@@ -1,0 +1,25 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext {
+        buildToolsVersion = "33.0.0"
+        minSdkVersion = 21
+        compileSdkVersion = 33
+        targetSdkVersion = 33
+        ndkVersion = "23.1.7779620"
+        kotlinVersion = "1.6.20"
+    }
+    repositories {
+        google()
+        mavenCentral()
+         // react-native-crop-image-picker config starts here
+         maven { url 'https://maven.google.com' }
+         maven { url "https://www.jitpack.io" }
+         // react-native-crop-image-picker config ends here
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.20") // Updated Kotlin Gradle Plugin version
+    }
+}
