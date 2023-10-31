@@ -27,7 +27,8 @@ import CameraPreview from './Camera/CameraPreview';
 import IntroBackGroundImageView from './IntroBackgroundImageView';
 import CustomDrawerContent from './CustomDrawerContent';
 import DrawerItemText from './DrawerItemText';
-
+import RenderLicensePlateNumber from './RenderItem/RenderLicensePlateNumber';
+import RenderLicensePlateNumberHeader from './RenderItem/RenderLicensePlateNumberHeader';
 export {
   BackgroundImageView,
   PrimaryGradientButton,
@@ -58,4 +59,6 @@ export {
   TiresItemsExpandedCard,
   CustomDrawerContent,
   DrawerItemText,
+  RenderLicensePlateNumber,
+  RenderLicensePlateNumberHeader,
 };

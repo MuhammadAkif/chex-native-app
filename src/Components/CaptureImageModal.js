@@ -13,6 +13,7 @@ import {
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
+import * as Progress from 'react-native-progress';
 
 import Cross from '../Assets/Icons/Cross';
 import {colors, dot} from '../Assets/Styles';
@@ -30,6 +31,8 @@ const CaptureImageModal = ({
   title,
   isVideo,
   modalKey,
+  isLoading,
+  progress,
 }) => (
   <Modal
     animationType="slide"
@@ -81,12 +84,25 @@ const CaptureImageModal = ({
           )}
         </View>
       </View>
-      <View style={styles.body}>
-        <PrimaryGradientButton
-          text={buttonText}
-          onPress={() => handleCaptureImage(isVideo, modalKey)}
-        />
-      </View>
+      {isLoading ? (
+        <View style={[styles.body, {justifyContent: 'center'}]}>
+          <Progress.Pie
+            progress={progress}
+            size={150}
+            indeterminate={progress === 0}
+          />
+          <Text style={[styles.textColor, styles.loadingText]}>
+            Finalizing Upload
+          </Text>
+        </View>
+      ) : (
+        <View style={styles.body}>
+          <PrimaryGradientButton
+            text={buttonText}
+            onPress={() => handleCaptureImage(isVideo, modalKey)}
+          />
+        </View>
+      )}
       <View style={styles.footerView} />
     </View>
     <StatusBar hidden={true} />
@@ -160,6 +176,10 @@ const styles = StyleSheet.create({
   },
   instructionsAndSubHeadingContainer: {
     alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: hp('1.8%'),
+    paddingTop: hp('1%'),
   },
 });
 

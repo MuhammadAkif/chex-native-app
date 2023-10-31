@@ -8,8 +8,14 @@ import {
 
 import {buttonTextStyle} from '../Assets/Styles';
 
-const PrimaryGradientButton = ({buttonStyle, textStyle, onPress, text}) => (
-  <TouchableOpacity onPress={onPress}>
+const PrimaryGradientButton = ({
+  buttonStyle,
+  textStyle,
+  onPress,
+  text,
+  disabled,
+}) => (
+  <TouchableOpacity onPress={onPress} disabled={disabled}>
     <LinearGradient
       colors={['#FF7A00', '#F90']}
       start={{x: 0, y: 0}}

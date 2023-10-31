@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Keyboard, Platform, StyleSheet} from 'react-native';
 import {Formik} from 'formik';
-import {useNavigation} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -13,9 +13,10 @@ import {signInValidationSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
 import {baseURL} from '../../Constants';
+import {SIGN_IN_ACTION} from '../../Store/Actions';
 
-const SignInContainer = () => {
-  const navigation = useNavigation();
+const SignInContainer = ({navigation}) => {
+  const dispatch = useDispatch();
   const emailRef = useRef();
   const passwordRef = useRef();
   const [isKeyboardActive, setKeyboardActive] = useState(false);
@@ -65,6 +66,7 @@ const SignInContainer = () => {
       })
       .then(response => {
         console.log('response: ', response.data);
+        dispatch(SIGN_IN_ACTION(response.data));
       })
       .catch(err => console.log('error: ', err?.response?.data?.errors));
   };
@@ -78,9 +80,10 @@ const SignInContainer = () => {
           username: values.name,
           password: values.password,
         };
-        checkUserData(body);
-        resetForm();
-        navigation.navigate(ROUTES.HOME);
+        checkUserData(body).then(() => {
+          resetForm();
+          navigation.navigate(ROUTES.HOME);
+        });
       }}>
       {({
         values,

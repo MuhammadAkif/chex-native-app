@@ -1,11 +1,11 @@
 import {Types} from '../Types';
 
-export function updateCarVerificationItemURI(item, uri) {
+export function UpdateCarVerificationItemURI(item, uri) {
   let payload = {item: item, uri: uri};
   return dispatch =>
     dispatch({type: Types.CAR_VERIFICATION_ITEMS, payload: payload});
 }
-export function updateExteriorItemURI(item, uri) {
+export function UpdateExteriorItemURI(item, uri) {
   let payload = {item: item, uri: uri};
   return dispatch =>
     dispatch({
@@ -13,7 +13,7 @@ export function updateExteriorItemURI(item, uri) {
       payload: payload,
     });
 }
-export function updateTiresItemURI(item, uri) {
+export function UpdateTiresItemURI(item, uri) {
   let payload = {item: item, uri: uri};
   return dispatch =>
     dispatch({
@@ -21,12 +21,12 @@ export function updateTiresItemURI(item, uri) {
       payload: payload,
     });
 }
-export function removeCarVerificationItemURI(item) {
+export function RemoveCarVerificationItemURI(item) {
   let payload = {item: item, uri: ''};
   return dispatch =>
     dispatch({type: Types.REMOVE_CAR_VERIFICATION_ITEM_URI, payload: payload});
 }
-export function removeExteriorItemURI(item) {
+export function RemoveExteriorItemURI(item) {
   let payload = {item: item, uri: ''};
   return dispatch =>
     dispatch({
@@ -34,7 +34,7 @@ export function removeExteriorItemURI(item) {
       payload: payload,
     });
 }
-export function removeTiresItemURI(item) {
+export function RemoveTiresItemURI(item) {
   let payload = {item: item, uri: ''};
   return dispatch =>
     dispatch({
@@ -42,3 +42,7 @@ export function removeTiresItemURI(item) {
       payload: payload,
     });
 }
+export function NumberPlateSelectedAction(NP) {
+  //pass data using api
+  console.log(NP);
+};

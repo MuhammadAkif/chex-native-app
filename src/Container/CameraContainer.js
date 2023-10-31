@@ -1,8 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {AppState, StatusBar, StyleSheet, View} from 'react-native';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -12,17 +12,18 @@ import FastImage from 'react-native-fast-image';
 
 import {colors, PreviewStyles} from '../Assets/Styles';
 import {BackArrow} from '../Assets/Icons';
-import {CameraFooter, CameraPreview} from '../Components';
+import {CameraFooter, CameraPreview, CaptureImageModal} from '../Components';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
-  updateCarVerificationItemURI,
-  updateExteriorItemURI,
-  updateTiresItemURI,
+  UpdateCarVerificationItemURI,
+  UpdateExteriorItemURI,
+  UpdateTiresItemURI,
 } from '../Store/Actions';
+import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
 
-const CameraContainer = ({route}) => {
+const CameraContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const navigation = useNavigation();
+  const {token} = useSelector(state => state?.auth);
   const isFocused = useIsFocused();
   const cameraRef = useRef();
   const appState = useRef(AppState.currentState);
@@ -30,7 +31,12 @@ const CameraContainer = ({route}) => {
   const [device, setDevice] = useState();
   const [isBackCamera, setIsBackCamera] = useState(true);
   const [isImageURL, setIsImageURL] = useState('');
-  const {title, type} = route.params;
+  const [isImageFile, setIsImageFile] = useState({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const {type, modalDetails, inspectionId} = route.params;
+  const {category, subCategory, instructionalText, source, title} =
+    modalDetails;
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
@@ -40,6 +46,9 @@ const CameraContainer = ({route}) => {
     return () => {
       subscription.remove();
       setIsImageURL('');
+      setIsImageFile({});
+      setIsModalVisible(false);
+      setProgress(0);
     };
   }, []);
 
@@ -52,12 +61,18 @@ const CameraContainer = ({route}) => {
   }, [isBackCamera, devices]);
 
   const handleNavigationBackPress = () => navigation.goBack();
+  const handleVisible = () => {
+    setProgress(0);
+    setIsModalVisible(false);
+  };
   const handleSwitchCamera = () => setIsBackCamera(!isBackCamera);
   const handleCaptureNowPress = async () => {
     if (cameraRef.current) {
-      const file = await cameraRef?.current?.takePhoto();
-      setIsImageURL(`file://${file.path}`);
-      const result = await fetch(`file://${file.path}`);
+      let file = await cameraRef?.current?.takePhoto();
+      const filePath = `file://${file.path}`;
+      setIsImageFile(file);
+      setIsImageURL(filePath);
+      // const result = await fetch(filePath);
       // const data = await result.blob();
     }
   };
@@ -70,22 +85,58 @@ const CameraContainer = ({route}) => {
     })
       .then(image => {
         console.log(image);
+        setIsImageFile(image);
+        debugger;
         setIsImageURL(image?.sourceURL);
       })
       .catch(error => console.log(error.code));
   };
-  const handleRetryPress = () => setIsImageURL('');
-  const handleNextPress = () => {
-    title === 'CarVerification'
-      ? dispatch(updateCarVerificationItemURI(type, isImageURL))
-      : title === 'Exterior'
-      ? dispatch(updateExteriorItemURI(type, isImageURL))
-      : dispatch(updateTiresItemURI(type, isImageURL));
+  const handleRetryPress = () => {
+    setIsImageURL('');
+    setIsImageFile({});
+  };
+  const handleResponse = key => {
+    const body = {
+      category: subCategory,
+      url: key,
+      extension: isImageFile.mime,
+      groupType: 'type',
+      dateImage: getCurrentDate(),
+    };
+    uploadFile(body, inspectionId, token).then(res =>
+      console.log('uploadFile outer response: ', res),
+    );
+    category === 'CarVerification'
+      ? dispatch(UpdateCarVerificationItemURI(type, isImageURL))
+      : category === 'Exterior'
+      ? dispatch(UpdateExteriorItemURI(type, isImageURL))
+      : dispatch(UpdateTiresItemURI(type, isImageURL));
     navigation.navigate(ROUTES.NEW_INSPECTION);
+  };
+  const handleNextPress = () => {
+    setIsModalVisible(true);
+    getSignedUrl(
+      token,
+      isImageFile.mime,
+      isImageFile.path,
+      setProgress,
+      handleResponse,
+    ).then();
   };
 
   return (
     <>
+      {isModalVisible && (
+        <CaptureImageModal
+          isLoading={true}
+          instructionalText={instructionalText}
+          source={source}
+          title={title}
+          progress={progress}
+          handleNavigationBackPress={handleNavigationBackPress}
+          handleVisible={handleVisible}
+        />
+      )}
       {isImageURL ? (
         <CameraPreview
           handleNavigationBackPress={handleNavigationBackPress}

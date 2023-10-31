@@ -1,5 +1,8 @@
 import * as yup from 'yup';
 import {Camera} from 'react-native-vision-camera';
+import axios from 'axios';
+import {nanoid} from '@reduxjs/toolkit';
+import {baseURL, uploadAPI} from '../Constants';
 
 export const validationSchema = yup.object().shape({
   firstName: yup.string().required('Field required'),
@@ -46,6 +49,7 @@ export const LicensePlateDetails = {
   instructionalText: 'Please take a photo of the License plate on the vehicle',
   instructionalSubHeadingText: '',
   category: 'CarVerification',
+  subCategory: 'license_plate',
   buttonText: 'Capture Now',
 };
 export const OdometerDetails = {
@@ -56,9 +60,9 @@ export const OdometerDetails = {
     'Please take a photo entire odometer dashboard area with vehicle turned on capturing following items:',
   instructionalSubHeadingText: 'Vehicle mileage',
   category: 'CarVerification',
+  subCategory: 'odometer',
   buttonText: 'Capture Now',
 };
-
 //___________________________Exterior______________________________
 export const ExteriorLeftDetails = {
   key: 'exteriorLeft',
@@ -69,6 +73,7 @@ export const ExteriorLeftDetails = {
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
   category: 'Exterior',
+  subCategory: 'exterior_left',
   isVideo: false,
 };
 export const ExteriorRightDetails = {
@@ -80,6 +85,7 @@ export const ExteriorRightDetails = {
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
   category: 'Exterior',
+  subCategory: 'exterior_right',
   isVideo: false,
 };
 export const ExteriorFrontDetails = {
@@ -91,6 +97,7 @@ export const ExteriorFrontDetails = {
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
   category: 'Exterior',
+  subCategory: 'exterior_front',
   isVideo: true,
 };
 export const ExteriorRearDetails = {
@@ -102,9 +109,9 @@ export const ExteriorRearDetails = {
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
   category: 'Exterior',
+  subCategory: 'exterior_rear',
   isVideo: true,
 };
-
 //____________________________Tires_____________________________
 export const LeftFrontTireDetails = {
   key: 'leftFrontTire',
@@ -116,6 +123,7 @@ export const LeftFrontTireDetails = {
     'Place Lincoln’s heads on the penny upside down and facing the camera',
   buttonText: 'Capture Now',
   category: 'Tires',
+  subCategory: 'left_front_tire',
   isVideo: false,
 };
 export const LeftRearTireDetails = {
@@ -128,6 +136,7 @@ export const LeftRearTireDetails = {
     'Place Lincoln’s heads on the penny upside down and facing the camera',
   buttonText: 'Capture Now',
   category: 'Tires',
+  subCategory: 'left_rear_tire',
   isVideo: false,
 };
 export const RightFrontTireDetails = {
@@ -140,6 +149,7 @@ export const RightFrontTireDetails = {
     'Place Lincoln’s heads on the penny upside down and facing the camera',
   buttonText: 'Capture Now',
   category: 'Tires',
+  subCategory: 'right_front_tire',
   isVideo: false,
 };
 export const RightRearTireDetails = {
@@ -152,11 +162,11 @@ export const RightRearTireDetails = {
     'Place Lincoln’s heads on the penny upside down and facing the camera',
   buttonText: 'Capture Now',
   category: 'Tires',
+  subCategory: 'right_rear_tire',
   isVideo: false,
 };
 
 //New Inspection Objects starts here
-
 // Mock Data stars here
 export const MockInspectionDetail = [
   {
@@ -184,6 +194,14 @@ export const MockInspectionDetail = [
     name: 'Interior Backseat',
   },
 ];
+export const MockLicensePlateNumbers = [
+  'DFKGI',
+  'OPOPL',
+  'FEPOI',
+  'FPALI',
+  'AAWWP',
+  'POLIK',
+];
 // Mock Data ends here
 
 export const hasCameraAndMicrophoneAllowed = async () => {
@@ -195,4 +213,90 @@ export const hasCameraAndMicrophoneAllowed = async () => {
   if (microphonePermission !== 'authorized') {
     await Camera.requestMicrophonePermission();
   }
+};
+export const getSignedUrl = async (
+  token,
+  mime,
+  path,
+  setProgress,
+  handleResponse,
+) => {
+  await axios
+    .post(
+      uploadAPI,
+      {type: mime},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
+    .then(res => {
+      const {url, key} = res.data;
+      debugger;
+      uploadToS3(url, key, path, mime, setProgress, handleResponse);
+    })
+    .catch(error => console.log(error));
+};
+export const uploadToS3 = async (
+  preSignedUrl,
+  key,
+  path,
+  mime,
+  setProgress,
+  handleResponse,
+) => {
+  const extension = mime.split('/').pop();
+  const body = {
+    uri: path,
+    type: mime,
+    name: `${nanoid()}.${extension}`,
+  };
+  debugger;
+
+  const formData = new FormData();
+  formData.append('file', body);
+
+  await axios
+    .put(preSignedUrl, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: progressEvent => setProgress(progressEvent.progress),
+    })
+    .then(response => {
+      console.log('Uploaded successfully');
+      handleResponse(key);
+    })
+    .catch(error => {
+      console.error('Error uploading image:', error);
+    });
+};
+
+export const getCurrentDate = () => {
+  const currentDate = new Date();
+
+  const day = currentDate.getDate();
+  const month = currentDate.getMonth() + 1;
+  const year = currentDate.getFullYear();
+
+  return `${day}-${month}-${year}`;
+};
+
+export const uploadFile = async (body, inspectionId, token) => {
+  debugger;
+  await axios
+    .post(`${baseURL}/api/v1/vehicle/${inspectionId}/file`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(res => {
+      console.log('uploadFile response: ', res);
+    })
+    .catch(error => {
+      console.log('uploadFile error :', error);
+    });
 };

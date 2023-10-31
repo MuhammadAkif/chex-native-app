@@ -4,13 +4,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import {NewInspectionScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
-  removeCarVerificationItemURI,
-  removeExteriorItemURI,
-  removeTiresItemURI,
+  RemoveCarVerificationItemURI,
+  RemoveExteriorItemURI,
+  RemoveTiresItemURI,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
 
-const NewInspectionContainer = ({navigation}) => {
+const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {carVerificationItems, exteriorItems, tires} = useSelector(
     state => state.newInspection,
@@ -21,6 +21,7 @@ const NewInspectionContainer = ({navigation}) => {
     isExterior: false,
     isTires: false,
   });
+  const [inspectionID, setInspectionID] = useState(0);
   const modalDetailsInitialState = {
     key: 'licensePlate',
     title: 'License Plate',
@@ -30,6 +31,7 @@ const NewInspectionContainer = ({navigation}) => {
     instructionalSubHeadingText: '',
     buttonText: 'Capture Now',
     category: 'CarVerification',
+    subCategory: 'license_plate',
     isVideo: false,
   };
   const [modalDetails, setModalDetails] = useState(modalDetailsInitialState);
@@ -52,6 +54,10 @@ const NewInspectionContainer = ({navigation}) => {
     isBothTiresImagesAvailable;
 
   useEffect(() => {
+    if (route.params) {
+      const {inspectionId} = route.params;
+      setInspectionID(inspectionId);
+    }
     return () => {
       setModalDetails(modalDetailsInitialState);
       setModalVisible(false);
@@ -85,26 +91,28 @@ const NewInspectionContainer = ({navigation}) => {
   };
   const handleModalVisible = () => setModalVisible(!modalVisible);
   const handleCarVerificationCrossPress = key => {
-    console.log('Cross Pressed');
-    dispatch(removeCarVerificationItemURI(key));
+    dispatch(RemoveCarVerificationItemURI(key));
   };
   const handleExteriorCrossPress = key => {
-    console.log('Cross Pressed');
-    dispatch(removeExteriorItemURI(key));
+    dispatch(RemoveExteriorItemURI(key));
   };
   const handleTiresCrossPress = key => {
-    console.log('Cross Pressed');
-    dispatch(removeTiresItemURI(key));
+    dispatch(RemoveTiresItemURI(key));
   };
   const handleCaptureNowPress = (isVideo, key) => {
     setModalVisible(false);
     setModalDetails(modalDetailsInitialState);
     if (isVideo) {
-      navigation.navigate(ROUTES.VIDEO, {type: key});
+      navigation.navigate(ROUTES.VIDEO, {
+        type: key,
+        modalDetails: modalDetails,
+        inspectionId: inspectionID,
+      });
     } else {
       navigation.navigate(ROUTES.CAMERA, {
-        title: modalDetails.category,
         type: key,
+        modalDetails: modalDetails,
+        inspectionId: inspectionID,
       });
     }
   };

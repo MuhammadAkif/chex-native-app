@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import {View, StyleSheet, ScrollView, StatusBar} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
+import {useDispatch} from 'react-redux';
 
 import {SignInLogo} from './index';
 import {ROUTES} from '../Navigation/ROUTES';
@@ -17,8 +18,10 @@ import {
   Plus,
 } from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
+import {SIGN_OUT_ACTION} from '../Store/Actions';
 
 const CustomDrawerContent = props => {
+  const dispatch = useDispatch();
   return (
     <ScrollView style={styles.body} {...props}>
       <View style={styles.header}>
@@ -47,7 +50,9 @@ const CustomDrawerContent = props => {
         Icon={
           <Plus height={hp('2.5%')} width={wp('5%')} color={colors.black} />
         }
-        onPress={() => props.navigation.navigate(ROUTES.NEW_INSPECTION)}
+        onPress={() =>
+          props.navigation.navigate(ROUTES.LICENSE_PLATE_SELECTION)
+        }
       />
       <DrawerItemText
         text={'Inspection Reviewed'}
@@ -76,8 +81,13 @@ const CustomDrawerContent = props => {
         Icon={
           <Logout height={hp('3%')} width={wp('5%')} color={colors.black} />
         }
-        onPress={() => props.navigation.navigate(ROUTES.WELCOME)}
+        onPress={() => {
+          dispatch(SIGN_OUT_ACTION());
+          props.navigation.navigate(ROUTES.SIGN_IN);
+        }}
+        // onPress={() => props.navigation.navigate(ROUTES.WELCOME)}
       />
+      <StatusBar backgroundColor={'transparent'} barStyle={'light-content'} />
     </ScrollView>
   );
 };

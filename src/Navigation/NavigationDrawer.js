@@ -7,6 +7,7 @@ import {
   NewInspectionContainer,
   InspectionReviewedContainer,
   InspectionDetailContainer,
+  LicensePlateNumberSelectionContainer,
 } from '../Container';
 import {
   HeaderBackButton,
@@ -29,15 +30,21 @@ const NavigationDrawer = () => {
       drawerContent={props => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerTitle: () => <HeaderTitle />,
-        drawerHideStatusBarOnOpen: true,
+        // drawerHideStatusBarOnOpen: true,
         drawerType: 'front',
         drawerStatusBarAnimation: 'slide',
         headerLeft: () => <HeaderBackButton />,
       }}
       initialRouteName={ROUTES.INTRO}>
+      {/*initialRouteName={ROUTES.LICENSE_PLATE_SELECTION}>*/}
       <Drawer.Screen
         name={ROUTES.INTRO}
         component={IntroContainer}
+        options={options}
+      />
+      <Drawer.Screen
+        name={ROUTES.LICENSE_PLATE_SELECTION}
+        component={LicensePlateNumberSelectionContainer}
         options={options}
       />
       <Drawer.Screen

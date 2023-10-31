@@ -1,8 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {AppState, StatusBar, StyleSheet, View} from 'react-native';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -11,23 +11,28 @@ import ImagePicker from 'react-native-image-crop-picker';
 
 import {colors, PreviewStyles} from '../Assets/Styles';
 import {BackArrow} from '../Assets/Icons';
-import {CameraFooter, RecordingPreview} from '../Components';
+import {CameraFooter, CaptureImageModal, RecordingPreview} from '../Components';
 import {ROUTES} from '../Navigation/ROUTES';
-import {updateExteriorItemURI} from '../Store/Actions';
+import {UpdateExteriorItemURI} from '../Store/Actions';
+import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
 
-const VideoContainer = ({route}) => {
+const VideoContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const navigation = useNavigation();
+  const {token} = useSelector(state => state?.auth);
   const isFocused = useIsFocused();
   const videoRef = useRef();
   const appState = useRef(AppState.currentState);
   const devices = useCameraDevices('wide-angle-camera');
   const [device, setDevice] = useState();
   const [isBackCamera, setIsBackCamera] = useState(true);
+  const [isVideoFile, setIsVideoFile] = useState({});
   const [isVideoURI, setIsVideoURI] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [counter, setCounter] = useState(30);
-  const {type} = route.params;
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const {type, modalDetails, inspectionId} = route.params;
+  const {subCategory, instructionalText, source, title} = modalDetails;
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
@@ -39,6 +44,9 @@ const VideoContainer = ({route}) => {
       console.log('cleaning video uri');
       setIsVideoURI('');
       setIsRecording(false);
+      setIsVideoFile({});
+      setIsModalVisible(false);
+      setProgress(0);
       // setCounter(30);
     };
   }, []);
@@ -71,6 +79,10 @@ const VideoContainer = ({route}) => {
     setIsRecording(false);
   }
   const handleNavigationBackPress = () => navigation.goBack();
+  const handleVisible = () => {
+    setProgress(0);
+    setIsModalVisible(false);
+  };
   const handleSwitchCamera = () => setIsBackCamera(!isBackCamera);
   const handleRecordingPress = async () => {
     if (videoRef.current) {
@@ -81,6 +93,7 @@ const VideoContainer = ({route}) => {
         setIsRecording(true);
         videoRef?.current?.startRecording({
           onRecordingFinished: video => {
+            setIsVideoFile(video);
             const path = video.path;
             setIsVideoURI(`file://${path}`);
           },
@@ -94,7 +107,7 @@ const VideoContainer = ({route}) => {
       mediaType: 'video',
     })
       .then(video => {
-        console.log(video);
+        setIsVideoFile(video);
         setIsVideoURI(video?.sourceURL);
       })
       .catch(error => console.log(error.code));
@@ -102,15 +115,47 @@ const VideoContainer = ({route}) => {
   const handleRetryPress = () => {
     setIsRecording(false);
     setIsVideoURI('');
+    setIsVideoFile({});
     // setCounter(30);
   };
-  const handleNextPress = () => {
-    dispatch(updateExteriorItemURI(type, isVideoURI));
+  const handleResponse = key => {
+    const body = {
+      category: subCategory,
+      url: key,
+      extension: isVideoFile.mime,
+      groupType: 'type',
+      dateImage: getCurrentDate(),
+    };
+    uploadFile(body, inspectionId, token).then(res =>
+      console.log('uploadFile outer response: ', res),
+    );
+    dispatch(UpdateExteriorItemURI(type, isVideoURI));
     navigation.navigate(ROUTES.NEW_INSPECTION);
+  };
+  const handleNextPress = () => {
+    setIsModalVisible(true);
+    getSignedUrl(
+      token,
+      isVideoFile.mime,
+      isVideoFile.path,
+      setProgress,
+      handleResponse,
+    ).then();
   };
 
   return (
     <>
+      {isModalVisible && (
+        <CaptureImageModal
+          isLoading={true}
+          instructionalText={instructionalText}
+          source={source}
+          title={title}
+          progress={progress}
+          handleNavigationBackPress={handleNavigationBackPress}
+          handleVisible={handleVisible}
+        />
+      )}
       {isVideoURI ? (
         <RecordingPreview
           handleNavigationBackPress={handleNavigationBackPress}

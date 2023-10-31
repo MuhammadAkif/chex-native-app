@@ -12,14 +12,17 @@ import {
 } from '../Container';
 import {ROUTES} from './ROUTES';
 import NavigationDrawer from './NavigationDrawer';
+import {useSelector} from 'react-redux';
 
 const Navigation = () => {
   const Stack = createNativeStackNavigator();
+  const {token} = useSelector(state => state.auth);
+  const initialRouteName = token ? ROUTES.HOME : ROUTES.WELCOME;
 
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={ROUTES.HOME}
+        initialRouteName={initialRouteName}
         screenOptions={{headerShown: false}}>
         <Stack.Screen name={ROUTES.WELCOME} component={WelcomeContainer} />
         <Stack.Screen name={ROUTES.REGISTER} component={RegisterContainer} />
