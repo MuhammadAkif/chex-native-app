@@ -1,11 +1,11 @@
 import React, {useCallback, useState} from 'react';
+import {useSelector} from 'react-redux';
+import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
 import {LicensePlateNumberSelectionScreen} from '../Screens';
-import {baseURL, createInspectionAPI} from '../Constants';
+import {baseURL, createInspectionURL, fetchNPURL} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
-import {useSelector} from 'react-redux';
-import {useFocusEffect} from '@react-navigation/native';
 
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const {
@@ -32,7 +32,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
 
   function fetchNP() {
     axios
-      .post(`${baseURL}/api/v1/searchnumberplate`, {
+      .post(fetchNPURL, {
         companyId: companyId,
       })
       .then(response => {
@@ -54,10 +54,8 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       Authorization: `Bearer ${token}`,
     };
     axios
-      .post(createInspectionAPI, data, {headers: headers})
+      .post(createInspectionURL, data, {headers: headers})
       .then(response => {
-        console.log('response: ', response.data);
-        debugger;
         navigation.navigate(ROUTES.NEW_INSPECTION, {
           inspectionId: response.data.id,
         });

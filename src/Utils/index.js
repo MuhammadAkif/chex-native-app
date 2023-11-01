@@ -2,7 +2,8 @@ import * as yup from 'yup';
 import {Camera} from 'react-native-vision-camera';
 import axios from 'axios';
 import {nanoid} from '@reduxjs/toolkit';
-import {baseURL, uploadAPI} from '../Constants';
+
+import {baseURL, uploadURL} from '../Constants';
 
 export const validationSchema = yup.object().shape({
   firstName: yup.string().required('Field required'),
@@ -223,7 +224,7 @@ export const getSignedUrl = async (
 ) => {
   await axios
     .post(
-      uploadAPI,
+      uploadURL,
       {type: mime},
       {
         headers: {
@@ -234,7 +235,6 @@ export const getSignedUrl = async (
     )
     .then(res => {
       const {url, key} = res.data;
-      debugger;
       uploadToS3(url, key, path, mime, setProgress, handleResponse);
     })
     .catch(error => console.log(error));
@@ -253,7 +253,6 @@ export const uploadToS3 = async (
     type: mime,
     name: `${nanoid()}.${extension}`,
   };
-  debugger;
 
   const formData = new FormData();
   formData.append('file', body);
@@ -266,7 +265,6 @@ export const uploadToS3 = async (
       onUploadProgress: progressEvent => setProgress(progressEvent.progress),
     })
     .then(response => {
-      console.log('Uploaded successfully');
       handleResponse(key);
     })
     .catch(error => {
@@ -285,7 +283,6 @@ export const getCurrentDate = () => {
 };
 
 export const uploadFile = async (body, inspectionId, token) => {
-  debugger;
   await axios
     .post(`${baseURL}/api/v1/vehicle/${inspectionId}/file`, body, {
       headers: {

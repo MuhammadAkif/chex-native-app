@@ -86,7 +86,6 @@ const CameraContainer = ({route, navigation}) => {
       .then(image => {
         console.log(image);
         setIsImageFile(image);
-        debugger;
         setIsImageURL(image?.sourceURL);
       })
       .catch(error => console.log(error.code));

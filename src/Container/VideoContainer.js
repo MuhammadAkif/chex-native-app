@@ -41,7 +41,6 @@ const VideoContainer = ({route, navigation}) => {
 
     return () => {
       subscription.remove();
-      console.log('cleaning video uri');
       setIsVideoURI('');
       setIsRecording(false);
       setIsVideoFile({});
@@ -126,9 +125,7 @@ const VideoContainer = ({route, navigation}) => {
       groupType: 'type',
       dateImage: getCurrentDate(),
     };
-    uploadFile(body, inspectionId, token).then(res =>
-      console.log('uploadFile outer response: ', res),
-    );
+    uploadFile(body, inspectionId, token).then();
     dispatch(UpdateExteriorItemURI(type, isVideoURI));
     navigation.navigate(ROUTES.NEW_INSPECTION);
   };
