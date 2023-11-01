@@ -35,7 +35,7 @@ const CameraContainer = ({route, navigation}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [progress, setProgress] = useState(0);
   const {type, modalDetails, inspectionId} = route.params;
-  const {category, subCategory, instructionalText, source, title} =
+  const {category, subCategory, instructionalText, source, title, isVideo} =
     modalDetails;
 
   useEffect(() => {
@@ -84,7 +84,6 @@ const CameraContainer = ({route, navigation}) => {
       // includeBase64: true,
     })
       .then(image => {
-        console.log(image);
         setIsImageFile(image);
         setIsImageURL(image?.sourceURL);
       })
@@ -102,9 +101,7 @@ const CameraContainer = ({route, navigation}) => {
       groupType: 'type',
       dateImage: getCurrentDate(),
     };
-    uploadFile(body, inspectionId, token).then(res =>
-      console.log('uploadFile outer response: ', res),
-    );
+    uploadFile(body, inspectionId, token).then();
     category === 'CarVerification'
       ? dispatch(UpdateCarVerificationItemURI(type, isImageURL))
       : category === 'Exterior'
@@ -128,6 +125,7 @@ const CameraContainer = ({route, navigation}) => {
       {isModalVisible && (
         <CaptureImageModal
           isLoading={true}
+          isVideo={isVideo}
           instructionalText={instructionalText}
           source={source}
           title={title}

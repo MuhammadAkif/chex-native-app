@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Platform} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   heightPercentageToDP as hp,
@@ -10,7 +10,7 @@ import CompletedInspectionBackgroundImage from '../Components/CompletedInspectio
 import {colors} from '../Assets/Styles';
 import {PrimaryGradientButton} from '../Components';
 
-const CompletedInspectionScreen = () => (
+const CompletedInspectionScreen = ({handleThankYouPress}) => (
   <CompletedInspectionBackgroundImage>
     <View style={styles.container}>
       <LinearGradient
@@ -29,7 +29,13 @@ const CompletedInspectionScreen = () => (
             You may now exit our app. Our representatives will reach out to you
             if we need any further help
           </Text>
-          <PrimaryGradientButton buttonStyle={styles.button} text={'Exit'} />
+          {Platform.OS === 'android' && (
+            <PrimaryGradientButton
+              buttonStyle={styles.button}
+              text={'Thank You'}
+              onPress={handleThankYouPress}
+            />
+          )}
           <View style={styles.bodyFooterEmptyView} />
         </View>
       </LinearGradient>

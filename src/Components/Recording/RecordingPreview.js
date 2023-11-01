@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -16,30 +16,39 @@ const RecordingPreview = ({
   styles,
   handleRetryPress,
   handleNextPress,
-}) => (
-  <View style={styles.recordingPreviewContainer}>
-    <View style={styles.headerContainer}>
-      <BackArrow
-        height={hp('8%')}
-        width={wp('8%')}
-        color={colors.white}
-        onPress={handleNavigationBackPress}
+  isVideoPaused,
+}) => {
+  const [isPaused, setIsPaused] = useState(isVideoPaused);
+
+  return (
+    <View style={styles.recordingPreviewContainer}>
+      <View style={styles.headerContainer}>
+        <BackArrow
+          height={hp('8%')}
+          width={wp('8%')}
+          color={colors.white}
+          onPress={handleNavigationBackPress}
+        />
+      </View>
+      <View style={styles.videoContainer}>
+        <Video
+          controls={false}
+          repeat={true}
+          paused={isPaused}
+          playInBackground={false}
+          style={[StyleSheet.absoluteFillObject, {borderRadius: 10}]}
+          source={{uri: isVideoURI}}
+        />
+      </View>
+      <PreviewFooter
+        onRetryPress={handleRetryPress}
+        onNextPress={() => {
+          setIsPaused(true);
+          handleNextPress();
+        }}
       />
     </View>
-    <View style={styles.videoContainer}>
-      <Video
-        controls={false}
-        repeat={true}
-        playInBackground={false}
-        style={[StyleSheet.absoluteFillObject, {borderRadius: 10}]}
-        source={{uri: isVideoURI}}
-      />
-    </View>
-    <PreviewFooter
-      onRetryPress={handleRetryPress}
-      onNextPress={handleNextPress}
-    />
-  </View>
-);
+  );
+};
 
 export default RecordingPreview;

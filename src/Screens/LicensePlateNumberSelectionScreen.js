@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Text, StyleSheet, FlatList, TextInput} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TextInput,
+  ActivityIndicator,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -15,6 +22,8 @@ const LicensePlateNumberSelectionScreen = ({
   search,
   handleSearchInput,
   handleSubmit,
+  selectText,
+  isLoading,
 }) => (
   <View style={NewInspectionStyles.container}>
     <View style={[NewInspectionStyles.bodyContainer, styles.container]}>
@@ -29,24 +38,27 @@ const LicensePlateNumberSelectionScreen = ({
           style={styles.searchInput}
         />
       </View>
-
       <View style={styles.innerBodyContainer}>
         <FlatList
           data={data}
+          ListEmptyComponent={
+            <ActivityIndicator size={'large'} color={colors.royalBlue} />
+          }
           renderItem={({item}) => (
             <RenderLicensePlateNumber
               item={item}
               selectedNP={selectedNP}
               handleSelectedNP={handleSelectedNP}
+              isLoading={isLoading}
             />
           )}
         />
       </View>
       <View style={styles.footerContainer}>
         <PrimaryGradientButton
-          text={'Select'}
+          text={selectText}
           onPress={handleSubmit}
-          disabled={selectedNP === ''}
+          disabled={selectedNP === '' || isLoading}
         />
       </View>
     </View>

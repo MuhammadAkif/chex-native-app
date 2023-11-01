@@ -9,6 +9,7 @@ import {
   InspectionSelectionContainer,
   CameraContainer,
   VideoContainer,
+  CompletedInspectionContainer,
 } from '../Container';
 import {ROUTES} from './ROUTES';
 import NavigationDrawer from './NavigationDrawer';
@@ -33,6 +34,10 @@ const Navigation = () => {
         <Stack.Screen
           name={ROUTES.INSPECTION_SELECTION}
           component={InspectionSelectionContainer}
+        />
+        <Stack.Screen
+          name={ROUTES.Completed_Inspection}
+          component={CompletedInspectionContainer}
         />
       </Stack.Navigator>
     </NavigationContainer>

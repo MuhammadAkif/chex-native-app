@@ -1,11 +1,13 @@
 import React, {useCallback, useState} from 'react';
+import {ActivityIndicator, Alert} from 'react-native';
 import {useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
 import {LicensePlateNumberSelectionScreen} from '../Screens';
-import {baseURL, createInspectionURL, fetchNPURL} from '../Constants';
+import {createInspectionURL, fetchNPURL} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
+import {colors} from '../Assets/Styles';
 
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const {
@@ -15,17 +17,25 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const [selectedNP, setSelectedNP] = useState('');
   const [search, setSearch] = useState('');
   const [numberPlate, setNumberPlate] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const filterNP = numberPlate.filter(NP =>
     NP.toLowerCase().includes(search.toLowerCase()),
+  );
+  const selectedText = isLoading ? (
+    <ActivityIndicator size={'small'} color={colors.white} />
+  ) : (
+    'Select'
   );
 
   useFocusEffect(
     useCallback(() => {
       fetchNP();
+
       return () => {
         setNumberPlate([]);
         setSearch('');
         setSelectedNP('');
+        setIsLoading(false);
       };
     }, []),
   );
@@ -45,6 +55,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
     setSelectedNP(item);
   };
   const handleSubmit = () => {
+    setIsLoading(true);
     const data = {
       licensePlateNumber: selectedNP,
       companyId: companyId,
@@ -56,11 +67,17 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
     axios
       .post(createInspectionURL, data, {headers: headers})
       .then(response => {
+        setIsLoading(false);
         navigation.navigate(ROUTES.NEW_INSPECTION, {
           inspectionId: response.data.id,
         });
       })
-      .catch(err => console.log('error: ', err?.response?.data?.errors));
+      .catch(err => {
+        const errorMessage =
+          err?.response?.data?.errorMessage ?? err?.response?.data?.message[0];
+        setIsLoading(false);
+        Alert.alert('', errorMessage);
+      });
   };
 
   return (
@@ -71,6 +88,8 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       search={search}
       handleSearchInput={handleSearchInput}
       handleSubmit={handleSubmit}
+      selectText={selectedText}
+      isLoading={isLoading}
     />
   );
 };

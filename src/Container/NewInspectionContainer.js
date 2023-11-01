@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import axios from 'axios';
 
 import {NewInspectionScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
@@ -9,12 +10,14 @@ import {
   RemoveTiresItemURI,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
+import {baseURL} from '../Constants';
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {carVerificationItems, exteriorItems, tires} = useSelector(
     state => state.newInspection,
   );
+  const {token} = useSelector(state => state?.auth);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState({
     isCarVerification: true,
@@ -22,6 +25,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     isTires: false,
   });
   const [inspectionID, setInspectionID] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const modalDetailsInitialState = {
     key: 'licensePlate',
     title: 'License Plate',
@@ -61,6 +65,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     return () => {
       setModalDetails(modalDetailsInitialState);
       setModalVisible(false);
+      setIsLoading(false);
       dispatch({type: Types.CLEAR_NEW_INSPECTION});
     };
   }, []);
@@ -116,7 +121,25 @@ const NewInspectionContainer = ({route, navigation}) => {
       });
     }
   };
-  const handleSubmitPress = () => dispatch({type: Types.CLEAR_NEW_INSPECTION});
+  const handleSubmitPress = () => {
+    setIsLoading(true);
+    axios
+      .patch(`${baseURL}/api/v1/inspection/${inspectionID}`, null, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(() => {
+        setIsLoading(false);
+        dispatch({type: Types.CLEAR_NEW_INSPECTION});
+        navigation.navigate(ROUTES.Completed_Inspection);
+      })
+      .catch(error => {
+        setIsLoading(false);
+        console.log('Completed Inspection error :', error);
+      });
+  };
 
   return (
     <NewInspectionScreen
@@ -148,6 +171,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       isBothTiresImagesAvailable={isBothTiresImagesAvailable}
       isVehicleAllPartsImagesAvailable={isVehicleAllPartsImagesAvailable}
       handleSubmitPress={handleSubmitPress}
+      isLoading={isLoading}
     />
   );
 };

@@ -8,6 +8,7 @@ import InspectionReviewedContainer from './InspectionReviewedContainer';
 import InspectionDetailContainer from './InspectionDetailContainer';
 import CameraContainer from './CameraContainer';
 import VideoContainer from './VideoContainer';
+import CompletedInspectionContainer from './CompletedInspectionContainer';
 import LicensePlateNumberSelectionContainer from './LicensePlateNumberSelectionContainer';
 
 export {
@@ -22,4 +23,5 @@ export {
   CameraContainer,
   VideoContainer,
   LicensePlateNumberSelectionContainer,
+  CompletedInspectionContainer,
 };

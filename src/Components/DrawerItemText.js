@@ -7,10 +7,10 @@ import {
 
 import {colors} from '../Assets/Styles';
 
-const DrawerItemText = ({text, onPress, Icon}) => (
-  <View style={styles.container}>
+const DrawerItemText = ({text, onPress, Icon, activeColor, textColor}) => (
+  <View style={[styles.container, {backgroundColor: activeColor}]}>
     {Icon}
-    <Text style={styles.contentItem} onPress={onPress}>
+    <Text style={[styles.contentItem, {color: textColor}]} onPress={onPress}>
       {text}
     </Text>
   </View>

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Keyboard, Platform, StyleSheet} from 'react-native';
+import {Alert, Keyboard, Platform, StyleSheet} from 'react-native';
 import {Formik} from 'formik';
 import {useDispatch} from 'react-redux';
 import {
@@ -57,7 +57,7 @@ const SignInContainer = ({navigation}) => {
   const handleForgetPasswordPress = () =>
     console.log('Forgot Password Pressed');
   const handleRegisterPress = () => navigation.navigate(ROUTES.REGISTER);
-  const checkUserData = async body => {
+  const checkUserData = async (body, resetForm) => {
     // const {username, password} = body;
     axios
       .post(`${baseURL}/api/v1/auth/login`, {
@@ -65,10 +65,14 @@ const SignInContainer = ({navigation}) => {
         password: body.password,
       })
       .then(response => {
-        console.log('response: ', response.data);
         dispatch(SIGN_IN_ACTION(response.data));
+        resetForm();
+        navigation.navigate(ROUTES.HOME);
       })
-      .catch(err => console.log('error: ', err?.response?.data?.errors));
+      .catch(err => {
+        console.log('error: ', err?.response?.data?.errors);
+        Alert.alert('Login Failed', err?.response?.data?.errors[0]);
+      });
   };
 
   return (
@@ -80,9 +84,9 @@ const SignInContainer = ({navigation}) => {
           username: values.name,
           password: values.password,
         };
-        checkUserData(body).then(() => {
-          resetForm();
-          navigation.navigate(ROUTES.HOME);
+        checkUserData(body, resetForm).then(() => {
+          // resetForm();
+          // navigation.navigate(ROUTES.HOME);
         });
       }}>
       {({

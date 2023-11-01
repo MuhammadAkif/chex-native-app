@@ -11,5 +11,6 @@ export const ROUTES = {
   INSPECTION_DETAIL: 'INSPECTION DETAIL',
   CAMERA: 'CAMERA',
   VIDEO: 'VIDEO',
+  Completed_Inspection: 'Completed Inspection',
   LOGOUT: 'LOGOUT',
 };

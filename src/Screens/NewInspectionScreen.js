@@ -38,6 +38,7 @@ const NewInspectionScreen = ({
   isBothTiresImagesAvailable,
   isVehicleAllPartsImagesAvailable,
   handleSubmitPress,
+  isLoading,
 }) => (
   <View style={NewInspectionStyles.container}>
     <View style={NewInspectionStyles.headerContainer}>
@@ -81,6 +82,7 @@ const NewInspectionScreen = ({
               handleItemPickerPress={handleItemPickerPress}
               carVerificationItems={carVerificationItems}
               handleCrossPress={handleCarVerificationCrossPress}
+              isLoading={isLoading}
             />
           )}
           <CollapsedCard
@@ -95,6 +97,7 @@ const NewInspectionScreen = ({
               handleItemPickerPress={handleItemPickerPress}
               exteriorItems={exteriorItems}
               handleCrossPress={handleExteriorCrossPress}
+              isLoading={isLoading}
             />
           )}
           <CollapsedCard
@@ -109,6 +112,7 @@ const NewInspectionScreen = ({
               handleItemPickerPress={handleItemPickerPress}
               tires={tires}
               handleCrossPress={handleTiresCrossPress}
+              isLoading={isLoading}
             />
           )}
         </ScrollView>

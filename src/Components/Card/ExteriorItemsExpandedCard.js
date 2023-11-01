@@ -15,6 +15,7 @@ const ExteriorItemsExpandedCard = ({
   handleItemPickerPress,
   exteriorItems,
   handleCrossPress,
+  isLoading,
 }) => (
   <View
     style={[
@@ -26,6 +27,7 @@ const ExteriorItemsExpandedCard = ({
         text={'Exterior Left'}
         pickerText={'Upload Image'}
         imageURL={exteriorItems?.exteriorLeft}
+        isLoading={isLoading}
         onPress={() => handleItemPickerPress(ExteriorLeftDetails)}
         onClearPress={() => handleCrossPress(ExteriorLeftDetails.key)}
       />
@@ -33,6 +35,7 @@ const ExteriorItemsExpandedCard = ({
         text={'Exterior Right'}
         pickerText={'Upload Image'}
         imageURL={exteriorItems?.exteriorRight}
+        isLoading={isLoading}
         onPress={() => handleItemPickerPress(ExteriorRightDetails)}
         onClearPress={() => handleCrossPress(ExteriorRightDetails.key)}
       />
@@ -42,6 +45,7 @@ const ExteriorItemsExpandedCard = ({
         text={'Exterior Front'}
         pickerText={'Upload Video'}
         videoURL={exteriorItems?.exteriorFront}
+        isLoading={isLoading}
         onPress={() => handleItemPickerPress(ExteriorFrontDetails)}
         onClearPress={() => handleCrossPress(ExteriorFrontDetails.key)}
       />
@@ -49,6 +53,7 @@ const ExteriorItemsExpandedCard = ({
         text={'Exterior Rear'}
         pickerText={'Upload Video'}
         videoURL={exteriorItems?.exteriorRear}
+        isLoading={isLoading}
         onPress={() => handleItemPickerPress(ExteriorRearDetails)}
         onClearPress={() => handleCrossPress(ExteriorRearDetails.key)}
       />

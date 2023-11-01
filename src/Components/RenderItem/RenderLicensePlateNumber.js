@@ -20,9 +20,11 @@ const RenderLicensePlateNumber = ({
   item,
   selectedNP,
   handleSelectedNP,
+  isLoading,
 }) => (
   <TouchableOpacity
     style={styles.itemContainer}
+    disabled={isLoading}
     onPress={() => handleSelectedNP(item)}>
     <Text style={styles.text}>{item}</Text>
     <View style={styles.checkBoxContainer}>

@@ -35,7 +35,6 @@ const RegisterContainer = () => {
       Alert.alert('Sign Up Failed', 'Please Select Terms of Use');
       return;
     }
-    console.log('Register Pressed');
   };
 
   return (

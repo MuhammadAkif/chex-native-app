@@ -32,7 +32,7 @@ const VideoContainer = ({route, navigation}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [progress, setProgress] = useState(0);
   const {type, modalDetails, inspectionId} = route.params;
-  const {subCategory, instructionalText, source, title} = modalDetails;
+  const {subCategory, instructionalText, source, title, isVideo} = modalDetails;
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
@@ -145,6 +145,7 @@ const VideoContainer = ({route, navigation}) => {
       {isModalVisible && (
         <CaptureImageModal
           isLoading={true}
+          isVideo={isVideo}
           instructionalText={instructionalText}
           source={source}
           title={title}

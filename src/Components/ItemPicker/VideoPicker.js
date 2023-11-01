@@ -16,10 +16,17 @@ import {Cross, Play} from '../../Assets/Icons';
 const height = hp('5%');
 const width = wp('5%');
 
-const VideoPicker = ({onPress, text, pickerText, videoURL, onClearPress}) => (
+const VideoPicker = ({
+  onPress,
+  text,
+  pickerText,
+  videoURL,
+  onClearPress,
+  isLoading,
+}) => (
   <View style={expandedCardStyles.uploadImageAndTextContainer}>
     {videoURL ? (
-      <TouchableOpacity style={ItemPickerStyles.container}>
+      <TouchableOpacity style={ItemPickerStyles.container} disabled={isLoading}>
         <TouchableOpacity
           style={expandedCardStyles.crossContainer}
           onPress={onClearPress}>

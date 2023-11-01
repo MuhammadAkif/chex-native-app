@@ -13,7 +13,6 @@ function App() {
     dispatch({type: Types.CLEAR_NEW_INSPECTION});
     hasCameraAndMicrophoneAllowed().then();
     return () => {
-      console.log('cleaning store');
       dispatch({type: Types.CLEAR_NEW_INSPECTION});
     };
   }, []);

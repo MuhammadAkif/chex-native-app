@@ -30,13 +30,11 @@ const NavigationDrawer = () => {
       drawerContent={props => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerTitle: () => <HeaderTitle />,
-        // drawerHideStatusBarOnOpen: true,
         drawerType: 'front',
         drawerStatusBarAnimation: 'slide',
         headerLeft: () => <HeaderBackButton />,
       }}
       initialRouteName={ROUTES.INTRO}>
-      {/*initialRouteName={ROUTES.LICENSE_PLATE_SELECTION}>*/}
       <Drawer.Screen
         name={ROUTES.INTRO}
         component={IntroContainer}

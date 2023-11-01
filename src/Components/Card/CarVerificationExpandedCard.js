@@ -9,6 +9,7 @@ const CarVerificationExpandedCard = ({
   handleItemPickerPress,
   carVerificationItems,
   handleCrossPress,
+  isLoading,
 }) => (
   <View style={expandedCardStyles.expandedCardContainer}>
     <View
@@ -20,6 +21,7 @@ const CarVerificationExpandedCard = ({
         onPress={() => handleItemPickerPress(LicensePlateDetails)}
         pickerText={'Upload Image'}
         text={'License Plate'}
+        isLoading={isLoading}
         imageURL={carVerificationItems?.licensePlate}
         onClearPress={() => handleCrossPress(LicensePlateDetails.key)}
       />
@@ -33,6 +35,7 @@ const CarVerificationExpandedCard = ({
         onPress={() => handleItemPickerPress(OdometerDetails)}
         pickerText={'Upload Image'}
         text={'Odometer'}
+        isLoading={isLoading}
         imageURL={carVerificationItems?.odometer}
         onClearPress={() => handleCrossPress(OdometerDetails.key)}
       />

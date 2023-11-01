@@ -16,10 +16,17 @@ import {Camera, CrossFilled} from '../../Assets/Icons';
 const height = hp('7%');
 const width = wp('7%');
 
-const ImagePicker = ({onPress, text, pickerText, imageURL, onClearPress}) => (
+const ImagePicker = ({
+  onPress,
+  text,
+  pickerText,
+  imageURL,
+  onClearPress,
+  isLoading,
+}) => (
   <View style={expandedCardStyles.uploadImageAndTextContainer}>
     {imageURL ? (
-      <TouchableOpacity style={ItemPickerStyles.container}>
+      <TouchableOpacity style={ItemPickerStyles.container} disabled={isLoading}>
         <TouchableOpacity
           style={expandedCardStyles.crossContainer}
           onPress={onClearPress}>
