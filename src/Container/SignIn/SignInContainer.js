@@ -84,10 +84,7 @@ const SignInContainer = ({navigation}) => {
           username: values.name,
           password: values.password,
         };
-        checkUserData(body, resetForm).then(() => {
-          // resetForm();
-          // navigation.navigate(ROUTES.HOME);
-        });
+        checkUserData(body, resetForm).then();
       }}>
       {({
         values,

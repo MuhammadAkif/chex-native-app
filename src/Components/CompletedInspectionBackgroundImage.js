@@ -14,7 +14,7 @@ const CompletedInspectionBackgroundImage = ({children}) => (
     <View style={styles.container}>
       <StatusBar
         backgroundColor="transparent"
-        barStyle="dark-content"
+        barStyle="light-content"
         translucent={true}
       />
       {children}

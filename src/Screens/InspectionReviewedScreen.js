@@ -1,25 +1,23 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import LinearGradient from 'react-native-linear-gradient';
 
-import {buttonTextStyle, colors, NewInspectionStyles} from '../Assets/Styles';
+import {colors, NewInspectionStyles} from '../Assets/Styles';
 import {
   InspectionStatusCollapsedCard,
   InspectionStatusExpandedCard,
+  PrimaryStartInspectionButton,
 } from '../Components';
-import {Plus} from '../Assets/Icons';
+import {handleHomePress, handleStartInspectionPress} from '../Utils';
 
-const InspectionReviewedScreen = ({handleIsExpanded, isExpanded}) => (
+const InspectionReviewedScreen = ({
+  handleIsExpanded,
+  isExpanded,
+  navigation,
+}) => (
   <View style={NewInspectionStyles.container}>
     <View style={NewInspectionStyles.bodyContainer}>
       <View style={styles.bodyHeaderContainer}>
@@ -51,24 +49,10 @@ const InspectionReviewedScreen = ({handleIsExpanded, isExpanded}) => (
           {isExpanded && <InspectionStatusExpandedCard />}
         </ScrollView>
       </View>
-      <View style={styles.footer}>
-        <TouchableOpacity>
-          <LinearGradient
-            colors={['#FF7A00', '#F90']}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            style={[styles.buttonContainer]}>
-            <Plus height={hp('5%')} width={wp('5%')} color={colors.white} />
-            <Text style={[buttonTextStyle, {right: wp('8%')}]}>
-              Start Inspection
-            </Text>
-          </LinearGradient>
-        </TouchableOpacity>
-        <Text style={styles.footerText}>
-          Or Go back to
-          <Text style={styles.homeText}> Home</Text> page
-        </Text>
-      </View>
+      <PrimaryStartInspectionButton
+        buttonPress={() => handleStartInspectionPress(navigation)}
+        textPress={() => handleHomePress(navigation)}
+      />
     </View>
   </View>
 );

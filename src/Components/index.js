@@ -20,6 +20,7 @@ import ImagePicker from './ItemPicker/ImagePicker';
 import VideoPicker from './ItemPicker/VideoPicker';
 import RenderInspectionDetailHeader from './RenderItem/RenderInspectionDetailHeader';
 import RenderInspectionDetail from './RenderItem/RenderInspectionDetail';
+import RenderInspectionInProgress from './RenderItem/RenderInspectionInProgress';
 import CameraFooter from './CameraFooter';
 import PreviewFooter from './Recording/PreviewFooter';
 import RecordingPreview from './Recording/RecordingPreview';
@@ -29,6 +30,9 @@ import CustomDrawerContent from './CustomDrawerContent';
 import DrawerItemText from './DrawerItemText';
 import RenderLicensePlateNumber from './RenderItem/RenderLicensePlateNumber';
 import RenderLicensePlateNumberHeader from './RenderItem/RenderLicensePlateNumberHeader';
+import PrimaryStartInspectionButton from './PrimaryStartInspectionButton';
+import Column from './Column';
+
 export {
   BackgroundImageView,
   PrimaryGradientButton,
@@ -61,4 +65,7 @@ export {
   DrawerItemText,
   RenderLicensePlateNumber,
   RenderLicensePlateNumberHeader,
+  PrimaryStartInspectionButton,
+  Column,
+  RenderInspectionInProgress,
 };

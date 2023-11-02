@@ -13,7 +13,11 @@ import {
   SecondaryButton,
 } from '../Components';
 
-const InspectionSelectionScreen = ({handleNewInspectionPress}) => (
+const InspectionSelectionScreen = ({
+  handleNewInspectionPress,
+  handleInspectionInProgressPress,
+  handleInspectionReviewedPress,
+}) => (
   <BackgroundImageView>
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -33,8 +37,14 @@ const InspectionSelectionScreen = ({handleNewInspectionPress}) => (
           buttonStyle={styles.buttonContainer}
           onPress={handleNewInspectionPress}
         />
-        <SecondaryButton text={'Inspection In Progress'} />
-        <SecondaryButton text={'Inspection Reviewed'} />
+        <SecondaryButton
+          text={'Inspection In Progress'}
+          onPress={handleInspectionInProgressPress}
+        />
+        <SecondaryButton
+          text={'Inspection Reviewed'}
+          onPress={handleInspectionReviewedPress}
+        />
       </View>
       <View style={styles.emptyFooterView} />
     </View>

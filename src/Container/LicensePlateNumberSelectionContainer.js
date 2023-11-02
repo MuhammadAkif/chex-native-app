@@ -10,10 +10,7 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {colors} from '../Assets/Styles';
 
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
-  const {
-    token,
-    data: {companyId},
-  } = useSelector(state => state?.auth);
+  const {token, data} = useSelector(state => state?.auth);
   const [selectedNP, setSelectedNP] = useState('');
   const [search, setSearch] = useState('');
   const [numberPlate, setNumberPlate] = useState([]);
@@ -43,7 +40,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
   function fetchNP() {
     axios
       .post(fetchNPURL, {
-        companyId: companyId,
+        companyId: data?.companyId,
       })
       .then(response => {
         setNumberPlate(response.data);
@@ -56,16 +53,16 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
   };
   const handleSubmit = () => {
     setIsLoading(true);
-    const data = {
+    const body = {
       licensePlateNumber: selectedNP,
-      companyId: companyId,
+      companyId: data?.companyId,
     };
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     };
     axios
-      .post(createInspectionURL, data, {headers: headers})
+      .post(createInspectionURL, body, {headers: headers})
       .then(response => {
         setIsLoading(false);
         navigation.navigate(ROUTES.NEW_INSPECTION, {

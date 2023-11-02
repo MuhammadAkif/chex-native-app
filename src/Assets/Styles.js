@@ -141,6 +141,7 @@ export const NewInspectionStyles = StyleSheet.create({
   },
   bodyContainer: {
     flex: 5,
+    marginTop: '3%',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: colors.white,

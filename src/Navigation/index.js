@@ -36,7 +36,7 @@ const Navigation = () => {
           component={InspectionSelectionContainer}
         />
         <Stack.Screen
-          name={ROUTES.Completed_Inspection}
+          name={ROUTES.COMPLETED_INSPECTION}
           component={CompletedInspectionContainer}
         />
       </Stack.Navigator>

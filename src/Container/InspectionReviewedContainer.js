@@ -2,13 +2,14 @@ import React, {useState} from 'react';
 
 import InspectionReviewedScreen from '../Screens/InspectionReviewedScreen';
 
-const InspectionReviewedContainer = () => {
+const InspectionReviewedContainer = ({navigation}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const handleIsExpanded = () => setIsExpanded(!isExpanded);
   return (
     <InspectionReviewedScreen
       handleIsExpanded={handleIsExpanded}
       isExpanded={isExpanded}
+      navigation={navigation}
     />
   );
 };

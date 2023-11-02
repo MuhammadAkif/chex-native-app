@@ -3,7 +3,8 @@ import {Camera} from 'react-native-vision-camera';
 import axios from 'axios';
 import {nanoid} from '@reduxjs/toolkit';
 
-import {baseURL, uploadURL} from '../Constants';
+import {baseURL, fetchInProgressURL, uploadURL} from '../Constants';
+import {ROUTES} from '../Navigation/ROUTES';
 
 export const validationSchema = yup.object().shape({
   firstName: yup.string().required('Field required'),
@@ -271,17 +272,6 @@ export const uploadToS3 = async (
       console.error('Error uploading image:', error);
     });
 };
-
-export const getCurrentDate = () => {
-  const currentDate = new Date();
-
-  const day = currentDate.getDate();
-  const month = currentDate.getMonth() + 1;
-  const year = currentDate.getFullYear();
-
-  return `${day}-${month}-${year}`;
-};
-
 export const uploadFile = async (body, inspectionId, token) => {
   await axios
     .post(`${baseURL}/api/v1/vehicle/${inspectionId}/file`, body, {
@@ -297,3 +287,46 @@ export const uploadFile = async (body, inspectionId, token) => {
       console.log('uploadFile error :', error);
     });
 };
+export const fetchInProgressInspections = async (token, setState) => {
+  await axios
+    .post(
+      fetchInProgressURL,
+      {
+        status: 'IN_PROGRESS',
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
+    .then(response => {
+      console.log(response.data);
+      setState(response.data);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+export const getCurrentDate = () => {
+  const currentDate = new Date();
+
+  const day = currentDate.getDate();
+  const month = currentDate.getMonth() + 1;
+  const year = currentDate.getFullYear();
+
+  return `${day}-${month}-${year}`;
+};
+export const extractDate = dataAndTime => {
+  const date = new Date(dataAndTime);
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
+export const handleHomePress = navigation =>
+  navigation.navigate(ROUTES.INSPECTION_SELECTION);
+export const handleStartInspectionPress = navigation =>
+  navigation.navigate(ROUTES.LICENSE_PLATE_SELECTION);

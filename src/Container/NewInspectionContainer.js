@@ -11,6 +11,8 @@ import {
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {baseURL} from '../Constants';
+import {ActivityIndicator} from 'react-native';
+import {colors} from '../Assets/Styles';
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -56,6 +58,11 @@ const NewInspectionContainer = ({route, navigation}) => {
     isBothCarVerificationImagesAvailable &&
     isAllExteriorImagesAvailable &&
     isBothTiresImagesAvailable;
+  const submitText = isLoading ? (
+    <ActivityIndicator size={'small'} color={colors.white} />
+  ) : (
+    'Submit'
+  );
 
   useEffect(() => {
     if (route.params) {
@@ -133,7 +140,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       .then(() => {
         setIsLoading(false);
         dispatch({type: Types.CLEAR_NEW_INSPECTION});
-        navigation.navigate(ROUTES.Completed_Inspection);
+        navigation.navigate(ROUTES.COMPLETED_INSPECTION);
       })
       .catch(error => {
         setIsLoading(false);
@@ -172,6 +179,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       isVehicleAllPartsImagesAvailable={isVehicleAllPartsImagesAvailable}
       handleSubmitPress={handleSubmitPress}
       isLoading={isLoading}
+      submitText={submitText}
     />
   );
 };

@@ -8,6 +8,7 @@ import {
   InspectionReviewedContainer,
   InspectionDetailContainer,
   LicensePlateNumberSelectionContainer,
+  InspectionInProgressContainer,
 } from '../Container';
 import {
   HeaderBackButton,
@@ -58,6 +59,11 @@ const NavigationDrawer = () => {
       <Drawer.Screen
         name={ROUTES.INSPECTION_DETAIL}
         component={InspectionDetailContainer}
+        options={options}
+      />
+      <Drawer.Screen
+        name={ROUTES.INSPECTION_IN_PROGRESS}
+        component={InspectionInProgressContainer}
         options={options}
       />
     </Drawer.Navigator>

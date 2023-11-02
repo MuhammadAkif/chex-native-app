@@ -6,6 +6,9 @@ import {
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import {useDispatch} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
+import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 
 import {SignInLogo} from './index';
 import {ROUTES} from '../Navigation/ROUTES';
@@ -22,14 +25,20 @@ import {SIGN_OUT_ACTION} from '../Store/Actions';
 
 const CustomDrawerContent = props => {
   const dispatch = useDispatch();
-  const [activeScreen, setActiveScreen] = useState('Intro');
+  const route = useRoute();
+  const activeRouteName = getFocusedRouteNameFromRoute(route);
+  const [activeScreen, setActiveScreen] = useState('');
   let activeColor = colors.cobaltBlue;
   const activeColorOfTextAndIcon = screen => {
-    return activeScreen === screen ? colors.white : colors.black;
+    // return activeRouteName.toLowerCase() === screen.toLowerCase()
+    //   ? colors.white
+    //   : colors.black;
   };
 
+  console.log('Active Screen:', activeRouteName);
+
   const handleNavigationPress = (path, activeScreen) => {
-    setActiveScreen(activeScreen);
+    // setActiveScreen(activeScreen);
     props.navigation.navigate(path);
   };
   return (
@@ -65,21 +74,23 @@ const CustomDrawerContent = props => {
       />
       <DrawerItemText
         text={'New Inspection'}
-        textColor={activeColorOfTextAndIcon('New Inspection')}
+        textColor={activeColorOfTextAndIcon('LICENSE PLATE SELECTION')}
         activeColor={
-          activeScreen === 'New Inspection' ? activeColor : 'transparent'
+          activeScreen === 'LICENSE PLATE SELECTION'
+            ? activeColor
+            : 'transparent'
         }
         Icon={
           <Plus
             height={hp('2.5%')}
             width={wp('5%')}
-            color={activeColorOfTextAndIcon('New Inspection')}
+            color={activeColorOfTextAndIcon('LICENSE PLATE SELECTION')}
           />
         }
         onPress={() =>
           handleNavigationPress(
             ROUTES.LICENSE_PLATE_SELECTION,
-            'New Inspection',
+            'LICENSE PLATE SELECTION',
           )
         }
       />

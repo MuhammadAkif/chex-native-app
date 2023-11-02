@@ -39,6 +39,7 @@ const NewInspectionScreen = ({
   isVehicleAllPartsImagesAvailable,
   handleSubmitPress,
   isLoading,
+  submitText,
 }) => (
   <View style={NewInspectionStyles.container}>
     <View style={NewInspectionStyles.headerContainer}>
@@ -119,7 +120,11 @@ const NewInspectionScreen = ({
       </View>
       {isVehicleAllPartsImagesAvailable && (
         <View style={NewInspectionStyles.footerContainer}>
-          <PrimaryGradientButton text={'Submit'} onPress={handleSubmitPress} />
+          <PrimaryGradientButton
+            text={submitText}
+            onPress={handleSubmitPress}
+            disabled={isLoading}
+          />
         </View>
       )}
     </View>
