@@ -35,7 +35,6 @@ const CustomDrawerContent = props => {
     //   : colors.black;
   };
 
-  console.log('Active Screen:', activeRouteName);
 
   const handleNavigationPress = (path, activeScreen) => {
     // setActiveScreen(activeScreen);

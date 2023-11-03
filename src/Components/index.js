@@ -30,6 +30,7 @@ import CustomDrawerContent from './CustomDrawerContent';
 import DrawerItemText from './DrawerItemText';
 import RenderLicensePlateNumber from './RenderItem/RenderLicensePlateNumber';
 import RenderLicensePlateNumberHeader from './RenderItem/RenderLicensePlateNumberHeader';
+import RenderInspectionReviewed from './RenderItem/RenderInspectionReviewed';
 import PrimaryStartInspectionButton from './PrimaryStartInspectionButton';
 import Column from './Column';
 
@@ -68,4 +69,5 @@ export {
   PrimaryStartInspectionButton,
   Column,
   RenderInspectionInProgress,
+  RenderInspectionReviewed,
 };

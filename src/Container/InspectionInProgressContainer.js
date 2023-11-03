@@ -1,25 +1,31 @@
 import React, {useCallback, useState} from 'react';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 import {useFocusEffect} from '@react-navigation/native';
 
 import {InspectionInProgressScreen} from '../Screens';
-import {fetchInProgressInspections} from '../Utils';
 import {baseURL} from '../Constants';
+import {FETCH_INSPECTION_IN_PROGRESS} from '../Store/Actions';
 
 const InspectionInProgressContainer = ({navigation}) => {
+  const dispatch = useDispatch();
   const {token} = useSelector(state => state.auth);
+  const inspectionInProgress = useSelector(
+    state => state?.inspectionInProgress,
+  );
   const [imageUrl, setImageUrl] = useState('');
-  const [data, setData] = useState([]);
-  console.log(imageUrl);
+
   useFocusEffect(
     useCallback(() => {
-      fetchInProgressInspections(token, setData).then();
+      dispatch(FETCH_INSPECTION_IN_PROGRESS(token));
+      return () => {
+        setImageUrl('');
+      };
     }, []),
   );
+
   const handleContinuePress = inspectionId => {
     axios.get(`${baseURL}/api/v1/files/details/${inspectionId}`).then(res => {
-      console.log('res => ', res.data);
       setImageUrl(
         `https://chex-ai-uploads.s3.amazonaws.com/${res.data.files[0].url}`,
       );
@@ -29,7 +35,7 @@ const InspectionInProgressContainer = ({navigation}) => {
   const onCrossPress = id => console.log('cross-pressed');
   return (
     <InspectionInProgressScreen
-      data={data}
+      data={inspectionInProgress}
       navigation={navigation}
       handleContinuePress={handleContinuePress}
       onCrossPress={onCrossPress}

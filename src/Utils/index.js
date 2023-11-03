@@ -287,12 +287,13 @@ export const uploadFile = async (body, inspectionId, token) => {
       console.log('uploadFile error :', error);
     });
 };
-export const fetchInProgressInspections = async (token, setState) => {
+export const fetchInProgressInspections = async (token, status) => {
+  let data = '';
   await axios
     .post(
       fetchInProgressURL,
       {
-        status: 'IN_PROGRESS',
+        status: status,
       },
       {
         headers: {
@@ -302,12 +303,12 @@ export const fetchInProgressInspections = async (token, setState) => {
       },
     )
     .then(response => {
-      console.log(response.data);
-      setState(response.data);
+      data = response.data;
     })
     .catch(error => {
       console.log(error);
     });
+  return data;
 };
 export const getCurrentDate = () => {
   const currentDate = new Date();

@@ -70,7 +70,6 @@ const SignInContainer = ({navigation}) => {
         navigation.navigate(ROUTES.HOME);
       })
       .catch(err => {
-        console.log('error: ', err?.response?.data?.errors);
         Alert.alert('Login Failed', err?.response?.data?.errors[0]);
       });
   };

@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, FlatList} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -10,6 +10,7 @@ import {
   InspectionStatusCollapsedCard,
   InspectionStatusExpandedCard,
   PrimaryStartInspectionButton,
+  RenderInspectionReviewed,
 } from '../Components';
 import {handleHomePress, handleStartInspectionPress} from '../Utils';
 
@@ -17,6 +18,7 @@ const InspectionReviewedScreen = ({
   handleIsExpanded,
   isExpanded,
   navigation,
+  data,
 }) => (
   <View style={NewInspectionStyles.container}>
     <View style={NewInspectionStyles.bodyContainer}>
@@ -24,30 +26,18 @@ const InspectionReviewedScreen = ({
         <Text style={styles.bodyHeaderTitleText}>Inspection Reviewed</Text>
       </View>
       <View style={NewInspectionStyles.innerBody}>
-        <ScrollView
-          contentContainerStyle={NewInspectionStyles.scrollViewContainer}
-          showsVerticalScrollIndicator={false}>
-          <InspectionStatusCollapsedCard
-            textOne={'21-0001'}
-            textTwo={'12/02/2021'}
-            index={1}
-            isReviewed={'In Review'}
-            labelOne={'Tracking ID'}
-            labelTwo={'Date Created'}
-            onPress={handleIsExpanded}
-          />
-          <InspectionStatusCollapsedCard
-            textOne={'21-0002'}
-            textTwo={'12/02/2022'}
-            index={1}
-            isReviewed={'Reviewed'}
-            labelOne={'Tracking ID'}
-            labelTwo={'Date Completed'}
-            isActive={isExpanded}
-            onPress={handleIsExpanded}
-          />
-          {isExpanded && <InspectionStatusExpandedCard />}
-        </ScrollView>
+        {/*<View style={NewInspectionStyles.scrollViewContainer}>*/}
+        <FlatList
+          data={data}
+          renderItem={({item}) => (
+            <RenderInspectionReviewed
+              item={item}
+              isExpanded={isExpanded}
+              handleIsExpanded={handleIsExpanded}
+            />
+          )}
+          keyExtractor={item => item?.id}
+        />
       </View>
       <PrimaryStartInspectionButton
         buttonPress={() => handleStartInspectionPress(navigation)}
