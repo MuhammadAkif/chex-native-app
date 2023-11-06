@@ -3,19 +3,29 @@ import {Types} from '../Types';
 const initialState = {
   carVerificationItems: {
     licensePlate: '',
+    licensePlateID: '',
     odometer: '',
+    odometerID: '',
   },
   exteriorItems: {
     exteriorLeft: '',
+    exteriorLeftID: '',
     exteriorRight: '',
+    exteriorRightID: '',
     exteriorFront: '',
+    exteriorFrontID: '',
     exteriorRear: '',
+    exteriorRearID: '',
   },
   tires: {
     leftFrontTire: '',
+    leftFrontTireID: '',
     leftRearTire: '',
+    leftRearTireID: '',
     rightFrontTire: '',
+    rightFrontTireID: '',
     rightRearTire: '',
+    rightRearTireID: '',
   },
 };
 
@@ -27,6 +37,7 @@ const newInspectionReducer = (state = initialState, action) => {
         carVerificationItems: {
           ...state.carVerificationItems,
           [action.payload.item]: action.payload.uri,
+          [`${action.payload.item}ID`]: action.payload.id,
         },
       };
     case Types.EXTERIOR_ITEMS:
@@ -35,6 +46,7 @@ const newInspectionReducer = (state = initialState, action) => {
         exteriorItems: {
           ...state.exteriorItems,
           [action.payload.item]: action.payload.uri,
+          [`${action.payload.item}ID`]: action.payload.id,
         },
       };
     case Types.TIRES:
@@ -43,6 +55,7 @@ const newInspectionReducer = (state = initialState, action) => {
         tires: {
           ...state.tires,
           [action.payload.item]: action.payload.uri,
+          [`${action.payload.item}ID`]: action.payload.id,
         },
       };
     case Types.REMOVE_CAR_VERIFICATION_ITEM_URI:
@@ -51,6 +64,7 @@ const newInspectionReducer = (state = initialState, action) => {
         carVerificationItems: {
           ...state.carVerificationItems,
           [action.payload.item]: action.payload.uri,
+          [`${action.payload.item}ID`]: action.payload.id,
         },
       };
     case Types.REMOVE_EXTERIOR_ITEM_URI:
@@ -59,6 +73,7 @@ const newInspectionReducer = (state = initialState, action) => {
         exteriorItems: {
           ...state.exteriorItems,
           [action.payload.item]: action.payload.uri,
+          [`${action.payload.item}ID`]: action.payload.id,
         },
       };
     case Types.REMOVE_TIRES_ITEM_URI:
@@ -67,6 +82,7 @@ const newInspectionReducer = (state = initialState, action) => {
         tires: {
           ...state.tires,
           [action.payload.item]: action.payload.uri,
+          [`${action.payload.item}ID`]: action.payload.id,
         },
       };
     case Types.CLEAR_NEW_INSPECTION:

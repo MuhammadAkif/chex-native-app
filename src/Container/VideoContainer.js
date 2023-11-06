@@ -117,7 +117,7 @@ const VideoContainer = ({route, navigation}) => {
     setIsVideoFile({});
     // setCounter(30);
   };
-  const handleResponse = key => {
+  const handleResponse = async key => {
     const body = {
       category: subCategory,
       url: key,
@@ -125,10 +125,12 @@ const VideoContainer = ({route, navigation}) => {
       groupType: 'type',
       dateImage: getCurrentDate(),
     };
-    uploadFile(body, inspectionId, token).then();
-    dispatch(UpdateExteriorItemURI(type, isVideoURI));
-    navigation.navigate(ROUTES.NEW_INSPECTION);
+    await uploadFile(uploadVideoToStore, body, inspectionId, token);
   };
+  function uploadVideoToStore(imageID) {
+    dispatch(UpdateExteriorItemURI(type, isVideoURI, imageID));
+    navigation.navigate(ROUTES.NEW_INSPECTION);
+  }
   const handleNextPress = () => {
     setIsModalVisible(true);
     getSignedUrl(

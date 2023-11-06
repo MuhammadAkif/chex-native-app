@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 
@@ -13,6 +13,7 @@ import {Types} from '../Store/Types';
 import {baseURL} from '../Constants';
 import {ActivityIndicator} from 'react-native';
 import {colors} from '../Assets/Styles';
+import {useFocusEffect} from '@react-navigation/native';
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -103,13 +104,63 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   const handleModalVisible = () => setModalVisible(!modalVisible);
   const handleCarVerificationCrossPress = key => {
-    dispatch(RemoveCarVerificationItemURI(key));
+    let imageID =
+      key === 'licensePlate'
+        ? carVerificationItems.licensePlateID
+        : carVerificationItems.odometerID;
+    axios
+      .delete(`${baseURL}/api/v1/files/${imageID}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(res => {
+        console.log(res);
+        dispatch(RemoveCarVerificationItemURI(key));
+      });
   };
-  const handleExteriorCrossPress = key => {
-    dispatch(RemoveExteriorItemURI(key));
+  const handleExteriorCrossPress = async key => {
+    let imageID =
+      key === 'exteriorLeft'
+        ? exteriorItems?.exteriorLeftID
+        : key === 'exteriorRight'
+        ? exteriorItems?.exteriorRightID
+        : key === 'exteriorFront'
+        ? exteriorItems.exteriorFrontID
+        : exteriorItems?.exteriorRearID;
+    await axios
+      .delete(`${baseURL}/api/v1/files/${imageID}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(res => {
+        console.log(res);
+        dispatch(RemoveExteriorItemURI(key));
+      });
   };
-  const handleTiresCrossPress = key => {
-    dispatch(RemoveTiresItemURI(key));
+  const handleTiresCrossPress = async key => {
+    let imageID =
+      key === 'leftFrontTire'
+        ? tires?.leftFrontTireID
+        : key === 'leftRearTire'
+        ? tires?.leftRearTireID
+        : key === 'rightFrontTire'
+        ? tires.rightFrontTireID
+        : tires.rightRearTireID;
+    await axios
+      .delete(`${baseURL}/api/v1/files/${imageID}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(res => {
+        console.log(res);
+        dispatch(RemoveTiresItemURI(key));
+      });
   };
   const handleCaptureNowPress = (isVideo, key) => {
     setModalVisible(false);

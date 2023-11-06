@@ -93,7 +93,7 @@ const CameraContainer = ({route, navigation}) => {
     setIsImageURL('');
     setIsImageFile({});
   };
-  const handleResponse = key => {
+  const handleResponse = async key => {
     const body = {
       category: subCategory,
       url: key,
@@ -101,14 +101,16 @@ const CameraContainer = ({route, navigation}) => {
       groupType: 'type',
       dateImage: getCurrentDate(),
     };
-    uploadFile(body, inspectionId, token).then();
-    category === 'CarVerification'
-      ? dispatch(UpdateCarVerificationItemURI(type, isImageURL))
-      : category === 'Exterior'
-      ? dispatch(UpdateExteriorItemURI(type, isImageURL))
-      : dispatch(UpdateTiresItemURI(type, isImageURL));
-    navigation.navigate(ROUTES.NEW_INSPECTION);
+    await uploadFile(uploadImageToStore, body, inspectionId, token);
   };
+  function uploadImageToStore(imageID) {
+    category === 'CarVerification'
+      ? dispatch(UpdateCarVerificationItemURI(type, isImageURL, imageID))
+      : category === 'Exterior'
+      ? dispatch(UpdateExteriorItemURI(type, isImageURL, imageID))
+      : dispatch(UpdateTiresItemURI(type, isImageURL, imageID));
+    navigation.navigate(ROUTES.NEW_INSPECTION);
+  }
   const handleNextPress = () => {
     setIsModalVisible(true);
     getSignedUrl(

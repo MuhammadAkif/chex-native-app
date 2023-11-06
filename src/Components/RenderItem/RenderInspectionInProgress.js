@@ -17,7 +17,9 @@ const RenderInspectionInProgress = ({
   onCrossPress,
 }) => (
   <View style={styles.cardContainer}>
-    <TouchableOpacity style={styles.crossIconContainer} onPress={onCrossPress}>
+    <TouchableOpacity
+      style={styles.crossIconContainer}
+      onPress={() => onCrossPress(item?.id)}>
       <Cross height={hp('2.3%')} width={wp('5%')} color={colors.red} />
     </TouchableOpacity>
     <View style={styles.tableContainer}>

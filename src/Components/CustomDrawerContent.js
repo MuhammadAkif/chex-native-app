@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, ScrollView, StatusBar} from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -6,7 +6,6 @@ import {
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import {useDispatch} from 'react-redux';
-import {useIsFocused} from '@react-navigation/native';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {useRoute} from '@react-navigation/native';
 
@@ -22,11 +21,13 @@ import {
 } from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {SIGN_OUT_ACTION} from '../Store/Actions';
+import {Types} from '../Store/Types';
 
 const CustomDrawerContent = props => {
   const dispatch = useDispatch();
   const route = useRoute();
   const activeRouteName = getFocusedRouteNameFromRoute(route);
+  const [previousScreen, setPreviousScreen] = useState('');
   const [activeScreen, setActiveScreen] = useState('');
   let activeColor = colors.cobaltBlue;
   const activeColorOfTextAndIcon = screen => {
@@ -34,7 +35,15 @@ const CustomDrawerContent = props => {
     //   ? colors.white
     //   : colors.black;
   };
-
+  useEffect(() => {
+    if (
+      activeRouteName !== 'NEW INSPECTION' &&
+      previousScreen === 'NEW INSPECTION'
+    ) {
+      dispatch({type: Types.CLEAR_NEW_INSPECTION});
+    }
+    setPreviousScreen(activeRouteName);
+  }, [activeRouteName]);
 
   const handleNavigationPress = (path, activeScreen) => {
     // setActiveScreen(activeScreen);

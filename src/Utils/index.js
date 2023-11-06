@@ -272,7 +272,8 @@ export const uploadToS3 = async (
       console.error('Error uploading image:', error);
     });
 };
-export const uploadFile = async (body, inspectionId, token) => {
+export const uploadFile = async (callback, body, inspectionId, token) => {
+  let imageID = 0;
   await axios
     .post(`${baseURL}/api/v1/vehicle/${inspectionId}/file`, body, {
       headers: {
@@ -282,10 +283,12 @@ export const uploadFile = async (body, inspectionId, token) => {
     })
     .then(res => {
       console.log('uploadFile response: ', res);
+      callback(res?.data?.id);
     })
     .catch(error => {
       console.log('uploadFile error :', error);
     });
+  return imageID;
 };
 export const fetchInProgressInspections = async (token, status) => {
   let data = '';
