@@ -3,8 +3,15 @@ import {Camera} from 'react-native-vision-camera';
 import axios from 'axios';
 import {nanoid} from '@reduxjs/toolkit';
 
-import {baseURL, fetchInProgressURL, uploadURL} from '../Constants';
+import {
+  AWS_S3_BUCKET_NAME,
+  baseURL,
+  fetchInProgressURL,
+  s3,
+  uploadURL,
+} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
+import RNFetchBlob from 'rn-fetch-blob';
 
 export const validationSchema = yup.object().shape({
   firstName: yup.string().required('Field required'),
@@ -51,7 +58,8 @@ export const LicensePlateDetails = {
   instructionalText: 'Please take a photo of the License plate on the vehicle',
   instructionalSubHeadingText: '',
   category: 'CarVerification',
-  subCategory: 'license_plate',
+  subCategory: 'license_plate_number',
+  groupType: 'carVerificiationItems',
   buttonText: 'Capture Now',
 };
 export const OdometerDetails = {
@@ -63,6 +71,7 @@ export const OdometerDetails = {
   instructionalSubHeadingText: 'Vehicle mileage',
   category: 'CarVerification',
   subCategory: 'odometer',
+  groupType: 'carVerificiationItems',
   buttonText: 'Capture Now',
 };
 //___________________________Exterior______________________________
@@ -76,6 +85,7 @@ export const ExteriorLeftDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'exterior_left',
+  groupType: 'exteriorItems',
   isVideo: false,
 };
 export const ExteriorRightDetails = {
@@ -88,6 +98,7 @@ export const ExteriorRightDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'exterior_right',
+  groupType: 'exteriorItems',
   isVideo: false,
 };
 export const ExteriorFrontDetails = {
@@ -100,6 +111,7 @@ export const ExteriorFrontDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'exterior_front',
+  groupType: 'exteriorItems',
   isVideo: true,
 };
 export const ExteriorRearDetails = {
@@ -112,6 +124,7 @@ export const ExteriorRearDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'exterior_rear',
+  groupType: 'exteriorItems',
   isVideo: true,
 };
 //____________________________Tires_____________________________
@@ -126,6 +139,7 @@ export const LeftFrontTireDetails = {
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'left_front_tire',
+  groupType: 'tires',
   isVideo: false,
 };
 export const LeftRearTireDetails = {
@@ -139,6 +153,7 @@ export const LeftRearTireDetails = {
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'left_rear_tire',
+  groupType: 'tires',
   isVideo: false,
 };
 export const RightFrontTireDetails = {
@@ -152,6 +167,7 @@ export const RightFrontTireDetails = {
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'right_front_tire',
+  groupType: 'tires',
   isVideo: false,
 };
 export const RightRearTireDetails = {
@@ -165,6 +181,7 @@ export const RightRearTireDetails = {
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'right_rear_tire',
+  groupType: 'tires',
   isVideo: false,
 };
 
@@ -236,7 +253,7 @@ export const getSignedUrl = async (
     )
     .then(res => {
       const {url, key} = res.data;
-      uploadToS3(url, key, path, mime, setProgress, handleResponse);
+      uploadToS3(url, key, path, mime, setProgress, handleResponse, token);
     })
     .catch(error => console.log(error));
 };
@@ -247,30 +264,22 @@ export const uploadToS3 = async (
   mime,
   setProgress,
   handleResponse,
+  token,
 ) => {
-  const extension = mime.split('/').pop();
-  const body = {
-    uri: path,
-    type: mime,
-    name: `${nanoid()}.${extension}`,
-  };
-
-  const formData = new FormData();
-  formData.append('file', body);
-
-  await axios
-    .put(preSignedUrl, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      onUploadProgress: progressEvent => setProgress(progressEvent.progress),
+  RNFetchBlob.fetch(
+    'PUT',
+    preSignedUrl,
+    {'Content-Type': mime},
+    RNFetchBlob.wrap(path),
+  )
+    .uploadProgress((written, total) => {
+      const percentCompleted = Math.round((written * 100) / total);
+      setProgress(percentCompleted);
     })
-    .then(response => {
+    .then(res => {
       handleResponse(key);
     })
-    .catch(error => {
-      console.error('Error uploading image:', error);
-    });
+    .catch(err => console.warn(err));
 };
 export const uploadFile = async (callback, body, inspectionId, token) => {
   let imageID = 0;
@@ -334,3 +343,34 @@ export const handleHomePress = navigation =>
   navigation.navigate(ROUTES.INSPECTION_SELECTION);
 export const handleStartInspectionPress = navigation =>
   navigation.navigate(ROUTES.LICENSE_PLATE_SELECTION);
+
+// export const convertToBase64 = uri => {
+//   let base64Path = '';
+//   RNFetchBlob.fs
+//     .readFile(uri, 'base64')
+//     .then(base64 => {
+//       console.log('base64 String => ', base64);
+//       base64Path = base64;
+//     })
+//     .catch(error => console.log('error converting base64 => ', error));
+//   return base64Path;
+// };
+export const convertToBase64 = async (url, mime) => {
+  let base64Path = '';
+  await RNFetchBlob.config({
+    fileCache: true,
+  })
+    .fetch('GET', url)
+    .then(resp => resp.readFile('base64'))
+    .then(base64 => {
+      base64Path = `data:${mime};base64,${base64}`;
+    })
+    .catch(error => console.log('error converting base64 => ', error));
+  return base64Path;
+};
+
+export const getBlob = async fileUri => {
+  const resp = await fetch(fileUri);
+  const imageBody = await resp.blob();
+  return imageBody;
+};

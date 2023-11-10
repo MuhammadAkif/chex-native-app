@@ -32,7 +32,8 @@ const VideoContainer = ({route, navigation}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [progress, setProgress] = useState(0);
   const {type, modalDetails, inspectionId} = route.params;
-  const {subCategory, instructionalText, source, title, isVideo} = modalDetails;
+  const {subCategory, instructionalText, source, title, isVideo, groupType} =
+    modalDetails;
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
@@ -122,7 +123,7 @@ const VideoContainer = ({route, navigation}) => {
       category: subCategory,
       url: key,
       extension: isVideoFile.mime,
-      groupType: 'type',
+      groupType: groupType,
       dateImage: getCurrentDate(),
     };
     await uploadFile(uploadVideoToStore, body, inspectionId, token);

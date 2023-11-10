@@ -29,24 +29,17 @@ const InspectionInProgressContainer = ({navigation}) => {
   );
 
   const handleContinuePress = inspectionId => {
+    debugger
     axios
-      // .get(
-      //   `https://fbyrgnnu14.execute-api.us-east-1.amazonaws.com/chexai-dsp-staging/api/v1/filesAll/${inspectionId}`,
-      //   {
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   },
-      // )
       .get(`${baseURL}/api/v1/files/details/${inspectionId}`)
       .then(res => {
+        debugger
         setImageUrl(
           `https://chex-ai-uploads.s3.amazonaws.com/${res.data.files[0].url}`,
         );
       })
       .catch(error => {
-        console.log(error);
+        console.log('error of inspection in progress => ', error);
       });
   };
   const onCrossPress = id => {

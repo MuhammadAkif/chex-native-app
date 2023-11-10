@@ -19,7 +19,13 @@ import {
   UpdateExteriorItemURI,
   UpdateTiresItemURI,
 } from '../Store/Actions';
-import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
+import {
+  convertToBase64,
+  getBlob,
+  getCurrentDate,
+  getSignedUrl,
+  uploadFile,
+} from '../Utils';
 
 const CameraContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -35,8 +41,15 @@ const CameraContainer = ({route, navigation}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [progress, setProgress] = useState(0);
   const {type, modalDetails, inspectionId} = route.params;
-  const {category, subCategory, instructionalText, source, title, isVideo} =
-    modalDetails;
+  const {
+    category,
+    subCategory,
+    instructionalText,
+    source,
+    title,
+    isVideo,
+    groupType,
+  } = modalDetails;
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
@@ -70,6 +83,11 @@ const CameraContainer = ({route, navigation}) => {
     if (cameraRef.current) {
       let file = await cameraRef?.current?.takePhoto();
       const filePath = `file://${file.path}`;
+      // let base64 = await convertToBase64(filePath).then(res => {
+      //   console.log('base64 res => ', res);
+      //   debugger;
+      // });
+      debugger;
       setIsImageFile(file);
       setIsImageURL(filePath);
       // const result = await fetch(filePath);
@@ -81,11 +99,14 @@ const CameraContainer = ({route, navigation}) => {
       width: 300,
       height: 400,
       cropping: true,
-      // includeBase64: true,
+      includeBase64: true,
     })
-      .then(image => {
+      .then(async image => {
+        // let base64 = await convertToBase64(image?.sourceURL, image?.mime).then();
+        debugger;
         setIsImageFile(image);
-        setIsImageURL(image?.sourceURL);
+        // setIsImageURL(base64);
+        setIsImageURL(image?.path);
       })
       .catch(error => console.log(error.code));
   };
@@ -98,9 +119,10 @@ const CameraContainer = ({route, navigation}) => {
       category: subCategory,
       url: key,
       extension: isImageFile.mime,
-      groupType: 'type',
+      groupType: groupType,
       dateImage: getCurrentDate(),
     };
+    debugger;
     await uploadFile(uploadImageToStore, body, inspectionId, token);
   };
   function uploadImageToStore(imageID) {
@@ -116,7 +138,8 @@ const CameraContainer = ({route, navigation}) => {
     getSignedUrl(
       token,
       isImageFile.mime,
-      isImageFile.path,
+      isImageURL,
+      // isImageFile.sourceURL,
       setProgress,
       handleResponse,
     ).then();
@@ -162,6 +185,7 @@ const CameraContainer = ({route, navigation}) => {
                 audio={false}
                 isActive={isFocused && appState.current === 'active'}
                 enableZoomGesture={true}
+                includeBase64={true}
               />
             )
           )}
