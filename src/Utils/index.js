@@ -1,17 +1,10 @@
 import * as yup from 'yup';
 import {Camera} from 'react-native-vision-camera';
 import axios from 'axios';
-import {nanoid} from '@reduxjs/toolkit';
-
-import {
-  AWS_S3_BUCKET_NAME,
-  baseURL,
-  fetchInProgressURL,
-  s3,
-  uploadURL,
-} from '../Constants';
-import {ROUTES} from '../Navigation/ROUTES';
 import RNFetchBlob from 'rn-fetch-blob';
+
+import {baseURL, fetchInProgressURL, uploadURL} from '../Constants';
+import {ROUTES} from '../Navigation/ROUTES';
 
 export const validationSchema = yup.object().shape({
   firstName: yup.string().required('Field required'),

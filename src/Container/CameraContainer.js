@@ -87,7 +87,6 @@ const CameraContainer = ({route, navigation}) => {
       //   console.log('base64 res => ', res);
       //   debugger;
       // });
-      debugger;
       setIsImageFile(file);
       setIsImageURL(filePath);
       // const result = await fetch(filePath);
@@ -103,7 +102,6 @@ const CameraContainer = ({route, navigation}) => {
     })
       .then(async image => {
         // let base64 = await convertToBase64(image?.sourceURL, image?.mime).then();
-        debugger;
         setIsImageFile(image);
         // setIsImageURL(base64);
         setIsImageURL(image?.path);
@@ -122,7 +120,6 @@ const CameraContainer = ({route, navigation}) => {
       groupType: groupType,
       dateImage: getCurrentDate(),
     };
-    debugger;
     await uploadFile(uploadImageToStore, body, inspectionId, token);
   };
   function uploadImageToStore(imageID) {
