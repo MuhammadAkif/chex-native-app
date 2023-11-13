@@ -83,10 +83,6 @@ const CameraContainer = ({route, navigation}) => {
     if (cameraRef.current) {
       let file = await cameraRef?.current?.takePhoto();
       const filePath = `file://${file.path}`;
-      // let base64 = await convertToBase64(filePath).then(res => {
-      //   console.log('base64 res => ', res);
-      //   debugger;
-      // });
       setIsImageFile(file);
       setIsImageURL(filePath);
       // const result = await fetch(filePath);
@@ -101,9 +97,7 @@ const CameraContainer = ({route, navigation}) => {
       includeBase64: true,
     })
       .then(async image => {
-        // let base64 = await convertToBase64(image?.sourceURL, image?.mime).then();
         setIsImageFile(image);
-        // setIsImageURL(base64);
         setIsImageURL(image?.path);
       })
       .catch(error => console.log(error.code));
@@ -145,7 +139,7 @@ const CameraContainer = ({route, navigation}) => {
     getSignedUrl(
       token,
       isImageFile.mime,
-      isImageURL,
+      isImageFile.path,
       // isImageFile.sourceURL,
       setProgress,
       handleResponse,

@@ -1,4 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import {ActivityIndicator} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 
@@ -11,9 +12,7 @@ import {
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {baseURL} from '../Constants';
-import {ActivityIndicator} from 'react-native';
 import {colors} from '../Assets/Styles';
-import {useFocusEffect} from '@react-navigation/native';
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -116,7 +115,6 @@ const NewInspectionContainer = ({route, navigation}) => {
         },
       })
       .then(res => {
-        console.log(res);
         dispatch(RemoveCarVerificationItemURI(key));
       });
   };
@@ -158,7 +156,6 @@ const NewInspectionContainer = ({route, navigation}) => {
         },
       })
       .then(res => {
-        console.log(res);
         dispatch(RemoveTiresItemURI(key));
       });
   };

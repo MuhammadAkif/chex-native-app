@@ -11,6 +11,7 @@ const RenderInspectionReviewed = ({
   handleIsExpanded,
   isExpanded,
   inspectionDetailsPress,
+  isLoading,
 }) => (
   <>
     <InspectionStatusCollapsedCard
@@ -27,6 +28,7 @@ const RenderInspectionReviewed = ({
       <InspectionStatusExpandedCard
         inspectionID={item?.id}
         inspectionDetailsPress={inspectionDetailsPress}
+        isLoading={isLoading}
       />
     )}
   </>

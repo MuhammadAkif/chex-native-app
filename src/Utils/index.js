@@ -32,14 +32,9 @@ export const signInValidationSchema = yup.object().shape({
     .string()
     .required('Please enter your Name!')
     .min(2, 'Name must be at least 2 characters'),
-  // .email('Please enter a valid email')
-  // .matches(
-  //   /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-  //   'Invalid email format',
-  // ),
   password: yup
     .string()
-    .min(6, 'Password must be at least 8 characters')
+    .min(1, 'Password must be at least 1 characters')
     .required('Please enter your password!'),
 });
 
@@ -235,7 +230,6 @@ export const getSignedUrl = async (
   handleResponse,
   handleError,
 ) => {
-  debugger;
   await axios
     .post(
       uploadURL,
@@ -270,7 +264,6 @@ export const uploadToS3 = async (
   handleResponse,
   handleError,
 ) => {
-  debugger;
   RNFetchBlob.fetch(
     'PUT',
     preSignedUrl,
@@ -285,8 +278,6 @@ export const uploadToS3 = async (
       handleResponse(key);
     })
     .catch(err => {
-      console.warn(err);
-      debugger;
       Alert.alert(
         'Upload Failed',
         'Please check your internet connection and try again. If issues persist, reduce file size or switch networks. Contact support if needed. Apologies for any inconvenience.',
@@ -310,7 +301,6 @@ export const uploadFile = async (
       },
     })
     .then(res => {
-      console.log('uploadFile response: ', res);
       callback(res?.data?.id);
     })
     .catch(error => {
@@ -319,7 +309,6 @@ export const uploadFile = async (
         error.response.data.statusCode,
       );
       Alert.alert(title, message, [{text: 'Retry', onPress: handleError}]);
-      debugger;
     });
   return imageID;
 };

@@ -8,13 +8,13 @@ import {
 import {colors, ShadowEffect} from '../../Assets/Styles';
 import {Car} from '../../Assets/Icons';
 
-const InspectionStatusExpandedCard = ({inspectionID, inspectionDetailsPress}) => (
+const InspectionStatusExpandedCard = ({inspectionID, inspectionDetailsPress, isLoading}) => (
   <View style={styles.container}>
     <TouchableOpacity style={styles.detailsContainer}>
       <Car height={hp('5%')} width={wp('5%')} color={colors.royalBlue} />
       <Text style={styles.detailsText}>No Damage Detected</Text>
     </TouchableOpacity>
-    <TouchableOpacity style={styles.detailsContainer} onPress={() => inspectionDetailsPress(inspectionID)}>
+    <TouchableOpacity style={styles.detailsContainer} disabled={isLoading} onPress={() => inspectionDetailsPress(inspectionID)}>
       <Car height={hp('5%')} width={wp('5%')} color={colors.royalBlue} />
       <Text style={styles.detailsText}>Inspection Details</Text>
     </TouchableOpacity>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Platform, StyleSheet, View} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -7,7 +7,6 @@ import {
 
 import {colors} from '../Assets/Styles';
 import {FlipCamera, Record} from '../Assets/Icons';
-import PhotoLibrary from '../Assets/Icons/PhotoLibrary';
 
 const CameraFooter = ({
   isCamera,

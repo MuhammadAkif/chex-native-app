@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -11,9 +11,9 @@ import {
   PrimaryGradientButton,
   SignInLogo,
 } from '../Components';
-import {buttonTextStyle, colors} from '../Assets/Styles';
+import {colors} from '../Assets/Styles';
 
-const WelcomeScreen = ({handleSignInPress, handleRegisterPress}) => (
+const WelcomeScreen = ({handleSignInPress}) => (
   <BackgroundImageView>
     <View style={styles.container}>
       <LinearGradient
@@ -34,11 +34,6 @@ const WelcomeScreen = ({handleSignInPress, handleRegisterPress}) => (
       </LinearGradient>
       <View style={styles.bodyContainer}>
         <PrimaryGradientButton text={'Sign In'} onPress={handleSignInPress} />
-        <TouchableOpacity
-          style={styles.registerButton}
-          onPress={handleRegisterPress}>
-          <Text style={buttonTextStyle}>Register</Text>
-        </TouchableOpacity>
       </View>
       <View style={styles.emptyView} />
     </View>
@@ -62,23 +57,11 @@ const styles = StyleSheet.create({
     fontSize: hp('2%'),
     color: colors.cobaltBlue,
   },
-  textColor: {
-    color: colors.white,
-  },
   bodyContainer: {
     flex: 0.25,
     width: wp('100%'),
     justifyContent: 'space-evenly',
     alignItems: 'center',
-  },
-  registerButton: {
-    height: hp('6%'),
-    width: wp('70%'),
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#ffffff',
   },
   emptyView: {
     flex: 0.3,

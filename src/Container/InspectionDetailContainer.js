@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 
 import {InspectionDetailScreen} from '../Screens';
 
@@ -8,8 +8,6 @@ const InspectionDetailContainer = ({route}) => {
     let {files} = route.params;
     detailsFiles = files;
   }
-  console.log('detailsFiles => ', detailsFiles);
-  debugger
   return <InspectionDetailScreen detailsFiles={detailsFiles} />;
 };
 

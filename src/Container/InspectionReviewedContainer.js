@@ -1,10 +1,10 @@
 import React, {useCallback, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
+import axios from 'axios';
 
 import InspectionReviewedScreen from '../Screens/InspectionReviewedScreen';
 import {FETCH_INSPECTION_REVIEWED} from '../Store/Actions';
-import axios from 'axios';
 import {baseURL} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 
@@ -13,10 +13,15 @@ const InspectionReviewedContainer = ({navigation}) => {
   const {token} = useSelector(state => state.auth);
   const inspectionReviewed = useSelector(state => state?.inspectionReviewed);
   const [isExpanded, setIsExpanded] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       dispatch(FETCH_INSPECTION_REVIEWED(token));
+      return () => {
+        setIsLoading(false);
+        setIsExpanded([]);
+      };
     }, []),
   );
 
@@ -30,14 +35,17 @@ const InspectionReviewedContainer = ({navigation}) => {
     }
   };
   const inspectionDetailsPress = inspectionID => {
+    setIsLoading(true);
     axios
       .get(`${baseURL}/api/v1/files/details/${inspectionID}`)
       .then(res => {
-        console.log('inspectionDetailsPress res => ', res.data);
-        debugger;
-        navigation.navigate(ROUTES.INSPECTION_DETAIL, {files: res?.data?.files});
+        setIsLoading(false);
+        navigation.navigate(ROUTES.INSPECTION_DETAIL, {
+          files: res?.data?.files,
+        });
       })
       .catch(error => {
+        setIsLoading(false);
         console.log('error of inspection in progress => ', error);
       });
   };
@@ -48,6 +56,7 @@ const InspectionReviewedContainer = ({navigation}) => {
       navigation={navigation}
       data={inspectionReviewed}
       inspectionDetailsPress={inspectionDetailsPress}
+      isLoading={isLoading}
     />
   );
 };

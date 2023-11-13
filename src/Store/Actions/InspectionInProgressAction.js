@@ -21,6 +21,7 @@ export const REMOVE_INSPECTION_IN_PROGRESS = (
   token,
   inspectionId,
   inspections,
+  setIsLoading,
 ) => {
   return async dispatch => {
     let inspectionsInProgress = [];
@@ -35,7 +36,7 @@ export const REMOVE_INSPECTION_IN_PROGRESS = (
         },
       })
       .then(res => {
-        console.log('delete inspection response: ', res);
+        setIsLoading(false);
         dispatch({
           type: Types.REMOVE_INSPECTION_IN_PROGRESS,
           payload: {inspectionsInProgress: inspectionsInProgress},
@@ -43,9 +44,8 @@ export const REMOVE_INSPECTION_IN_PROGRESS = (
         Alert.alert('Deleted', res?.data);
       })
       .catch(error => {
+        setIsLoading(false);
         let errorMessage = error?.response?.data?.message[0];
-
-        console.log('inspection delete error: ', errorMessage);
         Alert.alert('', errorMessage);
       });
   };

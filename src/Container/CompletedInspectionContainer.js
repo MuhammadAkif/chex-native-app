@@ -1,5 +1,4 @@
-import React, {useEffect} from 'react';
-import {BackHandler} from 'react-native';
+import React from 'react';
 
 import CompletedInspectionScreen from '../Screens/CompletedInspectionScreen';
 import {ROUTES} from '../Navigation/ROUTES';

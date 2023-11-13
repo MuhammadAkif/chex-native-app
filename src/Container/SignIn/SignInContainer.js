@@ -12,7 +12,7 @@ import {SignInScreen} from '../../Screens';
 import {signInValidationSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
-import {baseURL} from '../../Constants';
+import {baseURL, loginURL} from '../../Constants';
 import {SIGN_IN_ACTION} from '../../Store/Actions';
 
 const SignInContainer = ({navigation}) => {
@@ -56,9 +56,8 @@ const SignInContainer = ({navigation}) => {
   const handlePasswordFocus = () => passwordRef?.current?.focus();
   // Focus handling ends here
   const checkUserData = async (body, resetForm) => {
-    // const {username, password} = body;
     axios
-      .post(`${baseURL}/api/v1/auth/login`, {
+      .post(loginURL, {
         username: body.username,
         password: body.password,
       })

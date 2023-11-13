@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Text, TouchableOpacity, View} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -15,11 +15,14 @@ const RenderInspectionInProgress = ({
   styles,
   handleContinuePress,
   onCrossPress,
+  isLoading,
+  inspectionID,
 }) => (
   <View style={styles.cardContainer}>
     <TouchableOpacity
       style={styles.crossIconContainer}
-      onPress={() => onCrossPress(item?.id)}>
+      onPress={() => onCrossPress(item?.id)}
+      disabled={isLoading}>
       <Cross height={hp('2.3%')} width={wp('5%')} color={colors.red} />
     </TouchableOpacity>
     <View style={styles.tableContainer}>
@@ -40,9 +43,17 @@ const RenderInspectionInProgress = ({
     </View>
     <View style={styles.buttonContainer}>
       <TouchableOpacity
-        style={styles.button}
+        style={[
+          styles.button,
+          {width: inspectionID === item?.id && isLoading ? wp('37%') : null},
+        ]}
+        disabled={isLoading}
         onPress={() => handleContinuePress(item?.id)}>
-        <Text style={styles.buttonText}>Continue</Text>
+        {inspectionID === item?.id && isLoading ? (
+          <ActivityIndicator size={'small'} color={colors.white} />
+        ) : (
+          <Text style={styles.buttonText}>Continue</Text>
+        )}
       </TouchableOpacity>
     </View>
   </View>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -7,8 +7,6 @@ import {
 
 import {colors, NewInspectionStyles} from '../Assets/Styles';
 import {
-  InspectionStatusCollapsedCard,
-  InspectionStatusExpandedCard,
   PrimaryStartInspectionButton,
   RenderInspectionReviewed,
 } from '../Components';
@@ -19,7 +17,8 @@ const InspectionReviewedScreen = ({
   isExpanded,
   navigation,
   data,
-                                    inspectionDetailsPress,
+  inspectionDetailsPress,
+  isLoading,
 }) => (
   <View style={NewInspectionStyles.container}>
     <View style={NewInspectionStyles.bodyContainer}>
@@ -27,7 +26,6 @@ const InspectionReviewedScreen = ({
         <Text style={styles.bodyHeaderTitleText}>Inspection Reviewed</Text>
       </View>
       <View style={NewInspectionStyles.innerBody}>
-        {/*<View style={NewInspectionStyles.scrollViewContainer}>*/}
         <FlatList
           data={data}
           renderItem={({item}) => (
@@ -36,6 +34,7 @@ const InspectionReviewedScreen = ({
               isExpanded={isExpanded}
               handleIsExpanded={handleIsExpanded}
               inspectionDetailsPress={inspectionDetailsPress}
+              isLoading={isLoading}
             />
           )}
           keyExtractor={item => item?.id}
@@ -44,6 +43,7 @@ const InspectionReviewedScreen = ({
       <PrimaryStartInspectionButton
         buttonPress={() => handleStartInspectionPress(navigation)}
         textPress={() => handleHomePress(navigation)}
+        disabled={isLoading}
       />
     </View>
   </View>

@@ -12,13 +12,7 @@ import {useRoute} from '@react-navigation/native';
 import {SignInLogo} from './index';
 import {ROUTES} from '../Navigation/ROUTES';
 import DrawerItemText from './DrawerItemText';
-import {
-  Home,
-  InspectionDetails,
-  InspectionReviewed,
-  Logout,
-  Plus,
-} from '../Assets/Icons';
+import {Home, InspectionReviewed, Logout, Plus} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {SIGN_OUT_ACTION} from '../Store/Actions';
 import {Types} from '../Store/Types';

@@ -9,9 +9,9 @@ import {
 import {Plus} from '../Assets/Icons';
 import {buttonTextStyle, colors} from '../Assets/Styles';
 
-const PrimaryStartInspectionButton = ({buttonPress, textPress}) => (
+const PrimaryStartInspectionButton = ({buttonPress, textPress, disabled}) => (
   <View style={styles.footer}>
-    <TouchableOpacity onPress={buttonPress}>
+    <TouchableOpacity onPress={buttonPress} disabled={disabled}>
       <LinearGradient
         colors={['#FF7A00', '#F90']}
         start={{x: 0, y: 0}}

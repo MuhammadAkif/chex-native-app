@@ -8,12 +8,10 @@ const WelcomeContainer = () => {
   const navigation = useNavigation();
 
   const handleSignInPress = () => navigation.navigate(ROUTES.SIGN_IN);
-  const handleRegisterPress = () => navigation.navigate(ROUTES.REGISTER);
 
   return (
     <WelcomeScreen
       handleSignInPress={handleSignInPress}
-      handleRegisterPress={handleRegisterPress}
     />
   );
 };

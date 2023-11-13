@@ -10,14 +10,15 @@ import {
   RenderInspectionInProgress,
 } from '../Components';
 import {colors, NewInspectionStyles, ShadowEffect} from '../Assets/Styles';
-import { handleHomePress, handleStartInspectionPress } from "../Utils";
-import FastImage from 'react-native-fast-image';
+import {handleHomePress, handleStartInspectionPress} from '../Utils';
 
 const InspectionInProgressScreen = ({
   data,
   navigation,
   handleContinuePress,
   onCrossPress,
+  isLoading,
+  inspectionID,
 }) => (
   <View style={NewInspectionStyles.container}>
     <View style={NewInspectionStyles.bodyContainer}>
@@ -48,6 +49,8 @@ const InspectionInProgressScreen = ({
                 styles={styles}
                 handleContinuePress={handleContinuePress}
                 onCrossPress={onCrossPress}
+                isLoading={isLoading}
+                inspectionID={inspectionID}
               />
             )}
           />
