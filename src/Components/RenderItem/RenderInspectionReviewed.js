@@ -6,7 +6,12 @@ import {
 } from '../index';
 import {extractDate} from '../../Utils';
 
-const RenderInspectionReviewed = ({item, handleIsExpanded, isExpanded}) => (
+const RenderInspectionReviewed = ({
+  item,
+  handleIsExpanded,
+  isExpanded,
+  inspectionDetailsPress,
+}) => (
   <>
     <InspectionStatusCollapsedCard
       textOne={item?.inspectionCode}
@@ -19,7 +24,10 @@ const RenderInspectionReviewed = ({item, handleIsExpanded, isExpanded}) => (
       onPress={() => handleIsExpanded(item?.id)}
     />
     {isExpanded.includes(item?.id) && item?.status === 'REVIEWED' && (
-      <InspectionStatusExpandedCard />
+      <InspectionStatusExpandedCard
+        inspectionID={item?.id}
+        inspectionDetailsPress={inspectionDetailsPress}
+      />
     )}
   </>
 );

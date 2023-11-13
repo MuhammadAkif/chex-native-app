@@ -32,6 +32,7 @@ const InspectionInProgressContainer = ({navigation}) => {
     axios
       .get(`${baseURL}/api/v1/files/details/${inspectionId}`)
       .then(res => {
+        debugger
         setImageUrl(
           `https://chex-ai-uploads.s3.amazonaws.com/${res.data.files[0].url}`,
         );

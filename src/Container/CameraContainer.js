@@ -1,5 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {AppState, StatusBar, StyleSheet, View} from 'react-native';
+import {
+  AppState,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -19,13 +25,7 @@ import {
   UpdateExteriorItemURI,
   UpdateTiresItemURI,
 } from '../Store/Actions';
-import {
-  convertToBase64,
-  getBlob,
-  getCurrentDate,
-  getSignedUrl,
-  uploadFile,
-} from '../Utils';
+import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
 
 const CameraContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -120,7 +120,13 @@ const CameraContainer = ({route, navigation}) => {
       groupType: groupType,
       dateImage: getCurrentDate(),
     };
-    await uploadFile(uploadImageToStore, body, inspectionId, token);
+    await uploadFile(
+      uploadImageToStore,
+      body,
+      inspectionId,
+      token,
+      handleError,
+    );
   };
   function uploadImageToStore(imageID) {
     category === 'CarVerification'
@@ -130,6 +136,10 @@ const CameraContainer = ({route, navigation}) => {
       : dispatch(UpdateTiresItemURI(type, isImageURL, imageID));
     navigation.navigate(ROUTES.NEW_INSPECTION);
   }
+  const handleError = () => {
+    setIsModalVisible(false);
+    setProgress(0);
+  };
   const handleNextPress = () => {
     setIsModalVisible(true);
     getSignedUrl(
@@ -139,6 +149,7 @@ const CameraContainer = ({route, navigation}) => {
       // isImageFile.sourceURL,
       setProgress,
       handleResponse,
+      handleError,
     ).then();
   };
 
@@ -186,14 +197,16 @@ const CameraContainer = ({route, navigation}) => {
               />
             )
           )}
-          <View style={PreviewStyles.headerContainer}>
+          <TouchableOpacity
+            style={PreviewStyles.headerContainer}
+            onPress={handleNavigationBackPress}>
             <BackArrow
               height={hp('8%')}
               width={wp('8%')}
               color={colors.white}
-              onPress={handleNavigationBackPress}
+              // onPress={handleNavigationBackPress}
             />
-          </View>
+          </TouchableOpacity>
           <CameraFooter
             isCamera={true}
             handleSwitchCamera={handleSwitchCamera}

@@ -199,18 +199,22 @@ export const PreviewStyles = StyleSheet.create({
     width: wp('100%'),
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingTop: Platform.OS === 'ios' && '5%',
+    paddingTop: Platform.OS === 'ios' && '8%',
     paddingHorizontal: '5%',
     alignItems: 'center',
+    zIndex: 1,
   },
-  counterText: {
+  counterContainer: {
     height: hp('5%'),
     width: wp('15%'),
-    fontSize: hp('3%'),
-    color: colors.white,
-    backgroundColor: colors.tealGreen,
-    textAlign: 'center',
+    backgroundColor: colors.orange,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 30,
+  },
+  counterText: {
+    fontSize: hp('2.8%'),
+    color: colors.white,
   },
 });
 

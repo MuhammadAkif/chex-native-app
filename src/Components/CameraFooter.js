@@ -32,13 +32,14 @@ const CameraFooter = ({
       onPress={handleCaptureNowPress}
     />
     {!isRecording && (
-      <TouchableOpacity onPress={openPhotoLibrary} activeOpacity={1}>
-        <PhotoLibrary
-          height={hp('5%')}
-          width={wp('10%')}
-          color={colors.white}
-        />
-      </TouchableOpacity>
+      <View style={styles.emptyView} />
+      // <TouchableOpacity onPress={openPhotoLibrary} activeOpacity={1}>
+      //   <PhotoLibrary
+      //     height={hp('5%')}
+      //     width={wp('10%')}
+      //     color={colors.white}
+      //   />
+      // </TouchableOpacity>
     )}
   </View>
 );
@@ -51,6 +52,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     paddingVertical: '5%',
     zIndex: 20,
+  },
+  emptyView: {
+    height: hp('5%'),
+    width: wp('10%'),
   },
 });
 

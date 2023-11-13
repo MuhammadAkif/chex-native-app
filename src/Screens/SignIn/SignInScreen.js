@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {
+  View,
+  Text,
+  Platform,
+  TouchableOpacity,
+  Keyboard,
+  ActivityIndicator,
+} from 'react-native';
 
 import {
   BackgroundImageView,
@@ -8,6 +15,7 @@ import {
   SignInLogo,
 } from '../../Components';
 import CustomInput from '../../Components/CustomInput';
+import {colors} from '../../Assets/Styles';
 
 const SignInScreen = ({
   values,
@@ -19,13 +27,27 @@ const SignInScreen = ({
   handleBlur,
   errors,
   touched,
-  handleRegisterPress,
-  handleForgetPasswordPress,
   styles,
+  isKeyboardActive,
+  isSubmitting,
 }) => (
   <BackgroundImageView>
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
+    <TouchableOpacity
+      activeOpacity={1}
+      style={styles.container}
+      onPress={() => Keyboard.dismiss()}>
+      <View
+        style={[
+          styles.headerContainer,
+          {
+            flex:
+              Platform.OS === 'android'
+                ? 2
+                : Platform.OS === 'ios' && isKeyboardActive
+                ? 1
+                : 1.5,
+          },
+        ]}>
         <SignInLogo
           titleText={'CHEX'}
           dotTitleText={'.AI'}
@@ -43,7 +65,6 @@ const SignInScreen = ({
           valueName={'name'}
           placeholder={'John Doe'}
           onSubmitEditing={handlePasswordFocus}
-          // keyboardType={'email-address'}
         />
         <InputFieldRequiredError touched={touched.name} error={errors.name} />
         <CustomInput
@@ -61,24 +82,23 @@ const SignInScreen = ({
           touched={touched.password}
           error={errors.password}
         />
-        <View
-          style={styles.forgetPasswordContainer}
-          onTouchStart={handleForgetPasswordPress}>
-          <Text style={styles.text}>Forget Password?</Text>
-        </View>
+        <View style={styles.forgetPasswordContainer} />
       </View>
       <View style={styles.footerContainer}>
         <PrimaryGradientButton
           buttonStyle={styles.registerButtonText}
-          text={'Sign In'}
+          text={
+            isSubmitting ? (
+              <ActivityIndicator color={colors.white} size={'small'} />
+            ) : (
+              'Sign In'
+            )
+          }
           onPress={handleSubmit}
+          disabled={isSubmitting}
         />
-        <Text style={styles.text}>
-          Don't have an account?
-          <Text onPress={handleRegisterPress}> Register</Text>
-        </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   </BackgroundImageView>
 );
 

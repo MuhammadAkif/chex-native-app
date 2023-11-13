@@ -5,6 +5,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import {baseURL, fetchInProgressURL, uploadURL} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
+import {Alert} from 'react-native';
 
 export const validationSchema = yup.object().shape({
   firstName: yup.string().required('Field required'),
@@ -232,7 +233,9 @@ export const getSignedUrl = async (
   path,
   setProgress,
   handleResponse,
+  handleError,
 ) => {
+  debugger;
   await axios
     .post(
       uploadURL,
@@ -246,7 +249,15 @@ export const getSignedUrl = async (
     )
     .then(res => {
       const {url, key} = res.data;
-      uploadToS3(url, key, path, mime, setProgress, handleResponse, token);
+      uploadToS3(
+        url,
+        key,
+        path,
+        mime,
+        setProgress,
+        handleResponse,
+        handleError,
+      );
     })
     .catch(error => console.log(error));
 };
@@ -257,8 +268,9 @@ export const uploadToS3 = async (
   mime,
   setProgress,
   handleResponse,
-  token,
+  handleError,
 ) => {
+  debugger;
   RNFetchBlob.fetch(
     'PUT',
     preSignedUrl,
@@ -272,9 +284,23 @@ export const uploadToS3 = async (
     .then(res => {
       handleResponse(key);
     })
-    .catch(err => console.warn(err));
+    .catch(err => {
+      console.warn(err);
+      debugger;
+      Alert.alert(
+        'Upload Failed',
+        'Please check your internet connection and try again. If issues persist, reduce file size or switch networks. Contact support if needed. Apologies for any inconvenience.',
+        [{text: 'Retry', onPress: handleError}],
+      );
+    });
 };
-export const uploadFile = async (callback, body, inspectionId, token) => {
+export const uploadFile = async (
+  callback,
+  body,
+  inspectionId,
+  token,
+  handleError,
+) => {
   let imageID = 0;
   await axios
     .post(`${baseURL}/api/v1/vehicle/${inspectionId}/file`, body, {
@@ -289,6 +315,11 @@ export const uploadFile = async (callback, body, inspectionId, token) => {
     })
     .catch(error => {
       console.log('uploadFile error :', error);
+      const {title, message} = newInspectionUploadError(
+        error.response.data.statusCode,
+      );
+      Alert.alert(title, message, [{text: 'Retry', onPress: handleError}]);
+      debugger;
     });
   return imageID;
 };
@@ -366,4 +397,13 @@ export const getBlob = async fileUri => {
   const resp = await fetch(fileUri);
   const imageBody = await resp.blob();
   return imageBody;
+};
+
+export const newInspectionUploadError = statusCode => {
+  const errorTitle = statusCode === 409 ? 'Duplicate Image Detected' : '';
+  const errorMessage =
+    statusCode === 409
+      ? 'An image/video for this category was uploaded previously and already exists in our database. please refresh your page to see the previously uploaded image.'
+      : '';
+  return {title: errorTitle, message: errorMessage};
 };

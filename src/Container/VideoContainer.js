@@ -1,5 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {AppState, StatusBar, StyleSheet, View} from 'react-native';
+import {
+  AppState,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Text,
+} from 'react-native';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -39,7 +46,6 @@ const VideoContainer = ({route, navigation}) => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       appState.current = nextAppState;
     });
-
     return () => {
       subscription.remove();
       setIsVideoURI('');
@@ -47,23 +53,23 @@ const VideoContainer = ({route, navigation}) => {
       setIsVideoFile({});
       setIsModalVisible(false);
       setProgress(0);
-      // setCounter(30);
+      setCounter(30);
     };
   }, []);
 
-  // useEffect(() => {
-  //   let interval = null;
-  //   counter === 0 && reset();
-  //   if (isRecording) {
-  //     interval = setInterval(() => {
-  //       setCounter(counter - 1);
-  //     }, 1000);
-  //   } else {
-  //     clearInterval(interval);
-  //   }
-  //   // Clear the interval when the component unmounts
-  //   return () => clearInterval(interval);
-  // }, [counter, isRecording]);
+  useEffect(() => {
+    let interval = null;
+    counter === 0 && reset();
+    if (isRecording) {
+      interval = setInterval(() => {
+        setCounter(counter - 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, [counter, isRecording]);
 
   useEffect(() => {
     if (isBackCamera) {
@@ -126,20 +132,32 @@ const VideoContainer = ({route, navigation}) => {
       groupType: groupType,
       dateImage: getCurrentDate(),
     };
-    await uploadFile(uploadVideoToStore, body, inspectionId, token);
+    await uploadFile(
+      uploadVideoToStore,
+      body,
+      inspectionId,
+      token,
+      handleError,
+    );
   };
   function uploadVideoToStore(imageID) {
     dispatch(UpdateExteriorItemURI(type, isVideoURI, imageID));
     navigation.navigate(ROUTES.NEW_INSPECTION);
   }
+  const handleError = () => {
+    setIsModalVisible(false);
+    setProgress(0);
+  };
   const handleNextPress = () => {
     setIsModalVisible(true);
+    const path = isVideoFile.path.replace('file://', '');
     getSignedUrl(
       token,
       isVideoFile.mime,
-      isVideoFile.path,
+      path,
       setProgress,
       handleResponse,
+      handleError,
     ).then();
   };
 
@@ -179,15 +197,18 @@ const VideoContainer = ({route, navigation}) => {
               enableZoomGesture={true}
             />
           )}
-          <View style={PreviewStyles.headerContainer}>
+          <TouchableOpacity
+            style={PreviewStyles.headerContainer}
+            onPress={handleNavigationBackPress}>
             <BackArrow
               height={hp('8%')}
               width={wp('8%')}
               color={colors.white}
-              onPress={handleNavigationBackPress}
             />
-            {/*<Text style={PreviewStyles.counterText}>{counter}</Text>*/}
-          </View>
+            <View style={PreviewStyles.counterContainer}>
+              <Text style={PreviewStyles.counterText}>{counter}</Text>
+            </View>
+          </TouchableOpacity>
           <CameraFooter
             isCamera={false}
             isRecording={isRecording}

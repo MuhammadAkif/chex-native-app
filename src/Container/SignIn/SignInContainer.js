@@ -20,6 +20,7 @@ const SignInContainer = ({navigation}) => {
   const emailRef = useRef();
   const passwordRef = useRef();
   const [isKeyboardActive, setKeyboardActive] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const initialValues = {
     name: '',
     password: '',
@@ -54,9 +55,6 @@ const SignInContainer = ({navigation}) => {
   // Focus handling starts here
   const handlePasswordFocus = () => passwordRef?.current?.focus();
   // Focus handling ends here
-  const handleForgetPasswordPress = () =>
-    console.log('Forgot Password Pressed');
-  const handleRegisterPress = () => navigation.navigate(ROUTES.REGISTER);
   const checkUserData = async (body, resetForm) => {
     // const {username, password} = body;
     axios
@@ -65,11 +63,13 @@ const SignInContainer = ({navigation}) => {
         password: body.password,
       })
       .then(response => {
+        setIsSubmitting(false);
         dispatch(SIGN_IN_ACTION(response.data));
         resetForm();
         navigation.navigate(ROUTES.HOME);
       })
       .catch(err => {
+        setIsSubmitting(false);
         Alert.alert('Login Failed', err?.response?.data?.errors[0]);
       });
   };
@@ -78,22 +78,15 @@ const SignInContainer = ({navigation}) => {
     <Formik
       initialValues={initialValues}
       validationSchema={signInValidationSchema}
-      onSubmit={(values, {isSubmitting, resetForm}) => {
+      onSubmit={(values, {resetForm}) => {
+        setIsSubmitting(true);
         let body = {
           username: values.name,
           password: values.password,
         };
         checkUserData(body, resetForm).then();
       }}>
-      {({
-        values,
-        errors,
-        touched,
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        isSubmitting,
-      }) => (
+      {({values, errors, touched, handleChange, handleBlur, handleSubmit}) => (
         <SignInScreen
           values={values}
           handleChange={handleChange}
@@ -104,13 +97,13 @@ const SignInContainer = ({navigation}) => {
           handleBlur={handleBlur}
           errors={errors}
           touched={touched}
-          handleRegisterPress={handleRegisterPress}
-          handleForgetPasswordPress={handleForgetPasswordPress}
           styles={
             Platform.OS === 'android' && isKeyboardActive
               ? androidKeyboardOpenStyle
               : styles
           }
+          isKeyboardActive={isKeyboardActive}
+          isSubmitting={isSubmitting}
         />
       )}
     </Formik>

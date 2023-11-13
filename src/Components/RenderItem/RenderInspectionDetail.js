@@ -13,11 +13,7 @@ const {width} = Dimensions.get('window');
 
 const RenderInspectionDetail = ({item}) => (
   <View style={styles.container}>
-    <FastImage
-      source={item?.source}
-      resizeMode={'contain'}
-      style={styles.image}
-    />
+    <FastImage source={item?.url} resizeMode={'contain'} style={styles.image} />
     {item?.name === 'Overview' && (
       <View style={styles.circle}>
         <Play

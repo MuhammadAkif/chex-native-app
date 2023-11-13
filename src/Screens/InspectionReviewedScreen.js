@@ -19,6 +19,7 @@ const InspectionReviewedScreen = ({
   isExpanded,
   navigation,
   data,
+                                    inspectionDetailsPress,
 }) => (
   <View style={NewInspectionStyles.container}>
     <View style={NewInspectionStyles.bodyContainer}>
@@ -34,6 +35,7 @@ const InspectionReviewedScreen = ({
               item={item}
               isExpanded={isExpanded}
               handleIsExpanded={handleIsExpanded}
+              inspectionDetailsPress={inspectionDetailsPress}
             />
           )}
           keyExtractor={item => item?.id}

@@ -47,7 +47,14 @@ const CustomDrawerContent = props => {
 
   const handleNavigationPress = (path, activeScreen) => {
     // setActiveScreen(activeScreen);
-    props.navigation.navigate(path);
+    if (activeScreen === 'Logout') {
+      props.navigation.reset({
+        index: 0,
+        routes: [{name: ROUTES.SIGN_IN}],
+      });
+    } else {
+      props.navigation.navigate(path);
+    }
   };
   return (
     <ScrollView style={styles.body} {...props}>
@@ -122,30 +129,30 @@ const CustomDrawerContent = props => {
           )
         }
       />
-      <DrawerItemText
-        text={'Inspection Detail'}
-        textColor={activeColorOfTextAndIcon('Inspection Detail')}
-        activeColor={
-          activeScreen === 'Inspection Detail' ? activeColor : 'transparent'
-        }
-        Icon={
-          <InspectionDetails
-            height={hp('2.5%')}
-            width={wp('5%')}
-            color={activeColorOfTextAndIcon('Inspection Detail')}
-          />
-        }
-        onPress={() =>
-          handleNavigationPress(ROUTES.INSPECTION_DETAIL, 'Inspection Detail')
-        }
-      />
+      {/*<DrawerItemText*/}
+      {/*  text={'Inspection Detail'}*/}
+      {/*  textColor={activeColorOfTextAndIcon('Inspection Detail')}*/}
+      {/*  activeColor={*/}
+      {/*    activeScreen === 'Inspection Detail' ? activeColor : 'transparent'*/}
+      {/*  }*/}
+      {/*  Icon={*/}
+      {/*    <InspectionDetails*/}
+      {/*      height={hp('2.5%')}*/}
+      {/*      width={wp('5%')}*/}
+      {/*      color={activeColorOfTextAndIcon('Inspection Detail')}*/}
+      {/*    />*/}
+      {/*  }*/}
+      {/*  onPress={() =>*/}
+      {/*    handleNavigationPress(ROUTES.INSPECTION_DETAIL, 'Inspection Detail')*/}
+      {/*  }*/}
+      {/*/>*/}
       <DrawerItemText
         text={'Logout'}
         textColor={colors.red}
         Icon={<Logout height={hp('3%')} width={wp('5%')} color={colors.red} />}
         onPress={() => {
           dispatch(SIGN_OUT_ACTION());
-          handleNavigationPress(ROUTES.SIGN_IN, '');
+          handleNavigationPress(ROUTES.SIGN_IN, 'Logout');
         }}
       />
       <StatusBar backgroundColor={'transparent'} barStyle={'light-content'} />
