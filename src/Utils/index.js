@@ -312,7 +312,11 @@ export const uploadFile = async (
     });
   return imageID;
 };
-export const fetchInProgressInspections = async (token, status) => {
+export const fetchInProgressInspections = async (
+  token,
+  status,
+  setIsLoading,
+) => {
   let data = '';
   await axios
     .post(
@@ -329,8 +333,14 @@ export const fetchInProgressInspections = async (token, status) => {
     )
     .then(response => {
       data = response.data;
+      if (setIsLoading) {
+        setIsLoading(false);
+      }
     })
     .catch(error => {
+      if (setIsLoading) {
+        setIsLoading(false);
+      }
       console.log(error);
     });
   return data;

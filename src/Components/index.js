@@ -33,6 +33,7 @@ import RenderLicensePlateNumberHeader from './RenderItem/RenderLicensePlateNumbe
 import RenderInspectionReviewed from './RenderItem/RenderInspectionReviewed';
 import PrimaryStartInspectionButton from './PrimaryStartInspectionButton';
 import Column from './Column';
+import LoadingIndicator from './LoadingIndicator';
 
 export {
   BackgroundImageView,
@@ -70,4 +71,5 @@ export {
   Column,
   RenderInspectionInProgress,
   RenderInspectionReviewed,
+  LoadingIndicator,
 };

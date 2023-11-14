@@ -25,7 +25,8 @@ const InspectionInProgressContainer = ({navigation}) => {
 
   useFocusEffect(
     useCallback(() => {
-      dispatch(FETCH_INSPECTION_IN_PROGRESS(token));
+      setIsLoading(true);
+      dispatch(FETCH_INSPECTION_IN_PROGRESS(token, setIsLoading));
       return () => {
         setIsLoading(false);
         setInspectionID(null);

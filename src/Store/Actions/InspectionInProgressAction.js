@@ -4,12 +4,13 @@ import axios from 'axios';
 import {baseURL} from '../../Constants';
 import {Alert} from 'react-native';
 
-export const FETCH_INSPECTION_IN_PROGRESS = token => {
+export const FETCH_INSPECTION_IN_PROGRESS = (token, setIsLoading) => {
   return async dispatch => {
     let inspectionInProgress = [];
     inspectionInProgress = await fetchInProgressInspections(
       token,
       'IN_PROGRESS',
+      setIsLoading,
     );
     dispatch({
       type: Types.GET_INSPECTION_IN_PROGRESS,

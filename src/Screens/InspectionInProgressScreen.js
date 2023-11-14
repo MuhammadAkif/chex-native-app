@@ -6,6 +6,7 @@ import {
 } from 'react-native-responsive-screen';
 
 import {
+  LoadingIndicator,
   PrimaryStartInspectionButton,
   RenderInspectionInProgress,
 } from '../Components';
@@ -21,6 +22,7 @@ const InspectionInProgressScreen = ({
   inspectionID,
 }) => (
   <View style={NewInspectionStyles.container}>
+    {isLoading && inspectionID === null && <LoadingIndicator />}
     <View style={NewInspectionStyles.bodyContainer}>
       <View style={styles.bodyHeaderContainer}>
         <Text style={styles.bodyHeaderTitleText}>Inspections in Progress</Text>
