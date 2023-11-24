@@ -12,7 +12,7 @@ import {SignInScreen} from '../../Screens';
 import {signInValidationSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
-import {baseURL, loginURL} from '../../Constants';
+import {loginURL} from '../../Constants';
 import {SIGN_IN_ACTION} from '../../Store/Actions';
 
 const SignInContainer = ({navigation}) => {

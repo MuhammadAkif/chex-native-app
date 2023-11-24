@@ -1,35 +1,77 @@
 import React from 'react';
-import {View, Text, StyleSheet, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import Video from 'react-native-video';
 
 import {circleBorderRadius, colors} from '../../Assets/Styles';
 import {Play} from '../../Assets/Icons';
+import {S3_BUCKET_BASEURL} from '@env';
+import {extractTitle} from '../../Utils';
 
 const {width} = Dimensions.get('window');
 
-const RenderInspectionDetail = ({item}) => (
-  <View style={styles.container}>
-    <FastImage
-      source={{uri: item?.url}}
-      resizeMode={'stretch'}
-      style={styles.image}
-    />
-    {item?.name === 'Overview' && (
-      <View style={styles.circle}>
-        <Play
-          height={hp('4%')}
-          width={wp('4%')}
-          color={'rgba(255, 255, 255, 0.7)'}
-        />
-      </View>
-    )}
-    <Text style={styles.text}>{item?.name}</Text>
-  </View>
-);
+const RenderInspectionDetail = ({item, handleDisplayMedia}) => {
+  let mediaURL =
+    item?.url.split('/')[0] === 'uploads'
+      ? `${S3_BUCKET_BASEURL}${item?.url}`
+      : item?.url;
+  const isVideo = item?.extension === 'video/mp4' || item?.extension === '.mp4';
+
+  return (
+    <>
+      {!isVideo ? (
+        <TouchableOpacity
+          style={styles.container}
+          onPress={() => handleDisplayMedia(item)}>
+          <FastImage
+            source={{uri: mediaURL}}
+            resizeMode={'stretch'}
+            style={styles.image}
+          />
+          <Text style={styles.text}>
+            {extractTitle(item?.groupType, item?.category)}
+          </Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={styles.container}
+          onPress={() => handleDisplayMedia(item)}>
+          <Video
+            source={{uri: mediaURL}}
+            controls={false}
+            paused={true}
+            playInBackground={false}
+            style={styles.image}
+          />
+          {item?.extension === 'video/mp4' ||
+            (item?.extension === '.mp4' && (
+              // {item?.name === 'Overview' && (
+              <View style={styles.circle}>
+                <Play
+                  height={hp('4%')}
+                  width={wp('4%')}
+                  color={'rgba(255, 255, 255, 0.7)'}
+                />
+              </View>
+            ))}
+          <Text style={styles.text}>
+            {extractTitle(item?.groupType, item?.category)}
+          </Text>
+        </TouchableOpacity>
+      )}
+    </>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -55,7 +97,7 @@ const styles = StyleSheet.create({
     paddingLeft: '5%',
     backgroundColor: 'rgba(0, 27, 81, 0.4)',
     top: hp('5%'),
-    left: wp('20%'),
+    left: wp('18.5%'),
     zIndex: 1,
   },
 });

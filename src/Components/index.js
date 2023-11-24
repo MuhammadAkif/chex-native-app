@@ -34,6 +34,7 @@ import RenderInspectionReviewed from './RenderItem/RenderInspectionReviewed';
 import PrimaryStartInspectionButton from './PrimaryStartInspectionButton';
 import Column from './Column';
 import LoadingIndicator from './LoadingIndicator';
+import DisplayMediaModal from './DisplayMediaModal';
 
 export {
   BackgroundImageView,
@@ -72,4 +73,5 @@ export {
   RenderInspectionInProgress,
   RenderInspectionReviewed,
   LoadingIndicator,
+  DisplayMediaModal,
 };

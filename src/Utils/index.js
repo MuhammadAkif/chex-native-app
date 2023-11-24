@@ -3,7 +3,8 @@ import {Camera} from 'react-native-vision-camera';
 import axios from 'axios';
 import RNFetchBlob from 'rn-fetch-blob';
 
-import {baseURL, fetchInProgressURL, uploadURL} from '../Constants';
+import {fetchInProgressURL, uploadURL} from '../Constants';
+import {DEV_URL} from '@env';
 import {ROUTES} from '../Navigation/ROUTES';
 import {Alert} from 'react-native';
 
@@ -294,7 +295,7 @@ export const uploadFile = async (
 ) => {
   let imageID = 0;
   await axios
-    .post(`${baseURL}/api/v1/vehicle/${inspectionId}/file`, body, {
+    .post(`${DEV_URL}/api/v1/vehicle/${inspectionId}/file`, body, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
@@ -405,4 +406,39 @@ export const newInspectionUploadError = statusCode => {
       ? 'An image/video for this category was uploaded previously and already exists in our database. please refresh your page to see the previously uploaded image.'
       : '';
   return {title: errorTitle, message: errorMessage};
+};
+
+export const extractTitle = (groupType, category) => {
+  let title = 'No Title';
+  if (groupType === 'carVerificiationItems') {
+    title =
+      category === 'license_plate_number'
+        ? 'License Plate Number'
+        : category === 'odometer'
+        ? 'Odometer'
+        : 'No Title';
+  } else if (groupType === 'exteriorItems') {
+    title =
+      category === 'exterior_left'
+        ? 'Exterior Left'
+        : category === 'exterior_right'
+        ? 'Exterior Right'
+        : category === 'exterior_front'
+        ? 'Exterior Front'
+        : category === 'exterior_rear'
+        ? 'Exterior Rear'
+        : 'No Title';
+  } else if (groupType === 'tires') {
+    title =
+      category === 'left_front_tire'
+        ? 'Left Front Tire'
+        : category === 'left_rear_tire'
+        ? 'Left Rear Tire'
+        : category === 'right_front_tire'
+        ? 'Right Front Tire'
+        : category === 'right_rear_tire'
+        ? 'Right Rear Tire'
+        : 'No Title';
+  }
+  return title;
 };

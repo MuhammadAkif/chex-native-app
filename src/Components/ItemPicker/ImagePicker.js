@@ -23,10 +23,14 @@ const ImagePicker = ({
   imageURL,
   onClearPress,
   isLoading,
+  handleMediaModalDetailsPress,
 }) => (
   <View style={expandedCardStyles.uploadImageAndTextContainer}>
     {imageURL ? (
-      <TouchableOpacity style={ItemPickerStyles.container} disabled={isLoading}>
+      <TouchableOpacity
+        style={ItemPickerStyles.container}
+        disabled={isLoading}
+        onPress={handleMediaModalDetailsPress}>
         <TouchableOpacity
           style={expandedCardStyles.crossContainer}
           onPress={onClearPress}>

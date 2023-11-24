@@ -7,6 +7,7 @@ import {
 
 import {colors, NewInspectionStyles} from '../Assets/Styles';
 import {
+  LoadingIndicator,
   PrimaryStartInspectionButton,
   RenderInspectionReviewed,
 } from '../Components';
@@ -21,6 +22,7 @@ const InspectionReviewedScreen = ({
   isLoading,
 }) => (
   <View style={NewInspectionStyles.container}>
+    {isLoading && <LoadingIndicator />}
     <View style={NewInspectionStyles.bodyContainer}>
       <View style={styles.bodyHeaderContainer}>
         <Text style={styles.bodyHeaderTitleText}>Inspection Reviewed</Text>

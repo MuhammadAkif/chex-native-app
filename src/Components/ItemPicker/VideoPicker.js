@@ -11,7 +11,7 @@ import {
   expandedCardStyles,
   ItemPickerStyles,
 } from '../../Assets/Styles';
-import {Cross, Play} from '../../Assets/Icons';
+import {CrossFilled, Play} from '../../Assets/Icons';
 
 const height = hp('5%');
 const width = wp('5%');
@@ -23,14 +23,22 @@ const VideoPicker = ({
   videoURL,
   onClearPress,
   isLoading,
+  handleMediaModalDetailsPress,
 }) => (
   <View style={expandedCardStyles.uploadImageAndTextContainer}>
     {videoURL ? (
-      <TouchableOpacity style={ItemPickerStyles.container} disabled={isLoading}>
+      <TouchableOpacity
+        style={ItemPickerStyles.container}
+        disabled={isLoading}
+        onPress={handleMediaModalDetailsPress}>
         <TouchableOpacity
           style={expandedCardStyles.crossContainer}
           onPress={onClearPress}>
-          <Cross height={hp('5%')} width={wp('5%')} color={colors.red} />
+          <CrossFilled
+            height={hp('5%')}
+            width={wp('5%')}
+            color={colors.orangePeel}
+          />
         </TouchableOpacity>
         <Video
           source={{uri: videoURL}}

@@ -122,7 +122,7 @@ const VideoContainer = ({route, navigation}) => {
     setIsRecording(false);
     setIsVideoURI('');
     setIsVideoFile({});
-    // setCounter(30);
+    setCounter(30);
   };
   const handleResponse = async key => {
     const body = {
@@ -197,24 +197,23 @@ const VideoContainer = ({route, navigation}) => {
               enableZoomGesture={true}
             />
           )}
-          <TouchableOpacity
-            style={PreviewStyles.headerContainer}
-            onPress={handleNavigationBackPress}>
-            <BackArrow
-              height={hp('8%')}
-              width={wp('8%')}
-              color={colors.white}
-            />
+          <View style={PreviewStyles.headerContainer}>
+            <TouchableOpacity onPress={handleNavigationBackPress}>
+              <BackArrow
+                height={hp('8%')}
+                width={wp('8%')}
+                color={colors.white}
+              />
+            </TouchableOpacity>
             <View style={PreviewStyles.counterContainer}>
               <Text style={PreviewStyles.counterText}>{counter}</Text>
             </View>
-          </TouchableOpacity>
+          </View>
           <CameraFooter
             isCamera={false}
             isRecording={isRecording}
             handleSwitchCamera={handleSwitchCamera}
             handleCaptureNowPress={handleRecordingPress}
-            openPhotoLibrary={handleVideoPicker}
           />
         </View>
       )}

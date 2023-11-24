@@ -1,7 +1,7 @@
 import {Types} from '../Types';
 import {fetchInProgressInspections} from '../../Utils';
 import axios from 'axios';
-import {baseURL} from '../../Constants';
+import {DEV_URL} from '@env';
 import {Alert} from 'react-native';
 
 export const FETCH_INSPECTION_IN_PROGRESS = (token, setIsLoading) => {
@@ -30,7 +30,7 @@ export const REMOVE_INSPECTION_IN_PROGRESS = (
       item => item.id !== inspectionId,
     );
     await axios
-      .delete(`${baseURL}/api/v1/delete/inspection/${inspectionId}?type=app`, {
+      .delete(`${DEV_URL}/api/v1/delete/inspection/${inspectionId}?type=app`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,

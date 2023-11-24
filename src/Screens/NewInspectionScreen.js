@@ -9,6 +9,7 @@ import {
   ExteriorItemsExpandedCard,
   TiresItemsExpandedCard,
   PrimaryGradientButton,
+  DisplayMediaModal,
 } from '../Components';
 
 const NewInspectionScreen = ({
@@ -40,6 +41,10 @@ const NewInspectionScreen = ({
   handleSubmitPress,
   isLoading,
   submitText,
+  handleMediaModalDetailsPress,
+  handleMediaModalDetailsCrossPress,
+  mediaModalDetails,
+  mediaModalVisible,
 }) => (
   <View style={NewInspectionStyles.container}>
     <View style={NewInspectionStyles.headerContainer}>
@@ -71,6 +76,14 @@ const NewInspectionScreen = ({
               handleCaptureImage={handleCaptureNowPress}
             />
           )}
+          {mediaModalVisible && (
+            <DisplayMediaModal
+              title={mediaModalDetails?.title}
+              isVideo={mediaModalDetails?.isVideo}
+              source={mediaModalDetails?.source}
+              handleVisible={handleMediaModalDetailsCrossPress}
+            />
+          )}
           <CollapsedCard
             text={'Car Verification items'}
             index={1}
@@ -84,6 +97,7 @@ const NewInspectionScreen = ({
               carVerificationItems={carVerificationItems}
               handleCrossPress={handleCarVerificationCrossPress}
               isLoading={isLoading}
+              handleMediaModalDetailsPress={handleMediaModalDetailsPress}
             />
           )}
           <CollapsedCard
@@ -99,6 +113,7 @@ const NewInspectionScreen = ({
               exteriorItems={exteriorItems}
               handleCrossPress={handleExteriorCrossPress}
               isLoading={isLoading}
+              handleMediaModalDetailsPress={handleMediaModalDetailsPress}
             />
           )}
           <CollapsedCard
@@ -114,6 +129,7 @@ const NewInspectionScreen = ({
               tires={tires}
               handleCrossPress={handleTiresCrossPress}
               isLoading={isLoading}
+              handleMediaModalDetailsPress={handleMediaModalDetailsPress}
             />
           )}
         </ScrollView>

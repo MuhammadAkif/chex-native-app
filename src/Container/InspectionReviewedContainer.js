@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import InspectionReviewedScreen from '../Screens/InspectionReviewedScreen';
 import {FETCH_INSPECTION_REVIEWED} from '../Store/Actions';
-import {baseURL} from '../Constants';
+import {DEV_URL} from '@env';
 import {ROUTES} from '../Navigation/ROUTES';
 
 const InspectionReviewedContainer = ({navigation}) => {
@@ -17,7 +17,8 @@ const InspectionReviewedContainer = ({navigation}) => {
 
   useFocusEffect(
     useCallback(() => {
-      dispatch(FETCH_INSPECTION_REVIEWED(token));
+      setIsLoading(true);
+      dispatch(FETCH_INSPECTION_REVIEWED(token, setIsLoading));
       return () => {
         setIsLoading(false);
         setIsExpanded([]);
@@ -37,7 +38,7 @@ const InspectionReviewedContainer = ({navigation}) => {
   const inspectionDetailsPress = inspectionID => {
     setIsLoading(true);
     axios
-      .get(`${baseURL}/api/v1/files/details/${inspectionID}`)
+      .get(`${DEV_URL}/api/v1/files/details/${inspectionID}`)
       .then(res => {
         setIsLoading(false);
         navigation.navigate(ROUTES.INSPECTION_DETAIL, {

@@ -10,6 +10,7 @@ const CarVerificationExpandedCard = ({
   carVerificationItems,
   handleCrossPress,
   isLoading,
+  handleMediaModalDetailsPress,
 }) => (
   <View style={expandedCardStyles.expandedCardContainer}>
     <View
@@ -24,6 +25,13 @@ const CarVerificationExpandedCard = ({
         isLoading={isLoading}
         imageURL={carVerificationItems?.licensePlate}
         onClearPress={() => handleCrossPress(LicensePlateDetails.key)}
+        handleMediaModalDetailsPress={() =>
+          handleMediaModalDetailsPress(
+            'License Plate',
+            carVerificationItems?.licensePlate,
+            false,
+          )
+        }
       />
     </View>
     <View
@@ -38,6 +46,13 @@ const CarVerificationExpandedCard = ({
         isLoading={isLoading}
         imageURL={carVerificationItems?.odometer}
         onClearPress={() => handleCrossPress(OdometerDetails.key)}
+        handleMediaModalDetailsPress={() =>
+          handleMediaModalDetailsPress(
+            'Odometer',
+            carVerificationItems?.odometer,
+            false,
+          )
+        }
       />
     </View>
   </View>

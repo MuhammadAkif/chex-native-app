@@ -15,6 +15,7 @@ const TiresItemsExpandedCard = ({
   tires,
   handleCrossPress,
   isLoading,
+  handleMediaModalDetailsPress,
 }) => (
   <View
     style={[
@@ -29,6 +30,13 @@ const TiresItemsExpandedCard = ({
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(LeftFrontTireDetails)}
         onClearPress={() => handleCrossPress(LeftFrontTireDetails.key)}
+        handleMediaModalDetailsPress={() =>
+          handleMediaModalDetailsPress(
+            'Left Front Tire',
+            tires?.leftFrontTire,
+            false,
+          )
+        }
       />
       <ImagePicker
         text={'Left Rear Tire'}
@@ -37,6 +45,13 @@ const TiresItemsExpandedCard = ({
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(LeftRearTireDetails)}
         onClearPress={() => handleCrossPress(LeftRearTireDetails.key)}
+        handleMediaModalDetailsPress={() =>
+          handleMediaModalDetailsPress(
+            'Left Rear Tire',
+            tires?.leftRearTire,
+            false,
+          )
+        }
       />
     </View>
     <View style={ExpandedCardStyles.itemPickerContainer}>
@@ -47,6 +62,13 @@ const TiresItemsExpandedCard = ({
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(RightFrontTireDetails)}
         onClearPress={() => handleCrossPress(RightFrontTireDetails.key)}
+        handleMediaModalDetailsPress={() =>
+          handleMediaModalDetailsPress(
+            'Right Front Tire',
+            tires?.rightFrontTire,
+            false,
+          )
+        }
       />
       <ImagePicker
         text={'Right Rear Tire'}
@@ -55,6 +77,13 @@ const TiresItemsExpandedCard = ({
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(RightRearTireDetails)}
         onClearPress={() => handleCrossPress(RightRearTireDetails.key)}
+        handleMediaModalDetailsPress={() =>
+          handleMediaModalDetailsPress(
+            'Right Rear Tire',
+            tires?.rightRearTire,
+            false,
+          )
+        }
       />
     </View>
   </View>

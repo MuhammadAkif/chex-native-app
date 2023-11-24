@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, ScrollView, StatusBar} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -50,6 +56,10 @@ const CustomDrawerContent = props => {
       props.navigation.navigate(path);
     }
   };
+  const handleLogout = () => {
+    dispatch(SIGN_OUT_ACTION());
+    handleNavigationPress(ROUTES.SIGN_IN, 'Logout');
+  };
   return (
     <ScrollView style={styles.body} {...props}>
       <View style={styles.header}>
@@ -73,56 +83,63 @@ const CustomDrawerContent = props => {
         textColor={activeColorOfTextAndIcon('Intro')}
         activeColor={activeScreen === 'Intro' ? activeColor : 'transparent'}
         Icon={
-          <Home
-            height={hp('3%')}
-            width={wp('5%')}
-            color={activeColorOfTextAndIcon('Intro')}
-          />
-        }
-        onPress={() => handleNavigationPress(ROUTES.INTRO, 'Intro')}
-      />
-      <DrawerItemText
-        text={'New Inspection'}
-        textColor={activeColorOfTextAndIcon('LICENSE PLATE SELECTION')}
-        activeColor={
-          activeScreen === 'LICENSE PLATE SELECTION'
-            ? activeColor
-            : 'transparent'
-        }
-        Icon={
-          <Plus
-            height={hp('2.5%')}
-            width={wp('5%')}
-            color={activeColorOfTextAndIcon('LICENSE PLATE SELECTION')}
-          />
+          <TouchableOpacity
+            onPress={() =>
+              handleNavigationPress(ROUTES.INSPECTION_SELECTION, 'Intro')
+            }>
+            <Home
+              height={hp('3%')}
+              width={wp('5%')}
+              color={activeColorOfTextAndIcon('Intro')}
+            />
+          </TouchableOpacity>
         }
         onPress={() =>
-          handleNavigationPress(
-            ROUTES.LICENSE_PLATE_SELECTION,
-            'LICENSE PLATE SELECTION',
-          )
+          handleNavigationPress(ROUTES.INSPECTION_SELECTION, 'Intro')
         }
       />
-      <DrawerItemText
-        text={'Inspection Reviewed'}
-        textColor={activeColorOfTextAndIcon('Inspection Reviewed')}
-        activeColor={
-          activeScreen === 'Inspection Reviewed' ? activeColor : 'transparent'
-        }
-        Icon={
-          <InspectionReviewed
-            height={hp('2.5%')}
-            width={wp('5%')}
-            color={activeColorOfTextAndIcon('Inspection Reviewed')}
-          />
-        }
-        onPress={() =>
-          handleNavigationPress(
-            ROUTES.INSPECTION_REVIEWED,
-            'Inspection Reviewed',
-          )
-        }
-      />
+      {/*<DrawerItemText*/}
+      {/*  text={'New Inspection'}*/}
+      {/*  textColor={activeColorOfTextAndIcon('LICENSE PLATE SELECTION')}*/}
+      {/*  activeColor={*/}
+      {/*    activeScreen === 'LICENSE PLATE SELECTION'*/}
+      {/*      ? activeColor*/}
+      {/*      : 'transparent'*/}
+      {/*  }*/}
+      {/*  Icon={*/}
+      {/*    <Plus*/}
+      {/*      height={hp('2.5%')}*/}
+      {/*      width={wp('5%')}*/}
+      {/*      color={activeColorOfTextAndIcon('LICENSE PLATE SELECTION')}*/}
+      {/*    />*/}
+      {/*  }*/}
+      {/*  onPress={() =>*/}
+      {/*    handleNavigationPress(*/}
+      {/*      ROUTES.LICENSE_PLATE_SELECTION,*/}
+      {/*      'LICENSE PLATE SELECTION',*/}
+      {/*    )*/}
+      {/*  }*/}
+      {/*/>*/}
+      {/*<DrawerItemText*/}
+      {/*  text={'Inspection Reviewed'}*/}
+      {/*  textColor={activeColorOfTextAndIcon('Inspection Reviewed')}*/}
+      {/*  activeColor={*/}
+      {/*    activeScreen === 'Inspection Reviewed' ? activeColor : 'transparent'*/}
+      {/*  }*/}
+      {/*  Icon={*/}
+      {/*    <InspectionReviewed*/}
+      {/*      height={hp('2.5%')}*/}
+      {/*      width={wp('5%')}*/}
+      {/*      color={activeColorOfTextAndIcon('Inspection Reviewed')}*/}
+      {/*    />*/}
+      {/*  }*/}
+      {/*  onPress={() =>*/}
+      {/*    handleNavigationPress(*/}
+      {/*      ROUTES.INSPECTION_REVIEWED,*/}
+      {/*      'Inspection Reviewed',*/}
+      {/*    )*/}
+      {/*  }*/}
+      {/*/>*/}
       {/*<DrawerItemText*/}
       {/*  text={'Inspection Detail'}*/}
       {/*  textColor={activeColorOfTextAndIcon('Inspection Detail')}*/}
@@ -143,11 +160,12 @@ const CustomDrawerContent = props => {
       <DrawerItemText
         text={'Logout'}
         textColor={colors.red}
-        Icon={<Logout height={hp('3%')} width={wp('5%')} color={colors.red} />}
-        onPress={() => {
-          dispatch(SIGN_OUT_ACTION());
-          handleNavigationPress(ROUTES.SIGN_IN, 'Logout');
-        }}
+        Icon={
+          <TouchableOpacity onPress={handleLogout}>
+            <Logout height={hp('3%')} width={wp('5%')} color={colors.red} />
+          </TouchableOpacity>
+        }
+        onPress={handleLogout}
       />
       <StatusBar backgroundColor={'transparent'} barStyle={'light-content'} />
     </ScrollView>

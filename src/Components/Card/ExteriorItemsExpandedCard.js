@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View} from 'react-native';
 
 import {ExpandedCardStyles, expandedCardStyles} from '../../Assets/Styles';
 import ImagePicker from '../ItemPicker/ImagePicker';
@@ -16,6 +16,7 @@ const ExteriorItemsExpandedCard = ({
   exteriorItems,
   handleCrossPress,
   isLoading,
+  handleMediaModalDetailsPress,
 }) => (
   <View
     style={[
@@ -30,6 +31,13 @@ const ExteriorItemsExpandedCard = ({
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(ExteriorLeftDetails)}
         onClearPress={() => handleCrossPress(ExteriorLeftDetails.key)}
+        handleMediaModalDetailsPress={() =>
+          handleMediaModalDetailsPress(
+            'Exterior Left',
+            exteriorItems?.exteriorLeft,
+            false,
+          )
+        }
       />
       <ImagePicker
         text={'Exterior Right'}
@@ -38,6 +46,13 @@ const ExteriorItemsExpandedCard = ({
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(ExteriorRightDetails)}
         onClearPress={() => handleCrossPress(ExteriorRightDetails.key)}
+        handleMediaModalDetailsPress={() =>
+          handleMediaModalDetailsPress(
+            'Exterior Right',
+            exteriorItems?.exteriorRight,
+            false,
+          )
+        }
       />
     </View>
     <View style={ExpandedCardStyles.itemPickerContainer}>
@@ -48,6 +63,13 @@ const ExteriorItemsExpandedCard = ({
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(ExteriorFrontDetails)}
         onClearPress={() => handleCrossPress(ExteriorFrontDetails.key)}
+        handleMediaModalDetailsPress={() =>
+          handleMediaModalDetailsPress(
+            'Exterior Front',
+            exteriorItems?.exteriorFront,
+            true,
+          )
+        }
       />
       <VideoPicker
         text={'Exterior Rear'}
@@ -56,6 +78,13 @@ const ExteriorItemsExpandedCard = ({
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(ExteriorRearDetails)}
         onClearPress={() => handleCrossPress(ExteriorRearDetails.key)}
+        handleMediaModalDetailsPress={() =>
+          handleMediaModalDetailsPress(
+            'Exterior Rear',
+            exteriorItems?.exteriorRear,
+            true,
+          )
+        }
       />
     </View>
   </View>

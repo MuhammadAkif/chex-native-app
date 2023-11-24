@@ -191,21 +191,20 @@ const CameraContainer = ({route, navigation}) => {
               />
             )
           )}
-          <TouchableOpacity
-            style={PreviewStyles.headerContainer}
-            onPress={handleNavigationBackPress}>
-            <BackArrow
-              height={hp('8%')}
-              width={wp('8%')}
-              color={colors.white}
-              // onPress={handleNavigationBackPress}
-            />
-          </TouchableOpacity>
+          <View style={PreviewStyles.headerContainer}>
+            <TouchableOpacity onPress={handleNavigationBackPress}>
+              <BackArrow
+                height={hp('8%')}
+                width={wp('8%')}
+                color={colors.white}
+                // onPress={handleNavigationBackPress}
+              />
+            </TouchableOpacity>
+          </View>
           <CameraFooter
             isCamera={true}
             handleSwitchCamera={handleSwitchCamera}
             handleCaptureNowPress={handleCaptureNowPress}
-            openPhotoLibrary={handleImagePicker}
           />
         </View>
       )}

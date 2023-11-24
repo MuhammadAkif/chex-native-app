@@ -11,7 +11,7 @@ import {
   RemoveTiresItemURI,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
-import {baseURL} from '../Constants';
+import {DEV_URL} from '@env';
 import {colors} from '../Assets/Styles';
 
 const NewInspectionContainer = ({route, navigation}) => {
@@ -21,6 +21,8 @@ const NewInspectionContainer = ({route, navigation}) => {
   );
   const {token} = useSelector(state => state?.auth);
   const [modalVisible, setModalVisible] = useState(false);
+  const [mediaModalVisible, setMediaModalVisible] = useState(false);
+  const [mediaModalDetails, setMediaModalDetails] = useState({});
   const [selectedOption, setSelectedOption] = useState({
     isCarVerification: true,
     isExterior: false,
@@ -108,7 +110,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         ? carVerificationItems.licensePlateID
         : carVerificationItems.odometerID;
     axios
-      .delete(`${baseURL}/api/v1/files/${imageID}`, {
+      .delete(`${DEV_URL}/api/v1/files/${imageID}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -128,17 +130,31 @@ const NewInspectionContainer = ({route, navigation}) => {
         ? exteriorItems.exteriorFrontID
         : exteriorItems?.exteriorRearID;
     await axios
-      .delete(`${baseURL}/api/v1/files/${imageID}`, {
+      .delete(`${DEV_URL}/api/v1/files/${imageID}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
       })
       .then(res => {
-        console.log(res);
         dispatch(RemoveExteriorItemURI(key));
       });
   };
+  // Media Modal logic starts here
+  const handleMediaModalDetailsPress = (title, mediaURL, isVideo) => {
+    setMediaModalDetails({
+      title: title,
+      source: mediaURL,
+      isVideo: isVideo,
+    });
+    setMediaModalVisible(true);
+  };
+  const handleMediaModalDetailsCrossPress = () => {
+    setMediaModalVisible(false);
+    setMediaModalDetails({});
+  };
+  // Media Modal logic ends here
+
   const handleTiresCrossPress = async key => {
     let imageID =
       key === 'leftFrontTire'
@@ -149,7 +165,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         ? tires.rightFrontTireID
         : tires.rightRearTireID;
     await axios
-      .delete(`${baseURL}/api/v1/files/${imageID}`, {
+      .delete(`${DEV_URL}/api/v1/files/${imageID}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -179,7 +195,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   const handleSubmitPress = () => {
     setIsLoading(true);
     axios
-      .patch(`${baseURL}/api/v1/inspection/${inspectionID}`, null, {
+      .patch(`${DEV_URL}/api/v1/inspection/${inspectionID}`, null, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -228,6 +244,10 @@ const NewInspectionContainer = ({route, navigation}) => {
       handleSubmitPress={handleSubmitPress}
       isLoading={isLoading}
       submitText={submitText}
+      handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+      handleMediaModalDetailsCrossPress={handleMediaModalDetailsCrossPress}
+      mediaModalDetails={mediaModalDetails}
+      mediaModalVisible={mediaModalVisible}
     />
   );
 };

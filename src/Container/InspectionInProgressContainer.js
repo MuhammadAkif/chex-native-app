@@ -4,7 +4,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
 import {InspectionInProgressScreen} from '../Screens';
-import {baseURL} from '../Constants';
+import {DEV_URL} from '@env';
 import {
   FETCH_INSPECTION_IN_PROGRESS,
   REMOVE_INSPECTION_IN_PROGRESS,
@@ -13,6 +13,7 @@ import {
   UpdateTiresItemURI,
 } from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
+import {S3_BUCKET_BASEURL} from '@env';
 
 const InspectionInProgressContainer = ({navigation}) => {
   const dispatch = useDispatch();
@@ -38,7 +39,7 @@ const InspectionInProgressContainer = ({navigation}) => {
     setIsLoading(true);
     setInspectionID(inspectionId);
     axios
-      .get(`${baseURL}/api/v1/files/details/${inspectionId}`)
+      .get(`${DEV_URL}/api/v1/files/details/${inspectionId}`)
       .then(res => {
         uploadInProgressMediaToStore(res?.data?.files);
         setIsLoading(false);
@@ -53,7 +54,10 @@ const InspectionInProgressContainer = ({navigation}) => {
   };
   function uploadInProgressMediaToStore(files) {
     for (let file = 0; file < files.length; file++) {
-      const imageURL = `https://chex-ai-uploads.s3.amazonaws.com/${files[file].url}`;
+      const imageURL =
+        files[file].url.split(':')[0] === 'https'
+          ? files[file].url
+          : `${S3_BUCKET_BASEURL}${files[file].url}`;
       const {groupType, id, category} = files[file];
       if (groupType === 'carVerificiationItems') {
         category === 'license_plate_number'
