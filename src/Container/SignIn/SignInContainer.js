@@ -21,6 +21,7 @@ const SignInContainer = ({navigation}) => {
   const passwordRef = useRef();
   const [isKeyboardActive, setKeyboardActive] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
   const initialValues = {
     name: '',
     password: '',
@@ -50,11 +51,13 @@ const SignInContainer = ({navigation}) => {
     return () => {
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
+      setHidePassword(true);
     };
   }, []);
   // Focus handling starts here
   const handlePasswordFocus = () => passwordRef?.current?.focus();
   // Focus handling ends here
+  const hidePasswordHandler = () => setHidePassword(!hidePassword);
   const checkUserData = async (body, resetForm) => {
     axios
       .post(loginURL, {
@@ -103,6 +106,8 @@ const SignInContainer = ({navigation}) => {
           }
           isKeyboardActive={isKeyboardActive}
           isSubmitting={isSubmitting}
+          hidePasswordHandler={hidePasswordHandler}
+          hidePassword={hidePassword}
         />
       )}
     </Formik>

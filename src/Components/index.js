@@ -35,6 +35,7 @@ import PrimaryStartInspectionButton from './PrimaryStartInspectionButton';
 import Column from './Column';
 import LoadingIndicator from './LoadingIndicator';
 import DisplayMediaModal from './DisplayMediaModal';
+import CustomPasswordInput from './CustomPasswordInput';
 
 export {
   BackgroundImageView,
@@ -74,4 +75,5 @@ export {
   RenderInspectionReviewed,
   LoadingIndicator,
   DisplayMediaModal,
+  CustomPasswordInput,
 };

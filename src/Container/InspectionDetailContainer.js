@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 
 import {InspectionDetailScreen} from '../Screens';
-import {S3_BUCKET_BASEURL} from '@env';
 import {extractTitle} from '../Utils';
+import {S3_BUCKET_BASEURL} from '../Constants';
 
 const InspectionDetailContainer = ({route}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);

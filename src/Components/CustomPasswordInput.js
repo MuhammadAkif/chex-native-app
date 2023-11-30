@@ -1,13 +1,14 @@
 import React, {forwardRef} from 'react';
-import {View, TextInput, StyleSheet} from 'react-native';
+import {View, TextInput, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
 import {colors} from '../Assets/Styles';
+import {HidePassword, ShowPassword} from '../Assets/Icons';
 
-const CustomInput = forwardRef(
+const CustomPasswordInput = forwardRef(
   (
     {
       placeholder,
@@ -28,6 +29,7 @@ const CustomInput = forwardRef(
       onPressOut,
       inputContainerStyle,
       hidePasswordHandler,
+      isPasswordHidden,
     },
     ref,
   ) => (
@@ -40,7 +42,8 @@ const CustomInput = forwardRef(
         onChange={onChange}
         onPressIn={onPressIn}
         onPressOut={onPressOut}
-        textAlign={'left'}
+        numberOfLines={1}
+        multiline={false}
         onChangeText={onChangeText(valueName)}
         onBlur={onBlur(valueName)}
         secureTextEntry={secureTextEntry}
@@ -50,6 +53,21 @@ const CustomInput = forwardRef(
         onSubmitEditing={onSubmitEditing}
         keyboardType={keyboardType}
       />
+      <TouchableOpacity onPress={hidePasswordHandler}>
+        {isPasswordHidden ? (
+          <HidePassword
+            height={hp('3%')}
+            width={wp('6%')}
+            color={colors.gray}
+          />
+        ) : (
+          <ShowPassword
+            height={hp('3%')}
+            width={wp('6%')}
+            color={colors.gray}
+          />
+        )}
+      </TouchableOpacity>
     </View>
   ),
 );
@@ -66,9 +84,9 @@ const styles = StyleSheet.create({
   },
   input: {
     height: hp('7%'),
-    width: wp('80%'),
+    width: wp('65%'),
     fontSize: hp('2%'),
   },
 });
 
-export default CustomInput;
+export default CustomPasswordInput;

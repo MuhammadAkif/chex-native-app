@@ -11,8 +11,8 @@ import {
   RemoveTiresItemURI,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
-import {DEV_URL} from '@env';
 import {colors} from '../Assets/Styles';
+import {DEV_URL} from '../Constants';
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();

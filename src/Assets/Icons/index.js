@@ -19,6 +19,8 @@ import Logout from './Logout';
 import Home from './Home';
 import InspectionReviewed from './InspectionReviewed';
 import InspectionDetails from './InspectionDetails';
+import HidePassword from './HidePassword';
+import ShowPassword from './ShowPassword';
 
 export {
   Check,
@@ -42,4 +44,6 @@ export {
   Home,
   InspectionReviewed,
   InspectionDetails,
+  HidePassword,
+  ShowPassword,
 };

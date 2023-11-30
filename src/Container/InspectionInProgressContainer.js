@@ -4,7 +4,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
 import {InspectionInProgressScreen} from '../Screens';
-import {DEV_URL} from '@env';
 import {
   FETCH_INSPECTION_IN_PROGRESS,
   REMOVE_INSPECTION_IN_PROGRESS,
@@ -13,7 +12,7 @@ import {
   UpdateTiresItemURI,
 } from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
-import {S3_BUCKET_BASEURL} from '@env';
+import {DEV_URL, S3_BUCKET_BASEURL} from '../Constants';
 
 const InspectionInProgressContainer = ({navigation}) => {
   const dispatch = useDispatch();

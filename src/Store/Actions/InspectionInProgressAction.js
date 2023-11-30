@@ -1,8 +1,8 @@
 import {Types} from '../Types';
 import {fetchInProgressInspections} from '../../Utils';
 import axios from 'axios';
-import {DEV_URL} from '@env';
 import {Alert} from 'react-native';
+import {DEV_URL} from '../../Constants';
 
 export const FETCH_INSPECTION_IN_PROGRESS = (token, setIsLoading) => {
   return async dispatch => {

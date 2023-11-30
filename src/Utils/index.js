@@ -3,8 +3,7 @@ import {Camera} from 'react-native-vision-camera';
 import axios from 'axios';
 import RNFetchBlob from 'rn-fetch-blob';
 
-import {fetchInProgressURL, uploadURL} from '../Constants';
-import {DEV_URL} from '@env';
+import {DEV_URL, fetchInProgressURL, uploadURL} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {Alert} from 'react-native';
 

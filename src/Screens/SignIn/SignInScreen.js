@@ -16,6 +16,7 @@ import {
 } from '../../Components';
 import CustomInput from '../../Components/CustomInput';
 import {colors} from '../../Assets/Styles';
+import CustomPasswordInput from "../../Components/CustomPasswordInput";
 
 const SignInScreen = ({
   values,
@@ -30,6 +31,8 @@ const SignInScreen = ({
   styles,
   isKeyboardActive,
   isSubmitting,
+  hidePasswordHandler,
+  hidePassword
 }) => (
   <BackgroundImageView>
     <TouchableOpacity
@@ -67,7 +70,7 @@ const SignInScreen = ({
           onSubmitEditing={handlePasswordFocus}
         />
         <InputFieldRequiredError touched={touched.name} error={errors.name} />
-        <CustomInput
+        <CustomPasswordInput
           ref={passwordRef}
           value={values?.password}
           onChangeText={handleChange}
@@ -75,8 +78,10 @@ const SignInScreen = ({
           valueName={'password'}
           placeholder={'********'}
           onSubmitEditing={handleSubmit}
-          secureTextEntry={true}
+          secureTextEntry={hidePassword}
           enterKeyHint={'done'}
+          hidePasswordHandler={hidePasswordHandler}
+          isPasswordHidden={hidePassword}
         />
         <InputFieldRequiredError
           touched={touched.password}

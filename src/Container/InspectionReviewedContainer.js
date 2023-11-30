@@ -5,8 +5,8 @@ import axios from 'axios';
 
 import InspectionReviewedScreen from '../Screens/InspectionReviewedScreen';
 import {FETCH_INSPECTION_REVIEWED} from '../Store/Actions';
-import {DEV_URL} from '@env';
 import {ROUTES} from '../Navigation/ROUTES';
+import {DEV_URL} from '../Constants';
 
 const InspectionReviewedContainer = ({navigation}) => {
   const dispatch = useDispatch();
