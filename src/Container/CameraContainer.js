@@ -107,10 +107,12 @@ const CameraContainer = ({route, navigation}) => {
     setIsImageFile({});
   };
   const handleResponse = async key => {
+    let extension = isImageFile.path.split('.')[1];
+
     const body = {
       category: subCategory,
       url: key,
-      extension: isImageFile.mime,
+      extension: `image/${extension}`,
       groupType: groupType,
       dateImage: getCurrentDate(),
     };
@@ -136,9 +138,10 @@ const CameraContainer = ({route, navigation}) => {
   };
   const handleNextPress = () => {
     setIsModalVisible(true);
+    let extension = isImageFile.path.split('.')[1];
     getSignedUrl(
       token,
-      isImageFile.mime,
+      `image/${extension}`,
       isImageFile.path,
       // isImageFile.sourceURL,
       setProgress,

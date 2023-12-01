@@ -14,7 +14,7 @@ import {handleHomePress} from '../Utils';
 const CompletedInspectionScreen = ({
   navigation,
   handleThankYouPress,
-  seconds,
+  // seconds,
 }) => (
   <CompletedInspectionBackgroundImage>
     <View style={styles.container}>
@@ -41,18 +41,18 @@ const CompletedInspectionScreen = ({
               onPress={handleThankYouPress}
             />
           )}
-          {Platform.OS === 'ios' && (
-            <>
-              <PrimaryGradientButton
-                buttonStyle={styles.button}
-                text={'Home'}
-                onPress={() => handleHomePress(navigation)}
-              />
-              <Text style={styles.subTitleText}>
-                Returning home ({seconds})
-              </Text>
-            </>
-          )}
+          {/*{Platform.OS === 'ios' && (*/}
+          {/*  <>*/}
+          {/*    <PrimaryGradientButton*/}
+          {/*      buttonStyle={styles.button}*/}
+          {/*      text={'Home'}*/}
+          {/*      onPress={() => handleHomePress(navigation)}*/}
+          {/*    />*/}
+          {/*    <Text style={styles.subTitleText}>*/}
+          {/*      Returning home ({seconds})*/}
+          {/*    </Text>*/}
+          {/*  </>*/}
+          {/*)}*/}
           <View style={styles.bodyFooterEmptyView} />
         </View>
       </LinearGradient>
