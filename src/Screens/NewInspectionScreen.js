@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, ScrollView} from 'react-native';
 
-import {NewInspectionStyles} from '../Assets/Styles';
+import {colors, NewInspectionStyles} from '../Assets/Styles';
 import {
   CollapsedCard,
   CarVerificationExpandedCard,
@@ -10,6 +10,7 @@ import {
   TiresItemsExpandedCard,
   PrimaryGradientButton,
   DisplayMediaModal,
+  DiscardInspectionModal,
 } from '../Components';
 
 const NewInspectionScreen = ({
@@ -45,8 +46,21 @@ const NewInspectionScreen = ({
   handleMediaModalDetailsCrossPress,
   mediaModalDetails,
   mediaModalVisible,
+  handleOnCrossPress,
+  onNoPress,
+  onYesPress,
+  isDiscardInspectionModalVisible,
 }) => (
   <View style={NewInspectionStyles.container}>
+    {isDiscardInspectionModalVisible && (
+      <DiscardInspectionModal
+        onNoPress={onNoPress}
+        onYesPress={onYesPress}
+        description={'Are you sure you want to delete this inspection item?'}
+        noButtonText={{color: colors.black}}
+        noButtonStyle={{borderColor: colors.orange}}
+      />
+    )}
     <View style={NewInspectionStyles.headerContainer}>
       <Text style={NewInspectionStyles.headerTitleText}>
         Please complete inspection items within each category below
@@ -95,7 +109,8 @@ const NewInspectionScreen = ({
             <CarVerificationExpandedCard
               handleItemPickerPress={handleItemPickerPress}
               carVerificationItems={carVerificationItems}
-              handleCrossPress={handleCarVerificationCrossPress}
+              handleCrossPress={handleOnCrossPress}
+              // handleCrossPress={handleCarVerificationCrossPress}
               isLoading={isLoading}
               handleMediaModalDetailsPress={handleMediaModalDetailsPress}
             />
@@ -111,7 +126,8 @@ const NewInspectionScreen = ({
             <ExteriorItemsExpandedCard
               handleItemPickerPress={handleItemPickerPress}
               exteriorItems={exteriorItems}
-              handleCrossPress={handleExteriorCrossPress}
+              handleCrossPress={handleOnCrossPress}
+              // handleCrossPress={handleExteriorCrossPress}
               isLoading={isLoading}
               handleMediaModalDetailsPress={handleMediaModalDetailsPress}
             />
@@ -127,7 +143,8 @@ const NewInspectionScreen = ({
             <TiresItemsExpandedCard
               handleItemPickerPress={handleItemPickerPress}
               tires={tires}
-              handleCrossPress={handleTiresCrossPress}
+              handleCrossPress={handleOnCrossPress}
+              // handleCrossPress={handleTiresCrossPress}
               isLoading={isLoading}
               handleMediaModalDetailsPress={handleMediaModalDetailsPress}
             />

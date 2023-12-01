@@ -9,8 +9,13 @@ import {
 import CompletedInspectionBackgroundImage from '../Components/CompletedInspectionBackgroundImage';
 import {colors} from '../Assets/Styles';
 import {PrimaryGradientButton} from '../Components';
+import {handleHomePress} from '../Utils';
 
-const CompletedInspectionScreen = ({handleThankYouPress}) => (
+const CompletedInspectionScreen = ({
+  navigation,
+  handleThankYouPress,
+  seconds,
+}) => (
   <CompletedInspectionBackgroundImage>
     <View style={styles.container}>
       <LinearGradient
@@ -35,6 +40,18 @@ const CompletedInspectionScreen = ({handleThankYouPress}) => (
               text={'Thank You'}
               onPress={handleThankYouPress}
             />
+          )}
+          {Platform.OS === 'ios' && (
+            <>
+              <PrimaryGradientButton
+                buttonStyle={styles.button}
+                text={'Home'}
+                onPress={() => handleHomePress(navigation)}
+              />
+              <Text style={styles.subTitleText}>
+                Returning home ({seconds})
+              </Text>
+            </>
           )}
           <View style={styles.bodyFooterEmptyView} />
         </View>
@@ -78,6 +95,7 @@ const styles = StyleSheet.create({
   bodyFooterEmptyView: {
     flex: 0.3,
   },
+  returningHomeText: {},
 });
 
 export default CompletedInspectionScreen;

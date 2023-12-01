@@ -6,6 +6,7 @@ import axios from 'axios';
 import {InspectionInProgressScreen} from '../Screens';
 import {
   FETCH_INSPECTION_IN_PROGRESS,
+  NumberPlateSelectedAction,
   REMOVE_INSPECTION_IN_PROGRESS,
   UpdateCarVerificationItemURI,
   UpdateExteriorItemURI,
@@ -22,6 +23,9 @@ const InspectionInProgressContainer = ({navigation}) => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [inspectionID, setInspectionID] = useState(null);
+  const [deleteInspectionID, setDeleteInspectionID] = useState(null);
+  const [isDiscardInspectionModalVisible, setIsDiscardInspectionModalVisible] =
+    useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -30,6 +34,8 @@ const InspectionInProgressContainer = ({navigation}) => {
       return () => {
         setIsLoading(false);
         setInspectionID(null);
+        setIsDiscardInspectionModalVisible(false);
+        setDeleteInspectionID(null);
       };
     }, []),
   );
@@ -42,6 +48,7 @@ const InspectionInProgressContainer = ({navigation}) => {
       .then(res => {
         uploadInProgressMediaToStore(res?.data?.files);
         setIsLoading(false);
+        dispatch(NumberPlateSelectedAction(inspectionId));
         navigation.navigate(ROUTES.NEW_INSPECTION, {
           inspectionId: inspectionId,
         });
@@ -88,16 +95,22 @@ const InspectionInProgressContainer = ({navigation}) => {
     }
   }
   const onCrossPress = id => {
+    setDeleteInspectionID(id);
+    setIsDiscardInspectionModalVisible(true);
+  };
+  const handleYesPress = () => {
+    setIsDiscardInspectionModalVisible(false);
     setIsLoading(true);
     dispatch(
       REMOVE_INSPECTION_IN_PROGRESS(
         token,
-        id,
+        deleteInspectionID,
         inspectionInProgress,
         setIsLoading,
       ),
     );
   };
+  const handleNoPress = () => setIsDiscardInspectionModalVisible(false);
 
   return (
     <InspectionInProgressScreen
@@ -107,6 +120,9 @@ const InspectionInProgressContainer = ({navigation}) => {
       onCrossPress={onCrossPress}
       isLoading={isLoading}
       inspectionID={inspectionID}
+      onYesPress={handleYesPress}
+      onNoPress={handleNoPress}
+      isDiscardInspectionModalVisible={isDiscardInspectionModalVisible}
     />
   );
 };

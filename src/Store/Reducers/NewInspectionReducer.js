@@ -27,6 +27,7 @@ const initialState = {
     rightRearTire: '',
     rightRearTireID: '',
   },
+  selectedInspectionID: null,
 };
 
 const newInspectionReducer = (state = initialState, action) => {
@@ -84,6 +85,11 @@ const newInspectionReducer = (state = initialState, action) => {
           [action.payload.item]: action.payload.uri,
           [`${action.payload.item}ID`]: action.payload.id,
         },
+      };
+    case Types.SELECTED_INSPECTION_ID:
+      return {
+        ...state,
+        selectedInspectionID: action.payload.selectedInspectionID,
       };
     case Types.CLEAR_NEW_INSPECTION:
       return initialState;

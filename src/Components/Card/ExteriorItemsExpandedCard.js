@@ -30,7 +30,9 @@ const ExteriorItemsExpandedCard = ({
         imageURL={exteriorItems?.exteriorLeft}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(ExteriorLeftDetails)}
-        onClearPress={() => handleCrossPress(ExteriorLeftDetails.key)}
+        onClearPress={() =>
+          handleCrossPress('exteriorItems', ExteriorLeftDetails.key)
+        }
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
             'Exterior Left',
@@ -45,7 +47,9 @@ const ExteriorItemsExpandedCard = ({
         imageURL={exteriorItems?.exteriorRight}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(ExteriorRightDetails)}
-        onClearPress={() => handleCrossPress(ExteriorRightDetails.key)}
+        onClearPress={() =>
+          handleCrossPress('exteriorItems', ExteriorRightDetails.key)
+        }
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
             'Exterior Right',
@@ -62,7 +66,9 @@ const ExteriorItemsExpandedCard = ({
         videoURL={exteriorItems?.exteriorFront}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(ExteriorFrontDetails)}
-        onClearPress={() => handleCrossPress(ExteriorFrontDetails.key)}
+        onClearPress={() =>
+          handleCrossPress('exteriorItems', ExteriorFrontDetails.key)
+        }
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
             'Exterior Front',
@@ -77,7 +83,9 @@ const ExteriorItemsExpandedCard = ({
         videoURL={exteriorItems?.exteriorRear}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(ExteriorRearDetails)}
-        onClearPress={() => handleCrossPress(ExteriorRearDetails.key)}
+        onClearPress={() =>
+          handleCrossPress('exteriorItems', ExteriorRearDetails.key)
+        }
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
             'Exterior Rear',

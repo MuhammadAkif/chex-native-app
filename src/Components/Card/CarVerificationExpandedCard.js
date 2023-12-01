@@ -24,7 +24,9 @@ const CarVerificationExpandedCard = ({
         text={'License Plate'}
         isLoading={isLoading}
         imageURL={carVerificationItems?.licensePlate}
-        onClearPress={() => handleCrossPress(LicensePlateDetails.key)}
+        onClearPress={() =>
+          handleCrossPress('carVerificationItems', LicensePlateDetails.key)
+        }
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
             'License Plate',
@@ -45,7 +47,9 @@ const CarVerificationExpandedCard = ({
         text={'Odometer'}
         isLoading={isLoading}
         imageURL={carVerificationItems?.odometer}
-        onClearPress={() => handleCrossPress(OdometerDetails.key)}
+        onClearPress={() =>
+          handleCrossPress('carVerificationItems', OdometerDetails.key)
+        }
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
             'Odometer',

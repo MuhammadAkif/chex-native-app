@@ -42,7 +42,11 @@ export function RemoveTiresItemURI(item) {
       payload: payload,
     });
 }
-export function NumberPlateSelectedAction(NP) {
-  //pass data using api
-  console.log(NP);
+export function NumberPlateSelectedAction(selectedInspectionID) {
+  let payload = {selectedInspectionID: selectedInspectionID};
+  return dispatch =>
+    dispatch({
+      type: Types.SELECTED_INSPECTION_ID,
+      payload: payload,
+    });
 }

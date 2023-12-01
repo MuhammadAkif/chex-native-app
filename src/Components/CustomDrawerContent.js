@@ -18,7 +18,7 @@ import {useRoute} from '@react-navigation/native';
 import {SignInLogo} from './index';
 import {ROUTES} from '../Navigation/ROUTES';
 import DrawerItemText from './DrawerItemText';
-import {Home, InspectionReviewed, Logout, Plus} from '../Assets/Icons';
+import {Home, Logout} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {SIGN_OUT_ACTION} from '../Store/Actions';
 import {Types} from '../Store/Types';
@@ -45,9 +45,10 @@ const CustomDrawerContent = props => {
     setPreviousScreen(activeRouteName);
   }, [activeRouteName]);
 
-  const handleNavigationPress = (path, activeScreen) => {
+  const handleNavigationPress = (path, active_Screen) => {
     // setActiveScreen(activeScreen);
-    if (activeScreen === 'Logout') {
+    props.navigation.toggleDrawer();
+    if (active_Screen === 'Logout') {
       props.navigation.reset({
         index: 0,
         routes: [{name: ROUTES.SIGN_IN}],

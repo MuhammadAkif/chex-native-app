@@ -29,7 +29,7 @@ const TiresItemsExpandedCard = ({
         imageURL={tires?.leftFrontTire}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(LeftFrontTireDetails)}
-        onClearPress={() => handleCrossPress(LeftFrontTireDetails.key)}
+        onClearPress={() => handleCrossPress('tires', LeftFrontTireDetails.key)}
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
             'Left Front Tire',
@@ -44,7 +44,7 @@ const TiresItemsExpandedCard = ({
         imageURL={tires?.leftRearTire}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(LeftRearTireDetails)}
-        onClearPress={() => handleCrossPress(LeftRearTireDetails.key)}
+        onClearPress={() => handleCrossPress('tires', LeftRearTireDetails.key)}
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
             'Left Rear Tire',
@@ -61,7 +61,7 @@ const TiresItemsExpandedCard = ({
         imageURL={tires?.rightFrontTire}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(RightFrontTireDetails)}
-        onClearPress={() => handleCrossPress(RightFrontTireDetails.key)}
+        onClearPress={() => handleCrossPress('tires', RightFrontTireDetails.key)}
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
             'Right Front Tire',
@@ -76,7 +76,7 @@ const TiresItemsExpandedCard = ({
         imageURL={tires?.rightRearTire}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(RightRearTireDetails)}
-        onClearPress={() => handleCrossPress(RightRearTireDetails.key)}
+        onClearPress={() => handleCrossPress('tires', RightRearTireDetails.key)}
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
             'Right Rear Tire',

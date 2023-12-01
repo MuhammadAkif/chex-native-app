@@ -6,6 +6,7 @@ import axios from 'axios';
 import {NewInspectionScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
+  REMOVE_INSPECTION_IN_PROGRESS,
   RemoveCarVerificationItemURI,
   RemoveExteriorItemURI,
   RemoveTiresItemURI,
@@ -16,9 +17,8 @@ import {DEV_URL} from '../Constants';
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const {carVerificationItems, exteriorItems, tires} = useSelector(
-    state => state.newInspection,
-  );
+  let {carVerificationItems, exteriorItems, tires, selectedInspectionID} =
+    useSelector(state => state.newInspection);
   const {token} = useSelector(state => state?.auth);
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
@@ -28,8 +28,10 @@ const NewInspectionContainer = ({route, navigation}) => {
     isExterior: false,
     isTires: false,
   });
-  const [inspectionID, setInspectionID] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [deleteItem, setDeleteItem] = useState({category: null, key: null});
+  const [isDiscardInspectionModalVisible, setIsDiscardInspectionModalVisible] =
+    useState(false);
   const modalDetailsInitialState = {
     key: 'licensePlate',
     title: 'License Plate',
@@ -67,15 +69,13 @@ const NewInspectionContainer = ({route, navigation}) => {
   );
 
   useEffect(() => {
-    if (route.params) {
-      const {inspectionId} = route.params;
-      setInspectionID(inspectionId);
-    }
     return () => {
       setModalDetails(modalDetailsInitialState);
       setModalVisible(false);
       setIsLoading(false);
       dispatch({type: Types.CLEAR_NEW_INSPECTION});
+      setIsDiscardInspectionModalVisible(false);
+      setDeleteItem({category: null, key: null});
     };
   }, []);
 
@@ -104,7 +104,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setModalVisible(true);
   };
   const handleModalVisible = () => setModalVisible(!modalVisible);
-  const handleCarVerificationCrossPress = key => {
+  const handleCarVerificationCrossPress = async key => {
     let imageID =
       key === 'licensePlate'
         ? carVerificationItems.licensePlateID
@@ -141,20 +141,6 @@ const NewInspectionContainer = ({route, navigation}) => {
       });
   };
   // Media Modal logic starts here
-  const handleMediaModalDetailsPress = (title, mediaURL, isVideo) => {
-    setMediaModalDetails({
-      title: title,
-      source: mediaURL,
-      isVideo: isVideo,
-    });
-    setMediaModalVisible(true);
-  };
-  const handleMediaModalDetailsCrossPress = () => {
-    setMediaModalVisible(false);
-    setMediaModalDetails({});
-  };
-  // Media Modal logic ends here
-
   const handleTiresCrossPress = async key => {
     let imageID =
       key === 'leftFrontTire'
@@ -175,6 +161,20 @@ const NewInspectionContainer = ({route, navigation}) => {
         dispatch(RemoveTiresItemURI(key));
       });
   };
+  const handleMediaModalDetailsPress = (title, mediaURL, isVideo) => {
+    setMediaModalDetails({
+      title: title,
+      source: mediaURL,
+      isVideo: isVideo,
+    });
+    setMediaModalVisible(true);
+  };
+  const handleMediaModalDetailsCrossPress = () => {
+    setMediaModalVisible(false);
+    setMediaModalDetails({});
+  };
+
+  // Media Modal logic ends here
   const handleCaptureNowPress = (isVideo, key) => {
     setModalVisible(false);
     setModalDetails(modalDetailsInitialState);
@@ -182,34 +182,73 @@ const NewInspectionContainer = ({route, navigation}) => {
       navigation.navigate(ROUTES.VIDEO, {
         type: key,
         modalDetails: modalDetails,
-        inspectionId: inspectionID,
+        inspectionId: selectedInspectionID,
       });
     } else {
       navigation.navigate(ROUTES.CAMERA, {
         type: key,
         modalDetails: modalDetails,
-        inspectionId: inspectionID,
+        inspectionId: selectedInspectionID,
       });
     }
   };
   const handleSubmitPress = () => {
+    console.log('token => ', token);
+    console.log('selectedInspectionID => ', selectedInspectionID);
     setIsLoading(true);
     axios
-      .patch(`${DEV_URL}/api/v1/inspection/${inspectionID}`, null, {
+      .patch(`${DEV_URL}/api/v1/inspection/${selectedInspectionID}`, null, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
       })
       .then(() => {
-        setIsLoading(false);
-        dispatch({type: Types.CLEAR_NEW_INSPECTION});
-        navigation.navigate(ROUTES.COMPLETED_INSPECTION);
+        axios
+          .put(
+            `${DEV_URL}/api/v1/inspection/location`,
+            {
+              isLocation: true,
+              inspectionId: selectedInspectionID,
+            },
+            {},
+          )
+          .then(res => {
+            console.log('location res => ', res);
+            setIsLoading(false);
+            dispatch({type: Types.CLEAR_NEW_INSPECTION});
+            navigation.navigate(ROUTES.COMPLETED_INSPECTION);
+          })
+          .catch(error => {
+            setIsLoading(false);
+            console.log('Completed location error :', error);
+          });
       })
       .catch(error => {
         setIsLoading(false);
         console.log('Completed Inspection error :', error);
       });
+  };
+
+  const handleOnCrossPress = (category, key) => {
+    setIsDiscardInspectionModalVisible(true);
+    setDeleteItem({category: category, key: key});
+  };
+  const handleYesPress = () => {
+    setIsDiscardInspectionModalVisible(false);
+    if (deleteItem.category === 'carVerificationItems') {
+      handleCarVerificationCrossPress(deleteItem.key).then();
+    } else if (deleteItem.category === 'exteriorItems') {
+      handleExteriorCrossPress(deleteItem.key).then();
+    } else if (deleteItem.category === 'tires') {
+      handleTiresCrossPress(deleteItem.key).then();
+    } else {
+      return true;
+    }
+  };
+  const handleNoPress = () => {
+    setIsDiscardInspectionModalVisible(false);
+    setDeleteItem({category: null, key: null});
   };
 
   return (
@@ -248,6 +287,10 @@ const NewInspectionContainer = ({route, navigation}) => {
       handleMediaModalDetailsCrossPress={handleMediaModalDetailsCrossPress}
       mediaModalDetails={mediaModalDetails}
       mediaModalVisible={mediaModalVisible}
+      onYesPress={handleYesPress}
+      onNoPress={handleNoPress}
+      isDiscardInspectionModalVisible={isDiscardInspectionModalVisible}
+      handleOnCrossPress={handleOnCrossPress}
     />
   );
 };

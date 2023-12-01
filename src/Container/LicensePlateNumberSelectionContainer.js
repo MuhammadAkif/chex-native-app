@@ -1,6 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import {ActivityIndicator, Alert} from 'react-native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
@@ -8,8 +8,10 @@ import {LicensePlateNumberSelectionScreen} from '../Screens';
 import {createInspectionURL, fetchNPURL} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {colors} from '../Assets/Styles';
+import {NumberPlateSelectedAction} from '../Store/Actions';
 
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
+  const dispatch = useDispatch();
   const {token, data} = useSelector(state => state?.auth);
   const [selectedNP, setSelectedNP] = useState('');
   const [search, setSearch] = useState('');
@@ -65,6 +67,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       .post(createInspectionURL, body, {headers: headers})
       .then(response => {
         setIsLoading(false);
+        dispatch(NumberPlateSelectedAction(response.data.id));
         navigation.navigate(ROUTES.NEW_INSPECTION, {
           inspectionId: response.data.id,
         });

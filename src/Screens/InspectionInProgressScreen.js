@@ -6,6 +6,7 @@ import {
 } from 'react-native-responsive-screen';
 
 import {
+  DiscardInspectionModal,
   LoadingIndicator,
   PrimaryStartInspectionButton,
   RenderInspectionInProgress,
@@ -20,9 +21,19 @@ const InspectionInProgressScreen = ({
   onCrossPress,
   isLoading,
   inspectionID,
+  onYesPress,
+  onNoPress,
+  isDiscardInspectionModalVisible,
 }) => (
   <View style={NewInspectionStyles.container}>
     {isLoading && inspectionID === null && <LoadingIndicator />}
+    {isDiscardInspectionModalVisible && (
+      <DiscardInspectionModal
+        onYesPress={onYesPress}
+        onNoPress={onNoPress}
+        description={'Are You Sure Want To Discard Your Inspection?'}
+      />
+    )}
     <View style={NewInspectionStyles.bodyContainer}>
       <View style={styles.bodyHeaderContainer}>
         <Text style={styles.bodyHeaderTitleText}>Inspections in Progress</Text>

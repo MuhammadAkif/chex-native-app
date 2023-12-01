@@ -36,6 +36,7 @@ import Column from './Column';
 import LoadingIndicator from './LoadingIndicator';
 import DisplayMediaModal from './DisplayMediaModal';
 import CustomPasswordInput from './CustomPasswordInput';
+import DiscardInspectionModal from './PopUpModals/DiscardInspectionModal';
 
 export {
   BackgroundImageView,
@@ -76,4 +77,5 @@ export {
   LoadingIndicator,
   DisplayMediaModal,
   CustomPasswordInput,
+  DiscardInspectionModal,
 };
