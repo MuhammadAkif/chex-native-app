@@ -128,7 +128,8 @@ const VideoContainer = ({route, navigation}) => {
     const body = {
       category: subCategory,
       url: key,
-      extension: isVideoFile.mime,
+      extension: 'video/mp4',
+      // extension: isVideoFile.mime,
       groupType: groupType,
       dateImage: getCurrentDate(),
     };
@@ -153,7 +154,8 @@ const VideoContainer = ({route, navigation}) => {
     const path = isVideoFile.path.replace('file://', '');
     getSignedUrl(
       token,
-      isVideoFile.mime,
+      'video/mp4',
+      // isVideoFile.mime,
       path,
       setProgress,
       handleResponse,
