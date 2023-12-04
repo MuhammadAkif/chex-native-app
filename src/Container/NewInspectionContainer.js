@@ -6,14 +6,18 @@ import axios from 'axios';
 import {NewInspectionScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
+  NumberPlateSelectedAction,
   REMOVE_INSPECTION_IN_PROGRESS,
   RemoveCarVerificationItemURI,
   RemoveExteriorItemURI,
   RemoveTiresItemURI,
+  UpdateCarVerificationItemURI,
+  UpdateExteriorItemURI,
+  UpdateTiresItemURI,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {colors} from '../Assets/Styles';
-import {DEV_URL} from '../Constants';
+import {DEV_URL, S3_BUCKET_BASEURL} from '../Constants';
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();

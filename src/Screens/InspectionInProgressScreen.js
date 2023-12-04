@@ -26,7 +26,9 @@ const InspectionInProgressScreen = ({
   isDiscardInspectionModalVisible,
 }) => (
   <View style={NewInspectionStyles.container}>
-    {isLoading && inspectionID === null && <LoadingIndicator />}
+    {isLoading && inspectionID === null && (
+      <LoadingIndicator isLoading={isLoading} />
+    )}
     {isDiscardInspectionModalVisible && (
       <DiscardInspectionModal
         onYesPress={onYesPress}

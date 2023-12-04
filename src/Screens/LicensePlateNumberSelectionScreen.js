@@ -13,7 +13,11 @@ import {
 } from 'react-native-responsive-screen';
 
 import {colors, NewInspectionStyles} from '../Assets/Styles';
-import {PrimaryGradientButton, RenderLicensePlateNumber} from '../Components';
+import {
+  DiscardInspectionModal,
+  PrimaryGradientButton,
+  RenderLicensePlateNumber,
+} from '../Components';
 
 const LicensePlateNumberSelectionScreen = ({
   handleSelectedNP,
@@ -24,8 +28,21 @@ const LicensePlateNumberSelectionScreen = ({
   handleSubmit,
   selectText,
   isLoading,
+  errorTitle,
+  isDiscardInspectionModalVisible,
+  onNoPress,
+  onYesPress,
 }) => (
   <View style={NewInspectionStyles.container}>
+    {isDiscardInspectionModalVisible && (
+      <DiscardInspectionModal
+        onNoPress={onNoPress}
+        onYesPress={onYesPress}
+        description={errorTitle}
+        noButtonText={{color: colors.black}}
+        noButtonStyle={{borderColor: colors.orange}}
+      />
+    )}
     <View style={[NewInspectionStyles.bodyContainer, styles.container]}>
       <View style={styles.headerContainer}>
         <Text style={styles.bodyHeader}>New Inspection</Text>

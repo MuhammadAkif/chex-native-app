@@ -4,14 +4,15 @@ import axios from 'axios';
 import {Alert} from 'react-native';
 import {DEV_URL} from '../../Constants';
 
-export const FETCH_INSPECTION_IN_PROGRESS = (token, setIsLoading) => {
+export const FETCH_INSPECTION_IN_PROGRESS = inspectionInProgress => {
+  // export const FETCH_INSPECTION_IN_PROGRESS = (token, setIsLoading) => {
   return async dispatch => {
-    let inspectionInProgress = [];
-    inspectionInProgress = await fetchInProgressInspections(
-      token,
-      'IN_PROGRESS',
-      setIsLoading,
-    );
+    // let inspectionInProgress = [];
+    // inspectionInProgress = await fetchInProgressInspections(
+    //   token,
+    //   'IN_PROGRESS',
+    //   setIsLoading,
+    // );
     dispatch({
       type: Types.GET_INSPECTION_IN_PROGRESS,
       payload: {inspectionInProgress},

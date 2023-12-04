@@ -4,11 +4,11 @@ import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 import {colors} from '../Assets/Styles';
 
-const LoadingIndicator = () => (
+const LoadingIndicator = ({isLoading}) => (
   <Modal
     animationType="slide"
     transparent={true}
-    visible={true}
+    visible={isLoading}
     style={styles.container}>
     <View style={styles.centeredView}>
       <ActivityIndicator size={'large'} color={colors.white} />

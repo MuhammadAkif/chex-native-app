@@ -48,9 +48,9 @@ const CompletedInspectionScreen = ({
                 text={'Home'}
                 onPress={() => handleHomePress(navigation)}
               />
-              <Text style={styles.subTitleText}>
-                Returning home ({seconds})
-              </Text>
+              {/*<Text style={styles.subTitleText}>*/}
+              {/*  Returning home ({seconds})*/}
+              {/*</Text>*/}
             </>
           )}
           <View style={styles.bodyFooterEmptyView} />

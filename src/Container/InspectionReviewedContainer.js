@@ -4,9 +4,16 @@ import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
 import InspectionReviewedScreen from '../Screens/InspectionReviewedScreen';
-import {FETCH_INSPECTION_REVIEWED} from '../Store/Actions';
+import {
+  FETCH_INSPECTION_IN_PROGRESS,
+  FETCH_INSPECTION_REVIEWED,
+} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
 import {DEV_URL} from '../Constants';
+import {
+  fetchInProgressInspections,
+  sortInspectionReviewedItems,
+} from '../Utils';
 
 const InspectionReviewedContainer = ({navigation}) => {
   const dispatch = useDispatch();
@@ -18,14 +25,25 @@ const InspectionReviewedContainer = ({navigation}) => {
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
-      dispatch(FETCH_INSPECTION_REVIEWED(token, setIsLoading));
+      fetchInspectionInProgress().then();
+      // dispatch(FETCH_INSPECTION_REVIEWED(token, setIsLoading));
       return () => {
         setIsLoading(false);
         setIsExpanded([]);
       };
     }, []),
   );
+  async function fetchInspectionInProgress() {
+    let inspectionReviewData = [];
+    inspectionReviewData = await fetchInProgressInspections(
+      token,
+      ['IN_REVIEW', 'REVIEWED'],
+      setIsLoading,
+    );
+    dispatch(FETCH_INSPECTION_REVIEWED(inspectionReviewData));
 
+    return null;
+  }
   const handleIsExpanded = id => {
     let latestData = [];
     if (isExpanded.includes(id)) {
@@ -41,8 +59,9 @@ const InspectionReviewedContainer = ({navigation}) => {
       .get(`${DEV_URL}/api/v1/files/details/${inspectionID}`)
       .then(res => {
         setIsLoading(false);
+        let files = sortInspectionReviewedItems(res?.data?.files);
         navigation.navigate(ROUTES.INSPECTION_DETAIL, {
-          files: res?.data?.files,
+          files: files,
         });
       })
       .catch(error => {

@@ -14,6 +14,7 @@ import {
 } from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
 import {DEV_URL, S3_BUCKET_BASEURL} from '../Constants';
+import {fetchInProgressInspections} from '../Utils';
 
 const InspectionInProgressContainer = ({navigation}) => {
   const dispatch = useDispatch();
@@ -30,7 +31,8 @@ const InspectionInProgressContainer = ({navigation}) => {
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
-      dispatch(FETCH_INSPECTION_IN_PROGRESS(token, setIsLoading));
+      // dispatch(FETCH_INSPECTION_IN_PROGRESS(token, setIsLoading));
+      fetchInspectionInProgress().then();
       return () => {
         setIsLoading(false);
         setInspectionID(null);
@@ -39,7 +41,17 @@ const InspectionInProgressContainer = ({navigation}) => {
       };
     }, []),
   );
+  async function fetchInspectionInProgress() {
+    let inProgressInspection = [];
+    inProgressInspection = await fetchInProgressInspections(
+      token,
+      'IN_PROGRESS',
+      setIsLoading,
+    );
+    dispatch(FETCH_INSPECTION_IN_PROGRESS(inProgressInspection));
 
+    return null;
+  }
   const handleContinuePress = inspectionId => {
     setIsLoading(true);
     setInspectionID(inspectionId);

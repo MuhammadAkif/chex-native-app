@@ -19,6 +19,7 @@ import Cross from '../Assets/Icons/Cross';
 import {colors, dot} from '../Assets/Styles';
 import Info from '../Assets/Icons/Info';
 import {PrimaryGradientButton} from './index';
+import CircularProgress from 'react-native-circular-progress-indicator';
 
 const CaptureImageModal = ({
   modalVisible,
@@ -87,11 +88,21 @@ const CaptureImageModal = ({
       </View>
       {isLoading ? (
         <View style={[styles.body, {justifyContent: 'center'}]}>
-          <Progress.Pie
-            progress={progress}
-            size={150}
-            indeterminate={progress === 0}
+          <CircularProgress
+            // duration={2000}
+            maxValue={200}
+            value={progress}
+            valueSuffix={'%'}
+            radius={80}
+            progressValueColor={colors.white}
+            activeStrokeColor={colors.orangePeel}
+            titleStyle={{fontWeight: 'bold'}}
           />
+          {/*<Progress.Pie*/}
+          {/*  progress={progress}*/}
+          {/*  size={150}*/}
+          {/*  indeterminate={progress === 0}*/}
+          {/*/>*/}
           <Text style={[styles.textColor, styles.loadingText]}>
             Finalizing Upload
           </Text>

@@ -5,10 +5,11 @@ import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
 import {LicensePlateNumberSelectionScreen} from '../Screens';
-import {createInspectionURL, fetchNPURL} from '../Constants';
+import {createInspectionURL, DEV_URL, fetchNPURL} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {colors} from '../Assets/Styles';
 import {NumberPlateSelectedAction} from '../Store/Actions';
+import {uploadInProgressMediaToStore} from '../Utils';
 
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const dispatch = useDispatch();
@@ -17,6 +18,10 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const [search, setSearch] = useState('');
   const [numberPlate, setNumberPlate] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDiscardInspectionModalVisible, setIsDiscardInspectionModalVisible] =
+    useState(false);
+  const [inspectionID, setInspectionID] = useState(null);
+  const [errorTitle, setErrorTitle] = useState('');
   const filterNP = numberPlate.filter(NP =>
     NP.toLowerCase().includes(search.toLowerCase()),
   );
@@ -35,6 +40,8 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
         setSearch('');
         setSelectedNP('');
         setIsLoading(false);
+        setErrorTitle('');
+        setInspectionID(null);
       };
     }, []),
   );
@@ -67,17 +74,46 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       .post(createInspectionURL, body, {headers: headers})
       .then(response => {
         setIsLoading(false);
+        setInspectionID(response.data.id);
         dispatch(NumberPlateSelectedAction(response.data.id));
         navigation.navigate(ROUTES.NEW_INSPECTION, {
           inspectionId: response.data.id,
         });
       })
       .catch(err => {
+        const inProgressLicensePlateErrorMessage = `Inspection for license plate #${selectedNP} is already in progress. Would you like to visit in progress inspections page?`;
         const errorMessage =
           err?.response?.data?.errorMessage ?? err?.response?.data?.message[0];
+        setErrorTitle(inProgressLicensePlateErrorMessage);
         setIsLoading(false);
-        Alert.alert('', errorMessage);
+        setIsDiscardInspectionModalVisible(true);
+        // Alert.alert('', errorMessage);
       });
+  };
+
+  const handleYesPressOfInProgressInspection = () => {
+    setIsDiscardInspectionModalVisible(false);
+    setIsLoading(true);
+    setErrorTitle('');
+    // setInspectionID(inspectionId);
+    axios
+      .get(`${DEV_URL}/api/v1/files/details/${inspectionID}`)
+      .then(res => {
+        uploadInProgressMediaToStore(res?.data?.files, dispatch);
+        setIsLoading(false);
+        dispatch(NumberPlateSelectedAction(inspectionID));
+        navigation.navigate(ROUTES.NEW_INSPECTION, {
+          inspectionId: inspectionID,
+        });
+      })
+      .catch(error => {
+        setIsLoading(false);
+        console.log('error of selected inspection in progress => ', error);
+      });
+  };
+  const onNoPress = () => {
+    setIsDiscardInspectionModalVisible(false);
+    setErrorTitle('');
   };
 
   return (
@@ -90,6 +126,10 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       handleSubmit={handleSubmit}
       selectText={selectedText}
       isLoading={isLoading}
+      errorTitle={errorTitle}
+      isDiscardInspectionModalVisible={isDiscardInspectionModalVisible}
+      onYesPress={handleYesPressOfInProgressInspection}
+      onNoPress={onNoPress}
     />
   );
 };
