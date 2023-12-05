@@ -4,10 +4,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
 import InspectionReviewedScreen from '../Screens/InspectionReviewedScreen';
-import {
-  FETCH_INSPECTION_IN_PROGRESS,
-  FETCH_INSPECTION_REVIEWED,
-} from '../Store/Actions';
+import {FETCH_INSPECTION_REVIEWED} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
 import {DEV_URL} from '../Constants';
 import {

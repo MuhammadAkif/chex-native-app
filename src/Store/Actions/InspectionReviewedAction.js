@@ -1,4 +1,3 @@
-import {fetchInProgressInspections} from '../../Utils';
 import {Types} from '../Types';
 
 export const FETCH_INSPECTION_REVIEWED = inspectionReviewData => {

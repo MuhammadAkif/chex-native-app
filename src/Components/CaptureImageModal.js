@@ -13,13 +13,12 @@ import {
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
-import * as Progress from 'react-native-progress';
+import CircularProgress from 'react-native-circular-progress-indicator';
 
 import Cross from '../Assets/Icons/Cross';
 import {colors, dot} from '../Assets/Styles';
 import Info from '../Assets/Icons/Info';
 import {PrimaryGradientButton} from './index';
-import CircularProgress from 'react-native-circular-progress-indicator';
 
 const CaptureImageModal = ({
   modalVisible,

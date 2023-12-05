@@ -441,3 +441,41 @@ export const extractTitle = (groupType, category) => {
   }
   return title;
 };
+
+export const sortInspectionReviewedItems = list => {
+  const customSortOrder = {
+    groupType: ['carVerificiationItems', 'exteriorItems', 'tires'],
+    carVerificiationItems: ['license_plate_number', 'odometer'],
+    exteriorItems: [
+      'Exterior-Left',
+      'Exterior-Right',
+      'Exterior-Front',
+      'Exterior-Rear',
+    ],
+    tires: [
+      'Left-Front-Tire',
+      'Left-Right-Tire',
+      'Right-Front-Tire',
+      'Right-Rear-Tire',
+    ],
+  };
+
+  function customSort(a, b) {
+    const groupTypeComparison =
+      customSortOrder.groupType.indexOf(a.groupType) -
+      customSortOrder.groupType.indexOf(b.groupType);
+    if (groupTypeComparison !== 0) {
+      return groupTypeComparison;
+    }
+
+    const categoryComparison =
+      customSortOrder[a.groupType].indexOf(a.category) -
+      customSortOrder[b.groupType].indexOf(b.category);
+    return categoryComparison;
+  }
+
+  const sortedArray = list.sort(customSort);
+
+  console.log(sortedArray);
+  return sortedArray;
+};

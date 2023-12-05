@@ -21,7 +21,7 @@ const CompletedInspectionContainer = () => {
     <CompletedInspectionScreen
       navigation={navigation}
       handleThankYouPress={handleThankYouPress}
-      seconds={seconds}
+      // seconds={seconds}
     />
   );
 };
