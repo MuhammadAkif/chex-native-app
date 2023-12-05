@@ -31,7 +31,12 @@ const InspectionDetailScreen = ({
           data={detailsFiles}
           numColumns={2}
           ListHeaderComponent={() => <RenderInspectionDetailHeader />}
-          renderItem={({item}) => <RenderInspectionDetail item={item} handleDisplayMedia={handleDisplayMedia} />}
+          renderItem={({item}) => (
+            <RenderInspectionDetail
+              item={item}
+              handleDisplayMedia={handleDisplayMedia}
+            />
+          )}
           keyExtractor={item => item?.id}
         />
       </View>

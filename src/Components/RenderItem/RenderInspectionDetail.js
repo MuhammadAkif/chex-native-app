@@ -53,17 +53,15 @@ const RenderInspectionDetail = ({item, handleDisplayMedia}) => {
             playInBackground={false}
             style={styles.image}
           />
-          {item?.extension === 'video/mp4' ||
-            (item?.extension === '.mp4' && (
-              // {item?.name === 'Overview' && (
-              <View style={styles.circle}>
-                <Play
-                  height={hp('4%')}
-                  width={wp('4%')}
-                  color={'rgba(255, 255, 255, 0.7)'}
-                />
-              </View>
-            ))}
+          {isVideo && (
+            <View style={styles.circle}>
+              <Play
+                height={hp('4%')}
+                width={wp('4%')}
+                color={'rgba(255, 255, 255, 0.7)'}
+              />
+            </View>
+          )}
           <Text style={styles.text}>
             {extractTitle(item?.groupType, item?.category)}
           </Text>
