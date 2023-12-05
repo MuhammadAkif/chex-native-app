@@ -1,5 +1,9 @@
 import React from 'react';
-import {View, Text, ScrollView} from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity} from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
 import {colors, NewInspectionStyles} from '../Assets/Styles';
 import {
@@ -12,6 +16,7 @@ import {
   DisplayMediaModal,
   DiscardInspectionModal,
 } from '../Components';
+import {BackArrow} from '../Assets/Icons';
 
 const NewInspectionScreen = ({
   selectedOption,
@@ -50,6 +55,7 @@ const NewInspectionScreen = ({
   onNoPress,
   onYesPress,
   isDiscardInspectionModalVisible,
+  handleBackPress,
 }) => (
   <View style={NewInspectionStyles.container}>
     {isDiscardInspectionModalVisible && (
@@ -66,12 +72,15 @@ const NewInspectionScreen = ({
         Please complete inspection items within each category below
       </Text>
     </View>
+    <TouchableOpacity style={NewInspectionStyles.backIconContainer} onPress={handleBackPress}>
+      <BackArrow height={hp('3%')} width={wp('7%')} color={colors.white} />
+    </TouchableOpacity>
     <View style={NewInspectionStyles.bodyContainer}>
-      <View style={NewInspectionStyles.bodyHeaderContainer}>
-        <Text style={NewInspectionStyles.bodyHeaderTitleText}>
-          Please use mobile phone for optimal performance
-        </Text>
-      </View>
+      {/*<View style={NewInspectionStyles.bodyHeaderContainer}>*/}
+      {/*  <Text style={NewInspectionStyles.bodyHeaderTitleText}>*/}
+      {/*    Please use mobile phone for optimal performance*/}
+      {/*  </Text>*/}
+      {/*</View>*/}
       <View style={NewInspectionStyles.innerBody}>
         <ScrollView
           contentContainerStyle={NewInspectionStyles.scrollViewContainer}

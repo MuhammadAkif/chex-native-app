@@ -18,7 +18,13 @@ const RenderInspectionReviewed = ({
       textOne={item?.inspectionCode}
       textTwo={extractDate(item?.createdAt)}
       index={1}
-      isReviewed={item?.status === 'REVIEWED' ? 'Reviewed' : 'In Review'}
+      isReviewed={
+        item?.status === 'REVIEWED'
+          ? 'Reviewed'
+          : item?.status === 'READY_FOR_REVIEW'
+          ? 'Submitted'
+          : 'In Review'
+      }
       labelOne={'Tracking ID'}
       labelTwo={'Date Created'}
       isActive={isExpanded.includes(item.id)}

@@ -8,13 +8,13 @@ import {
   FETCH_INSPECTION_IN_PROGRESS,
   NumberPlateSelectedAction,
   REMOVE_INSPECTION_IN_PROGRESS,
-  UpdateCarVerificationItemURI,
-  UpdateExteriorItemURI,
-  UpdateTiresItemURI,
 } from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
-import {DEV_URL, S3_BUCKET_BASEURL} from '../Constants';
-import {fetchInProgressInspections} from '../Utils';
+import {DEV_URL} from '../Constants';
+import {
+  fetchInProgressInspections,
+  uploadInProgressMediaToStore,
+} from '../Utils';
 
 const InspectionInProgressContainer = ({navigation}) => {
   const dispatch = useDispatch();
@@ -33,14 +33,15 @@ const InspectionInProgressContainer = ({navigation}) => {
       setIsLoading(true);
       // dispatch(FETCH_INSPECTION_IN_PROGRESS(token, setIsLoading));
       fetchInspectionInProgress().then();
-      return () => {
-        setIsLoading(false);
-        setInspectionID(null);
-        setIsDiscardInspectionModalVisible(false);
-        setDeleteInspectionID(null);
-      };
+      return () => resetAllStates();
     }, []),
   );
+  function resetAllStates() {
+    setIsLoading(false);
+    setInspectionID(null);
+    setIsDiscardInspectionModalVisible(false);
+    setDeleteInspectionID(null);
+  }
   async function fetchInspectionInProgress() {
     let inProgressInspection = [];
     inProgressInspection = await fetchInProgressInspections(
@@ -58,11 +59,12 @@ const InspectionInProgressContainer = ({navigation}) => {
     axios
       .get(`${DEV_URL}/api/v1/files/details/${inspectionId}`)
       .then(res => {
-        uploadInProgressMediaToStore(res?.data?.files);
+        uploadInProgressMediaToStore(res?.data?.files, dispatch);
         setIsLoading(false);
         dispatch(NumberPlateSelectedAction(inspectionId));
+        resetAllStates();
         navigation.navigate(ROUTES.NEW_INSPECTION, {
-          inspectionId: inspectionId,
+          routeName: ROUTES.INSPECTION_IN_PROGRESS,
         });
       })
       .catch(error => {
@@ -70,42 +72,42 @@ const InspectionInProgressContainer = ({navigation}) => {
         console.log('error of inspection in progress => ', error);
       });
   };
-  function uploadInProgressMediaToStore(files) {
-    for (let file = 0; file < files.length; file++) {
-      const imageURL =
-        files[file].url.split(':')[0] === 'https'
-          ? files[file].url
-          : `${S3_BUCKET_BASEURL}${files[file].url}`;
-      const {groupType, id, category} = files[file];
-      if (groupType === 'carVerificiationItems') {
-        category === 'license_plate_number'
-          ? dispatch(UpdateCarVerificationItemURI('licensePlate', imageURL, id))
-          : category === 'odometer'
-          ? dispatch(UpdateCarVerificationItemURI('odometer', imageURL, id))
-          : null;
-      } else if (groupType === 'exteriorItems') {
-        category === 'exterior_left'
-          ? dispatch(UpdateExteriorItemURI('exteriorLeft', imageURL, id))
-          : category === 'exterior_right'
-          ? dispatch(UpdateExteriorItemURI('exteriorRight', imageURL, id))
-          : category === 'exterior_front'
-          ? dispatch(UpdateExteriorItemURI('exteriorFront', imageURL, id))
-          : category === 'exterior_rear'
-          ? dispatch(UpdateExteriorItemURI('exteriorRear', imageURL, id))
-          : null;
-      } else if (groupType === 'tires') {
-        category === 'left_front_tire'
-          ? dispatch(UpdateTiresItemURI('leftFrontTire', imageURL, id))
-          : category === 'left_rear_tire'
-          ? dispatch(UpdateTiresItemURI('leftRearTire', imageURL, id))
-          : category === 'right_front_tire'
-          ? dispatch(UpdateTiresItemURI('rightFrontTire', imageURL, id))
-          : category === 'right_rear_tire'
-          ? dispatch(UpdateTiresItemURI('rightRearTire', imageURL, id))
-          : null;
-      }
-    }
-  }
+  // function uploadInProgressMediaToStore(files) {
+  //   for (let file = 0; file < files.length; file++) {
+  //     const imageURL =
+  //       files[file].url.split(':')[0] === 'https'
+  //         ? files[file].url
+  //         : `${S3_BUCKET_BASEURL}${files[file].url}`;
+  //     const {groupType, id, category} = files[file];
+  //     if (groupType === 'carVerificiationItems') {
+  //       category === 'license_plate_number'
+  //         ? dispatch(UpdateCarVerificationItemURI('licensePlate', imageURL, id))
+  //         : category === 'odometer'
+  //         ? dispatch(UpdateCarVerificationItemURI('odometer', imageURL, id))
+  //         : null;
+  //     } else if (groupType === 'exteriorItems') {
+  //       category === 'exterior_left'
+  //         ? dispatch(UpdateExteriorItemURI('exteriorLeft', imageURL, id))
+  //         : category === 'exterior_right'
+  //         ? dispatch(UpdateExteriorItemURI('exteriorRight', imageURL, id))
+  //         : category === 'exterior_front'
+  //         ? dispatch(UpdateExteriorItemURI('exteriorFront', imageURL, id))
+  //         : category === 'exterior_rear'
+  //         ? dispatch(UpdateExteriorItemURI('exteriorRear', imageURL, id))
+  //         : null;
+  //     } else if (groupType === 'tires') {
+  //       category === 'left_front_tire'
+  //         ? dispatch(UpdateTiresItemURI('leftFrontTire', imageURL, id))
+  //         : category === 'left_rear_tire'
+  //         ? dispatch(UpdateTiresItemURI('leftRearTire', imageURL, id))
+  //         : category === 'right_front_tire'
+  //         ? dispatch(UpdateTiresItemURI('rightFrontTire', imageURL, id))
+  //         : category === 'right_rear_tire'
+  //         ? dispatch(UpdateTiresItemURI('rightRearTire', imageURL, id))
+  //         : null;
+  //     }
+  //   }
+  // }
   const onCrossPress = id => {
     setDeleteInspectionID(id);
     setIsDiscardInspectionModalVisible(true);

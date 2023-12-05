@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
-import InspectionReviewedScreen from '../Screens/InspectionReviewedScreen';
+import {InspectionReviewedScreen} from '../Screens';
 import {FETCH_INSPECTION_REVIEWED} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
 import {DEV_URL} from '../Constants';
@@ -34,7 +34,7 @@ const InspectionReviewedContainer = ({navigation}) => {
     let inspectionReviewData = [];
     inspectionReviewData = await fetchInProgressInspections(
       token,
-      ['IN_REVIEW', 'REVIEWED'],
+      ['IN_REVIEW', 'REVIEWED', 'READY_FOR_REVIEW'],
       setIsLoading,
     );
     dispatch(FETCH_INSPECTION_REVIEWED(inspectionReviewData));

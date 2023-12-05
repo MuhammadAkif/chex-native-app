@@ -14,7 +14,7 @@ import {
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 
-import Cross from '../Assets/Icons/Cross';
+import {Cross} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 
 const DisplayMediaModal = ({handleVisible, source, title, isVideo}) => (

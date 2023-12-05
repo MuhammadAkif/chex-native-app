@@ -19,10 +19,8 @@ const VectorDesign = () => (
   </View>
 );
 
-// Later on in your styles..
 const styles = StyleSheet.create({
   container: {
-    // height: hp('35%'),
     flex: 1,
     backgroundColor: 'hsla(209 ,12%, 11%, 100)',
   },
@@ -30,7 +28,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // zIndex: 0,
   },
   text: {
     color: '#ffffff',

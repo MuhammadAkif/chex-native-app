@@ -1,6 +1,7 @@
 import React, {forwardRef} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Camera} from 'react-native-vision-camera';
+
 import {colors} from '../Assets/Styles';
 
 const CameraScreen = forwardRef(

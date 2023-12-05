@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, StyleSheet, View} from 'react-native';
+import {Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -8,12 +8,12 @@ import {
 import {colors} from '../Assets/Styles';
 
 const DrawerItemText = ({text, onPress, Icon, activeColor, textColor}) => (
-  <View style={[styles.container, {backgroundColor: activeColor}]}>
+  <TouchableOpacity
+    style={[styles.container, {backgroundColor: activeColor}]}
+    onPress={onPress}>
     {Icon}
-    <Text style={[styles.contentItem, {color: textColor}]} onPress={onPress}>
-      {text}
-    </Text>
-  </View>
+    <Text style={[styles.contentItem, {color: textColor}]}>{text}</Text>
+  </TouchableOpacity>
 );
 
 const styles = StyleSheet.create({

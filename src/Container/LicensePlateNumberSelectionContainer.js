@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {ActivityIndicator, Alert} from 'react-native';
+import {ActivityIndicator} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
@@ -14,7 +14,7 @@ import {uploadInProgressMediaToStore} from '../Utils';
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const dispatch = useDispatch();
   const {token, data} = useSelector(state => state?.auth);
-  const [selectedNP, setSelectedNP] = useState('');
+  const [selectedNP, setSelectedNP] = useState(null);
   const [search, setSearch] = useState('');
   const [numberPlate, setNumberPlate] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,17 +35,17 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
     useCallback(() => {
       fetchNP();
 
-      return () => {
-        setNumberPlate([]);
-        setSearch('');
-        setSelectedNP('');
-        setIsLoading(false);
-        setErrorTitle('');
-        setInspectionID(null);
-      };
+      return () => resetAllStates();
     }, []),
   );
-
+  function resetAllStates() {
+    setNumberPlate([]);
+    setSearch('');
+    setSelectedNP(null);
+    setIsLoading(false);
+    setErrorTitle('');
+    setInspectionID(null);
+  }
   function fetchNP() {
     axios
       .post(fetchNPURL, {
@@ -76,8 +76,9 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
         setIsLoading(false);
         setInspectionID(response.data.id);
         dispatch(NumberPlateSelectedAction(response.data.id));
+        resetAllStates();
         navigation.navigate(ROUTES.NEW_INSPECTION, {
-          inspectionId: response.data.id,
+          routeName: ROUTES.LICENSE_PLATE_SELECTION,
         });
       })
       .catch(err => {

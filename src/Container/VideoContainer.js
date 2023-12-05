@@ -14,7 +14,6 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import ImagePicker from 'react-native-image-crop-picker';
 
 import {colors, PreviewStyles} from '../Assets/Styles';
 import {BackArrow} from '../Assets/Icons';
@@ -108,16 +107,6 @@ const VideoContainer = ({route, navigation}) => {
       }
     }
   };
-  const handleVideoPicker = () => {
-    ImagePicker.openPicker({
-      mediaType: 'video',
-    })
-      .then(video => {
-        setIsVideoFile(video);
-        setIsVideoURI(video?.sourceURL);
-      })
-      .catch(error => console.log(error.code));
-  };
   const handleRetryPress = () => {
     setIsRecording(false);
     setIsVideoURI('');
@@ -129,7 +118,6 @@ const VideoContainer = ({route, navigation}) => {
       category: subCategory,
       url: key,
       extension: 'video/mp4',
-      // extension: isVideoFile.mime,
       groupType: groupType,
       dateImage: getCurrentDate(),
     };
@@ -155,7 +143,6 @@ const VideoContainer = ({route, navigation}) => {
     getSignedUrl(
       token,
       'video/mp4',
-      // isVideoFile.mime,
       path,
       setProgress,
       handleResponse,

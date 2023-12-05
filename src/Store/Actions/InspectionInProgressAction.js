@@ -1,7 +1,7 @@
-import {Types} from '../Types';
-import {fetchInProgressInspections} from '../../Utils';
 import axios from 'axios';
 import {Alert} from 'react-native';
+
+import {Types} from '../Types';
 import {DEV_URL} from '../../Constants';
 
 export const FETCH_INSPECTION_IN_PROGRESS = inspectionInProgress => {

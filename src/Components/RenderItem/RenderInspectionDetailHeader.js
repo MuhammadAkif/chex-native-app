@@ -5,7 +5,7 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-import Tick from '../../Assets/Icons/Tick';
+import {Tick} from '../../Assets/Icons';
 import {colors} from '../../Assets/Styles';
 
 const RenderInspectionDetailHeader = () => (
@@ -28,7 +28,6 @@ const RenderInspectionDetailHeader = () => (
 
 const styles = StyleSheet.create({
   headerContainer: {
-    // flex: 1,
     height: hp('30%'),
     justifyContent: 'space-evenly',
     borderBottomWidth: 1,

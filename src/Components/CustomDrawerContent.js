@@ -17,7 +17,7 @@ import {useRoute} from '@react-navigation/native';
 
 import {SignInLogo} from './index';
 import {ROUTES} from '../Navigation/ROUTES';
-import DrawerItemText from './DrawerItemText';
+import {DrawerItemText} from './index';
 import {Home, Logout} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {SIGN_OUT_ACTION} from '../Store/Actions';
@@ -80,23 +80,23 @@ const CustomDrawerContent = props => {
         </View>
       </View>
       <DrawerItemText
-        text={'Intro'}
-        textColor={activeColorOfTextAndIcon('Intro')}
-        activeColor={activeScreen === 'Intro' ? activeColor : 'transparent'}
+        text={'Home'}
+        textColor={activeColorOfTextAndIcon('Home')}
+        activeColor={activeScreen === 'Home' ? activeColor : 'transparent'}
         Icon={
           <TouchableOpacity
             onPress={() =>
-              handleNavigationPress(ROUTES.INSPECTION_SELECTION, 'Intro')
+              handleNavigationPress(ROUTES.INSPECTION_SELECTION, 'Home')
             }>
             <Home
               height={hp('3%')}
               width={wp('5%')}
-              color={activeColorOfTextAndIcon('Intro')}
+              color={activeColorOfTextAndIcon('Home')}
             />
           </TouchableOpacity>
         }
         onPress={() =>
-          handleNavigationPress(ROUTES.INSPECTION_SELECTION, 'Intro')
+          handleNavigationPress(ROUTES.INSPECTION_SELECTION, 'Home')
         }
       />
       {/*<DrawerItemText*/}

@@ -2,8 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 
 import {ExpandedCardStyles, expandedCardStyles} from '../../Assets/Styles';
-import ImagePicker from '../ItemPicker/ImagePicker';
-import {VideoPicker} from '../index';
+import {VideoPicker, ImagePicker} from '../index';
 import {
   ExteriorFrontDetails,
   ExteriorLeftDetails,

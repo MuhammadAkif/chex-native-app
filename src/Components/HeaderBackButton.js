@@ -4,10 +4,10 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import {useNavigation} from '@react-navigation/native';
 
 import {colors} from '../Assets/Styles';
-import Bars from '../Assets/Icons/Bars';
-import {useNavigation} from '@react-navigation/native';
+import {Bars} from '../Assets/Icons';
 
 const HeaderBackButton = () => {
   const navigation = useNavigation();

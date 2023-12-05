@@ -16,7 +16,7 @@ import {
 } from '../../Components';
 import CustomInput from '../../Components/CustomInput';
 import {colors} from '../../Assets/Styles';
-import CustomPasswordInput from "../../Components/CustomPasswordInput";
+import CustomPasswordInput from '../../Components/CustomPasswordInput';
 
 const SignInScreen = ({
   values,
@@ -32,7 +32,7 @@ const SignInScreen = ({
   isKeyboardActive,
   isSubmitting,
   hidePasswordHandler,
-  hidePassword
+  hidePassword,
 }) => (
   <BackgroundImageView>
     <TouchableOpacity

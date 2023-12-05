@@ -15,9 +15,8 @@ import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 import CircularProgress from 'react-native-circular-progress-indicator';
 
-import Cross from '../Assets/Icons/Cross';
+import {Cross, Info} from '../Assets/Icons';
 import {colors, dot} from '../Assets/Styles';
-import Info from '../Assets/Icons/Info';
 import {PrimaryGradientButton} from './index';
 
 const CaptureImageModal = ({
@@ -103,7 +102,7 @@ const CaptureImageModal = ({
           {/*  indeterminate={progress === 0}*/}
           {/*/>*/}
           <Text style={[styles.textColor, styles.loadingText]}>
-            Finalizing Upload
+            {progress === 100 ? 'Finalizing Upload' : 'Uploading'}
           </Text>
         </View>
       ) : (

@@ -25,60 +25,66 @@ const InspectionStatusCollapsedCard = ({
   labelOne,
   labelTwo,
   isReviewed,
-}) => (
-  <TouchableOpacity
-    style={styles.collapsedCardContainer}
-    disabled={isReviewed === 'In Review'}
-    onPress={onPress}>
-    <View
-      style={[
-        styles.statusContainer,
-        {
-          backgroundColor:
-            isReviewed === 'In Review' ? colors.skyBlue : colors.deepGreen,
-        },
-      ]}>
-      <Text style={styles.statusText}>{isReviewed}</Text>
-    </View>
-    <View style={styles.collapsedCardContentContainer}>
-      <View style={styles.trackingIdAndDateContainer}>
-        <View style={styles.trackingIDContainer}>
-          <Text style={styles.labelText}>{labelOne}</Text>
-          <Text style={styles.labelDescription}>{textOne}</Text>
-        </View>
-        <View style={styles.trackingIDContainer}>
-          <Text style={styles.labelText}>{labelTwo}</Text>
-          <Text style={styles.labelDescription}>{textTwo}</Text>
-        </View>
-      </View>
+}) => {
+  const isInReview = isReviewed === 'In Review' || isReviewed === 'Submitted';
+  const isNotInPreview =
+    isReviewed !== 'In Review' && isReviewed !== 'Submitted';
+  const iconHeight = hp('4%');
+  const iconWidth = wp('4%');
+  return (
+    <TouchableOpacity
+      style={styles.collapsedCardContainer}
+      disabled={isInReview}
+      onPress={onPress}>
       <View
         style={[
-          styles.iconContainer,
+          styles.statusContainer,
           {
-            borderColor:
-              isReviewed !== 'In Review' &&
-              (isActive ? colors.orangePeel : colors.lightSteelBlue),
-            borderWidth: isReviewed !== 'In Review' ? 3 : 0,
+            backgroundColor: isInReview ? colors.skyBlue : colors.deepGreen,
           },
         ]}>
-        {isReviewed !== 'In Review' &&
-          (isActive ? (
-            <UpArrow
-              height={hp('4%')}
-              width={wp('4%')}
-              color={colors.orangePeel}
-            />
-          ) : (
-            <DownArrow
-              height={hp('4%')}
-              width={wp('4%')}
-              color={colors.lightSteelBlue}
-            />
-          ))}
+        <Text style={styles.statusText}>{isReviewed}</Text>
       </View>
-    </View>
-  </TouchableOpacity>
-);
+      <View style={styles.collapsedCardContentContainer}>
+        <View style={styles.trackingIdAndDateContainer}>
+          <View style={styles.trackingIDContainer}>
+            <Text style={styles.labelText}>{labelOne}</Text>
+            <Text style={styles.labelDescription}>{textOne}</Text>
+          </View>
+          <View style={styles.trackingIDContainer}>
+            <Text style={styles.labelText}>{labelTwo}</Text>
+            <Text style={styles.labelDescription}>{textTwo}</Text>
+          </View>
+        </View>
+        <View
+          style={[
+            styles.iconContainer,
+            {
+              borderColor:
+                isNotInPreview &&
+                (isActive ? colors.orangePeel : colors.lightSteelBlue),
+              borderWidth: isNotInPreview ? 3 : 0,
+            },
+          ]}>
+          {isNotInPreview &&
+            (isActive ? (
+              <UpArrow
+                height={iconHeight}
+                width={iconWidth}
+                color={colors.orangePeel}
+              />
+            ) : (
+              <DownArrow
+                height={iconHeight}
+                width={iconWidth}
+                color={colors.lightSteelBlue}
+              />
+            ))}
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   collapsedCardContainer: {

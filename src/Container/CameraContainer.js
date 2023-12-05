@@ -13,7 +13,6 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import ImagePicker from 'react-native-image-crop-picker';
 import FastImage from 'react-native-fast-image';
 
 import {colors, PreviewStyles} from '../Assets/Styles';
@@ -89,19 +88,6 @@ const CameraContainer = ({route, navigation}) => {
       // const data = await result.blob();
     }
   };
-  const handleImagePicker = () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: true,
-      includeBase64: true,
-    })
-      .then(async image => {
-        setIsImageFile(image);
-        setIsImageURL(image?.path);
-      })
-      .catch(error => console.log(error.code));
-  };
   const handleRetryPress = () => {
     setIsImageURL('');
     setIsImageFile({});
@@ -142,7 +128,6 @@ const CameraContainer = ({route, navigation}) => {
       token,
       `image/${extension}`,
       isImageFile.path,
-      // isImageFile.sourceURL,
       setProgress,
       handleResponse,
       handleError,
@@ -199,7 +184,6 @@ const CameraContainer = ({route, navigation}) => {
                 height={hp('8%')}
                 width={wp('8%')}
                 color={colors.white}
-                // onPress={handleNavigationBackPress}
               />
             </TouchableOpacity>
           </View>

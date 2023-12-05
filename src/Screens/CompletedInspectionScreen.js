@@ -6,7 +6,7 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-import CompletedInspectionBackgroundImage from '../Components/CompletedInspectionBackgroundImage';
+import {CompletedInspectionBackgroundImage} from '../Components';
 import {colors} from '../Assets/Styles';
 import {PrimaryGradientButton} from '../Components';
 import {handleHomePress} from '../Utils';
@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
   bodyFooterEmptyView: {
     flex: 0.3,
   },
-  returningHomeText: {},
 });
 
 export default CompletedInspectionScreen;

@@ -12,9 +12,7 @@ import {
 } from 'react-native-responsive-screen';
 
 import {colors, ShadowEffect} from '../../Assets/Styles';
-import UpArrow from '../../Assets/Icons/UpArrow';
-import {DownArrow} from '../../Assets/Icons';
-import Check from '../../Assets/Icons/Check';
+import {DownArrow, UpArrow, Check} from '../../Assets/Icons';
 
 const {height, width} = Dimensions.get('window');
 

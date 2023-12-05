@@ -1,11 +1,21 @@
+import {Alert} from 'react-native';
 import * as yup from 'yup';
 import {Camera} from 'react-native-vision-camera';
 import axios from 'axios';
 import RNFetchBlob from 'rn-fetch-blob';
 
-import {DEV_URL, fetchInProgressURL, uploadURL} from '../Constants';
+import {
+  DEV_URL,
+  fetchInProgressURL,
+  S3_BUCKET_BASEURL,
+  uploadURL,
+} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
-import {Alert} from 'react-native';
+import {
+  UpdateCarVerificationItemURI,
+  UpdateExteriorItemURI,
+  UpdateTiresItemURI,
+} from '../Store/Actions';
 
 export const validationSchema = yup.object().shape({
   firstName: yup.string().required('Field required'),
@@ -360,7 +370,7 @@ export const extractDate = dataAndTime => {
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
 
-  return `${day}/${month}/${year}`;
+  return `${month}/${day}/${year}`;
 };
 export const handleHomePress = navigation =>
   navigation.navigate(ROUTES.INSPECTION_SELECTION);
@@ -468,14 +478,48 @@ export const sortInspectionReviewedItems = list => {
       return groupTypeComparison;
     }
 
-    const categoryComparison =
+    return (
       customSortOrder[a.groupType].indexOf(a.category) -
-      customSortOrder[b.groupType].indexOf(b.category);
-    return categoryComparison;
+      customSortOrder[b.groupType].indexOf(b.category)
+    );
   }
 
-  const sortedArray = list.sort(customSort);
-
-  console.log(sortedArray);
-  return sortedArray;
+  return list.sort(customSort);
 };
+
+export function uploadInProgressMediaToStore(files, dispatch) {
+  for (let file = 0; file < files.length; file++) {
+    const imageURL =
+      files[file].url.split(':')[0] === 'https'
+        ? files[file].url
+        : `${S3_BUCKET_BASEURL}${files[file].url}`;
+    const {groupType, id, category} = files[file];
+    if (groupType === 'carVerificiationItems') {
+      category === 'license_plate_number'
+        ? dispatch(UpdateCarVerificationItemURI('licensePlate', imageURL, id))
+        : category === 'odometer'
+        ? dispatch(UpdateCarVerificationItemURI('odometer', imageURL, id))
+        : null;
+    } else if (groupType === 'exteriorItems') {
+      category === 'exterior_left'
+        ? dispatch(UpdateExteriorItemURI('exteriorLeft', imageURL, id))
+        : category === 'exterior_right'
+        ? dispatch(UpdateExteriorItemURI('exteriorRight', imageURL, id))
+        : category === 'exterior_front'
+        ? dispatch(UpdateExteriorItemURI('exteriorFront', imageURL, id))
+        : category === 'exterior_rear'
+        ? dispatch(UpdateExteriorItemURI('exteriorRear', imageURL, id))
+        : null;
+    } else if (groupType === 'tires') {
+      category === 'left_front_tire'
+        ? dispatch(UpdateTiresItemURI('leftFrontTire', imageURL, id))
+        : category === 'left_rear_tire'
+        ? dispatch(UpdateTiresItemURI('leftRearTire', imageURL, id))
+        : category === 'right_front_tire'
+        ? dispatch(UpdateTiresItemURI('rightFrontTire', imageURL, id))
+        : category === 'right_rear_tire'
+        ? dispatch(UpdateTiresItemURI('rightRearTire', imageURL, id))
+        : null;
+    }
+  }
+}

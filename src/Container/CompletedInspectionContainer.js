@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 
 import CompletedInspectionScreen from '../Screens/CompletedInspectionScreen';
 import {ROUTES} from '../Navigation/ROUTES';

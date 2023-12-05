@@ -5,7 +5,7 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-import {buttonTextStyle} from '../Assets/Styles';
+import {buttonTextStyle, colors} from '../Assets/Styles';
 
 const SecondaryButton = ({text, buttonStyle, textStyle, onPress}) => (
   <TouchableOpacity
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#ffffff',
+    borderColor: colors.white,
   },
 });
 

@@ -5,7 +5,7 @@ import InspectionSelectionScreen from './InspectionSelectionScreen';
 import IntroScreen from './IntroScreen';
 import NewInspectionScreen from './NewInspectionScreen';
 import CompletedInspectionScreen from './CompletedInspectionScreen';
-import InspectionsReviewedScreen from './InspectionReviewedScreen';
+import InspectionReviewedScreen from './InspectionReviewedScreen';
 import InspectionDetailScreen from './InspectionDetailScreen';
 import CameraScreen from './CameraScreen';
 import LicensePlateNumberSelectionScreen from './LicensePlateNumberSelectionScreen';
@@ -19,7 +19,7 @@ export {
   IntroScreen,
   NewInspectionScreen,
   CompletedInspectionScreen,
-  InspectionsReviewedScreen,
+  InspectionReviewedScreen,
   InspectionDetailScreen,
   CameraScreen,
   LicensePlateNumberSelectionScreen,

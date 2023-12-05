@@ -6,18 +6,13 @@ import axios from 'axios';
 import {NewInspectionScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
-  NumberPlateSelectedAction,
-  REMOVE_INSPECTION_IN_PROGRESS,
   RemoveCarVerificationItemURI,
   RemoveExteriorItemURI,
   RemoveTiresItemURI,
-  UpdateCarVerificationItemURI,
-  UpdateExteriorItemURI,
-  UpdateTiresItemURI,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {colors} from '../Assets/Styles';
-import {DEV_URL, S3_BUCKET_BASEURL} from '../Constants';
+import {DEV_URL} from '../Constants';
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -36,6 +31,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   const [deleteItem, setDeleteItem] = useState({category: null, key: null});
   const [isDiscardInspectionModalVisible, setIsDiscardInspectionModalVisible] =
     useState(false);
+  const [previousRoute, setPreviousRoute] = useState('');
   const modalDetailsInitialState = {
     key: 'licensePlate',
     title: 'License Plate',
@@ -73,16 +69,29 @@ const NewInspectionContainer = ({route, navigation}) => {
   );
 
   useEffect(() => {
-    return () => {
-      setModalDetails(modalDetailsInitialState);
-      setModalVisible(false);
-      setIsLoading(false);
-      dispatch({type: Types.CLEAR_NEW_INSPECTION});
-      setIsDiscardInspectionModalVisible(false);
-      setDeleteItem({category: null, key: null});
-    };
-  }, []);
+    if (route) {
+      const {routeName} = route.params;
+      setPreviousRoute(routeName);
+    }
+  }, [route]);
+  function resetAllStates() {
+    setSelectedOption({
+      isCarVerification: false,
+      isExterior: false,
+      isTires: false,
+    });
+    setModalDetails(modalDetailsInitialState);
+    setModalVisible(false);
+    setIsLoading(false);
+    dispatch({type: Types.CLEAR_NEW_INSPECTION});
+    setIsDiscardInspectionModalVisible(false);
+    setDeleteItem({category: null, key: null});
+  }
 
+  const handleBackPress = () => {
+    resetAllStates();
+    navigation.navigate(previousRoute);
+  };
   //Collapsed Cards Functions starts here
   const handleCarVerificationSelection = () => {
     setSelectedOption(prevState => ({
@@ -295,6 +304,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       onNoPress={handleNoPress}
       isDiscardInspectionModalVisible={isDiscardInspectionModalVisible}
       handleOnCrossPress={handleOnCrossPress}
+      handleBackPress={handleBackPress}
     />
   );
 };

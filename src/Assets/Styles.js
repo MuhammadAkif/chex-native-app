@@ -139,6 +139,10 @@ export const NewInspectionStyles = StyleSheet.create({
     textAlign: 'center',
     color: '#77A1DF',
   },
+  backIconContainer: {
+    marginLeft: wp('2.5%'),
+    width: wp('10%'),
+  },
   bodyContainer: {
     flex: 5,
     marginTop: '3%',

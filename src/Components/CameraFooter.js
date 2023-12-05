@@ -13,7 +13,6 @@ const CameraFooter = ({
   isRecording,
   handleSwitchCamera,
   handleCaptureNowPress,
-  openPhotoLibrary,
 }) => (
   <View style={styles.cameraOptionContainer}>
     {!isRecording && (
@@ -30,16 +29,7 @@ const CameraFooter = ({
       color={isCamera ? colors.white : colors.red}
       onPress={handleCaptureNowPress}
     />
-    {!isRecording && (
-      <View style={styles.emptyView} />
-      // <TouchableOpacity onPress={openPhotoLibrary} activeOpacity={1}>
-      //   <PhotoLibrary
-      //     height={hp('5%')}
-      //     width={wp('10%')}
-      //     color={colors.white}
-      //   />
-      // </TouchableOpacity>
-    )}
+    {!isRecording && <View style={styles.emptyView} />}
   </View>
 );
 const styles = StyleSheet.create({
