@@ -7,7 +7,6 @@ import {
 
 import {colors, NewInspectionStyles} from '../Assets/Styles';
 import {
-  LoadingIndicator,
   PrimaryStartInspectionButton,
   RenderInspectionReviewed,
 } from '../Components';
@@ -20,9 +19,10 @@ const InspectionReviewedScreen = ({
   data,
   inspectionDetailsPress,
   isLoading,
+  fetchInspectionInProgress,
+  selectedInspectionID,
 }) => (
   <View style={NewInspectionStyles.container}>
-    {isLoading && <LoadingIndicator />}
     <View style={NewInspectionStyles.bodyContainer}>
       <View style={styles.bodyHeaderContainer}>
         <Text style={styles.bodyHeaderTitleText}>Inspection Reviewed</Text>
@@ -37,8 +37,17 @@ const InspectionReviewedScreen = ({
               handleIsExpanded={handleIsExpanded}
               inspectionDetailsPress={inspectionDetailsPress}
               isLoading={isLoading}
+              selectedInspectionID={selectedInspectionID}
             />
           )}
+          onRefresh={() => {
+            if (selectedInspectionID === null) {
+              fetchInspectionInProgress();
+            } else {
+              return true;
+            }
+          }}
+          refreshing={isLoading && selectedInspectionID === null}
           keyExtractor={item => item?.id}
         />
       </View>

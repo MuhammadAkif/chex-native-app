@@ -26,9 +26,10 @@ const InspectionStatusCollapsedCard = ({
   labelTwo,
   isReviewed,
 }) => {
-  const isInReview = isReviewed === 'In Review' || isReviewed === 'Submitted';
+  const isInReview =
+    isReviewed === 'In Review' || isReviewed === 'Ready for review';
   const isNotInPreview =
-    isReviewed !== 'In Review' && isReviewed !== 'Submitted';
+    isReviewed !== 'In Review' && isReviewed !== 'Ready for review';
   const iconHeight = hp('4%');
   const iconWidth = wp('4%');
   return (

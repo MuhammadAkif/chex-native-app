@@ -7,12 +7,12 @@ import {
 
 import {
   DiscardInspectionModal,
-  LoadingIndicator,
   PrimaryStartInspectionButton,
   RenderInspectionInProgress,
 } from '../Components';
 import {colors, NewInspectionStyles, ShadowEffect} from '../Assets/Styles';
 import {handleHomePress, handleStartInspectionPress} from '../Utils';
+import Toast from '../Components/Toast';
 
 const InspectionInProgressScreen = ({
   data,
@@ -24,11 +24,11 @@ const InspectionInProgressScreen = ({
   onYesPress,
   onNoPress,
   isDiscardInspectionModalVisible,
+  fetchInspectionInProgress,
+  modalMessageDetails,
+  handleOkPress,
 }) => (
   <View style={NewInspectionStyles.container}>
-    {isLoading && inspectionID === null && (
-      <LoadingIndicator isLoading={isLoading} />
-    )}
     {isDiscardInspectionModalVisible && (
       <DiscardInspectionModal
         onYesPress={onYesPress}
@@ -36,6 +36,12 @@ const InspectionInProgressScreen = ({
         description={'Are You Sure Want To Discard Your Inspection?'}
       />
     )}
+    <Toast
+      onCrossPress={handleOkPress}
+      isVisible={modalMessageDetails.isVisible}
+      message={modalMessageDetails.message}
+    />
+
     <View style={NewInspectionStyles.bodyContainer}>
       <View style={styles.bodyHeaderContainer}>
         <Text style={styles.bodyHeaderTitleText}>Inspections in Progress</Text>
@@ -58,6 +64,8 @@ const InspectionInProgressScreen = ({
         {data.length ? (
           <FlatList
             data={data}
+            onRefresh={fetchInspectionInProgress}
+            refreshing={isLoading && inspectionID === null}
             renderItem={({item}) => (
               <RenderInspectionInProgress
                 item={item}
@@ -71,7 +79,13 @@ const InspectionInProgressScreen = ({
           />
         ) : (
           <View style={styles.emptyDataContainer}>
-            <Text style={styles.emptyDataText}>No Inspection in progress</Text>
+            {isLoading ? (
+              <Text style={styles.emptyDataText}>Loading...</Text>
+            ) : (
+              <Text style={styles.emptyDataText}>
+                No Inspection in progress
+              </Text>
+            )}
           </View>
         )}
       </View>

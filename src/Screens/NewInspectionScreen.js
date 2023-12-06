@@ -15,6 +15,7 @@ import {
   PrimaryGradientButton,
   DisplayMediaModal,
   DiscardInspectionModal,
+  Toast,
 } from '../Components';
 import {BackArrow} from '../Assets/Icons';
 
@@ -56,6 +57,8 @@ const NewInspectionScreen = ({
   onYesPress,
   isDiscardInspectionModalVisible,
   handleBackPress,
+  modalMessageDetails,
+  handleOkPress,
 }) => (
   <View style={NewInspectionStyles.container}>
     {isDiscardInspectionModalVisible && (
@@ -67,12 +70,19 @@ const NewInspectionScreen = ({
         noButtonStyle={{borderColor: colors.orange}}
       />
     )}
+    <Toast
+      onCrossPress={handleOkPress}
+      isVisible={modalMessageDetails.isVisible}
+      message={modalMessageDetails.message}
+    />
     <View style={NewInspectionStyles.headerContainer}>
       <Text style={NewInspectionStyles.headerTitleText}>
         Please complete inspection items within each category below
       </Text>
     </View>
-    <TouchableOpacity style={NewInspectionStyles.backIconContainer} onPress={handleBackPress}>
+    <TouchableOpacity
+      style={NewInspectionStyles.backIconContainer}
+      onPress={handleBackPress}>
       <BackArrow height={hp('3%')} width={wp('7%')} color={colors.white} />
     </TouchableOpacity>
     <View style={NewInspectionStyles.bodyContainer}>

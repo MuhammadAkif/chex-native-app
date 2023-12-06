@@ -88,7 +88,7 @@ const CaptureImageModal = ({
         <View style={[styles.body, {justifyContent: 'center'}]}>
           <CircularProgress
             // duration={2000}
-            maxValue={200}
+            maxValue={100}
             value={progress}
             valueSuffix={'%'}
             radius={80}
@@ -96,11 +96,6 @@ const CaptureImageModal = ({
             activeStrokeColor={colors.orangePeel}
             titleStyle={{fontWeight: 'bold'}}
           />
-          {/*<Progress.Pie*/}
-          {/*  progress={progress}*/}
-          {/*  size={150}*/}
-          {/*  indeterminate={progress === 0}*/}
-          {/*/>*/}
           <Text style={[styles.textColor, styles.loadingText]}>
             {progress === 100 ? 'Finalizing Upload' : 'Uploading'}
           </Text>

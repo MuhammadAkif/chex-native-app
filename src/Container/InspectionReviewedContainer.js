@@ -18,18 +18,21 @@ const InspectionReviewedContainer = ({navigation}) => {
   const inspectionReviewed = useSelector(state => state?.inspectionReviewed);
   const [isExpanded, setIsExpanded] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedInspectionID, setSelectedInspectionID] = useState(null);
 
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
       fetchInspectionInProgress().then();
       // dispatch(FETCH_INSPECTION_REVIEWED(token, setIsLoading));
-      return () => {
-        setIsLoading(false);
-        setIsExpanded([]);
-      };
+      return () => resetAllStates();
     }, []),
   );
+  function resetAllStates() {
+    setIsLoading(false);
+    setIsExpanded([]);
+    setSelectedInspectionID(null);
+  }
   async function fetchInspectionInProgress() {
     let inspectionReviewData = [];
     inspectionReviewData = await fetchInProgressInspections(
@@ -52,11 +55,13 @@ const InspectionReviewedContainer = ({navigation}) => {
   };
   const inspectionDetailsPress = inspectionID => {
     setIsLoading(true);
+    setSelectedInspectionID(inspectionID);
     axios
       .get(`${DEV_URL}/api/v1/files/details/${inspectionID}`)
       .then(res => {
         setIsLoading(false);
         let files = sortInspectionReviewedItems(res?.data?.files);
+        resetAllStates();
         navigation.navigate(ROUTES.INSPECTION_DETAIL, {
           files: files,
         });
@@ -74,6 +79,8 @@ const InspectionReviewedContainer = ({navigation}) => {
       data={inspectionReviewed}
       inspectionDetailsPress={inspectionDetailsPress}
       isLoading={isLoading}
+      fetchInspectionInProgress={fetchInspectionInProgress}
+      selectedInspectionID={selectedInspectionID}
     />
   );
 };

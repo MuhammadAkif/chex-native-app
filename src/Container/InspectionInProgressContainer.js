@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
@@ -22,12 +22,19 @@ const InspectionInProgressContainer = ({navigation}) => {
   const inspectionInProgress = useSelector(
     state => state?.inspectionInProgress,
   );
+  const modalMessageDetailsInitialState = {
+    isVisible: false,
+    title: '',
+    message: '',
+  };
   const [isLoading, setIsLoading] = useState(false);
   const [inspectionID, setInspectionID] = useState(null);
   const [deleteInspectionID, setDeleteInspectionID] = useState(null);
   const [isDiscardInspectionModalVisible, setIsDiscardInspectionModalVisible] =
     useState(false);
-
+  const [modalMessageDetails, setModalMessageDetails] = useState(
+    modalMessageDetailsInitialState,
+  );
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
@@ -36,6 +43,12 @@ const InspectionInProgressContainer = ({navigation}) => {
       return () => resetAllStates();
     }, []),
   );
+  useEffect(() => {
+    setTimeout(
+      () => setModalMessageDetails(modalMessageDetailsInitialState),
+      5000,
+    );
+  }, [modalMessageDetails]);
   function resetAllStates() {
     setIsLoading(false);
     setInspectionID(null);
@@ -72,42 +85,6 @@ const InspectionInProgressContainer = ({navigation}) => {
         console.log('error of inspection in progress => ', error);
       });
   };
-  // function uploadInProgressMediaToStore(files) {
-  //   for (let file = 0; file < files.length; file++) {
-  //     const imageURL =
-  //       files[file].url.split(':')[0] === 'https'
-  //         ? files[file].url
-  //         : `${S3_BUCKET_BASEURL}${files[file].url}`;
-  //     const {groupType, id, category} = files[file];
-  //     if (groupType === 'carVerificiationItems') {
-  //       category === 'license_plate_number'
-  //         ? dispatch(UpdateCarVerificationItemURI('licensePlate', imageURL, id))
-  //         : category === 'odometer'
-  //         ? dispatch(UpdateCarVerificationItemURI('odometer', imageURL, id))
-  //         : null;
-  //     } else if (groupType === 'exteriorItems') {
-  //       category === 'exterior_left'
-  //         ? dispatch(UpdateExteriorItemURI('exteriorLeft', imageURL, id))
-  //         : category === 'exterior_right'
-  //         ? dispatch(UpdateExteriorItemURI('exteriorRight', imageURL, id))
-  //         : category === 'exterior_front'
-  //         ? dispatch(UpdateExteriorItemURI('exteriorFront', imageURL, id))
-  //         : category === 'exterior_rear'
-  //         ? dispatch(UpdateExteriorItemURI('exteriorRear', imageURL, id))
-  //         : null;
-  //     } else if (groupType === 'tires') {
-  //       category === 'left_front_tire'
-  //         ? dispatch(UpdateTiresItemURI('leftFrontTire', imageURL, id))
-  //         : category === 'left_rear_tire'
-  //         ? dispatch(UpdateTiresItemURI('leftRearTire', imageURL, id))
-  //         : category === 'right_front_tire'
-  //         ? dispatch(UpdateTiresItemURI('rightFrontTire', imageURL, id))
-  //         : category === 'right_rear_tire'
-  //         ? dispatch(UpdateTiresItemURI('rightRearTire', imageURL, id))
-  //         : null;
-  //     }
-  //   }
-  // }
   const onCrossPress = id => {
     setDeleteInspectionID(id);
     setIsDiscardInspectionModalVisible(true);
@@ -121,10 +98,13 @@ const InspectionInProgressContainer = ({navigation}) => {
         deleteInspectionID,
         inspectionInProgress,
         setIsLoading,
+        setModalMessageDetails,
       ),
     );
   };
   const handleNoPress = () => setIsDiscardInspectionModalVisible(false);
+  const handleOkPress = () =>
+    setModalMessageDetails(modalMessageDetailsInitialState);
 
   return (
     <InspectionInProgressScreen
@@ -137,6 +117,9 @@ const InspectionInProgressContainer = ({navigation}) => {
       onYesPress={handleYesPress}
       onNoPress={handleNoPress}
       isDiscardInspectionModalVisible={isDiscardInspectionModalVisible}
+      fetchInspectionInProgress={fetchInspectionInProgress}
+      modalMessageDetails={modalMessageDetails}
+      handleOkPress={handleOkPress}
     />
   );
 };

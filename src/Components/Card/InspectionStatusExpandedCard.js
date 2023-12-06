@@ -1,5 +1,11 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -8,15 +14,29 @@ import {
 import {colors, ShadowEffect} from '../../Assets/Styles';
 import {Car} from '../../Assets/Icons';
 
-const InspectionStatusExpandedCard = ({inspectionID, inspectionDetailsPress, isLoading}) => (
+const InspectionStatusExpandedCard = ({
+  inspectionID,
+  inspectionDetailsPress,
+  isLoading,
+  isActivity,
+}) => (
   <View style={styles.container}>
     <TouchableOpacity style={styles.detailsContainer}>
       <Car height={hp('5%')} width={wp('5%')} color={colors.royalBlue} />
       <Text style={styles.detailsText}>No Damage Detected</Text>
     </TouchableOpacity>
-    <TouchableOpacity style={styles.detailsContainer} disabled={isLoading} onPress={() => inspectionDetailsPress(inspectionID)}>
+    <TouchableOpacity
+      style={styles.detailsContainer}
+      disabled={isLoading}
+      onPress={() => inspectionDetailsPress(inspectionID)}>
       <Car height={hp('5%')} width={wp('5%')} color={colors.royalBlue} />
-      <Text style={styles.detailsText}>Inspection Details</Text>
+      {isLoading && isActivity ? (
+        <View style={styles.activityContainer}>
+          <ActivityIndicator size={'small'} />
+        </View>
+      ) : (
+        <Text style={styles.detailsText}>Inspection Details</Text>
+      )}
     </TouchableOpacity>
   </View>
 );
@@ -42,6 +62,10 @@ const styles = StyleSheet.create({
     width: wp('65%'),
     paddingVertical: 5,
     color: colors.royalBlue,
+  },
+  activityContainer: {
+    width: wp('65%'),
+    paddingVertical: 5,
   },
 });
 

@@ -37,6 +37,8 @@ import LoadingIndicator from './LoadingIndicator';
 import DisplayMediaModal from './DisplayMediaModal';
 import CustomPasswordInput from './CustomPasswordInput';
 import DiscardInspectionModal from './PopUpModals/DiscardInspectionModal';
+import InfoModal from './PopUpModals/InfoModal';
+import Toast from './Toast';
 
 export {
   BackgroundImageView,
@@ -78,4 +80,6 @@ export {
   DisplayMediaModal,
   CustomPasswordInput,
   DiscardInspectionModal,
+  InfoModal,
+  Toast,
 };

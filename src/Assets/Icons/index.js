@@ -21,6 +21,7 @@ import InspectionReviewed from './InspectionReviewed';
 import InspectionDetails from './InspectionDetails';
 import HidePassword from './HidePassword';
 import ShowPassword from './ShowPassword';
+import XMark from './XMark';
 
 export {
   Check,
@@ -46,4 +47,5 @@ export {
   InspectionDetails,
   HidePassword,
   ShowPassword,
+  XMark,
 };

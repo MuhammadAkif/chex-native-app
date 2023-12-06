@@ -19,6 +19,16 @@ const NewInspectionContainer = ({route, navigation}) => {
   let {carVerificationItems, exteriorItems, tires, selectedInspectionID} =
     useSelector(state => state.newInspection);
   const {token} = useSelector(state => state?.auth);
+  const modalMessageDetailsInitialState = {
+    isVisible: false,
+    title: '',
+    message: '',
+  };
+  const deleteSuccess = {
+    isVisible: true,
+    title: '',
+    message: 'Deleted Successfully.',
+  };
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
   const [mediaModalDetails, setMediaModalDetails] = useState({});
@@ -45,6 +55,9 @@ const NewInspectionContainer = ({route, navigation}) => {
     isVideo: false,
   };
   const [modalDetails, setModalDetails] = useState(modalDetailsInitialState);
+  const [modalMessageDetails, setModalMessageDetails] = useState(
+    modalMessageDetailsInitialState,
+  );
   let isBothCarVerificationImagesAvailable =
     carVerificationItems.licensePlate !== '' &&
     carVerificationItems.odometer !== '';
@@ -69,11 +82,17 @@ const NewInspectionContainer = ({route, navigation}) => {
   );
 
   useEffect(() => {
-    if (route) {
+    if (route.params) {
       const {routeName} = route.params;
       setPreviousRoute(routeName);
     }
   }, [route]);
+  useEffect(() => {
+    setTimeout(
+      () => setModalMessageDetails(modalMessageDetailsInitialState),
+      5000,
+    );
+  }, [modalMessageDetails]);
   function resetAllStates() {
     setSelectedOption({
       isCarVerification: false,
@@ -130,6 +149,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         },
       })
       .then(res => {
+        setModalMessageDetails(deleteSuccess);
         dispatch(RemoveCarVerificationItemURI(key));
       });
   };
@@ -150,6 +170,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         },
       })
       .then(res => {
+        setModalMessageDetails(deleteSuccess);
         dispatch(RemoveExteriorItemURI(key));
       });
   };
@@ -171,6 +192,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         },
       })
       .then(res => {
+        setModalMessageDetails(deleteSuccess);
         dispatch(RemoveTiresItemURI(key));
       });
   };
@@ -206,8 +228,6 @@ const NewInspectionContainer = ({route, navigation}) => {
     }
   };
   const handleSubmitPress = () => {
-    console.log('token => ', token);
-    console.log('selectedInspectionID => ', selectedInspectionID);
     setIsLoading(true);
     axios
       .patch(`${DEV_URL}/api/v1/inspection/${selectedInspectionID}`, null, {
@@ -227,7 +247,6 @@ const NewInspectionContainer = ({route, navigation}) => {
             {},
           )
           .then(res => {
-            console.log('location res => ', res);
             setIsLoading(false);
             dispatch({type: Types.CLEAR_NEW_INSPECTION});
             navigation.navigate(ROUTES.COMPLETED_INSPECTION);
@@ -263,7 +282,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsDiscardInspectionModalVisible(false);
     setDeleteItem({category: null, key: null});
   };
-
+  const handleOkPress = () =>
+    setModalMessageDetails(modalMessageDetailsInitialState);
   return (
     <NewInspectionScreen
       selectedOption={selectedOption}
@@ -305,6 +325,8 @@ const NewInspectionContainer = ({route, navigation}) => {
       isDiscardInspectionModalVisible={isDiscardInspectionModalVisible}
       handleOnCrossPress={handleOnCrossPress}
       handleBackPress={handleBackPress}
+      modalMessageDetails={modalMessageDetails}
+      handleOkPress={handleOkPress}
     />
   );
 };

@@ -12,6 +12,7 @@ const RenderInspectionReviewed = ({
   isExpanded,
   inspectionDetailsPress,
   isLoading,
+  selectedInspectionID,
 }) => (
   <>
     <InspectionStatusCollapsedCard
@@ -20,10 +21,15 @@ const RenderInspectionReviewed = ({
       index={1}
       isReviewed={
         item?.status === 'REVIEWED'
-          ? 'Reviewed'
-          : item?.status === 'READY_FOR_REVIEW'
           ? 'Submitted'
+          : item?.status === 'READY_FOR_REVIEW'
+          ? 'Ready for review'
           : 'In Review'
+        // item?.status === 'REVIEWED'
+        // ? 'Reviewed'
+        // : item?.status === 'READY_FOR_REVIEW'
+        // ? 'Submitted'
+        // : 'In Review'
       }
       labelOne={'Tracking ID'}
       labelTwo={'Date Created'}
@@ -35,6 +41,7 @@ const RenderInspectionReviewed = ({
         inspectionID={item?.id}
         inspectionDetailsPress={inspectionDetailsPress}
         isLoading={isLoading}
+        isActivity={selectedInspectionID === item?.id}
       />
     )}
   </>

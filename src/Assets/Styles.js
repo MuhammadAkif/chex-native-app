@@ -242,3 +242,73 @@ export const ItemPickerStyles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export const modalLoadingIndicatorStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 27, 81, 0.9)',
+    paddingTop: hp('7%'),
+  },
+});
+
+export const modalStyle = StyleSheet.create({
+  modalOuterContainer: {
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    width: wp('90%'),
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.white,
+    padding: 10,
+    borderRadius: 10,
+  },
+  header: {
+    fontSize: hp('2%'),
+    color: colors.black,
+    fontWeight: 'bold',
+    paddingVertical: 5,
+    paddingHorizontal: 30,
+  },
+  body: {
+    fontSize: hp('1.7%'),
+    textAlign: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    fontWeight: 'bold',
+  },
+  footer: {
+    width: wp('90%'),
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+  },
+  button: {
+    height: hp('4%'),
+    width: wp('30%'),
+  },
+  noButton: {
+    borderWidth: 1,
+    borderRadius: 20,
+    borderColor: colors.brightBlue,
+  },
+  noTextStyle: {
+    color: colors.brightBlue,
+    fontWeight: 500,
+  },
+  yesText: {
+    fontWeight: 500,
+  },
+});

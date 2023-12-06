@@ -1,5 +1,4 @@
 import axios from 'axios';
-import {Alert} from 'react-native';
 
 import {Types} from '../Types';
 import {DEV_URL} from '../../Constants';
@@ -24,6 +23,7 @@ export const REMOVE_INSPECTION_IN_PROGRESS = (
   inspectionId,
   inspections,
   setIsLoading,
+  setModalMessageDetails,
 ) => {
   return async dispatch => {
     let inspectionsInProgress = [];
@@ -43,12 +43,20 @@ export const REMOVE_INSPECTION_IN_PROGRESS = (
           type: Types.REMOVE_INSPECTION_IN_PROGRESS,
           payload: {inspectionsInProgress: inspectionsInProgress},
         });
-        Alert.alert('Deleted', res?.data);
+        setModalMessageDetails({
+          isVisible: true,
+          title: 'Deleted',
+          message: res?.data,
+        });
       })
       .catch(error => {
         setIsLoading(false);
         let errorMessage = error?.response?.data?.message[0];
-        Alert.alert('', errorMessage);
+        setModalMessageDetails({
+          isVisible: true,
+          title: '',
+          message: errorMessage,
+        });
       });
   };
 };

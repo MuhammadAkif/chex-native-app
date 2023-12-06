@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, Alert} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
@@ -85,10 +85,10 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
         const inProgressLicensePlateErrorMessage = `Inspection for license plate #${selectedNP} is already in progress. Would you like to visit in progress inspections page?`;
         const errorMessage =
           err?.response?.data?.errorMessage ?? err?.response?.data?.message[0];
-        setErrorTitle(inProgressLicensePlateErrorMessage);
+        // setErrorTitle(inProgressLicensePlateErrorMessage);
         setIsLoading(false);
-        setIsDiscardInspectionModalVisible(true);
-        // Alert.alert('', errorMessage);
+        // setIsDiscardInspectionModalVisible(true);
+        Alert.alert('', errorMessage);
       });
   };
 

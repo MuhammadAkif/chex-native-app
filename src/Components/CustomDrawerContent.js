@@ -18,7 +18,7 @@ import {useRoute} from '@react-navigation/native';
 import {SignInLogo} from './index';
 import {ROUTES} from '../Navigation/ROUTES';
 import {DrawerItemText} from './index';
-import {Home, Logout} from '../Assets/Icons';
+import {Home, Logout, Info} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {SIGN_OUT_ACTION} from '../Store/Actions';
 import {Types} from '../Store/Types';
@@ -99,28 +99,19 @@ const CustomDrawerContent = props => {
           handleNavigationPress(ROUTES.INSPECTION_SELECTION, 'Home')
         }
       />
-      {/*<DrawerItemText*/}
-      {/*  text={'New Inspection'}*/}
-      {/*  textColor={activeColorOfTextAndIcon('LICENSE PLATE SELECTION')}*/}
-      {/*  activeColor={*/}
-      {/*    activeScreen === 'LICENSE PLATE SELECTION'*/}
-      {/*      ? activeColor*/}
-      {/*      : 'transparent'*/}
-      {/*  }*/}
-      {/*  Icon={*/}
-      {/*    <Plus*/}
-      {/*      height={hp('2.5%')}*/}
-      {/*      width={wp('5%')}*/}
-      {/*      color={activeColorOfTextAndIcon('LICENSE PLATE SELECTION')}*/}
-      {/*    />*/}
-      {/*  }*/}
-      {/*  onPress={() =>*/}
-      {/*    handleNavigationPress(*/}
-      {/*      ROUTES.LICENSE_PLATE_SELECTION,*/}
-      {/*      'LICENSE PLATE SELECTION',*/}
-      {/*    )*/}
-      {/*  }*/}
-      {/*/>*/}
+      <DrawerItemText
+        text={'Things you will require'}
+        textColor={activeColorOfTextAndIcon('Intro')}
+        activeColor={activeScreen === 'Intro' ? activeColor : 'transparent'}
+        Icon={
+          <Info
+            height={hp('2.5%')}
+            width={wp('5%')}
+            color={activeColorOfTextAndIcon('Intro')}
+          />
+        }
+        onPress={() => handleNavigationPress(ROUTES.INTRO, 'Intro ')}
+      />
       {/*<DrawerItemText*/}
       {/*  text={'Inspection Reviewed'}*/}
       {/*  textColor={activeColorOfTextAndIcon('Inspection Reviewed')}*/}
