@@ -21,15 +21,10 @@ const RenderInspectionReviewed = ({
       index={1}
       isReviewed={
         item?.status === 'REVIEWED'
-          ? 'Submitted'
+          ? 'Reviewed'
           : item?.status === 'READY_FOR_REVIEW'
-          ? 'Ready for review'
+          ? 'Ready For Review'
           : 'In Review'
-        // item?.status === 'REVIEWED'
-        // ? 'Reviewed'
-        // : item?.status === 'READY_FOR_REVIEW'
-        // ? 'Submitted'
-        // : 'In Review'
       }
       labelOne={'Tracking ID'}
       labelTwo={'Date Created'}

@@ -27,9 +27,9 @@ const InspectionStatusCollapsedCard = ({
   isReviewed,
 }) => {
   const isInReview =
-    isReviewed === 'In Review' || isReviewed === 'Ready for review';
+    isReviewed === 'In Review' || isReviewed === 'Ready For Review';
   const isNotInPreview =
-    isReviewed !== 'In Review' && isReviewed !== 'Ready for review';
+    isReviewed !== 'In Review' && isReviewed !== 'Ready For Review';
   const iconHeight = hp('4%');
   const iconWidth = wp('4%');
   return (
@@ -41,7 +41,12 @@ const InspectionStatusCollapsedCard = ({
         style={[
           styles.statusContainer,
           {
-            backgroundColor: isInReview ? colors.skyBlue : colors.deepGreen,
+            backgroundColor:
+              isInReview && isReviewed === 'Ready For Review'
+                ? colors.orangePeel
+                : isInReview
+                ? colors.skyBlue
+                : colors.deepGreen,
           },
         ]}>
         <Text style={styles.statusText}>{isReviewed}</Text>

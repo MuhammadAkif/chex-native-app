@@ -42,7 +42,7 @@ const InspectionSelectionScreen = ({
           onPress={handleInspectionInProgressPress}
         />
         <SecondaryButton
-          text={'Inspection Reviewed'}
+          text={'Inspection Submitted'}
           onPress={handleInspectionReviewedPress}
         />
       </View>
