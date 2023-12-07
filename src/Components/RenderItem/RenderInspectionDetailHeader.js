@@ -5,22 +5,28 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-import {Tick} from '../../Assets/Icons';
+import {CrossFilled, Tick} from '../../Assets/Icons';
 import {colors} from '../../Assets/Styles';
 
-const RenderInspectionDetailHeader = () => (
+const RenderInspectionDetailHeader = ({finalStatus, remarks}) => (
   <View style={styles.headerContainer}>
     <Text style={styles.headerText}>Inspection Details</Text>
     <View style={styles.finalStatusContainer}>
       <Text style={[styles.text, {width: wp('30%')}]}>Final Status</Text>
-      <Tick height={hp('3%')} width={wp('8%')} color={colors.deepGreen} />
-      <Text style={[styles.text, styles.statusText]}>No Damage Detected</Text>
+      {finalStatus && finalStatus.toLowerCase() === 'pass' ? (
+        <Tick height={hp('3%')} width={wp('8%')} color={colors.deepGreen} />
+      ) : (
+        <CrossFilled height={hp('3%')} width={wp('8%')} color={colors.red} />
+      )}
+      <Text style={[styles.text, styles.statusText]}>
+        {finalStatus && finalStatus.toLowerCase() === 'pass'
+          ? 'No Damage Detected'
+          : 'Damage Detected'}
+      </Text>
     </View>
     <View style={styles.statusDescriptionContainer}>
       <ScrollView>
-        <Text style={styles.text}>
-          Minor Dent on the exterior frontMinor Dent on the exterior
-        </Text>
+        <Text style={styles.text}>{remarks || 'No Remarks'}</Text>
       </ScrollView>
     </View>
   </View>
@@ -55,6 +61,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: hp('1.8%'),
+    // textTransform: 'capitalize',
   },
   statusText: {
     fontWeight: 'bold',

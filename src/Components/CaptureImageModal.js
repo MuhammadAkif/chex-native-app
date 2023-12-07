@@ -87,7 +87,6 @@ const CaptureImageModal = ({
       {isLoading ? (
         <View style={[styles.body, {justifyContent: 'center'}]}>
           <CircularProgress
-            // duration={2000}
             maxValue={100}
             value={progress}
             valueSuffix={'%'}

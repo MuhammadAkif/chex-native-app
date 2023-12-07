@@ -10,6 +10,8 @@ import {
 
 const InspectionDetailScreen = ({
   detailsFiles,
+  finalStatus,
+  remarks,
   modalDetails,
   isModalVisible,
   handleDisplayMedia,
@@ -30,7 +32,12 @@ const InspectionDetailScreen = ({
         <FlatList
           data={detailsFiles}
           numColumns={2}
-          ListHeaderComponent={() => <RenderInspectionDetailHeader />}
+          ListHeaderComponent={() => (
+            <RenderInspectionDetailHeader
+              finalStatus={finalStatus}
+              remarks={remarks}
+            />
+          )}
           renderItem={({item}) => (
             <RenderInspectionDetail
               item={item}

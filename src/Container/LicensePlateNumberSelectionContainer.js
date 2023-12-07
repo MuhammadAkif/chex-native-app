@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {ActivityIndicator, Alert} from 'react-native';
+import {ActivityIndicator} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
@@ -82,21 +82,20 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
         });
       })
       .catch(err => {
+        setInspectionID(err?.response?.data?.inspectionId);
         const inProgressLicensePlateErrorMessage = `Inspection for license plate #${selectedNP} is already in progress. Would you like to visit in progress inspections page?`;
-        const errorMessage =
-          err?.response?.data?.errorMessage ?? err?.response?.data?.message[0];
-        // setErrorTitle(inProgressLicensePlateErrorMessage);
+        // const errorMessage =
+        //   err?.response?.data?.errorMessage ?? err?.response?.data?.message[0];
+        setErrorTitle(inProgressLicensePlateErrorMessage);
         setIsLoading(false);
-        // setIsDiscardInspectionModalVisible(true);
-        Alert.alert('', errorMessage);
+        setIsDiscardInspectionModalVisible(true);
+        // Alert.alert('', errorMessage);
       });
   };
-
   const handleYesPressOfInProgressInspection = () => {
     setIsDiscardInspectionModalVisible(false);
     setIsLoading(true);
     setErrorTitle('');
-    // setInspectionID(inspectionId);
     axios
       .get(`${DEV_URL}/api/v1/files/details/${inspectionID}`)
       .then(res => {
@@ -104,7 +103,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
         setIsLoading(false);
         dispatch(NumberPlateSelectedAction(inspectionID));
         navigation.navigate(ROUTES.NEW_INSPECTION, {
-          inspectionId: inspectionID,
+          routeName: ROUTES.LICENSE_PLATE_SELECTION,
         });
       })
       .catch(error => {

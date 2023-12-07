@@ -9,8 +9,8 @@ const InspectionDetailContainer = ({route}) => {
   const [modalDetails, setModalDetails] = useState({});
   let detailsFiles = [];
   if (route?.params) {
-    let {files} = route.params;
-    detailsFiles = files;
+    let {files, finalStatus, remarks} = route.params;
+    detailsFiles = {files: files, finalStatus: finalStatus, remarks: remarks};
   }
   const handleDisplayMedia = item => {
     let title = extractTitle(item?.groupType, item?.category);
@@ -33,7 +33,9 @@ const InspectionDetailContainer = ({route}) => {
   };
   return (
     <InspectionDetailScreen
-      detailsFiles={detailsFiles}
+      detailsFiles={detailsFiles?.files}
+      finalStatus={detailsFiles?.finalStatus}
+      remarks={detailsFiles?.remarks}
       isModalVisible={isModalVisible}
       modalDetails={modalDetails}
       handleDisplayMedia={handleDisplayMedia}

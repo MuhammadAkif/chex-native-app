@@ -24,7 +24,6 @@ const InspectionReviewedContainer = ({navigation}) => {
     useCallback(() => {
       setIsLoading(true);
       fetchInspectionInProgress().then();
-      // dispatch(FETCH_INSPECTION_REVIEWED(token, setIsLoading));
       return () => resetAllStates();
     }, []),
   );
@@ -60,10 +59,13 @@ const InspectionReviewedContainer = ({navigation}) => {
       .get(`${DEV_URL}/api/v1/files/details/${inspectionID}`)
       .then(res => {
         setIsLoading(false);
+        const {finalStatus, remarks} = res?.data?.inspection;
         let files = sortInspectionReviewedItems(res?.data?.files);
         resetAllStates();
         navigation.navigate(ROUTES.INSPECTION_DETAIL, {
           files: files,
+          finalStatus: finalStatus,
+          remarks: remarks,
         });
       })
       .catch(error => {

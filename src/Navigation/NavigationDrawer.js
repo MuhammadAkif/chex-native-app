@@ -9,6 +9,7 @@ import {
   InspectionDetailContainer,
   LicensePlateNumberSelectionContainer,
   InspectionInProgressContainer,
+  InspectionSelectionContainer,
 } from '../Container';
 import {
   HeaderBackButton,
@@ -35,11 +36,18 @@ const NavigationDrawer = () => {
         drawerStatusBarAnimation: 'slide',
         headerLeft: () => <HeaderBackButton />,
       }}
-      initialRouteName={ROUTES.INTRO}>
+      initialRouteName={ROUTES.INSPECTION_SELECTION}>
       <Drawer.Screen
         name={ROUTES.INTRO}
         component={IntroContainer}
         options={options}
+      />
+      <Drawer.Screen
+        name={ROUTES.INSPECTION_SELECTION}
+        component={InspectionSelectionContainer}
+        options={{
+          headerShown: false,
+        }}
       />
       <Drawer.Screen
         name={ROUTES.LICENSE_PLATE_SELECTION}

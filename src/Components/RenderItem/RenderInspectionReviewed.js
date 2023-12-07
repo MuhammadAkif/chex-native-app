@@ -16,7 +16,7 @@ const RenderInspectionReviewed = ({
 }) => (
   <>
     <InspectionStatusCollapsedCard
-      textOne={item?.inspectionCode}
+      textOne={item?.Vehicle?.licensePlateNumber}
       textTwo={extractDate(item?.createdAt)}
       index={1}
       isReviewed={
@@ -26,7 +26,7 @@ const RenderInspectionReviewed = ({
           ? 'Ready For Review'
           : 'In Review'
       }
-      labelOne={'Tracking ID'}
+      labelOne={'License Plate'}
       labelTwo={'Date Created'}
       isActive={isExpanded.includes(item.id)}
       onPress={() => handleIsExpanded(item?.id)}
