@@ -39,6 +39,7 @@ import CustomPasswordInput from './CustomPasswordInput';
 import DiscardInspectionModal from './PopUpModals/DiscardInspectionModal';
 import InfoModal from './PopUpModals/InfoModal';
 import Toast from './Toast';
+import AndroidMediaViewModal from './AndroidMediaViewModal';
 
 export {
   BackgroundImageView,
@@ -82,4 +83,5 @@ export {
   DiscardInspectionModal,
   InfoModal,
   Toast,
+  AndroidMediaViewModal,
 };

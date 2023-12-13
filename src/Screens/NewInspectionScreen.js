@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity, Platform} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -16,6 +16,7 @@ import {
   DisplayMediaModal,
   DiscardInspectionModal,
   Toast,
+  AndroidMediaViewModal,
 } from '../Components';
 import {BackArrow} from '../Assets/Icons';
 
@@ -109,12 +110,20 @@ const NewInspectionScreen = ({
               handleCaptureImage={handleCaptureNowPress}
             />
           )}
-          {mediaModalVisible && (
+          {Platform.OS === 'ios' && mediaModalVisible && (
             <DisplayMediaModal
               title={mediaModalDetails?.title}
               isVideo={mediaModalDetails?.isVideo}
               source={mediaModalDetails?.source}
               handleVisible={handleMediaModalDetailsCrossPress}
+            />
+          )}
+          {Platform.OS === 'android' && mediaModalVisible && (
+            <AndroidMediaViewModal
+              handleVisible={handleMediaModalDetailsCrossPress}
+              title={mediaModalDetails?.title}
+              isVideo={mediaModalDetails?.isVideo}
+              source={mediaModalDetails?.source}
             />
           )}
           <CollapsedCard
@@ -129,7 +138,6 @@ const NewInspectionScreen = ({
               handleItemPickerPress={handleItemPickerPress}
               carVerificationItems={carVerificationItems}
               handleCrossPress={handleOnCrossPress}
-              // handleCrossPress={handleCarVerificationCrossPress}
               isLoading={isLoading}
               handleMediaModalDetailsPress={handleMediaModalDetailsPress}
             />
@@ -146,7 +154,6 @@ const NewInspectionScreen = ({
               handleItemPickerPress={handleItemPickerPress}
               exteriorItems={exteriorItems}
               handleCrossPress={handleOnCrossPress}
-              // handleCrossPress={handleExteriorCrossPress}
               isLoading={isLoading}
               handleMediaModalDetailsPress={handleMediaModalDetailsPress}
             />
@@ -163,7 +170,6 @@ const NewInspectionScreen = ({
               handleItemPickerPress={handleItemPickerPress}
               tires={tires}
               handleCrossPress={handleOnCrossPress}
-              // handleCrossPress={handleTiresCrossPress}
               isLoading={isLoading}
               handleMediaModalDetailsPress={handleMediaModalDetailsPress}
             />

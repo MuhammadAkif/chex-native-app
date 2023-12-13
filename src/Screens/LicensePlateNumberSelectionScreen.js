@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
     fontSize: hp('2%'),
     width: wp('90%'),
     paddingVertical: 15,
+    color: colors.black,
   },
   searchInput: {
     height: hp('5%'),

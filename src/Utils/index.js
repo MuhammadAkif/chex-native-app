@@ -40,7 +40,7 @@ export const validationSchema = yup.object().shape({
 export const signInValidationSchema = yup.object().shape({
   name: yup
     .string()
-    .required('Please enter your Name!')
+    .required('Please enter your name!')
     .min(2, 'Name must be at least 2 characters'),
   password: yup
     .string()

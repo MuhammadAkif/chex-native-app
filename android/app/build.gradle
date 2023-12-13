@@ -79,13 +79,21 @@ android {
     defaultConfig {
         applicationId "com.chex_ai"
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion 27
+        targetSdkVersion 31
 //         targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
         versionCode 1
         versionName "1.0"
     }
     signingConfigs {
+        release {
+            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+                    storeFile file(MYAPP_UPLOAD_STORE_FILE)
+                    storePassword MYAPP_UPLOAD_STORE_PASSWORD
+                    keyAlias MYAPP_UPLOAD_KEY_ALIAS
+                    keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+                }
+                }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
@@ -110,6 +118,10 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+    // React-native-video config starts here
+    implementation "androidx.appcompat:appcompat:1.0.0"
+    // React-native-video config ends here
+
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {

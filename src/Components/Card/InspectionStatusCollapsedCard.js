@@ -141,6 +141,7 @@ const styles = StyleSheet.create({
     fontSize: hp('1.5%'),
     paddingBottom: '3%',
     fontWeight: '600',
+    color: colors.black,
   },
   statusContainer: {
     position: 'absolute',

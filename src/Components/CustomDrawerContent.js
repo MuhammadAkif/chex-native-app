@@ -31,6 +31,7 @@ const CustomDrawerContent = props => {
   const [activeScreen, setActiveScreen] = useState('');
   let activeColor = colors.cobaltBlue;
   const activeColorOfTextAndIcon = screen => {
+    return colors.black;
     // return activeRouteName.toLowerCase() === screen.toLowerCase()
     //   ? colors.white
     //   : colors.black;

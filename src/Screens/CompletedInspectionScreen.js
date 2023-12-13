@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, Platform} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   heightPercentageToDP as hp,
@@ -34,25 +34,11 @@ const CompletedInspectionScreen = ({
             You may now exit our app. Our representatives will reach out to you
             if we need any further help
           </Text>
-          {Platform.OS === 'android' && (
-            <PrimaryGradientButton
-              buttonStyle={styles.button}
-              text={'Thank You'}
-              onPress={handleThankYouPress}
-            />
-          )}
-          {Platform.OS === 'ios' && (
-            <>
-              <PrimaryGradientButton
-                buttonStyle={styles.button}
-                text={'Home'}
-                onPress={() => handleHomePress(navigation)}
-              />
-              {/*<Text style={styles.subTitleText}>*/}
-              {/*  Returning home ({seconds})*/}
-              {/*</Text>*/}
-            </>
-          )}
+          <PrimaryGradientButton
+            buttonStyle={styles.button}
+            text={'Home'}
+            onPress={() => handleHomePress(navigation)}
+          />
           <View style={styles.bodyFooterEmptyView} />
         </View>
       </LinearGradient>

@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingLeft: hp('1%'),
     width: wp('60%'),
+    color: colors.black,
   },
   iconContainer: {
     alignItems: 'center',

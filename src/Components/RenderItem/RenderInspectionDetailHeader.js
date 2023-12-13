@@ -10,15 +10,19 @@ import {colors} from '../../Assets/Styles';
 
 const RenderInspectionDetailHeader = ({finalStatus, remarks}) => (
   <View style={styles.headerContainer}>
-    <Text style={styles.headerText}>Inspection Details</Text>
+    <Text style={[styles.headerText, styles.textColor]}>
+      Inspection Details
+    </Text>
     <View style={styles.finalStatusContainer}>
-      <Text style={[styles.text, {width: wp('30%')}]}>Final Status</Text>
+      <Text style={[styles.text, styles.textColor, {width: wp('30%')}]}>
+        Final Status
+      </Text>
       {finalStatus && finalStatus.toLowerCase() === 'pass' ? (
         <Tick height={hp('3%')} width={wp('8%')} color={colors.deepGreen} />
       ) : (
         <CrossFilled height={hp('3%')} width={wp('8%')} color={colors.red} />
       )}
-      <Text style={[styles.text, styles.statusText]}>
+      <Text style={[styles.text, styles.statusText, styles.textColor]}>
         {finalStatus && finalStatus.toLowerCase() === 'pass'
           ? 'No Damage Detected'
           : 'Damage Detected'}
@@ -26,7 +30,9 @@ const RenderInspectionDetailHeader = ({finalStatus, remarks}) => (
     </View>
     <View style={styles.statusDescriptionContainer}>
       <ScrollView>
-        <Text style={styles.text}>{remarks || 'No Remarks'}</Text>
+        <Text style={[styles.text, styles.textColor]}>
+          {remarks || 'No Remarks'}
+        </Text>
       </ScrollView>
     </View>
   </View>
@@ -67,6 +73,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: '2%',
   },
+  textColor: {color: colors.black},
 });
 
 export default RenderInspectionDetailHeader;

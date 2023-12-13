@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
   bodyHeaderTitleText: {
     fontSize: hp('2.5%'),
     fontWeight: 'bold',
+    color: colors.black,
   },
   bodyHeaderBorderRadius: {
     borderTopLeftRadius: 0,

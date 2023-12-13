@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   StatusBar,
+  Platform,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -18,6 +19,7 @@ import CircularProgress from 'react-native-circular-progress-indicator';
 import {Cross, Info} from '../Assets/Icons';
 import {colors, dot} from '../Assets/Styles';
 import {PrimaryGradientButton} from './index';
+import VideoPlayer from 'react-native-video-controls';
 
 const CaptureImageModal = ({
   modalVisible,
@@ -49,12 +51,26 @@ const CaptureImageModal = ({
         style={[styles.header, {flex: instructionalSubHeadingText ? 1.5 : 1}]}>
         <Text style={[styles.titleText, styles.textColor]}>{title}</Text>
         {isVideo ? (
-          <Video
-            source={source}
-            controls={true}
-            playInBackground={false}
-            style={styles.image}
-          />
+          <>
+            {Platform.OS === 'android' ? (
+              <VideoPlayer
+                source={source}
+                playInBackground={false}
+                tapAnywhereToPause={true}
+                disableBack={true}
+                videoStyle={styles.video}
+                style={styles.imageStyle}
+                repeat={false}
+              />
+            ) : (
+              <Video
+                source={source}
+                controls={true}
+                playInBackground={false}
+                style={styles.image}
+              />
+            )}
+          </>
         ) : (
           <FastImage
             source={source}
@@ -165,6 +181,19 @@ const styles = StyleSheet.create({
     height: hp('25%'),
     width: wp('90%'),
     borderRadius: 10,
+  },
+  video: {
+    height: Platform.OS === 'android' ? '100%' : hp('25%'),
+    width: Platform.OS === 'android' ? '90%' : wp('90%'),
+    borderRadius: 10,
+    left: Platform.OS === 'android' ? wp('5%') : null,
+  },
+  imageStyle: {
+    height: hp('20%'),
+    width: wp('90%'),
+    borderRadius: 10,
+    marginVertical: hp('2%'),
+    left: Platform.OS === 'android' ? wp('5%') : null,
   },
   crossIconContainer: {
     position: 'absolute',

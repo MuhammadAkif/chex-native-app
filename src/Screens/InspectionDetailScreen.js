@@ -1,8 +1,9 @@
 import React from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
+import {View, StyleSheet, FlatList, Platform} from 'react-native';
 
 import {NewInspectionStyles} from '../Assets/Styles';
 import {
+  AndroidMediaViewModal,
   DisplayMediaModal,
   RenderInspectionDetail,
   RenderInspectionDetailHeader,
@@ -18,8 +19,16 @@ const InspectionDetailScreen = ({
   handleDisplayMediaCrossPress,
 }) => (
   <View style={NewInspectionStyles.container}>
-    {isModalVisible && (
+    {Platform.OS === 'ios' && isModalVisible && (
       <DisplayMediaModal
+        handleVisible={handleDisplayMediaCrossPress}
+        title={modalDetails?.title}
+        isVideo={modalDetails?.isVideo}
+        source={modalDetails?.source}
+      />
+    )}
+    {Platform.OS === 'android' && isModalVisible && (
+      <AndroidMediaViewModal
         handleVisible={handleDisplayMediaCrossPress}
         title={modalDetails?.title}
         isVideo={modalDetails?.isVideo}

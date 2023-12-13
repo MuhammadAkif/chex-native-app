@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
   Text,
+  Platform,
 } from 'react-native';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
@@ -99,8 +100,9 @@ const VideoContainer = ({route, navigation}) => {
         videoRef?.current?.startRecording({
           onRecordingFinished: video => {
             setIsVideoFile(video);
-            const path = video.path;
-            setIsVideoURI(`file://${path}`);
+            const path =
+              Platform.OS === 'android' ? video.path : `file://${video.path}`;
+            setIsVideoURI(path);
           },
           onRecordingError: error => console.error(error.message),
         });

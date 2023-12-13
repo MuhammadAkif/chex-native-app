@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {
@@ -49,7 +50,8 @@ const RenderInspectionDetail = ({item, handleDisplayMedia}) => {
           <Video
             source={{uri: mediaURL}}
             controls={false}
-            paused={true}
+            repeat={false}
+            paused={Platform.OS !== 'android'}
             playInBackground={false}
             style={styles.image}
           />

@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
   bodyHeaderTitleText: {
     fontSize: hp('2.5%'),
     fontWeight: 'bold',
+    color: colors.black,
   },
   buttonContainer: {
     height: hp('6%'),

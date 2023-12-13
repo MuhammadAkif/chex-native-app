@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
+import {Text, TouchableOpacity, View, StyleSheet, Platform} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -44,7 +44,7 @@ const VideoPicker = ({
           source={{uri: videoURL}}
           controls={false}
           repeat={false}
-          paused={true}
+          paused={Platform.OS !== 'android'}
           playInBackground={false}
           style={StyleSheet.absoluteFill}
         />

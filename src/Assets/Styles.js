@@ -287,6 +287,7 @@ export const modalStyle = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 30,
     fontWeight: 'bold',
+    color: colors.black,
   },
   footer: {
     width: wp('90%'),

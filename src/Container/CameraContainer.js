@@ -32,6 +32,13 @@ const CameraContainer = ({route, navigation}) => {
   const isFocused = useIsFocused();
   const cameraRef = useRef();
   const appState = useRef(AppState.currentState);
+  // const devices = useCameraDevices({
+  //   physicalDevices: [
+  //     'wide-angle-camera',
+  //     'ultra-wide-angle-camera',
+  //     'telephoto-camera',
+  //   ],
+  // });
   const devices = useCameraDevices('wide-angle-camera');
   const [device, setDevice] = useState();
   const [isBackCamera, setIsBackCamera] = useState(true);
