@@ -1,5 +1,9 @@
 package com.chex_ai;
 
+//Splash screen configuration
+import android.os.Bundle;
+import org.devio.rn.splashscreen.SplashScreen;
+//Splash screen configuration
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
@@ -15,6 +19,12 @@ public class MainActivity extends ReactActivity {
   protected String getMainComponentName() {
     return "Chex_AI";
   }
+  //Splash screen configuration
+    @Override
+       protected void onCreate(Bundle savedInstanceState) {
+           SplashScreen.show(this, true);
+           super.onCreate(savedInstanceState);
+       }
   /**
    * Returns the instance of the {@link ReactActivityDelegate}. Here we use a util class {@link
    * DefaultReactActivityDelegate} which allows you to easily enable Fabric and Concurrent React

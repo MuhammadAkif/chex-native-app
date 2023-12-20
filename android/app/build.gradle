@@ -121,6 +121,7 @@ dependencies {
     // React-native-video config starts here
     implementation "androidx.appcompat:appcompat:1.0.0"
     // React-native-video config ends here
+    implementation project(':react-native-splash-screen')
 
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
