@@ -304,9 +304,6 @@ const NewInspectionContainer = ({route, navigation}) => {
       carVerificationItems={carVerificationItems}
       exteriorItems={exteriorItems}
       tires={tires}
-      handleCarVerificationCrossPress={handleCarVerificationCrossPress}
-      handleExteriorCrossPress={handleExteriorCrossPress}
-      handleTiresCrossPress={handleTiresCrossPress}
       isBothCarVerificationImagesAvailable={
         isBothCarVerificationImagesAvailable
       }
