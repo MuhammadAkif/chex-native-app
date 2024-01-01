@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Camera, useCameraDevices} from 'react-native-vision-camera';
+import {Camera, useCameraDevice} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -32,16 +32,15 @@ const CameraContainer = ({route, navigation}) => {
   const isFocused = useIsFocused();
   const cameraRef = useRef();
   const appState = useRef(AppState.currentState);
-  // const devices = useCameraDevices({
-  //   physicalDevices: [
-  //     'wide-angle-camera',
-  //     'ultra-wide-angle-camera',
-  //     'telephoto-camera',
-  //   ],
-  // });
-  const devices = useCameraDevices('wide-angle-camera');
-  const [device, setDevice] = useState();
-  const [isBackCamera, setIsBackCamera] = useState(true);
+  const [selectedCamera, setSelectedCamera] = useState('back');
+  const device = useCameraDevice(selectedCamera, {
+    physicalDevices: [
+      'wide-angle-camera',
+      'ultra-wide-angle-camera',
+      'telephoto-camera',
+    ],
+  });
+  const [isBackCamera, setIsBackCamera] = useState(selectedCamera === 'front');
   const [isImageURL, setIsImageURL] = useState('');
   const [isImageFile, setIsImageFile] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -56,7 +55,6 @@ const CameraContainer = ({route, navigation}) => {
     isVideo,
     groupType,
   } = modalDetails;
-
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       appState.current = nextAppState;
@@ -73,11 +71,11 @@ const CameraContainer = ({route, navigation}) => {
 
   useEffect(() => {
     if (isBackCamera) {
-      setDevice(devices.back);
+      setSelectedCamera('front');
     } else {
-      setDevice(devices.front);
+      setSelectedCamera('back');
     }
-  }, [isBackCamera, devices]);
+  }, [isBackCamera, device]);
 
   const handleNavigationBackPress = () => navigation.goBack();
   const handleVisible = () => {
@@ -120,8 +118,8 @@ const CameraContainer = ({route, navigation}) => {
     category === 'CarVerification'
       ? dispatch(UpdateCarVerificationItemURI(type, isImageURL, imageID))
       : category === 'Exterior'
-      ? dispatch(UpdateExteriorItemURI(type, isImageURL, imageID))
-      : dispatch(UpdateTiresItemURI(type, isImageURL, imageID));
+        ? dispatch(UpdateExteriorItemURI(type, isImageURL, imageID))
+        : dispatch(UpdateTiresItemURI(type, isImageURL, imageID));
     navigation.navigate(ROUTES.NEW_INSPECTION);
   }
   const handleError = () => {
@@ -172,7 +170,7 @@ const CameraContainer = ({route, navigation}) => {
               source={{uri: isImageURL}}
             />
           ) : (
-            device && (
+            selectedCamera && (
               <Camera
                 ref={cameraRef}
                 style={StyleSheet.absoluteFill}
