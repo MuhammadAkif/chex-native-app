@@ -491,6 +491,8 @@
 				DEVELOPMENT_TEAM = 9JR835FQLZ;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Chex_AI/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Chex DSP";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -521,6 +523,8 @@
 				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 9JR835FQLZ;
 				INFOPLIST_FILE = Chex_AI/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Chex DSP";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

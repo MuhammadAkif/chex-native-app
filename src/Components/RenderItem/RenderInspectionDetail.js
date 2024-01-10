@@ -54,6 +54,7 @@ const RenderInspectionDetail = ({item, handleDisplayMedia}) => {
             paused={Platform.OS !== 'android'}
             playInBackground={false}
             style={styles.image}
+            muted={true}
           />
           {isVideo && (
             <View style={styles.circle}>

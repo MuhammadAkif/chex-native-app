@@ -6,9 +6,12 @@ import {
   TouchableOpacity,
   View,
   Text,
-  Platform,
 } from 'react-native';
-import {Camera, useCameraDevices} from 'react-native-vision-camera';
+import {
+  Camera,
+  useCameraDevice,
+  useCameraFormat,
+} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -29,9 +32,19 @@ const VideoContainer = ({route, navigation}) => {
   const isFocused = useIsFocused();
   const videoRef = useRef();
   const appState = useRef(AppState.currentState);
-  const devices = useCameraDevices('wide-angle-camera');
-  const [device, setDevice] = useState();
-  const [isBackCamera, setIsBackCamera] = useState(true);
+  const [selectedCamera, setSelectedCamera] = useState('back');
+  const device = useCameraDevice(selectedCamera, {
+    physicalDevices: [
+      'wide-angle-camera',
+      'ultra-wide-angle-camera',
+      'telephoto-camera',
+    ],
+  });
+  const format = useCameraFormat(device, [
+    {videoResolution: {width: 3048, height: 2160}},
+    {fps: 60},
+  ]);
+  const [isBackCamera, setIsBackCamera] = useState(selectedCamera === 'front');
   const [isVideoFile, setIsVideoFile] = useState({});
   const [isVideoURI, setIsVideoURI] = useState('');
   const [isRecording, setIsRecording] = useState(false);
@@ -73,11 +86,11 @@ const VideoContainer = ({route, navigation}) => {
 
   useEffect(() => {
     if (isBackCamera) {
-      setDevice(devices.back);
+      setSelectedCamera('front');
     } else {
-      setDevice(devices.front);
+      setSelectedCamera('back');
     }
-  }, [isBackCamera, devices]);
+  }, [isBackCamera, device]);
 
   function reset() {
     setCounter(30);
@@ -100,8 +113,8 @@ const VideoContainer = ({route, navigation}) => {
         videoRef?.current?.startRecording({
           onRecordingFinished: video => {
             setIsVideoFile(video);
-            const path =
-              Platform.OS === 'android' ? video.path : `file://${video.path}`;
+            const path = `file://${video.path}`;
+            // Platform.OS === 'android' ? video.path : `file://${video.path}`;
             setIsVideoURI(path);
           },
           onRecordingError: error => console.error(error.message),
@@ -176,7 +189,7 @@ const VideoContainer = ({route, navigation}) => {
         />
       ) : (
         <View style={PreviewStyles.container}>
-          {device && (
+          {selectedCamera && (
             <Camera
               ref={videoRef}
               style={StyleSheet.absoluteFill}
@@ -186,6 +199,7 @@ const VideoContainer = ({route, navigation}) => {
               audio={true}
               isActive={isFocused && appState.current === 'active'}
               enableZoomGesture={true}
+              format={format}
             />
           )}
           <View style={PreviewStyles.headerContainer}>

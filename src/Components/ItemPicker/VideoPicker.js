@@ -47,6 +47,7 @@ const VideoPicker = ({
           paused={Platform.OS !== 'android'}
           playInBackground={false}
           style={StyleSheet.absoluteFill}
+          muted={true}
         />
         <Play
           height={hp('4%')}
