@@ -12,6 +12,8 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        jcenter()
+
          // react-native-crop-image-picker config starts here
          maven { url 'https://maven.google.com' }
          maven { url "https://www.jitpack.io" }

@@ -145,8 +145,8 @@ const styles = StyleSheet.create({
   },
   statusContainer: {
     position: 'absolute',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    paddingVertical: hp('0.45%'),
+    paddingHorizontal: wp('2%'),
     borderTopRightRadius: 5,
     borderBottomLeftRadius: 5,
     right: 0,

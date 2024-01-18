@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Modal,
   StyleSheet,
@@ -16,10 +16,11 @@ import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 import CircularProgress from 'react-native-circular-progress-indicator';
 
-import {Cross, Info} from '../Assets/Icons';
+import {Cross, Expand, Info} from '../Assets/Icons';
 import {colors, dot} from '../Assets/Styles';
 import {PrimaryGradientButton} from './index';
-import VideoPlayer from 'react-native-video-controls';
+import VideoPlayer from 'react-native-video-player';
+import Collapse from '../Assets/Icons/Collapse';
 
 const CaptureImageModal = ({
   modalVisible,
@@ -34,100 +35,159 @@ const CaptureImageModal = ({
   modalKey,
   isLoading,
   progress,
-}) => (
-  <Modal
-    animationType="slide"
-    transparent={true}
-    visible={modalVisible}
-    style={styles.container}>
-    <View style={styles.centeredView}>
-      <TouchableOpacity
-        style={styles.crossIconContainer}
-        onPress={handleVisible}
-        disabled={isLoading}>
-        <Cross height={hp('8%')} width={wp('10%')} color={colors.white} />
-      </TouchableOpacity>
-      <View
-        style={[styles.header, {flex: instructionalSubHeadingText ? 1.5 : 1}]}>
-        <Text style={[styles.titleText, styles.textColor]}>{title}</Text>
-        {isVideo ? (
-          <>
-            {Platform.OS === 'android' ? (
-              <VideoPlayer
-                source={source}
-                playInBackground={false}
-                tapAnywhereToPause={true}
-                disableBack={true}
-                videoStyle={styles.video}
-                style={styles.imageStyle}
-                repeat={false}
-              />
-            ) : (
-              <Video
-                source={source}
-                controls={true}
-                playInBackground={false}
-                style={styles.image}
-              />
-            )}
-          </>
-        ) : (
-          <FastImage
-            source={source}
-            priority={'normal'}
-            resizeMode={'stretch'}
-            style={styles.image}
-          />
-        )}
-        <View style={styles.instructionsAndSubHeadingContainer}>
-          <View style={styles.instructionsContainer}>
-            <Info height={hp('7%')} width={wp('7%')} color={colors.white} />
-            <Text style={[styles.instructionsText, styles.textColor]}>
-              {instructionalText}
-            </Text>
-          </View>
-          {instructionalSubHeadingText && (
-            <View style={styles.subHeadingContainer}>
-              <View style={[dot, styles.dot]} />
-              <Text
-                style={[
-                  styles.instructionsText,
-                  {color: colors.blueGray, width: wp('75%')},
-                ]}>
-                {instructionalSubHeadingText}
+}) => {
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  let height = hp('5%');
+  let width = wp('5%');
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalVisible}
+      style={styles.container}>
+      <View style={styles.centeredView}>
+        <TouchableOpacity
+          style={styles.crossIconContainer}
+          onPress={handleVisible}
+          disabled={isLoading}>
+          <Cross height={hp('8%')} width={wp('10%')} color={colors.white} />
+        </TouchableOpacity>
+        <View
+          style={[
+            styles.header,
+            {
+              flex: instructionalSubHeadingText ? 1.5 : 1,
+            },
+          ]}>
+          <Text
+            style={[
+              styles.titleText,
+              styles.textColor,
+              {bottom: isFullScreen ? hp('3%') : null},
+            ]}>
+            {title}
+          </Text>
+          {isVideo ? (
+            <>
+              {Platform.OS === 'android' ? (
+                <View style={styles.image}>
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      color: '#fff',
+                      right: 0,
+                      zIndex: 1,
+                    }}
+                    onPress={() => setIsFullScreen(!isFullScreen)}>
+                    {isFullScreen ? (
+                      <Expand
+                        height={height}
+                        width={width}
+                        color={colors.white}
+                      />
+                    ) : (
+                      <Collapse
+                        height={height}
+                        width={width}
+                        color={colors.white}
+                      />
+                    )}
+                  </TouchableOpacity>
+                  <VideoPlayer
+                    video={source}
+                    videoHeight={isFullScreen ? hp('50%') : hp('25%')}
+                    videoWidth={wp('90%')}
+                    autoplay={true}
+                    fullScreenOnLongPress={true}
+                  />
+                </View>
+              ) : (
+                // <VideoPlayer
+                //   source={source}
+                //   playInBackground={false}
+                //   tapAnywhereToPause={true}
+                //   disableBack={true}
+                //   disableVolume={true}
+                //   onEnterFullscreen={() => setIsFullScreen(true)}
+                //   onExitFullscreen={() => setIsFullScreen(false)}
+                //   videoStyle={styles.video}
+                //   style={[
+                //     styles.imageStyle,
+                //     {position: isFullScreen ? 'absolute' : 'relative'},
+                //   ]}
+                //   repeat={false}
+                // />
+                <Video
+                  source={source}
+                  controls={true}
+                  playInBackground={false}
+                  resizeMode={'contain'}
+                  style={styles.image}
+                />
+              )}
+            </>
+          ) : (
+            <FastImage
+              source={source}
+              priority={'normal'}
+              resizeMode={'stretch'}
+              style={styles.image}
+            />
+          )}
+          <View style={styles.instructionsAndSubHeadingContainer}>
+            <View
+              style={[
+                styles.instructionsContainer,
+                {top: isFullScreen ? hp('25%') : null},
+              ]}>
+              <Info height={hp('7%')} width={wp('7%')} color={colors.white} />
+              <Text style={[styles.instructionsText, styles.textColor]}>
+                {instructionalText}
               </Text>
             </View>
-          )}
+            {instructionalSubHeadingText && (
+              <View style={styles.subHeadingContainer}>
+                <View style={[dot, styles.dot]} />
+                <Text
+                  style={[
+                    styles.instructionsText,
+                    {color: colors.blueGray, width: wp('75%')},
+                  ]}>
+                  {instructionalSubHeadingText}
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
+        {isLoading ? (
+          <View style={[styles.body, {justifyContent: 'center'}]}>
+            <CircularProgress
+              maxValue={100}
+              value={progress}
+              valueSuffix={'%'}
+              radius={80}
+              progressValueColor={colors.white}
+              activeStrokeColor={colors.orangePeel}
+              titleStyle={{fontWeight: 'bold'}}
+            />
+            <Text style={[styles.textColor, styles.loadingText]}>
+              {progress === 100 ? 'Finalizing Upload' : 'Uploading'}
+            </Text>
+          </View>
+        ) : (
+          <View style={styles.body}>
+            <PrimaryGradientButton
+              text={buttonText}
+              onPress={() => handleCaptureImage(isVideo, modalKey)}
+            />
+          </View>
+        )}
+        <View style={styles.footerView} />
       </View>
-      {isLoading ? (
-        <View style={[styles.body, {justifyContent: 'center'}]}>
-          <CircularProgress
-            maxValue={100}
-            value={progress}
-            valueSuffix={'%'}
-            radius={80}
-            progressValueColor={colors.white}
-            activeStrokeColor={colors.orangePeel}
-            titleStyle={{fontWeight: 'bold'}}
-          />
-          <Text style={[styles.textColor, styles.loadingText]}>
-            {progress === 100 ? 'Finalizing Upload' : 'Uploading'}
-          </Text>
-        </View>
-      ) : (
-        <View style={styles.body}>
-          <PrimaryGradientButton
-            text={buttonText}
-            onPress={() => handleCaptureImage(isVideo, modalKey)}
-          />
-        </View>
-      )}
-      <View style={styles.footerView} />
-    </View>
-    <StatusBar hidden={true} />
-  </Modal>
-);
+      <StatusBar hidden={true} />
+    </Modal>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -189,7 +249,7 @@ const styles = StyleSheet.create({
     left: Platform.OS === 'android' ? wp('5%') : null,
   },
   imageStyle: {
-    height: hp('20%'),
+    height: hp('50%'),
     width: wp('90%'),
     borderRadius: 10,
     marginVertical: hp('2%'),

@@ -36,6 +36,7 @@ const DisplayMediaModal = ({handleVisible, source, title, isVideo}) => (
             source={{uri: source}}
             controls={true}
             playInBackground={false}
+            resizeMode={'contain'}
             style={styles.image}
           />
         ) : (
