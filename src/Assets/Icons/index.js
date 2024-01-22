@@ -24,6 +24,7 @@ import ShowPassword from './ShowPassword';
 import XMark from './XMark';
 import Expand from './Expand';
 import Collapse from './Collapse';
+import Retry from './Retry';
 
 export {
   Check,
@@ -52,4 +53,5 @@ export {
   XMark,
   Expand,
   Collapse,
+  Retry,
 };

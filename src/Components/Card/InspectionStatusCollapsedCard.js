@@ -12,8 +12,7 @@ import {
 } from 'react-native-responsive-screen';
 
 import {circleBorderRadius, colors, ShadowEffect} from '../../Assets/Styles';
-import UpArrow from '../../Assets/Icons/UpArrow';
-import {DownArrow} from '../../Assets/Icons';
+import {DownArrow, UpArrow} from '../../Assets/Icons';
 
 const {width} = Dimensions.get('window');
 

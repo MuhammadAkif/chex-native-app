@@ -6,6 +6,8 @@ import {
   FlatList,
   TextInput,
   ActivityIndicator,
+  TouchableOpacity,
+  Keyboard,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -43,7 +45,10 @@ const LicensePlateNumberSelectionScreen = ({
         noButtonStyle={{borderColor: colors.orange}}
       />
     )}
-    <View style={[NewInspectionStyles.bodyContainer, styles.container]}>
+    <TouchableOpacity
+      style={[NewInspectionStyles.bodyContainer, styles.container]}
+      activeOpacity={1}
+      onPress={Keyboard.dismiss}>
       <View style={styles.headerContainer}>
         <Text style={styles.bodyHeader}>New Inspection</Text>
         <Text style={styles.bodyHeader}>Select Car License Plate Number</Text>
@@ -69,6 +74,7 @@ const LicensePlateNumberSelectionScreen = ({
               isLoading={isLoading}
             />
           )}
+          keyboardShouldPersistTaps={'handled'}
         />
       </View>
       <View style={styles.footerContainer}>
@@ -78,7 +84,7 @@ const LicensePlateNumberSelectionScreen = ({
           disabled={selectedNP === null || isLoading}
         />
       </View>
-    </View>
+    </TouchableOpacity>
   </View>
 );
 
