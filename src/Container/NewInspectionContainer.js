@@ -12,8 +12,8 @@ import {
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {colors} from '../Assets/Styles';
-// import {DEV_URL} from '../Constants';
-import {DEV_URL} from '@env'
+import {DEV_URL} from '../Constants';
+// import {DEV_URL} from '@env'
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();

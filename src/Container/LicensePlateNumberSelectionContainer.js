@@ -5,8 +5,8 @@ import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
 import {LicensePlateNumberSelectionScreen} from '../Screens';
-import {createInspectionURL, fetchNPURL} from '../Constants';
-import {DEV_URL} from '@env'
+import {createInspectionURL, fetchNPURL, DEV_URL} from '../Constants';
+// import {DEV_URL} from '@env'
 import {ROUTES} from '../Navigation/ROUTES';
 import {colors} from '../Assets/Styles';
 import {NumberPlateSelectedAction} from '../Store/Actions';

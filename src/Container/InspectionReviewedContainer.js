@@ -6,8 +6,8 @@ import axios from 'axios';
 import {InspectionReviewedScreen} from '../Screens';
 import {FETCH_INSPECTION_REVIEWED} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
-import {DEV_URL} from '@env';
-// import {DEV_URL} from '../Constants';
+// import {DEV_URL} from '@env';
+import {DEV_URL} from '../Constants';
 import {
   fetchInProgressInspections,
   sortInspectionReviewedItems,

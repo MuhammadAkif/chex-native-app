@@ -10,8 +10,8 @@ import {
   REMOVE_INSPECTION_IN_PROGRESS,
 } from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
-// import {DEV_URL} from '../Constants';
-import {DEV_URL} from '@env'
+import {DEV_URL} from '../Constants';
+// import {DEV_URL} from '@env'
 import {
   fetchInProgressInspections,
   uploadInProgressMediaToStore,

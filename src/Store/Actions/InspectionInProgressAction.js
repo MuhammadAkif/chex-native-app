@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 import {Types} from '../Types';
-// import {DEV_URL} from '../../Constants';
-import {DEV_URL} from '@env'
+import {DEV_URL} from '../../Constants';
+// import {DEV_URL} from '@env'
 
 export const FETCH_INSPECTION_IN_PROGRESS = inspectionInProgress => {
   // export const FETCH_INSPECTION_IN_PROGRESS = (token, setIsLoading) => {

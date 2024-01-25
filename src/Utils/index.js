@@ -4,14 +4,19 @@ import {Camera} from 'react-native-vision-camera';
 import axios from 'axios';
 import RNFetchBlob from 'rn-fetch-blob';
 
-import {fetchInProgressURL, uploadURL} from '../Constants';
+import {
+  fetchInProgressURL,
+  uploadURL,
+  DEV_URL,
+  S3_BUCKET_BASEURL,
+} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
   UpdateCarVerificationItemURI,
   UpdateExteriorItemURI,
   UpdateTiresItemURI,
 } from '../Store/Actions';
-import {DEV_URL, S3_BUCKET_BASEURL} from '@env';
+// import {DEV_URL, S3_BUCKET_BASEURL} from '@env';
 
 export const validationSchema = yup.object().shape({
   firstName: yup.string().required('Field required'),
