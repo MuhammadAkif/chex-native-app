@@ -102,21 +102,6 @@ const CaptureImageModal = ({
                   />
                 </View>
               ) : (
-                // <VideoPlayer
-                //   source={source}
-                //   playInBackground={false}
-                //   tapAnywhereToPause={true}
-                //   disableBack={true}
-                //   disableVolume={true}
-                //   onEnterFullscreen={() => setIsFullScreen(true)}
-                //   onExitFullscreen={() => setIsFullScreen(false)}
-                //   videoStyle={styles.video}
-                //   style={[
-                //     styles.imageStyle,
-                //     {position: isFullScreen ? 'absolute' : 'relative'},
-                //   ]}
-                //   repeat={false}
-                // />
                 <Video
                   source={source}
                   controls={true}
@@ -160,12 +145,20 @@ const CaptureImageModal = ({
           </View>
         </View>
         {isLoading ? (
-          <View style={[styles.body, {justifyContent: 'center'}]}>
+          <View
+            style={[
+              styles.body,
+              {
+                justifyContent: 'center',
+                top:
+                  Platform.OS === 'android' && isFullScreen ? hp('8%') : null,
+              },
+            ]}>
             <CircularProgress
               maxValue={100}
               value={progress}
               valueSuffix={'%'}
-              radius={80}
+              radius={Platform.OS === 'android' && isFullScreen ? 40 : 80}
               progressValueColor={colors.white}
               activeStrokeColor={colors.orangePeel}
               titleStyle={{fontWeight: 'bold'}}

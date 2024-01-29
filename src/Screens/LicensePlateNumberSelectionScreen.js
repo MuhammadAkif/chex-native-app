@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Keyboard,
+  Platform,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
     width: wp('100%'),
   },
   headerContainer: {
-    flex: 0.3,
+    flex: Platform.OS === 'ios' ? 0.3 : null,
   },
   bodyHeader: {
     fontSize: hp('2%'),
@@ -104,9 +105,10 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     height: hp('5%'),
-    fontSize: hp('1.8%'),
     width: wp('90%'),
+    fontSize: hp('1.8%'),
     padding: '3%',
+    color: colors.black,
     backgroundColor: colors.silverGray,
   },
   innerBodyContainer: {

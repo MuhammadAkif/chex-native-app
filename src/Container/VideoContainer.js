@@ -40,6 +40,10 @@ const VideoContainer = ({route, navigation}) => {
       'telephoto-camera',
     ],
   });
+  // const format = useCameraFormat(device, [
+  //   {videoResolution: {width: 1280, height: 720}},
+  //   {fps: 30},
+  // ]);
   const format = useCameraFormat(device, [
     {videoResolution: {width: 3048, height: 2160}},
     {fps: 60},

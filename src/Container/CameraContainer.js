@@ -6,7 +6,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Camera, useCameraDevice} from 'react-native-vision-camera';
+import {
+  Camera,
+  useCameraDevice,
+  useCameraFormat,
+} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -46,6 +50,10 @@ const CameraContainer = ({route, navigation}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [progress, setProgress] = useState(0);
   const {type, modalDetails, inspectionId} = route.params;
+  // const format = useCameraFormat(device, [
+  //   {videoResolution: {width: 1280, height: 720}},
+  //   {fps: 30},
+  // ]);
   const {
     category,
     subCategory,
@@ -180,6 +188,7 @@ const CameraContainer = ({route, navigation}) => {
                 isActive={isFocused && appState.current === 'active'}
                 enableZoomGesture={true}
                 includeBase64={true}
+                // format={format}
               />
             )
           )}
