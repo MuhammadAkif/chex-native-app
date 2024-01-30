@@ -17,7 +17,6 @@ import {
   uploadInProgressMediaToStore,
 } from '../Utils';
 
-
 const InspectionInProgressContainer = ({navigation}) => {
   const dispatch = useDispatch();
   const {token} = useSelector(state => state.auth);
@@ -46,16 +45,20 @@ const InspectionInProgressContainer = ({navigation}) => {
     }, []),
   );
   useEffect(() => {
-    setTimeout(
+    let timeoutID = setTimeout(
       () => setModalMessageDetails(modalMessageDetailsInitialState),
       5000,
     );
+    return () => {
+      clearTimeout(timeoutID);
+    };
   }, [modalMessageDetails]);
   function resetAllStates() {
     setIsLoading(false);
     setInspectionID(null);
     setIsDiscardInspectionModalVisible(false);
     setDeleteInspectionID(null);
+    setModalMessageDetails(modalMessageDetailsInitialState);
   }
   async function fetchInspectionInProgress() {
     let inProgressInspection = [];

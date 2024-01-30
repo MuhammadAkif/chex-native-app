@@ -89,10 +89,14 @@ const NewInspectionContainer = ({route, navigation}) => {
     }
   }, [route]);
   useEffect(() => {
-    setTimeout(
+    let timeoutID = setTimeout(
       () => setModalMessageDetails(modalMessageDetailsInitialState),
       5000,
     );
+
+    return () => {
+      clearTimeout(timeoutID);
+    };
   }, [modalMessageDetails]);
   function resetAllStates() {
     setSelectedOption({
@@ -106,6 +110,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     dispatch({type: Types.CLEAR_NEW_INSPECTION});
     setIsDiscardInspectionModalVisible(false);
     setDeleteItem({category: null, key: null});
+    setModalMessageDetails(modalMessageDetailsInitialState);
   }
 
   const handleBackPress = () => {

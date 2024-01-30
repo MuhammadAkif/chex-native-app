@@ -8,25 +8,25 @@ import {XMark, Check} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 
 const Toast = ({message, onCrossPress, isVisible}) => (
-  <Modal
-    animationType="slide"
-    transparent={true}
-    visible={isVisible}
-    style={styles.container}>
-    <View style={styles.centeredView}>
-      <View style={styles.messageTextContainer}>
-        <View style={styles.iconContainer}>
-          <Check height={hp('3%')} width={wp('5%')} color={colors.white} />
-        </View>
-        <Text style={styles.messageText}>{message}</Text>
-        <TouchableOpacity
-          style={[styles.iconContainer, {backgroundColor: 'transparent'}]}
-          onPress={onCrossPress}>
-          <XMark height={hp('3%')} width={wp('5%')} color={colors.gray} />
-        </TouchableOpacity>
+  // <Modal
+  //   animationType="slide"
+  //   transparent={true}
+  //   visible={isVisible}
+  //   style={styles.container}>
+  <View style={styles.centeredView}>
+    <View style={styles.messageTextContainer}>
+      <View style={styles.iconContainer}>
+        <Check height={hp('3%')} width={wp('5%')} color={colors.white} />
       </View>
+      <Text style={styles.messageText}>{message}</Text>
+      <TouchableOpacity
+        style={[styles.iconContainer, {backgroundColor: 'transparent'}]}
+        onPress={onCrossPress}>
+        <XMark height={hp('3%')} width={wp('5%')} color={colors.gray} />
+      </TouchableOpacity>
     </View>
-  </Modal>
+  </View>
+  // </Modal>
 );
 
 const styles = StyleSheet.create({
@@ -34,9 +34,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   centeredView: {
-    flex: 1,
-    paddingTop: hp('8%'),
+    // flex: 1,
+    position: 'absolute',
+    // paddingTop: hp('1%'),
     alignItems: 'center',
+    zIndex: 1,
+    right: wp('10%'),
   },
   tickContainer: {
     height: '4%',

@@ -44,6 +44,7 @@ const VideoPicker = ({
           source={{uri: videoURL}}
           controls={false}
           repeat={false}
+          resizeMode={'contain'}
           paused={Platform.OS !== 'android'}
           playInBackground={false}
           style={StyleSheet.absoluteFill}

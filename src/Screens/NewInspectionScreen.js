@@ -71,11 +71,13 @@ const NewInspectionScreen = ({
         noButtonStyle={{borderColor: colors.orange}}
       />
     )}
-    <Toast
-      onCrossPress={handleOkPress}
-      isVisible={modalMessageDetails.isVisible}
-      message={modalMessageDetails.message}
-    />
+    {modalMessageDetails.isVisible && (
+      <Toast
+        onCrossPress={handleOkPress}
+        isVisible={modalMessageDetails.isVisible}
+        message={modalMessageDetails.message}
+      />
+    )}
     <View style={NewInspectionStyles.headerContainer}>
       <Text style={NewInspectionStyles.headerTitleText}>
         Please complete inspection items within each category below

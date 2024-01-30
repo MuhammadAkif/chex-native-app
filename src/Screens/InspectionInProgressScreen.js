@@ -36,12 +36,13 @@ const InspectionInProgressScreen = ({
         description={'Are You Sure Want To Discard Your Inspection?'}
       />
     )}
-    <Toast
-      onCrossPress={handleOkPress}
-      isVisible={modalMessageDetails.isVisible}
-      message={modalMessageDetails.message}
-    />
-
+    {modalMessageDetails.isVisible && (
+      <Toast
+        onCrossPress={handleOkPress}
+        isVisible={modalMessageDetails.isVisible}
+        message={modalMessageDetails.message}
+      />
+    )}
     <View style={NewInspectionStyles.bodyContainer}>
       <View style={styles.bodyHeaderContainer}>
         <Text style={styles.bodyHeaderTitleText}>Inspections in Progress</Text>
@@ -92,6 +93,7 @@ const InspectionInProgressScreen = ({
       <PrimaryStartInspectionButton
         buttonPress={() => handleStartInspectionPress(navigation)}
         textPress={() => handleHomePress(navigation)}
+        disabled={isLoading}
       />
     </View>
   </View>
