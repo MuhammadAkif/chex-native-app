@@ -20,6 +20,7 @@ import {
   DiscardInspectionModal,
   PrimaryGradientButton,
   RenderLicensePlateNumber,
+  NumberPlateInUseModal,
 } from '../Components';
 
 const LicensePlateNumberSelectionScreen = ({
@@ -35,6 +36,8 @@ const LicensePlateNumberSelectionScreen = ({
   isDiscardInspectionModalVisible,
   onNoPress,
   onYesPress,
+  handleOkPress,
+  numberPlateInUseError,
 }) => (
   <View style={NewInspectionStyles.container}>
     {isDiscardInspectionModalVisible && (
@@ -45,6 +48,9 @@ const LicensePlateNumberSelectionScreen = ({
         noButtonText={{color: colors.black}}
         noButtonStyle={{borderColor: colors.orange}}
       />
+    )}
+    {numberPlateInUseError && (
+      <NumberPlateInUseModal onOkPress={handleOkPress} />
     )}
     <TouchableOpacity
       style={[NewInspectionStyles.bodyContainer, styles.container]}

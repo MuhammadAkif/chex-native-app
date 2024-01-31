@@ -36,6 +36,7 @@ const RecordingPreview = ({
           repeat={true}
           paused={isPaused}
           playInBackground={false}
+          resizeMode={'contain'}
           style={[StyleSheet.absoluteFillObject, {borderRadius: 10}]}
           source={{uri: isVideoURI}}
         />

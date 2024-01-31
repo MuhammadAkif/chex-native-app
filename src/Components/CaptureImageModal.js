@@ -177,7 +177,11 @@ const CaptureImageModal = ({
         )}
         <View style={styles.footerView} />
       </View>
-      <StatusBar hidden={true} />
+      <StatusBar
+        backgroundColor="rgba(0, 27, 81, 0.9)"
+        barStyle="light-content"
+        translucent={true}
+      />
     </Modal>
   );
 };

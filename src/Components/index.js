@@ -40,6 +40,8 @@ import DiscardInspectionModal from './PopUpModals/DiscardInspectionModal';
 import InfoModal from './PopUpModals/InfoModal';
 import Toast from './Toast';
 import AndroidMediaViewModal from './AndroidMediaViewModal';
+import NumberPlateInUseModal from './NumberPlateInUseModal';
+import FocusAwareStatusBar from './FocusAwareStatusBar';
 
 export {
   BackgroundImageView,
@@ -84,4 +86,6 @@ export {
   InfoModal,
   Toast,
   AndroidMediaViewModal,
+  NumberPlateInUseModal,
+  FocusAwareStatusBar,
 };

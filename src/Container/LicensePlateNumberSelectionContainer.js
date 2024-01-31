@@ -18,6 +18,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const [selectedNP, setSelectedNP] = useState(null);
   const [search, setSearch] = useState('');
   const [numberPlate, setNumberPlate] = useState([]);
+  const [numberPlateInUseError, setNumberPlateInUseError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDiscardInspectionModalVisible, setIsDiscardInspectionModalVisible] =
     useState(false);
@@ -110,8 +111,12 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       .catch(error => {
         setIsLoading(false);
         console.log('error of selected inspection in progress => ', error);
+        if (error.message === 'Request failed with status code 500') {
+          setNumberPlateInUseError(true);
+        }
       });
   };
+  const handleOkPress = () => setNumberPlateInUseError(false);
   const onNoPress = () => {
     setIsDiscardInspectionModalVisible(false);
     setErrorTitle('');
@@ -131,6 +136,8 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       isDiscardInspectionModalVisible={isDiscardInspectionModalVisible}
       onYesPress={handleYesPressOfInProgressInspection}
       onNoPress={onNoPress}
+      handleOkPress={handleOkPress}
+      numberPlateInUseError={numberPlateInUseError}
     />
   );
 };

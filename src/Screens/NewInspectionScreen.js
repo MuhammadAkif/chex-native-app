@@ -89,11 +89,6 @@ const NewInspectionScreen = ({
       <BackArrow height={hp('3%')} width={wp('7%')} color={colors.white} />
     </TouchableOpacity>
     <View style={NewInspectionStyles.bodyContainer}>
-      {/*<View style={NewInspectionStyles.bodyHeaderContainer}>*/}
-      {/*  <Text style={NewInspectionStyles.bodyHeaderTitleText}>*/}
-      {/*    Please use mobile phone for optimal performance*/}
-      {/*  </Text>*/}
-      {/*</View>*/}
       <View style={NewInspectionStyles.innerBody}>
         <ScrollView
           contentContainerStyle={NewInspectionStyles.scrollViewContainer}
