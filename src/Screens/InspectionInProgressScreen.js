@@ -39,7 +39,6 @@ const InspectionInProgressScreen = ({
     {modalMessageDetails.isVisible && (
       <Toast
         onCrossPress={handleOkPress}
-        isVisible={modalMessageDetails.isVisible}
         message={modalMessageDetails.message}
       />
     )}

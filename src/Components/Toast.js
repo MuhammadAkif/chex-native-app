@@ -7,12 +7,7 @@ import {
 import {XMark, Check} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 
-const Toast = ({message, onCrossPress, isVisible}) => (
-  // <Modal
-  //   animationType="slide"
-  //   transparent={true}
-  //   visible={isVisible}
-  //   style={styles.container}>
+const Toast = ({message, onCrossPress}) => (
   <View style={styles.centeredView}>
     <View style={styles.messageTextContainer}>
       <View style={styles.iconContainer}>
@@ -26,7 +21,6 @@ const Toast = ({message, onCrossPress, isVisible}) => (
       </TouchableOpacity>
     </View>
   </View>
-  // </Modal>
 );
 
 const styles = StyleSheet.create({
@@ -34,9 +28,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   centeredView: {
-    // flex: 1,
     position: 'absolute',
-    // paddingTop: hp('1%'),
     alignItems: 'center',
     zIndex: 1,
     right: wp('10%'),
