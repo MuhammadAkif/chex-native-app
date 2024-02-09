@@ -57,10 +57,11 @@ const InspectionReviewedContainer = ({navigation}) => {
     setIsLoading(true);
     setSelectedInspectionID(inspectionID);
     axios
-      .get(`${DEV_URL}/api/v1/files/details/${inspectionID}`)
+      .get(`${DEV_URL}/api/v1/files/app/${inspectionID}`)
+      // .get(`${DEV_URL}/api/v1/files/details/${inspectionID}`)
       .then(res => {
         setIsLoading(false);
-        const {finalStatus, remarks} = res?.data?.inspection;
+        const {finalStatus, remarks} = res?.data?.inspectionData;
         let files = sortInspectionReviewedItems(res?.data?.files);
         resetAllStates();
         navigation.navigate(ROUTES.INSPECTION_DETAIL, {
