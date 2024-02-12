@@ -36,11 +36,11 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>We needs access to your Camera to capture vehicle images and videos for inspections.</string>
+	<string>Camera access required in order to capture vehicle images and videos for the inspection.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>We needs access to your Microphone to record audio notes for inspections.</string>
+	<string>Microphone access required in order to record audio notes for the inspection.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We needs access to your photo library.</string>
 	<key>UILaunchStoryboardName</key>
