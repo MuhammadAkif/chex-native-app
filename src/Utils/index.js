@@ -278,7 +278,7 @@ export const uploadToS3 = async (
   RNFetchBlob.fetch(
     'PUT',
     preSignedUrl,
-    {'Content-Type': mime},
+    {'Content-Type': mime, Connection: 'close'},
     RNFetchBlob.wrap(path),
   )
     .uploadProgress((written, total) => {

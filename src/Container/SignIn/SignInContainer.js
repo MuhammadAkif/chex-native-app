@@ -72,7 +72,13 @@ const SignInContainer = ({navigation}) => {
       })
       .catch(err => {
         setIsSubmitting(false);
-        Alert.alert('Login Failed', err?.response?.data?.errors[0]);
+        const isWrongPassword =
+          err?.response?.data?.errors[0] === 'password is  incorrect';
+        if (isWrongPassword) {
+          Alert.alert('Login Failed', 'Wrong password. Please try again.');
+        } else {
+          Alert.alert('Login Failed', err?.response?.data?.errors[0]);
+        }
       });
   };
 

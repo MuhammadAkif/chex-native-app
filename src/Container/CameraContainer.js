@@ -135,7 +135,8 @@ const CameraContainer = ({route, navigation}) => {
     setProgress(0);
   };
   const handleNextPress = () => {
-    let extension = isImageFile.path.split('.')[1];
+    let extension = isImageFile.path.split('.')[2];
+
     setIsModalVisible(true);
     getSignedUrl(
       token,

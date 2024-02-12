@@ -2,10 +2,8 @@ import React from 'react';
 
 import CompletedInspectionScreen from '../Screens/CompletedInspectionScreen';
 import {ROUTES} from '../Navigation/ROUTES';
-import {useNavigation} from '@react-navigation/native';
 
-const CompletedInspectionContainer = () => {
-  const navigation = useNavigation();
+const CompletedInspectionContainer = ({navigation}) => {
   // const [seconds, setSeconds] = useState(5);
   // useEffect(() => {
   //   if (seconds === 1) {
