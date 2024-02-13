@@ -89,8 +89,8 @@ const SignInContainer = ({navigation}) => {
       onSubmit={(values, {resetForm}) => {
         setIsSubmitting(true);
         let body = {
-          username: values.name,
-          password: values.password,
+          username: values.name.trim(),
+          password: values.password.trim(),
         };
         checkUserData(body, resetForm).then();
       }}>
