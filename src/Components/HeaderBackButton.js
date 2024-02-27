@@ -21,7 +21,7 @@ const HeaderBackButton = () => {
 };
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 15,
+    paddingHorizontal: wp('4%'),
   },
 });
 

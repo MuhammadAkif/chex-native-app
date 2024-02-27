@@ -19,8 +19,9 @@ import {
 import {colors} from '../../Assets/Styles';
 import CustomInput from '../../Components/CustomInput';
 import {Check} from '../../Assets/Icons';
+import {ANDROID} from '../../Constants';
 
-const isAndroid = Platform.OS === 'android';
+const isAndroid = Platform.OS === ANDROID;
 
 const RegisterScreen = ({
   values,

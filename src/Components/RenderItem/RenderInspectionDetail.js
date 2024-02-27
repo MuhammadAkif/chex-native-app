@@ -17,11 +17,10 @@ import Video from 'react-native-video';
 import {circleBorderRadius, colors} from '../../Assets/Styles';
 import {Play} from '../../Assets/Icons';
 import {extractTitle} from '../../Utils';
-import {S3_BUCKET_BASEURL} from '../../Constants';
+import {ANDROID, S3_BUCKET_BASEURL, WINDOW} from '../../Constants';
 // import {S3_BUCKET_BASEURL} from '@env'
 
-
-const {width} = Dimensions.get('window');
+const {width} = Dimensions.get(WINDOW);
 
 const RenderInspectionDetail = ({item, handleDisplayMedia}) => {
   let mediaURL =
@@ -53,7 +52,7 @@ const RenderInspectionDetail = ({item, handleDisplayMedia}) => {
             source={{uri: mediaURL}}
             controls={false}
             repeat={false}
-            paused={Platform.OS !== 'android'}
+            paused={Platform.OS !== ANDROID}
             playInBackground={false}
             style={styles.image}
             muted={true}

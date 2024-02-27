@@ -19,6 +19,7 @@ import {
   AndroidMediaViewModal,
 } from '../Components';
 import {BackArrow} from '../Assets/Icons';
+import {ANDROID} from '../Constants';
 
 const NewInspectionScreen = ({
   selectedOption,
@@ -115,7 +116,7 @@ const NewInspectionScreen = ({
               handleVisible={handleMediaModalDetailsCrossPress}
             />
           )}
-          {Platform.OS === 'android' && mediaModalVisible && (
+          {Platform.OS === ANDROID && mediaModalVisible && (
             <AndroidMediaViewModal
               handleVisible={handleMediaModalDetailsCrossPress}
               title={mediaModalDetails?.title}

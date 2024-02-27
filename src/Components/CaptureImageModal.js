@@ -21,6 +21,7 @@ import {colors, dot} from '../Assets/Styles';
 import {PrimaryGradientButton} from './index';
 import VideoPlayer from 'react-native-video-player';
 import Collapse from '../Assets/Icons/Collapse';
+import {ANDROID} from '../Constants';
 
 const CaptureImageModal = ({
   modalVisible,
@@ -44,6 +45,7 @@ const CaptureImageModal = ({
       animationType="slide"
       transparent={true}
       visible={modalVisible}
+      onRequestClose={handleVisible}
       style={styles.container}>
       <View style={styles.centeredView}>
         <TouchableOpacity
@@ -69,7 +71,7 @@ const CaptureImageModal = ({
           </Text>
           {isVideo ? (
             <>
-              {Platform.OS === 'android' ? (
+              {Platform.OS === ANDROID ? (
                 <View style={styles.image}>
                   <TouchableOpacity
                     style={{
@@ -150,15 +152,14 @@ const CaptureImageModal = ({
               styles.body,
               {
                 justifyContent: 'center',
-                top:
-                  Platform.OS === 'android' && isFullScreen ? hp('8%') : null,
+                top: Platform.OS === ANDROID && isFullScreen ? hp('8%') : null,
               },
             ]}>
             <CircularProgress
               maxValue={100}
               value={progress}
               valueSuffix={'%'}
-              radius={Platform.OS === 'android' && isFullScreen ? 40 : 80}
+              radius={Platform.OS === ANDROID && isFullScreen ? 40 : 80}
               progressValueColor={colors.white}
               activeStrokeColor={colors.orangePeel}
               titleStyle={{fontWeight: 'bold'}}
@@ -240,17 +241,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   video: {
-    height: Platform.OS === 'android' ? '100%' : hp('25%'),
-    width: Platform.OS === 'android' ? '90%' : wp('90%'),
+    height: Platform.OS === ANDROID ? '100%' : hp('25%'),
+    width: Platform.OS === ANDROID ? '90%' : wp('90%'),
     borderRadius: 10,
-    left: Platform.OS === 'android' ? wp('5%') : null,
+    left: Platform.OS === ANDROID ? wp('5%') : null,
   },
   imageStyle: {
     height: hp('50%'),
     width: wp('90%'),
     borderRadius: 10,
     marginVertical: hp('2%'),
-    left: Platform.OS === 'android' ? wp('5%') : null,
+    left: Platform.OS === ANDROID ? wp('5%') : null,
   },
   crossIconContainer: {
     position: 'absolute',

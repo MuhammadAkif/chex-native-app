@@ -1,4 +1,5 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
+import {BackHandler} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
@@ -7,9 +8,10 @@ import {InspectionReviewedScreen} from '../Screens';
 import {FETCH_INSPECTION_REVIEWED} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
 // import {DEV_URL} from '@env';
-import {DEV_URL} from '../Constants';
+import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
 import {
   fetchInProgressInspections,
+  handleNavigationHardwareBackPress,
   sortInspectionReviewedItems,
 } from '../Utils';
 
@@ -28,6 +30,12 @@ const InspectionReviewedContainer = ({navigation}) => {
       return () => resetAllStates();
     }, []),
   );
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, () =>
+      handleNavigationHardwareBackPress(navigation),
+    );
+    return () => backHandler.remove();
+  }, []);
   function resetAllStates() {
     setIsLoading(false);
     setIsExpanded([]);

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, BackHandler} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 
@@ -12,8 +12,8 @@ import {
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {colors} from '../Assets/Styles';
-import {DEV_URL} from '../Constants';
-// import {DEV_URL} from '@env'
+import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
+import {handleNavigationHardwareBackPress} from '../Utils';
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -89,6 +89,16 @@ const NewInspectionContainer = ({route, navigation}) => {
     }
   }, [route]);
   useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      HARDWARE_BACK_PRESS,
+      () => {
+        resetAllStates();
+        handleNavigationHardwareBackPress(navigation);
+      },
+    );
+    return () => backHandler.remove();
+  }, []);
+  useEffect(() => {
     let timeoutID = setTimeout(
       () => setModalMessageDetails(modalMessageDetailsInitialState),
       5000,
@@ -115,7 +125,8 @@ const NewInspectionContainer = ({route, navigation}) => {
 
   const handleBackPress = () => {
     resetAllStates();
-    navigation.navigate(previousRoute);
+    navigation.goBack();
+    // navigation.navigate(previousRoute);
   };
   //Collapsed Cards Functions starts here
   const handleCarVerificationSelection = () => {

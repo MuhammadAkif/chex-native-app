@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import {BackHandler} from 'react-native';
 
 import {InspectionDetailScreen} from '../Screens';
-import {extractTitle} from '../Utils';
-import {S3_BUCKET_BASEURL} from '../Constants';
-// import {S3_BUCKET_BASEURL} from '@env'
+import {extractTitle, handleNavigationHardwareBackPress} from '../Utils';
+import {HARDWARE_BACK_PRESS, S3_BUCKET_BASEURL} from '../Constants';
 
-const InspectionDetailContainer = ({route}) => {
+const InspectionDetailContainer = ({navigation, route}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalDetails, setModalDetails] = useState({});
   let detailsFiles = [];
@@ -13,6 +13,12 @@ const InspectionDetailContainer = ({route}) => {
     let {files, finalStatus, remarks} = route.params;
     detailsFiles = {files: files, finalStatus: finalStatus, remarks: remarks};
   }
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, () =>
+      handleNavigationHardwareBackPress(navigation),
+    );
+    return () => backHandler.remove();
+  }, []);
   const handleDisplayMedia = item => {
     let title = extractTitle(item?.groupType, item?.category);
     let mediaURL =

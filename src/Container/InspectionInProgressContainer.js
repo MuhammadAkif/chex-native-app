@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
+import {BackHandler} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
@@ -10,10 +11,11 @@ import {
   REMOVE_INSPECTION_IN_PROGRESS,
 } from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
-import {DEV_URL} from '../Constants';
+import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
 // import {DEV_URL} from '@env'
 import {
   fetchInProgressInspections,
+  handleNavigationHardwareBackPress,
   uploadInProgressMediaToStore,
 } from '../Utils';
 
@@ -53,6 +55,12 @@ const InspectionInProgressContainer = ({navigation}) => {
       clearTimeout(timeoutID);
     };
   }, [modalMessageDetails]);
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, () =>
+      handleNavigationHardwareBackPress(navigation),
+    );
+    return () => backHandler.remove();
+  }, []);
   function resetAllStates() {
     setIsLoading(false);
     setInspectionID(null);

@@ -1,16 +1,24 @@
-import React, {useCallback, useState} from 'react';
-import {ActivityIndicator} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {ActivityIndicator, BackHandler} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
 import {LicensePlateNumberSelectionScreen} from '../Screens';
-import {createInspectionURL, fetchNPURL, DEV_URL} from '../Constants';
+import {
+  createInspectionURL,
+  fetchNPURL,
+  DEV_URL,
+  HARDWARE_BACK_PRESS,
+} from '../Constants';
 // import {DEV_URL} from '@env'
 import {ROUTES} from '../Navigation/ROUTES';
 import {colors} from '../Assets/Styles';
 import {NumberPlateSelectedAction} from '../Store/Actions';
-import {uploadInProgressMediaToStore} from '../Utils';
+import {
+  handleNavigationHardwareBackPress,
+  uploadInProgressMediaToStore,
+} from '../Utils';
 
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const dispatch = useDispatch();
@@ -40,6 +48,12 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       return () => resetAllStates();
     }, []),
   );
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, () =>
+      handleNavigationHardwareBackPress(navigation),
+    );
+    return () => backHandler.remove();
+  }, []);
   function resetAllStates() {
     setNumberPlate([]);
     setSearch('');

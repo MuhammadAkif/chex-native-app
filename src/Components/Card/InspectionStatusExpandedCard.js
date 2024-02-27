@@ -19,11 +19,14 @@ const InspectionStatusExpandedCard = ({
   inspectionDetailsPress,
   isLoading,
   isActivity,
+  finalStatus,
 }) => (
   <View style={styles.container}>
     <TouchableOpacity style={styles.detailsContainer}>
       <Car height={hp('5%')} width={wp('5%')} color={colors.royalBlue} />
-      <Text style={styles.detailsText}>No Damage Detected</Text>
+      <Text style={styles.detailsText}>
+        {finalStatus ? 'No Damage Detected' : 'Damage Detected'}
+      </Text>
     </TouchableOpacity>
     <TouchableOpacity
       style={styles.detailsContainer}

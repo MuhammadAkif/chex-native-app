@@ -12,7 +12,7 @@ import {SignInScreen} from '../../Screens';
 import {signInValidationSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
-import {loginURL} from '../../Constants';
+import {ANDROID, loginURL} from '../../Constants';
 import {SIGN_IN_ACTION} from '../../Store/Actions';
 
 const SignInContainer = ({navigation}) => {
@@ -106,7 +106,7 @@ const SignInContainer = ({navigation}) => {
           errors={errors}
           touched={touched}
           styles={
-            Platform.OS === 'android' && isKeyboardActive
+            Platform.OS === ANDROID && isKeyboardActive
               ? androidKeyboardOpenStyle
               : styles
           }
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 27, 81, 0.8)',
   },
   headerContainer: {
-    flex: Platform.OS === 'android' ? 2 : 1.5,
+    flex: Platform.OS === ANDROID ? 2 : 1.5,
     justifyContent: 'space-around',
     alignItems: 'center',
   },

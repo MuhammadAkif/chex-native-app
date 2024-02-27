@@ -22,6 +22,7 @@ const DisplayMediaModal = ({handleVisible, source, title, isVideo}) => (
     animationType="slide"
     transparent={true}
     visible={true}
+    onRequestClose={handleVisible}
     style={styles.container}>
     <View style={styles.centeredView}>
       <TouchableOpacity

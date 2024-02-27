@@ -61,7 +61,9 @@ const TiresItemsExpandedCard = ({
         imageURL={tires?.rightFrontTire}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(RightFrontTireDetails)}
-        onClearPress={() => handleCrossPress('tires', RightFrontTireDetails.key)}
+        onClearPress={() =>
+          handleCrossPress('tires', RightFrontTireDetails.key)
+        }
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
             'Right Front Tire',

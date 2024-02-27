@@ -12,6 +12,7 @@ import {
   ItemPickerStyles,
 } from '../../Assets/Styles';
 import {CrossFilled, Play} from '../../Assets/Icons';
+import {ANDROID} from '../../Constants';
 
 const height = hp('5%');
 const width = wp('5%');
@@ -45,7 +46,7 @@ const VideoPicker = ({
           controls={false}
           repeat={false}
           resizeMode={'contain'}
-          paused={Platform.OS !== 'android'}
+          paused={Platform.OS !== ANDROID}
           playInBackground={false}
           style={StyleSheet.absoluteFill}
           muted={true}

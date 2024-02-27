@@ -6,7 +6,9 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-const {width} = Dimensions.get('window');
+import {WINDOW} from '../Constants';
+
+const {width} = Dimensions.get(WINDOW);
 const is_iOS =
   Platform.OS === 'ios' && width === 375
     ? width / 1.1 - 2.5

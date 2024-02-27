@@ -13,8 +13,9 @@ import {
 
 import {circleBorderRadius, colors, ShadowEffect} from '../../Assets/Styles';
 import {DownArrow, UpArrow} from '../../Assets/Icons';
+import {WINDOW} from '../../Constants';
 
-const {width} = Dimensions.get('window');
+const {width} = Dimensions.get(WINDOW);
 
 const InspectionStatusCollapsedCard = ({
   textOne,

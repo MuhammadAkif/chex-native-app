@@ -8,3 +8,6 @@ export const loginURL = `${DEV_URL}/api/v1/auth/login`;
 export const uploadURL = `${DEV_URL}/api/v1/file/upload`;
 export const createInspectionURL = `${DEV_URL}/api/v1/create/inspection`;
 export const fetchInProgressURL = `${DEV_URL}/api/v1/status/vehicle`;
+export const HARDWARE_BACK_PRESS = 'hardwareBackPress';
+export const ANDROID = 'android';
+export const WINDOW = 'window';

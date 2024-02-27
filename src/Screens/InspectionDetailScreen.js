@@ -20,6 +20,7 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {CrossFilled, Tick} from '../Assets/Icons';
+import {ANDROID} from '../Constants';
 
 const InspectionDetailScreen = ({
   detailsFiles,
@@ -39,7 +40,7 @@ const InspectionDetailScreen = ({
         source={modalDetails?.source}
       />
     )}
-    {Platform.OS === 'android' && isModalVisible && (
+    {Platform.OS === ANDROID && isModalVisible && (
       <AndroidMediaViewModal
         handleVisible={handleDisplayMediaCrossPress}
         title={modalDetails?.title}

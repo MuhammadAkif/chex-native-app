@@ -109,8 +109,8 @@ const VideoContainer = ({route, navigation}) => {
   const handleSwitchCamera = () => setIsBackCamera(!isBackCamera);
   const handleRecordingPress = async () => {
     if (videoRef.current) {
-      setIsRecording(false);
       if (isRecording) {
+        setIsRecording(false);
         await videoRef?.current?.stopRecording();
       } else {
         setIsRecording(true);

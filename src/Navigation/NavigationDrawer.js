@@ -29,6 +29,7 @@ const NavigationDrawer = () => {
 
   return (
     <Drawer.Navigator
+      backBehavior={'history'}
       drawerContent={props => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerTitle: () => <HeaderTitle />,
@@ -38,16 +39,16 @@ const NavigationDrawer = () => {
       }}
       initialRouteName={ROUTES.INSPECTION_SELECTION}>
       <Drawer.Screen
-        name={ROUTES.INTRO}
-        component={IntroContainer}
-        options={options}
-      />
-      <Drawer.Screen
         name={ROUTES.INSPECTION_SELECTION}
         component={InspectionSelectionContainer}
         options={{
           headerShown: false,
         }}
+      />
+      <Drawer.Screen
+        name={ROUTES.INTRO}
+        component={IntroContainer}
+        options={options}
       />
       <Drawer.Screen
         name={ROUTES.LICENSE_PLATE_SELECTION}

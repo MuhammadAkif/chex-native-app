@@ -15,6 +15,7 @@ const DiscardInspectionModal = ({
     animationType="slide"
     transparent={true}
     visible={true}
+    onRequestClose={onNoPress}
     style={modalStyle.modalOuterContainer}>
     <View style={modalStyle.container}>
       <View style={modalStyle.modalContainer}>

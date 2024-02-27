@@ -17,6 +17,7 @@ import {
 import CustomInput from '../../Components/CustomInput';
 import {colors} from '../../Assets/Styles';
 import CustomPasswordInput from '../../Components/CustomPasswordInput';
+import {ANDROID} from '../../Constants';
 
 const SignInScreen = ({
   values,
@@ -44,7 +45,7 @@ const SignInScreen = ({
           styles.headerContainer,
           {
             flex:
-              Platform.OS === 'android'
+              Platform.OS === ANDROID
                 ? 2
                 : Platform.OS === 'ios' && isKeyboardActive
                 ? 1

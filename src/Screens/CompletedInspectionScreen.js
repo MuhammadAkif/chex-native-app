@@ -11,11 +11,7 @@ import {colors} from '../Assets/Styles';
 import {PrimaryGradientButton} from '../Components';
 import {handleHomePress} from '../Utils';
 
-const CompletedInspectionScreen = ({
-  navigation,
-  handleThankYouPress,
-  seconds,
-}) => (
+const CompletedInspectionScreen = ({navigation}) => (
   <CompletedInspectionBackgroundImage>
     <View style={styles.container}>
       <LinearGradient

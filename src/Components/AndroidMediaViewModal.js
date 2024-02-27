@@ -25,6 +25,7 @@ const AndroidMediaViewModal = ({
       animationType="slide"
       transparent={true}
       visible={true}
+      onRequestClose={handleVisible}
       style={styles.modalContainer}>
       <View style={styles.centeredView}>
         <TouchableOpacity

@@ -1,4 +1,4 @@
-import {Alert} from 'react-native';
+import {Alert, BackHandler} from 'react-native';
 import * as yup from 'yup';
 import {Camera} from 'react-native-vision-camera';
 import axios from 'axios';
@@ -184,44 +184,7 @@ export const RightRearTireDetails = {
   groupType: 'tires',
   isVideo: false,
 };
-
 //New Inspection Objects starts here
-// Mock Data stars here
-export const MockInspectionDetail = [
-  {
-    source: require('../Assets/Images/InspectionDetails/Overwiew.jpg'),
-    name: 'Overview',
-  },
-  {
-    source: require('../Assets/Images/InspectionDetails/InteriorDriverside.jpg'),
-    name: 'Interior Driverside',
-  },
-  {
-    source: require('../Assets/Images/InspectionDetails/DriverSeatAdjusted.jpg'),
-    name: 'Driver seat Adjusted',
-  },
-  {
-    source: require('../Assets/Images/InspectionDetails/InteriorPassengerSide.jpg'),
-    name: 'Interior Passengerside',
-  },
-  {
-    source: require('../Assets/Images/InspectionDetails/PassengerSeatAdjusted.jpg'),
-    name: 'Passenger seat Adjusted',
-  },
-  {
-    source: require('../Assets/Images/InspectionDetails/InteriorBackseat.jpg'),
-    name: 'Interior Backseat',
-  },
-];
-export const MockLicensePlateNumbers = [
-  'DFKGI',
-  'OPOPL',
-  'FEPOI',
-  'FPALI',
-  'AAWWP',
-  'POLIK',
-];
-// Mock Data ends here
 
 export const hasCameraAndMicrophoneAllowed = async () => {
   const cameraPermission = await Camera.getCameraPermissionStatus();
@@ -285,10 +248,10 @@ export const uploadToS3 = async (
       const percentCompleted = Math.round((written * 100) / total);
       setProgress(percentCompleted);
     })
-    .then(res => {
+    .then(() => {
       handleResponse(key);
     })
-    .catch(err => {
+    .catch(() => {
       Alert.alert(
         'Upload Failed',
         'Please check your internet connection and try again. If issues persist, reduce file size or switch networks. Contact support if needed. Apologies for any inconvenience.',
@@ -377,18 +340,16 @@ export const handleHomePress = navigation =>
   navigation.navigate(ROUTES.INSPECTION_SELECTION);
 export const handleStartInspectionPress = navigation =>
   navigation.navigate(ROUTES.LICENSE_PLATE_SELECTION);
+export const handleNavigationHardwareBackPress = navigation => {
+  if (navigation.canGoBack()) {
+    navigation.goBack();
+    return true;
+  } else {
+    BackHandler.exitApp();
+  }
+  return false;
+};
 
-// export const convertToBase64 = uri => {
-//   let base64Path = '';
-//   RNFetchBlob.fs
-//     .readFile(uri, 'base64')
-//     .then(base64 => {
-//       console.log('base64 String => ', base64);
-//       base64Path = base64;
-//     })
-//     .catch(error => console.log('error converting base64 => ', error));
-//   return base64Path;
-// };
 export const convertToBase64 = async (url, mime) => {
   let base64Path = '';
   await RNFetchBlob.config({
@@ -401,12 +362,6 @@ export const convertToBase64 = async (url, mime) => {
     })
     .catch(error => console.log('error converting base64 => ', error));
   return base64Path;
-};
-
-export const getBlob = async fileUri => {
-  const resp = await fetch(fileUri);
-  const imageBody = await resp.blob();
-  return imageBody;
 };
 
 export const newInspectionUploadError = statusCode => {

@@ -13,8 +13,9 @@ import {
 
 import {colors, ShadowEffect} from '../../Assets/Styles';
 import {DownArrow, UpArrow, Check} from '../../Assets/Icons';
+import {WINDOW} from '../../Constants';
 
-const {height, width} = Dimensions.get('window');
+const {height, width} = Dimensions.get(WINDOW);
 
 const CollapsedCard = ({
   text,

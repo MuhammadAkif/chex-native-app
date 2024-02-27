@@ -13,8 +13,9 @@ import {
 
 import {Check} from '../../Assets/Icons';
 import {colors} from '../../Assets/Styles';
+import {WINDOW} from '../../Constants';
 
-const {width} = Dimensions.get('window');
+const {width} = Dimensions.get(WINDOW);
 
 const RenderLicensePlateNumber = ({
   item,

@@ -5,7 +5,9 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-const {width} = Dimensions.get('window');
+import {WINDOW} from '../Constants';
+
+const {width} = Dimensions.get(WINDOW);
 
 const circleArray = Array.from({length: width / 1.3});
 const VectorDesign = () => (

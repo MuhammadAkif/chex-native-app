@@ -37,6 +37,7 @@ const RenderInspectionReviewed = ({
         inspectionDetailsPress={inspectionDetailsPress}
         isLoading={isLoading}
         isActivity={selectedInspectionID === item?.id}
+        finalStatus={item?.finalStatus.toLowerCase() === 'pass'}
       />
     )}
   </>
