@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
   Text,
+  BackHandler,
 } from 'react-native';
 import {
   Camera,
@@ -25,6 +26,7 @@ import {CameraFooter, CaptureImageModal, RecordingPreview} from '../Components';
 import {ROUTES} from '../Navigation/ROUTES';
 import {UpdateExteriorItemURI} from '../Store/Actions';
 import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
+import {HARDWARE_BACK_PRESS} from '../Constants';
 
 const VideoContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -73,6 +75,22 @@ const VideoContainer = ({route, navigation}) => {
       setCounter(30);
     };
   }, []);
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      HARDWARE_BACK_PRESS,
+      () => {
+        if (isVideoURI) {
+          handleRetryPress();
+          return true;
+        } else if (navigation.canGoBack()) {
+          navigation.navigate(ROUTES.NEW_INSPECTION);
+          return true;
+        }
+        return false;
+      },
+    );
+    return () => backHandler.remove();
+  }, [isVideoURI]);
 
   useEffect(() => {
     let interval = null;
@@ -180,7 +198,7 @@ const VideoContainer = ({route, navigation}) => {
           title={title}
           progress={progress}
           handleNavigationBackPress={handleNavigationBackPress}
-          handleVisible={handleVisible}
+          // handleVisible={handleVisible}
         />
       )}
       {isVideoURI ? (

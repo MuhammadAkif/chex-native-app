@@ -12,7 +12,6 @@ import {
 } from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
 import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
-// import {DEV_URL} from '@env'
 import {
   fetchInProgressInspections,
   handleNavigationHardwareBackPress,
@@ -41,7 +40,6 @@ const InspectionInProgressContainer = ({navigation}) => {
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
-      // dispatch(FETCH_INSPECTION_IN_PROGRESS(token, setIsLoading));
       fetchInspectionInProgress().then();
       return () => resetAllStates();
     }, []),

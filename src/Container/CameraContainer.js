@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
   AppState,
+  BackHandler,
   StatusBar,
   StyleSheet,
   TouchableOpacity,
@@ -29,6 +30,7 @@ import {
   UpdateTiresItemURI,
 } from '../Store/Actions';
 import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
+import {HARDWARE_BACK_PRESS} from '../Constants';
 
 const CameraContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -76,6 +78,22 @@ const CameraContainer = ({route, navigation}) => {
       setProgress(0);
     };
   }, []);
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      HARDWARE_BACK_PRESS,
+      () => {
+        if (isImageURL) {
+          handleRetryPress();
+          return true;
+        } else if (navigation.canGoBack()) {
+          navigation.navigate(ROUTES.NEW_INSPECTION);
+          return true;
+        }
+        return false;
+      },
+    );
+    return () => backHandler.remove();
+  }, [isImageURL]);
 
   useEffect(() => {
     if (isBackCamera) {
@@ -159,7 +177,7 @@ const CameraContainer = ({route, navigation}) => {
           title={title}
           progress={progress}
           handleNavigationBackPress={handleNavigationBackPress}
-          handleVisible={handleVisible}
+          // handleVisible={handleVisible}
         />
       )}
       {isImageURL ? (

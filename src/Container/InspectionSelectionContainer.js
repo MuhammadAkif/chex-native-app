@@ -5,7 +5,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import {InspectionSelectionScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
 import {ANDROID, HARDWARE_BACK_PRESS} from '../Constants';
-import {handleNavigationHardwareBackPress} from '../Utils';
 
 const InspectionSelectionContainer = ({navigation}) => {
   const exitApp = () => {
@@ -18,7 +17,7 @@ const InspectionSelectionContainer = ({navigation}) => {
         },
         {
           text: 'YES',
-          onPress: () => handleNavigationHardwareBackPress(navigation),
+          onPress: () => BackHandler.exitApp(),
         },
       ]);
       return true;

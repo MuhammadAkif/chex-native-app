@@ -49,8 +49,11 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
     }, []),
   );
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, () =>
-      handleNavigationHardwareBackPress(navigation),
+    const backHandler = BackHandler.addEventListener(
+      HARDWARE_BACK_PRESS,
+      () => {
+        handleNavigationHardwareBackPress(navigation);
+      },
     );
     return () => backHandler.remove();
   }, []);
