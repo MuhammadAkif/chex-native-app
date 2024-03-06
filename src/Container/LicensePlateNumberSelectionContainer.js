@@ -6,8 +6,8 @@ import axios from 'axios';
 
 import {LicensePlateNumberSelectionScreen} from '../Screens';
 import {
-  createInspectionURL,
-  fetchNPURL,
+  CREATE_INSPECTION_URL,
+  FETCH_NUMBER_PLATE_URL,
   DEV_URL,
   HARDWARE_BACK_PRESS,
 } from '../Constants';
@@ -15,10 +15,7 @@ import {
 import {ROUTES} from '../Navigation/ROUTES';
 import {colors} from '../Assets/Styles';
 import {NumberPlateSelectedAction} from '../Store/Actions';
-import {
-  handleNavigationHardwareBackPress,
-  uploadInProgressMediaToStore,
-} from '../Utils';
+import {uploadInProgressMediaToStore} from '../Utils';
 
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const dispatch = useDispatch();
@@ -51,12 +48,17 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
-      () => {
-        handleNavigationHardwareBackPress(navigation);
-      },
+      handle_Hardware_Back_Press,
     );
     return () => backHandler.remove();
   }, []);
+  function handle_Hardware_Back_Press() {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+      return true;
+    }
+    return false;
+  }
   function resetAllStates() {
     setNumberPlate([]);
     setSearch('');
@@ -67,7 +69,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
   }
   function fetchNP() {
     axios
-      .post(fetchNPURL, {
+      .post(FETCH_NUMBER_PLATE_URL, {
         companyId: data?.companyId,
       })
       .then(response => {
@@ -90,7 +92,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       Authorization: `Bearer ${token}`,
     };
     axios
-      .post(createInspectionURL, body, {headers: headers})
+      .post(CREATE_INSPECTION_URL, body, {headers: headers})
       .then(response => {
         setIsLoading(false);
         setInspectionID(response.data.id);

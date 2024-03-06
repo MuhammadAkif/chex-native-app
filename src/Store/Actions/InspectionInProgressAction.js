@@ -5,14 +5,7 @@ import {DEV_URL} from '../../Constants';
 // import {DEV_URL} from '@env'
 
 export const FETCH_INSPECTION_IN_PROGRESS = inspectionInProgress => {
-  // export const FETCH_INSPECTION_IN_PROGRESS = (token, setIsLoading) => {
   return async dispatch => {
-    // let inspectionInProgress = [];
-    // inspectionInProgress = await fetchInProgressInspections(
-    //   token,
-    //   'IN_PROGRESS',
-    //   setIsLoading,
-    // );
     dispatch({
       type: Types.GET_INSPECTION_IN_PROGRESS,
       payload: {inspectionInProgress},

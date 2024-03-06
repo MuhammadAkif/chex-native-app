@@ -17,12 +17,9 @@ import {
   HeaderBackground,
   CustomDrawerContent,
 } from '../Components';
-import {useNavigationState} from '@react-navigation/native';
 
 const NavigationDrawer = () => {
   const Drawer = createDrawerNavigator();
-  const index = useNavigationState(state => state?.routes[0]?.state?.history);
-  console.log('history => ', index);
 
   const options = {
     headerTitleAlign: 'center',

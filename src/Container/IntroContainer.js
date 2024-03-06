@@ -6,19 +6,20 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {HARDWARE_BACK_PRESS} from '../Constants';
 
 const IntroContainer = ({navigation}) => {
-  const handleGoBack = () => {
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      HARDWARE_BACK_PRESS,
+      handle_Hardware_Back_Press,
+    );
+    return () => backHandler.remove();
+  }, []);
+  function handle_Hardware_Back_Press() {
     if (navigation.canGoBack()) {
       navigation.goBack();
       return true;
     }
-  };
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      HARDWARE_BACK_PRESS,
-      handleGoBack,
-    );
-    return () => backHandler.remove();
-  }, []);
+    return false;
+  }
   const handleStartInspection = () =>
     navigation.navigate(ROUTES.LICENSE_PLATE_SELECTION);
 

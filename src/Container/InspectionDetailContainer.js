@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {BackHandler} from 'react-native';
 
 import {InspectionDetailScreen} from '../Screens';
-import {extractTitle, handleNavigationHardwareBackPress} from '../Utils';
+import {extractTitle} from '../Utils';
 import {HARDWARE_BACK_PRESS, S3_BUCKET_BASEURL} from '../Constants';
 
 const InspectionDetailContainer = ({navigation, route}) => {
@@ -14,11 +14,19 @@ const InspectionDetailContainer = ({navigation, route}) => {
     detailsFiles = {files: files, finalStatus: finalStatus, remarks: remarks};
   }
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, () =>
-      handleNavigationHardwareBackPress(navigation),
+    const backHandler = BackHandler.addEventListener(
+      HARDWARE_BACK_PRESS,
+      handle_Hardware_Back_Press,
     );
     return () => backHandler.remove();
   }, []);
+  function handle_Hardware_Back_Press() {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+      return true;
+    }
+    return false;
+  }
   const handleDisplayMedia = item => {
     let title = extractTitle(item?.groupType, item?.category);
     let mediaURL =

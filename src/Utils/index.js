@@ -1,12 +1,12 @@
-import {Alert, BackHandler} from 'react-native';
+import {Alert} from 'react-native';
 import * as yup from 'yup';
 import {Camera} from 'react-native-vision-camera';
 import axios from 'axios';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import {
-  fetchInProgressURL,
-  uploadURL,
+  FETCH_IN_PROGRESS_URL,
+  UPLOAD_URL,
   DEV_URL,
   S3_BUCKET_BASEURL,
 } from '../Constants';
@@ -206,7 +206,7 @@ export const getSignedUrl = async (
 ) => {
   await axios
     .post(
-      uploadURL,
+      UPLOAD_URL,
       {type: mime},
       {
         headers: {
@@ -278,7 +278,6 @@ export const uploadFile = async (
       callback(res?.data?.id);
     })
     .catch(error => {
-      console.log('uploadFile error :', error);
       const {title, message} = newInspectionUploadError(
         error.response.data.statusCode,
       );
@@ -294,7 +293,7 @@ export const fetchInProgressInspections = async (
   let data = '';
   await axios
     .post(
-      fetchInProgressURL,
+      FETCH_IN_PROGRESS_URL,
       {
         status: status,
       },
@@ -340,15 +339,6 @@ export const handleHomePress = navigation =>
   navigation.navigate(ROUTES.INSPECTION_SELECTION);
 export const handleStartInspectionPress = navigation =>
   navigation.navigate(ROUTES.LICENSE_PLATE_SELECTION);
-export const handleNavigationHardwareBackPress = navigation => {
-  if (navigation.canGoBack()) {
-    navigation.goBack();
-    return true;
-  } else {
-    BackHandler.exitApp();
-  }
-  return false;
-};
 
 export const convertToBase64 = async (url, mime) => {
   let base64Path = '';

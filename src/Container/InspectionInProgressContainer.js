@@ -14,7 +14,6 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
 import {
   fetchInProgressInspections,
-  handleNavigationHardwareBackPress,
   uploadInProgressMediaToStore,
 } from '../Utils';
 
@@ -54,11 +53,19 @@ const InspectionInProgressContainer = ({navigation}) => {
     };
   }, [modalMessageDetails]);
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, () =>
-      handleNavigationHardwareBackPress(navigation),
+    const backHandler = BackHandler.addEventListener(
+      HARDWARE_BACK_PRESS,
+      handle_Hardware_Back_Press,
     );
     return () => backHandler.remove();
   }, []);
+  function handle_Hardware_Back_Press() {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+      return true;
+    }
+    return false;
+  }
   function resetAllStates() {
     setIsLoading(false);
     setInspectionID(null);

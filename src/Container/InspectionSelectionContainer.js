@@ -7,7 +7,7 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {ANDROID, HARDWARE_BACK_PRESS} from '../Constants';
 
 const InspectionSelectionContainer = ({navigation}) => {
-  const exitApp = () => {
+  const handle_Hardware_Back_Press = () => {
     if (Platform.OS === ANDROID) {
       Alert.alert('Hold on!', 'Are you sure you want to exit app?', [
         {
@@ -27,7 +27,7 @@ const InspectionSelectionContainer = ({navigation}) => {
     useCallback(() => {
       const backHandler = BackHandler.addEventListener(
         HARDWARE_BACK_PRESS,
-        exitApp,
+        handle_Hardware_Back_Press,
       );
       return () => backHandler.remove();
     }, []),

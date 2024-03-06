@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Keyboard, Platform, StyleSheet} from 'react-native';
+import {Alert, BackHandler, Keyboard, Platform, StyleSheet} from 'react-native';
 import {Formik} from 'formik';
 import {useDispatch} from 'react-redux';
 import {
@@ -12,7 +12,7 @@ import {SignInScreen} from '../../Screens';
 import {signInValidationSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
-import {ANDROID, loginURL} from '../../Constants';
+import {ANDROID, HARDWARE_BACK_PRESS, LOGIN_URL} from '../../Constants';
 import {SIGN_IN_ACTION} from '../../Store/Actions';
 
 const SignInContainer = ({navigation}) => {
@@ -26,7 +26,22 @@ const SignInContainer = ({navigation}) => {
     name: '',
     password: '',
   };
-
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      HARDWARE_BACK_PRESS,
+      handle_Hardware_Back_Press,
+    );
+    return () => backHandler.remove();
+  }, []);
+  function handle_Hardware_Back_Press() {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+      return true;
+    } else {
+      navigation.navigate(ROUTES.WELCOME);
+    }
+    return false;
+  }
   // Function to handle keyboard visibility changes
   const handleKeyboardDidShow = () => {
     setKeyboardActive(true);
@@ -60,7 +75,7 @@ const SignInContainer = ({navigation}) => {
   const hidePasswordHandler = () => setHidePassword(!hidePassword);
   const checkUserData = async (body, resetForm) => {
     axios
-      .post(loginURL, {
+      .post(LOGIN_URL, {
         username: body.username,
         password: body.password,
       })

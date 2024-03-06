@@ -78,16 +78,7 @@ const VideoContainer = ({route, navigation}) => {
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
-      () => {
-        if (isVideoURI) {
-          handleRetryPress();
-          return true;
-        } else if (navigation.canGoBack()) {
-          navigation.navigate(ROUTES.NEW_INSPECTION);
-          return true;
-        }
-        return false;
-      },
+      handle_Hardware_Back_Press,
     );
     return () => backHandler.remove();
   }, [isVideoURI]);
@@ -114,6 +105,16 @@ const VideoContainer = ({route, navigation}) => {
     }
   }, [isBackCamera, device]);
 
+  function handle_Hardware_Back_Press() {
+    if (isVideoURI) {
+      handleRetryPress();
+      return true;
+    } else if (navigation.canGoBack()) {
+      navigation.navigate(ROUTES.NEW_INSPECTION);
+      return true;
+    }
+    return false;
+  }
   function reset() {
     setCounter(30);
     videoRef?.current?.stopRecording();

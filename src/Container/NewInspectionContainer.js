@@ -13,7 +13,6 @@ import {
 import {Types} from '../Store/Types';
 import {colors} from '../Assets/Styles';
 import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
-import {handleNavigationHardwareBackPress} from '../Utils';
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -91,10 +90,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
-      () => {
-        resetAllStates();
-        handleNavigationHardwareBackPress(navigation);
-      },
+      handle_Hardware_Back_Press,
     );
     return () => backHandler.remove();
   }, []);
@@ -108,6 +104,13 @@ const NewInspectionContainer = ({route, navigation}) => {
       clearTimeout(timeoutID);
     };
   }, [modalMessageDetails]);
+  function handle_Hardware_Back_Press() {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+      return true;
+    }
+    return false;
+  }
   function resetAllStates() {
     setSelectedOption({
       isCarVerification: false,

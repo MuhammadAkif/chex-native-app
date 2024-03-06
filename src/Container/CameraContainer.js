@@ -81,16 +81,7 @@ const CameraContainer = ({route, navigation}) => {
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
-      () => {
-        if (isImageURL) {
-          handleRetryPress();
-          return true;
-        } else if (navigation.canGoBack()) {
-          navigation.navigate(ROUTES.NEW_INSPECTION);
-          return true;
-        }
-        return false;
-      },
+      handle_Hardware_Back_Press,
     );
     return () => backHandler.remove();
   }, [isImageURL]);
@@ -103,6 +94,16 @@ const CameraContainer = ({route, navigation}) => {
     }
   }, [isBackCamera, device]);
 
+  function handle_Hardware_Back_Press() {
+    if (isImageURL) {
+      handleRetryPress();
+      return true;
+    } else if (navigation.canGoBack()) {
+      navigation.navigate(ROUTES.NEW_INSPECTION);
+      return true;
+    }
+    return false;
+  }
   const handleNavigationBackPress = () => navigation.goBack();
   const handleVisible = () => {
     setProgress(0);

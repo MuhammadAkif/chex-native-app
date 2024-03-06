@@ -15,11 +15,11 @@ import {
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 import CircularProgress from 'react-native-circular-progress-indicator';
+import VideoPlayer from 'react-native-video-player';
 
 import {Cross, Expand, Info} from '../Assets/Icons';
 import {colors, dot} from '../Assets/Styles';
 import {PrimaryGradientButton} from './index';
-import VideoPlayer from 'react-native-video-player';
 import Collapse from '../Assets/Icons/Collapse';
 import {ANDROID} from '../Constants';
 
