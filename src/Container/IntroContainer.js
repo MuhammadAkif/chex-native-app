@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {BackHandler} from 'react-native';
+import {BackHandler, Linking} from 'react-native';
 
 import {IntroScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
@@ -20,10 +20,18 @@ const IntroContainer = ({navigation}) => {
     }
     return false;
   }
+  const handleOpenSettings = async () => {
+    await Linking.openSettings().then();
+  };
   const handleStartInspection = () =>
     navigation.navigate(ROUTES.LICENSE_PLATE_SELECTION);
 
-  return <IntroScreen handleStartInspection={handleStartInspection} />;
+  return (
+    <IntroScreen
+      handleStartInspection={handleStartInspection}
+      handleOpenSettings={handleOpenSettings}
+    />
+  );
 };
 
 export default IntroContainer;

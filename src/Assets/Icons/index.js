@@ -25,6 +25,7 @@ import XMark from './XMark';
 import Expand from './Expand';
 import Collapse from './Collapse';
 import Retry from './Retry';
+import External from './External';
 
 export {
   Check,
@@ -54,4 +55,5 @@ export {
   Expand,
   Collapse,
   Retry,
+  External,
 };

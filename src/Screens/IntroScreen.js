@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Platform} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -14,8 +14,11 @@ import {
 } from '../Assets/Styles';
 import {IntroBackGroundImageView} from '../Components';
 import {Plus} from '../Assets/Icons';
+import {ANDROID} from '../Constants';
+import External from '../Assets/Icons/External';
 
-const IntroScreen = ({handleStartInspection}) => (
+let isAndroid = Platform.OS === ANDROID && 'Apps > ';
+const IntroScreen = ({handleStartInspection, handleOpenSettings}) => (
   <View style={styles.container}>
     <View style={styles.innerContainer}>
       <View style={styles.bodyContainer}>
@@ -34,12 +37,19 @@ const IntroScreen = ({handleStartInspection}) => (
                 case don’t worry, follow the steps below in your phone settings:
               </Text>
             </View>
-            <Text style={styles.settingsText}>
-              Settings {'>'} Browser (Chrome, Firefox etc) {'>'} Allow Camera
+            <Text style={styles.settingsText} onPress={handleOpenSettings}>
+              Settings {'>'} {isAndroid}Chex DSP {'>'} Allow Camera
+              <Text onPress={handleOpenSettings}>
+                {' '}
+                <External
+                  height={hp('2%')}
+                  width={wp('5%')}
+                  color={colors.cobaltBlueTwo}
+                />
+              </Text>
             </Text>
             <View style={styles.introTextContainer}>
               <Text style={styles.introTitle}>Things you will require</Text>
-
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={dot} />
                 <Text style={styles.introDescription}>A Penny</Text>
@@ -117,11 +127,13 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   settingsText: {
+    flexDirection: 'row',
     width: wp('80%'),
     fontSize: hp('2.5%'),
     fontWeight: 'bold',
-    color: colors.black,
+    color: colors.cobaltBlueTwo,
     paddingRight: wp('5%'),
+    textDecorationLine: 'underline',
   },
   emptyView: {
     flex: 0.2,
@@ -140,6 +152,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     flexDirection: 'row',
+  },
+  settingsGuideContainer: {
+    // flexDirection: 'row',
   },
 });
 
