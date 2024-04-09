@@ -243,7 +243,7 @@ const androidKeyboardOpenStyle = StyleSheet.create({
     backgroundColor: 'rgba(0, 27, 81, 0.8)',
   },
   headerContainer: {
-    flex: 1,
+    flex: 0.3,
     justifyContent: 'space-around',
     alignItems: 'center',
   },
@@ -256,7 +256,8 @@ const androidKeyboardOpenStyle = StyleSheet.create({
     color: colors.gray,
   },
   bodyContainer: {
-    flex: 0.9,
+    flex: 1.5,
+    // flex: 0.9,
     alignItems: 'center',
     justifyContent: 'space-evenly',
   },
