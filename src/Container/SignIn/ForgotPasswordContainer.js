@@ -1,38 +1,33 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, BackHandler, Keyboard, Platform, StyleSheet} from 'react-native';
+import {BackHandler, Keyboard, Platform, StyleSheet} from 'react-native';
 import {Formik} from 'formik';
-import {useDispatch} from 'react-redux';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import axios from 'axios';
 
-import {SignInScreen} from '../../Screens';
-import {signInValidationSchema} from '../../Utils';
+import {ForgotPasswordScreen} from '../../Screens';
+import {forgetPasswordSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
-import {ANDROID, HARDWARE_BACK_PRESS, LOGIN_URL} from '../../Constants';
-import {SIGN_IN_ACTION} from '../../Store/Actions';
+import {
+  ANDROID,
+  FORGET_PASSWORD_URL,
+  HARDWARE_BACK_PRESS,
+} from '../../Constants';
 
-const SignInContainer = ({navigation, route}) => {
-  const dispatch = useDispatch();
+const ForgotPasswordContainer = ({navigation}) => {
   const emailRef = useRef();
   const passwordRef = useRef();
   const modalMessageInitialState = {isVisible: false, message: '', error: ''};
   const [isKeyboardActive, setKeyboardActive] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
-  const [modalMessage, setModalMessage] = useState({
-    isVisible: false,
-    message: '',
-    error: '',
-  });
+  const [modalMessage, setModalMessage] = useState(modalMessageInitialState);
   const initialValues = {
-    name: '',
-    password: '',
+    email: '',
   };
-
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
@@ -40,15 +35,6 @@ const SignInContainer = ({navigation, route}) => {
     );
     return () => backHandler.remove();
   }, []);
-  useEffect(() => {
-    if (route.params) {
-      setModalMessage({
-        isVisible: route?.params?.passwordChanged,
-        message: route?.params?.toastMessage,
-        error: '',
-      });
-    }
-  }, [route.params]);
   useEffect(() => {
     let timeoutID = setTimeout(
       () => setModalMessage(modalMessageInitialState),
@@ -58,7 +44,6 @@ const SignInContainer = ({navigation, route}) => {
       clearTimeout(timeoutID);
     };
   }, [modalMessage]);
-
   function handle_Hardware_Back_Press() {
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -99,47 +84,38 @@ const SignInContainer = ({navigation, route}) => {
   const handlePasswordFocus = () => passwordRef?.current?.focus();
   // Focus handling ends here
   const hidePasswordHandler = () => setHidePassword(!hidePassword);
-  const handleForgetPassword = () =>
-    navigation.navigate(ROUTES.FORGET_PASSWORD);
-  const checkUserData = async (body, resetForm) => {
+  const handleVerificationCodeSend = async (email, resetForm) => {
     axios
-      .post(LOGIN_URL, {
-        username: body.username,
-        password: body.password,
-      })
+      .post(FORGET_PASSWORD_URL, {email: email})
       .then(response => {
         setIsSubmitting(false);
-        dispatch(SIGN_IN_ACTION(response.data));
         resetForm();
-        navigation.navigate(ROUTES.HOME);
+        navigation.navigate(ROUTES.RESET_PASSWORD, {
+          email: email,
+          toastMessage: 'Verification code has been sent to your account',
+        });
       })
       .catch(err => {
         setIsSubmitting(false);
-        const isWrongPassword =
-          err?.response?.data?.errors[0] === 'password is  incorrect';
-        if (isWrongPassword) {
-          Alert.alert('Login Failed', 'Wrong password. Please try again.');
-        } else {
-          Alert.alert('Login Failed', err?.response?.data?.errors[0]);
-        }
+        setModalMessage(prev => ({
+          ...prev,
+          isVisible: true,
+          error: 'Email not found',
+        }));
       });
   };
   const handleOkPress = () => setModalMessage(modalMessageInitialState);
-
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={signInValidationSchema}
+      validationSchema={forgetPasswordSchema}
       onSubmit={(values, {resetForm}) => {
         setIsSubmitting(true);
-        let body = {
-          username: values.name.trim(),
-          password: values.password.trim(),
-        };
-        checkUserData(body, resetForm).then();
+        handleVerificationCodeSend(values.email, resetForm);
       }}>
       {({values, errors, touched, handleChange, handleBlur, handleSubmit}) => (
-        <SignInScreen
+        <ForgotPasswordScreen
+          navigation={navigation}
           values={values}
           handleChange={handleChange}
           emailRef={emailRef}
@@ -158,7 +134,6 @@ const SignInContainer = ({navigation, route}) => {
           isSubmitting={isSubmitting}
           hidePasswordHandler={hidePasswordHandler}
           hidePassword={hidePassword}
-          handleForgetPassword={handleForgetPassword}
           modalMessage={modalMessage}
           handleOkPress={handleOkPress}
         />
@@ -180,9 +155,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   registerTitleText: {
-    fontSize: hp('3%'),
-    fontWeight: 'bold',
-    color: colors.white,
+    fontSize: hp('2.5%'),
+    color: colors.gray,
   },
   bodyContainer: {
     flex: 0.9,
@@ -298,10 +272,6 @@ const androidKeyboardOpenStyle = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
-  forgotPasswordText: {
-    color: colors.white,
-    textDecorationLine: 'underline',
-  },
 });
 
-export default SignInContainer;
+export default ForgotPasswordContainer;

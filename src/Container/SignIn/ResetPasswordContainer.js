@@ -1,38 +1,43 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, BackHandler, Keyboard, Platform, StyleSheet} from 'react-native';
+import {BackHandler, Keyboard, Platform, StyleSheet} from 'react-native';
 import {Formik} from 'formik';
-import {useDispatch} from 'react-redux';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import axios from 'axios';
 
-import {SignInScreen} from '../../Screens';
-import {signInValidationSchema} from '../../Utils';
+import {resetPasswordSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
-import {ANDROID, HARDWARE_BACK_PRESS, LOGIN_URL} from '../../Constants';
-import {SIGN_IN_ACTION} from '../../Store/Actions';
+import {
+  ANDROID,
+  HARDWARE_BACK_PRESS,
+  RESET_PASSWORD_URL,
+} from '../../Constants';
+import {ResetPasswordScreen} from '../../Screens';
 
-const SignInContainer = ({navigation, route}) => {
-  const dispatch = useDispatch();
+const ResetPasswordContainer = ({navigation, route}) => {
+  const email = route?.params?.email;
+  const toastMessage = route?.params?.toastMessage;
   const emailRef = useRef();
   const passwordRef = useRef();
+  const confirmPasswordRef = useRef();
   const modalMessageInitialState = {isVisible: false, message: '', error: ''};
   const [isKeyboardActive, setKeyboardActive] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
+  const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
   const [modalMessage, setModalMessage] = useState({
-    isVisible: false,
-    message: '',
+    isVisible: true,
+    message: toastMessage,
     error: '',
   });
   const initialValues = {
-    name: '',
+    verificationCode: '',
     password: '',
+    confirmPassword: '',
   };
-
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
@@ -40,15 +45,6 @@ const SignInContainer = ({navigation, route}) => {
     );
     return () => backHandler.remove();
   }, []);
-  useEffect(() => {
-    if (route.params) {
-      setModalMessage({
-        isVisible: route?.params?.passwordChanged,
-        message: route?.params?.toastMessage,
-        error: '',
-      });
-    }
-  }, [route.params]);
   useEffect(() => {
     let timeoutID = setTimeout(
       () => setModalMessage(modalMessageInitialState),
@@ -58,7 +54,6 @@ const SignInContainer = ({navigation, route}) => {
       clearTimeout(timeoutID);
     };
   }, [modalMessage]);
-
   function handle_Hardware_Back_Press() {
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -97,31 +92,38 @@ const SignInContainer = ({navigation, route}) => {
   }, []);
   // Focus handling starts here
   const handlePasswordFocus = () => passwordRef?.current?.focus();
+  const handleConfirmPasswordFocus = () => confirmPasswordRef?.current?.focus();
   // Focus handling ends here
   const hidePasswordHandler = () => setHidePassword(!hidePassword);
+  const hideConfirmPasswordHandler = () =>
+    setHideConfirmPassword(!hideConfirmPassword);
   const handleForgetPassword = () =>
     navigation.navigate(ROUTES.FORGET_PASSWORD);
-  const checkUserData = async (body, resetForm) => {
+  const handleResetPassword = async (body, resetForm) => {
+    let {verificationCode, password, confirmPassword} = body;
     axios
-      .post(LOGIN_URL, {
-        username: body.username,
-        password: body.password,
+      .post(RESET_PASSWORD_URL, {
+        OTP: verificationCode,
+        confirmPassword: confirmPassword,
+        email: email,
+        password: password,
       })
       .then(response => {
         setIsSubmitting(false);
-        dispatch(SIGN_IN_ACTION(response.data));
+        // dispatch(SIGN_IN_ACTION(response.data));
         resetForm();
-        navigation.navigate(ROUTES.HOME);
+        navigation.navigate(ROUTES.SIGN_IN, {
+          toastMessage: 'Your password has been changed successfully',
+          passwordChanged: true,
+        });
       })
       .catch(err => {
         setIsSubmitting(false);
-        const isWrongPassword =
-          err?.response?.data?.errors[0] === 'password is  incorrect';
-        if (isWrongPassword) {
-          Alert.alert('Login Failed', 'Wrong password. Please try again.');
-        } else {
-          Alert.alert('Login Failed', err?.response?.data?.errors[0]);
-        }
+        setModalMessage(prev => ({
+          ...prev,
+          isVisible: true,
+          error: err?.response?.data?.errors,
+        }));
       });
   };
   const handleOkPress = () => setModalMessage(modalMessageInitialState);
@@ -129,22 +131,20 @@ const SignInContainer = ({navigation, route}) => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={signInValidationSchema}
+      validationSchema={resetPasswordSchema}
       onSubmit={(values, {resetForm}) => {
         setIsSubmitting(true);
-        let body = {
-          username: values.name.trim(),
-          password: values.password.trim(),
-        };
-        checkUserData(body, resetForm).then();
+        handleResetPassword(values, resetForm).then();
       }}>
       {({values, errors, touched, handleChange, handleBlur, handleSubmit}) => (
-        <SignInScreen
+        <ResetPasswordScreen
           values={values}
           handleChange={handleChange}
           emailRef={emailRef}
           passwordRef={passwordRef}
+          confirmPasswordRef={confirmPasswordRef}
           handlePasswordFocus={handlePasswordFocus}
+          handleConfirmPasswordFocus={handleConfirmPasswordFocus}
           handleSubmit={handleSubmit}
           handleBlur={handleBlur}
           errors={errors}
@@ -157,8 +157,10 @@ const SignInContainer = ({navigation, route}) => {
           isKeyboardActive={isKeyboardActive}
           isSubmitting={isSubmitting}
           hidePasswordHandler={hidePasswordHandler}
+          hideConfirmPasswordHandler={hideConfirmPasswordHandler}
           hidePassword={hidePassword}
           handleForgetPassword={handleForgetPassword}
+          hideConfirmPassword={hideConfirmPassword}
           modalMessage={modalMessage}
           handleOkPress={handleOkPress}
         />
@@ -180,9 +182,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   registerTitleText: {
-    fontSize: hp('3%'),
-    fontWeight: 'bold',
-    color: colors.white,
+    paddingHorizontal: wp('2%'),
+    fontSize: hp('2.2%'),
+    color: colors.gray,
   },
   bodyContainer: {
     flex: 0.9,
@@ -249,9 +251,9 @@ const androidKeyboardOpenStyle = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   registerTitleText: {
-    fontSize: hp('3%'),
-    fontWeight: 'bold',
-    color: colors.white,
+    paddingHorizontal: wp('2%'),
+    fontSize: hp('2.2%'),
+    color: colors.gray,
   },
   bodyContainer: {
     flex: 0.9,
@@ -298,10 +300,5 @@ const androidKeyboardOpenStyle = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
-  forgotPasswordText: {
-    color: colors.white,
-    textDecorationLine: 'underline',
-  },
 });
-
-export default SignInContainer;
+export default ResetPasswordContainer;

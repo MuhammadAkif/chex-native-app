@@ -7,6 +7,8 @@ import {
   RegisterContainer,
   WelcomeContainer,
   SignInContainer,
+  ResetPasswordContainer,
+  ForgotPasswordContainer,
   CameraContainer,
   VideoContainer,
   CompletedInspectionContainer,
@@ -27,6 +29,14 @@ const Navigation = () => {
         <Stack.Screen name={ROUTES.WELCOME} component={WelcomeContainer} />
         <Stack.Screen name={ROUTES.REGISTER} component={RegisterContainer} />
         <Stack.Screen name={ROUTES.SIGN_IN} component={SignInContainer} />
+        <Stack.Screen
+          name={ROUTES.FORGET_PASSWORD}
+          component={ForgotPasswordContainer}
+        />
+        <Stack.Screen
+          name={ROUTES.RESET_PASSWORD}
+          component={ResetPasswordContainer}
+        />
         <Stack.Screen name={ROUTES.CAMERA} component={CameraContainer} />
         <Stack.Screen name={ROUTES.VIDEO} component={VideoContainer} />
         <Stack.Screen name={ROUTES.HOME} component={NavigationDrawer} />

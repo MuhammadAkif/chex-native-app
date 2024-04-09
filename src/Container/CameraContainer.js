@@ -56,6 +56,8 @@ const CameraContainer = ({route, navigation}) => {
     {videoResolution: {width: 1280, height: 720}},
     {fps: 30},
   ]);
+  const preSignedSignle = new AbortController();
+  const uploadToS3Sigal = new AbortController();
   const {
     category,
     subCategory,

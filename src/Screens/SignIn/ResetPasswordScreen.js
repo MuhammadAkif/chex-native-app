@@ -7,6 +7,7 @@ import {
   Keyboard,
   ActivityIndicator,
 } from 'react-native';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 import {
   BackgroundImageView,
@@ -18,13 +19,15 @@ import CustomInput from '../../Components/CustomInput';
 import {colors} from '../../Assets/Styles';
 import CustomPasswordInput from '../../Components/CustomPasswordInput';
 import {ANDROID} from '../../Constants';
-import Toast from '../../Components/Toast';
+import {Toast} from '../../Components';
 
-const SignInScreen = ({
+const ResetPasswordScreen = ({
   values,
   handleChange,
   emailRef,
   passwordRef,
+  confirmPasswordRef,
+  handleConfirmPasswordFocus,
   handlePasswordFocus,
   handleSubmit,
   handleBlur,
@@ -34,8 +37,9 @@ const SignInScreen = ({
   isKeyboardActive,
   isSubmitting,
   hidePasswordHandler,
+  hideConfirmPasswordHandler,
   hidePassword,
-  handleForgetPassword,
+  hideConfirmPassword,
   modalMessage,
   handleOkPress,
 }) => (
@@ -50,53 +54,69 @@ const SignInScreen = ({
           {
             flex:
               Platform.OS === ANDROID
-                ? 2
+                ? 1.5
                 : Platform.OS === 'ios' && isKeyboardActive
                 ? 1
                 : 1.5,
           },
         ]}>
         <SignInLogo
-          titleText={'CHEX'}
-          dotTitleText={'.AI'}
-          subtitleText={'Virtual Inspections'}
+          titleText={'Forget Password'}
+          textStyle={{fontSize: hp('3%')}}
           containerStyle={styles.logoContainer}
         />
-        <Text style={styles.registerTitleText}>Sign in</Text>
+        <Text style={styles.registerTitleText}>
+          Please check your email for unique pin and type below
+        </Text>
       </View>
       <View style={styles.bodyContainer}>
         <CustomInput
           ref={emailRef}
-          value={values?.name}
+          value={values?.verificationCode}
           onChangeText={handleChange}
           onBlur={handleBlur}
-          valueName={'name'}
-          placeholder={'John Doe'}
+          valueName={'verificationCode'}
+          placeholder={'Verification Code'}
           onSubmitEditing={handlePasswordFocus}
         />
-        <InputFieldRequiredError touched={touched.name} error={errors.name} />
+        <InputFieldRequiredError
+          touched={touched.verificationCode}
+          error={errors.verificationCode}
+        />
         <CustomPasswordInput
           ref={passwordRef}
           value={values?.password}
           onChangeText={handleChange}
           onBlur={handleBlur}
           valueName={'password'}
-          placeholder={'********'}
-          onSubmitEditing={handleSubmit}
+          placeholder={'Password'}
           secureTextEntry={hidePassword}
           enterKeyHint={'done'}
           hidePasswordHandler={hidePasswordHandler}
           isPasswordHidden={hidePassword}
+          onSubmitEditing={handleConfirmPasswordFocus}
         />
         <InputFieldRequiredError
           touched={touched.password}
           error={errors.password}
         />
-        <TouchableOpacity
-          onPress={handleForgetPassword}
-          style={styles.forgetPasswordContainer}>
-          <Text style={styles.forgotPasswordText}>Forget Password</Text>
-        </TouchableOpacity>
+        <CustomPasswordInput
+          ref={confirmPasswordRef}
+          value={values?.confirmPassword}
+          onChangeText={handleChange}
+          onBlur={handleBlur}
+          valueName={'confirmPassword'}
+          placeholder={'Confirm Password'}
+          secureTextEntry={hideConfirmPassword}
+          enterKeyHint={'done'}
+          hidePasswordHandler={hideConfirmPasswordHandler}
+          isPasswordHidden={hideConfirmPassword}
+          onSubmitEditing={handleSubmit}
+        />
+        <InputFieldRequiredError
+          touched={touched.confirmPassword}
+          error={errors.confirmPassword}
+        />
       </View>
       <View style={styles.footerContainer}>
         <PrimaryGradientButton
@@ -124,4 +144,4 @@ const SignInScreen = ({
   </BackgroundImageView>
 );
 
-export default SignInScreen;
+export default ResetPasswordScreen;

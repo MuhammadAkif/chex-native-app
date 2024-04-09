@@ -1,6 +1,8 @@
 import WelcomeContainer from './WelcomeContainer';
 import RegisterContainer from './SignIn/RegisterContainer';
 import SignInContainer from './SignIn/SignInContainer';
+import ForgotPasswordContainer from './SignIn/ForgotPasswordContainer';
+import ResetPasswordContainer from './SignIn/ResetPasswordContainer';
 import InspectionSelectionContainer from './InspectionSelectionContainer';
 import IntroContainer from './IntroContainer';
 import NewInspectionContainer from './NewInspectionContainer';
@@ -16,6 +18,8 @@ export {
   WelcomeContainer,
   RegisterContainer,
   SignInContainer,
+  ForgotPasswordContainer,
+  ResetPasswordContainer,
   InspectionSelectionContainer,
   IntroContainer,
   NewInspectionContainer,

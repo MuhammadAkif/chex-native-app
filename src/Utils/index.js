@@ -48,6 +48,28 @@ export const signInValidationSchema = yup.object().shape({
     .min(1, 'Password must be at least 1 characters')
     .required('Please enter your password!'),
 });
+export const forgetPasswordSchema = yup.object().shape({
+  email: yup
+    .string()
+    .required('Please enter your email!')
+    .min(2, 'Email must be at least 2 characters')
+    .email('Invalid email address'),
+});
+
+export const resetPasswordSchema = yup.object().shape({
+  verificationCode: yup
+    .string()
+    .min(6, 'Name must be at least 6 characters')
+    .required('Please enter your code!'),
+  password: yup
+    .string()
+    .required('Please enter your new password!')
+    .min(6, 'Password must be at least 6 characters'),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('password'), null], 'Passwords must match')
+    .required('Please re-enter your new password!'),
+});
 
 //New Inspection Objects starts here
 //____________________________Car Verification_________________________

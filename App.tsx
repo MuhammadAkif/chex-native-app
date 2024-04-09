@@ -19,7 +19,7 @@ function App() {
     if (displayGif) {
       setTimeout(() => {
         setDisplayGif(false);
-      }, 2900);
+      }, 3500);
     } else {
       dispatch({type: Types.CLEAR_NEW_INSPECTION});
       hasCameraAndMicrophoneAllowed().then();
@@ -32,7 +32,7 @@ function App() {
   return displayGif ? (
     <>
       <FastImage
-        source={require('./src/Assets/Images/chexDSPSlpash-speed55s.gif')}
+        source={require('./src/Assets/Images/chexDSPSlpash-speed55s-no-repeat.gif')}
         resizeMode={'contain'}
         style={[StyleSheet.absoluteFill, {backgroundColor: colors.white}]}
       />

@@ -5,14 +5,24 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-import {XMark, Check} from '../Assets/Icons';
+import {XMark, Check, Cross} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-const Toast = ({message, onCrossPress}) => (
-  <View style={styles.centeredView}>
+const Toast = ({message, onCrossPress, isError, isForgetPassword}) => (
+  <View
+    style={[styles.centeredView, {top: isForgetPassword ? hp('5%') : null}]}>
     <View style={styles.messageTextContainer}>
-      <View style={styles.iconContainer}>
-        <Check height={hp('3%')} width={wp('5%')} color={colors.white} />
+      <View
+        style={[
+          styles.iconContainer,
+          {backgroundColor: isError ? colors.red : colors.brightGreen},
+        ]}>
+        {isError ? (
+          <Cross height={hp('3%')} width={wp('5%')} color={colors.white} />
+        ) : (
+          <Check height={hp('3%')} width={wp('5%')} color={colors.white} />
+        )}
       </View>
       <Text style={styles.messageText}>{message}</Text>
       <TouchableOpacity
