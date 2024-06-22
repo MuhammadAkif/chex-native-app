@@ -30,7 +30,14 @@ import {
   UpdateTiresItemURI,
 } from '../Store/Actions';
 import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
-import {HARDWARE_BACK_PRESS} from '../Constants';
+import {
+  AI_API_TOKEN,
+  EXTRACT_NUMBER_PLATE_WITH_AI,
+  HARDWARE_BACK_PRESS,
+  S3_BUCKET_BASEURL,
+} from '../Constants';
+import {Types} from '../Store/Types';
+import axios from 'axios';
 
 const CameraContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -135,6 +142,9 @@ const CameraContainer = ({route, navigation}) => {
       groupType: groupType,
       dateImage: getCurrentDate(),
     };
+    if (category === 'CarVerification' && type === 'licensePlate') {
+      await handleExtractNumberPlate(`${S3_BUCKET_BASEURL}${key}`);
+    }
     await uploadFile(
       uploadImageToStore,
       body,
@@ -149,8 +159,24 @@ const CameraContainer = ({route, navigation}) => {
       : category === 'Exterior'
       ? dispatch(UpdateExteriorItemURI(type, isImageURL, imageID))
       : dispatch(UpdateTiresItemURI(type, isImageURL, imageID));
+    if (category === 'CarVerification' && type === 'licensePlate') {
+      dispatch({type: Types.IS_VEHICLE_DETAIL_VISIBLE, payload: true});
+    }
     navigation.navigate(ROUTES.NEW_INSPECTION);
   }
+  const handleExtractNumberPlate = async imageURL => {
+    const body = {image_url: imageURL};
+    const headers = {
+      api_token: AI_API_TOKEN,
+    };
+    await axios
+      .post(EXTRACT_NUMBER_PLATE_WITH_AI, body, {headers: headers})
+      .then(res => {
+        console.log('AI res => ', res?.data);
+        dispatch({type: Types.plate_Number, payload: res?.data?.plateNumber});
+      })
+      .catch(error => console.log('AI error => ', error));
+  };
   const handleError = () => {
     setIsModalVisible(false);
     setProgress(0);

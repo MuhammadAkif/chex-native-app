@@ -17,6 +17,7 @@ import {
   DiscardInspectionModal,
   Toast,
   AndroidMediaViewModal,
+  ConfirmVehicleDetailModal,
 } from '../Components';
 import {BackArrow} from '../Assets/Icons';
 import {ANDROID} from '../Constants';
@@ -61,6 +62,10 @@ const NewInspectionScreen = ({
   handleBackPress,
   modalMessageDetails,
   handleOkPress,
+  isVehicleDetailVisible,
+  handleConfirmModalVisible,
+  handleConfirmVehicleDetail,
+                               plateNumber
 }) => (
   <View style={NewInspectionStyles.container}>
     {isDiscardInspectionModalVisible && (
@@ -70,6 +75,14 @@ const NewInspectionScreen = ({
         description={'Are you sure you want to delete this inspection item?'}
         noButtonText={{color: colors.black}}
         noButtonStyle={{borderColor: colors.orange}}
+      />
+    )}
+    {isVehicleDetailVisible && (
+      <ConfirmVehicleDetailModal
+        isLoading={isLoading}
+        onCrossPress={handleConfirmModalVisible}
+        onConfirmPress={handleConfirmVehicleDetail}
+        numberPlateText={plateNumber}
       />
     )}
     {modalMessageDetails.isVisible && (

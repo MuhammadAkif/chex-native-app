@@ -4,6 +4,9 @@ export const DEV_URL =
   'https://fbyrgnnu14.execute-api.us-east-1.amazonaws.com/chexai-dsp-staging';
 export const S3_BUCKET_BASEURL = 'https://chex-ai-uploads.s3.amazonaws.com/';
 export const FETCH_NUMBER_PLATE_URL = `${DEV_URL}/api/v1/searchnumberplate`;
+export const EXTRACT_NUMBER_PLATE = `${DEV_URL}/api/v1/extract/inspection/create`;
+export const EXTRACT_NUMBER_PLATE_WITH_AI =
+  'https://cardamage.chex.ai/license-plate-number-extraction/';
 export const LOGIN_URL = `${DEV_URL}/api/v1/auth/login`;
 export const UPLOAD_URL = `${DEV_URL}/api/v1/file/upload`;
 export const CREATE_INSPECTION_URL = `${DEV_URL}/api/v1/create/inspection`;
@@ -13,3 +16,4 @@ export const RESET_PASSWORD_URL = `${DEV_URL}/api/v1/auth/reset/password`;
 export const HARDWARE_BACK_PRESS = 'hardwareBackPress';
 export const ANDROID = 'android';
 export const WINDOW = 'window';
+export const AI_API_TOKEN = 'FF5SE7GZULOP0CZQQ180KMZER';

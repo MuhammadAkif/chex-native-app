@@ -38,6 +38,7 @@ import DisplayMediaModal from './DisplayMediaModal';
 import CustomPasswordInput from './CustomPasswordInput';
 import DiscardInspectionModal from './PopUpModals/DiscardInspectionModal';
 import InfoModal from './PopUpModals/InfoModal';
+import ConfirmVehicleDetailModal from './PopUpModals/ConfirmVehicleDetailModal';
 import Toast from './Toast';
 import AndroidMediaViewModal from './AndroidMediaViewModal';
 import NumberPlateInUseModal from './NumberPlateInUseModal';
@@ -88,4 +89,5 @@ export {
   AndroidMediaViewModal,
   NumberPlateInUseModal,
   FocusAwareStatusBar,
+  ConfirmVehicleDetailModal,
 };

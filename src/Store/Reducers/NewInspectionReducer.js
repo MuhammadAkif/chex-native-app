@@ -28,6 +28,9 @@ const initialState = {
     rightRearTireID: '',
   },
   selectedInspectionID: null,
+  company_ID: null,
+  plateNumber: null,
+  isVehicleDetailVisible: false,
 };
 
 const newInspectionReducer = (state = initialState, action) => {
@@ -90,6 +93,21 @@ const newInspectionReducer = (state = initialState, action) => {
       return {
         ...state,
         selectedInspectionID: action.payload.selectedInspectionID,
+      };
+    case Types.company_ID:
+      return {
+        ...state,
+        company_ID: action.payload,
+      };
+    case Types.IS_VEHICLE_DETAIL_VISIBLE:
+      return {
+        ...state,
+        isVehicleDetailVisible: action.payload,
+      };
+    case Types.plate_Number:
+      return {
+        ...state,
+        plateNumber: action.payload,
       };
     case Types.CLEAR_NEW_INSPECTION:
       return initialState;

@@ -12,12 +12,24 @@ import {
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {colors} from '../Assets/Styles';
-import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
+import {
+  CREATE_INSPECTION_URL,
+  DEV_URL,
+  EXTRACT_NUMBER_PLATE,
+  HARDWARE_BACK_PRESS,
+} from '../Constants';
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
-  let {carVerificationItems, exteriorItems, tires, selectedInspectionID} =
-    useSelector(state => state.newInspection);
+  let {
+    carVerificationItems,
+    exteriorItems,
+    tires,
+    selectedInspectionID,
+    isVehicleDetailVisible,
+    company_ID,
+    plateNumber
+  } = useSelector(state => state.newInspection);
   const {token} = useSelector(state => state?.auth);
   const modalMessageDetailsInitialState = {
     isVisible: false,
@@ -304,6 +316,32 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   const handleOkPress = () =>
     setModalMessageDetails(modalMessageDetailsInitialState);
+  const handleConfirmModalVisible = () =>
+    dispatch({type: Types.IS_VEHICLE_DETAIL_VISIBLE, payload: false});
+  const handleConfirmVehicleDetail = numberPlate => {
+    const body = {
+      licensePlateNumber: numberPlate,
+      companyId: company_ID,
+      inspectionId: selectedInspectionID,
+    };
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    };
+    setIsLoading(true);
+    axios
+      .post(EXTRACT_NUMBER_PLATE, body, {headers: headers})
+      .then(res => {
+        console.log('vehicle detail body response => ', res?.data);
+      })
+      .catch(e => {
+        console.log('vehicle detail body error => ', e?.message);
+      })
+      .finally(() => {
+        handleConfirmModalVisible();
+        setIsLoading(false);
+      });
+  };
   return (
     <NewInspectionScreen
       selectedOption={selectedOption}
@@ -347,6 +385,10 @@ const NewInspectionContainer = ({route, navigation}) => {
       handleBackPress={handleBackPress}
       modalMessageDetails={modalMessageDetails}
       handleOkPress={handleOkPress}
+      isVehicleDetailVisible={isVehicleDetailVisible}
+      handleConfirmModalVisible={handleConfirmModalVisible}
+      handleConfirmVehicleDetail={handleConfirmVehicleDetail}
+      plateNumber={plateNumber}
     />
   );
 };

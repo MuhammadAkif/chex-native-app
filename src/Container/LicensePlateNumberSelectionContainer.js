@@ -16,6 +16,7 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {colors} from '../Assets/Styles';
 import {NumberPlateSelectedAction} from '../Store/Actions';
 import {uploadInProgressMediaToStore} from '../Utils';
+import {Types} from '../Store/Types';
 
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const dispatch = useDispatch();
@@ -87,6 +88,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       licensePlateNumber: selectedNP,
       companyId: data?.companyId,
     };
+    dispatch({type: Types.company_ID, payload: data?.companyId});
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
