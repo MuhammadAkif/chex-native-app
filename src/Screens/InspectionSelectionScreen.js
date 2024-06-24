@@ -17,6 +17,8 @@ const InspectionSelectionScreen = ({
   handleNewInspectionPress,
   handleInspectionInProgressPress,
   handleInspectionReviewedPress,
+  selectedText,
+                                     isLoading,
 }) => (
   <BackgroundImageView>
     <View style={styles.container}>
@@ -33,17 +35,21 @@ const InspectionSelectionScreen = ({
       </View>
       <View style={styles.bodyContainer}>
         <PrimaryGradientButton
-          text={'+ New Inspection'}
+          text={selectedText}
+          // text={'+ New Inspection'}
           buttonStyle={styles.buttonContainer}
           onPress={handleNewInspectionPress}
+          disabled={isLoading}
         />
         <SecondaryButton
           text={'Inspection In Progress'}
           onPress={handleInspectionInProgressPress}
+          disabled={isLoading}
         />
         <SecondaryButton
           text={'Inspection Submitted'}
           onPress={handleInspectionReviewedPress}
+          disabled={isLoading}
         />
       </View>
       <View style={styles.emptyFooterView} />

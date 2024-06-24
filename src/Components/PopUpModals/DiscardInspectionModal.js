@@ -10,6 +10,7 @@ const DiscardInspectionModal = ({
   onNoPress,
   noButtonText,
   noButtonStyle,
+  dualButton = true,
 }) => (
   <Modal
     animationType="slide"
@@ -28,16 +29,18 @@ const DiscardInspectionModal = ({
             textStyle={modalStyle.yesText}
             onPress={onYesPress}
           />
-          <SecondaryButton
-            text={'No'}
-            buttonStyle={[
-              modalStyle.button,
-              modalStyle.noButton,
-              noButtonStyle,
-            ]}
-            onPress={onNoPress}
-            textStyle={[modalStyle.noTextStyle, noButtonText]}
-          />
+          {dualButton && (
+            <SecondaryButton
+              text={'No'}
+              buttonStyle={[
+                modalStyle.button,
+                modalStyle.noButton,
+                noButtonStyle,
+              ]}
+              onPress={onNoPress}
+              textStyle={[modalStyle.noTextStyle, noButtonText]}
+            />
+          )}
         </View>
       </View>
     </View>

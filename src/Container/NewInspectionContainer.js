@@ -6,6 +6,7 @@ import axios from 'axios';
 import {NewInspectionScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
+  NumberPlateSelectedAction,
   RemoveCarVerificationItemURI,
   RemoveExteriorItemURI,
   RemoveTiresItemURI,
@@ -18,6 +19,7 @@ import {
   EXTRACT_NUMBER_PLATE,
   HARDWARE_BACK_PRESS,
 } from '../Constants';
+import {uploadInProgressMediaToStore} from '../Utils';
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -28,7 +30,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     selectedInspectionID,
     isVehicleDetailVisible,
     company_ID,
-    plateNumber
+    plateNumber,
   } = useSelector(state => state.newInspection);
   const {token} = useSelector(state => state?.auth);
   const modalMessageDetailsInitialState = {
@@ -53,7 +55,13 @@ const NewInspectionContainer = ({route, navigation}) => {
   const [deleteItem, setDeleteItem] = useState({category: null, key: null});
   const [isDiscardInspectionModalVisible, setIsDiscardInspectionModalVisible] =
     useState(false);
+  const [
+    isInspectionInProgressModalVisible,
+    setIsInspectionInProgressModalVisible,
+  ] = useState(false);
   const [previousRoute, setPreviousRoute] = useState('');
+  const [errorTitle, setErrorTitle] = useState('');
+  const [inspectionID, setInspectionID] = useState(null);
   const modalDetailsInitialState = {
     key: 'licensePlate',
     title: 'License Plate',
@@ -332,14 +340,38 @@ const NewInspectionContainer = ({route, navigation}) => {
     axios
       .post(EXTRACT_NUMBER_PLATE, body, {headers: headers})
       .then(res => {
-        console.log('vehicle detail body response => ', res?.data);
       })
       .catch(e => {
-        console.log('vehicle detail body error => ', e?.message);
+        const statusCode = e?.response?.data?.statusCode;
+        if (statusCode === 409) {
+          setInspectionID(e?.response?.data?.inspectionId);
+          setIsInspectionInProgressModalVisible(true);
+          setErrorTitle(e?.response?.data?.errorMessage);
+        }
       })
       .finally(() => {
         handleConfirmModalVisible();
         setIsLoading(false);
+      });
+  };
+
+  const handleYesPressOfInProgressInspection = () => {
+    setIsInspectionInProgressModalVisible(false);
+    setIsLoading(true);
+    setErrorTitle('');
+    axios
+      .get(`${DEV_URL}/api/v1/files/details/${inspectionID}`)
+      .then(res => {
+        uploadInProgressMediaToStore(res?.data?.files, dispatch);
+        setIsLoading(false);
+        dispatch(NumberPlateSelectedAction(inspectionID));
+      })
+      .catch(error => {
+        setIsLoading(false);
+        console.log('error of selected inspection in progress => ', error);
+        // if (error.message === 'Request failed with status code 500') {
+        //   setNumberPlateInUseError(true);
+        // }
       });
   };
   return (
@@ -389,6 +421,11 @@ const NewInspectionContainer = ({route, navigation}) => {
       handleConfirmModalVisible={handleConfirmModalVisible}
       handleConfirmVehicleDetail={handleConfirmVehicleDetail}
       plateNumber={plateNumber}
+      errorTitle={errorTitle}
+      handleYesPressOfInProgressInspection={
+        handleYesPressOfInProgressInspection
+      }
+      isInspectionInProgressModalVisible={isInspectionInProgressModalVisible}
     />
   );
 };

@@ -7,9 +7,10 @@ import {
 
 import {buttonTextStyle, colors} from '../Assets/Styles';
 
-const SecondaryButton = ({text, buttonStyle, textStyle, onPress}) => (
+const SecondaryButton = ({text, buttonStyle, textStyle, onPress, disabled}) => (
   <TouchableOpacity
     onPress={onPress}
+    disabled={disabled}
     style={[styles.registerButton, buttonStyle]}>
     <Text style={[buttonTextStyle, textStyle]}>{text}</Text>
   </TouchableOpacity>

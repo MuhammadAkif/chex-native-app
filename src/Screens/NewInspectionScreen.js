@@ -65,7 +65,10 @@ const NewInspectionScreen = ({
   isVehicleDetailVisible,
   handleConfirmModalVisible,
   handleConfirmVehicleDetail,
-                               plateNumber
+  plateNumber,
+  errorTitle,
+  handleYesPressOfInProgressInspection,
+  isInspectionInProgressModalVisible,
 }) => (
   <View style={NewInspectionStyles.container}>
     {isDiscardInspectionModalVisible && (
@@ -75,6 +78,13 @@ const NewInspectionScreen = ({
         description={'Are you sure you want to delete this inspection item?'}
         noButtonText={{color: colors.black}}
         noButtonStyle={{borderColor: colors.orange}}
+      />
+    )}
+    {isInspectionInProgressModalVisible && (
+      <DiscardInspectionModal
+        onYesPress={handleYesPressOfInProgressInspection}
+        description={errorTitle}
+        dualButton={false}
       />
     )}
     {isVehicleDetailVisible && (
