@@ -52,6 +52,7 @@ const ConfirmVehicleDetailModal = ({
             placeholderTextColor={colors.gray}
             style={styles.numberPlateInput}
             enterKeyHint={'done'}
+            editable={!isLoading}
             onChangeText={setNumberPlate}
             onSubmitEditing={onConfirmPress}
           />

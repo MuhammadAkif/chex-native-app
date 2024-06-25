@@ -59,7 +59,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     isInspectionInProgressModalVisible,
     setIsInspectionInProgressModalVisible,
   ] = useState(false);
-  const [previousRoute, setPreviousRoute] = useState('');
+  const [isLicenseModalVisible, setIsLicenseModalVisible]=useState(false)
+  // const [previousRoute, setPreviousRoute] = useState('');
   const [errorTitle, setErrorTitle] = useState('');
   const [inspectionID, setInspectionID] = useState(null);
   const modalDetailsInitialState = {
@@ -102,9 +103,13 @@ const NewInspectionContainer = ({route, navigation}) => {
   );
 
   useEffect(() => {
+    let timeoutID;
     if (route.params) {
-      const {routeName} = route.params;
-      setPreviousRoute(routeName);
+      console.log('route.params => ', route.params);
+      const {routeName, isLicensePlate} = route.params;
+      if (isLicensePlate) {
+        setTimeout(() => setIsLicenseModalVisible(true), 1000)
+      }
     }
   }, [route]);
   useEffect(() => {
@@ -324,8 +329,8 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   const handleOkPress = () =>
     setModalMessageDetails(modalMessageDetailsInitialState);
-  const handleConfirmModalVisible = () =>
-    dispatch({type: Types.IS_VEHICLE_DETAIL_VISIBLE, payload: false});
+  const handleConfirmModalVisible = () => setIsLicenseModalVisible(prevState => !prevState)
+    // dispatch({type: Types.IS_VEHICLE_DETAIL_VISIBLE, payload: false});
   const handleConfirmVehicleDetail = numberPlate => {
     const body = {
       licensePlateNumber: numberPlate,
@@ -417,7 +422,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       handleBackPress={handleBackPress}
       modalMessageDetails={modalMessageDetails}
       handleOkPress={handleOkPress}
-      isVehicleDetailVisible={isVehicleDetailVisible}
+      isLicenseModalVisible={isLicenseModalVisible}
       handleConfirmModalVisible={handleConfirmModalVisible}
       handleConfirmVehicleDetail={handleConfirmVehicleDetail}
       plateNumber={plateNumber}

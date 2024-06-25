@@ -160,9 +160,10 @@ const CameraContainer = ({route, navigation}) => {
       ? dispatch(UpdateExteriorItemURI(type, isImageURL, imageID))
       : dispatch(UpdateTiresItemURI(type, isImageURL, imageID));
     if (category === 'CarVerification' && type === 'licensePlate') {
-      dispatch({type: Types.IS_VEHICLE_DETAIL_VISIBLE, payload: true});
+      navigation.navigate(ROUTES.NEW_INSPECTION, {isLicensePlate: true});
+    } else {
+      navigation.navigate(ROUTES.NEW_INSPECTION, {isLicensePlate: false});
     }
-    navigation.navigate(ROUTES.NEW_INSPECTION);
   }
   const handleExtractNumberPlate = async imageURL => {
     const body = {image_url: imageURL};

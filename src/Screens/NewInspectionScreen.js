@@ -62,7 +62,7 @@ const NewInspectionScreen = ({
   handleBackPress,
   modalMessageDetails,
   handleOkPress,
-  isVehicleDetailVisible,
+                               isLicenseModalVisible,
   handleConfirmModalVisible,
   handleConfirmVehicleDetail,
   plateNumber,
@@ -87,14 +87,13 @@ const NewInspectionScreen = ({
         dualButton={false}
       />
     )}
-    {isVehicleDetailVisible && (
+    {isLicenseModalVisible && (
       <ConfirmVehicleDetailModal
         isLoading={isLoading}
         onCrossPress={handleConfirmModalVisible}
         onConfirmPress={handleConfirmVehicleDetail}
-        numberPlateText={plateNumber}
-      />
-    )}
+        numberPlateText={plateNumber || ''}
+    />)}
     {modalMessageDetails.isVisible && (
       <Toast
         onCrossPress={handleOkPress}
