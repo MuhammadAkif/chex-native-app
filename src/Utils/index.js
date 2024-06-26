@@ -9,13 +9,16 @@ import {
   UPLOAD_URL,
   DEV_URL,
   S3_BUCKET_BASEURL,
+  CREATE_INSPECTION_URL,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
+  NumberPlateSelectedAction,
   UpdateCarVerificationItemURI,
   UpdateExteriorItemURI,
   UpdateTiresItemURI,
 } from '../Store/Actions';
+import {Types} from '../Store/Types';
 // import {DEV_URL, S3_BUCKET_BASEURL} from '@env';
 
 export const validationSchema = yup.object().shape({
@@ -506,4 +509,49 @@ export const generateRandomString = () => {
   }
 
   return randomString;
+};
+
+export const handleNewInspectionPress = async (
+  dispatch,
+  setIsLoading,
+  companyId,
+  token,
+  navigation,
+  resetAllStates,
+) => {
+  setIsLoading(true);
+  const body = {
+    licensePlateNumber: generateRandomString(),
+    companyId: companyId,
+  };
+  console.log(body);
+  dispatch({type: Types.company_ID, payload: companyId});
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
+  await axios
+    .post(CREATE_INSPECTION_URL, body, {headers: headers})
+    .then(response => {
+      console.log('--------------------------------');
+      console.log('response => ', response.data);
+      // setInspectionID(response.data.id);
+      dispatch(NumberPlateSelectedAction(response.data.id));
+      resetAllStates();
+      navigation.navigate(ROUTES.NEW_INSPECTION, {
+        routeName: ROUTES.LICENSE_PLATE_SELECTION,
+      });
+    })
+    .catch(err => {
+      console.log('err => ', err);
+      // setInspectionID(err?.response?.data?.inspectionId);
+      // const inProgressLicensePlateErrorMessage = `Inspection for license plate #${selectedNP} is already in progress. Would you like to visit in progress inspections page?`;
+      // const errorMessage =
+      //   err?.response?.data?.errorMessage ?? err?.response?.data?.message[0];
+      // setErrorTitle(inProgressLicensePlateErrorMessage);
+      // setIsLoading(false);
+      // setIsDiscardInspectionModalVisible(true);
+      // Alert.alert('', errorMessage);
+    })
+    .finally(() => setIsLoading(false));
 };

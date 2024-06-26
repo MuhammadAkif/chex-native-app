@@ -20,6 +20,7 @@ const InspectionInProgressScreen = ({
   handleContinuePress,
   onCrossPress,
   isLoading,
+  isNewInspectionLoading,
   inspectionID,
   onYesPress,
   onNoPress,
@@ -27,6 +28,7 @@ const InspectionInProgressScreen = ({
   fetchInspectionInProgress,
   modalMessageDetails,
   handleOkPress,
+  onNewInspectionPress,
 }) => (
   <View style={NewInspectionStyles.container}>
     {isDiscardInspectionModalVisible && (
@@ -72,7 +74,7 @@ const InspectionInProgressScreen = ({
                 styles={styles}
                 handleContinuePress={handleContinuePress}
                 onCrossPress={onCrossPress}
-                isLoading={isLoading}
+                isLoading={isLoading||isNewInspectionLoading}
                 inspectionID={inspectionID}
               />
             )}
@@ -90,9 +92,10 @@ const InspectionInProgressScreen = ({
         )}
       </View>
       <PrimaryStartInspectionButton
-        buttonPress={() => handleStartInspectionPress(navigation)}
+        isLoading={isNewInspectionLoading}
+        buttonPress={onNewInspectionPress}
         textPress={() => handleHomePress(navigation)}
-        disabled={isLoading}
+        disabled={isLoading || isNewInspectionLoading}
       />
     </View>
   </View>

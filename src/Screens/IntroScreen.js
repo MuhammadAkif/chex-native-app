@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Platform} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+  ActivityIndicator,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -18,7 +25,11 @@ import {ANDROID} from '../Constants';
 import External from '../Assets/Icons/External';
 
 let isAndroid = Platform.OS === ANDROID && 'Apps > ';
-const IntroScreen = ({handleStartInspection, handleOpenSettings}) => (
+const IntroScreen = ({
+  handleStartInspection,
+  handleOpenSettings,
+  isLoading,
+}) => (
   <View style={styles.container}>
     <View style={styles.innerContainer}>
       <View style={styles.bodyContainer}>
@@ -37,9 +48,9 @@ const IntroScreen = ({handleStartInspection, handleOpenSettings}) => (
                 case don’t worry, follow the steps below in your phone settings:
               </Text>
             </View>
-            <Text style={styles.settingsText} onPress={handleOpenSettings}>
+            <Text style={styles.settingsText} onPress={handleOpenSettings} disabled={isLoading}>
               Settings {'>'} {isAndroid}Chex DSP {'>'} Allow Camera
-              <Text onPress={handleOpenSettings}>
+              <Text onPress={handleOpenSettings} disabled={isLoading}>
                 {' '}
                 <External
                   height={hp('2%')}
@@ -59,16 +70,28 @@ const IntroScreen = ({handleStartInspection, handleOpenSettings}) => (
             <View style={styles.emptyView} />
           </View>
           <View style={styles.footerContainer}>
-            <TouchableOpacity onPress={handleStartInspection}>
+            <TouchableOpacity
+              onPress={handleStartInspection}
+              disabled={isLoading}>
               <LinearGradient
                 colors={['#FF7A00', '#F90']}
                 start={{x: 0, y: 0}}
                 end={{x: 1, y: 0}}
-                style={[styles.buttonContainer]}>
-                <Plus height={hp('5%')} width={wp('5%')} color={colors.white} />
-                <Text style={[buttonTextStyle, {right: wp('6%')}]}>
-                  Start Inspection
-                </Text>
+                style={styles.buttonContainer}>
+                {isLoading ? (
+                  <ActivityIndicator size={'small'} color={colors.white} />
+                ) : (
+                  <>
+                    <Plus
+                      height={hp('5%')}
+                      width={wp('5%')}
+                      color={colors.white}
+                    />
+                    <Text style={[buttonTextStyle, {right: wp('6%')}]}>
+                      Start Inspection
+                    </Text>
+                  </>
+                )}
               </LinearGradient>
             </TouchableOpacity>
           </View>

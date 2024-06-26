@@ -10,16 +10,17 @@ import {ROUTES} from '../Navigation/ROUTES';
 // import {DEV_URL} from '@env';
 import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
 import {
-  fetchInProgressInspections,
+  fetchInProgressInspections, handleNewInspectionPress,
   sortInspectionReviewedItems,
-} from '../Utils';
+} from "../Utils";
 
 const InspectionReviewedContainer = ({navigation}) => {
   const dispatch = useDispatch();
-  const {token} = useSelector(state => state.auth);
+  const {token, data} = useSelector(state => state.auth);
   const inspectionReviewed = useSelector(state => state?.inspectionReviewed);
   const [isExpanded, setIsExpanded] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isNewInspectionLoading, setIsNewInspectionLoading] = useState(false);
   const [selectedInspectionID, setSelectedInspectionID] = useState(null);
 
   useFocusEffect(
@@ -90,6 +91,16 @@ const InspectionReviewedContainer = ({navigation}) => {
         console.log('error of inspection in progress => ', error);
       });
   };
+  const onNewInspectionPress = async () => {
+    await handleNewInspectionPress(
+      dispatch,
+      setIsNewInspectionLoading,
+      data?.companyId,
+      token,
+      navigation,
+      resetAllStates,
+    );
+  };
   return (
     <InspectionReviewedScreen
       handleIsExpanded={handleIsExpanded}
@@ -98,8 +109,10 @@ const InspectionReviewedContainer = ({navigation}) => {
       data={inspectionReviewed}
       inspectionDetailsPress={inspectionDetailsPress}
       isLoading={isLoading}
+      isNewInspectionLoading={isNewInspectionLoading}
       fetchInspectionInProgress={fetchInspectionInProgress}
       selectedInspectionID={selectedInspectionID}
+      onNewInspectionPress={onNewInspectionPress}
     />
   );
 };

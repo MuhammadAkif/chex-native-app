@@ -1,20 +1,13 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {ActivityIndicator, Alert, BackHandler, Platform} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
-import axios from 'axios';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {InspectionSelectionScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
-import {
-  ANDROID,
-  CREATE_INSPECTION_URL,
-  HARDWARE_BACK_PRESS,
-} from '../Constants';
-import {Types} from '../Store/Types';
-import {NumberPlateSelectedAction} from '../Store/Actions';
+import {ANDROID, HARDWARE_BACK_PRESS} from '../Constants';
 import {colors} from '../Assets/Styles';
-import { generateRandomString } from "../Utils";
+import {handleNewInspectionPress} from '../Utils';
 
 const InspectionSelectionContainer = ({navigation}) => {
   const dispatch = useDispatch();
@@ -54,46 +47,53 @@ const InspectionSelectionContainer = ({navigation}) => {
       return () => backHandler.remove();
     }, []),
   );
-  const handleSubmit = () => {
-    setIsLoading(true);
-    const body = {
-      licensePlateNumber: generateRandomString(),
-      companyId: data?.companyId,
-    };
-    console.log(body)
-    dispatch({type: Types.company_ID, payload: data?.companyId});
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    };
-    axios
-      .post(CREATE_INSPECTION_URL, body, {headers: headers})
-      .then(response => {
-        console.log('--------------------------------');
-        console.log('response => ', response.data);
-        // setInspectionID(response.data.id);
-        dispatch(NumberPlateSelectedAction(response.data.id));
-        resetAllStates();
-        navigation.navigate(ROUTES.NEW_INSPECTION, {
-          routeName: ROUTES.LICENSE_PLATE_SELECTION,
-        });
-      })
-      .catch(err => {
-        console.log('err => ', err);
-        // setInspectionID(err?.response?.data?.inspectionId);
-        // const inProgressLicensePlateErrorMessage = `Inspection for license plate #${selectedNP} is already in progress. Would you like to visit in progress inspections page?`;
-        // const errorMessage =
-        //   err?.response?.data?.errorMessage ?? err?.response?.data?.message[0];
-        // setErrorTitle(inProgressLicensePlateErrorMessage);
-        // setIsLoading(false);
-        // setIsDiscardInspectionModalVisible(true);
-        // Alert.alert('', errorMessage);
-      })
-      .finally(() => setIsLoading(false));
-  };
+  // const handleSubmit = () => {
+  //   setIsLoading(true);
+  //   const body = {
+  //     licensePlateNumber: generateRandomString(),
+  //     companyId: data?.companyId,
+  //   };
+  //   console.log(body);
+  //   dispatch({type: Types.company_ID, payload: data?.companyId});
+  //   const headers = {
+  //     'Content-Type': 'application/json',
+  //     Authorization: `Bearer ${token}`,
+  //   };
+  //   axios
+  //     .post(CREATE_INSPECTION_URL, body, {headers: headers})
+  //     .then(response => {
+  //       console.log('--------------------------------');
+  //       console.log('response => ', response.data);
+  //       // setInspectionID(response.data.id);
+  //       dispatch(NumberPlateSelectedAction(response.data.id));
+  //       resetAllStates();
+  //       navigation.navigate(ROUTES.NEW_INSPECTION, {
+  //         routeName: ROUTES.LICENSE_PLATE_SELECTION,
+  //       });
+  //     })
+  //     .catch(err => {
+  //       console.log('err => ', err);
+  //       // setInspectionID(err?.response?.data?.inspectionId);
+  //       // const inProgressLicensePlateErrorMessage = `Inspection for license plate #${selectedNP} is already in progress. Would you like to visit in progress inspections page?`;
+  //       // const errorMessage =
+  //       //   err?.response?.data?.errorMessage ?? err?.response?.data?.message[0];
+  //       // setErrorTitle(inProgressLicensePlateErrorMessage);
+  //       // setIsLoading(false);
+  //       // setIsDiscardInspectionModalVisible(true);
+  //       // Alert.alert('', errorMessage);
+  //     })
+  //     .finally(() => setIsLoading(false));
+  // };
 
-  const handleNewInspectionPress = () => {
-    handleSubmit();
+  const onNewInspectionPress = async () => {
+    await handleNewInspectionPress(
+      dispatch,
+      setIsLoading,
+      data?.companyId,
+      token,
+      navigation,
+      resetAllStates,
+    );
   };
   // navigation.navigate(ROUTES.LICENSE_PLATE_SELECTION);
   const handleInspectionInProgressPress = () =>
@@ -103,7 +103,7 @@ const InspectionSelectionContainer = ({navigation}) => {
 
   return (
     <InspectionSelectionScreen
-      handleNewInspectionPress={handleNewInspectionPress}
+      handleNewInspectionPress={onNewInspectionPress}
       handleInspectionInProgressPress={handleInspectionInProgressPress}
       handleInspectionReviewedPress={handleInspectionReviewedPress}
       selectedText={selectedText}

@@ -19,8 +19,10 @@ const InspectionReviewedScreen = ({
   data,
   inspectionDetailsPress,
   isLoading,
+  isNewInspectionLoading,
   fetchInspectionInProgress,
   selectedInspectionID,
+  onNewInspectionPress,
 }) => (
   <View style={NewInspectionStyles.container}>
     <View style={NewInspectionStyles.bodyContainer}>
@@ -36,7 +38,7 @@ const InspectionReviewedScreen = ({
               isExpanded={isExpanded}
               handleIsExpanded={handleIsExpanded}
               inspectionDetailsPress={inspectionDetailsPress}
-              isLoading={isLoading}
+              isLoading={isLoading || isNewInspectionLoading}
               selectedInspectionID={selectedInspectionID}
             />
           )}
@@ -52,9 +54,10 @@ const InspectionReviewedScreen = ({
         />
       </View>
       <PrimaryStartInspectionButton
-        buttonPress={() => handleStartInspectionPress(navigation)}
+        buttonPress={onNewInspectionPress}
         textPress={() => handleHomePress(navigation)}
-        disabled={isLoading}
+        isLoading={isNewInspectionLoading}
+        disabled={isLoading || isNewInspectionLoading}
       />
     </View>
   </View>

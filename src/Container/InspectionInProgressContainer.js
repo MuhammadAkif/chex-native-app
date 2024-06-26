@@ -14,12 +14,13 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
 import {
   fetchInProgressInspections,
+  handleNewInspectionPress,
   uploadInProgressMediaToStore,
 } from '../Utils';
 
 const InspectionInProgressContainer = ({navigation}) => {
   const dispatch = useDispatch();
-  const {token} = useSelector(state => state.auth);
+  const {token, data} = useSelector(state => state?.auth);
   const inspectionInProgress = useSelector(
     state => state?.inspectionInProgress,
   );
@@ -29,6 +30,7 @@ const InspectionInProgressContainer = ({navigation}) => {
     message: '',
   };
   const [isLoading, setIsLoading] = useState(false);
+  const [isNewInspectionLoading, setIsNewInspectionLoading] = useState(false);
   const [inspectionID, setInspectionID] = useState(null);
   const [deleteInspectionID, setDeleteInspectionID] = useState(null);
   const [isDiscardInspectionModalVisible, setIsDiscardInspectionModalVisible] =
@@ -123,6 +125,16 @@ const InspectionInProgressContainer = ({navigation}) => {
   const handleNoPress = () => setIsDiscardInspectionModalVisible(false);
   const handleOkPress = () =>
     setModalMessageDetails(modalMessageDetailsInitialState);
+  const onNewInspectionPress = async () => {
+    await handleNewInspectionPress(
+      dispatch,
+      setIsNewInspectionLoading,
+      data?.companyId,
+      token,
+      navigation,
+      resetAllStates,
+    );
+  };
 
   return (
     <InspectionInProgressScreen
@@ -131,6 +143,7 @@ const InspectionInProgressContainer = ({navigation}) => {
       handleContinuePress={handleContinuePress}
       onCrossPress={onCrossPress}
       isLoading={isLoading}
+      isNewInspectionLoading={isNewInspectionLoading}
       inspectionID={inspectionID}
       onYesPress={handleYesPress}
       onNoPress={handleNoPress}
@@ -138,6 +151,7 @@ const InspectionInProgressContainer = ({navigation}) => {
       fetchInspectionInProgress={fetchInspectionInProgress}
       modalMessageDetails={modalMessageDetails}
       handleOkPress={handleOkPress}
+      onNewInspectionPress={onNewInspectionPress}
     />
   );
 };

@@ -1,5 +1,11 @@
 import React from 'react';
-import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   heightPercentageToDP as hp,
@@ -8,8 +14,12 @@ import {
 
 import {Plus} from '../Assets/Icons';
 import {buttonTextStyle, colors} from '../Assets/Styles';
-
-const PrimaryStartInspectionButton = ({buttonPress, textPress, disabled}) => (
+const PrimaryStartInspectionButton = ({
+  buttonPress,
+  textPress,
+  disabled,
+  isLoading,
+}) => (
   <View style={styles.footer}>
     <TouchableOpacity onPress={buttonPress} disabled={disabled}>
       <LinearGradient
@@ -17,15 +27,21 @@ const PrimaryStartInspectionButton = ({buttonPress, textPress, disabled}) => (
         start={{x: 0, y: 0}}
         end={{x: 1, y: 0}}
         style={styles.buttonContainer}>
-        <Plus height={hp('5%')} width={wp('5%')} color={colors.white} />
-        <Text style={[buttonTextStyle, {right: wp('8%')}]}>
-          Start Inspection
-        </Text>
+        {isLoading ? (
+          <ActivityIndicator size={'small'} color={colors.white} />
+        ) : (
+          <>
+            <Plus height={hp('5%')} width={wp('5%')} color={colors.white} />
+            <Text style={[buttonTextStyle, {right: wp('8%')}]}>
+              Start Inspection
+            </Text>
+          </>
+        )}
       </LinearGradient>
     </TouchableOpacity>
-    <Text style={styles.footerText}>
+    <Text style={styles.footerText} disabled={isLoading}>
       Or Go back to
-      <Text style={styles.homeText} onPress={textPress}>
+      <Text style={styles.homeText} onPress={textPress} disabled={isLoading}>
         {' '}
         Home{' '}
       </Text>

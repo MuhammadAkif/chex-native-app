@@ -18,7 +18,7 @@ const InspectionSelectionScreen = ({
   handleInspectionInProgressPress,
   handleInspectionReviewedPress,
   selectedText,
-                                     isLoading,
+  isLoading,
 }) => (
   <BackgroundImageView>
     <View style={styles.container}>
