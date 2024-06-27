@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
+  ActivityIndicator,
   AppState,
   BackHandler,
   StatusBar,
@@ -29,19 +30,26 @@ import {
   UpdateExteriorItemURI,
   UpdateTiresItemURI,
 } from '../Store/Actions';
-import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
+import {
+  getCurrentDate,
+  getSignedUrl,
+  handleNewInspectionPress,
+  uploadFile,
+} from '../Utils';
 import {
   AI_API_TOKEN,
+  EXPIRY_INSPECTION,
   EXTRACT_NUMBER_PLATE_WITH_AI,
   HARDWARE_BACK_PRESS,
   S3_BUCKET_BASEURL,
 } from '../Constants';
 import {Types} from '../Store/Types';
 import axios from 'axios';
+import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
 
 const CameraContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const {token} = useSelector(state => state?.auth);
+  const {token, data} = useSelector(state => state?.auth);
   const isFocused = useIsFocused();
   const cameraRef = useRef();
   const appState = useRef(AppState.currentState);
@@ -57,12 +65,15 @@ const CameraContainer = ({route, navigation}) => {
   const [isImageURL, setIsImageURL] = useState('');
   const [isImageFile, setIsImageFile] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isExpiryInspectionVisible, setIsExpiryInspectionVisible] =
+    useState(false);
   const [progress, setProgress] = useState(0);
   const {type, modalDetails, inspectionId} = route.params;
   const format = useCameraFormat(device, [
     {videoResolution: {width: 1280, height: 720}},
     {fps: 30},
   ]);
+  const [isLoading, setIsLoading] = useState(false);
   const preSignedSignle = new AbortController();
   const uploadToS3Sigal = new AbortController();
   const {
@@ -74,6 +85,11 @@ const CameraContainer = ({route, navigation}) => {
     isVideo,
     groupType,
   } = modalDetails;
+  const confirmButtonText = isLoading ? (
+    <ActivityIndicator size={'small'} color={colors.white} />
+  ) : (
+    EXPIRY_INSPECTION.confirmButton
+  );
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       appState.current = nextAppState;
@@ -81,12 +97,16 @@ const CameraContainer = ({route, navigation}) => {
 
     return () => {
       subscription.remove();
-      setIsImageURL('');
-      setIsImageFile({});
-      setIsModalVisible(false);
-      setProgress(0);
+      resetAllStates();
     };
   }, []);
+  function resetAllStates() {
+    setIsImageURL('');
+    setIsImageFile({});
+    setIsModalVisible(false);
+    setProgress(0);
+    setIsExpiryInspectionVisible(false);
+  }
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
@@ -178,9 +198,13 @@ const CameraContainer = ({route, navigation}) => {
       })
       .catch(error => console.log('AI error => ', error));
   };
-  const handleError = () => {
-    setIsModalVisible(false);
-    setProgress(0);
+  const handleError = (inspectionDeleted = false) => {
+    if (inspectionDeleted) {
+      setIsExpiryInspectionVisible(true);
+    } else {
+      setIsModalVisible(false);
+      setProgress(0);
+    }
   };
   const handleNextPress = () => {
     let extension = isImageFile.path.split('.')[2];
@@ -194,6 +218,26 @@ const CameraContainer = ({route, navigation}) => {
       handleResponse,
       handleError,
     ).then();
+  };
+
+  const onNewInspectionPress = async () => {
+    await handleNewInspectionPress(
+      dispatch,
+      setIsLoading,
+      data?.companyId,
+      token,
+      navigation,
+      resetAllStates,
+    )
+      .then(() => {
+        dispatch({type: Types.CLEAR_INSPECTION_IMAGES});
+      })
+      .catch(error => console.log(error))
+      .finally(() => setIsLoading(false));
+  };
+  const handleExitPress = () => {
+    resetAllStates();
+    navigation.navigate(ROUTES.INSPECTION_SELECTION);
   };
 
   return (
@@ -257,6 +301,12 @@ const CameraContainer = ({route, navigation}) => {
           />
         </View>
       )}
+      <ExpiredInspectionModal
+        onConfirmPress={onNewInspectionPress}
+        onCancelPress={handleExitPress}
+        visible={isExpiryInspectionVisible}
+        confirmButtonText={confirmButtonText}
+      />
       <StatusBar
         backgroundColor="transparent"
         barStyle="light-content"

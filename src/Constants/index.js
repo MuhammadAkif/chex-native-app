@@ -17,3 +17,9 @@ export const HARDWARE_BACK_PRESS = 'hardwareBackPress';
 export const ANDROID = 'android';
 export const WINDOW = 'window';
 export const AI_API_TOKEN = 'FF5SE7GZULOP0CZQQ180KMZER';
+
+export const EXPIRY_INSPECTION = {
+  description: 'The Inspection Has Expired. Please Start A New Inspection.',
+  confirmButton: 'New Inspection',
+  cancelButton: 'Exit',
+};

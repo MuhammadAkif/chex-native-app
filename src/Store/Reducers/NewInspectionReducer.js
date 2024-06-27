@@ -30,7 +30,6 @@ const initialState = {
   selectedInspectionID: null,
   company_ID: null,
   plateNumber: null,
-  isVehicleDetailVisible: false,
 };
 
 const newInspectionReducer = (state = initialState, action) => {
@@ -89,6 +88,13 @@ const newInspectionReducer = (state = initialState, action) => {
           [`${action.payload.item}ID`]: action.payload.id,
         },
       };
+    case Types.CLEAR_INSPECTION_IMAGES:
+      return {
+        ...state,
+        carVerificationItems: initialState.carVerificationItems,
+        exteriorItems: initialState.exteriorItems,
+        tires: initialState.tires,
+      };
     case Types.SELECTED_INSPECTION_ID:
       return {
         ...state,
@@ -98,11 +104,6 @@ const newInspectionReducer = (state = initialState, action) => {
       return {
         ...state,
         company_ID: action.payload,
-      };
-    case Types.IS_VEHICLE_DETAIL_VISIBLE:
-      return {
-        ...state,
-        isVehicleDetailVisible: action.payload,
       };
     case Types.plate_Number:
       return {

@@ -303,10 +303,17 @@ export const uploadFile = async (
       callback(res?.data?.id);
     })
     .catch(error => {
+      const inspectionDeleted = error?.response?.data?.statusCode === 403;
       const {title, message} = newInspectionUploadError(
-        error.response.data.statusCode,
+        error?.response?.data?.statusCode,
       );
-      Alert.alert(title, message, [{text: 'Retry', onPress: handleError}]);
+      if (inspectionDeleted) {
+        handleError(inspectionDeleted);
+      } else {
+        Alert.alert(title, message, [
+          {text: 'Retry', onPress: () => handleError(inspectionDeleted)},
+        ]);
+      }
     });
   return imageID;
 };
@@ -379,13 +386,24 @@ export const convertToBase64 = async (url, mime) => {
   return base64Path;
 };
 
-export const newInspectionUploadError = statusCode => {
-  const errorTitle = statusCode === 409 ? 'Duplicate Image Detected' : '';
-  const errorMessage =
-    statusCode === 409
-      ? 'An image/video for this category was uploaded previously and already exists in our database. please refresh your page to see the previously uploaded image.'
-      : '';
-  return {title: errorTitle, message: errorMessage};
+export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
+  const errors = {
+    409: {
+      title: 'Duplicate Image Detected',
+      message:
+        'An image/video for this category was uploaded previously and already exists in our database. please refresh your page to see the previously uploaded image.',
+    },
+    403: {
+      title: '',
+      message: 'The inspection has expired. Please start a new Inspection.',
+    },
+    noStatusCode: {
+      title: 'Upload Failed',
+      message: 'Please try again in a few minutes',
+    },
+  };
+  console.log('errors[statusCode] => ', errors[statusCode]);
+  return errors[statusCode];
 };
 
 export const extractTitle = (groupType, category) => {
@@ -536,7 +554,7 @@ export const handleNewInspectionPress = async (
       console.log('--------------------------------');
       console.log('response => ', response.data);
       // setInspectionID(response.data.id);
-      dispatch(NumberPlateSelectedAction(response.data.id));
+      dispatch(NumberPlateSelectedAction(response?.data?.id));
       resetAllStates();
       navigation.navigate(ROUTES.NEW_INSPECTION, {
         routeName: ROUTES.LICENSE_PLATE_SELECTION,

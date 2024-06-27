@@ -28,7 +28,6 @@ const NewInspectionContainer = ({route, navigation}) => {
     exteriorItems,
     tires,
     selectedInspectionID,
-    isVehicleDetailVisible,
     company_ID,
     plateNumber,
   } = useSelector(state => state.newInspection);
@@ -59,7 +58,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     isInspectionInProgressModalVisible,
     setIsInspectionInProgressModalVisible,
   ] = useState(false);
-  const [isLicenseModalVisible, setIsLicenseModalVisible]=useState(false)
+  const [isLicenseModalVisible, setIsLicenseModalVisible] = useState(false);
   // const [previousRoute, setPreviousRoute] = useState('');
   const [errorTitle, setErrorTitle] = useState('');
   const [inspectionID, setInspectionID] = useState(null);
@@ -108,7 +107,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       console.log('route.params => ', route.params);
       const {routeName, isLicensePlate} = route.params;
       if (isLicensePlate) {
-        setTimeout(() => setIsLicenseModalVisible(true), 1000)
+        setTimeout(() => setIsLicenseModalVisible(true), 1000);
       }
     }
   }, [route]);
@@ -149,6 +148,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsDiscardInspectionModalVisible(false);
     setDeleteItem({category: null, key: null});
     setModalMessageDetails(modalMessageDetailsInitialState);
+    setIsDiscardInspectionModalVisible(false);
   }
 
   const handleBackPress = () => {
@@ -329,8 +329,8 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   const handleOkPress = () =>
     setModalMessageDetails(modalMessageDetailsInitialState);
-  const handleConfirmModalVisible = () => setIsLicenseModalVisible(prevState => !prevState)
-    // dispatch({type: Types.IS_VEHICLE_DETAIL_VISIBLE, payload: false});
+  const handleConfirmModalVisible = () =>
+    setIsLicenseModalVisible(prevState => !prevState);
   const handleConfirmVehicleDetail = numberPlate => {
     const body = {
       licensePlateNumber: numberPlate,
@@ -344,8 +344,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsLoading(true);
     axios
       .post(EXTRACT_NUMBER_PLATE, body, {headers: headers})
-      .then(res => {
-      })
+      .then(res => {})
       .catch(e => {
         const statusCode = e?.response?.data?.statusCode;
         if (statusCode === 409) {
