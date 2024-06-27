@@ -16,6 +16,7 @@ export const RESET_PASSWORD_URL = `${DEV_URL}/api/v1/auth/reset/password`;
 export const HARDWARE_BACK_PRESS = 'hardwareBackPress';
 export const ANDROID = 'android';
 export const WINDOW = 'window';
+export const IOS = 'ios';
 export const AI_API_TOKEN = 'FF5SE7GZULOP0CZQQ180KMZER';
 
 export const EXPIRY_INSPECTION = {
