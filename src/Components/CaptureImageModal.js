@@ -32,14 +32,20 @@ const CaptureImageModal = ({
   instructionalSubHeadingText,
   buttonText,
   title,
-  isVideo,
+  isVideo = false,
   modalKey,
-  isLoading,
-  progress,
+  isLoading = false,
+  progress = 0,
+  isCarVerification = false,
+  isExterior = true,
 }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   let height = hp('5%');
   let width = wp('5%');
+  const imageHeight = {
+    true: hp('20%'),
+    false: hp('30%'),
+  };
   return (
     <Modal
       animationType="slide"
@@ -59,6 +65,7 @@ const CaptureImageModal = ({
             styles.header,
             {
               flex: instructionalSubHeadingText ? 1.5 : 1,
+              flexGrow: isExterior ? 2 : 1,
             },
           ]}>
           <Text
@@ -118,7 +125,7 @@ const CaptureImageModal = ({
               source={source}
               priority={'normal'}
               resizeMode={'stretch'}
-              style={styles.image}
+              style={[styles.image, {height: imageHeight[isCarVerification]}]}
             />
           )}
           <View style={styles.instructionsAndSubHeadingContainer}>
@@ -127,7 +134,7 @@ const CaptureImageModal = ({
                 styles.instructionsContainer,
                 {top: isFullScreen ? hp('25%') : null},
               ]}>
-              <Info height={hp('7%')} width={wp('7%')} color={colors.white} />
+              <Info height={hp('4%')} width={wp('7%')} color={colors.white} />
               <Text style={[styles.instructionsText, styles.textColor]}>
                 {instructionalText}
               </Text>
@@ -203,6 +210,7 @@ const styles = StyleSheet.create({
     width: wp('100%'),
     justifyContent: 'space-evenly',
     alignItems: 'center',
+    rowGap: hp('3%'),
   },
   titleText: {
     fontSize: hp('3%'),
@@ -211,7 +219,6 @@ const styles = StyleSheet.create({
   instructionsContainer: {
     width: wp('90%'),
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
   },
   instructionsText: {
@@ -236,7 +243,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    height: hp('25%'),
     width: wp('90%'),
     borderRadius: 10,
   },

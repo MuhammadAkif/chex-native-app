@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   AppState,
-  BackHandler, Platform,
+  BackHandler,
   StatusBar,
   StyleSheet,
   TouchableOpacity,
@@ -40,7 +40,7 @@ import {
   AI_API_TOKEN,
   EXPIRY_INSPECTION,
   EXTRACT_NUMBER_PLATE_WITH_AI,
-  HARDWARE_BACK_PRESS, IOS,
+  HARDWARE_BACK_PRESS,
   S3_BUCKET_BASEURL,
 } from '../Constants';
 import {Types} from '../Store/Types';
@@ -302,14 +302,14 @@ const CameraContainer = ({route, navigation}) => {
           />
         </View>
       )}
-      {isExpiryInspectionVisible &&
-          <ExpiredInspectionModal
+      {isExpiryInspectionVisible && (
+        <ExpiredInspectionModal
           onConfirmPress={onNewInspectionPress}
           onCancelPress={handleExitPress}
           visible={true}
           confirmButtonText={confirmButtonText}
-          />
-      }
+        />
+      )}
       <StatusBar
         backgroundColor="transparent"
         barStyle="light-content"

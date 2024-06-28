@@ -35,15 +35,14 @@ const NewInspectionScreen = ({
   title,
   isVideo,
   modalKey,
+  isCarVerification,
+  isExterior,
   instructionalSubHeadingText,
   handleItemPickerPress,
   handleCaptureNowPress,
   carVerificationItems,
   exteriorItems,
   tires,
-  handleCarVerificationCrossPress,
-  handleExteriorCrossPress,
-  handleTiresCrossPress,
   isBothCarVerificationImagesAvailable,
   isAllExteriorImagesAvailable,
   isBothTiresImagesAvailable,
@@ -129,6 +128,8 @@ const NewInspectionScreen = ({
               instructionalSubHeadingText={instructionalSubHeadingText}
               modalKey={modalKey}
               handleCaptureImage={handleCaptureNowPress}
+              isCarVerification={isCarVerification}
+              isExterior={isExterior}
             />
           )}
           {Platform.OS === 'ios' && mediaModalVisible && (

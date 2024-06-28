@@ -19,7 +19,11 @@ import {
   EXTRACT_NUMBER_PLATE,
   HARDWARE_BACK_PRESS,
 } from '../Constants';
-import {uploadInProgressMediaToStore} from '../Utils';
+import {
+  EXTRACT_INSPECTION_ITEM_ID,
+  LicensePlateDetails,
+  uploadInProgressMediaToStore,
+} from '../Utils';
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -63,15 +67,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   const [errorTitle, setErrorTitle] = useState('');
   const [inspectionID, setInspectionID] = useState(null);
   const modalDetailsInitialState = {
-    key: 'licensePlate',
-    title: 'License Plate',
-    source: require('../Assets/Images/license_number.jpg'),
-    instructionalText:
-      'Please take a photo of the License plate on the vehicle',
-    instructionalSubHeadingText: '',
-    buttonText: 'Capture Now',
-    category: 'CarVerification',
-    subCategory: 'license_plate',
+    ...LicensePlateDetails,
     isVideo: false,
   };
   const [modalDetails, setModalDetails] = useState(modalDetailsInitialState);
@@ -199,14 +195,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       });
   };
   const handleExteriorCrossPress = async key => {
-    let imageID =
-      key === 'exteriorLeft'
-        ? exteriorItems?.exteriorLeftID
-        : key === 'exteriorRight'
-        ? exteriorItems?.exteriorRightID
-        : key === 'exteriorFront'
-        ? exteriorItems.exteriorFrontID
-        : exteriorItems?.exteriorRearID;
+    let imageID = EXTRACT_INSPECTION_ITEM_ID(key);
     await axios
       .delete(`${DEV_URL}/api/v1/files/${imageID}`, {
         headers: {
@@ -241,7 +230,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         dispatch(RemoveTiresItemURI(key));
       });
   };
-  const handleMediaModalDetailsPress = (title, mediaURL, isVideo) => {
+  const handleMediaModalDetailsPress = (title, mediaURL, isVideo = false) => {
     setMediaModalDetails({
       title: title,
       source: mediaURL,
@@ -312,16 +301,33 @@ const NewInspectionContainer = ({route, navigation}) => {
     setDeleteItem({category: category, key: key});
   };
   const handleYesPress = () => {
+    const handleRemoveImage = {
+      carVerificiationItems: handleCarVerificationCrossPress,
+      exteriorItems: handleExteriorCrossPress,
+      tires: handleTiresCrossPress,
+    };
     setIsDiscardInspectionModalVisible(false);
-    if (deleteItem.category === 'carVerificationItems') {
-      handleCarVerificationCrossPress(deleteItem.key).then();
-    } else if (deleteItem.category === 'exteriorItems') {
-      handleExteriorCrossPress(deleteItem.key).then();
-    } else if (deleteItem.category === 'tires') {
-      handleTiresCrossPress(deleteItem.key).then();
-    } else {
-      return true;
-    }
+    const imageID = EXTRACT_INSPECTION_ITEM_ID(deleteItem.key);
+    axios
+      .delete(`${DEV_URL}/api/v1/files/${imageID}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(res => {
+        setModalMessageDetails(deleteSuccess);
+        dispatch(handleRemoveImage[deleteItem.key](deleteItem.key));
+      });
+    // if (deleteItem.category === 'carVerificationItems') {
+    //   handleCarVerificationCrossPress(deleteItem.key).then();
+    // } else if (deleteItem.category === 'exteriorItems') {
+    //   handleExteriorCrossPress(deleteItem.key).then();
+    // } else if (deleteItem.category === 'tires') {
+    //   handleTiresCrossPress(deleteItem.key).then();
+    // } else {
+    //   return true;
+    // }
   };
   const handleNoPress = () => {
     setIsDiscardInspectionModalVisible(false);
@@ -386,21 +392,20 @@ const NewInspectionContainer = ({route, navigation}) => {
       handleTiresSelection={handleTiresSelection}
       modalVisible={modalVisible}
       handleModalVisible={handleModalVisible}
-      source={modalDetails.source}
-      instructionalText={modalDetails.instructionalText}
-      buttonText={modalDetails.buttonText}
-      title={modalDetails.title}
-      isVideo={modalDetails.isVideo}
-      modalKey={modalDetails.key}
-      instructionalSubHeadingText={modalDetails.instructionalSubHeadingText}
+      source={modalDetails?.source}
+      instructionalText={modalDetails?.instructionalText}
+      buttonText={modalDetails?.buttonText}
+      title={modalDetails?.title}
+      isVideo={modalDetails?.isVideo}
+      modalKey={modalDetails?.key}
+      isExterior={modalDetails?.groupType === 'exteriorItems'}
+      isCarVerification={modalDetails?.groupType === 'carVerificiationItems'}
+      instructionalSubHeadingText={modalDetails?.instructionalSubHeadingText}
       handleItemPickerPress={handleItemPickerPress}
       handleCaptureNowPress={handleCaptureNowPress}
       carVerificationItems={carVerificationItems}
       exteriorItems={exteriorItems}
       tires={tires}
-      handleCarVerificationCrossPress={handleCarVerificationCrossPress}
-      handleExteriorCrossPress={handleExteriorCrossPress}
-      handleTiresCrossPress={handleTiresCrossPress}
       isBothCarVerificationImagesAvailable={
         isBothCarVerificationImagesAvailable
       }

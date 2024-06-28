@@ -24,66 +24,80 @@ const TiresItemsExpandedCard = ({
     ]}>
     <View style={ExpandedCardStyles.itemPickerContainer}>
       <ImagePicker
-        text={'Left Front Tire'}
+        text={LeftFrontTireDetails.title}
         pickerText={'Upload Image'}
         imageURL={tires?.leftFrontTire}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(LeftFrontTireDetails)}
-        onClearPress={() => handleCrossPress('tires', LeftFrontTireDetails.key)}
+        onClearPress={() =>
+          handleCrossPress(
+            LeftFrontTireDetails.groupType,
+            LeftFrontTireDetails.key,
+          )
+        }
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
-            'Left Front Tire',
+            LeftFrontTireDetails.title,
             tires?.leftFrontTire,
-            false,
           )
         }
       />
       <ImagePicker
-        text={'Left Rear Tire'}
+        text={LeftRearTireDetails.title}
         pickerText={'Upload Image'}
         imageURL={tires?.leftRearTire}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(LeftRearTireDetails)}
-        onClearPress={() => handleCrossPress('tires', LeftRearTireDetails.key)}
+        onClearPress={() =>
+          handleCrossPress(
+            LeftRearTireDetails.groupType,
+            LeftRearTireDetails.key,
+          )
+        }
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
-            'Left Rear Tire',
+            LeftRearTireDetails.title,
             tires?.leftRearTire,
-            false,
           )
         }
       />
     </View>
     <View style={ExpandedCardStyles.itemPickerContainer}>
       <ImagePicker
-        text={'Right Front Tire'}
+        text={RightFrontTireDetails.title}
         pickerText={'Upload Image'}
         imageURL={tires?.rightFrontTire}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(RightFrontTireDetails)}
         onClearPress={() =>
-          handleCrossPress('tires', RightFrontTireDetails.key)
+          handleCrossPress(
+            RightFrontTireDetails.groupType,
+            RightFrontTireDetails.key,
+          )
         }
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
-            'Right Front Tire',
+            RightFrontTireDetails.title,
             tires?.rightFrontTire,
-            false,
           )
         }
       />
       <ImagePicker
-        text={'Right Rear Tire'}
+        text={RightRearTireDetails.title}
         pickerText={'Upload Image'}
         imageURL={tires?.rightRearTire}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(RightRearTireDetails)}
-        onClearPress={() => handleCrossPress('tires', RightRearTireDetails.key)}
+        onClearPress={() =>
+          handleCrossPress(
+            RightRearTireDetails.groupType,
+            RightRearTireDetails.key,
+          )
+        }
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
-            'Right Rear Tire',
+            RightRearTireDetails.title,
             tires?.rightRearTire,
-            false,
           )
         }
       />

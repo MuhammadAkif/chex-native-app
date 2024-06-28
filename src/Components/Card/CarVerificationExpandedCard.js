@@ -11,6 +11,7 @@ const CarVerificationExpandedCard = ({
   handleCrossPress,
   isLoading,
   handleMediaModalDetailsPress,
+  pickerText = 'Upload Image',
 }) => (
   <View style={expandedCardStyles.expandedCardContainer}>
     <View
@@ -20,8 +21,8 @@ const CarVerificationExpandedCard = ({
       ]}>
       <ImagePicker
         onPress={() => handleItemPickerPress(LicensePlateDetails)}
-        pickerText={'Upload Image'}
-        text={'License Plate'}
+        pickerText={pickerText}
+        text={LicensePlateDetails.title}
         isLoading={isLoading}
         imageURL={carVerificationItems?.licensePlate}
         onClearPress={() =>
@@ -29,9 +30,8 @@ const CarVerificationExpandedCard = ({
         }
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
-            'License Plate',
+            LicensePlateDetails.title,
             carVerificationItems?.licensePlate,
-            false,
           )
         }
       />
@@ -43,8 +43,8 @@ const CarVerificationExpandedCard = ({
       ]}>
       <ImagePicker
         onPress={() => handleItemPickerPress(OdometerDetails)}
-        pickerText={'Upload Image'}
-        text={'Odometer'}
+        pickerText={pickerText}
+        text={OdometerDetails.title}
         isLoading={isLoading}
         imageURL={carVerificationItems?.odometer}
         onClearPress={() =>
@@ -52,9 +52,8 @@ const CarVerificationExpandedCard = ({
         }
         handleMediaModalDetailsPress={() =>
           handleMediaModalDetailsPress(
-            'Odometer',
+            OdometerDetails.title,
             carVerificationItems?.odometer,
-            false,
           )
         }
       />
