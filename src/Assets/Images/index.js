@@ -1,6 +1,8 @@
 export const IMAGES = {
   license_Plate: require('./license_number.jpg'),
   odometer: require('./Odometer.png'),
+  exterior_Left: require('./ExteriorLeft.png'),
+  exterior_Right: require('./ExteriorRight.png'),
   exterior_Front: require('./Exterior_Front.png'),
   exterior_Rear: require('./Exterior_Rear.png'),
   front_Left_Corner: require('./Front_Left_Corner.png'),

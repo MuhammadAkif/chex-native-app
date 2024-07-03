@@ -40,6 +40,10 @@ const initialState = {
   selectedInspectionID: null,
   company_ID: null,
   plateNumber: null,
+  skipLeft: false,
+  skipLeftCorners: false,
+  skipRight: false,
+  skipRightCorners: false,
 };
 
 const newInspectionReducer = (state = initialState, action) => {
@@ -70,6 +74,11 @@ const newInspectionReducer = (state = initialState, action) => {
           [action.payload.item]: action.payload.uri,
           [`${action.payload.item}ID`]: action.payload.id,
         },
+      };
+    case Types.CLEAR_TIRES:
+      return {
+        ...state,
+        tires: initialState.tires,
       };
     case Types.REMOVE_CAR_VERIFICATION_ITEM_URI:
       return {
@@ -119,6 +128,26 @@ const newInspectionReducer = (state = initialState, action) => {
       return {
         ...state,
         plateNumber: action.payload,
+      };
+    case Types.SKIP_LEFT:
+      return {
+        ...state,
+        skipLeft: action.payload,
+      };
+    case Types.SKIP_LEFT_CORNERS:
+      return {
+        ...state,
+        skipLeftCorners: action.payload,
+      };
+    case Types.SKIP_RIGHT:
+      return {
+        ...state,
+        skipRight: action.payload,
+      };
+    case Types.SKIP_RIGHT_CORNERS:
+      return {
+        ...state,
+        skipRightCorners: action.payload,
       };
     case Types.CLEAR_NEW_INSPECTION:
       return initialState;

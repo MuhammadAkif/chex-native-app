@@ -41,6 +41,7 @@ import {
   EXPIRY_INSPECTION,
   EXTRACT_NUMBER_PLATE_WITH_AI,
   HARDWARE_BACK_PRESS,
+  INSPECTION,
   S3_BUCKET_BASEURL,
 } from '../Constants';
 import {Types} from '../Store/Types';
@@ -252,6 +253,8 @@ const CameraContainer = ({route, navigation}) => {
           title={title}
           progress={progress}
           handleNavigationBackPress={handleNavigationBackPress}
+          isExterior={groupType === INSPECTION.EXTERIOR}
+          isCarVerification={groupType === INSPECTION.CAR_VERIFICATION}
           // handleVisible={handleVisible}
         />
       )}

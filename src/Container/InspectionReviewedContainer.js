@@ -10,9 +10,11 @@ import {ROUTES} from '../Navigation/ROUTES';
 // import {DEV_URL} from '@env';
 import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
 import {
-  fetchInProgressInspections, handleNewInspectionPress,
+  fetchInProgressInspections,
+  FILTER_IMAGES,
+  handleNewInspectionPress,
   sortInspectionReviewedItems,
-} from "../Utils";
+} from '../Utils';
 
 const InspectionReviewedContainer = ({navigation}) => {
   const dispatch = useDispatch();
@@ -78,7 +80,8 @@ const InspectionReviewedContainer = ({navigation}) => {
       .then(res => {
         setIsLoading(false);
         const {finalStatus, remarks} = res?.data?.inspectionData;
-        let files = sortInspectionReviewedItems(res?.data?.files);
+        const beforeImages = FILTER_IMAGES(res?.data?.files, 'before');
+        let files = sortInspectionReviewedItems(beforeImages);
         resetAllStates();
         navigation.navigate(ROUTES.INSPECTION_DETAIL, {
           files: files,

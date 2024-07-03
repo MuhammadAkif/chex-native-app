@@ -5,11 +5,14 @@ import axios from 'axios';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import {
-  FETCH_IN_PROGRESS_URL,
-  UPLOAD_URL,
-  DEV_URL,
-  S3_BUCKET_BASEURL,
   CREATE_INSPECTION_URL,
+  DEV_URL,
+  FETCH_IN_PROGRESS_URL,
+  INSPECTION,
+  INSPECTION_SUBCATEGORY,
+  INSPECTION_TITLE,
+  S3_BUCKET_BASEURL,
+  UPLOAD_URL,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
@@ -86,7 +89,7 @@ export const LicensePlateDetails = {
   instructionalSubHeadingText: '',
   category: 'CarVerification',
   subCategory: 'license_plate_number',
-  groupType: 'carVerificiationItems',
+  groupType: INSPECTION.CAR_VERIFICATION,
   buttonText: 'Capture Now',
 };
 export const OdometerDetails = {
@@ -99,62 +102,10 @@ export const OdometerDetails = {
   instructionalSubHeadingText: '',
   category: 'CarVerification',
   subCategory: 'odometer',
-  groupType: 'carVerificiationItems',
+  groupType: INSPECTION.CAR_VERIFICATION,
   buttonText: 'Capture Now',
 };
 //___________________________Exterior______________________________
-export const ExteriorFrontLeftCornerDetails = {
-  key: 'exteriorLeft',
-  title: 'Front Left Corner',
-  source: IMAGES.front_Left_Corner,
-  instructionalText:
-    'Please take a photo from the front left corner of the vehicle clearly capturing the left headlight, driver door and roof on the exterior left side of the vehicle',
-  instructionalSubHeadingText: '',
-  buttonText: 'Capture Now',
-  category: 'Exterior',
-  subCategory: 'exterior_left',
-  groupType: 'exteriorItems',
-  isVideo: false,
-};
-export const ExteriorFrontRightCornerDetails = {
-  key: 'exteriorRight',
-  title: 'Front Right Corner',
-  source: IMAGES.front_Right_Corner,
-  instructionalText:
-    'Please take a photo from the front right corner of the vehicle clearly capturing the right headlight, passenger door and roof on the exterior right side of the vehicle',
-  instructionalSubHeadingText: '',
-  buttonText: 'Capture Now',
-  category: 'Exterior',
-  subCategory: 'exterior_right',
-  groupType: 'exteriorItems',
-  isVideo: false,
-};
-export const ExteriorRearLeftCornerDetails = {
-  key: 'exteriorFront',
-  title: 'Rear Left Corner',
-  source: IMAGES.rear_Left_Corner,
-  instructionalText:
-    'Please take a photo from the rear left corner of the vehicle clearly capturing the left tail light, rear door and roof on the exterior left side of the vehicle',
-  instructionalSubHeadingText: '',
-  buttonText: 'Capture Now',
-  category: 'Exterior',
-  subCategory: 'exterior_front',
-  groupType: 'exteriorItems',
-  isVideo: false,
-};
-export const ExteriorRearRightCornerDetails = {
-  key: 'exteriorFront',
-  title: 'Rear Right Corner',
-  source: IMAGES.rear_Right_Corner,
-  instructionalText:
-    'Please take a photo from the right left corner of the vehicle clearly capturing the right tail light, rear door and roof on the exterior right side of the vehicle',
-  instructionalSubHeadingText: '',
-  buttonText: 'Capture Now',
-  category: 'Exterior',
-  subCategory: 'exterior_front',
-  groupType: 'exteriorItems',
-  isVideo: false,
-};
 export const ExteriorFrontDetails = {
   key: 'exteriorFront',
   title: 'Exterior Front',
@@ -165,7 +116,7 @@ export const ExteriorFrontDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'exterior_front',
-  groupType: 'exteriorItems',
+  groupType: INSPECTION.EXTERIOR,
   isVideo: false,
 };
 export const ExteriorRearDetails = {
@@ -178,7 +129,85 @@ export const ExteriorRearDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'exterior_rear',
-  groupType: 'exteriorItems',
+  groupType: INSPECTION.EXTERIOR,
+  isVideo: false,
+};
+export const ExteriorLeftDetails = {
+  key: 'exteriorLeft',
+  title: 'Exterior Left',
+  source: IMAGES.exterior_Left,
+  instructionalText:
+    'Please take a photo clearly capturing the entire exterior left side of the vehicle',
+  instructionalSubHeadingText: '',
+  buttonText: 'Capture Now',
+  category: 'Exterior',
+  subCategory: 'exterior_left',
+  groupType: INSPECTION.EXTERIOR,
+  isVideo: false,
+};
+export const ExteriorRightDetails = {
+  key: 'exteriorRight',
+  title: 'Exterior Right',
+  source: IMAGES.exterior_Right,
+  instructionalText:
+    'Please take a photo clearly capturing the entire exterior right side of the vehicle',
+  instructionalSubHeadingText: '',
+  buttonText: 'Capture Now',
+  category: 'Exterior',
+  subCategory: 'exterior_right',
+  groupType: INSPECTION.EXTERIOR,
+  isVideo: false,
+};
+export const ExteriorFrontLeftCornerDetails = {
+  key: 'exteriorFrontLeftCorner',
+  title: 'Front Left Corner',
+  source: IMAGES.front_Left_Corner,
+  instructionalText:
+    'Please take a photo from the front left corner of the vehicle clearly capturing the left headlight, driver door and roof on the exterior left side of the vehicle',
+  instructionalSubHeadingText: '',
+  buttonText: 'Capture Now',
+  category: 'Exterior',
+  subCategory: 'front_left_corner',
+  groupType: INSPECTION.EXTERIOR,
+  isVideo: false,
+};
+export const ExteriorFrontRightCornerDetails = {
+  key: 'exteriorFrontRightCorner',
+  title: 'Front Right Corner',
+  source: IMAGES.front_Right_Corner,
+  instructionalText:
+    'Please take a photo from the front right corner of the vehicle clearly capturing the right headlight, passenger door and roof on the exterior right side of the vehicle',
+  instructionalSubHeadingText: '',
+  buttonText: 'Capture Now',
+  category: 'Exterior',
+  subCategory: 'front_right_corner',
+  groupType: INSPECTION.EXTERIOR,
+  isVideo: false,
+};
+export const ExteriorRearLeftCornerDetails = {
+  key: 'exteriorRearLeftCorner',
+  title: 'Rear Left Corner',
+  source: IMAGES.rear_Left_Corner,
+  instructionalText:
+    'Please take a photo from the rear left corner of the vehicle clearly capturing the left tail light, rear door and roof on the exterior left side of the vehicle',
+  instructionalSubHeadingText: '',
+  buttonText: 'Capture Now',
+  category: 'Exterior',
+  subCategory: 'rear_left_corner',
+  groupType: INSPECTION.EXTERIOR,
+  isVideo: false,
+};
+export const ExteriorRearRightCornerDetails = {
+  key: 'exteriorRearRightCorner',
+  title: 'Rear Right Corner',
+  source: IMAGES.rear_Right_Corner,
+  instructionalText:
+    'Please take a photo from the right left corner of the vehicle clearly capturing the right tail light, rear door and roof on the exterior right side of the vehicle',
+  instructionalSubHeadingText: '',
+  buttonText: 'Capture Now',
+  category: 'Exterior',
+  subCategory: 'rear_right_corner',
+  groupType: INSPECTION.EXTERIOR,
   isVideo: false,
 };
 export const ExteriorInsideCargoRoofDetails = {
@@ -191,7 +220,7 @@ export const ExteriorInsideCargoRoofDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'inside_cargo_roof',
-  groupType: 'exteriorItems',
+  groupType: INSPECTION.EXTERIOR,
   isVideo: false,
 };
 //____________________________Tires_____________________________
@@ -206,7 +235,7 @@ export const LeftFrontTireDetails = {
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'left_front_tire',
-  groupType: 'tires',
+  groupType: INSPECTION.TIRES,
   isVideo: false,
 };
 export const LeftRearTireDetails = {
@@ -220,7 +249,7 @@ export const LeftRearTireDetails = {
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'left_rear_tire',
-  groupType: 'tires',
+  groupType: INSPECTION.TIRES,
   isVideo: false,
 };
 export const RightFrontTireDetails = {
@@ -234,7 +263,7 @@ export const RightFrontTireDetails = {
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'right_front_tire',
-  groupType: 'tires',
+  groupType: INSPECTION.TIRES,
   isVideo: false,
 };
 export const RightRearTireDetails = {
@@ -248,7 +277,7 @@ export const RightRearTireDetails = {
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'right_rear_tire',
-  groupType: 'tires',
+  groupType: INSPECTION.TIRES,
   isVideo: false,
 };
 //New Inspection Objects starts here
@@ -448,9 +477,9 @@ export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
   return errors[statusCode];
 };
 
-export const extractTitle = (groupType, category) => {
+/*export const extractTitle = (groupType, category) => {
   let title = 'No Title';
-  if (groupType === 'carVerificiationItems') {
+  if (groupType === INSPECTION.CAR_VERIFICATION) {
     title =
       category === 'license_plate_number'
         ? 'License Plate Number'
@@ -468,7 +497,7 @@ export const extractTitle = (groupType, category) => {
         : category === 'exterior_rear'
         ? 'Exterior Rear'
         : 'No Title';
-  } else if (groupType === 'tires') {
+  } else if (groupType === INSPECTION.TIRES) {
     title =
       category === 'left_front_tire'
         ? 'Left Front Tire'
@@ -481,6 +510,11 @@ export const extractTitle = (groupType, category) => {
         : 'No Title';
   }
   return title;
+};*/
+export const extractTitle = (groupType, category) => {
+  let title = 'No Title';
+
+  return INSPECTION_TITLE[category] || 'No Title';
 };
 
 export const sortInspectionReviewedItems = list => {
@@ -488,10 +522,15 @@ export const sortInspectionReviewedItems = list => {
     groupType: ['carVerificiationItems', 'exteriorItems', 'tires'],
     carVerificiationItems: ['license_plate_number', 'odometer'],
     exteriorItems: [
-      'Exterior-Left',
-      'Exterior-Right',
+      // 'Exterior-Left',
+      // 'Exterior-Right',
       'Exterior-Front',
       'Exterior-Rear',
+      'Front-Left-Corner',
+      'Front-Right-Corner',
+      'Rear-Left-Corner',
+      'Rear-Right-Corner',
+      'Inside-Cargo-Roof',
     ],
     tires: [
       'Left-Front-Tire',
@@ -517,7 +556,11 @@ export const sortInspectionReviewedItems = list => {
 
   return list.sort(customSort);
 };
-
+export const handleUpdateStoreMedia = {
+  carVerificiationItems: UpdateCarVerificationItemURI,
+  exteriorItems: UpdateExteriorItemURI,
+  tires: UpdateTiresItemURI,
+};
 export function uploadInProgressMediaToStore(files, dispatch) {
   for (let file = 0; file < files.length; file++) {
     const imageURL =
@@ -525,33 +568,10 @@ export function uploadInProgressMediaToStore(files, dispatch) {
         ? files[file].url
         : `${S3_BUCKET_BASEURL}${files[file].url}`;
     const {groupType, id, category} = files[file];
-    if (groupType === 'carVerificiationItems') {
-      category === 'license_plate_number'
-        ? dispatch(UpdateCarVerificationItemURI('licensePlate', imageURL, id))
-        : category === 'odometer'
-        ? dispatch(UpdateCarVerificationItemURI('odometer', imageURL, id))
-        : null;
-    } else if (groupType === 'exteriorItems') {
-      category === 'exterior_left'
-        ? dispatch(UpdateExteriorItemURI('exteriorLeft', imageURL, id))
-        : category === 'exterior_right'
-        ? dispatch(UpdateExteriorItemURI('exteriorRight', imageURL, id))
-        : category === 'exterior_front'
-        ? dispatch(UpdateExteriorItemURI('exteriorFront', imageURL, id))
-        : category === 'exterior_rear'
-        ? dispatch(UpdateExteriorItemURI('exteriorRear', imageURL, id))
-        : null;
-    } else if (groupType === 'tires') {
-      category === 'left_front_tire'
-        ? dispatch(UpdateTiresItemURI('leftFrontTire', imageURL, id))
-        : category === 'left_rear_tire'
-        ? dispatch(UpdateTiresItemURI('leftRearTire', imageURL, id))
-        : category === 'right_front_tire'
-        ? dispatch(UpdateTiresItemURI('rightFrontTire', imageURL, id))
-        : category === 'right_rear_tire'
-        ? dispatch(UpdateTiresItemURI('rightRearTire', imageURL, id))
-        : null;
-    }
+    const UPDATE_INSPECTION_IMAGES = handleUpdateStoreMedia[groupType];
+    dispatch(
+      UPDATE_INSPECTION_IMAGES(INSPECTION_SUBCATEGORY[category], imageURL, id),
+    );
   }
 }
 export const generateRandomString = () => {
@@ -629,6 +649,8 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
     tires,
   } = store.getState().newInspection;
   const {
+    exteriorLeftID,
+    exteriorRightID,
     exteriorFrontID,
     exteriorRearID,
     exteriorFrontLeftCornerID,
@@ -645,6 +667,8 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
     odometer: odometerID,
     exteriorFront: exteriorFrontID,
     exteriorRear: exteriorRearID,
+    exteriorLeft: exteriorLeftID,
+    exteriorRight: exteriorRightID,
     exteriorFrontLeftCorner: exteriorFrontLeftCornerID,
     exteriorFrontRightCorner: exteriorFrontRightCornerID,
     exteriorRearLeftCorner: exteriorRearLeftCornerID,
@@ -657,3 +681,118 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
   };
   return GET_EXTERIOR_ITEM[key] || "Inspection ID doesn't exists";
 };
+
+export const isAllExteriorImagesAvailable = () => {
+  let isCompleted = false;
+  const {
+    carVerificationItems: carVerification,
+    exteriorItems: exterior,
+    tires,
+    skipLeft,
+    skipLeftCorners,
+    skipRight,
+    skipRightCorners,
+  } = store.getState().newInspection;
+  const {
+    exteriorLeftID,
+    exteriorRightID,
+    exteriorFrontID,
+    exteriorRearID,
+    exteriorFrontLeftCornerID,
+    exteriorFrontRightCornerID,
+    exteriorRearLeftCornerID,
+    exteriorRearRightCornerID,
+    exteriorInsideCargoRoofID,
+  } = exterior;
+
+  return isCompleted;
+};
+
+export const isNotEmpty = value =>
+  value !== null && value !== undefined && value !== '' && value !== 0;
+export const isObjectEmpty = (object = {}) => {
+  const extractValues = Object?.values(object);
+  return extractValues?.includes('');
+};
+export const checkExterior = () => {
+  const {exteriorItems: exterior} = store.getState().newInspection;
+  const {
+    exteriorLeftID,
+    exteriorRightID,
+    exteriorFrontID,
+    exteriorRearID,
+    exteriorFrontLeftCornerID,
+    exteriorFrontRightCornerID,
+    exteriorRearLeftCornerID,
+    exteriorRearRightCornerID,
+    exteriorInsideCargoRoofID,
+  } = exterior;
+
+  const leftCheck =
+    isNotEmpty(exteriorLeftID) ||
+    (isNotEmpty(exteriorFrontLeftCornerID) &&
+      isNotEmpty(exteriorRearLeftCornerID));
+
+  const rightCheck =
+    isNotEmpty(exteriorRightID) ||
+    (isNotEmpty(exteriorFrontRightCornerID) &&
+      isNotEmpty(exteriorRearRightCornerID));
+  console.log(
+    '----- => ',
+    isNotEmpty(exteriorFrontID) &&
+      isNotEmpty(exteriorRearID) &&
+      isNotEmpty(exteriorInsideCargoRoofID) &&
+      leftCheck &&
+      rightCheck,
+  );
+  return (
+    isNotEmpty(exteriorFrontID) &&
+    isNotEmpty(exteriorRearID) &&
+    isNotEmpty(exteriorInsideCargoRoofID) &&
+    leftCheck &&
+    rightCheck
+  );
+};
+
+export const FILTER_IMAGES = (arr = [], toFilter = 'before') => {
+  if (!Array.isArray(arr)) {
+    console.log('Please enter an array');
+    return;
+  }
+  if (toFilter === 'before') {
+    return arr.filter(item => item?.pictureTag === toFilter);
+  } else {
+    return arr.filter(item => {
+      console.log(
+        'group Type => ',
+        item?.groupType === INSPECTION.CAR_VERIFICATION ||
+          item?.groupType === INSPECTION.TIRES,
+      );
+      if (
+        item?.groupType === INSPECTION.CAR_VERIFICATION ||
+        item?.groupType === INSPECTION.TIRES
+      ) {
+        return item;
+      } else if (
+        item?.groupType === INSPECTION.EXTERIOR &&
+        item?.pictureTag === toFilter
+      ) {
+        return item;
+      }
+    });
+  }
+};
+
+export function extractIDs(obj) {
+  const idsArray = [];
+
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key) && key.includes('ID')) {
+      console.log('-----------');
+      if (isNotEmpty(obj[key])) {
+        idsArray.push(obj[key]);
+      }
+    }
+  }
+  return idsArray;
+}

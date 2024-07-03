@@ -68,6 +68,11 @@ const NewInspectionScreen = ({
   errorTitle,
   handleYesPressOfInProgressInspection,
   isInspectionInProgressModalVisible,
+  skipLeft,
+  skipLeftCorners,
+  skipRight,
+  skipRightCorners,
+  displayTires,
 }) => (
   <View style={NewInspectionStyles.container}>
     {isDiscardInspectionModalVisible && (
@@ -177,6 +182,10 @@ const NewInspectionScreen = ({
               exteriorItems={exteriorItems}
               handleCrossPress={handleOnCrossPress}
               isLoading={isLoading}
+              skipLeft={skipLeft}
+              skipLeftCorners={skipLeftCorners}
+              skipRight={skipRight}
+              skipRightCorners={skipRightCorners}
               handleMediaModalDetailsPress={handleMediaModalDetailsPress}
             />
           )}
@@ -188,6 +197,7 @@ const NewInspectionScreen = ({
             onPress={handleTiresSelection}
           />
           {selectedOption?.isTires && (
+            // {selectedOption?.isTires && displayTires && (
             <TiresItemsExpandedCard
               handleItemPickerPress={handleItemPickerPress}
               tires={tires}

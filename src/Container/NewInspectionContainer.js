@@ -14,16 +14,24 @@ import {
 import {Types} from '../Store/Types';
 import {colors} from '../Assets/Styles';
 import {
-  CREATE_INSPECTION_URL,
   DEV_URL,
   EXTRACT_NUMBER_PLATE,
   HARDWARE_BACK_PRESS,
+  INSPECTION,
 } from '../Constants';
 import {
   EXTRACT_INSPECTION_ITEM_ID,
+  isObjectEmpty,
   LicensePlateDetails,
   uploadInProgressMediaToStore,
 } from '../Utils';
+
+const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
+  isAllCarVerification: false,
+  isAllExterior: false,
+  isAllTires: false,
+  isAllParts: false,
+};
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -34,6 +42,10 @@ const NewInspectionContainer = ({route, navigation}) => {
     selectedInspectionID,
     company_ID,
     plateNumber,
+    skipLeft,
+    skipLeftCorners,
+    skipRight,
+    skipRightCorners,
   } = useSelector(state => state.newInspection);
   const {token} = useSelector(state => state?.auth);
   const modalMessageDetailsInitialState = {
@@ -74,23 +86,11 @@ const NewInspectionContainer = ({route, navigation}) => {
   const [modalMessageDetails, setModalMessageDetails] = useState(
     modalMessageDetailsInitialState,
   );
-  let isBothCarVerificationImagesAvailable =
-    carVerificationItems.licensePlate !== '' &&
-    carVerificationItems.odometer !== '';
-  let isAllExteriorImagesAvailable =
-    exteriorItems.exteriorLeft !== '' &&
-    exteriorItems.exteriorRight !== '' &&
-    exteriorItems.exteriorFront !== '' &&
-    exteriorItems.exteriorRear !== '';
-  let isBothTiresImagesAvailable =
-    tires.leftFrontTire !== '' &&
-    tires.leftRearTire !== '' &&
-    tires.rightFrontTire !== '' &&
-    tires.rightRearTire !== '';
-  let isVehicleAllPartsImagesAvailable =
-    isBothCarVerificationImagesAvailable &&
-    isAllExteriorImagesAvailable &&
-    isBothTiresImagesAvailable;
+  // const [isAllExteriorImagesAvailable, setIsAllExteriorImagesAvailable] =
+  //   useState(false);
+  const [isAllVehicleParts, setIsAllVehicleParts] = useState(
+    IS_ALL_VEHICLE_PARTS_INITIAL_STATE,
+  );
   const submitText = isLoading ? (
     <ActivityIndicator size={'small'} color={colors.white} />
   ) : (
@@ -100,7 +100,6 @@ const NewInspectionContainer = ({route, navigation}) => {
   useEffect(() => {
     let timeoutID;
     if (route.params) {
-      console.log('route.params => ', route.params);
       const {routeName, isLicensePlate} = route.params;
       if (isLicensePlate) {
         setTimeout(() => setIsLicenseModalVisible(true), 1000);
@@ -124,6 +123,33 @@ const NewInspectionContainer = ({route, navigation}) => {
       clearTimeout(timeoutID);
     };
   }, [modalMessageDetails]);
+  useEffect(() => {
+    if (exteriorItems?.exteriorLeft?.length) {
+      dispatch({type: Types.SKIP_LEFT_CORNERS, payload: true});
+    } else if (
+      exteriorItems?.exteriorFrontLeftCorner?.length ||
+      exteriorItems?.exteriorRearLeftCorner?.length
+    ) {
+      dispatch({type: Types.SKIP_LEFT, payload: true});
+    } else {
+      dispatch({type: Types.SKIP_LEFT, payload: false});
+      dispatch({type: Types.SKIP_LEFT_CORNERS, payload: false});
+    }
+    if (exteriorItems?.exteriorRight?.length) {
+      dispatch({type: Types.SKIP_RIGHT_CORNERS, payload: true});
+    } else if (
+      exteriorItems?.exteriorFrontRightCorner?.length ||
+      exteriorItems?.exteriorRearRightCorner?.length
+    ) {
+      dispatch({type: Types.SKIP_RIGHT, payload: true});
+    } else {
+      dispatch({type: Types.SKIP_RIGHT, payload: false});
+      dispatch({type: Types.SKIP_RIGHT_CORNERS, payload: false});
+    }
+  }, [exteriorItems]);
+  useEffect(() => {
+    handleIsAllVehicleParts();
+  }, [carVerificationItems, exteriorItems, tires]);
   function handle_Hardware_Back_Press() {
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -145,6 +171,38 @@ const NewInspectionContainer = ({route, navigation}) => {
     setDeleteItem({category: null, key: null});
     setModalMessageDetails(modalMessageDetailsInitialState);
     setIsDiscardInspectionModalVisible(false);
+    setIsAllVehicleParts(IS_ALL_VEHICLE_PARTS_INITIAL_STATE);
+  }
+
+  function handleIsAllVehicleParts() {
+    const {
+      exteriorFront,
+      exteriorRear,
+      exteriorFrontLeftCorner,
+      exteriorFrontRightCorner,
+      exteriorRearLeftCorner,
+      exteriorRearRightCorner,
+      exteriorInsideCargoRoof,
+    } = exteriorItems;
+    const exteriorImages = {
+      exteriorFront,
+      exteriorRear,
+      exteriorFrontLeftCorner,
+      exteriorFrontRightCorner,
+      exteriorRearLeftCorner,
+      exteriorRearRightCorner,
+      exteriorInsideCargoRoof,
+    };
+    const allCarVerification = !isObjectEmpty(carVerificationItems);
+    const allExterior = !isObjectEmpty(exteriorImages);
+    const allTires = !isObjectEmpty(tires);
+    const allParts = allCarVerification && allExterior && allTires;
+    setIsAllVehicleParts({
+      isAllCarVerification: allCarVerification,
+      isAllExterior: allExterior,
+      isAllTires: allTires,
+      isAllParts: allParts,
+    });
   }
 
   const handleBackPress = () => {
@@ -302,12 +360,13 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   const handleYesPress = () => {
     const handleRemoveImage = {
-      carVerificiationItems: handleCarVerificationCrossPress,
-      exteriorItems: handleExteriorCrossPress,
-      tires: handleTiresCrossPress,
+      carVerificationItems: RemoveCarVerificationItemURI,
+      exteriorItems: RemoveExteriorItemURI,
+      tires: RemoveTiresItemURI,
     };
+    const RemoveMethod = handleRemoveImage[deleteItem?.category];
     setIsDiscardInspectionModalVisible(false);
-    const imageID = EXTRACT_INSPECTION_ITEM_ID(deleteItem.key);
+    const imageID = EXTRACT_INSPECTION_ITEM_ID(deleteItem?.key);
     axios
       .delete(`${DEV_URL}/api/v1/files/${imageID}`, {
         headers: {
@@ -317,17 +376,9 @@ const NewInspectionContainer = ({route, navigation}) => {
       })
       .then(res => {
         setModalMessageDetails(deleteSuccess);
-        dispatch(handleRemoveImage[deleteItem.key](deleteItem.key));
-      });
-    // if (deleteItem.category === 'carVerificationItems') {
-    //   handleCarVerificationCrossPress(deleteItem.key).then();
-    // } else if (deleteItem.category === 'exteriorItems') {
-    //   handleExteriorCrossPress(deleteItem.key).then();
-    // } else if (deleteItem.category === 'tires') {
-    //   handleTiresCrossPress(deleteItem.key).then();
-    // } else {
-    //   return true;
-    // }
+        dispatch(RemoveMethod(deleteItem?.key));
+      })
+      .catch(e => console.log('error deleting image => ', e));
   };
   const handleNoPress = () => {
     setIsDiscardInspectionModalVisible(false);
@@ -350,7 +401,9 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsLoading(true);
     axios
       .post(EXTRACT_NUMBER_PLATE, body, {headers: headers})
-      .then(res => {})
+      .then(res => {
+        // checkVehicleStatusToRender(selectedInspectionID);
+      })
       .catch(e => {
         const statusCode = e?.response?.data?.statusCode;
         if (statusCode === 409) {
@@ -398,8 +451,10 @@ const NewInspectionContainer = ({route, navigation}) => {
       title={modalDetails?.title}
       isVideo={modalDetails?.isVideo}
       modalKey={modalDetails?.key}
-      isExterior={modalDetails?.groupType === 'exteriorItems'}
-      isCarVerification={modalDetails?.groupType === 'carVerificiationItems'}
+      isExterior={modalDetails?.groupType === INSPECTION.EXTERIOR}
+      isCarVerification={
+        modalDetails?.groupType === INSPECTION.CAR_VERIFICATION
+      }
       instructionalSubHeadingText={modalDetails?.instructionalSubHeadingText}
       handleItemPickerPress={handleItemPickerPress}
       handleCaptureNowPress={handleCaptureNowPress}
@@ -407,11 +462,11 @@ const NewInspectionContainer = ({route, navigation}) => {
       exteriorItems={exteriorItems}
       tires={tires}
       isBothCarVerificationImagesAvailable={
-        isBothCarVerificationImagesAvailable
+        isAllVehicleParts.isAllCarVerification
       }
-      isAllExteriorImagesAvailable={isAllExteriorImagesAvailable}
-      isBothTiresImagesAvailable={isBothTiresImagesAvailable}
-      isVehicleAllPartsImagesAvailable={isVehicleAllPartsImagesAvailable}
+      isAllExteriorImagesAvailable={isAllVehicleParts.isAllExterior}
+      isBothTiresImagesAvailable={isAllVehicleParts.isAllTires}
+      isVehicleAllPartsImagesAvailable={isAllVehicleParts.isAllParts}
       handleSubmitPress={handleSubmitPress}
       isLoading={isLoading}
       submitText={submitText}
@@ -435,6 +490,10 @@ const NewInspectionContainer = ({route, navigation}) => {
         handleYesPressOfInProgressInspection
       }
       isInspectionInProgressModalVisible={isInspectionInProgressModalVisible}
+      // skipLeft={skipLeft}
+      // skipLeftCorners={skipLeftCorners}
+      // skipRight={skipRight}
+      // skipRightCorners={skipRightCorners}
     />
   );
 };
