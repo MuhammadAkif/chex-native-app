@@ -202,7 +202,7 @@ export const ExteriorRearRightCornerDetails = {
   title: 'Rear Right Corner',
   source: IMAGES.rear_Right_Corner,
   instructionalText:
-    'Please take a photo from the right left corner of the vehicle clearly capturing the right tail light, rear door and roof on the exterior right side of the vehicle',
+    'Please take a photo from the right right corner of the vehicle clearly capturing the right tail light, rear door and roof on the exterior right side of the vehicle',
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
   category: 'Exterior',

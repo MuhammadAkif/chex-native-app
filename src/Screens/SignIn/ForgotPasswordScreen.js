@@ -39,6 +39,7 @@ const ForgetPasswordScreen = ({
   handleForgetPassword,
   modalMessage,
   handleOkPress,
+  handleKnowYourPassword,
 }) => (
   <BackgroundImageView>
     <TouchableOpacity
@@ -77,6 +78,19 @@ const ForgetPasswordScreen = ({
           onSubmitEditing={handleSubmit}
         />
         <InputFieldRequiredError touched={touched.email} error={errors.email} />
+        <TouchableOpacity
+          onPress={handleKnowYourPassword}
+          disabled={isSubmitting}
+          style={styles.forgetPasswordContainer}>
+          <Text
+            style={{color: colors.white, fontSize: hp('1.8%')}}
+            disabled={isSubmitting}>
+            Know Your Password?{' '}
+            <Text style={styles.forgotPasswordText} disabled={isSubmitting}>
+              Login
+            </Text>
+          </Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.footerContainer}>
         <PrimaryGradientButton

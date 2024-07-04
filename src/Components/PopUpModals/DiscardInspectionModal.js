@@ -11,6 +11,7 @@ const DiscardInspectionModal = ({
   noButtonText,
   noButtonStyle,
   dualButton = true,
+  yesButtonText = 'Yes',
 }) => (
   <Modal
     animationType="slide"
@@ -24,7 +25,7 @@ const DiscardInspectionModal = ({
         <Text style={modalStyle.body}>{description}</Text>
         <View style={modalStyle.footer}>
           <PrimaryGradientButton
-            text={'Yes'}
+            text={yesButtonText}
             buttonStyle={modalStyle.button}
             textStyle={modalStyle.yesText}
             onPress={onYesPress}

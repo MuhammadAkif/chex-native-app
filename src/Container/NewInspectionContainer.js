@@ -77,6 +77,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   const [isLicenseModalVisible, setIsLicenseModalVisible] = useState(false);
   // const [previousRoute, setPreviousRoute] = useState('');
   const [errorTitle, setErrorTitle] = useState('');
+  const [inUseErrorTitle, setInUseErrorTitle] = useState('');
   const [inspectionID, setInspectionID] = useState(null);
   const modalDetailsInitialState = {
     ...LicensePlateDetails,
@@ -172,6 +173,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setModalMessageDetails(modalMessageDetailsInitialState);
     setIsDiscardInspectionModalVisible(false);
     setIsAllVehicleParts(IS_ALL_VEHICLE_PARTS_INITIAL_STATE);
+    setInUseErrorTitle('');
   }
 
   function handleIsAllVehicleParts() {
@@ -410,6 +412,8 @@ const NewInspectionContainer = ({route, navigation}) => {
           setInspectionID(e?.response?.data?.inspectionId);
           setIsInspectionInProgressModalVisible(true);
           setErrorTitle(e?.response?.data?.errorMessage);
+        } else if (e?.response?.data?.statusCode === 400) {
+          setInUseErrorTitle(e?.response?.data?.message);
         }
       })
       .finally(() => {
@@ -490,6 +494,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         handleYesPressOfInProgressInspection
       }
       isInspectionInProgressModalVisible={isInspectionInProgressModalVisible}
+      inUseErrorTitle={inUseErrorTitle}
       // skipLeft={skipLeft}
       // skipLeftCorners={skipLeftCorners}
       // skipRight={skipRight}

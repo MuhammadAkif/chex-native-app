@@ -68,6 +68,7 @@ const NewInspectionScreen = ({
   errorTitle,
   handleYesPressOfInProgressInspection,
   isInspectionInProgressModalVisible,
+  inUseErrorTitle,
   skipLeft,
   skipLeftCorners,
   skipRight,
@@ -88,6 +89,14 @@ const NewInspectionScreen = ({
       <DiscardInspectionModal
         onYesPress={handleYesPressOfInProgressInspection}
         description={errorTitle}
+        dualButton={false}
+      />
+    )}
+    {inUseErrorTitle && (
+      <DiscardInspectionModal
+        yesButtonText={'Ok'}
+        onYesPress={handleBackPress}
+        description={inUseErrorTitle}
         dualButton={false}
       />
     )}

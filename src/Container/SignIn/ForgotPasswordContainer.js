@@ -105,6 +105,7 @@ const ForgotPasswordContainer = ({navigation}) => {
       });
   };
   const handleOkPress = () => setModalMessage(modalMessageInitialState);
+  const handleKnowYourPassword = () => navigation.navigate(ROUTES.SIGN_IN);
   return (
     <Formik
       initialValues={initialValues}
@@ -136,6 +137,7 @@ const ForgotPasswordContainer = ({navigation}) => {
           hidePassword={hidePassword}
           modalMessage={modalMessage}
           handleOkPress={handleOkPress}
+          handleKnowYourPassword={handleKnowYourPassword}
         />
       )}
     </Formik>
