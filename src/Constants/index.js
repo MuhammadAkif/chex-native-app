@@ -1,7 +1,7 @@
 // import {DEV_URL} from '@env'
 export const DEV_URL =
-  // 'https://n3hqyu9j2i.execute-api.us-east-1.amazonaws.com/chexai-dsp';
-  'https://fbyrgnnu14.execute-api.us-east-1.amazonaws.com/chexai-dsp-staging';
+  'https://n3hqyu9j2i.execute-api.us-east-1.amazonaws.com/chexai-dsp';
+// 'https://fbyrgnnu14.execute-api.us-east-1.amazonaws.com/chexai-dsp-staging';
 export const S3_BUCKET_BASEURL = 'https://chex-ai-uploads.s3.amazonaws.com/';
 export const FETCH_NUMBER_PLATE_URL = `${DEV_URL}/api/v1/searchnumberplate`;
 export const EXTRACT_NUMBER_PLATE = `${DEV_URL}/api/v1/extract/inspection/create`;
@@ -65,4 +65,11 @@ export const INSPECTION_TITLE = {
   left_rear_tire: 'Left Rear Tire',
   right_front_tire: 'Right Front Tire',
   right_rear_tire: 'Right Rear Tire',
+};
+
+export const UPDATE_APP = {
+  TITLE: 'Version Update',
+  MESSAGE:
+    'A new version of the app is available. Please update to continue using the app.',
+  BUTTON: 'UPDATE'
 };

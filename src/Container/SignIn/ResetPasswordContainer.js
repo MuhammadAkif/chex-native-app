@@ -178,12 +178,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 27, 81, 0.8)',
   },
   headerContainer: {
-    flex: Platform.OS === ANDROID ? 2 : 1.5,
+    flex: Platform.OS === ANDROID ? 2 : 1,
     justifyContent: 'space-around',
     alignItems: 'center',
   },
   logoContainer: {
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
   },
   registerTitleText: {
     paddingHorizontal: wp('2%'),
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     color: colors.gray,
   },
   bodyContainer: {
-    flex: 0.9,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'space-evenly',
   },

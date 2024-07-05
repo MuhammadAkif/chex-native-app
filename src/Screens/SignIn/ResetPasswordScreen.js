@@ -7,7 +7,10 @@ import {
   Keyboard,
   ActivityIndicator,
 } from 'react-native';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from "react-native-responsive-screen";
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
 import {
   BackgroundImageView,
@@ -16,11 +19,11 @@ import {
   SignInLogo,
 } from '../../Components';
 import CustomInput from '../../Components/CustomInput';
-import { colors, PreviewStyles } from "../../Assets/Styles";
+import {colors, PreviewStyles} from '../../Assets/Styles';
 import CustomPasswordInput from '../../Components/CustomPasswordInput';
 import {ANDROID} from '../../Constants';
 import {Toast} from '../../Components';
-import { BackArrow } from "../../Assets/Icons";
+import {BackArrow} from '../../Assets/Icons';
 
 const ResetPasswordScreen = ({
   values,
@@ -44,8 +47,7 @@ const ResetPasswordScreen = ({
   modalMessage,
   handleOkPress,
   handleKnowYourPassword,
-                               handleNavigationBackPress,
-
+  handleNavigationBackPress,
 }) => (
   <BackgroundImageView>
     <TouchableOpacity
@@ -69,6 +71,8 @@ const ResetPasswordScreen = ({
                 ? 1
                 : Platform.OS === 'ios' && isKeyboardActive
                 ? 0.5
+                : Platform.OS === 'ios'
+                ? 1
                 : 1.5,
           },
         ]}>
@@ -77,7 +81,13 @@ const ResetPasswordScreen = ({
           textStyle={{fontSize: hp('3%')}}
           containerStyle={styles.logoContainer}
         />
-        <Text style={styles.registerTitleText}>
+        <Text
+          style={[
+            styles.registerTitleText,
+            {
+              bottom: Platform.OS === 'ios' && isKeyboardActive ? hp('1%') : 0,
+            },
+          ]}>
           Please check your email for unique pin and type below
         </Text>
       </View>

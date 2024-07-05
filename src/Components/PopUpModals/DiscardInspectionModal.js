@@ -10,6 +10,7 @@ const DiscardInspectionModal = ({
   onNoPress,
   noButtonText,
   noButtonStyle,
+  title = '',
   dualButton = true,
   yesButtonText = 'Yes',
 }) => (
@@ -21,7 +22,7 @@ const DiscardInspectionModal = ({
     style={modalStyle.modalOuterContainer}>
     <View style={modalStyle.container}>
       <View style={modalStyle.modalContainer}>
-        <Text style={modalStyle.header} />
+        {title && <Text style={modalStyle.header}>{title}</Text>}
         <Text style={modalStyle.body}>{description}</Text>
         <View style={modalStyle.footer}>
           <PrimaryGradientButton

@@ -80,11 +80,12 @@ android {
     defaultConfig {
         applicationId "com.chex_ai"
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion 33
+        //Update your target API level by 31 August 2024 to release updates to your app
+        targetSdkVersion 34
 //         targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
-        versionCode 23
-        versionName "1.1"
+        versionCode 26
+        versionName "1.3"
     }
     signingConfigs {
       release {
