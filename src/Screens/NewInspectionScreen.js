@@ -24,9 +24,6 @@ import {ANDROID} from '../Constants';
 
 const NewInspectionScreen = ({
   selectedOption,
-  handleCarVerificationSelection,
-  handleExteriorSelection,
-  handleTiresSelection,
   modalVisible,
   handleModalVisible,
   source,
@@ -74,6 +71,7 @@ const NewInspectionScreen = ({
   skipRight,
   skipRightCorners,
   displayTires,
+  handleCardExpansion,
 }) => (
   <View style={NewInspectionStyles.container}>
     {isDiscardInspectionModalVisible && (
@@ -167,7 +165,7 @@ const NewInspectionScreen = ({
             index={1}
             isActive={selectedOption?.isCarVerification}
             isBothItemsAvailable={isBothCarVerificationImagesAvailable}
-            onPress={handleCarVerificationSelection}
+            onPress={() => handleCardExpansion('isCarVerification')}
           />
           {selectedOption?.isCarVerification && (
             <CarVerificationExpandedCard
@@ -183,7 +181,7 @@ const NewInspectionScreen = ({
             index={2}
             isActive={selectedOption?.isExterior}
             isBothItemsAvailable={isAllExteriorImagesAvailable}
-            onPress={handleExteriorSelection}
+            onPress={() => handleCardExpansion('isExterior')}
           />
           {selectedOption?.isExterior && (
             <ExteriorItemsExpandedCard
@@ -203,7 +201,7 @@ const NewInspectionScreen = ({
             index={3}
             isActive={selectedOption?.isTires}
             isBothItemsAvailable={isBothTiresImagesAvailable}
-            onPress={handleTiresSelection}
+            onPress={() => handleCardExpansion('isTires')}
           />
           {selectedOption?.isTires && (
             // {selectedOption?.isTires && displayTires && (

@@ -18,9 +18,13 @@ import {
   EXTRACT_NUMBER_PLATE,
   HARDWARE_BACK_PRESS,
   INSPECTION,
+  INSPECTION_TIRE_STATUS,
+  REMOVE_ALL_TIRES,
 } from '../Constants';
 import {
   EXTRACT_INSPECTION_ITEM_ID,
+  extractIDs,
+  isNotEmpty,
   isObjectEmpty,
   LicensePlateDetails,
   uploadInProgressMediaToStore,
@@ -87,8 +91,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   const [modalMessageDetails, setModalMessageDetails] = useState(
     modalMessageDetailsInitialState,
   );
-  // const [isAllExteriorImagesAvailable, setIsAllExteriorImagesAvailable] =
-  //   useState(false);
+  const [displayTires, setDisplayTires] = useState(true);
   const [isAllVehicleParts, setIsAllVehicleParts] = useState(
     IS_ALL_VEHICLE_PARTS_INITIAL_STATE,
   );
@@ -97,11 +100,16 @@ const NewInspectionContainer = ({route, navigation}) => {
   ) : (
     'Submit'
   );
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  };
 
   useEffect(() => {
-    let timeoutID;
     if (route.params) {
-      const {routeName, isLicensePlate} = route.params;
+      const {isLicensePlate} = route.params;
       if (isLicensePlate) {
         setTimeout(() => setIsLicenseModalVisible(true), 1000);
       }
@@ -125,32 +133,17 @@ const NewInspectionContainer = ({route, navigation}) => {
     };
   }, [modalMessageDetails]);
   useEffect(() => {
-    if (exteriorItems?.exteriorLeft?.length) {
-      dispatch({type: Types.SKIP_LEFT_CORNERS, payload: true});
-    } else if (
-      exteriorItems?.exteriorFrontLeftCorner?.length ||
-      exteriorItems?.exteriorRearLeftCorner?.length
-    ) {
-      dispatch({type: Types.SKIP_LEFT, payload: true});
-    } else {
-      dispatch({type: Types.SKIP_LEFT, payload: false});
-      dispatch({type: Types.SKIP_LEFT_CORNERS, payload: false});
-    }
-    if (exteriorItems?.exteriorRight?.length) {
-      dispatch({type: Types.SKIP_RIGHT_CORNERS, payload: true});
-    } else if (
-      exteriorItems?.exteriorFrontRightCorner?.length ||
-      exteriorItems?.exteriorRearRightCorner?.length
-    ) {
-      dispatch({type: Types.SKIP_RIGHT, payload: true});
-    } else {
-      dispatch({type: Types.SKIP_RIGHT, payload: false});
-      dispatch({type: Types.SKIP_RIGHT_CORNERS, payload: false});
-    }
+    handleExteriorLeft();
+    handleExteriorRight();
   }, [exteriorItems]);
   useEffect(() => {
     handleIsAllVehicleParts();
   }, [carVerificationItems, exteriorItems, tires]);
+  useEffect(() => {
+    if (!displayTires) {
+      handleRemovedAllTires().then();
+    }
+  }, [displayTires]);
   function handle_Hardware_Back_Press() {
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -175,7 +168,32 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsAllVehicleParts(IS_ALL_VEHICLE_PARTS_INITIAL_STATE);
     setInUseErrorTitle('');
   }
-
+  function handleExteriorLeft() {
+    if (isNotEmpty(exteriorItems?.exteriorLeft)) {
+      dispatch({type: Types.SKIP_LEFT_CORNERS, payload: true});
+    } else if (
+      isNotEmpty(exteriorItems?.exteriorFrontLeftCorner) ||
+      isNotEmpty(exteriorItems?.exteriorRearLeftCorner)
+    ) {
+      dispatch({type: Types.SKIP_LEFT, payload: true});
+    } else {
+      dispatch({type: Types.SKIP_LEFT, payload: false});
+      dispatch({type: Types.SKIP_LEFT_CORNERS, payload: false});
+    }
+  }
+  function handleExteriorRight() {
+    if (isNotEmpty(exteriorItems?.exteriorRight)) {
+      dispatch({type: Types.SKIP_RIGHT_CORNERS, payload: true});
+    } else if (
+      isNotEmpty(exteriorItems?.exteriorFrontRightCorner) ||
+      isNotEmpty(exteriorItems?.exteriorRearRightCorner)
+    ) {
+      dispatch({type: Types.SKIP_RIGHT, payload: true});
+    } else {
+      dispatch({type: Types.SKIP_RIGHT, payload: false});
+      dispatch({type: Types.SKIP_RIGHT_CORNERS, payload: false});
+    }
+  }
   function handleIsAllVehicleParts() {
     const {
       exteriorFront,
@@ -213,22 +231,10 @@ const NewInspectionContainer = ({route, navigation}) => {
     // navigation.navigate(previousRoute);
   };
   //Collapsed Cards Functions starts here
-  const handleCarVerificationSelection = () => {
+  const handleCardExpansion = key => {
     setSelectedOption(prevState => ({
       ...prevState,
-      isCarVerification: !selectedOption.isCarVerification,
-    }));
-  };
-  const handleExteriorSelection = () => {
-    setSelectedOption(prevState => ({
-      ...prevState,
-      isExterior: !selectedOption.isExterior,
-    }));
-  };
-  const handleTiresSelection = () => {
-    setSelectedOption(prevState => ({
-      ...prevState,
-      isTires: !selectedOption.isTires,
+      [key]: !selectedOption[key],
     }));
   };
   //Collapsed Cards Functions ends here
@@ -237,59 +243,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setModalVisible(true);
   };
   const handleModalVisible = () => setModalVisible(!modalVisible);
-  const handleCarVerificationCrossPress = async key => {
-    let imageID =
-      key === 'licensePlate'
-        ? carVerificationItems.licensePlateID
-        : carVerificationItems.odometerID;
-    axios
-      .delete(`${DEV_URL}/api/v1/files/${imageID}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(res => {
-        setModalMessageDetails(deleteSuccess);
-        dispatch(RemoveCarVerificationItemURI(key));
-      });
-  };
-  const handleExteriorCrossPress = async key => {
-    let imageID = EXTRACT_INSPECTION_ITEM_ID(key);
-    await axios
-      .delete(`${DEV_URL}/api/v1/files/${imageID}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(res => {
-        setModalMessageDetails(deleteSuccess);
-        dispatch(RemoveExteriorItemURI(key));
-      });
-  };
   // Media Modal logic starts here
-  const handleTiresCrossPress = async key => {
-    let imageID =
-      key === 'leftFrontTire'
-        ? tires?.leftFrontTireID
-        : key === 'leftRearTire'
-        ? tires?.leftRearTireID
-        : key === 'rightFrontTire'
-        ? tires.rightFrontTireID
-        : tires.rightRearTireID;
-    await axios
-      .delete(`${DEV_URL}/api/v1/files/${imageID}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(res => {
-        setModalMessageDetails(deleteSuccess);
-        dispatch(RemoveTiresItemURI(key));
-      });
-  };
   const handleMediaModalDetailsPress = (title, mediaURL, isVideo = false) => {
     setMediaModalDetails({
       title: title,
@@ -324,12 +278,11 @@ const NewInspectionContainer = ({route, navigation}) => {
   const handleSubmitPress = () => {
     setIsLoading(true);
     axios
-      .patch(`${DEV_URL}/api/v1/inspection/${selectedInspectionID}`, null, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .patch(
+        `${DEV_URL}/api/v1/inspection/${selectedInspectionID}`,
+        null,
+        config,
+      )
       .then(() => {
         axios
           .put(
@@ -340,7 +293,7 @@ const NewInspectionContainer = ({route, navigation}) => {
             },
             {},
           )
-          .then(res => {
+          .then(() => {
             setIsLoading(false);
             dispatch({type: Types.CLEAR_NEW_INSPECTION});
             navigation.navigate(ROUTES.COMPLETED_INSPECTION);
@@ -370,13 +323,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsDiscardInspectionModalVisible(false);
     const imageID = EXTRACT_INSPECTION_ITEM_ID(deleteItem?.key);
     axios
-      .delete(`${DEV_URL}/api/v1/files/${imageID}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(res => {
+      .delete(`${DEV_URL}/api/v1/files/${imageID}`, config)
+      .then(() => {
         setModalMessageDetails(deleteSuccess);
         dispatch(RemoveMethod(deleteItem?.key));
       })
@@ -396,15 +344,11 @@ const NewInspectionContainer = ({route, navigation}) => {
       companyId: company_ID,
       inspectionId: selectedInspectionID,
     };
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    };
     setIsLoading(true);
     axios
-      .post(EXTRACT_NUMBER_PLATE, body, {headers: headers})
-      .then(res => {
-        // checkVehicleStatusToRender(selectedInspectionID);
+      .post(EXTRACT_NUMBER_PLATE, body, config)
+      .then(() => {
+        vehicleTireStatusToRender(selectedInspectionID).then();
       })
       .catch(e => {
         const statusCode = e?.response?.data?.statusCode;
@@ -436,17 +380,51 @@ const NewInspectionContainer = ({route, navigation}) => {
       .catch(error => {
         setIsLoading(false);
         console.log('error of selected inspection in progress => ', error);
-        // if (error.message === 'Request failed with status code 500') {
-        //   setNumberPlateInUseError(true);
-        // }
       });
   };
+  //Tire Rendering logic start here
+  async function vehicleTireStatusToRender(inspection_ID) {
+    const body = {
+      inspectionId: inspection_ID,
+    };
+    await axios
+      .post(INSPECTION_TIRE_STATUS, body, config)
+      .then(res => {
+        const {
+          data: {displayTire},
+        } = res;
+        console.log({displayTire});
+        setDisplayTires(displayTire);
+      })
+      .catch(e =>
+        console.log(
+          'error while check tire status again inspection => ',
+          e.message,
+        ),
+      )
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+  async function handleRemovedAllTires() {
+    setIsLoading(true);
+
+    let removeTiresList = extractIDs(tires) || [];
+    const body = {fileId: removeTiresList};
+    await axios
+      .post(REMOVE_ALL_TIRES, body, config)
+      .then(res => {
+        console.log('response removing tires => ', res?.data);
+        dispatch({type: Types.CLEAR_TIRES});
+      })
+      .catch(e => console.log('error while removed all tires', e.message))
+      .finally(() => setIsLoading(false));
+  }
+  //Tire Rendering logic ends here
+
   return (
     <NewInspectionScreen
       selectedOption={selectedOption}
-      handleCarVerificationSelection={handleCarVerificationSelection}
-      handleExteriorSelection={handleExteriorSelection}
-      handleTiresSelection={handleTiresSelection}
       modalVisible={modalVisible}
       handleModalVisible={handleModalVisible}
       source={modalDetails?.source}
@@ -495,10 +473,12 @@ const NewInspectionContainer = ({route, navigation}) => {
       }
       isInspectionInProgressModalVisible={isInspectionInProgressModalVisible}
       inUseErrorTitle={inUseErrorTitle}
+      handleCardExpansion={handleCardExpansion}
       // skipLeft={skipLeft}
       // skipLeftCorners={skipLeftCorners}
       // skipRight={skipRight}
       // skipRightCorners={skipRightCorners}
+      // displayTires={displayTires}
     />
   );
 };

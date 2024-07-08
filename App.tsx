@@ -35,11 +35,8 @@ function App() {
   }, [displayGif]);
 
   async function versionCheck() {
-    console.log('checking version');
     const version = await checkVersion();
-    console.log({version});
     if (version.needsUpdate) {
-      console.log('got version update => ', version.needsUpdate);
       setUpdateAvailable(version);
     }
   }

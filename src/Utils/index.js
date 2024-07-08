@@ -619,8 +619,6 @@ export const handleNewInspectionPress = async (
   await axios
     .post(CREATE_INSPECTION_URL, body, {headers: headers})
     .then(response => {
-      console.log('--------------------------------');
-      console.log('response => ', response.data);
       // setInspectionID(response.data.id);
       dispatch(NumberPlateSelectedAction(response?.data?.id));
       resetAllStates();
