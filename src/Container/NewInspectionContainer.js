@@ -71,6 +71,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     isTires: false,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingIndicator, setLoadingIndicator] = useState(false);
   const [deleteItem, setDeleteItem] = useState({category: null, key: null});
   const [isDiscardInspectionModalVisible, setIsDiscardInspectionModalVisible] =
     useState(false);
@@ -99,6 +100,11 @@ const NewInspectionContainer = ({route, navigation}) => {
     <ActivityIndicator size={'small'} color={colors.white} />
   ) : (
     'Submit'
+  );
+  const confirmVehicleButtonText = isLoading ? (
+    <ActivityIndicator size={'small'} color={colors.white} />
+  ) : (
+    'Confirm'
   );
   const config = {
     headers: {
@@ -138,7 +144,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   }, [exteriorItems]);
   useEffect(() => {
     handleIsAllVehicleParts();
-  }, [carVerificationItems, exteriorItems, tires]);
+  }, [carVerificationItems, exteriorItems, tires, displayTires]);
   useEffect(() => {
     if (!displayTires) {
       handleRemovedAllTires().then();
@@ -167,6 +173,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsDiscardInspectionModalVisible(false);
     setIsAllVehicleParts(IS_ALL_VEHICLE_PARTS_INITIAL_STATE);
     setInUseErrorTitle('');
+    setLoadingIndicator(false);
   }
   function handleExteriorLeft() {
     if (isNotEmpty(exteriorItems?.exteriorLeft)) {
@@ -217,12 +224,22 @@ const NewInspectionContainer = ({route, navigation}) => {
     const allExterior = !isObjectEmpty(exteriorImages);
     const allTires = !isObjectEmpty(tires);
     const allParts = allCarVerification && allExterior && allTires;
-    setIsAllVehicleParts({
-      isAllCarVerification: allCarVerification,
-      isAllExterior: allExterior,
-      isAllTires: allTires,
-      isAllParts: allParts,
-    });
+    const skipOnlyTires = allCarVerification && allExterior;
+    if (displayTires) {
+      setIsAllVehicleParts({
+        isAllCarVerification: allCarVerification,
+        isAllExterior: allExterior,
+        isAllTires: allTires,
+        isAllParts: allParts,
+      });
+    } else {
+      setIsAllVehicleParts({
+        isAllCarVerification: allCarVerification,
+        isAllExterior: allExterior,
+        isAllTires: false,
+        isAllParts: skipOnlyTires,
+      });
+    }
   }
 
   const handleBackPress = () => {
@@ -407,7 +424,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       });
   }
   async function handleRemovedAllTires() {
-    setIsLoading(true);
+    setLoadingIndicator(true);
 
     let removeTiresList = extractIDs(tires) || [];
     const body = {fileId: removeTiresList};
@@ -418,7 +435,9 @@ const NewInspectionContainer = ({route, navigation}) => {
         dispatch({type: Types.CLEAR_TIRES});
       })
       .catch(e => console.log('error while removed all tires', e.message))
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        setLoadingIndicator(false);
+      });
   }
   //Tire Rendering logic ends here
 
@@ -466,6 +485,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       isLicenseModalVisible={isLicenseModalVisible}
       handleConfirmModalVisible={handleConfirmModalVisible}
       handleConfirmVehicleDetail={handleConfirmVehicleDetail}
+      confirmVehicleButtonText={confirmVehicleButtonText}
       plateNumber={plateNumber}
       errorTitle={errorTitle}
       handleYesPressOfInProgressInspection={
@@ -479,6 +499,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       // skipRight={skipRight}
       // skipRightCorners={skipRightCorners}
       // displayTires={displayTires}
+      loadingIndicator={loadingIndicator}
     />
   );
 };

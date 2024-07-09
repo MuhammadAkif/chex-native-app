@@ -21,6 +21,7 @@ import {
 } from '../Components';
 import {BackArrow} from '../Assets/Icons';
 import {ANDROID} from '../Constants';
+import LoadingIndicator from "../Components/LoadingIndicator";
 
 const NewInspectionScreen = ({
   selectedOption,
@@ -61,6 +62,7 @@ const NewInspectionScreen = ({
   isLicenseModalVisible,
   handleConfirmModalVisible,
   handleConfirmVehicleDetail,
+                               confirmVehicleButtonText,
   plateNumber,
   errorTitle,
   handleYesPressOfInProgressInspection,
@@ -72,6 +74,7 @@ const NewInspectionScreen = ({
   skipRightCorners,
   displayTires,
   handleCardExpansion,
+                               loadingIndicator,
 }) => (
   <View style={NewInspectionStyles.container}>
     {isDiscardInspectionModalVisible && (
@@ -103,6 +106,7 @@ const NewInspectionScreen = ({
         isLoading={isLoading}
         onCrossPress={handleConfirmModalVisible}
         onConfirmPress={handleConfirmVehicleDetail}
+        buttonText={confirmVehicleButtonText}
         numberPlateText={plateNumber || ''}
       />
     )}
@@ -225,6 +229,7 @@ const NewInspectionScreen = ({
         </View>
       )}
     </View>
+    <LoadingIndicator isLoading={loadingIndicator} />
   </View>
 );
 
