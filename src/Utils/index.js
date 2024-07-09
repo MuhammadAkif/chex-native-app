@@ -512,8 +512,6 @@ export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
   return title;
 };*/
 export const extractTitle = (groupType, category) => {
-  let title = 'No Title';
-
   return INSPECTION_TITLE[category] || 'No Title';
 };
 
@@ -599,18 +597,11 @@ export const handleNewInspectionPress = async (
   navigation,
   resetAllStates,
 ) => {
-  console.log({
-    dispatch,
-    setIsLoading,
-    companyId,
-    resetAllStates,
-  });
   setIsLoading(true);
   const body = {
     licensePlateNumber: generateRandomString(),
     companyId: companyId,
   };
-  console.log(body);
   dispatch({type: Types.company_ID, payload: companyId});
   const headers = {
     'Content-Type': 'application/json',
@@ -628,14 +619,6 @@ export const handleNewInspectionPress = async (
     })
     .catch(err => {
       console.log('err => ', err.message);
-      // setInspectionID(err?.response?.data?.inspectionId);
-      // const inProgressLicensePlateErrorMessage = `Inspection for license plate #${selectedNP} is already in progress. Would you like to visit in progress inspections page?`;
-      // const errorMessage =
-      //   err?.response?.data?.errorMessage ?? err?.response?.data?.message[0];
-      // setErrorTitle(inProgressLicensePlateErrorMessage);
-      // setIsLoading(false);
-      // setIsDiscardInspectionModalVisible(true);
-      // Alert.alert('', errorMessage);
     })
     .finally(() => setIsLoading(false));
 };
@@ -761,11 +744,6 @@ export const FILTER_IMAGES = (arr = [], toFilter = 'before') => {
     return arr.filter(item => item?.pictureTag === toFilter);
   } else {
     return arr.filter(item => {
-      console.log(
-        'group Type => ',
-        item?.groupType === INSPECTION.CAR_VERIFICATION ||
-          item?.groupType === INSPECTION.TIRES,
-      );
       if (
         item?.groupType === INSPECTION.CAR_VERIFICATION ||
         item?.groupType === INSPECTION.TIRES
@@ -786,7 +764,6 @@ export function extractIDs(obj) {
 
   for (const key in obj) {
     if (obj.hasOwnProperty(key) && key.includes('ID')) {
-      console.log('-----------');
       if (isNotEmpty(obj[key])) {
         idsArray.push(obj[key]);
       }

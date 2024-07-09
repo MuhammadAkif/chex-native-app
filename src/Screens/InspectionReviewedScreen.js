@@ -10,7 +10,7 @@ import {
   PrimaryStartInspectionButton,
   RenderInspectionReviewed,
 } from '../Components';
-import {handleHomePress, handleStartInspectionPress} from '../Utils';
+import {handleHomePress} from '../Utils';
 
 const InspectionReviewedScreen = ({
   handleIsExpanded,

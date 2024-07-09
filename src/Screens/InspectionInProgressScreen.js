@@ -11,7 +11,7 @@ import {
   RenderInspectionInProgress,
 } from '../Components';
 import {colors, NewInspectionStyles, ShadowEffect} from '../Assets/Styles';
-import {handleHomePress, handleStartInspectionPress} from '../Utils';
+import {handleHomePress} from '../Utils';
 import Toast from '../Components/Toast';
 
 const InspectionInProgressScreen = ({
