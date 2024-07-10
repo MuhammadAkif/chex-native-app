@@ -695,6 +695,12 @@ export const isObjectEmpty = (object = {}) => {
   const extractValues = Object?.values(object);
   return extractValues?.includes('');
 };
+export const haveOneValue = (object = {}) => {
+  const extractValues = Object?.values(object);
+  const even = element => element !== '';
+
+  return extractValues.some(even);
+};
 export const checkExterior = () => {
   const {exteriorItems: exterior} = store.getState().newInspection;
   const {

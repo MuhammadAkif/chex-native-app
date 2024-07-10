@@ -21,7 +21,7 @@ import {
 } from '../Components';
 import {BackArrow} from '../Assets/Icons';
 import {ANDROID} from '../Constants';
-import LoadingIndicator from "../Components/LoadingIndicator";
+import LoadingIndicator from '../Components/LoadingIndicator';
 
 const NewInspectionScreen = ({
   selectedOption,
@@ -62,7 +62,7 @@ const NewInspectionScreen = ({
   isLicenseModalVisible,
   handleConfirmModalVisible,
   handleConfirmVehicleDetail,
-                               confirmVehicleButtonText,
+  confirmVehicleButtonText,
   plateNumber,
   errorTitle,
   handleYesPressOfInProgressInspection,
@@ -74,7 +74,7 @@ const NewInspectionScreen = ({
   skipRightCorners,
   displayTires,
   handleCardExpansion,
-                               loadingIndicator,
+  loadingIndicator,
 }) => (
   <View style={NewInspectionStyles.container}>
     {isDiscardInspectionModalVisible && (
@@ -200,23 +200,26 @@ const NewInspectionScreen = ({
               handleMediaModalDetailsPress={handleMediaModalDetailsPress}
             />
           )}
-          <CollapsedCard
-            text={'Tires'}
-            index={3}
-            isActive={selectedOption?.isTires}
-            isBothItemsAvailable={isBothTiresImagesAvailable}
-            onPress={() => handleCardExpansion('isTires')}
-          />
-          {selectedOption?.isTires && (
-            // {selectedOption?.isTires && displayTires && (
-            <TiresItemsExpandedCard
-              handleItemPickerPress={handleItemPickerPress}
-              tires={tires}
-              handleCrossPress={handleOnCrossPress}
-              isLoading={isLoading}
-              handleMediaModalDetailsPress={handleMediaModalDetailsPress}
-            />
-          )}
+          {displayTires &&
+            <>
+              <CollapsedCard
+                text={'Tires'}
+                index={3}
+                isActive={selectedOption?.isTires}
+                isBothItemsAvailable={isBothTiresImagesAvailable}
+                onPress={() => handleCardExpansion('isTires')}
+              />
+              {selectedOption?.isTires && (
+                <TiresItemsExpandedCard
+                  handleItemPickerPress={handleItemPickerPress}
+                  tires={tires}
+                  handleCrossPress={handleOnCrossPress}
+                  isLoading={isLoading}
+                  handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+                />
+              )}
+            </>
+          }
         </ScrollView>
       </View>
       {isVehicleAllPartsImagesAvailable && (

@@ -24,6 +24,7 @@ import {
 import {
   EXTRACT_INSPECTION_ITEM_ID,
   extractIDs,
+  haveOneValue,
   isNotEmpty,
   isObjectEmpty,
   LicensePlateDetails,
@@ -51,7 +52,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     skipRight,
     skipRightCorners,
   } = useSelector(state => state.newInspection);
-  const {token} = useSelector(state => state?.auth);
+  const {token, data} = useSelector(state => state?.auth);
   const modalMessageDetailsInitialState = {
     isVisible: false,
     title: '',
@@ -93,6 +94,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     modalMessageDetailsInitialState,
   );
   const [displayTires, setDisplayTires] = useState(true);
+  const [checkTireStatus, setCheckTireStatus] = useState(true);
   const [isAllVehicleParts, setIsAllVehicleParts] = useState(
     IS_ALL_VEHICLE_PARTS_INITIAL_STATE,
   );
@@ -114,6 +116,14 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
 
   useEffect(() => {
+    if (
+      route.params?.routeName === ROUTES.INSPECTION_IN_PROGRESS &&
+      checkTireStatus
+    ) {
+      vehicleTireStatusToRender(selectedInspectionID).then(() =>
+        setCheckTireStatus(false),
+      );
+    }
     if (route.params) {
       const {isLicensePlate} = route.params;
       if (isLicensePlate) {
@@ -146,8 +156,11 @@ const NewInspectionContainer = ({route, navigation}) => {
     handleIsAllVehicleParts();
   }, [carVerificationItems, exteriorItems, tires, displayTires]);
   useEffect(() => {
-    if (!displayTires) {
+    const isTiresUploaded = haveOneValue(tires);
+    if (!displayTires && isTiresUploaded) {
       handleRemovedAllTires().then();
+    } else if (!displayTires) {
+      setLoadingIndicator(false);
     }
   }, [displayTires]);
   function handle_Hardware_Back_Press() {
@@ -174,6 +187,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsAllVehicleParts(IS_ALL_VEHICLE_PARTS_INITIAL_STATE);
     setInUseErrorTitle('');
     setLoadingIndicator(false);
+    setDisplayTires(true);
+    setCheckTireStatus(true);
   }
   function handleExteriorLeft() {
     if (isNotEmpty(exteriorItems?.exteriorLeft)) {
@@ -358,7 +373,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   const handleConfirmVehicleDetail = numberPlate => {
     const body = {
       licensePlateNumber: numberPlate,
-      companyId: company_ID,
+      companyId: data?.companyId,
       inspectionId: selectedInspectionID,
     };
     setIsLoading(true);
@@ -385,22 +400,24 @@ const NewInspectionContainer = ({route, navigation}) => {
 
   const handleYesPressOfInProgressInspection = () => {
     setIsInspectionInProgressModalVisible(false);
-    setIsLoading(true);
+    setLoadingIndicator(true);
     setErrorTitle('');
     axios
       .get(`${DEV_URL}/api/v1/files/details/${inspectionID}`)
       .then(res => {
         uploadInProgressMediaToStore(res?.data?.files, dispatch);
-        setIsLoading(false);
+        vehicleTireStatusToRender(inspectionID).then();
+        // setIsLoading(false);
         dispatch(NumberPlateSelectedAction(inspectionID));
       })
       .catch(error => {
-        setIsLoading(false);
+        setLoadingIndicator(false);
         console.log('error of selected inspection in progress => ', error);
       });
   };
   //Tire Rendering logic start here
   async function vehicleTireStatusToRender(inspection_ID) {
+    setLoadingIndicator(true);
     const body = {
       inspectionId: inspection_ID,
     };
@@ -410,31 +427,26 @@ const NewInspectionContainer = ({route, navigation}) => {
         const {
           data: {displayTire},
         } = res;
-        console.log({displayTire});
         setDisplayTires(displayTire);
+        setLoadingIndicator(!displayTire);
       })
       .catch(e =>
         console.log(
           'error while check tire status again inspection => ',
           e.message,
         ),
-      )
-      .finally(() => {
-        setIsLoading(false);
-      });
+      );
   }
   async function handleRemovedAllTires() {
-    setLoadingIndicator(true);
-
     let removeTiresList = extractIDs(tires) || [];
     const body = {fileId: removeTiresList};
     await axios
       .post(REMOVE_ALL_TIRES, body, config)
       .then(res => {
-        console.log('response removing tires => ', res?.data);
         dispatch({type: Types.CLEAR_TIRES});
       })
-      .catch(e => console.log('error while removed all tires', e.message))
+      .catch(e => {
+      })
       .finally(() => {
         setLoadingIndicator(false);
       });
@@ -498,7 +510,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       // skipLeftCorners={skipLeftCorners}
       // skipRight={skipRight}
       // skipRightCorners={skipRightCorners}
-      // displayTires={displayTires}
+      displayTires={displayTires}
       loadingIndicator={loadingIndicator}
     />
   );

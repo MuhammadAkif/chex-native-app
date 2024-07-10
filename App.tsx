@@ -16,10 +16,10 @@ import {UPDATE_APP} from './src/Constants';
 function App() {
   const dispatch = useDispatch();
   const [displayGif, setDisplayGif] = useState(true);
-  const [updateAvailable, setUpdateAvailable] = useState(null);
+  const [updateAvailable, setUpdateAvailable] = useState('');
 
   useEffect(() => {
-    versionCheck();
+    versionCheck().then();
     SplashScreen.hide();
     if (displayGif) {
       setTimeout(() => {
@@ -37,11 +37,11 @@ function App() {
   async function versionCheck() {
     const version = await checkVersion();
     if (version.needsUpdate) {
-      setUpdateAvailable(version);
+      setUpdateAvailable(version.url);
     }
   }
   const handleUpdatePress = async () => {
-    await Linking.openURL(updateAvailable?.url);
+    await Linking.openURL(updateAvailable);
   };
 
   return displayGif ? (
