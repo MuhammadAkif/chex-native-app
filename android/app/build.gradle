@@ -70,8 +70,8 @@ def enableProguardInReleaseBuilds = false
 def jscFlavor = 'org.webkit:android-jsc:+'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -80,12 +80,10 @@ android {
     defaultConfig {
         applicationId "com.chex_ai"
         minSdkVersion rootProject.ext.minSdkVersion
-        //Update your target API level by 31 August 2024 to release updates to your app
-        targetSdkVersion 34
-//         targetSdkVersion rootProject.ext.targetSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
-        versionCode 32
-        versionName "2.0"
+        versionCode 35
+        versionName "2.3"
     }
     signingConfigs {
       release {

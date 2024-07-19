@@ -328,6 +328,7 @@ const NewInspectionContainer = ({route, navigation}) => {
           .then(() => {
             setIsLoading(false);
             dispatch({type: Types.CLEAR_NEW_INSPECTION});
+            resetAllStates();
             navigation.navigate(ROUTES.COMPLETED_INSPECTION);
           })
           .catch(error => {
@@ -445,8 +446,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       .then(res => {
         dispatch({type: Types.CLEAR_TIRES});
       })
-      .catch(e => {
-      })
+      .catch(e => {})
       .finally(() => {
         setLoadingIndicator(false);
       });
