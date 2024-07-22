@@ -67,6 +67,9 @@ function App() {
           description={UPDATE_APP.MESSAGE}
           yesButtonText={UPDATE_APP.BUTTON}
           dualButton={false}
+          onNoPress={undefined}
+          noButtonText={undefined}
+          noButtonStyle={undefined}
         />
       )}
     </>

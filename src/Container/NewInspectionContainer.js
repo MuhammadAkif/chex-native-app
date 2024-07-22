@@ -163,6 +163,12 @@ const NewInspectionContainer = ({route, navigation}) => {
       setLoadingIndicator(false);
     }
   }, [displayTires]);
+  useEffect(() => {
+    if (!isNotEmpty(selectedInspectionID)) {
+      resetAllStates();
+    }
+  }, [selectedInspectionID]);
+
   function handle_Hardware_Back_Press() {
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -431,12 +437,13 @@ const NewInspectionContainer = ({route, navigation}) => {
         setDisplayTires(displayTire);
         setLoadingIndicator(!displayTire);
       })
-      .catch(e =>
+      .catch(e => {
+        setLoadingIndicator(false);
         console.log(
           'error while check tire status again inspection => ',
           e.message,
-        ),
-      );
+        );
+      });
   }
   async function handleRemovedAllTires() {
     let removeTiresList = extractIDs(tires) || [];
