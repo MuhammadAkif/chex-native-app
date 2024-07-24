@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useMemo} from 'react';
 import {
   Modal,
   StyleSheet,
@@ -22,6 +22,18 @@ import {colors, dot} from '../Assets/Styles';
 import {PrimaryGradientButton} from './index';
 import Collapse from '../Assets/Icons/Collapse';
 import {ANDROID} from '../Constants';
+import {
+  headerFlex,
+  headerFlexGrow,
+  headerTextBottom,
+  imageHeight,
+  instructionsContainerTop,
+} from '../Utils/helpers';
+
+const Accordion = {
+  true: Expand,
+  false: Collapse,
+};
 
 const CaptureImageModal = ({
   modalVisible,
@@ -40,12 +52,22 @@ const CaptureImageModal = ({
   isExterior = true,
 }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
-  let height = hp('5%');
-  let width = wp('5%');
-  const imageHeight = {
-    true: hp('20%'),
-    false: hp('30%'),
-  };
+
+  const height = hp('5%');
+  const width = wp('5%');
+  const ACCORDION_COMPONENT = Accordion[isFullScreen];
+
+  const calculatedStyles = useMemo(
+    () => ({
+      headerFlex: headerFlex[Boolean(instructionalSubHeadingText)],
+      headerFlexGrow: headerFlexGrow[isExterior],
+      headerTextBottom: headerTextBottom[isFullScreen],
+      imageHeight: imageHeight[isCarVerification],
+      instructionsContainerTop: instructionsContainerTop[isFullScreen],
+    }),
+    [instructionalSubHeadingText, isExterior, isFullScreen, isCarVerification],
+  );
+
   return (
     <Modal
       animationType="slide"
@@ -56,7 +78,8 @@ const CaptureImageModal = ({
       <View style={styles.centeredView}>
         <TouchableOpacity
           style={styles.crossIconContainer}
-          onPress={handleVisible}
+          onPress
+          and={handleVisible}
           disabled={isLoading}>
           <Cross height={hp('8%')} width={wp('10%')} color={colors.white} />
         </TouchableOpacity>
@@ -64,15 +87,15 @@ const CaptureImageModal = ({
           style={[
             styles.header,
             {
-              flex: instructionalSubHeadingText ? 1.5 : 1,
-              flexGrow: isExterior ? 2 : 1,
+              flex: calculatedStyles.headerFlex,
+              flexGrow: calculatedStyles.headerFlexGrow,
             },
           ]}>
           <Text
             style={[
               styles.titleText,
               styles.textColor,
-              {bottom: isFullScreen ? hp('3%') : null},
+              {bottom: calculatedStyles.headerTextBottom},
             ]}>
             {title}
           </Text>
@@ -81,26 +104,13 @@ const CaptureImageModal = ({
               {Platform.OS === ANDROID ? (
                 <View style={styles.image}>
                   <TouchableOpacity
-                    style={{
-                      position: 'absolute',
-                      color: '#fff',
-                      right: 0,
-                      zIndex: 1,
-                    }}
+                    style={styles.iconContainer}
                     onPress={() => setIsFullScreen(!isFullScreen)}>
-                    {isFullScreen ? (
-                      <Expand
-                        height={height}
-                        width={width}
-                        color={colors.white}
-                      />
-                    ) : (
-                      <Collapse
-                        height={height}
-                        width={width}
-                        color={colors.white}
-                      />
-                    )}
+                    <ACCORDION_COMPONENT
+                      height={height}
+                      width={width}
+                      color={colors.white}
+                    />
                   </TouchableOpacity>
                   <VideoPlayer
                     video={source}
@@ -125,14 +135,14 @@ const CaptureImageModal = ({
               source={source}
               priority={'normal'}
               resizeMode={'stretch'}
-              style={[styles.image, {height: imageHeight[isCarVerification]}]}
+              style={[styles.image, {height: calculatedStyles.imageHeight}]}
             />
           )}
           <View style={styles.instructionsAndSubHeadingContainer}>
             <View
               style={[
                 styles.instructionsContainer,
-                {top: isFullScreen ? hp('25%') : null},
+                {top: calculatedStyles.instructionsContainerTop},
               ]}>
               <Info height={hp('4%')} width={wp('7%')} color={colors.white} />
               <Text style={[styles.instructionsText, styles.textColor]}>
@@ -277,6 +287,13 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: hp('1.8%'),
     paddingTop: hp('1%'),
+  },
+  iconContainer: {
+    position: 'absolute',
+    color: '#fff',
+    right: 0,
+    top: 0,
+    margin: 10,
   },
 });
 

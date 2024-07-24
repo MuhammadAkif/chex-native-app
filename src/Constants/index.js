@@ -97,3 +97,16 @@ export const STATUSES = {
   READY_FOR_REVIEW: 'Ready For Review',
   IN_REVIEW: 'In Review',
 };
+export const PHYSICAL_DEVICES = [
+  'wide-angle-camera',
+  'ultra-wide-angle-camera',
+  'telephoto-camera',
+];
+export const IS_BACK_CAMERA = {
+  front: true,
+  back: false,
+};
+export const SWITCH_CAMERA = {
+  true: 'front',
+  false: 'back',
+};

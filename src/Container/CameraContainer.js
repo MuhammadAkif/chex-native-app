@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
-  ActivityIndicator,
   AppState,
   BackHandler,
   StatusBar,
@@ -20,6 +19,7 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
+import axios from 'axios';
 
 import {colors, PreviewStyles} from '../Assets/Styles';
 import {BackArrow} from '../Assets/Icons';
@@ -42,11 +42,19 @@ import {
   EXTRACT_NUMBER_PLATE_WITH_AI,
   HARDWARE_BACK_PRESS,
   INSPECTION,
+  IS_BACK_CAMERA,
+  PHYSICAL_DEVICES,
   S3_BUCKET_BASEURL,
+  SWITCH_CAMERA,
 } from '../Constants';
 import {Types} from '../Store/Types';
-import axios from 'axios';
 import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
+
+const handleUpdateStoreMedia = {
+  CarVerification: UpdateCarVerificationItemURI,
+  Exterior: UpdateExteriorItemURI,
+  Tires: UpdateTiresItemURI,
+};
 
 const CameraContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -56,13 +64,11 @@ const CameraContainer = ({route, navigation}) => {
   const appState = useRef(AppState.currentState);
   const [selectedCamera, setSelectedCamera] = useState('back');
   const device = useCameraDevice(selectedCamera, {
-    physicalDevices: [
-      'wide-angle-camera',
-      'ultra-wide-angle-camera',
-      'telephoto-camera',
-    ],
+    physicalDevices: PHYSICAL_DEVICES,
   });
-  const [isBackCamera, setIsBackCamera] = useState(selectedCamera === 'front');
+  const [isBackCamera, setIsBackCamera] = useState(
+    IS_BACK_CAMERA[selectedCamera],
+  );
   const [isImageURL, setIsImageURL] = useState('');
   const [isImageFile, setIsImageFile] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -75,8 +81,6 @@ const CameraContainer = ({route, navigation}) => {
     {fps: 30},
   ]);
   const [isLoading, setIsLoading] = useState(false);
-  const preSignedSignle = new AbortController();
-  const uploadToS3Sigal = new AbortController();
   const {
     category,
     subCategory,
@@ -112,11 +116,7 @@ const CameraContainer = ({route, navigation}) => {
   }, [isImageURL]);
 
   useEffect(() => {
-    if (isBackCamera) {
-      setSelectedCamera('front');
-    } else {
-      setSelectedCamera('back');
-    }
+    setSelectedCamera(SWITCH_CAMERA[isBackCamera]);
   }, [isBackCamera, device]);
 
   function handle_Hardware_Back_Press() {
@@ -170,11 +170,8 @@ const CameraContainer = ({route, navigation}) => {
     );
   };
   function uploadImageToStore(imageID) {
-    category === 'CarVerification'
-      ? dispatch(UpdateCarVerificationItemURI(type, isImageURL, imageID))
-      : category === 'Exterior'
-      ? dispatch(UpdateExteriorItemURI(type, isImageURL, imageID))
-      : dispatch(UpdateTiresItemURI(type, isImageURL, imageID));
+    const UPDATE_INSPECTION_IMAGES = handleUpdateStoreMedia[category];
+    dispatch(UPDATE_INSPECTION_IMAGES(type, isImageURL, imageID));
     if (category === 'CarVerification' && type === 'licensePlate') {
       navigation.navigate(ROUTES.NEW_INSPECTION, {isLicensePlate: true});
     } else {
