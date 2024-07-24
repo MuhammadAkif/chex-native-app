@@ -1,9 +1,9 @@
 import React, {useCallback} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import {Alert, BackHandler, Platform} from 'react-native';
 
 import {WelcomeScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
-import {useFocusEffect} from '@react-navigation/native';
-import {Alert, BackHandler, Platform} from 'react-native';
 import {ANDROID, HARDWARE_BACK_PRESS} from '../Constants';
 
 const WelcomeContainer = ({navigation}) => {

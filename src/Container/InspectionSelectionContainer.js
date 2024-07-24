@@ -1,23 +1,16 @@
 import React, {useCallback, useState} from 'react';
-import {ActivityIndicator, Alert, BackHandler, Platform} from 'react-native';
+import {Alert, BackHandler, Platform} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {InspectionSelectionScreen} from '../Screens';
-import {ROUTES} from '../Navigation/ROUTES';
 import {ANDROID, HARDWARE_BACK_PRESS} from '../Constants';
-import {colors} from '../Assets/Styles';
 import {handleNewInspectionPress} from '../Utils';
 
 const InspectionSelectionContainer = ({navigation}) => {
   const dispatch = useDispatch();
   const {token, data} = useSelector(state => state?.auth);
   const [isLoading, setIsLoading] = useState(false);
-  const selectedText = isLoading ? (
-    <ActivityIndicator size={'small'} color={colors.white} />
-  ) : (
-    '+ New Inspection'
-  );
 
   function resetAllStates() {
     setIsLoading(false);
@@ -58,18 +51,12 @@ const InspectionSelectionContainer = ({navigation}) => {
       resetAllStates,
     );
   };
-  // navigation.navigate(ROUTES.LICENSE_PLATE_SELECTION);
-  const handleInspectionInProgressPress = () =>
-    navigation.navigate(ROUTES.INSPECTION_IN_PROGRESS);
-  const handleInspectionReviewedPress = () =>
-    navigation.navigate(ROUTES.INSPECTION_REVIEWED);
+  const handleNavigation = PATH => navigation.navigate(PATH);
 
   return (
     <InspectionSelectionScreen
       handleNewInspectionPress={onNewInspectionPress}
-      handleInspectionInProgressPress={handleInspectionInProgressPress}
-      handleInspectionReviewedPress={handleInspectionReviewedPress}
-      selectedText={selectedText}
+      handleNavigation={handleNavigation}
       isLoading={isLoading}
     />
   );

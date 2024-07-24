@@ -8,7 +8,7 @@ import {InspectionReviewedScreen} from '../Screens';
 import {FETCH_INSPECTION_REVIEWED} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
 // import {DEV_URL} from '@env';
-import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
+import {DEV_URL, HARDWARE_BACK_PRESS, INSPECTION_STATUSES} from '../Constants';
 import {
   fetchInProgressInspections,
   FILTER_IMAGES,
@@ -55,7 +55,7 @@ const InspectionReviewedContainer = ({navigation}) => {
     let inspectionReviewData = [];
     inspectionReviewData = await fetchInProgressInspections(
       token,
-      ['IN_REVIEW', 'REVIEWED', 'READY_FOR_REVIEW'],
+      INSPECTION_STATUSES,
       setIsLoading,
     );
     dispatch(FETCH_INSPECTION_REVIEWED(inspectionReviewData));

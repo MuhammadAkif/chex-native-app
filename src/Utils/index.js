@@ -390,7 +390,7 @@ export const uploadFile = async (
 };
 export const fetchInProgressInspections = async (
   token,
-  status,
+  status = 'IN_PROGRESS',
   setIsLoading,
 ) => {
   let data = '';

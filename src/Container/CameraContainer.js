@@ -86,11 +86,6 @@ const CameraContainer = ({route, navigation}) => {
     isVideo,
     groupType,
   } = modalDetails;
-  const confirmButtonText = isLoading ? (
-    <ActivityIndicator size={'small'} color={colors.white} />
-  ) : (
-    EXPIRY_INSPECTION.confirmButton
-  );
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       appState.current = nextAppState;
@@ -310,7 +305,8 @@ const CameraContainer = ({route, navigation}) => {
           onConfirmPress={onNewInspectionPress}
           onCancelPress={handleExitPress}
           visible={true}
-          confirmButtonText={confirmButtonText}
+          isLoading={isLoading}
+          confirmButtonText={EXPIRY_INSPECTION.confirmButton}
         />
       )}
       <StatusBar

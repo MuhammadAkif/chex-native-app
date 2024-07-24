@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  Modal,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-} from 'react-native';
+import {View, Text, Modal, StyleSheet, TextInput} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -54,7 +47,7 @@ const ConfirmVehicleDetailModal = ({
             enterKeyHint={'done'}
             editable={!isLoading}
             onChangeText={setNumberPlate}
-            onSubmitEditing={onConfirmPress}
+            onSubmitEditing={() => onConfirmPress(numberPlate)}
           />
           <View style={modalStyle.footer}>
             <PrimaryGradientButton

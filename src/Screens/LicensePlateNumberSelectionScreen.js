@@ -86,7 +86,7 @@ const LicensePlateNumberSelectionScreen = ({
       </View>
       <View style={styles.footerContainer}>
         <PrimaryGradientButton
-          text={selectText}
+          text={'Select'}
           onPress={handleSubmit}
           disabled={selectedNP === null || isLoading}
         />

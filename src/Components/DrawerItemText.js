@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     fontSize: hp('1.7%'),
     width: wp('50%'),
     textAlignVertical: 'center',
+    textTransform: 'capitalize',
   },
 });
 

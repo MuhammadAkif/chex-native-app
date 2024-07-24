@@ -98,16 +98,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   const [isAllVehicleParts, setIsAllVehicleParts] = useState(
     IS_ALL_VEHICLE_PARTS_INITIAL_STATE,
   );
-  const submitText = isLoading ? (
-    <ActivityIndicator size={'small'} color={colors.white} />
-  ) : (
-    'Submit'
-  );
-  const confirmVehicleButtonText = isLoading ? (
-    <ActivityIndicator size={'small'} color={colors.white} />
-  ) : (
-    'Confirm'
-  );
+
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -489,7 +480,6 @@ const NewInspectionContainer = ({route, navigation}) => {
       isVehicleAllPartsImagesAvailable={isAllVehicleParts.isAllParts}
       handleSubmitPress={handleSubmitPress}
       isLoading={isLoading}
-      submitText={submitText}
       handleMediaModalDetailsPress={handleMediaModalDetailsPress}
       handleMediaModalDetailsCrossPress={handleMediaModalDetailsCrossPress}
       mediaModalDetails={mediaModalDetails}
@@ -504,7 +494,6 @@ const NewInspectionContainer = ({route, navigation}) => {
       isLicenseModalVisible={isLicenseModalVisible}
       handleConfirmModalVisible={handleConfirmModalVisible}
       handleConfirmVehicleDetail={handleConfirmVehicleDetail}
-      confirmVehicleButtonText={confirmVehicleButtonText}
       plateNumber={plateNumber}
       errorTitle={errorTitle}
       handleYesPressOfInProgressInspection={

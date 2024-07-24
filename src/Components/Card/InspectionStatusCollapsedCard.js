@@ -16,6 +16,24 @@ import {DownArrow, UpArrow} from '../../Assets/Icons';
 import {WINDOW} from '../../Constants';
 
 const {width} = Dimensions.get(WINDOW);
+const IS_IN_REVIEW = {
+  'In Review': true,
+  'Ready For Review': true,
+  Reviewed: false,
+};
+const STATUS_BACKGROUND_COLOR = {
+  'Ready For Review': colors.orangePeel,
+  'In Review': colors.skyBlue,
+  Reviewed: colors.deepGreen,
+};
+const Arrow = {
+  true: UpArrow,
+  false: DownArrow,
+};
+const ActiveColor = {
+  true: colors.orangePeel,
+  false: colors.lightSteelBlue,
+};
 
 const InspectionStatusCollapsedCard = ({
   textOne,
@@ -26,27 +44,20 @@ const InspectionStatusCollapsedCard = ({
   labelTwo,
   isReviewed,
 }) => {
-  const isInReview =
-    isReviewed === 'In Review' || isReviewed === 'Ready For Review';
-  const isNotInPreview =
-    isReviewed !== 'In Review' && isReviewed !== 'Ready For Review';
+  const ArrowComponent = Arrow[isActive];
+  const isNotInPreview = !IS_IN_REVIEW[isReviewed];
   const iconHeight = hp('4%');
   const iconWidth = wp('4%');
   return (
     <TouchableOpacity
       style={styles.collapsedCardContainer}
-      disabled={isInReview}
+      disabled={IS_IN_REVIEW[isReviewed]}
       onPress={onPress}>
       <View
         style={[
           styles.statusContainer,
           {
-            backgroundColor:
-              isInReview && isReviewed === 'Ready For Review'
-                ? colors.orangePeel
-                : isInReview
-                ? colors.skyBlue
-                : colors.deepGreen,
+            backgroundColor: STATUS_BACKGROUND_COLOR[isReviewed],
           },
         ]}>
         <Text style={styles.statusText}>{isReviewed}</Text>
@@ -66,26 +77,17 @@ const InspectionStatusCollapsedCard = ({
           style={[
             styles.iconContainer,
             {
-              borderColor:
-                isNotInPreview &&
-                (isActive ? colors.orangePeel : colors.lightSteelBlue),
+              borderColor: isNotInPreview && ActiveColor[isActive],
               borderWidth: isNotInPreview ? 3 : 0,
             },
           ]}>
-          {isNotInPreview &&
-            (isActive ? (
-              <UpArrow
-                height={iconHeight}
-                width={iconWidth}
-                color={colors.orangePeel}
-              />
-            ) : (
-              <DownArrow
-                height={iconHeight}
-                width={iconWidth}
-                color={colors.lightSteelBlue}
-              />
-            ))}
+          {isNotInPreview && (
+            <ArrowComponent
+              height={iconHeight}
+              width={iconWidth}
+              color={ActiveColor[isActive]}
+            />
+          )}
         </View>
       </View>
     </TouchableOpacity>
@@ -156,6 +158,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: hp('1.3%'),
     fontWeight: '600',
+    textTransform: 'capitalize',
   },
 });
 

@@ -5,6 +5,7 @@ import {
   InspectionStatusExpandedCard,
 } from '../index';
 import {extractDate} from '../../Utils';
+import {STATUSES} from '../../Constants';
 
 const RenderInspectionReviewed = ({
   item,
@@ -19,13 +20,7 @@ const RenderInspectionReviewed = ({
       textOne={item?.Vehicle?.licensePlateNumber}
       textTwo={extractDate(item?.createdAt)}
       index={1}
-      isReviewed={
-        item?.status === 'REVIEWED'
-          ? 'Reviewed'
-          : item?.status === 'READY_FOR_REVIEW'
-          ? 'Ready For Review'
-          : 'In Review'
-      }
+      isReviewed={STATUSES[item?.status]}
       labelOne={'License Plate'}
       labelTwo={'Date Created'}
       isActive={isExpanded.includes(item.id)}

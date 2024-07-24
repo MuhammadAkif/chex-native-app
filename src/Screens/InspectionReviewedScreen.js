@@ -57,7 +57,7 @@ const InspectionReviewedScreen = ({
         buttonPress={onNewInspectionPress}
         textPress={() => handleHomePress(navigation)}
         isLoading={isNewInspectionLoading}
-        disabled={isLoading || isNewInspectionLoading}
+        disabled={isNewInspectionLoading}
       />
     </View>
   </View>

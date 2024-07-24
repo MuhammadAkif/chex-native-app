@@ -10,6 +10,7 @@ import {CompletedInspectionBackgroundImage} from '../Components';
 import {colors} from '../Assets/Styles';
 import {PrimaryGradientButton} from '../Components';
 import {handleHomePress} from '../Utils';
+import {PROJECT_NAME} from '../Constants';
 
 const CompletedInspectionScreen = ({navigation}) => (
   <CompletedInspectionBackgroundImage>
@@ -25,7 +26,9 @@ const CompletedInspectionScreen = ({navigation}) => (
           <Text style={[styles.textColor, styles.titleText]}>
             Thank you for using
           </Text>
-          <Text style={[styles.textColor, styles.subheadingText]}>CHEX.AI</Text>
+          <Text style={[styles.textColor, styles.subheadingText]}>
+            {PROJECT_NAME.CHEX_AI}
+          </Text>
           <Text style={[styles.textColor, styles.subTitleText]}>
             You may now exit our app. Our representatives will reach out to you
             if we need any further help

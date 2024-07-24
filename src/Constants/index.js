@@ -1,7 +1,8 @@
 // import {DEV_URL} from '@env'
 export const DEV_URL =
   // 'https://n3hqyu9j2i.execute-api.us-east-1.amazonaws.com/chexai-dsp';
-  'https://fbyrgnnu14.execute-api.us-east-1.amazonaws.com/chexai-dsp-staging';
+  // 'https://fbyrgnnu14.execute-api.us-east-1.amazonaws.com/chexai-dsp-staging';
+  'https://prisoners-targets-reflected-decided.trycloudflare.com';
 export const S3_BUCKET_BASEURL = 'https://chex-ai-uploads.s3.amazonaws.com/';
 export const FETCH_NUMBER_PLATE_URL = `${DEV_URL}/api/v1/searchnumberplate`;
 export const EXTRACT_NUMBER_PLATE = `${DEV_URL}/api/v1/extract/inspection/create`;
@@ -73,4 +74,27 @@ export const UPDATE_APP = {
   MESSAGE:
     'A new version of the app is available. Please update to continue using the app.',
   BUTTON: 'UPDATE',
+};
+
+export const PROJECT_NAME = {
+  CHEX_AI: 'CHEX.AI',
+  CHEX: 'CHEX',
+  AI: '.AI',
+};
+
+export const DRAWER = {
+  HOME: 'HOME',
+  THINGS_YOU_WILL_REQUIRE: 'Things you will require',
+  LOGOUT: 'Logout',
+};
+
+export const INSPECTION_STATUSES = [
+  'IN_REVIEW',
+  'REVIEWED',
+  'READY_FOR_REVIEW',
+];
+export const STATUSES = {
+  REVIEWED: 'Reviewed',
+  READY_FOR_REVIEW: 'Ready For Review',
+  IN_REVIEW: 'In Review',
 };

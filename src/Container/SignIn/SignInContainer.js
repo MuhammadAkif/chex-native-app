@@ -108,13 +108,11 @@ const SignInContainer = ({navigation, route}) => {
         password: body.password,
       })
       .then(response => {
-        setIsSubmitting(false);
         dispatch(SIGN_IN_ACTION(response.data));
         resetForm();
         navigation.navigate(ROUTES.HOME);
       })
       .catch(err => {
-        setIsSubmitting(false);
         const isWrongPassword =
           err?.response?.data?.errors[0] === 'password is  incorrect';
         if (isWrongPassword) {
@@ -122,7 +120,8 @@ const SignInContainer = ({navigation, route}) => {
         } else {
           Alert.alert('Login Failed', err?.response?.data?.errors[0]);
         }
-      });
+      })
+      .finally(() => setIsSubmitting(false));
   };
   const handleOkPress = () => setModalMessage(modalMessageInitialState);
 
