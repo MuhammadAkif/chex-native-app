@@ -23,6 +23,7 @@ import {colors} from '../Assets/Styles';
 import {SIGN_OUT_ACTION} from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {DRAWER, PROJECT_NAME} from '../Constants';
+import {IMAGES} from '../Assets/Images';
 
 const CustomDrawerContent = props => {
   const dispatch = useDispatch();
@@ -67,7 +68,7 @@ const CustomDrawerContent = props => {
     <ScrollView style={styles.body} {...props}>
       <View style={styles.header}>
         <FastImage
-          source={require('../Assets/Images/DrawerImage.png')}
+          source={IMAGES.drawer}
           priority={'normal'}
           resizeMode={'cover'}
           style={StyleSheet.absoluteFillObject}

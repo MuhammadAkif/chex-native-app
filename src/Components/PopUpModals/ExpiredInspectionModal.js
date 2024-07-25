@@ -9,6 +9,7 @@ import FastImage from 'react-native-fast-image';
 import {PrimaryGradientButton, SecondaryButton} from '../index';
 import {modalStyle} from '../../Assets/Styles';
 import {EXPIRY_INSPECTION} from '../../Constants';
+import {IMAGES} from '../../Assets/Images';
 
 const ExpiredInspectionModal = ({
   description = EXPIRY_INSPECTION.description,
@@ -32,7 +33,7 @@ const ExpiredInspectionModal = ({
       <View style={modalStyle.modalContainer}>
         <Text style={modalStyle.header} />
         <FastImage
-          source={require('../../Assets/Images/ExpiryInspection.png')}
+          source={IMAGES.expiry_Inspection}
           priority={'normal'}
           resizeMode={'stretch'}
           style={styles.image}

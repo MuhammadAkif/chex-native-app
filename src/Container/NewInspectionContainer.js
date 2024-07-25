@@ -369,6 +369,9 @@ const NewInspectionContainer = ({route, navigation}) => {
   const handleConfirmModalVisible = () =>
     setIsLicenseModalVisible(prevState => !prevState);
   const handleConfirmVehicleDetail = numberPlate => {
+    if (!isNotEmpty(numberPlate)) {
+      return;
+    }
     const body = {
       licensePlateNumber: numberPlate,
       companyId: data?.companyId,

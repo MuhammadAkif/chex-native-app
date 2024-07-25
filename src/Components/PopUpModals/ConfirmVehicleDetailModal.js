@@ -7,7 +7,6 @@ import {
 
 import {PrimaryGradientButton} from '../index';
 import {circleBorderRadius, colors, modalStyle} from '../../Assets/Styles';
-import {Cross} from '../../Assets/Icons';
 
 const ConfirmVehicleDetailModal = ({
   title = 'Vehicle Detail',
@@ -52,7 +51,7 @@ const ConfirmVehicleDetailModal = ({
           <View style={modalStyle.footer}>
             <PrimaryGradientButton
               text={buttonText}
-              disabled={numberPlate.length === 0 || isLoading}
+              disabled={isLoading}
               buttonStyle={modalStyle.button}
               textStyle={modalStyle.yesText}
               onPress={() => onConfirmPress(numberPlate)}

@@ -11,4 +11,10 @@ export const IMAGES = {
   rear_Right_Corner: require('./Rear_Right_Corner.png'),
   inside_Cargo_Roof: require('./Inside_Cargo_Roof.png'),
   tire: require('./Tires.jpeg'),
+  splash: require('./chexDSPSlpash-speed55s-no-repeat.gif'),
+  sign_In_Background: require('./SignInBackgroundImage.jpeg'),
+  completed_Inspection_Background: require('./CompletedInspection.jpg'),
+  intro_Background: require('./IntroVehicle.png'),
+  expiry_Inspection: require('./ExpiryInspection.png'),
+  drawer: require('./DrawerImage.png'),
 };
