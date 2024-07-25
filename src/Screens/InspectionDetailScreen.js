@@ -13,23 +13,25 @@ import {
   AndroidMediaViewModal,
   DisplayMediaModal,
   RenderInspectionDetail,
-  RenderInspectionDetailHeader,
 } from '../Components';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {CrossFilled, Tick} from '../Assets/Icons';
 import {ANDROID} from '../Constants';
+import {INSPECTION_STATUS} from '../Utils/helpers';
 
 const InspectionDetailScreen = ({
   detailsFiles,
   finalStatus,
-  remarks,
+  remarks = 'No Remarks',
   modalDetails,
   isModalVisible,
   handleDisplayMedia,
   handleDisplayMediaCrossPress,
+  iconColor,
+  ICON_COMPONENT,
+  isPassed,
 }) => (
   <View style={NewInspectionStyles.container}>
     {Platform.OS === 'ios' && isModalVisible && (
@@ -58,26 +60,18 @@ const InspectionDetailScreen = ({
           <Text style={[styles.text, styles.textColor, {width: wp('30%')}]}>
             Final Status
           </Text>
-          {finalStatus && finalStatus.toLowerCase() === 'pass' ? (
-            <Tick height={hp('3%')} width={wp('8%')} color={colors.deepGreen} />
-          ) : (
-            <CrossFilled
-              height={hp('3%')}
-              width={wp('8%')}
-              color={colors.red}
-            />
-          )}
+          <ICON_COMPONENT
+            height={hp('3%')}
+            width={wp('8%')}
+            color={iconColor}
+          />
           <Text style={[styles.text, styles.statusText, styles.textColor]}>
-            {finalStatus && finalStatus.toLowerCase() === 'pass'
-              ? 'No Damage Detected'
-              : 'Damage Detected'}
+            {INSPECTION_STATUS[isPassed]}
           </Text>
         </View>
         <View style={styles.statusDescriptionContainer}>
           <ScrollView>
-            <Text style={[styles.text, styles.textColor]}>
-              {remarks || 'No Remarks'}
-            </Text>
+            <Text style={[styles.text, styles.textColor]}>{remarks}</Text>
           </ScrollView>
         </View>
       </View>

@@ -7,36 +7,45 @@ import {
 
 import {CrossFilled, Tick} from '../../Assets/Icons';
 import {colors} from '../../Assets/Styles';
+import {INSPECTION_STATUS} from '../../Utils/helpers';
 
-const RenderInspectionDetailHeader = ({finalStatus, remarks}) => (
-  <View style={styles.headerContainer}>
-    <Text style={[styles.headerText, styles.textColor]}>
-      Inspection Details
-    </Text>
-    <View style={styles.finalStatusContainer}>
-      <Text style={[styles.text, styles.textColor, {width: wp('30%')}]}>
-        Final Status
+const STATUS_ICON = {
+  true: Tick,
+  false: CrossFilled,
+};
+
+const RenderInspectionDetailHeader = ({
+  finalStatus,
+  remarks = 'No Remarks',
+}) => {
+  const isPassed = finalStatus && finalStatus.toLowerCase() === 'pass';
+  const ICON_COMPONENT = STATUS_ICON[isPassed];
+  return (
+    <View style={styles.headerContainer}>
+      <Text style={[styles.headerText, styles.textColor]}>
+        Inspection Details
       </Text>
-      {finalStatus && finalStatus.toLowerCase() === 'pass' ? (
-        <Tick height={hp('3%')} width={wp('8%')} color={colors.deepGreen} />
-      ) : (
-        <CrossFilled height={hp('3%')} width={wp('8%')} color={colors.red} />
-      )}
-      <Text style={[styles.text, styles.statusText, styles.textColor]}>
-        {finalStatus && finalStatus.toLowerCase() === 'pass'
-          ? 'No Damage Detected'
-          : 'Damage Detected'}
-      </Text>
-    </View>
-    <View style={styles.statusDescriptionContainer}>
-      <ScrollView>
-        <Text style={[styles.text, styles.textColor]}>
-          {remarks || 'No Remarks'}
+      <View style={styles.finalStatusContainer}>
+        <Text style={[styles.text, styles.textColor, {width: wp('30%')}]}>
+          Final Status
         </Text>
-      </ScrollView>
+        <ICON_COMPONENT
+          height={hp('3%')}
+          width={wp('8%')}
+          color={colors.deepGreen}
+        />
+        <Text style={[styles.text, styles.statusText, styles.textColor]}>
+          {INSPECTION_STATUS[isPassed]}
+        </Text>
+      </View>
+      <View style={styles.statusDescriptionContainer}>
+        <ScrollView>
+          <Text style={[styles.text, styles.textColor]}>{remarks}</Text>
+        </ScrollView>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   headerContainer: {

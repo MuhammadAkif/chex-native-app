@@ -20,3 +20,7 @@ export const instructionsContainerTop = {
   true: hp('25%'),
   false: null,
 };
+export const INSPECTION_STATUS = {
+  true: 'No Damage Detected',
+  false: 'Damage Detected',
+};

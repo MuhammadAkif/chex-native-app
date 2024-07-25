@@ -7,6 +7,13 @@ import {
   INSPECTION_TITLE,
   S3_BUCKET_BASEURL,
 } from '../Constants';
+import {CrossFilled, Tick} from '../Assets/Icons';
+import {colors} from '../Assets/Styles';
+
+const STATUS_ICON = {
+  true: Tick,
+  false: CrossFilled,
+};
 
 const InspectionDetailContainer = ({navigation, route}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -16,6 +23,14 @@ const InspectionDetailContainer = ({navigation, route}) => {
     let {files, finalStatus, remarks} = route.params;
     detailsFiles = {files: files, finalStatus: finalStatus, remarks: remarks};
   }
+  const isPassed =
+    detailsFiles?.finalStatus &&
+    detailsFiles?.finalStatus.toLowerCase() === 'pass';
+  const ICON_COLOR = {
+    true: colors.deepGreen,
+    false: colors.red,
+  };
+  const ICON_COMPONENT = STATUS_ICON[isPassed];
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
@@ -61,6 +76,9 @@ const InspectionDetailContainer = ({navigation, route}) => {
       modalDetails={modalDetails}
       handleDisplayMedia={handleDisplayMedia}
       handleDisplayMediaCrossPress={handleDisplayMediaCrossPress}
+      iconColor={ICON_COLOR[isPassed]}
+      ICON_COMPONENT={ICON_COMPONENT}
+      isPassed={isPassed}
     />
   );
 };
