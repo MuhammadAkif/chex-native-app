@@ -16,13 +16,16 @@ const Background_Color = {
   true: colors.red,
   false: colors.brightGreen,
 };
+const Container_Top = {
+  true: hp('5%'),
+  false: null,
+};
 
 const Toast = ({message, onCrossPress, isError, isForgetPassword}) => {
   const ICON_COMPONENT = Toast_Icons[isError];
   const BACKGROUND_COLOR = Background_Color[isError];
   return (
-    <View
-      style={[styles.centeredView, {top: isForgetPassword ? hp('5%') : null}]}>
+    <View style={[styles.centeredView, {top: Container_Top[isForgetPassword]}]}>
       <View style={styles.messageTextContainer}>
         <View
           style={[styles.iconContainer, {backgroundColor: BACKGROUND_COLOR}]}>
