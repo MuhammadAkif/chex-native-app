@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, BackHandler} from 'react-native';
+import {BackHandler} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 
@@ -12,7 +12,6 @@ import {
   RemoveTiresItemURI,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
-import {colors} from '../Assets/Styles';
 import {
   DEV_URL,
   EXTRACT_NUMBER_PLATE,

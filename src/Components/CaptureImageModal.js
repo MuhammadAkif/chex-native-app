@@ -78,8 +78,7 @@ const CaptureImageModal = ({
       <View style={styles.centeredView}>
         <TouchableOpacity
           style={styles.crossIconContainer}
-          onPress
-          and={handleVisible}
+          onPress={handleVisible}
           disabled={isLoading}>
           <Cross height={hp('8%')} width={wp('10%')} color={colors.white} />
         </TouchableOpacity>
