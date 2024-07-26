@@ -236,21 +236,21 @@ const NewInspectionContainer = ({route, navigation}) => {
     const allTires = !isObjectEmpty(tires);
     const allParts = allCarVerification && allExterior && allTires;
     const skipOnlyTires = allCarVerification && allExterior;
-    if (displayTires) {
-      setIsAllVehicleParts({
-        isAllCarVerification: allCarVerification,
-        isAllExterior: allExterior,
+    const shouldDisplayTire = {
+      true: {
         isAllTires: allTires,
         isAllParts: allParts,
-      });
-    } else {
-      setIsAllVehicleParts({
-        isAllCarVerification: allCarVerification,
-        isAllExterior: allExterior,
+      },
+      false: {
         isAllTires: false,
         isAllParts: skipOnlyTires,
-      });
-    }
+      },
+    };
+    setIsAllVehicleParts({
+      isAllCarVerification: allCarVerification,
+      isAllExterior: allExterior,
+      ...shouldDisplayTire[displayTires],
+    });
   }
 
   const handleBackPress = () => {
