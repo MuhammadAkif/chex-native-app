@@ -1,7 +1,7 @@
 buildscript {
     ext {
         buildToolsVersion = "34.0.0"
-        minSdkVersion = 21
+        minSdkVersion = 22
         compileSdkVersion = 34
         targetSdkVersion = 34
         ndkVersion = "23.1.7779620"
@@ -16,11 +16,16 @@ buildscript {
          maven { url 'https://maven.google.com' }
          maven { url "https://www.jitpack.io" }
          // react-native-crop-image-picker config ends here
+         // react-native-unity config starts here
+         flatDir {
+                 dirs "${project(':unityLibrary').projectDir}/libs"
+             }
+         // react-native-unity config ends here
+
     }
     dependencies {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-//         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0") // Updated Kotlin Gradle Plugin version
     }
 }
