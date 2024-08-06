@@ -54,7 +54,7 @@ const ConfirmVehicleDetailModal = ({
             enterKeyHint={'done'}
             editable={!isLoading}
             onChangeText={setNumberPlate}
-            onSubmitEditing={onConfirmPress}
+            onSubmitEditing={() => onConfirmPress(numberPlate)}
           />
           <View style={modalStyle.footer}>
             <PrimaryGradientButton
