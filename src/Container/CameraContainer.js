@@ -150,7 +150,7 @@ const CameraContainer = ({route, navigation}) => {
     setIsImageFile({});
   };
   const handleResponse = async key => {
-    let extension = isImageFile.path.split('.')[1];
+    let extension = isImageFile.path.split('.')[2];
     const body = {
       category: subCategory,
       url: key,

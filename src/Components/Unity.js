@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
   },
   unity: {
     flex: 1,
-    transformOrigin: 'top right',
   },
 });
 

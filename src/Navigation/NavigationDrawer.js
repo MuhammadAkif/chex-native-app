@@ -26,58 +26,68 @@ const headerBackButton = () => <HeaderBackButton />;
 
 const NavigationDrawer = () => {
   const Drawer = createDrawerNavigator();
-
+  const {
+    INSPECTION_SELECTION,
+    INTRO,
+    LICENSE_PLATE_SELECTION,
+    NEW_INSPECTION,
+    INSPECTION_REVIEWED,
+    INSPECTION_DETAIL,
+    INSPECTION_IN_PROGRESS,
+  } = ROUTES;
   const options = {
     headerTitleAlign: 'center',
     headerTitle: ScreenHeaderTitle,
     headerBackground: headerBackground,
+  };
+  const screenOptions = {
+    headerTitle: NavigatorHeaderTitle,
+    drawerType: 'front',
+    drawerStatusBarAnimation: 'slide',
+    headerLeft: headerBackButton,
+    swipeEdgeWidth: 200,
   };
 
   return (
     <Drawer.Navigator
       backBehavior={'history'}
       drawerContent={drawerContent}
-      screenOptions={{
-        headerTitle: NavigatorHeaderTitle,
-        drawerType: 'front',
-        drawerStatusBarAnimation: 'slide',
-        headerLeft: headerBackButton,
-      }}
-      initialRouteName={ROUTES.INSPECTION_SELECTION}>
+      screenOptions={screenOptions}
+      initialRouteName={INSPECTION_SELECTION}>
       <Drawer.Screen
-        name={ROUTES.INSPECTION_SELECTION}
+        name={INSPECTION_SELECTION}
         component={InspectionSelectionContainer}
         options={{
           headerShown: false,
         }}
       />
       <Drawer.Screen
-        name={ROUTES.INTRO}
+        name={INTRO}
         component={IntroContainer}
         options={options}
       />
       <Drawer.Screen
-        name={ROUTES.LICENSE_PLATE_SELECTION}
+        name={LICENSE_PLATE_SELECTION}
         component={LicensePlateNumberSelectionContainer}
         options={options}
       />
       <Drawer.Screen
-        name={ROUTES.NEW_INSPECTION}
+        name={NEW_INSPECTION}
         component={NewInspectionContainer}
         options={options}
       />
       <Drawer.Screen
-        name={ROUTES.INSPECTION_REVIEWED}
+        name={INSPECTION_REVIEWED}
         component={InspectionReviewedContainer}
         options={options}
       />
       <Drawer.Screen
-        name={ROUTES.INSPECTION_DETAIL}
+        name={INSPECTION_DETAIL}
         component={InspectionDetailContainer}
         options={options}
       />
       <Drawer.Screen
-        name={ROUTES.INSPECTION_IN_PROGRESS}
+        name={INSPECTION_IN_PROGRESS}
         component={InspectionInProgressContainer}
         options={options}
       />

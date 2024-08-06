@@ -30,14 +30,16 @@ const CustomDrawerContent = props => {
   const route = useRoute();
   const activeRouteName = getFocusedRouteNameFromRoute(route);
   const [previousScreen, setPreviousScreen] = useState('');
-  const [activeScreen, setActiveScreen] = useState('');
-  let activeColor = colors.cobaltBlue;
-  const activeColorOfTextAndIcon = screen => {
-    return colors.black;
-    // return activeRouteName.toLowerCase() === screen.toLowerCase()
-    //   ? colors.white
-    //   : colors.black;
-  };
+  // const [activeScreen, setActiveScreen] = useState('');
+  // let activeColor = colors.cobaltBlue;
+  const {SIGN_IN, INSPECTION_SELECTION, INTRO} = ROUTES;
+  const {LOGOUT, HOME, THINGS_YOU_WILL_REQUIRE} = DRAWER;
+  const TEXT_COLOR = colors.black;
+  /*const activeColorOfTextAndIcon = screen => {
+    return activeRouteName.toLowerCase() === screen.toLowerCase()
+      ? colors.white
+      : colors.black;
+  };*/
   useEffect(() => {
     if (
       activeRouteName !== 'NEW INSPECTION' &&
@@ -51,10 +53,10 @@ const CustomDrawerContent = props => {
   const handleNavigationPress = (path, active_Screen) => {
     // setActiveScreen(activeScreen);
     props.navigation.toggleDrawer();
-    if (active_Screen === DRAWER.LOGOUT) {
+    if (active_Screen === LOGOUT) {
       props.navigation.reset({
         index: 0,
-        routes: [{name: ROUTES.SIGN_IN}],
+        routes: [{name: SIGN_IN}],
       });
     } else {
       props.navigation.navigate(path);
@@ -62,7 +64,7 @@ const CustomDrawerContent = props => {
   };
   const handleLogout = () => {
     dispatch(SIGN_OUT_ACTION());
-    handleNavigationPress(ROUTES.SIGN_IN, DRAWER.LOGOUT);
+    handleNavigationPress(SIGN_IN, LOGOUT);
   };
   return (
     <ScrollView style={styles.body} {...props}>
@@ -83,77 +85,26 @@ const CustomDrawerContent = props => {
         </View>
       </View>
       <DrawerItemText
-        text={DRAWER.HOME}
-        textColor={activeColorOfTextAndIcon(DRAWER.HOME)}
-        activeColor={activeScreen === DRAWER.HOME ? activeColor : 'transparent'}
+        text={HOME}
+        textColor={TEXT_COLOR}
+        // activeColor={activeScreen === HOME ? activeColor : 'transparent'}
         Icon={
           <TouchableOpacity
-            onPress={() =>
-              handleNavigationPress(ROUTES.INSPECTION_SELECTION, 'Home')
-            }>
-            <Home
-              height={hp('3%')}
-              width={wp('5%')}
-              color={activeColorOfTextAndIcon('Home')}
-            />
+            onPress={() => handleNavigationPress(INSPECTION_SELECTION, 'Home')}>
+            <Home height={hp('3%')} width={wp('5%')} color={TEXT_COLOR} />
           </TouchableOpacity>
         }
-        onPress={() =>
-          handleNavigationPress(ROUTES.INSPECTION_SELECTION, 'Home')
-        }
+        onPress={() => handleNavigationPress(INSPECTION_SELECTION, 'Home')}
       />
       <DrawerItemText
-        text={DRAWER.THINGS_YOU_WILL_REQUIRE}
-        textColor={activeColorOfTextAndIcon('Intro')}
-        activeColor={activeScreen === 'Intro' ? activeColor : 'transparent'}
-        Icon={
-          <Info
-            height={hp('2.5%')}
-            width={wp('5%')}
-            color={activeColorOfTextAndIcon('Intro')}
-          />
-        }
-        onPress={() => handleNavigationPress(ROUTES.INTRO, 'Intro ')}
+        text={THINGS_YOU_WILL_REQUIRE}
+        textColor={TEXT_COLOR}
+        // activeColor={activeScreen === 'Intro' ? activeColor : 'transparent'}
+        Icon={<Info height={hp('2.5%')} width={wp('5%')} color={TEXT_COLOR} />}
+        onPress={() => handleNavigationPress(INTRO, 'Intro ')}
       />
-      {/*<DrawerItemText*/}
-      {/*  text={'Inspection Reviewed'}*/}
-      {/*  textColor={activeColorOfTextAndIcon('Inspection Reviewed')}*/}
-      {/*  activeColor={*/}
-      {/*    activeScreen === 'Inspection Reviewed' ? activeColor : 'transparent'*/}
-      {/*  }*/}
-      {/*  Icon={*/}
-      {/*    <InspectionReviewed*/}
-      {/*      height={hp('2.5%')}*/}
-      {/*      width={wp('5%')}*/}
-      {/*      color={activeColorOfTextAndIcon('Inspection Reviewed')}*/}
-      {/*    />*/}
-      {/*  }*/}
-      {/*  onPress={() =>*/}
-      {/*    handleNavigationPress(*/}
-      {/*      ROUTES.INSPECTION_REVIEWED,*/}
-      {/*      'Inspection Reviewed',*/}
-      {/*    )*/}
-      {/*  }*/}
-      {/*/>*/}
-      {/*<DrawerItemText*/}
-      {/*  text={'Inspection Detail'}*/}
-      {/*  textColor={activeColorOfTextAndIcon('Inspection Detail')}*/}
-      {/*  activeColor={*/}
-      {/*    activeScreen === 'Inspection Detail' ? activeColor : 'transparent'*/}
-      {/*  }*/}
-      {/*  Icon={*/}
-      {/*    <InspectionDetails*/}
-      {/*      height={hp('2.5%')}*/}
-      {/*      width={wp('5%')}*/}
-      {/*      color={activeColorOfTextAndIcon('Inspection Detail')}*/}
-      {/*    />*/}
-      {/*  }*/}
-      {/*  onPress={() =>*/}
-      {/*    handleNavigationPress(ROUTES.INSPECTION_DETAIL, 'Inspection Detail')*/}
-      {/*  }*/}
-      {/*/>*/}
       <DrawerItemText
-        text={DRAWER.LOGOUT}
+        text={LOGOUT}
         textColor={colors.red}
         Icon={
           <TouchableOpacity onPress={handleLogout}>

@@ -1,4 +1,5 @@
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {ROUTES} from '../Navigation/ROUTES';
 
 export const headerFlex = {
   true: 1.5,
@@ -23,4 +24,8 @@ export const instructionsContainerTop = {
 export const INSPECTION_STATUS = {
   true: 'No Damage Detected',
   false: 'Damage Detected',
+};
+export const INITIAL_ROUTE = {
+  true: ROUTES.HOME,
+  false: ROUTES.WELCOME,
 };

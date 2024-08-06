@@ -32,6 +32,7 @@ export const colors = {
   silverGray: '#F3F3F3',
   lightGray: '#FAFAFA',
   icyBlue: '#EFFBF7',
+  oxford_Blue: '#001B51CC',
 };
 
 export const buttonTextStyle = {
@@ -128,7 +129,7 @@ export const expandedCardStyles = StyleSheet.create({
 export const NewInspectionStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: NavigationDrawerBackgroundColor,
+    backgroundColor: colors.oxford_Blue,
   },
   headerContainer: {
     flex: 0.5,

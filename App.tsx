@@ -13,6 +13,7 @@ import {colors} from './src/Assets/Styles';
 import {DiscardInspectionModal} from './src/Components';
 import {UPDATE_APP} from './src/Constants';
 import {IMAGES} from './src/Assets/Images';
+// import Unity from './src/Components/Unity';
 
 function App() {
   const dispatch = useDispatch();
@@ -44,6 +45,8 @@ function App() {
   const handleUpdatePress = async () => {
     await Linking.openURL(updateAvailable);
   };
+
+  // return <Unity />;
 
   return displayGif ? (
     <>

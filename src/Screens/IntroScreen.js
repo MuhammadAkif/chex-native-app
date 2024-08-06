@@ -5,7 +5,7 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-import {colors, dot, NavigationDrawerBackgroundColor} from '../Assets/Styles';
+import {colors, dot} from '../Assets/Styles';
 import {IntroBackGroundImageView, PrimaryGradientButton} from '../Components';
 import {ANDROID} from '../Constants';
 import External from '../Assets/Icons/External';
@@ -75,7 +75,7 @@ const IntroScreen = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: NavigationDrawerBackgroundColor,
+    backgroundColor: colors.oxford_Blue,
   },
   innerContainer: {
     flex: 1,
