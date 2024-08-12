@@ -44,6 +44,7 @@ import AndroidMediaViewModal from './AndroidMediaViewModal';
 import NumberPlateInUseModal from './NumberPlateInUseModal';
 import FocusAwareStatusBar from './FocusAwareStatusBar';
 import Unity from './Unity';
+import ExpiredInspectionModal from './PopUpModals/ExpiredInspectionModal';
 
 export {
   BackgroundImageView,
@@ -92,4 +93,5 @@ export {
   FocusAwareStatusBar,
   ConfirmVehicleDetailModal,
   Unity,
+  ExpiredInspectionModal,
 };

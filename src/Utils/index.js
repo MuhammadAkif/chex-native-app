@@ -575,7 +575,7 @@ export const handleNewInspectionPress = async (
     licensePlateNumber: generateRandomString(),
     companyId: companyId,
   };
-  dispatch({type: Types.company_ID, payload: companyId});
+  dispatch({type: Types.COMPANY_ID, payload: companyId});
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,

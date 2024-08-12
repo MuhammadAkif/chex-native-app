@@ -119,12 +119,12 @@ const newInspectionReducer = (state = initialState, action) => {
         ...state,
         selectedInspectionID: action.payload.selectedInspectionID,
       };
-    case Types.company_ID:
+    case Types.COMPANY_ID:
       return {
         ...state,
         company_ID: action.payload,
       };
-    case Types.plate_Number:
+    case Types.PLATE_NUMBER:
       return {
         ...state,
         plateNumber: action.payload,

@@ -9,10 +9,10 @@ import {
   DiscardInspectionModal,
   PrimaryStartInspectionButton,
   RenderInspectionInProgress,
+  Toast,
 } from '../Components';
 import {colors, NewInspectionStyles, ShadowEffect} from '../Assets/Styles';
 import {handleHomePress} from '../Utils';
-import Toast from '../Components/Toast';
 
 const InspectionInProgressScreen = ({
   data,

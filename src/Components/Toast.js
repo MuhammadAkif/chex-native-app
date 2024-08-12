@@ -21,7 +21,7 @@ const Container_Top = {
   false: null,
 };
 
-const Toast = ({message, onCrossPress, isError, isForgetPassword}) => {
+const Toast = ({message, onCrossPress, isError = false, isForgetPassword}) => {
   const ICON_COMPONENT = Toast_Icons[isError];
   const BACKGROUND_COLOR = Background_Color[isError];
   return (

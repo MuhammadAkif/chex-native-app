@@ -88,7 +88,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       licensePlateNumber: selectedNP,
       companyId: data?.companyId,
     };
-    dispatch({type: Types.company_ID, payload: data?.companyId});
+    dispatch({type: Types.COMPANY_ID, payload: data?.companyId});
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,

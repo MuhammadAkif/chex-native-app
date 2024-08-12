@@ -90,6 +90,7 @@ const CameraContainer = ({route, navigation}) => {
     isVideo,
     groupType,
   } = modalDetails;
+  const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       appState.current = nextAppState;
@@ -124,16 +125,16 @@ const CameraContainer = ({route, navigation}) => {
       handleRetryPress();
       return true;
     } else if (navigation.canGoBack()) {
-      navigation.navigate(ROUTES.NEW_INSPECTION);
+      navigation.navigate(NEW_INSPECTION);
       return true;
     }
     return false;
   }
   const handleNavigationBackPress = () => navigation.goBack();
-  const handleVisible = () => {
+  /* const handleVisible = () => {
     setProgress(0);
     setIsModalVisible(false);
-  };
+  }; */
   const handleSwitchCamera = () => setIsBackCamera(!isBackCamera);
   const handleCaptureNowPress = async () => {
     if (cameraRef.current) {
@@ -171,12 +172,12 @@ const CameraContainer = ({route, navigation}) => {
   };
   function uploadImageToStore(imageID) {
     const UPDATE_INSPECTION_IMAGES = handleUpdateStoreMedia[category];
+    const isCarVerificationLicensePlate =
+      category === 'CarVerification' && type === 'licensePlate';
     dispatch(UPDATE_INSPECTION_IMAGES(type, isImageURL, imageID));
-    if (category === 'CarVerification' && type === 'licensePlate') {
-      navigation.navigate(ROUTES.NEW_INSPECTION, {isLicensePlate: true});
-    } else {
-      navigation.navigate(ROUTES.NEW_INSPECTION, {isLicensePlate: false});
-    }
+    navigation.navigate(NEW_INSPECTION, {
+      isLicensePlate: isCarVerificationLicensePlate,
+    });
   }
   const handleExtractNumberPlate = async imageURL => {
     const body = {image_url: imageURL};
@@ -187,16 +188,15 @@ const CameraContainer = ({route, navigation}) => {
       .post(EXTRACT_NUMBER_PLATE_WITH_AI, body, {headers: headers})
       .then(res => {
         console.log('AI res => ', res?.data);
-        dispatch({type: Types.plate_Number, payload: res?.data?.plateNumber});
+        dispatch({type: Types.PLATE_NUMBER, payload: res?.data?.plateNumber});
       })
       .catch(error => console.log('AI error => ', error));
   };
   const handleError = (inspectionDeleted = false) => {
+    setIsModalVisible(false);
     if (inspectionDeleted) {
-      setIsModalVisible(false);
       setIsExpiryInspectionVisible(true);
     } else {
-      setIsModalVisible(false);
       setProgress(0);
     }
   };
@@ -231,7 +231,7 @@ const CameraContainer = ({route, navigation}) => {
   };
   const handleExitPress = () => {
     resetAllStates();
-    navigation.navigate(ROUTES.INSPECTION_SELECTION);
+    navigation.navigate(INSPECTION_SELECTION);
   };
 
   return (
