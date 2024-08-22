@@ -11,4 +11,5 @@ export const IMAGES = {
   rear_Right_Corner: require('./Rear_Right_Corner.png'),
   inside_Cargo_Roof: require('./Inside_Cargo_Roof.png'),
   tire: require('./Tires.jpeg'),
+  frame: require('./frame.png'),
 };

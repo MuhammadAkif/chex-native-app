@@ -15,6 +15,7 @@ import {
 } from '../Container';
 import {ROUTES} from './ROUTES';
 import NavigationDrawer from './NavigationDrawer';
+import ProcessedImage from '../Components/ProcessedImage';
 
 const Navigation = () => {
   const Stack = createNativeStackNavigator();
@@ -24,8 +25,10 @@ const Navigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={initialRouteName}
+        initialRouteName={ROUTES.OPEN_CV}
+        // initialRouteName={initialRouteName}
         screenOptions={{headerShown: false, gestureEnabled: false}}>
+        <Stack.Screen name={ROUTES.OPEN_CV} component={ProcessedImage} />
         <Stack.Screen name={ROUTES.WELCOME} component={WelcomeContainer} />
         <Stack.Screen name={ROUTES.REGISTER} component={RegisterContainer} />
         <Stack.Screen name={ROUTES.SIGN_IN} component={SignInContainer} />
