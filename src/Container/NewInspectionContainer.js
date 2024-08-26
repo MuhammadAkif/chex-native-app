@@ -151,6 +151,8 @@ const NewInspectionContainer = ({route, navigation}) => {
       handleRemovedAllTires().then();
     } else if (!displayTires) {
       setLoadingIndicator(false);
+    } else {
+      setLoadingIndicator(false);
     }
   }, [displayTires]);
   useEffect(() => {
@@ -431,12 +433,12 @@ const NewInspectionContainer = ({route, navigation}) => {
         setLoadingIndicator(!displayTire);
       })
       .catch(e => {
-        setLoadingIndicator(false);
         console.log(
           'error while check tire status again inspection => ',
           e.message,
         );
-      });
+      })
+      .finally(() => setLoadingIndicator(false));
   }
   async function handleRemovedAllTires() {
     let removeTiresList = extractIDs(tires) || [];
