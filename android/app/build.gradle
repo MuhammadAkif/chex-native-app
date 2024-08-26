@@ -74,16 +74,14 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     ndkVersion rootProject.ext.ndkVersion
 
-    compileSdkVersion rootProject.ext.compileSdkVersion
-
     namespace "com.chex_ai"
     defaultConfig {
         applicationId "com.chex_ai"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
-        versionCode 35
-        versionName "2.3"
+        versionCode 39
+        versionName "2.5"
     }
     signingConfigs {
       release {
