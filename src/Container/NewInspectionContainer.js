@@ -161,6 +161,8 @@ const NewInspectionContainer = ({route, navigation}) => {
       handleRemovedAllTires().then();
     } else if (!displayTires) {
       setLoadingIndicator(false);
+    } else {
+      setLoadingIndicator(false);
     }
   }, [displayTires]);
   useEffect(() => {
@@ -387,7 +389,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     axios
       .post(EXTRACT_NUMBER_PLATE, body, config)
       .then(() => {
-        vehicleTireStatusToRender(selectedInspectionID).then();
+        vehicleTireStatusToRender(selectedInspectionID).then(() => setLoadingIndicator(false));
       })
       .catch(e => {
         const statusCode = e?.response?.data?.statusCode;
@@ -400,6 +402,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         }
       })
       .finally(() => {
+        setLoadingIndicator(false)
         handleConfirmModalVisible();
         setIsLoading(false);
       });
@@ -443,7 +446,7 @@ const NewInspectionContainer = ({route, navigation}) => {
           'error while check tire status again inspection => ',
           e.message,
         );
-      });
+      }).finally(() => setLoadingIndicator(false));
   }
   async function handleRemovedAllTires() {
     let removeTiresList = extractIDs(tires) || [];
