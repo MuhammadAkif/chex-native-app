@@ -292,6 +292,13 @@ export const hasCameraAndMicrophoneAllowed = async () => {
     await Camera.requestMicrophonePermission();
   }
 };
+function error_Handler(callback = null) {
+  Alert.alert(
+    'Upload Failed',
+    'Please check your internet connection and try again. If issues persist, reduce file size or switch networks. Contact support if needed. Apologies for any inconvenience.',
+    [{text: 'Retry', onPress: callback}],
+  );
+}
 export const getSignedUrl = async (
   token,
   mime,
@@ -323,7 +330,10 @@ export const getSignedUrl = async (
         handleError,
       );
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+      error_Handler(handleError);
+      console.log(error);
+    });
 };
 export const uploadToS3 = async (
   preSignedUrl,
@@ -348,11 +358,7 @@ export const uploadToS3 = async (
       handleResponse(key);
     })
     .catch(() => {
-      Alert.alert(
-        'Upload Failed',
-        'Please check your internet connection and try again. If issues persist, reduce file size or switch networks. Contact support if needed. Apologies for any inconvenience.',
-        [{text: 'Retry', onPress: handleError}],
-      );
+      error_Handler(handleError);
     });
 };
 export const uploadFile = async (
@@ -474,7 +480,7 @@ export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
     },
   };
   console.log('errors[statusCode] => ', errors[statusCode]);
-  return errors[statusCode];
+  return errors[statusCode] || errors.noStatusCode;
 };
 
 /*export const extractTitle = (groupType, category) => {
