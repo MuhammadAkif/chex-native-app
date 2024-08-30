@@ -43,6 +43,8 @@ import Toast from './Toast';
 import AndroidMediaViewModal from './AndroidMediaViewModal';
 import NumberPlateInUseModal from './NumberPlateInUseModal';
 import FocusAwareStatusBar from './FocusAwareStatusBar';
+import Object_Detection from './Object_Detection';
+import CanvasDraw from './CanvasDraw';
 
 export {
   BackgroundImageView,
@@ -90,4 +92,6 @@ export {
   NumberPlateInUseModal,
   FocusAwareStatusBar,
   ConfirmVehicleDetailModal,
+  Object_Detection,
+  CanvasDraw,
 };
