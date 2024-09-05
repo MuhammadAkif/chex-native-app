@@ -8,7 +8,11 @@ const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
  */
 const config = {
   resolver: {
-    assetExts: ['tflite', ...getDefaultConfig(__dirname)?.resolver?.assetExts],
+    assetExts: [
+      'tflite',
+      'onnx',
+      ...getDefaultConfig(__dirname)?.resolver?.assetExts,
+    ],
   },
 };
 

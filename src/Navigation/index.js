@@ -16,6 +16,8 @@ import {
 import {ROUTES} from './ROUTES';
 import NavigationDrawer from './NavigationDrawer';
 import Detection_License from '../Components/Detection_License';
+import Detection_ONXX from '../Components/Detection_ONXX';
+import Detect_AnyObject from '../Components/Detect_AnyObject';
 
 const Navigation = () => {
   const Stack = createNativeStackNavigator();
@@ -31,6 +33,7 @@ const Navigation = () => {
         <Stack.Screen
           name={ROUTES.OBJECT_DETECTION}
           // component={CanvasDraw}
+          // component={Detect_AnyObject}
           component={Detection_License}
           // component={Object_Detection}
         />
