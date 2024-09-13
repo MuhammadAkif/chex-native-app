@@ -15,9 +15,9 @@ import {
 } from '../Container';
 import {ROUTES} from './ROUTES';
 import NavigationDrawer from './NavigationDrawer';
-import Detection_License from '../Components/Detection_License';
-import Detection_ONXX from '../Components/Detection_ONXX';
-import Detect_AnyObject from '../Components/Detect_AnyObject';
+import YoloV8_Model from '../Components/Object_Detection_Demo/YoloV8_Model';
+import Working_Object_Detection from '../Components/Working_Object_Detection';
+import License_Plate_Detection from '../Components/Object_Detection_Demo/License_Plate_Detection';
 
 const Navigation = () => {
   const Stack = createNativeStackNavigator();
@@ -34,7 +34,7 @@ const Navigation = () => {
           name={ROUTES.OBJECT_DETECTION}
           // component={CanvasDraw}
           // component={Detect_AnyObject}
-          component={Detection_License}
+          component={License_Plate_Detection}
           // component={Object_Detection}
         />
         <Stack.Screen name={ROUTES.WELCOME} component={WelcomeContainer} />

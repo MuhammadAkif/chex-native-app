@@ -17,4 +17,5 @@ export const IMAGES = {
   intro_Background: require('./IntroVehicle.png'),
   expiry_Inspection: require('./ExpiryInspection.png'),
   drawer: require('./DrawerImage.png'),
+  match_frame: require('./cfa.png'),
 };

@@ -3,6 +3,7 @@ import * as yup from 'yup';
 import {Camera} from 'react-native-vision-camera';
 import axios from 'axios';
 import RNFetchBlob from 'rn-fetch-blob';
+import ImageCropPicker from 'react-native-image-crop-picker';
 
 import {
   CREATE_INSPECTION_URL,
@@ -784,3 +785,41 @@ export function extractIDs(obj) {
   }
   return idsArray;
 }
+
+export const cropImage = (imageUri, cropX, cropY, cropWidth, cropHeight) => {
+  ImageCropPicker.openCropper({
+    cropX: cropX,
+    cropY: cropY,
+    path: imageUri,
+    width: cropWidth,
+    height: cropHeight,
+    cropping: true,
+    cropperToolbarTitle: 'Crop License Plate',
+    freeStyleCropEnabled: true,
+    cropperActiveWidgetColor: '#ff0000',
+    cropperStatusBarColor: '#ff0000',
+    cropperToolbarColor: '#ff0000',
+    cropperCircleOverlay: false, // Optional: Set to true if you want a circular crop
+  })
+    .then(image => {
+      console.log('Cropped Image:', image);
+      // Do something with the cropped image
+    })
+    .catch(err => console.error('Error cropping image:', err));
+};
+export const isObjectInCenter = object => {
+  const frameLeft = 0.1; // 10% from left
+  const frameTop = 0.25; // 25% from top
+  const frameRight = 0.9; // 90% from left (10% from right)
+  const frameBottom = 0.75; // 75% from top (25% from bottom)
+
+  // Check if the object is completely inside the frame
+  const isInside =
+    object.left >= frameLeft &&
+    object.top >= frameTop &&
+    object.right <= frameRight &&
+    object.bottom <= frameBottom;
+
+  // Only consider it centered if it's completely inside the frame
+  return isInside;
+};

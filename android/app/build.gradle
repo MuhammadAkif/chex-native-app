@@ -80,8 +80,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
-        versionCode 39
-        versionName "2.5"
+        versionCode 42
+        versionName "2.6"
     }
     signingConfigs {
       release {
@@ -125,7 +125,8 @@ dependencies {
     implementation 'com.facebook.fresco:animated-base-support:1.3.0'
     // For animated GIF support
     implementation 'com.facebook.fresco:animated-gif:2.5.0'
-
+    implementation 'org.tensorflow:tensorflow-lite:2.4.0'
+    implementation project(':react-native-fs')
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.squareup.okhttp3', module:'okhttp'
