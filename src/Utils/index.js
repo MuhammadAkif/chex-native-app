@@ -446,9 +446,6 @@ export const extractDate = dataAndTime => {
 };
 export const handleHomePress = navigation =>
   navigation.navigate(ROUTES.INSPECTION_SELECTION);
-export const handleStartInspectionPress = navigation =>
-  navigation.navigate(ROUTES.LICENSE_PLATE_SELECTION);
-
 export const convertToBase64 = async (url, mime) => {
   let base64Path = '';
   await RNFetchBlob.config({
@@ -481,44 +478,6 @@ export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
   };
   console.log('errors[statusCode] => ', errors[statusCode]);
   return errors[statusCode] || errors.noStatusCode;
-};
-
-/*export const extractTitle = (groupType, category) => {
-  let title = 'No Title';
-  if (groupType === INSPECTION.CAR_VERIFICATION) {
-    title =
-      category === 'license_plate_number'
-        ? 'License Plate Number'
-        : category === 'odometer'
-        ? 'Odometer'
-        : 'No Title';
-  } else if (groupType === 'exteriorItems') {
-    title =
-      category === 'exterior_left'
-        ? 'Exterior Left'
-        : category === 'exterior_right'
-        ? 'Exterior Right'
-        : category === 'exterior_front'
-        ? 'Exterior Front'
-        : category === 'exterior_rear'
-        ? 'Exterior Rear'
-        : 'No Title';
-  } else if (groupType === INSPECTION.TIRES) {
-    title =
-      category === 'left_front_tire'
-        ? 'Left Front Tire'
-        : category === 'left_rear_tire'
-        ? 'Left Rear Tire'
-        : category === 'right_front_tire'
-        ? 'Right Front Tire'
-        : category === 'right_rear_tire'
-        ? 'Right Rear Tire'
-        : 'No Title';
-  }
-  return title;
-};*/
-export const extractTitle = (groupType, category) => {
-  return INSPECTION_TITLE[category] || 'No Title';
 };
 
 export const sortInspectionReviewedItems = list => {
@@ -667,32 +626,6 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
     rightRearTire: rightRearTireID,
   };
   return GET_EXTERIOR_ITEM[key] || "Inspection ID doesn't exists";
-};
-
-export const isAllExteriorImagesAvailable = () => {
-  let isCompleted = false;
-  const {
-    carVerificationItems: carVerification,
-    exteriorItems: exterior,
-    tires,
-    skipLeft,
-    skipLeftCorners,
-    skipRight,
-    skipRightCorners,
-  } = store.getState().newInspection;
-  const {
-    exteriorLeftID,
-    exteriorRightID,
-    exteriorFrontID,
-    exteriorRearID,
-    exteriorFrontLeftCornerID,
-    exteriorFrontRightCornerID,
-    exteriorRearLeftCornerID,
-    exteriorRearRightCornerID,
-    exteriorInsideCargoRoofID,
-  } = exterior;
-
-  return isCompleted;
 };
 
 export const isNotEmpty = value =>

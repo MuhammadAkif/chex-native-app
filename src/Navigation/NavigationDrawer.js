@@ -18,25 +18,26 @@ import {
   CustomDrawerContent,
 } from '../Components';
 
+const options = {
+  headerTitleAlign: 'center',
+  headerTitle: props => <HeaderTitle {...props} />,
+  headerBackground: () => <HeaderBackground />,
+};
+const screenOptions = {
+  headerTitle: () => <HeaderTitle />,
+  drawerType: 'front',
+  drawerStatusBarAnimation: 'slide',
+  headerLeft: () => <HeaderBackButton />,
+};
+const drawerContent = props => <CustomDrawerContent {...props} />;
 const NavigationDrawer = () => {
   const Drawer = createDrawerNavigator();
-
-  const options = {
-    headerTitleAlign: 'center',
-    headerTitle: props => <HeaderTitle {...props} />,
-    headerBackground: () => <HeaderBackground />,
-  };
 
   return (
     <Drawer.Navigator
       backBehavior={'history'}
-      drawerContent={props => <CustomDrawerContent {...props} />}
-      screenOptions={{
-        headerTitle: () => <HeaderTitle />,
-        drawerType: 'front',
-        drawerStatusBarAnimation: 'slide',
-        headerLeft: () => <HeaderBackButton />,
-      }}
+      drawerContent={drawerContent}
+      screenOptions={screenOptions}
       initialRouteName={ROUTES.INSPECTION_SELECTION}>
       <Drawer.Screen
         name={ROUTES.INSPECTION_SELECTION}
