@@ -10,7 +10,6 @@ import {
   FETCH_IN_PROGRESS_URL,
   INSPECTION,
   INSPECTION_SUBCATEGORY,
-  INSPECTION_TITLE,
   S3_BUCKET_BASEURL,
   UPLOAD_URL,
 } from '../Constants';
@@ -24,7 +23,6 @@ import {
 import {Types} from '../Store/Types';
 import {IMAGES} from '../Assets/Images';
 import {store} from '../Store';
-// import {DEV_URL, S3_BUCKET_BASEURL} from '@env';
 
 export const validationSchema = yup.object().shape({
   firstName: yup.string().required('Field required'),
@@ -306,6 +304,7 @@ export const getSignedUrl = async (
   setProgress,
   handleResponse,
   handleError,
+  dispatch,
 ) => {
   await axios
     .post(
@@ -328,10 +327,15 @@ export const getSignedUrl = async (
         setProgress,
         handleResponse,
         handleError,
+        dispatch,
       );
     })
     .catch(error => {
       error_Handler(handleError);
+      const statusCode = error?.response?.data?.statusCode;
+      if (statusCode === 401) {
+        handle_Session_Expired(statusCode, dispatch);
+      }
       console.log(error);
     });
 };
@@ -367,6 +371,7 @@ export const uploadFile = async (
   inspectionId,
   token,
   handleError,
+  dispatch,
 ) => {
   let imageID = 0;
   await axios
@@ -384,6 +389,10 @@ export const uploadFile = async (
       const {title, message} = newInspectionUploadError(
         error?.response?.data?.statusCode,
       );
+      const statusCode = error?.response?.data?.statusCode;
+      if (statusCode === 401) {
+        handle_Session_Expired(statusCode, dispatch);
+      }
       if (inspectionDeleted) {
         handleError(inspectionDeleted);
       } else {
@@ -398,6 +407,7 @@ export const fetchInProgressInspections = async (
   token,
   status,
   setIsLoading,
+  dispatch,
 ) => {
   let data = '';
   await axios
@@ -422,6 +432,10 @@ export const fetchInProgressInspections = async (
     .catch(error => {
       if (setIsLoading) {
         setIsLoading(false);
+      }
+      const statusCode = error?.response?.data?.statusCode;
+      if (statusCode === 401) {
+        handle_Session_Expired(statusCode, dispatch);
       }
       console.log(error);
     });
@@ -583,10 +597,19 @@ export const handleNewInspectionPress = async (
       });
     })
     .catch(err => {
-      console.log('err => ', err.message);
+      console.log('err => ', err?.response?.data?.statusCode);
+      const statusCode = err?.response?.data?.statusCode;
+      if (statusCode === 401) {
+        handle_Session_Expired(statusCode, dispatch);
+      }
     })
     .finally(() => setIsLoading(false));
 };
+export function handle_Session_Expired(statusCode = null, dispatch) {
+  if (statusCode === 401) {
+    dispatch({type: Types.SESSION_EXPIRED});
+  }
+}
 
 export const EXTRACT_INSPECTION_ITEM_ID = key => {
   const {

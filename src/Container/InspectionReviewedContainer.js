@@ -12,13 +12,16 @@ import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
 import {
   fetchInProgressInspections,
   FILTER_IMAGES,
+  handle_Session_Expired,
   handleNewInspectionPress,
   sortInspectionReviewedItems,
 } from '../Utils';
 
 const InspectionReviewedContainer = ({navigation}) => {
   const dispatch = useDispatch();
-  const {token, data} = useSelector(state => state.auth);
+  const {
+    user: {token, data},
+  } = useSelector(state => state.auth);
   const inspectionReviewed = useSelector(state => state?.inspectionReviewed);
   const [isExpanded, setIsExpanded] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,6 +60,7 @@ const InspectionReviewedContainer = ({navigation}) => {
       token,
       ['IN_REVIEW', 'REVIEWED', 'READY_FOR_REVIEW'],
       setIsLoading,
+      dispatch,
     );
     dispatch(FETCH_INSPECTION_REVIEWED(inspectionReviewData));
 
@@ -91,6 +95,10 @@ const InspectionReviewedContainer = ({navigation}) => {
       })
       .catch(error => {
         setIsLoading(false);
+        const statusCode = error?.response?.data?.statusCode;
+        if (statusCode === 401) {
+          handle_Session_Expired(statusCode, dispatch);
+        }
         console.log('error of inspection in progress => ', error);
       });
   };

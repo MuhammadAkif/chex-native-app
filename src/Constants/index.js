@@ -1,12 +1,14 @@
-// import {DEV_URL} from '@env'
-export const DEV_URL =
-  // 'https://n3hqyu9j2i.execute-api.us-east-1.amazonaws.com/chexai-dsp';
-  'https://fbyrgnnu14.execute-api.us-east-1.amazonaws.com/chexai-dsp-staging';
-export const S3_BUCKET_BASEURL = 'https://chex-ai-uploads.s3.amazonaws.com/';
+const ENV_TIME_URL = {
+  staging: process.env.STAGING_URL,
+  production: process.env.PRODUCTION_URL,
+  development: process.env.DEVELOPMENT_URL,
+};
+export const DEV_URL = ENV_TIME_URL.development;
+export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
 export const FETCH_NUMBER_PLATE_URL = `${DEV_URL}/api/v1/searchnumberplate`;
 export const EXTRACT_NUMBER_PLATE = `${DEV_URL}/api/v1/extract/inspection/create`;
 export const EXTRACT_NUMBER_PLATE_WITH_AI =
-  'https://cardamage.chex.ai/license-plate-number-extraction/';
+  process.env.EXTRACT_NUMBER_PLATE_URL;
 export const LOGIN_URL = `${DEV_URL}/api/v1/auth/login`;
 export const UPLOAD_URL = `${DEV_URL}/api/v1/file/upload`;
 export const CREATE_INSPECTION_URL = `${DEV_URL}/api/v1/create/inspection`;
@@ -19,7 +21,7 @@ export const HARDWARE_BACK_PRESS = 'hardwareBackPress';
 export const ANDROID = 'android';
 export const WINDOW = 'window';
 export const IOS = 'ios';
-export const AI_API_TOKEN = 'FF5SE7GZULOP0CZQQ180KMZER';
+export const AI_API_TOKEN = process.env.AI_API_TOKEN;
 
 export const EXPIRY_INSPECTION = {
   description: 'The Inspection Has Expired. Please Start A New Inspection.',
@@ -72,4 +74,9 @@ export const UPDATE_APP = {
   MESSAGE:
     'A new version of the app is available. Please update to continue using the app.',
   BUTTON: 'UPDATE',
+};
+export const SESSION_EXPIRED = {
+  TITLE: 'Session Expired',
+  MESSAGE: 'Your session has expired. Please log in again to continue.',
+  BUTTON: 'OK',
 };

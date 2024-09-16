@@ -14,13 +14,16 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
 import {
   fetchInProgressInspections,
+  handle_Session_Expired,
   handleNewInspectionPress,
   uploadInProgressMediaToStore,
 } from '../Utils';
 
 const InspectionInProgressContainer = ({navigation}) => {
   const dispatch = useDispatch();
-  const {token, data} = useSelector(state => state?.auth);
+  const {
+    user: {token, data},
+  } = useSelector(state => state?.auth);
   const inspectionInProgress = useSelector(
     state => state?.inspectionInProgress,
   );
@@ -81,6 +84,7 @@ const InspectionInProgressContainer = ({navigation}) => {
       token,
       'IN_PROGRESS',
       setIsLoading,
+      dispatch,
     );
     dispatch(FETCH_INSPECTION_IN_PROGRESS(inProgressInspection));
 
@@ -102,6 +106,10 @@ const InspectionInProgressContainer = ({navigation}) => {
       })
       .catch(error => {
         setIsLoading(false);
+        const statusCode = error?.response?.data?.statusCode;
+        if (statusCode === 401) {
+          handle_Session_Expired(statusCode, dispatch);
+        }
         console.log('error of inspection in progress => ', error);
       });
   };

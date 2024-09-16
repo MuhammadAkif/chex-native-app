@@ -30,7 +30,9 @@ import {HARDWARE_BACK_PRESS} from '../Constants';
 
 const VideoContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const {token} = useSelector(state => state?.auth);
+  const {
+    user: {token},
+  } = useSelector(state => state?.auth);
   const isFocused = useIsFocused();
   const videoRef = useRef();
   const appState = useRef(AppState.currentState);
@@ -165,6 +167,7 @@ const VideoContainer = ({route, navigation}) => {
       inspectionId,
       token,
       handleError,
+      dispatch,
     );
   };
   function uploadVideoToStore(imageID) {
@@ -185,6 +188,7 @@ const VideoContainer = ({route, navigation}) => {
       setProgress,
       handleResponse,
       handleError,
+      dispatch,
     ).then();
   };
 

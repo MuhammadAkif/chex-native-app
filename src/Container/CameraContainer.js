@@ -50,7 +50,9 @@ import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionM
 
 const CameraContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const {token, data} = useSelector(state => state?.auth);
+  const {
+    user: {token, data},
+  } = useSelector(state => state?.auth);
   const isFocused = useIsFocused();
   const cameraRef = useRef();
   const appState = useRef(AppState.currentState);
@@ -75,8 +77,6 @@ const CameraContainer = ({route, navigation}) => {
     {fps: 30},
   ]);
   const [isLoading, setIsLoading] = useState(false);
-  const preSignedSignle = new AbortController();
-  const uploadToS3Sigal = new AbortController();
   const {
     category,
     subCategory,
@@ -172,6 +172,7 @@ const CameraContainer = ({route, navigation}) => {
       inspectionId,
       token,
       handleError,
+      dispatch,
     );
   };
   function uploadImageToStore(imageID) {
@@ -219,6 +220,7 @@ const CameraContainer = ({route, navigation}) => {
       setProgress,
       handleResponse,
       handleError,
+      dispatch,
     ).then();
   };
 

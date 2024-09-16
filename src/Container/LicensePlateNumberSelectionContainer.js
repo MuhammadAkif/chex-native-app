@@ -15,12 +15,14 @@ import {
 import {ROUTES} from '../Navigation/ROUTES';
 import {colors} from '../Assets/Styles';
 import {NumberPlateSelectedAction} from '../Store/Actions';
-import {uploadInProgressMediaToStore} from '../Utils';
+import {handle_Session_Expired, uploadInProgressMediaToStore} from '../Utils';
 import {Types} from '../Store/Types';
 
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const dispatch = useDispatch();
-  const {token, data} = useSelector(state => state?.auth);
+  const {
+    user: {token, data},
+  } = useSelector(state => state?.auth);
   const [selectedNP, setSelectedNP] = useState(null);
   const [search, setSearch] = useState('');
   const [numberPlate, setNumberPlate] = useState([]);
@@ -131,6 +133,10 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       })
       .catch(error => {
         setIsLoading(false);
+        const statusCode = error?.response?.data?.statusCode;
+        if (statusCode === 401) {
+          handle_Session_Expired(statusCode, dispatch);
+        }
         console.log('error of selected inspection in progress => ', error);
         if (error.message === 'Request failed with status code 500') {
           setNumberPlateInUseError(true);

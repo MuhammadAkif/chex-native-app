@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {ActivityIndicator, Alert, BackHandler, Platform} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -11,8 +11,11 @@ import {handleNewInspectionPress} from '../Utils';
 
 const InspectionSelectionContainer = ({navigation}) => {
   const dispatch = useDispatch();
-  const {token, data} = useSelector(state => state?.auth);
+  const {
+    user: {token, data},
+  } = useSelector(state => state?.auth);
   const [isLoading, setIsLoading] = useState(false);
+  const {INSPECTION_REVIEWED, INSPECTION_IN_PROGRESS} = ROUTES;
   const selectedText = isLoading ? (
     <ActivityIndicator size={'small'} color={colors.white} />
   ) : (
@@ -58,11 +61,10 @@ const InspectionSelectionContainer = ({navigation}) => {
       resetAllStates,
     );
   };
-  // navigation.navigate(ROUTES.LICENSE_PLATE_SELECTION);
   const handleInspectionInProgressPress = () =>
-    navigation.navigate(ROUTES.INSPECTION_IN_PROGRESS);
+    navigation.navigate(INSPECTION_IN_PROGRESS);
   const handleInspectionReviewedPress = () =>
-    navigation.navigate(ROUTES.INSPECTION_REVIEWED);
+    navigation.navigate(INSPECTION_REVIEWED);
 
   return (
     <InspectionSelectionScreen

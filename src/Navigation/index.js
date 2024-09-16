@@ -18,7 +18,7 @@ import NavigationDrawer from './NavigationDrawer';
 
 const Navigation = () => {
   const Stack = createNativeStackNavigator();
-  const {token} = useSelector(state => state.auth);
+  const token = useSelector(state => state?.auth?.user?.token);
   const initialRouteName = token ? ROUTES.HOME : ROUTES.WELCOME;
 
   return (

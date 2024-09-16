@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {BackHandler, Linking} from 'react-native';
-
-import {IntroScreen} from '../Screens';
-import {ROUTES} from '../Navigation/ROUTES';
-import {HARDWARE_BACK_PRESS} from '../Constants';
-import {handleNewInspectionPress} from '../Utils';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {IntroScreen} from '../Screens';
+import {HARDWARE_BACK_PRESS} from '../Constants';
+import {handleNewInspectionPress} from '../Utils';
+
 const IntroContainer = ({navigation}) => {
-  const {token, data} = useSelector(state => state?.auth);
+  const {
+    user: {token, data},
+  } = useSelector(state => state?.auth);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {

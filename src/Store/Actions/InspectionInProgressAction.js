@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import {Types} from '../Types';
 import {DEV_URL} from '../../Constants';
-// import {DEV_URL} from '@env'
+import {handle_Session_Expired} from '../../Utils';
 
 export const FETCH_INSPECTION_IN_PROGRESS = inspectionInProgress => {
   return async dispatch => {
@@ -46,6 +46,10 @@ export const REMOVE_INSPECTION_IN_PROGRESS = (
       .catch(error => {
         setIsLoading(false);
         let errorMessage = error?.response?.data?.message[0];
+        const statusCode = error?.response?.data?.statusCode;
+        if (statusCode === 401) {
+          handle_Session_Expired(statusCode, dispatch);
+        }
         setModalMessageDetails({
           isVisible: true,
           title: '',

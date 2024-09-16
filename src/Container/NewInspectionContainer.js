@@ -24,6 +24,7 @@ import {
 import {
   EXTRACT_INSPECTION_ITEM_ID,
   extractIDs,
+  handle_Session_Expired,
   haveOneValue,
   isNotEmpty,
   isObjectEmpty,
@@ -52,7 +53,9 @@ const NewInspectionContainer = ({route, navigation}) => {
     skipRight,
     skipRightCorners,
   } = useSelector(state => state.newInspection);
-  const {token, data} = useSelector(state => state?.auth);
+  const {
+    user: {token, data},
+  } = useSelector(state => state?.auth);
   const modalMessageDetailsInitialState = {
     isVisible: false,
     title: '',
@@ -342,11 +345,19 @@ const NewInspectionContainer = ({route, navigation}) => {
           .catch(error => {
             setIsLoading(false);
             console.log('Completed location error :', error);
+            const statusCode = error?.response?.data?.statusCode;
+            if (statusCode === 401) {
+              handle_Session_Expired(statusCode, dispatch);
+            }
           });
       })
       .catch(error => {
         setIsLoading(false);
         console.log('Completed Inspection error :', error);
+        const statusCode = error?.response?.data?.statusCode;
+        if (statusCode === 401) {
+          handle_Session_Expired(statusCode, dispatch);
+        }
       });
   };
 
@@ -369,7 +380,13 @@ const NewInspectionContainer = ({route, navigation}) => {
         setModalMessageDetails(deleteSuccess);
         dispatch(RemoveMethod(deleteItem?.key));
       })
-      .catch(e => console.log('error deleting image => ', e));
+      .catch(e => {
+        console.log('error deleting image => ', e);
+        const statusCode = e?.response?.data?.statusCode;
+        if (statusCode === 401) {
+          handle_Session_Expired(statusCode, dispatch);
+        }
+      });
   };
   const handleNoPress = () => {
     setIsDiscardInspectionModalVisible(false);
@@ -424,6 +441,10 @@ const NewInspectionContainer = ({route, navigation}) => {
       })
       .catch(error => {
         setLoadingIndicator(false);
+        const statusCode = error?.response?.data?.statusCode;
+        if (statusCode === 401) {
+          handle_Session_Expired(statusCode, dispatch);
+        }
         console.log('error of selected inspection in progress => ', error);
       });
   };
