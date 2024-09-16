@@ -3,7 +3,7 @@ const ENV_TIME_URL = {
   production: process.env.PRODUCTION_URL,
   development: process.env.DEVELOPMENT_URL,
 };
-export const DEV_URL = ENV_TIME_URL.development;
+export const DEV_URL = ENV_TIME_URL.staging;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
 export const FETCH_NUMBER_PLATE_URL = `${DEV_URL}/api/v1/searchnumberplate`;
 export const EXTRACT_NUMBER_PLATE = `${DEV_URL}/api/v1/extract/inspection/create`;
