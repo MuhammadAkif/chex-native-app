@@ -14,10 +14,11 @@ const PrimaryGradientButton = ({
   onPress,
   text,
   disabled,
+  colors = ['#FF7A00', '#F90'],
 }) => (
   <TouchableOpacity onPress={onPress} disabled={disabled}>
     <LinearGradient
-      colors={['#FF7A00', '#F90']}
+      colors={colors}
       start={{x: 0, y: 0}}
       end={{x: 1, y: 0}}
       style={[styles.buttonContainer, buttonStyle]}>

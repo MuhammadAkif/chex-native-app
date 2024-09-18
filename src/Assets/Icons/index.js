@@ -26,6 +26,7 @@ import Expand from './Expand';
 import Collapse from './Collapse';
 import Retry from './Retry';
 import External from './External';
+import Damage_Vehicle from './Damage_Vehicle';
 
 export {
   Check,
@@ -56,4 +57,5 @@ export {
   Collapse,
   Retry,
   External,
+  Damage_Vehicle,
 };

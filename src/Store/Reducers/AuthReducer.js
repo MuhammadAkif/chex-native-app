@@ -1,7 +1,7 @@
 import {Types} from '../Types';
 
 const initialState = {
-  user: {},
+  user: {token: null},
   sessionExpired: false,
 };
 

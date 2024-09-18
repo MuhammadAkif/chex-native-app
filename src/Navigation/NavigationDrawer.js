@@ -53,12 +53,7 @@ const NavigationDrawer = ({navigation}) => {
     SIGN_IN,
   } = ROUTES;
 
-  useEffect(() => {
-    setIsSessionExpired(sessionExpired);
-  }, [sessionExpired]);
-
   const handleOkPress = () => {
-    setIsSessionExpired(!sessionExpired);
     dispatch({type: Types.SIGN_OUT});
     navigation.reset({
       index: 0,
@@ -109,9 +104,9 @@ const NavigationDrawer = ({navigation}) => {
           component={InspectionInProgressContainer}
           options={options}
         />
-        {isSessionExpired &&
-          Alert.alert(TITLE, MESSAGE, [{text: BUTTON, onPress: handleOkPress}])}
       </Drawer.Navigator>
+      {sessionExpired &&
+        Alert.alert(TITLE, MESSAGE, [{text: BUTTON, onPress: handleOkPress}])}
     </>
   );
 };

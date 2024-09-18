@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useSelector} from 'react-redux';
@@ -16,32 +16,44 @@ import {
 import {ROUTES} from './ROUTES';
 import NavigationDrawer from './NavigationDrawer';
 
+const {
+  HOME,
+  WELCOME,
+  REGISTER,
+  SIGN_IN,
+  FORGET_PASSWORD,
+  RESET_PASSWORD,
+  CAMERA,
+  VIDEO,
+  COMPLETED_INSPECTION,
+} = ROUTES;
+
 const Navigation = () => {
   const Stack = createNativeStackNavigator();
   const token = useSelector(state => state?.auth?.user?.token);
-  const initialRouteName = token ? ROUTES.HOME : ROUTES.WELCOME;
+  const initialRouteName = token ? HOME : WELCOME;
 
   return (
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName={initialRouteName}
         screenOptions={{headerShown: false, gestureEnabled: false}}>
-        <Stack.Screen name={ROUTES.WELCOME} component={WelcomeContainer} />
-        <Stack.Screen name={ROUTES.REGISTER} component={RegisterContainer} />
-        <Stack.Screen name={ROUTES.SIGN_IN} component={SignInContainer} />
+        <Stack.Screen name={WELCOME} component={WelcomeContainer} />
+        <Stack.Screen name={REGISTER} component={RegisterContainer} />
+        <Stack.Screen name={SIGN_IN} component={SignInContainer} />
         <Stack.Screen
-          name={ROUTES.FORGET_PASSWORD}
+          name={FORGET_PASSWORD}
           component={ForgotPasswordContainer}
         />
         <Stack.Screen
-          name={ROUTES.RESET_PASSWORD}
+          name={RESET_PASSWORD}
           component={ResetPasswordContainer}
         />
-        <Stack.Screen name={ROUTES.CAMERA} component={CameraContainer} />
-        <Stack.Screen name={ROUTES.VIDEO} component={VideoContainer} />
-        <Stack.Screen name={ROUTES.HOME} component={NavigationDrawer} />
+        <Stack.Screen name={CAMERA} component={CameraContainer} />
+        <Stack.Screen name={VIDEO} component={VideoContainer} />
+        <Stack.Screen name={HOME} component={NavigationDrawer} />
         <Stack.Screen
-          name={ROUTES.COMPLETED_INSPECTION}
+          name={COMPLETED_INSPECTION}
           component={CompletedInspectionContainer}
         />
       </Stack.Navigator>

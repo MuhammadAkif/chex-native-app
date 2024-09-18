@@ -43,6 +43,9 @@ import Toast from './Toast';
 import AndroidMediaViewModal from './AndroidMediaViewModal';
 import NumberPlateInUseModal from './NumberPlateInUseModal';
 import FocusAwareStatusBar from './FocusAwareStatusBar';
+import RenderDamageTypes from './RenderItem/RenderDamageTypes';
+import AnnotateImage from './Annotation/AnnotateImage';
+import AnnotateImageModal from './Annotation/AnnotateImageModal';
 
 export {
   BackgroundImageView,
@@ -90,4 +93,7 @@ export {
   NumberPlateInUseModal,
   FocusAwareStatusBar,
   ConfirmVehicleDetailModal,
+  RenderDamageTypes,
+  AnnotateImage,
+  AnnotateImageModal,
 };

@@ -1,9 +1,12 @@
-const ENV_TIME_URL = {
+// Api Endpoints start here
+import {IMAGES} from '../Assets/Images';
+
+const ENV_TYPE_URL = {
   staging: process.env.STAGING_URL,
   production: process.env.PRODUCTION_URL,
   development: process.env.DEVELOPMENT_URL,
 };
-export const DEV_URL = ENV_TIME_URL.staging;
+export const DEV_URL = ENV_TYPE_URL.staging;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
 export const FETCH_NUMBER_PLATE_URL = `${DEV_URL}/api/v1/searchnumberplate`;
 export const EXTRACT_NUMBER_PLATE = `${DEV_URL}/api/v1/extract/inspection/create`;
@@ -17,18 +20,19 @@ export const FORGET_PASSWORD_URL = `${DEV_URL}/api/v1/auth/reset/email`;
 export const RESET_PASSWORD_URL = `${DEV_URL}/api/v1/auth/reset/password`;
 export const INSPECTION_TIRE_STATUS = `${DEV_URL}/api/v1/display/tire`;
 export const REMOVE_ALL_TIRES = `${DEV_URL}/api/v1/delete/file`;
+export const AI_API_TOKEN = process.env.AI_API_TOKEN;
+// Api Endpoints ends here
+
 export const HARDWARE_BACK_PRESS = 'hardwareBackPress';
 export const ANDROID = 'android';
 export const WINDOW = 'window';
 export const IOS = 'ios';
-export const AI_API_TOKEN = process.env.AI_API_TOKEN;
 
 export const EXPIRY_INSPECTION = {
   description: 'The Inspection Has Expired. Please Start A New Inspection.',
   confirmButton: 'New Inspection',
   cancelButton: 'Exit',
 };
-
 export const INSPECTION = {
   CAR_VERIFICATION: 'carVerificiationItems',
   EXTERIOR: 'exteriorItems',
@@ -68,7 +72,6 @@ export const INSPECTION_TITLE = {
   right_front_tire: 'Right Front Tire',
   right_rear_tire: 'Right Rear Tire',
 };
-
 export const UPDATE_APP = {
   TITLE: 'Version Update',
   MESSAGE:
@@ -80,3 +83,26 @@ export const SESSION_EXPIRED = {
   MESSAGE: 'Your session has expired. Please log in again to continue.',
   BUTTON: 'OK',
 };
+
+export const ANNOTATE_IMAGE_DETAILS = {
+  title: 'Exterior Front',
+  source: IMAGES.front_Left_Corner,
+  description:
+    "To annotate an image of a vehicle's front, you can click directly on the area of interest within the image. Upon clicking, a damage icon will appear at the selected spot, allowing you to visually mark and highlight the specific location of any damage.",
+  instruction: 'Do you want to Annotate\n',
+  annotateText: 'Annotate',
+  skipText: 'Skip',
+};
+export const ANNOTATE_IMAGE = {
+  title: 'Exterior Front',
+  source: IMAGES.front_Left_Corner,
+  description:
+    "To annotate an image of a vehicle's front, you can click directly on the area of interest within the image. Upon clicking, a damage icon will appear at the selected spot, allowing you to visually mark and highlight the specific location of any damage.",
+  instruction: 'Do you want to Annotate\n',
+  annotateText: 'Submit',
+};
+
+export const remarks =
+  'skdjhaksdhsdk jadkjsab dias bdkasd gsakd gsakdj ajsdakj sjdhaks jdhaksjdhshskjdhskdhskjdhskshdkshdkshdksjhdkshdkshdskdhskdhskjdhkskdjhaksdhsdk jadkjsab dias bdkasd gsakd gsakdj ajsdakj sjdhaks jdhaksjdhshskjdhskdhskjdhskshdkshdkshdksjhdkshdkshdskdhskdhskjdhkskdjhaksdhsdk jadkjsab dias bdkasd gsakd gsakdj ajsdakj sjdhaks jdhaksjdhshskjdhskdhskjdhskshdkshdkshdksjhdkshdkshdskdhskdhskjdhk';
+
+export const DAMAGE_TYPE = ['Minor', 'Major', 'Severe'];
