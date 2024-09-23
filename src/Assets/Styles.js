@@ -234,6 +234,12 @@ export const ExpandedCardStyles = StyleSheet.create({
     justifyContent: 'space-evenly',
     paddingVertical: 10,
   },
+  itemPickerOuterContainer: {
+    width: '100%',
+    justifyContent: 'space-evenly',
+    paddingVertical: 10,
+    flexDirection: 'column',
+  },
 });
 
 export const ItemPickerStyles = StyleSheet.create({

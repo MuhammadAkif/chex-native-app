@@ -1,13 +1,23 @@
 import React from 'react';
 import Svg, {ClipPath, Defs, G, Path, Rect} from 'react-native-svg';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
-function Damage_Vehicle({height = '19', width = '19', color = '#FB3131'}) {
+function Damage_Vehicle({
+  height = hp('3%'),
+  width = wp('6%'),
+  color = '#FB3131',
+  style,
+}) {
   return (
     <Svg
       xmlns="http://www.w3.org/2000/svg"
       width={width}
       height={height}
       fill="none"
+      style={style}
       viewBox="0 0 19 19">
       <Rect width="18.587" height="18.587" fill={color} rx="6.97" />
       <G fill="#fff" clipPath="url(#clip0_3294_298)">

@@ -2,7 +2,6 @@ import React from 'react';
 import {View} from 'react-native';
 
 import {ExpandedCardStyles, expandedCardStyles} from '../../Assets/Styles';
-import {VideoPicker, ImagePicker} from '../index';
 import {
   ExteriorFrontDetails,
   ExteriorFrontLeftCornerDetails,
@@ -14,6 +13,7 @@ import {
   ExteriorLeftDetails,
   ExteriorRightDetails,
 } from '../../Utils';
+import {ImagePickerWithFooterList} from '../index';
 
 const ExteriorItemsExpandedCard = ({
   handleItemPickerPress,
@@ -21,57 +21,67 @@ const ExteriorItemsExpandedCard = ({
   handleCrossPress,
   isLoading,
   handleMediaModalDetailsPress,
-  pickerText = 'Upload Image',
+  pickerText = 'Capture Image',
   skipLeft = false,
   skipLeftCorners = false,
   skipRight = false,
   skipRightCorners = false,
 }) => (
   <View
-    style={[
-      expandedCardStyles.expandedCardContainer,
-      ExpandedCardStyles.container,
-    ]}>
-    <View style={ExpandedCardStyles.itemPickerContainer}>
-      <ImagePicker
-        text={ExteriorFrontDetails.title}
-        pickerText={pickerText}
-        imageURL={exteriorItems?.exteriorFront}
-        isLoading={isLoading}
-        onPress={() => handleItemPickerPress(ExteriorFrontDetails)}
-        onClearPress={() =>
-          handleCrossPress(
-            ExteriorFrontDetails.groupType,
-            ExteriorFrontDetails.key,
-          )
-        }
-        handleMediaModalDetailsPress={() =>
-          handleMediaModalDetailsPress(
-            ExteriorFrontDetails.title,
-            exteriorItems?.exteriorFront,
-          )
-        }
+    style={{
+      ...expandedCardStyles.expandedCardContainer,
+      ...ExpandedCardStyles.container,
+    }}>
+    <ImagePickerWithFooterList
+      categoryDetails={ExteriorFrontDetails}
+      handleCrossPress={handleCrossPress}
+      handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+      handleItemPickerPress={handleItemPickerPress}
+    />
+    <ImagePickerWithFooterList
+      categoryDetails={ExteriorRearDetails}
+      handleCrossPress={handleCrossPress}
+      handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+      handleItemPickerPress={handleItemPickerPress}
+    />
+    {!skipLeftCorners && (
+      <ImagePickerWithFooterList
+        categoryDetails={ExteriorFrontLeftCornerDetails}
+        handleCrossPress={handleCrossPress}
+        handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+        handleItemPickerPress={handleItemPickerPress}
       />
-      <ImagePicker
-        text={ExteriorRearDetails.title}
-        pickerText={pickerText}
-        imageURL={exteriorItems?.exteriorRear}
-        isLoading={isLoading}
-        onPress={() => handleItemPickerPress(ExteriorRearDetails)}
-        onClearPress={() =>
-          handleCrossPress(
-            ExteriorRearDetails.groupType,
-            ExteriorRearDetails.key,
-          )
-        }
-        handleMediaModalDetailsPress={() =>
-          handleMediaModalDetailsPress(
-            ExteriorRearDetails.title,
-            exteriorItems?.exteriorRear,
-          )
-        }
+    )}
+    {!skipRightCorners && (
+      <ImagePickerWithFooterList
+        categoryDetails={ExteriorFrontRightCornerDetails}
+        handleCrossPress={handleCrossPress}
+        handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+        handleItemPickerPress={handleItemPickerPress}
       />
-    </View>
+    )}
+    {!skipLeftCorners && (
+      <ImagePickerWithFooterList
+        categoryDetails={ExteriorRearLeftCornerDetails}
+        handleCrossPress={handleCrossPress}
+        handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+        handleItemPickerPress={handleItemPickerPress}
+      />
+    )}
+    {!skipRightCorners && (
+      <ImagePickerWithFooterList
+        categoryDetails={ExteriorRearRightCornerDetails}
+        handleCrossPress={handleCrossPress}
+        handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+        handleItemPickerPress={handleItemPickerPress}
+      />
+    )}
+    <ImagePickerWithFooterList
+      categoryDetails={ExteriorInsideCargoRoofDetails}
+      handleCrossPress={handleCrossPress}
+      handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+      handleItemPickerPress={handleItemPickerPress}
+    />
     {/*<View style={ExpandedCardStyles.itemPickerContainer}>*/}
     {/*  {!skipLeft && (*/}
     {/*    <ImagePicker*/}
@@ -116,116 +126,6 @@ const ExteriorItemsExpandedCard = ({
     {/*    />*/}
     {/*  )}*/}
     {/*</View>*/}
-    <View style={ExpandedCardStyles.itemPickerContainer}>
-      {!skipLeftCorners && (
-        <ImagePicker
-          text={ExteriorFrontLeftCornerDetails.title}
-          pickerText={pickerText}
-          imageURL={exteriorItems?.exteriorFrontLeftCorner}
-          isLoading={isLoading}
-          onPress={() => handleItemPickerPress(ExteriorFrontLeftCornerDetails)}
-          onClearPress={() =>
-            handleCrossPress(
-              ExteriorFrontLeftCornerDetails.groupType,
-              ExteriorFrontLeftCornerDetails.key,
-            )
-          }
-          handleMediaModalDetailsPress={() =>
-            handleMediaModalDetailsPress(
-              ExteriorFrontLeftCornerDetails.title,
-              exteriorItems?.exteriorFrontLeftCorner,
-            )
-          }
-        />
-      )}
-      {!skipRightCorners && (
-        <ImagePicker
-          text={ExteriorFrontRightCornerDetails.title}
-          pickerText={pickerText}
-          imageURL={exteriorItems?.exteriorFrontRightCorner}
-          isLoading={isLoading}
-          onPress={() => handleItemPickerPress(ExteriorFrontRightCornerDetails)}
-          onClearPress={() =>
-            handleCrossPress(
-              ExteriorFrontRightCornerDetails.groupType,
-              ExteriorFrontRightCornerDetails.key,
-            )
-          }
-          handleMediaModalDetailsPress={() =>
-            handleMediaModalDetailsPress(
-              ExteriorFrontRightCornerDetails.title,
-              exteriorItems?.exteriorFrontRightCorner,
-            )
-          }
-        />
-      )}
-    </View>
-    <View style={ExpandedCardStyles.itemPickerContainer}>
-      {!skipLeftCorners && (
-        <ImagePicker
-          text={ExteriorRearLeftCornerDetails.title}
-          pickerText={pickerText}
-          imageURL={exteriorItems?.exteriorRearLeftCorner}
-          isLoading={isLoading}
-          onPress={() => handleItemPickerPress(ExteriorRearLeftCornerDetails)}
-          onClearPress={() =>
-            handleCrossPress(
-              ExteriorRearLeftCornerDetails.groupType,
-              ExteriorRearLeftCornerDetails.key,
-            )
-          }
-          handleMediaModalDetailsPress={() =>
-            handleMediaModalDetailsPress(
-              ExteriorRearLeftCornerDetails.title,
-              exteriorItems?.exteriorRearLeftCorner,
-            )
-          }
-        />
-      )}
-      {!skipRightCorners && (
-        <ImagePicker
-          text={ExteriorRearRightCornerDetails.title}
-          pickerText={pickerText}
-          imageURL={exteriorItems?.exteriorRearRightCorner}
-          isLoading={isLoading}
-          onPress={() => handleItemPickerPress(ExteriorRearRightCornerDetails)}
-          onClearPress={() =>
-            handleCrossPress(
-              ExteriorRearRightCornerDetails.groupType,
-              ExteriorRearRightCornerDetails.key,
-            )
-          }
-          handleMediaModalDetailsPress={() =>
-            handleMediaModalDetailsPress(
-              ExteriorRearRightCornerDetails.title,
-              exteriorItems?.exteriorRearRightCorner,
-            )
-          }
-        />
-      )}
-    </View>
-    <View style={ExpandedCardStyles.itemPickerContainer}>
-      <ImagePicker
-        text={ExteriorInsideCargoRoofDetails.title}
-        pickerText={pickerText}
-        imageURL={exteriorItems?.exteriorInsideCargoRoof}
-        isLoading={isLoading}
-        onPress={() => handleItemPickerPress(ExteriorInsideCargoRoofDetails)}
-        onClearPress={() =>
-          handleCrossPress(
-            ExteriorInsideCargoRoofDetails.groupType,
-            ExteriorInsideCargoRoofDetails.key,
-          )
-        }
-        handleMediaModalDetailsPress={() =>
-          handleMediaModalDetailsPress(
-            ExteriorInsideCargoRoofDetails.title,
-            exteriorItems?.exteriorInsideCargoRoof,
-          )
-        }
-      />
-    </View>
   </View>
 );
-
 export default ExteriorItemsExpandedCard;

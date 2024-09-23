@@ -44,8 +44,12 @@ import AndroidMediaViewModal from './AndroidMediaViewModal';
 import NumberPlateInUseModal from './NumberPlateInUseModal';
 import FocusAwareStatusBar from './FocusAwareStatusBar';
 import RenderDamageTypes from './RenderItem/RenderDamageTypes';
+import RenderImagePicker from './RenderItem/RenderImagePicker';
+import RenderIcons from './RenderItem/RenderIcons';
 import AnnotateImage from './Annotation/AnnotateImage';
 import AnnotateImageModal from './Annotation/AnnotateImageModal';
+import ImagePickerWithFooterList from './ItemPicker/ImagePickerWithFooterList';
+import ImagePicker_New from './ItemPicker/ImagePicker_New';
 
 export {
   BackgroundImageView,
@@ -96,4 +100,8 @@ export {
   RenderDamageTypes,
   AnnotateImage,
   AnnotateImageModal,
+  ImagePickerWithFooterList,
+  RenderImagePicker,
+  RenderIcons,
+  ImagePicker_New,
 };

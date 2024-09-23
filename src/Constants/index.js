@@ -20,6 +20,7 @@ export const FORGET_PASSWORD_URL = `${DEV_URL}/api/v1/auth/reset/email`;
 export const RESET_PASSWORD_URL = `${DEV_URL}/api/v1/auth/reset/password`;
 export const INSPECTION_TIRE_STATUS = `${DEV_URL}/api/v1/display/tire`;
 export const REMOVE_ALL_TIRES = `${DEV_URL}/api/v1/delete/file`;
+export const ANNOTATION = `${DEV_URL}/api/v1/file/coordinate`;
 export const AI_API_TOKEN = process.env.AI_API_TOKEN;
 // Api Endpoints ends here
 
@@ -100,9 +101,8 @@ export const ANNOTATE_IMAGE = {
     "To annotate an image of a vehicle's front, you can click directly on the area of interest within the image. Upon clicking, a damage icon will appear at the selected spot, allowing you to visually mark and highlight the specific location of any damage.",
   instruction: 'Do you want to Annotate\n',
   annotateText: 'Submit',
+  cancelText: 'Cancel',
 };
 
-export const remarks =
-  'skdjhaksdhsdk jadkjsab dias bdkasd gsakd gsakdj ajsdakj sjdhaks jdhaksjdhshskjdhskdhskjdhskshdkshdkshdksjhdkshdkshdskdhskdhskjdhkskdjhaksdhsdk jadkjsab dias bdkasd gsakd gsakdj ajsdakj sjdhaks jdhaksjdhshskjdhskdhskjdhskshdkshdkshdksjhdkshdkshdskdhskdhskjdhkskdjhaksdhsdk jadkjsab dias bdkasd gsakd gsakdj ajsdakj sjdhaks jdhaksjdhshskjdhskdhskjdhskshdkshdkshdksjhdkshdkshdskdhskdhskjdhk';
-
 export const DAMAGE_TYPE = ['Minor', 'Major', 'Severe'];
+export const Image_Type = [];

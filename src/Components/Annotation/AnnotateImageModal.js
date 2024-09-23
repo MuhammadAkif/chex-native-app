@@ -17,7 +17,7 @@ import Video from 'react-native-video';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import VideoPlayer from 'react-native-video-player';
 
-import {Cross, Expand, Info} from '../../Assets/Icons';
+import {Cross, Exclamation, Expand, Info} from '../../Assets/Icons';
 import {colors} from '../../Assets/Styles';
 import {PrimaryGradientButton} from '../index';
 import Collapse from '../../Assets/Icons/Collapse';
@@ -31,11 +31,11 @@ const {
   instruction,
   source: imagePath,
 } = ANNOTATE_IMAGE_DETAILS;
+const {white, orangePeel, royalBlue} = colors;
 
 const AnnotateImageModal = ({
   modalVisible,
   handleVisible,
-  handleCaptureImage,
   source = imagePath,
   instructionalText = description,
   instructionalSubHeadingText = instruction,
@@ -43,11 +43,12 @@ const AnnotateImageModal = ({
   skipButtonText = skipText,
   title = Title,
   isVideo = false,
-  modalKey,
   isLoading = false,
   progress = 0,
   isCarVerification = false,
   isExterior = true,
+  handleAnnotatePress,
+  handleSkipPress,
 }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   let height = hp('5%');
@@ -68,7 +69,7 @@ const AnnotateImageModal = ({
           style={styles.crossIconContainer}
           onPress={handleVisible}
           disabled={isLoading}>
-          <Cross height={hp('8%')} width={wp('10%')} color={colors.white} />
+          <Cross height={hp('8%')} width={wp('10%')} color={white} />
         </TouchableOpacity>
         <View
           style={[
@@ -93,23 +94,15 @@ const AnnotateImageModal = ({
                   <TouchableOpacity
                     style={{
                       position: 'absolute',
-                      color: '#fff',
+                      color: white,
                       right: 0,
                       zIndex: 1,
                     }}
                     onPress={() => setIsFullScreen(!isFullScreen)}>
                     {isFullScreen ? (
-                      <Expand
-                        height={height}
-                        width={width}
-                        color={colors.white}
-                      />
+                      <Expand height={height} width={width} color={white} />
                     ) : (
-                      <Collapse
-                        height={height}
-                        width={width}
-                        color={colors.white}
-                      />
+                      <Collapse height={height} width={width} color={white} />
                     )}
                   </TouchableOpacity>
                   <VideoPlayer
@@ -131,12 +124,19 @@ const AnnotateImageModal = ({
               )}
             </>
           ) : (
-            <FastImage
-              source={source}
-              priority={'normal'}
-              resizeMode={'stretch'}
-              style={[styles.image, {height: imageHeight[isCarVerification]}]}
-            />
+            <View>
+              <FastImage
+                source={source}
+                priority={'normal'}
+                resizeMode={'stretch'}
+                style={[styles.image, {height: imageHeight[isCarVerification]}]}
+              />
+              <Exclamation
+                style={styles.damageIcon}
+                height={hp('3%')}
+                width={wp('6%')}
+              />
+            </View>
           )}
           <View style={styles.instructionsAndSubHeadingContainer}>
             <View
@@ -144,7 +144,7 @@ const AnnotateImageModal = ({
                 styles.instructionsContainer,
                 {top: isFullScreen ? hp('25%') : null},
               ]}>
-              <Info height={hp('4%')} width={wp('7%')} color={colors.white} />
+              <Info height={hp('4%')} width={wp('7%')} color={white} />
               <Text style={[styles.instructionsText, styles.textColor]}>
                 {instructionalText}
               </Text>
@@ -155,7 +155,7 @@ const AnnotateImageModal = ({
                   style={[
                     styles.instructionsText,
                     {
-                      color: colors.white,
+                      color: white,
                       width: wp('75%'),
                       fontSize: hp('2%'),
                     },
@@ -182,8 +182,8 @@ const AnnotateImageModal = ({
               value={progress}
               valueSuffix={'%'}
               radius={Platform.OS === ANDROID && isFullScreen ? 40 : 80}
-              progressValueColor={colors.white}
-              activeStrokeColor={colors.orangePeel}
+              progressValueColor={white}
+              activeStrokeColor={orangePeel}
               titleStyle={{fontWeight: 'bold'}}
             />
             <Text style={[styles.textColor, styles.loadingText]}>
@@ -194,12 +194,12 @@ const AnnotateImageModal = ({
           <View style={styles.footerContainer}>
             <PrimaryGradientButton
               text={annotateButtonText}
-              onPress={() => handleCaptureImage(isVideo, modalKey)}
+              onPress={handleAnnotatePress}
             />
             <PrimaryGradientButton
               text={skipButtonText}
-              colors={[colors.royalBlue, colors.royalBlue]}
-              onPress={() => handleCaptureImage(isVideo, modalKey)}
+              colors={[royalBlue, royalBlue]}
+              onPress={handleSkipPress}
             />
           </View>
         )}
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   textColor: {
-    color: colors.white,
+    color: white,
   },
   footerView: {
     flex: 0.1,
@@ -292,6 +292,11 @@ const styles = StyleSheet.create({
   },
   bold: {
     fontWeight: '600',
+  },
+  damageIcon: {
+    position: 'absolute',
+    top: hp('15%'),
+    right: wp('42%'),
   },
 });
 

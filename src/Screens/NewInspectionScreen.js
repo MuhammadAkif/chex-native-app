@@ -22,6 +22,8 @@ import {
 import {BackArrow} from '../Assets/Icons';
 import {ANDROID} from '../Constants';
 import LoadingIndicator from '../Components/LoadingIndicator';
+import AnnotateImageModal from '../Components/Annotation/AnnotateImageModal';
+import AnnotateImage from '../Components/Annotation/AnnotateImage';
 
 const NewInspectionScreen = ({
   selectedOption,
@@ -75,6 +77,12 @@ const NewInspectionScreen = ({
   displayTires,
   handleCardExpansion,
   loadingIndicator,
+  displayAnnotationPopUp,
+  handleSkipPress,
+  handleAnnotatePress,
+  displayAnnotation,
+  handleAnnotationSubmit,
+  handleAnnotationCancel,
 }) => (
   <View style={NewInspectionStyles.container}>
     {isDiscardInspectionModalVisible && (
@@ -110,6 +118,18 @@ const NewInspectionScreen = ({
         numberPlateText={plateNumber || ''}
       />
     )}
+    <AnnotateImageModal
+      modalVisible={displayAnnotationPopUp}
+      handleSkipPress={handleSkipPress}
+      handleAnnotatePress={handleAnnotatePress}
+      source={source}
+      title={title}
+    />
+    <AnnotateImage
+      modalVisible={displayAnnotation}
+      handleSubmit={handleAnnotationSubmit}
+      handleCancel={handleAnnotationCancel}
+    />
     {modalMessageDetails.isVisible && (
       <Toast
         onCrossPress={handleOkPress}
@@ -200,7 +220,7 @@ const NewInspectionScreen = ({
               handleMediaModalDetailsPress={handleMediaModalDetailsPress}
             />
           )}
-          {displayTires &&
+          {displayTires && (
             <>
               <CollapsedCard
                 text={'Tires'}
@@ -219,7 +239,7 @@ const NewInspectionScreen = ({
                 />
               )}
             </>
-          }
+          )}
         </ScrollView>
       </View>
       {isVehicleAllPartsImagesAvailable && (

@@ -176,16 +176,18 @@ const CameraContainer = ({route, navigation}) => {
     );
   };
   function uploadImageToStore(imageID) {
+    const isLicensePlate =
+      category === 'CarVerification' && type === 'licensePlate';
     category === 'CarVerification'
       ? dispatch(UpdateCarVerificationItemURI(type, isImageURL, imageID))
       : category === 'Exterior'
       ? dispatch(UpdateExteriorItemURI(type, isImageURL, imageID))
       : dispatch(UpdateTiresItemURI(type, isImageURL, imageID));
-    if (category === 'CarVerification' && type === 'licensePlate') {
-      navigation.navigate(ROUTES.NEW_INSPECTION, {isLicensePlate: true});
-    } else {
-      navigation.navigate(ROUTES.NEW_INSPECTION, {isLicensePlate: false});
-    }
+    navigation.navigate(ROUTES.NEW_INSPECTION, {
+      isLicensePlate: isLicensePlate,
+      displayAnnotation: true,
+      fileId: imageID,
+    });
   }
   const handleExtractNumberPlate = async imageURL => {
     const body = {image_url: imageURL};

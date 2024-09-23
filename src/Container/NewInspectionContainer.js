@@ -14,6 +14,7 @@ import {
 import {Types} from '../Store/Types';
 import {colors} from '../Assets/Styles';
 import {
+  ANNOTATION,
   DEV_URL,
   EXTRACT_NUMBER_PLATE,
   HARDWARE_BACK_PRESS,
@@ -97,6 +98,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     modalMessageDetailsInitialState,
   );
   const [displayTires, setDisplayTires] = useState(true);
+  const [displayAnnotationPopUp, setDisplayAnnotationPopUp] = useState(false);
+  const [displayAnnotation, setDisplayAnnotation] = useState(false);
   const [checkTireStatus, setCheckTireStatus] = useState(true);
   const [isAllVehicleParts, setIsAllVehicleParts] = useState(
     IS_ALL_VEHICLE_PARTS_INITIAL_STATE,
@@ -128,9 +131,12 @@ const NewInspectionContainer = ({route, navigation}) => {
       );
     }
     if (route.params) {
-      const {isLicensePlate} = route.params;
+      const {isLicensePlate, displayAnnotation, fileId} = route.params;
       if (isLicensePlate) {
         setTimeout(() => setIsLicenseModalVisible(true), 1000);
+      }
+      if (displayAnnotation) {
+        setDisplayAnnotationPopUp(displayAnnotation);
       }
     }
   }, [route]);
@@ -486,6 +492,31 @@ const NewInspectionContainer = ({route, navigation}) => {
   }
   //Tire Rendering logic ends here
 
+  //Annotation logic start here
+  const handleSkipPress = () => {
+    setDisplayAnnotationPopUp(!displayAnnotationPopUp);
+  };
+  const handleAnnotationPress = () => {
+    setDisplayAnnotationPopUp(!displayAnnotationPopUp);
+    setDisplayAnnotation(!displayAnnotation);
+  };
+  const handleAnnotationSubmit = async details => {
+    const body = {
+      ...details,
+      inspectionId: 2599,
+      fileId: 20437,
+    };
+    axios
+      .put(ANNOTATION, body, config)
+      .then(res => console.log({res}))
+      .catch(error => console.log({error}))
+      .finally(() => {});
+  };
+  const handleAnnotationCancel = () => {
+    setDisplayAnnotation(!displayAnnotation);
+  };
+  //Annotation logic ends here
+
   return (
     <NewInspectionScreen
       selectedOption={selectedOption}
@@ -545,6 +576,12 @@ const NewInspectionContainer = ({route, navigation}) => {
       // skipRightCorners={skipRightCorners}
       displayTires={displayTires}
       loadingIndicator={loadingIndicator}
+      displayAnnotationPopUp={displayAnnotationPopUp}
+      handleSkipPress={handleSkipPress}
+      handleAnnotatePress={handleAnnotationPress}
+      displayAnnotation={displayAnnotation}
+      handleAnnotationSubmit={handleAnnotationSubmit}
+      handleAnnotationCancel={handleAnnotationCancel}
     />
   );
 };
