@@ -23,48 +23,66 @@ const CollapsedCard = ({
   onPress,
   isActive,
   isBothItemsAvailable,
-}) => (
-  <TouchableOpacity
-    style={[
-      styles.collapsedCardContainer,
-      {
-        borderWidth: isBothItemsAvailable ? 1 : 0,
-        borderColor: isBothItemsAvailable ? colors.tealGreen : null,
-        backgroundColor: isBothItemsAvailable ? colors.icyBlue : colors.white,
-      },
-    ]}
-    onPress={onPress}>
-    <View style={styles.collapsedCardContentContainer}>
-      {isBothItemsAvailable ? (
-        <View style={[styles.numberContainer, styles.checkContainer]}>
-          <Check height={hp('2%')} width={wp('5%')} color={colors.white} />
-        </View>
-      ) : (
-        <Text style={styles.numberContainer}>{index}</Text>
-      )}
-      <Text style={[styles.titleText, styles.titleTextColor]}>{text}</Text>
-      <View
-        style={[
-          styles.iconContainer,
-          {borderColor: isActive ? colors.orangePeel : colors.lightSteelBlue},
-        ]}>
-        {isActive ? (
-          <UpArrow
-            height={hp('4%')}
-            width={wp('4%')}
-            color={colors.orangePeel}
-          />
+  disabled = false,
+}) => {
+  const disabled_Color = {
+    true: colors.gray,
+    false: colors.royalBlue,
+  };
+  const activeColor = disabled_Color[disabled];
+  return (
+    <TouchableOpacity
+      disabled={disabled}
+      style={[
+        styles.collapsedCardContainer,
+        {
+          borderWidth: isBothItemsAvailable ? 1 : 0,
+          borderColor: isBothItemsAvailable ? colors.tealGreen : null,
+          backgroundColor: isBothItemsAvailable ? colors.icyBlue : colors.white,
+        },
+      ]}
+      onPress={onPress}>
+      <View style={styles.collapsedCardContentContainer}>
+        {isBothItemsAvailable ? (
+          <View style={[styles.numberContainer, styles.checkContainer]}>
+            <Check height={hp('2%')} width={wp('5%')} color={colors.white} />
+          </View>
         ) : (
-          <DownArrow
-            height={hp('4%')}
-            width={wp('4%')}
-            color={colors.lightSteelBlue}
-          />
+          <Text style={[styles.numberContainer, {color: activeColor}]}>
+            {index}
+          </Text>
         )}
+        <Text
+          style={[
+            styles.titleText,
+            styles.titleTextColor,
+            {color: activeColor},
+          ]}>
+          {text}
+        </Text>
+        <View
+          style={[
+            styles.iconContainer,
+            {borderColor: isActive ? colors.orangePeel : colors.lightSteelBlue},
+          ]}>
+          {isActive ? (
+            <UpArrow
+              height={hp('4%')}
+              width={wp('4%')}
+              color={colors.orangePeel}
+            />
+          ) : (
+            <DownArrow
+              height={hp('4%')}
+              width={wp('4%')}
+              color={colors.lightSteelBlue}
+            />
+          )}
+        </View>
       </View>
-    </View>
-  </TouchableOpacity>
-);
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   collapsedCardContainer: {

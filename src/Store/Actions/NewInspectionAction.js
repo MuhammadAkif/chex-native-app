@@ -50,3 +50,10 @@ export function NumberPlateSelectedAction(selectedInspectionID) {
       payload: payload,
     });
 }
+export function UPDATE_IS_LICENSE_PLATE_UPLOADED(payload) {
+  return dispatch =>
+    dispatch({
+      type: Types.IS_LICENSE_PLATE_UPLOADED,
+      payload: payload,
+    });
+}

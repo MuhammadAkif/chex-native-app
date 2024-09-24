@@ -44,6 +44,8 @@ const initialState = {
   skipLeftCorners: false,
   skipRight: false,
   skipRightCorners: false,
+  isLicensePlateUploaded: false,
+  vehicle_Type: 'existing',
 };
 
 const newInspectionReducer = (state = initialState, action) => {
@@ -148,6 +150,16 @@ const newInspectionReducer = (state = initialState, action) => {
       return {
         ...state,
         skipRightCorners: action.payload,
+      };
+    case Types.IS_LICENSE_PLATE_UPLOADED:
+      return {
+        ...state,
+        isLicensePlateUploaded: action.payload,
+      };
+    case Types.VEHICLE_TYPE:
+      return {
+        ...state,
+        vehicle_Type: action.payload,
       };
     case Types.CLEAR_NEW_INSPECTION:
       return initialState;

@@ -5,8 +5,7 @@ import {FlatList, StyleSheet, View} from 'react-native';
 import {ExpandedCardStyles} from '../../Assets/Styles';
 import ItemPickerLabel from './ItemPickerLabel';
 import {Image_Type} from '../../Constants';
-import ImagePicker_New from './ImagePicker_New';
-import {RenderImagePicker} from '../index';
+import {RenderImagePicker, ImagePicker_New} from '../index';
 
 const ItemSeparatorComponent = () => <View style={{width: wp('3%')}} />;
 

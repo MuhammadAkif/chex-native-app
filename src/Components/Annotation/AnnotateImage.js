@@ -27,7 +27,7 @@ import {ANNOTATE_IMAGE, DAMAGE_TYPE} from '../../Constants';
 const AnnotateImage = ({
   modalVisible,
   handleVisible,
-  source = ANNOTATE_IMAGE.source,
+  source = '',
   instructionalSubHeadingText = ANNOTATE_IMAGE.instruction,
   annotateButtonText = ANNOTATE_IMAGE.annotateText,
   cancelButtonText = ANNOTATE_IMAGE.cancelText,
@@ -43,11 +43,30 @@ const AnnotateImage = ({
     useState(null); // Track currently selected marker for editing
   const [selectedMarkerId, setSelectedMarkerId] = useState(null); // Track the current marker's ID
 
+  function resetState() {
+    setIsFullScreen(false);
+    setDamageDetails([]);
+    setCurrentMarkerDamageDetails(null);
+    setSelectedMarkerId(null);
+  }
+
   const handleDamageDetails = (key, value) => {
-    setCurrentMarkerDamageDetails(prevState => ({
-      ...prevState,
-      [key]: value,
-    }));
+    // Update current marker's details
+    setCurrentMarkerDamageDetails(prevState => {
+      const updatedMarker = {
+        ...prevState,
+        [key]: value,
+      };
+
+      // Update damageDetails array with the updated marker
+      setDamageDetails(prevState =>
+        prevState.map(item =>
+          item.id === selectedMarkerId ? updatedMarker : item,
+        ),
+      );
+
+      return updatedMarker; // Also return the updated marker to update the current state
+    });
   };
 
   const addDamageDetails = coordinates => {
@@ -72,10 +91,6 @@ const AnnotateImage = ({
     }
   };
 
-  // const handleSubmit = () => {
-  //   console.log('Submitting details: ', {damageDetails});
-  // };
-
   const onImagePress = event => {
     const {locationX, locationY} = event.nativeEvent;
     const coordinates = {x: locationX, y: locationY};
@@ -90,6 +105,10 @@ const AnnotateImage = ({
     setSelectedMarkerId(selectedMarker.id); // Track the clicked marker's ID
   };
 
+  const handleSubmission = () => {
+    handleSubmit([...damageDetails]);
+    resetState();
+  };
   return (
     <Modal
       animationType="slide"
@@ -116,7 +135,7 @@ const AnnotateImage = ({
             </Text>
             <TouchableOpacity onPress={onImagePress} activeOpacity={1}>
               <FastImage
-                source={source}
+                source={{uri: source}}
                 priority={'normal'}
                 resizeMode={'stretch'}
                 style={[styles.image, {height: hp('25%')}]}
@@ -159,6 +178,7 @@ const AnnotateImage = ({
                   style={styles.text}
                   placeholder={notes}
                   multiline={true}
+                  placeholderTextColor={colors.gray}
                   value={currentMarkerDamageDetails?.notes}
                   onChangeText={text => handleDamageDetails('notes', text)}
                   onBlur={updateDamageDetails} // Save changes when losing focus
@@ -170,7 +190,7 @@ const AnnotateImage = ({
             <PrimaryGradientButton
               text={annotateButtonText}
               buttonStyle={styles.submitButton}
-              onPress={handleSubmit}
+              onPress={handleSubmission}
             />
             <SecondaryButton
               text={cancelButtonText}

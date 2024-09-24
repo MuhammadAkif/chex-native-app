@@ -83,6 +83,9 @@ const NewInspectionScreen = ({
   displayAnnotation,
   handleAnnotationSubmit,
   handleAnnotationCancel,
+  annotationModalDetails,
+  isLicensePlateUploaded,
+  ActiveExteriorItemsExpandedCard,
 }) => (
   <View style={NewInspectionStyles.container}>
     {isDiscardInspectionModalVisible && (
@@ -122,13 +125,15 @@ const NewInspectionScreen = ({
       modalVisible={displayAnnotationPopUp}
       handleSkipPress={handleSkipPress}
       handleAnnotatePress={handleAnnotatePress}
-      source={source}
-      title={title}
+      source={annotationModalDetails.source}
+      title={annotationModalDetails.title}
     />
     <AnnotateImage
       modalVisible={displayAnnotation}
       handleSubmit={handleAnnotationSubmit}
       handleCancel={handleAnnotationCancel}
+      source={annotationModalDetails.uri}
+      title={annotationModalDetails.title}
     />
     {modalMessageDetails.isVisible && (
       <Toast
@@ -198,6 +203,7 @@ const NewInspectionScreen = ({
               handleCrossPress={handleOnCrossPress}
               isLoading={isLoading}
               handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+              isLicensePlateUploaded={!isLicensePlateUploaded}
             />
           )}
           <CollapsedCard
@@ -206,9 +212,10 @@ const NewInspectionScreen = ({
             isActive={selectedOption?.isExterior}
             isBothItemsAvailable={isAllExteriorImagesAvailable}
             onPress={() => handleCardExpansion('isExterior')}
+            disabled={!isLicensePlateUploaded}
           />
           {selectedOption?.isExterior && (
-            <ExteriorItemsExpandedCard
+            <ActiveExteriorItemsExpandedCard
               handleItemPickerPress={handleItemPickerPress}
               exteriorItems={exteriorItems}
               handleCrossPress={handleOnCrossPress}
@@ -228,6 +235,7 @@ const NewInspectionScreen = ({
                 isActive={selectedOption?.isTires}
                 isBothItemsAvailable={isBothTiresImagesAvailable}
                 onPress={() => handleCardExpansion('isTires')}
+                disabled={!isLicensePlateUploaded}
               />
               {selectedOption?.isTires && (
                 <TiresItemsExpandedCard

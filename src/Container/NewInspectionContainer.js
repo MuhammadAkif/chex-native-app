@@ -32,12 +32,42 @@ import {
   LicensePlateDetails,
   uploadInProgressMediaToStore,
 } from '../Utils';
+import {
+  ExteriorItemsExpandedCard,
+  ExteriorItemsExpandedCard_Old,
+} from '../Components';
+import {UPDATE_IS_LICENSE_PLATE_UPLOADED} from '../Store/Actions/NewInspectionAction';
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllCarVerification: false,
   isAllExterior: false,
   isAllTires: false,
   isAllParts: false,
+};
+
+const {INSPECTION_IN_PROGRESS, VIDEO, CAMERA, COMPLETED_INSPECTION} = ROUTES;
+const {
+  SKIP_LEFT,
+  SKIP_LEFT_CORNERS,
+  SKIP_RIGHT,
+  SKIP_RIGHT_CORNERS,
+  CLEAR_NEW_INSPECTION,
+  IS_LICENSE_PLATE_UPLOADED,
+  CLEAR_TIRES,
+  VEHICLE_TYPE,
+} = Types;
+
+const annotationModalInitialState = {
+  title: '',
+  type: '',
+  uri: '',
+  fileId: '',
+  source: '',
+};
+
+const exteriorItemsExpandedCards = {
+  existing: ExteriorItemsExpandedCard_Old,
+  new: ExteriorItemsExpandedCard,
 };
 
 const NewInspectionContainer = ({route, navigation}) => {
@@ -53,6 +83,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     skipLeftCorners,
     skipRight,
     skipRightCorners,
+    isLicensePlateUploaded,
+    vehicle_Type,
   } = useSelector(state => state.newInspection);
   const {
     user: {token, data},
@@ -94,6 +126,9 @@ const NewInspectionContainer = ({route, navigation}) => {
     isVideo: false,
   };
   const [modalDetails, setModalDetails] = useState(modalDetailsInitialState);
+  const [annotationModalDetails, setAnnotationModalDetails] = useState(
+    annotationModalInitialState,
+  );
   const [modalMessageDetails, setModalMessageDetails] = useState(
     modalMessageDetailsInitialState,
   );
@@ -104,6 +139,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   const [isAllVehicleParts, setIsAllVehicleParts] = useState(
     IS_ALL_VEHICLE_PARTS_INITIAL_STATE,
   );
+  const [fileID, setFileID] = useState('');
   const submitText = isLoading ? (
     <ActivityIndicator size={'small'} color={colors.white} />
   ) : (
@@ -114,30 +150,32 @@ const NewInspectionContainer = ({route, navigation}) => {
   ) : (
     'Confirm'
   );
+  const ActiveExteriorItemsExpandedCard =
+    exteriorItemsExpandedCards[vehicle_Type];
   const config = {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
   };
-
   useEffect(() => {
-    if (
-      route.params?.routeName === ROUTES.INSPECTION_IN_PROGRESS &&
-      checkTireStatus
-    ) {
+    if (route.params?.routeName === INSPECTION_IN_PROGRESS && checkTireStatus) {
       vehicleTireStatusToRender(selectedInspectionID).then(() =>
         setCheckTireStatus(false),
       );
     }
     if (route.params) {
-      const {isLicensePlate, displayAnnotation, fileId} = route.params;
+      const {isLicensePlate, displayAnnotation, fileId, annotationDetails} =
+        route.params;
       if (isLicensePlate) {
         setTimeout(() => setIsLicenseModalVisible(true), 1000);
       }
-      if (displayAnnotation) {
-        setDisplayAnnotationPopUp(displayAnnotation);
-      }
+      setDisplayAnnotationPopUp(displayAnnotation || false);
+      setFileID(fileId || '');
+      setAnnotationModalDetails(prevState => ({
+        ...prevState,
+        uri: annotationDetails?.uri || '',
+      }));
     }
   }, [route]);
   useEffect(() => {
@@ -179,6 +217,10 @@ const NewInspectionContainer = ({route, navigation}) => {
       resetAllStates();
     }
   }, [selectedInspectionID]);
+  useEffect(() => {
+    const licenseBoolean = isNotEmpty(carVerificationItems.licensePlateNumber);
+    dispatch(UPDATE_IS_LICENSE_PLATE_UPLOADED(licenseBoolean));
+  }, [carVerificationItems.licensePlateNumber]);
 
   function handle_Hardware_Back_Press() {
     if (navigation.canGoBack()) {
@@ -196,7 +238,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setModalDetails(modalDetailsInitialState);
     setModalVisible(false);
     setIsLoading(false);
-    dispatch({type: Types.CLEAR_NEW_INSPECTION});
+    dispatch({type: CLEAR_NEW_INSPECTION});
     setIsDiscardInspectionModalVisible(false);
     setDeleteItem({category: null, key: null});
     setModalMessageDetails(modalMessageDetailsInitialState);
@@ -206,31 +248,34 @@ const NewInspectionContainer = ({route, navigation}) => {
     setLoadingIndicator(false);
     setDisplayTires(true);
     setCheckTireStatus(true);
+    setFileID('');
+    setDisplayAnnotationPopUp(false);
+    setDisplayAnnotation(false);
   }
   function handleExteriorLeft() {
     if (isNotEmpty(exteriorItems?.exteriorLeft)) {
-      dispatch({type: Types.SKIP_LEFT_CORNERS, payload: true});
+      dispatch({type: SKIP_LEFT_CORNERS, payload: true});
     } else if (
       isNotEmpty(exteriorItems?.exteriorFrontLeftCorner) ||
       isNotEmpty(exteriorItems?.exteriorRearLeftCorner)
     ) {
-      dispatch({type: Types.SKIP_LEFT, payload: true});
+      dispatch({type: SKIP_LEFT, payload: true});
     } else {
-      dispatch({type: Types.SKIP_LEFT, payload: false});
-      dispatch({type: Types.SKIP_LEFT_CORNERS, payload: false});
+      dispatch({type: SKIP_LEFT, payload: false});
+      dispatch({type: SKIP_LEFT_CORNERS, payload: false});
     }
   }
   function handleExteriorRight() {
     if (isNotEmpty(exteriorItems?.exteriorRight)) {
-      dispatch({type: Types.SKIP_RIGHT_CORNERS, payload: true});
+      dispatch({type: SKIP_RIGHT_CORNERS, payload: true});
     } else if (
       isNotEmpty(exteriorItems?.exteriorFrontRightCorner) ||
       isNotEmpty(exteriorItems?.exteriorRearRightCorner)
     ) {
-      dispatch({type: Types.SKIP_RIGHT, payload: true});
+      dispatch({type: SKIP_RIGHT, payload: true});
     } else {
-      dispatch({type: Types.SKIP_RIGHT, payload: false});
-      dispatch({type: Types.SKIP_RIGHT_CORNERS, payload: false});
+      dispatch({type: SKIP_RIGHT, payload: false});
+      dispatch({type: SKIP_RIGHT_CORNERS, payload: false});
     }
   }
   function handleIsAllVehicleParts() {
@@ -305,19 +350,26 @@ const NewInspectionContainer = ({route, navigation}) => {
     setMediaModalVisible(false);
     setMediaModalDetails({});
   };
-
   // Media Modal logic ends here
   const handleCaptureNowPress = (isVideo, key) => {
+    const details = {
+      title: modalDetails.title,
+      type: key,
+      uri: '',
+      source: modalDetails.source,
+      fileId: '',
+    };
+    setAnnotationModalDetails(details);
     setModalVisible(false);
     setModalDetails(modalDetailsInitialState);
     if (isVideo) {
-      navigation.navigate(ROUTES.VIDEO, {
+      navigation.navigate(VIDEO, {
         type: key,
         modalDetails: modalDetails,
         inspectionId: selectedInspectionID,
       });
     } else {
-      navigation.navigate(ROUTES.CAMERA, {
+      navigation.navigate(CAMERA, {
         type: key,
         modalDetails: modalDetails,
         inspectionId: selectedInspectionID,
@@ -344,9 +396,9 @@ const NewInspectionContainer = ({route, navigation}) => {
           )
           .then(() => {
             setIsLoading(false);
-            dispatch({type: Types.CLEAR_NEW_INSPECTION});
+            dispatch({type: CLEAR_NEW_INSPECTION});
             resetAllStates();
-            navigation.navigate(ROUTES.COMPLETED_INSPECTION);
+            navigation.navigate(COMPLETED_INSPECTION);
           })
           .catch(error => {
             setIsLoading(false);
@@ -411,7 +463,10 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsLoading(true);
     axios
       .post(EXTRACT_NUMBER_PLATE, body, config)
-      .then(() => {
+      .then(res => {
+        const vehicleType = res?.data?.hasAdded;
+        console.log('res ===> ', vehicleType);
+        dispatch({type: VEHICLE_TYPE, payload: vehicleType});
         vehicleTireStatusToRender(selectedInspectionID).then(() =>
           setLoadingIndicator(false),
         );
@@ -419,6 +474,8 @@ const NewInspectionContainer = ({route, navigation}) => {
       .catch(e => {
         const statusCode = e?.response?.data?.statusCode;
         if (statusCode === 409) {
+          const vehicleType = e?.response?.data?.hasAdded;
+          dispatch({type: VEHICLE_TYPE, payload: vehicleType});
           setInspectionID(e?.response?.data?.inspectionId);
           setIsInspectionInProgressModalVisible(true);
           setErrorTitle(e?.response?.data?.errorMessage);
@@ -483,7 +540,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     await axios
       .post(REMOVE_ALL_TIRES, body, config)
       .then(res => {
-        dispatch({type: Types.CLEAR_TIRES});
+        dispatch({type: CLEAR_TIRES});
       })
       .catch(e => {})
       .finally(() => {
@@ -492,7 +549,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   }
   //Tire Rendering logic ends here
 
-  //Annotation logic start here
+  //Annotation logic starts here
   const handleSkipPress = () => {
     setDisplayAnnotationPopUp(!displayAnnotationPopUp);
   };
@@ -502,9 +559,9 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   const handleAnnotationSubmit = async details => {
     const body = {
-      ...details,
-      inspectionId: 2599,
-      fileId: 20437,
+      coordinateArray: details,
+      inspectionId: selectedInspectionID,
+      fileId: fileID,
     };
     axios
       .put(ANNOTATION, body, config)
@@ -582,6 +639,9 @@ const NewInspectionContainer = ({route, navigation}) => {
       displayAnnotation={displayAnnotation}
       handleAnnotationSubmit={handleAnnotationSubmit}
       handleAnnotationCancel={handleAnnotationCancel}
+      annotationModalDetails={annotationModalDetails}
+      isLicensePlateUploaded={isLicensePlateUploaded}
+      ActiveExteriorItemsExpandedCard={ActiveExteriorItemsExpandedCard}
     />
   );
 };

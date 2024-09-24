@@ -48,6 +48,9 @@ import {Types} from '../Store/Types';
 import axios from 'axios';
 import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
 
+const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
+const {IS_LICENSE_PLATE_UPLOADED, plate_Number, CLEAR_INSPECTION_IMAGES} =
+  Types;
 const CameraContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {
@@ -129,7 +132,7 @@ const CameraContainer = ({route, navigation}) => {
       handleRetryPress();
       return true;
     } else if (navigation.canGoBack()) {
-      navigation.navigate(ROUTES.NEW_INSPECTION);
+      navigation.navigate(NEW_INSPECTION);
       return true;
     }
     return false;
@@ -178,15 +181,20 @@ const CameraContainer = ({route, navigation}) => {
   function uploadImageToStore(imageID) {
     const isLicensePlate =
       category === 'CarVerification' && type === 'licensePlate';
+    const annotationDetails = {uri: isImageURL};
     category === 'CarVerification'
       ? dispatch(UpdateCarVerificationItemURI(type, isImageURL, imageID))
       : category === 'Exterior'
       ? dispatch(UpdateExteriorItemURI(type, isImageURL, imageID))
       : dispatch(UpdateTiresItemURI(type, isImageURL, imageID));
-    navigation.navigate(ROUTES.NEW_INSPECTION, {
+    if (isLicensePlate) {
+      dispatch({type: IS_LICENSE_PLATE_UPLOADED});
+    }
+    navigation.navigate(NEW_INSPECTION, {
       isLicensePlate: isLicensePlate,
       displayAnnotation: true,
       fileId: imageID,
+      annotationDetails: annotationDetails,
     });
   }
   const handleExtractNumberPlate = async imageURL => {
@@ -198,7 +206,7 @@ const CameraContainer = ({route, navigation}) => {
       .post(EXTRACT_NUMBER_PLATE_WITH_AI, body, {headers: headers})
       .then(res => {
         console.log('AI res => ', res?.data);
-        dispatch({type: Types.plate_Number, payload: res?.data?.plateNumber});
+        dispatch({type: plate_Number, payload: res?.data?.plateNumber});
       })
       .catch(error => console.log('AI error => ', error));
   };
@@ -236,14 +244,14 @@ const CameraContainer = ({route, navigation}) => {
       resetAllStates,
     )
       .then(() => {
-        dispatch({type: Types.CLEAR_INSPECTION_IMAGES});
+        dispatch({type: CLEAR_INSPECTION_IMAGES});
       })
       .catch(error => console.log(error))
       .finally(() => setIsLoading(false));
   };
   const handleExitPress = () => {
     resetAllStates();
-    navigation.navigate(ROUTES.INSPECTION_SELECTION);
+    navigation.navigate(INSPECTION_SELECTION);
   };
 
   return (

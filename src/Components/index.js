@@ -9,6 +9,7 @@ import HeaderTitle from './HeaderTitle';
 import HeaderBackButton from './HeaderBackButton';
 import CollapsedCard from './Card/CollapsedCard';
 import ExteriorItemsExpandedCard from './Card/ExteriorItemsExpandedCard';
+import ExteriorItemsExpandedCard_Old from './Card/ExteriorItemsExpandedCard_Old';
 import TiresItemsExpandedCard from './Card/TiresItemsExpandedCard';
 import CarVerificationExpandedCard from './Card/CarVerificationExpandedCard';
 import InspectionStatusCollapsedCard from './Card/InspectionStatusCollapsedCard';
@@ -50,6 +51,7 @@ import AnnotateImage from './Annotation/AnnotateImage';
 import AnnotateImageModal from './Annotation/AnnotateImageModal';
 import ImagePickerWithFooterList from './ItemPicker/ImagePickerWithFooterList';
 import ImagePicker_New from './ItemPicker/ImagePicker_New';
+import ExpiredInspectionModal from './PopUpModals/ExpiredInspectionModal';
 
 export {
   BackgroundImageView,
@@ -78,6 +80,7 @@ export {
   CameraPreview,
   IntroBackGroundImageView,
   ExteriorItemsExpandedCard,
+  ExteriorItemsExpandedCard_Old,
   TiresItemsExpandedCard,
   CustomDrawerContent,
   DrawerItemText,
@@ -104,4 +107,5 @@ export {
   RenderImagePicker,
   RenderIcons,
   ImagePicker_New,
+  ExpiredInspectionModal,
 };
