@@ -31,6 +31,7 @@ import {
   UpdateTiresItemURI,
 } from '../Store/Actions';
 import {
+  exteriorVariant,
   getCurrentDate,
   getSignedUrl,
   handleNewInspectionPress,
@@ -56,6 +57,7 @@ const CameraContainer = ({route, navigation}) => {
   const {
     user: {token, data},
   } = useSelector(state => state?.auth);
+  const {vehicle_Type, variant} = useSelector(state => state.newInspection);
   const isFocused = useIsFocused();
   const cameraRef = useRef();
   const appState = useRef(AppState.currentState);
@@ -165,6 +167,7 @@ const CameraContainer = ({route, navigation}) => {
       extension: `image/${extension}`,
       groupType: groupType,
       dateImage: getCurrentDate(),
+      hasAdded: vehicle_Type,
     };
     if (category === 'CarVerification' && type === 'licensePlate') {
       await handleExtractNumberPlate(`${S3_BUCKET_BASEURL}${key}`);
@@ -182,19 +185,25 @@ const CameraContainer = ({route, navigation}) => {
     const isLicensePlate =
       category === 'CarVerification' && type === 'licensePlate';
     const annotationDetails = {uri: isImageURL};
+    let type_ = type;
+    if (category === 'Exterior') {
+      type_ = exteriorVariant(type_, variant);
+    }
+    const is_Exterior = category === 'Exterior';
     category === 'CarVerification'
-      ? dispatch(UpdateCarVerificationItemURI(type, isImageURL, imageID))
+      ? dispatch(UpdateCarVerificationItemURI(type_, isImageURL, imageID))
       : category === 'Exterior'
-      ? dispatch(UpdateExteriorItemURI(type, isImageURL, imageID))
-      : dispatch(UpdateTiresItemURI(type, isImageURL, imageID));
+      ? dispatch(UpdateExteriorItemURI(type_, isImageURL, imageID))
+      : dispatch(UpdateTiresItemURI(type_, isImageURL, imageID));
     if (isLicensePlate) {
       dispatch({type: IS_LICENSE_PLATE_UPLOADED});
     }
     navigation.navigate(NEW_INSPECTION, {
       isLicensePlate: isLicensePlate,
-      displayAnnotation: true,
+      displayAnnotation: vehicle_Type === 'new',
       fileId: imageID,
       annotationDetails: annotationDetails,
+      is_Exterior: is_Exterior,
     });
   }
   const handleExtractNumberPlate = async imageURL => {

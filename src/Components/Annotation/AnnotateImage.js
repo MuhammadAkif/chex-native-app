@@ -36,6 +36,7 @@ const AnnotateImage = ({
   notes = 'Add your notes here',
   handleCancel,
   handleSubmit,
+  isLoading = false,
 }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [damageDetails, setDamageDetails] = useState([]);
@@ -106,8 +107,7 @@ const AnnotateImage = ({
   };
 
   const handleSubmission = () => {
-    handleSubmit([...damageDetails]);
-    resetState();
+    handleSubmit([...damageDetails], resetState);
   };
   return (
     <Modal
@@ -133,7 +133,10 @@ const AnnotateImage = ({
               ]}>
               {title}
             </Text>
-            <TouchableOpacity onPress={onImagePress} activeOpacity={1}>
+            <TouchableOpacity
+              onPress={onImagePress}
+              activeOpacity={1}
+              disabled={isLoading}>
               <FastImage
                 source={{uri: source}}
                 priority={'normal'}
@@ -165,6 +168,7 @@ const AnnotateImage = ({
                     item={item}
                     selectedDamage={currentMarkerDamageDetails?.type}
                     handleDamageDetails={handleDamageDetails}
+                    disabled={isLoading}
                   />
                 )}
                 keyExtractor={item => item}
@@ -178,6 +182,7 @@ const AnnotateImage = ({
                   style={styles.text}
                   placeholder={notes}
                   multiline={true}
+                  editable={!isLoading}
                   placeholderTextColor={colors.gray}
                   value={currentMarkerDamageDetails?.notes}
                   onChangeText={text => handleDamageDetails('notes', text)}
@@ -191,12 +196,14 @@ const AnnotateImage = ({
               text={annotateButtonText}
               buttonStyle={styles.submitButton}
               onPress={handleSubmission}
+              disabled={isLoading}
             />
             <SecondaryButton
               text={cancelButtonText}
               buttonStyle={styles.cancelButton}
               textStyle={styles.cancelButtonText}
               onPress={handleCancel}
+              disabled={isLoading}
             />
           </View>
         </View>

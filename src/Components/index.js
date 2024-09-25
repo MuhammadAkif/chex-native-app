@@ -52,6 +52,8 @@ import AnnotateImageModal from './Annotation/AnnotateImageModal';
 import ImagePickerWithFooterList from './ItemPicker/ImagePickerWithFooterList';
 import ImagePicker_New from './ItemPicker/ImagePicker_New';
 import ExpiredInspectionModal from './PopUpModals/ExpiredInspectionModal';
+import ImagesPickerContainer from './ItemPicker/ImagesPickerContainer';
+import ItemPickerLabel from './ItemPicker/ItemPickerLabel';
 
 export {
   BackgroundImageView,
@@ -108,4 +110,6 @@ export {
   RenderIcons,
   ImagePicker_New,
   ExpiredInspectionModal,
+  ImagesPickerContainer,
+  ItemPickerLabel,
 };

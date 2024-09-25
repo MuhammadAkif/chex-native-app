@@ -10,22 +10,58 @@ const initialState = {
   exteriorItems: {
     exteriorLeft: '',
     exteriorLeftID: '',
+    exteriorLeft_1: '',
+    exteriorLeft_1ID: '',
+    exteriorLeft_2: '',
+    exteriorLeft_2ID: '',
     exteriorRight: '',
     exteriorRightID: '',
+    exteriorRight_1: '',
+    exteriorRight_1ID: '',
+    exteriorRight_2: '',
+    exteriorRight_2ID: '',
     exteriorFront: '',
     exteriorFrontID: '',
+    exteriorFront_1: '',
+    exteriorFront_1ID: '',
+    exteriorFront_2: '',
+    exteriorFront_2ID: '',
     exteriorRear: '',
     exteriorRearID: '',
+    exteriorRear_1: '',
+    exteriorRear_1ID: '',
+    exteriorRear_2: '',
+    exteriorRear_2ID: '',
     exteriorFrontLeftCorner: '',
     exteriorFrontLeftCornerID: '',
+    exteriorFrontLeftCorner_1: '',
+    exteriorFrontLeftCorner_1ID: '',
+    exteriorFrontLeftCorner_2: '',
+    exteriorFrontLeftCorner_2ID: '',
     exteriorFrontRightCorner: '',
     exteriorFrontRightCornerID: '',
+    exteriorFrontRightCorner_1: '',
+    exteriorFrontRightCorner_1ID: '',
+    exteriorFrontRightCorner_2: '',
+    exteriorFrontRightCorner_2ID: '',
     exteriorRearLeftCorner: '',
     exteriorRearLeftCornerID: '',
+    exteriorRearLeftCorner_1: '',
+    exteriorRearLeftCorner_1ID: '',
+    exteriorRearLeftCorner_2: '',
+    exteriorRearLeftCorner_2ID: '',
     exteriorRearRightCorner: '',
     exteriorRearRightCornerID: '',
+    exteriorRearRightCorner_1: '',
+    exteriorRearRightCorner_1ID: '',
+    exteriorRearRightCorner_2: '',
+    exteriorRearRightCorner_2ID: '',
     exteriorInsideCargoRoof: '',
     exteriorInsideCargoRoofID: '',
+    exteriorInsideCargoRoof_1: '',
+    exteriorInsideCargoRoof_1ID: '',
+    exteriorInsideCargoRoof_2: '',
+    exteriorInsideCargoRoof_2ID: '',
   },
   tires: {
     leftFrontTire: '',
@@ -46,6 +82,8 @@ const initialState = {
   skipRightCorners: false,
   isLicensePlateUploaded: false,
   vehicle_Type: 'existing',
+  variant: 0,
+  fileDetails: null,
 };
 
 const newInspectionReducer = (state = initialState, action) => {
@@ -160,6 +198,16 @@ const newInspectionReducer = (state = initialState, action) => {
       return {
         ...state,
         vehicle_Type: action.payload,
+      };
+    case Types.CATEGORY_VARIANT:
+      return {
+        ...state,
+        variant: action.payload,
+      };
+    case Types.FILE_DETAILS:
+      return {
+        ...state,
+        fileDetails: action.payload,
       };
     case Types.CLEAR_NEW_INSPECTION:
       return initialState;

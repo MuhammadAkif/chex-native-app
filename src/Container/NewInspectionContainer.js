@@ -10,6 +10,8 @@ import {
   RemoveCarVerificationItemURI,
   RemoveExteriorItemURI,
   RemoveTiresItemURI,
+  Update_Is_License_Plate_Uploaded,
+  Category_Variant,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {colors} from '../Assets/Styles';
@@ -23,8 +25,10 @@ import {
   REMOVE_ALL_TIRES,
 } from '../Constants';
 import {
+  exteriorVariant,
   EXTRACT_INSPECTION_ITEM_ID,
   extractIDs,
+  get_Inspection_Details,
   handle_Session_Expired,
   haveOneValue,
   isNotEmpty,
@@ -36,7 +40,6 @@ import {
   ExteriorItemsExpandedCard,
   ExteriorItemsExpandedCard_Old,
 } from '../Components';
-import {UPDATE_IS_LICENSE_PLATE_UPLOADED} from '../Store/Actions/NewInspectionAction';
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllCarVerification: false,
@@ -52,7 +55,6 @@ const {
   SKIP_RIGHT,
   SKIP_RIGHT_CORNERS,
   CLEAR_NEW_INSPECTION,
-  IS_LICENSE_PLATE_UPLOADED,
   CLEAR_TIRES,
   VEHICLE_TYPE,
 } = Types;
@@ -85,7 +87,10 @@ const NewInspectionContainer = ({route, navigation}) => {
     skipRightCorners,
     isLicensePlateUploaded,
     vehicle_Type,
+    variant,
+    fileDetails,
   } = useSelector(state => state.newInspection);
+  // console.log({vehicle_Type, variant, exteriorItems});
   const {
     user: {token, data},
   } = useSelector(state => state?.auth);
@@ -140,6 +145,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     IS_ALL_VEHICLE_PARTS_INITIAL_STATE,
   );
   const [fileID, setFileID] = useState('');
+  const [isExterior, setIsExterior] = useState(false);
   const submitText = isLoading ? (
     <ActivityIndicator size={'small'} color={colors.white} />
   ) : (
@@ -165,8 +171,13 @@ const NewInspectionContainer = ({route, navigation}) => {
       );
     }
     if (route.params) {
-      const {isLicensePlate, displayAnnotation, fileId, annotationDetails} =
-        route.params;
+      const {
+        isLicensePlate,
+        displayAnnotation,
+        fileId,
+        annotationDetails,
+        is_Exterior,
+      } = route.params;
       if (isLicensePlate) {
         setTimeout(() => setIsLicenseModalVisible(true), 1000);
       }
@@ -176,6 +187,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         ...prevState,
         uri: annotationDetails?.uri || '',
       }));
+      setIsExterior(is_Exterior || false);
     }
   }, [route]);
   useEffect(() => {
@@ -218,10 +230,10 @@ const NewInspectionContainer = ({route, navigation}) => {
     }
   }, [selectedInspectionID]);
   useEffect(() => {
-    const licenseBoolean = isNotEmpty(carVerificationItems.licensePlateNumber);
-    dispatch(UPDATE_IS_LICENSE_PLATE_UPLOADED(licenseBoolean));
-  }, [carVerificationItems.licensePlateNumber]);
-
+    const licenseBoolean = isNotEmpty(carVerificationItems.licensePlate);
+    dispatch(Update_Is_License_Plate_Uploaded(licenseBoolean));
+  }, [carVerificationItems.licensePlate]);
+  const shouldAnnotate = vehicle_Type === 'new' && isExterior;
   function handle_Hardware_Back_Press() {
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -251,6 +263,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setFileID('');
     setDisplayAnnotationPopUp(false);
     setDisplayAnnotation(false);
+    setIsExterior(false);
   }
   function handleExteriorLeft() {
     if (isNotEmpty(exteriorItems?.exteriorLeft)) {
@@ -332,7 +345,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     }));
   };
   //Collapsed Cards Functions ends here
-  const handleItemPickerPress = details => {
+  const handleItemPickerPress = (details, variant = 0) => {
+    dispatch(Category_Variant(variant));
     setModalDetails(details);
     setModalVisible(true);
   };
@@ -419,11 +433,16 @@ const NewInspectionContainer = ({route, navigation}) => {
       });
   };
 
-  const handleOnCrossPress = (category, key) => {
+  const handleOnCrossPress = (category, key, variant = 0) => {
+    dispatch(Category_Variant(variant));
     setIsDiscardInspectionModalVisible(true);
     setDeleteItem({category: category, key: key});
   };
   const handleYesPress = () => {
+    let key_ = deleteItem?.key;
+    if (deleteItem?.category === 'exteriorItems') {
+      key_ = exteriorVariant(key_, variant);
+    }
     const handleRemoveImage = {
       carVerificationItems: RemoveCarVerificationItemURI,
       exteriorItems: RemoveExteriorItemURI,
@@ -431,12 +450,13 @@ const NewInspectionContainer = ({route, navigation}) => {
     };
     const RemoveMethod = handleRemoveImage[deleteItem?.category];
     setIsDiscardInspectionModalVisible(false);
-    const imageID = EXTRACT_INSPECTION_ITEM_ID(deleteItem?.key);
+    const imageID = EXTRACT_INSPECTION_ITEM_ID(key_);
+    console.log({imageID});
     axios
       .delete(`${DEV_URL}/api/v1/files/${imageID}`, config)
       .then(() => {
         setModalMessageDetails(deleteSuccess);
-        dispatch(RemoveMethod(deleteItem?.key));
+        dispatch(RemoveMethod(key_));
       })
       .catch(e => {
         console.log('error deleting image => ', e);
@@ -465,7 +485,6 @@ const NewInspectionContainer = ({route, navigation}) => {
       .post(EXTRACT_NUMBER_PLATE, body, config)
       .then(res => {
         const vehicleType = res?.data?.hasAdded;
-        console.log('res ===> ', vehicleType);
         dispatch({type: VEHICLE_TYPE, payload: vehicleType});
         vehicleTireStatusToRender(selectedInspectionID).then(() =>
           setLoadingIndicator(false),
@@ -557,7 +576,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     setDisplayAnnotationPopUp(!displayAnnotationPopUp);
     setDisplayAnnotation(!displayAnnotation);
   };
-  const handleAnnotationSubmit = async details => {
+  const handleAnnotationSubmit = async (details, callback) => {
+    setLoadingIndicator(true);
     const body = {
       coordinateArray: details,
       inspectionId: selectedInspectionID,
@@ -565,11 +585,25 @@ const NewInspectionContainer = ({route, navigation}) => {
     };
     axios
       .put(ANNOTATION, body, config)
-      .then(res => console.log({res}))
-      .catch(error => console.log({error}))
-      .finally(() => {});
+      .then(res => {
+        console.log({res});
+        callback();
+        get_Inspection_Details(dispatch, selectedInspectionID);
+      })
+      .catch(error => {
+        console.log({error});
+        const statusCode = error?.response?.data?.statusCode;
+        if (statusCode === 401) {
+          handle_Session_Expired(statusCode, dispatch);
+        }
+      })
+      .finally(() => {
+        setLoadingIndicator(false);
+        setDisplayAnnotation(!displayAnnotation);
+      });
   };
   const handleAnnotationCancel = () => {
+    get_Inspection_Details(dispatch, selectedInspectionID).then();
     setDisplayAnnotation(!displayAnnotation);
   };
   //Annotation logic ends here
@@ -642,6 +676,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       annotationModalDetails={annotationModalDetails}
       isLicensePlateUploaded={isLicensePlateUploaded}
       ActiveExteriorItemsExpandedCard={ActiveExteriorItemsExpandedCard}
+      vehicle_Type={shouldAnnotate}
     />
   );
 };

@@ -20,7 +20,12 @@ const activeTextBold = {
   false: '400',
 };
 
-const RenderDamageTypes = ({item, selectedDamage, handleDamageDetails}) => {
+const RenderDamageTypes = ({
+  item,
+  selectedDamage,
+  handleDamageDetails,
+  disabled,
+}) => {
   const isActive = selectedDamage === item;
   const activeTypeColor = activeColor[isActive];
   const activeTextColor = activeTextTypeColor[isActive];
@@ -33,6 +38,7 @@ const RenderDamageTypes = ({item, selectedDamage, handleDamageDetails}) => {
 
   return (
     <TouchableOpacity
+      disabled={disabled}
       style={{...styles.container, backgroundColor: activeTypeColor}}
       onPress={() => handleDamageDetails('type', item)}>
       <Text style={style}>{item}</Text>

@@ -8,6 +8,7 @@ import {
   CREATE_INSPECTION_URL,
   DEV_URL,
   FETCH_IN_PROGRESS_URL,
+  Image_Type,
   INSPECTION,
   INSPECTION_SUBCATEGORY,
   S3_BUCKET_BASEURL,
@@ -15,6 +16,7 @@ import {
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
+  File_Details,
   NumberPlateSelectedAction,
   UpdateCarVerificationItemURI,
   UpdateExteriorItemURI,
@@ -619,14 +621,32 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
   } = store.getState().newInspection;
   const {
     exteriorLeftID,
+    exteriorLeft_1ID,
+    exteriorLeft_2ID,
     exteriorRightID,
+    exteriorRight_1ID,
+    exteriorRight_2ID,
     exteriorFrontID,
+    exteriorFront_1ID,
+    exteriorFront_2ID,
     exteriorRearID,
+    exteriorRear_1ID,
+    exteriorRear_2ID,
     exteriorFrontLeftCornerID,
+    exteriorFrontLeftCorner_1ID,
+    exteriorFrontLeftCorner_2ID,
     exteriorFrontRightCornerID,
+    exteriorFrontRightCorner_1ID,
+    exteriorFrontRightCorner_2ID,
     exteriorRearLeftCornerID,
+    exteriorRearLeftCorner_1ID,
+    exteriorRearLeftCorner_2ID,
     exteriorRearRightCornerID,
+    exteriorRearRightCorner_1ID,
+    exteriorRearRightCorner_2ID,
     exteriorInsideCargoRoofID,
+    exteriorInsideCargoRoof_1ID,
+    exteriorInsideCargoRoof_2ID,
   } = exterior;
   const {licensePlateID, odometerID} = carVerification;
   const {leftFrontTireID, leftRearTireID, rightFrontTireID, rightRearTireID} =
@@ -635,14 +655,32 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
     licensePlate: licensePlateID,
     odometer: odometerID,
     exteriorFront: exteriorFrontID,
+    exteriorFront_1: exteriorFront_1ID,
+    exteriorFront_2: exteriorFront_2ID,
     exteriorRear: exteriorRearID,
+    exteriorRear_1: exteriorRear_1ID,
+    exteriorRear_2: exteriorRear_2ID,
     exteriorLeft: exteriorLeftID,
+    exteriorLeft_1: exteriorLeft_1ID,
+    exteriorLeft_2: exteriorLeft_2ID,
     exteriorRight: exteriorRightID,
+    exteriorRight_1: exteriorRight_1ID,
+    exteriorRight_2: exteriorRight_2ID,
     exteriorFrontLeftCorner: exteriorFrontLeftCornerID,
+    exteriorFrontLeftCorner_1: exteriorFrontLeftCorner_1ID,
+    exteriorFrontLeftCorner_2: exteriorFrontLeftCorner_2ID,
     exteriorFrontRightCorner: exteriorFrontRightCornerID,
+    exteriorFrontRightCorner_1: exteriorFrontRightCorner_1ID,
+    exteriorFrontRightCorner_2: exteriorFrontRightCorner_2ID,
     exteriorRearLeftCorner: exteriorRearLeftCornerID,
+    exteriorRearLeftCorner_1: exteriorRearLeftCorner_1ID,
+    exteriorRearLeftCorner_2: exteriorRearLeftCorner_2ID,
     exteriorRearRightCorner: exteriorRearRightCornerID,
+    exteriorRearRightCorner_1: exteriorRearRightCorner_1ID,
+    exteriorRearRightCorner_2: exteriorRearRightCorner_2ID,
     exteriorInsideCargoRoof: exteriorInsideCargoRoofID,
+    exteriorInsideCargoRoof_1: exteriorInsideCargoRoof_1ID,
+    exteriorInsideCargoRoof_2: exteriorInsideCargoRoof_2ID,
     leftFrontTire: leftFrontTireID,
     leftRearTire: leftRearTireID,
     rightFrontTire: rightFrontTireID,
@@ -739,3 +777,56 @@ export function extractIDs(obj) {
   }
   return idsArray;
 }
+
+export function exteriorVariant(item, variant) {
+  if (variant === 0) {
+    return item;
+  }
+  return item + '_' + variant;
+}
+export const get_Inspection_Details = async (dispatch, inspectionId) => {
+  await axios
+    .get(`${DEV_URL}/api/v1/files/details/${inspectionId}`)
+    .then(res => {
+      const details = res?.data?.files;
+      dispatch(File_Details(details, inspectionId));
+    })
+    .catch(error => {
+      const statusCode = error?.response?.data?.statusCode;
+      if (statusCode === 401) {
+        handle_Session_Expired(statusCode, dispatch);
+      }
+      console.log('error of inspection in progress => ', error);
+    });
+};
+export const getAnnotationStatus = (files, id) => {
+  if (!isNotEmpty(files)) {
+    console.log('returning false for: ', {id});
+    return false;
+  }
+  for (let i = 0; i < files.length; i++) {
+    const checkById =
+      id === files[i].id && isNotEmpty(files[i].coordinateArray);
+    console.log({checkById});
+    if (checkById) {
+      console.log('returning true for: ', {id});
+      return true;
+    }
+  }
+  console.log('returning false because nothing found for: ', {id});
+
+  return false;
+};
+
+export const extractDetails = () => {
+  const data = Image_Type.files;
+  for (let i = 0; i < data.length; i++) {
+    const file = data[i];
+
+    for (let key in file) {
+      if (key === 'category') {
+        console.log('category: ', file[key]);
+      }
+    }
+  }
+};

@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: wp('2%'),
     alignItems: 'center',
-    paddingVertical: hp('1%'),
+    paddingBottom: hp('1%'),
   },
   label: {
     fontWeight: '600',

@@ -14,10 +14,14 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
 import {
   fetchInProgressInspections,
+  get_Inspection_Details,
   handle_Session_Expired,
   handleNewInspectionPress,
   uploadInProgressMediaToStore,
 } from '../Utils';
+import {Types} from '../Store/Types';
+
+const {VEHICLE_TYPE} = Types;
 
 const InspectionInProgressContainer = ({navigation}) => {
   const dispatch = useDispatch();
@@ -90,12 +94,15 @@ const InspectionInProgressContainer = ({navigation}) => {
 
     return null;
   }
-  const handleContinuePress = inspectionId => {
+  const handleContinuePress = async inspectionId => {
     setIsLoading(true);
     setInspectionID(inspectionId);
-    axios
+    await axios
       .get(`${DEV_URL}/api/v1/files/details/${inspectionId}`)
       .then(res => {
+        const vehicleType = res?.data?.hasAdded;
+        dispatch({type: VEHICLE_TYPE, payload: vehicleType});
+        get_Inspection_Details(dispatch, inspectionId).then();
         uploadInProgressMediaToStore(res?.data?.files, dispatch);
         setIsLoading(false);
         dispatch(NumberPlateSelectedAction(inspectionId));

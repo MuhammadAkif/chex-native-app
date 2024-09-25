@@ -86,6 +86,7 @@ const NewInspectionScreen = ({
   annotationModalDetails,
   isLicensePlateUploaded,
   ActiveExteriorItemsExpandedCard,
+  vehicle_Type,
 }) => (
   <View style={NewInspectionStyles.container}>
     {isDiscardInspectionModalVisible && (
@@ -121,20 +122,26 @@ const NewInspectionScreen = ({
         numberPlateText={plateNumber || ''}
       />
     )}
-    <AnnotateImageModal
-      modalVisible={displayAnnotationPopUp}
-      handleSkipPress={handleSkipPress}
-      handleAnnotatePress={handleAnnotatePress}
-      source={annotationModalDetails.source}
-      title={annotationModalDetails.title}
-    />
-    <AnnotateImage
-      modalVisible={displayAnnotation}
-      handleSubmit={handleAnnotationSubmit}
-      handleCancel={handleAnnotationCancel}
-      source={annotationModalDetails.uri}
-      title={annotationModalDetails.title}
-    />
+    {vehicle_Type && (
+      <AnnotateImageModal
+        modalVisible={displayAnnotationPopUp}
+        handleSkipPress={handleSkipPress}
+        handleAnnotatePress={handleAnnotatePress}
+        source={annotationModalDetails.source}
+        title={annotationModalDetails.title}
+      />
+    )}
+
+    {vehicle_Type && (
+      <AnnotateImage
+        modalVisible={displayAnnotation}
+        handleSubmit={handleAnnotationSubmit}
+        handleCancel={handleAnnotationCancel}
+        source={annotationModalDetails.uri}
+        title={annotationModalDetails.title}
+        isLoading={loadingIndicator}
+      />
+    )}
     {modalMessageDetails.isVisible && (
       <Toast
         onCrossPress={handleOkPress}
