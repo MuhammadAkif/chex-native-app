@@ -582,7 +582,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     setDisplayAnnotation(!displayAnnotation);
   };
   const handleAnnotationSubmit = async (details, callback) => {
-    setLoadingIndicator(true);
+    // setLoadingIndicator(true);
+    setIsLoading(true);
     const body = {
       coordinateArray: details,
       inspectionId: selectedInspectionID,
@@ -602,7 +603,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         }
       })
       .finally(() => {
-        setLoadingIndicator(false);
+        setIsLoading(false);
         setDisplayAnnotation(!displayAnnotation);
       });
   };

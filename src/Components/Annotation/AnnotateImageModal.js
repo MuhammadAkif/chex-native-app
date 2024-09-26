@@ -198,7 +198,7 @@ const AnnotateImageModal = ({
             />
             <PrimaryGradientButton
               text={skipButtonText}
-              colors={[royalBlue, royalBlue]}
+              color={[royalBlue, royalBlue]}
               onPress={handleSkipPress}
             />
           </View>

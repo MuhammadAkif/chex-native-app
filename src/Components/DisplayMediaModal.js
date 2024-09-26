@@ -48,7 +48,7 @@ const DisplayMediaModal = ({
             style={styles.image}
           />
         ) : (
-          <>
+          <View>
             <FastImage
               source={{uri: source}}
               priority={'normal'}
@@ -64,7 +64,7 @@ const DisplayMediaModal = ({
                   disabled={true}
                 />
               ))}
-          </>
+          </View>
         )}
       </View>
       <View style={styles.footerView} />

@@ -139,7 +139,7 @@ const NewInspectionScreen = ({
         handleCancel={handleAnnotationCancel}
         source={annotationModalDetails.uri}
         title={annotationModalDetails.title}
-        isLoading={loadingIndicator}
+        isLoading={isLoading}
       />
     )}
     {modalMessageDetails.isVisible && (

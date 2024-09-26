@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {BackHandler} from 'react-native';
 
 import {InspectionDetailScreen} from '../Screens';
@@ -7,6 +7,7 @@ import {
   INSPECTION_TITLE,
   S3_BUCKET_BASEURL,
 } from '../Constants';
+import {assignNumber} from '../Utils';
 
 const InspectionDetailContainer = ({navigation, route}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -23,6 +24,10 @@ const InspectionDetailContainer = ({navigation, route}) => {
     );
     return () => backHandler.remove();
   }, []);
+  useEffect(() => {
+    assignNumber(detailsFiles.files, detailsFiles.files.length);
+    console.log('detailsFiles.files -- ', detailsFiles.files);
+  }, [detailsFiles]);
   function handle_Hardware_Back_Press() {
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -49,6 +54,7 @@ const InspectionDetailContainer = ({navigation, route}) => {
     setIsModalVisible(false);
     setModalDetails({});
   };
+
   return (
     <InspectionDetailScreen
       detailsFiles={detailsFiles?.files}
