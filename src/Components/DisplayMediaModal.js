@@ -16,8 +16,15 @@ import Video from 'react-native-video';
 
 import {Cross} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
+import {RenderIcons} from './index';
 
-const DisplayMediaModal = ({handleVisible, source, title, isVideo}) => (
+const DisplayMediaModal = ({
+  handleVisible,
+  source,
+  title,
+  isVideo,
+  coordinates = [],
+}) => (
   <Modal
     animationType="slide"
     transparent={true}
@@ -41,12 +48,23 @@ const DisplayMediaModal = ({handleVisible, source, title, isVideo}) => (
             style={styles.image}
           />
         ) : (
-          <FastImage
-            source={{uri: source}}
-            priority={'normal'}
-            resizeMode={'stretch'}
-            style={styles.image}
-          />
+          <>
+            <FastImage
+              source={{uri: source}}
+              priority={'normal'}
+              resizeMode={'stretch'}
+              style={styles.image}
+            />
+            {coordinates.length > 0 &&
+              coordinates.map((marker, index) => (
+                <RenderIcons
+                  key={marker.id}
+                  marker={marker}
+                  index={index}
+                  disabled={true}
+                />
+              ))}
+          </>
         )}
       </View>
       <View style={styles.footerView} />

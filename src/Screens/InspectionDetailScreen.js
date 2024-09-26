@@ -85,14 +85,6 @@ const InspectionDetailScreen = ({
         <FlatList
           data={detailsFiles}
           numColumns={2}
-          // ListHeaderComponent={() =>
-          //   Platform.OS === 'android' && (
-          //     <RenderInspectionDetailHeader
-          //       finalStatus={finalStatus}
-          //       remarks={remarks}
-          //     />
-          //   )
-          // }
           renderItem={({item}) => (
             <RenderInspectionDetail
               item={item}

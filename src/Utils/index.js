@@ -338,7 +338,6 @@ export const getSignedUrl = async (
       if (statusCode === 401) {
         handle_Session_Expired(statusCode, dispatch);
       }
-      console.log(error);
     });
 };
 export const uploadToS3 = async (
@@ -439,7 +438,6 @@ export const fetchInProgressInspections = async (
       if (statusCode === 401) {
         handle_Session_Expired(statusCode, dispatch);
       }
-      console.log(error);
     });
   return data;
 };
@@ -492,7 +490,6 @@ export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
       message: 'Please try again in a few minutes',
     },
   };
-  console.log('errors[statusCode] => ', errors[statusCode]);
   return errors[statusCode] || errors.noStatusCode;
 };
 
@@ -535,6 +532,79 @@ export const sortInspectionReviewedItems = list => {
 
   return list.sort(customSort);
 };
+export const sortInspection_Reviewed_Items = list => {
+  const customSortOrder = {
+    groupType: ['carVerificiationItems', 'exteriorItems', 'tires'],
+    carVerificiationItems: ['license_plate_number', 'odometer'],
+    exteriorItems: [
+      'Exterior-Front',
+      'Exterior-Front',
+      'Exterior-Front',
+      'Exterior-Rear',
+      'Exterior-Rear',
+      'Exterior-Rear',
+      'Front-Left-Corner',
+      'Front-Left-Corner',
+      'Front-Left-Corner',
+      'Front-Right-Corner',
+      'Front-Right-Corner',
+      'Front-Right-Corner',
+      'Rear-Left-Corner',
+      'Rear-Left-Corner',
+      'Rear-Left-Corner',
+      'Rear-Right-Corner',
+      'Rear-Right-Corner',
+      'Rear-Right-Corner',
+      'Inside-Cargo-Roof',
+      'Inside-Cargo-Roof',
+      'Inside-Cargo-Roof',
+    ],
+    tires: [
+      'Left-Front-Tire',
+      'Left-Right-Tire',
+      'Right-Front-Tire',
+      'Right-Rear-Tire',
+    ],
+  };
+
+  // Step 1: Count occurrences
+  const countMap = {};
+  list.forEach(item => {
+    const key = `${item.groupType}-${item.category}`;
+    countMap[key] = (countMap[key] || 0) + 1;
+  });
+
+  // Step 2: Sort the list based on custom order
+  const sortedList = list.sort((a, b) => {
+    const groupTypeComparison =
+      customSortOrder.groupType.indexOf(a.groupType) -
+      customSortOrder.groupType.indexOf(b.groupType);
+
+    if (groupTypeComparison !== 0) {
+      return groupTypeComparison; // Sort by groupType first
+    }
+
+    return (
+      customSortOrder[a.groupType].indexOf(a.category) -
+      customSortOrder[b.groupType].indexOf(b.category) // Sort by category second
+    );
+  });
+
+  // Step 3: Flatten the sorted list based on counts
+  const finalSortedList = [];
+  sortedList.forEach(item => {
+    const key = `${item.groupType}-${item.category}`;
+    const count = countMap[key];
+    for (let i = 0; i < count; i++) {
+      finalSortedList.push(item);
+    }
+    // Delete the count to avoid duplicates in the final list
+    delete countMap[key];
+  });
+
+  return finalSortedList;
+};
+
 export const handleUpdateStoreMedia = {
   carVerificiationItems: UpdateCarVerificationItemURI,
   exteriorItems: UpdateExteriorItemURI,
@@ -546,7 +616,11 @@ export function uploadInProgressMediaToStore(files, dispatch) {
       files[file].url.split(':')[0] === 'https'
         ? files[file].url
         : `${S3_BUCKET_BASEURL}${files[file].url}`;
-    const {groupType, id, category} = files[file];
+    let {groupType, id, category, llamaCost: variant} = files[file];
+    let variant_ = parseInt(variant);
+    if (variant_) {
+      category += '_' + variant_;
+    }
     const UPDATE_INSPECTION_IMAGES = handleUpdateStoreMedia[groupType];
     dispatch(
       UPDATE_INSPECTION_IMAGES(INSPECTION_SUBCATEGORY[category], imageURL, id),
@@ -724,14 +798,6 @@ export const checkExterior = () => {
     isNotEmpty(exteriorRightID) ||
     (isNotEmpty(exteriorFrontRightCornerID) &&
       isNotEmpty(exteriorRearRightCornerID));
-  console.log(
-    '----- => ',
-    isNotEmpty(exteriorFrontID) &&
-      isNotEmpty(exteriorRearID) &&
-      isNotEmpty(exteriorInsideCargoRoofID) &&
-      leftCheck &&
-      rightCheck,
-  );
   return (
     isNotEmpty(exteriorFrontID) &&
     isNotEmpty(exteriorRearID) &&
@@ -743,7 +809,6 @@ export const checkExterior = () => {
 
 export const FILTER_IMAGES = (arr = [], toFilter = 'before') => {
   if (!Array.isArray(arr)) {
-    console.log('Please enter an array');
     return;
   }
   if (toFilter === 'before') {
@@ -799,34 +864,26 @@ export const get_Inspection_Details = async (dispatch, inspectionId) => {
       console.log('error of inspection in progress => ', error);
     });
 };
-export const getAnnotationStatus = (files, id) => {
-  if (!isNotEmpty(files)) {
-    console.log('returning false for: ', {id});
+export const getAnnotationStatus = (files = [], id = '') => {
+  if (!isNotEmpty(files) || !isNotEmpty(id)) {
     return false;
   }
   for (let i = 0; i < files.length; i++) {
     const checkById =
       id === files[i].id && isNotEmpty(files[i].coordinateArray);
-    console.log({checkById});
     if (checkById) {
-      console.log('returning true for: ', {id});
       return true;
     }
   }
-  console.log('returning false because nothing found for: ', {id});
-
   return false;
 };
 
-export const extractDetails = () => {
-  const data = Image_Type.files;
-  for (let i = 0; i < data.length; i++) {
-    const file = data[i];
-
-    for (let key in file) {
-      if (key === 'category') {
-        console.log('category: ', file[key]);
-      }
+export const extractCoordinates = (files = [], id = null) => {
+  let coordinates = [];
+  for (let file = 0; file < files.length; file++) {
+    if (id === files[file].id) {
+      return files[file].coordinateArray || [];
     }
   }
+  return coordinates;
 };

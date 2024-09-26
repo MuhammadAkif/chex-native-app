@@ -185,15 +185,17 @@ const NewInspectionScreen = ({
               title={mediaModalDetails?.title}
               isVideo={mediaModalDetails?.isVideo}
               source={mediaModalDetails?.source}
+              coordinates={mediaModalDetails.coordinates}
               handleVisible={handleMediaModalDetailsCrossPress}
             />
           )}
           {Platform.OS === ANDROID && mediaModalVisible && (
             <AndroidMediaViewModal
-              handleVisible={handleMediaModalDetailsCrossPress}
               title={mediaModalDetails?.title}
               isVideo={mediaModalDetails?.isVideo}
               source={mediaModalDetails?.source}
+              coordinates={mediaModalDetails.coordinates}
+              handleVisible={handleMediaModalDetailsCrossPress}
             />
           )}
           <CollapsedCard

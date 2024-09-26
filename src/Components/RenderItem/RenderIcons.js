@@ -7,7 +7,12 @@ import {
 
 import {Exclamation} from '../../Assets/Icons';
 
-const RenderIcons = ({marker, index, handleExclamationMarkPress}) => {
+const RenderIcons = ({
+  marker,
+  index,
+  handleExclamationMarkPress,
+  disabled = false,
+}) => {
   return (
     <TouchableOpacity
       style={{
@@ -16,6 +21,7 @@ const RenderIcons = ({marker, index, handleExclamationMarkPress}) => {
         top: marker.coordinates.y,
         left: marker.coordinates.x,
       }}
+      disabled={disabled}
       onPress={() => handleExclamationMarkPress(marker.id)}>
       <Exclamation height={hp('3%')} width={wp('6%')} />
     </TouchableOpacity>

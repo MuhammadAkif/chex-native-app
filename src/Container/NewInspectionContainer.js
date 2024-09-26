@@ -27,6 +27,7 @@ import {
 import {
   exteriorVariant,
   EXTRACT_INSPECTION_ITEM_ID,
+  extractCoordinates,
   extractIDs,
   get_Inspection_Details,
   handle_Session_Expired,
@@ -90,7 +91,6 @@ const NewInspectionContainer = ({route, navigation}) => {
     variant,
     fileDetails,
   } = useSelector(state => state.newInspection);
-  // console.log({vehicle_Type, variant, exteriorItems});
   const {
     user: {token, data},
   } = useSelector(state => state?.auth);
@@ -352,11 +352,18 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   const handleModalVisible = () => setModalVisible(!modalVisible);
   // Media Modal logic starts here
-  const handleMediaModalDetailsPress = (title, mediaURL, isVideo = false) => {
+  const handleMediaModalDetailsPress = (
+    title,
+    mediaURL,
+    isVideo = false,
+    image_ID = '',
+  ) => {
+    const coordinates = extractCoordinates(fileDetails, image_ID);
     setMediaModalDetails({
       title: title,
       source: mediaURL,
       isVideo: isVideo,
+      coordinates: coordinates,
     });
     setMediaModalVisible(true);
   };
@@ -416,7 +423,6 @@ const NewInspectionContainer = ({route, navigation}) => {
           })
           .catch(error => {
             setIsLoading(false);
-            console.log('Completed location error :', error);
             const statusCode = error?.response?.data?.statusCode;
             if (statusCode === 401) {
               handle_Session_Expired(statusCode, dispatch);
@@ -451,7 +457,6 @@ const NewInspectionContainer = ({route, navigation}) => {
     const RemoveMethod = handleRemoveImage[deleteItem?.category];
     setIsDiscardInspectionModalVisible(false);
     const imageID = EXTRACT_INSPECTION_ITEM_ID(key_);
-    console.log({imageID});
     axios
       .delete(`${DEV_URL}/api/v1/files/${imageID}`, config)
       .then(() => {
@@ -586,7 +591,6 @@ const NewInspectionContainer = ({route, navigation}) => {
     axios
       .put(ANNOTATION, body, config)
       .then(res => {
-        console.log({res});
         callback();
         get_Inspection_Details(dispatch, selectedInspectionID);
       })
@@ -607,7 +611,6 @@ const NewInspectionContainer = ({route, navigation}) => {
     setDisplayAnnotation(!displayAnnotation);
   };
   //Annotation logic ends here
-
   return (
     <NewInspectionScreen
       selectedOption={selectedOption}

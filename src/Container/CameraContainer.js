@@ -161,7 +161,7 @@ const CameraContainer = ({route, navigation}) => {
   };
   const handleResponse = async key => {
     let extension = isImageFile.path.split('.').pop();
-    const body = {
+    let body = {
       category: subCategory,
       url: key,
       extension: `image/${extension}`,
@@ -169,6 +169,9 @@ const CameraContainer = ({route, navigation}) => {
       dateImage: getCurrentDate(),
       hasAdded: vehicle_Type,
     };
+    if (groupType === 'exteriorItems') {
+      body = {...body, variant: variant};
+    }
     if (category === 'CarVerification' && type === 'licensePlate') {
       await handleExtractNumberPlate(`${S3_BUCKET_BASEURL}${key}`);
     }
@@ -214,7 +217,6 @@ const CameraContainer = ({route, navigation}) => {
     await axios
       .post(EXTRACT_NUMBER_PLATE_WITH_AI, body, {headers: headers})
       .then(res => {
-        console.log('AI res => ', res?.data);
         dispatch({type: plate_Number, payload: res?.data?.plateNumber});
       })
       .catch(error => console.log('AI error => ', error));

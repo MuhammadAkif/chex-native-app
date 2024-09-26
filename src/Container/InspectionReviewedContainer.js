@@ -14,6 +14,7 @@ import {
   FILTER_IMAGES,
   handle_Session_Expired,
   handleNewInspectionPress,
+  sortInspection_Reviewed_Items,
   sortInspectionReviewedItems,
 } from '../Utils';
 
@@ -80,12 +81,12 @@ const InspectionReviewedContainer = ({navigation}) => {
     setSelectedInspectionID(inspectionID);
     axios
       .get(`${DEV_URL}/api/v1/files/app/${inspectionID}`)
-      // .get(`${DEV_URL}/api/v1/files/details/${inspectionID}`)
       .then(res => {
         setIsLoading(false);
         const {finalStatus, remarks} = res?.data?.inspectionData;
         const beforeImages = FILTER_IMAGES(res?.data?.files, 'before');
-        let files = sortInspectionReviewedItems(beforeImages);
+        let files = sortInspection_Reviewed_Items(beforeImages);
+        // let files = sortInspectionReviewedItems(beforeImages);
         resetAllStates();
         navigation.navigate(ROUTES.INSPECTION_DETAIL, {
           files: files,

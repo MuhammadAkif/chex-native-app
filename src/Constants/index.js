@@ -6,7 +6,8 @@ const ENV_TYPE_URL = {
   production: process.env.PRODUCTION_URL,
   development: process.env.DEVELOPMENT_URL,
 };
-export const DEV_URL = ENV_TYPE_URL.development;
+export const DEV_URL = 'https://cd-partially-survivors-agree.trycloudflare.com';
+// export const DEV_URL = ENV_TYPE_URL.development;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
 export const FETCH_NUMBER_PLATE_URL = DEV_URL + '/api/v1/searchnumberplate';
 export const EXTRACT_NUMBER_PLATE =
@@ -44,14 +45,32 @@ export const INSPECTION_SUBCATEGORY = {
   license_plate_number: 'licensePlate',
   odometer: 'odometer',
   exterior_front: 'exteriorFront',
+  exterior_front_1: 'exteriorFront_1',
+  exterior_front_2: 'exteriorFront_2',
   exterior_rear: 'exteriorRear',
+  exterior_rear_1: 'exteriorRear_1',
+  exterior_rear_2: 'exteriorRear_2',
   exterior_left: 'exteriorLeft',
+  exterior_left_1: 'exteriorLeft_1',
+  exterior_left_2: 'exteriorLeft_2',
   exterior_right: 'exteriorRight',
+  exterior_right_1: 'exteriorRight_1',
+  exterior_right_2: 'exteriorRight_2',
   front_left_corner: 'exteriorFrontLeftCorner',
+  front_left_corner_1: 'exteriorFrontLeftCorner_1',
+  front_left_corner_2: 'exteriorFrontLeftCorner_2',
   front_right_corner: 'exteriorFrontRightCorner',
+  front_right_corner_1: 'exteriorFrontRightCorner_1',
+  front_right_corner_2: 'exteriorFrontRightCorner_2',
   rear_left_corner: 'exteriorRearLeftCorner',
+  rear_left_corner_1: 'exteriorRearLeftCorner_1',
+  rear_left_corner_2: 'exteriorRearLeftCorner_2',
   rear_right_corner: 'exteriorRearRightCorner',
+  rear_right_corner_1: 'exteriorRearRightCorner_1',
+  rear_right_corner_2: 'exteriorRearRightCorner_2',
   inside_cargo_roof: 'exteriorInsideCargoRoof',
+  inside_cargo_roof_1: 'exteriorInsideCargoRoof_1',
+  inside_cargo_roof_2: 'exteriorInsideCargoRoof_2',
   left_front_tire: 'leftFrontTire',
   left_rear_tire: 'leftRearTire',
   right_front_tire: 'rightFrontTire',

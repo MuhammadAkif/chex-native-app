@@ -9,6 +9,7 @@ import FastImage from 'react-native-fast-image';
 
 import {Cross, Expand, Collapse} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
+import {RenderIcons} from './index';
 
 const AndroidMediaViewModal = ({
   source,
@@ -16,6 +17,7 @@ const AndroidMediaViewModal = ({
   isLoading,
   title,
   isVideo,
+  coordinates = [],
 }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   let height = hp('5%');
@@ -62,12 +64,23 @@ const AndroidMediaViewModal = ({
               />
             </View>
           ) : (
-            <FastImage
-              source={{uri: source}}
-              priority={'normal'}
-              resizeMode={'stretch'}
-              style={styles.image}
-            />
+            <>
+              <FastImage
+                source={{uri: source}}
+                priority={'normal'}
+                resizeMode={'stretch'}
+                style={styles.image}
+              />
+              {coordinates.length > 0 &&
+                coordinates.map((marker, index) => (
+                  <RenderIcons
+                    key={marker.id}
+                    marker={marker}
+                    index={index}
+                    disabled={true}
+                  />
+                ))}
+            </>
           )}
         </View>
         <View style={styles.container} />
@@ -96,7 +109,7 @@ const styles = StyleSheet.create({
     paddingTop: hp('7%'),
   },
   image: {
-    height: '100%',
+    height: hp('25%'),
     width: '100%',
     borderRadius: 20,
   },

@@ -39,11 +39,6 @@ const ImagesPickerContainer = ({
     setImageURLOne_Annotated(imageOne_Annotated);
     setImageURLTwo_Annotated(imageTwo_Annotated);
   }, [fileDetails, exteriorItems]);
-  console.log({
-    imageURL_Annotated,
-    imageURLOne_Annotated,
-    imageURLTwo_Annotated,
-  });
   return (
     <View style={styles.OuterContainer}>
       <ItemPickerLabel label={title} />
@@ -56,7 +51,7 @@ const ImagesPickerContainer = ({
           onPress={() => handleItemPickerPress(ExteriorDetails)}
           onClearPress={() => handleCrossPress(groupType, key)}
           handleMediaModalDetailsPress={() =>
-            handleMediaModalDetailsPress(title, imageURL)
+            handleMediaModalDetailsPress(title, imageURL, false, imageURL_ID)
           }
           isAnnotated={imageURL_Annotated}
         />
@@ -68,7 +63,12 @@ const ImagesPickerContainer = ({
           onPress={() => handleItemPickerPress(ExteriorDetails, 1)}
           onClearPress={() => handleCrossPress(groupType, key, 1)}
           handleMediaModalDetailsPress={() =>
-            handleMediaModalDetailsPress(title, imageURLOne)
+            handleMediaModalDetailsPress(
+              title,
+              imageURLOne,
+              false,
+              imageURLOne_ID,
+            )
           }
           isAnnotated={imageURLOne_Annotated}
         />
@@ -80,7 +80,12 @@ const ImagesPickerContainer = ({
           onPress={() => handleItemPickerPress(ExteriorDetails, 2)}
           onClearPress={() => handleCrossPress(groupType, key, 2)}
           handleMediaModalDetailsPress={() =>
-            handleMediaModalDetailsPress(title, imageURLTwo)
+            handleMediaModalDetailsPress(
+              title,
+              imageURLTwo,
+              false,
+              imageURLTwo_ID,
+            )
           }
           isAnnotated={imageURLTwo_Annotated}
         />
