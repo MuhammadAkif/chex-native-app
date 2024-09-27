@@ -8,6 +8,7 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -23,10 +24,9 @@ import {
   SecondaryButton,
 } from '../index';
 import {ANNOTATE_IMAGE, DAMAGE_TYPE} from '../../Constants';
-import {isNotEmpty, isObjectEmpty} from '../../Utils';
 
 const AnnotateImage = ({
-  modalVisible,
+  modalVisible = false,
   handleVisible,
   source = '',
   instructionalSubHeadingText = ANNOTATE_IMAGE.instruction,
@@ -49,6 +49,11 @@ const AnnotateImage = ({
     const status = isButtonDisabled();
     setCanSubmit(status);
   }, [damageDetails, isLoading]);
+  const submitText = isLoading ? (
+    <ActivityIndicator size={'small'} color={colors.white} />
+  ) : (
+    annotateButtonText
+  );
   function resetState() {
     setIsFullScreen(false);
     setDamageDetails([]);
@@ -207,7 +212,7 @@ const AnnotateImage = ({
           </View>
           <View style={styles.footerContainer}>
             <PrimaryGradientButton
-              text={annotateButtonText}
+              text={submitText}
               buttonStyle={styles.submitButton}
               onPress={handleSubmission}
               disabled={canSubmit || damageDetails?.length < 1 || isLoading}

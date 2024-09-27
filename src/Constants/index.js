@@ -6,8 +6,7 @@ const ENV_TYPE_URL = {
   production: process.env.PRODUCTION_URL,
   development: process.env.DEVELOPMENT_URL,
 };
-export const DEV_URL = 'https://cd-partially-survivors-agree.trycloudflare.com';
-// export const DEV_URL = ENV_TYPE_URL.development;
+export const DEV_URL = ENV_TYPE_URL.development;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
 export const FETCH_NUMBER_PLATE_URL = DEV_URL + '/api/v1/searchnumberplate';
 export const EXTRACT_NUMBER_PLATE =
@@ -25,6 +24,32 @@ export const REMOVE_ALL_TIRES = DEV_URL + '/api/v1/delete/file';
 export const ANNOTATION = DEV_URL + '/api/v1/file/coordinate';
 export const AI_API_TOKEN = process.env.AI_API_TOKEN;
 // Api Endpoints ends here
+
+/*
+// Dynamically set the base URL based on the environment
+const ENV = process.env.NODE_ENV || 'development';
+const API_BASE_URL = process.env[`${ENV.toUpperCase()}_URL`] || 'http://localhost:3000';
+const S3_BUCKET_BASE_URL = process.env.S3_BUCKET_BASEURL;
+const AI_API_TOKEN = process.env.AI_API_TOKEN;
+
+// Group all API endpoints
+export const API_ENDPOINTS = {
+  FETCH_NUMBER_PLATE_URL: `${API_BASE_URL}/api/v1/searchnumberplate`,
+  EXTRACT_NUMBER_PLATE_URL: `${API_BASE_URL}/api/v1/extract/inspection/create`,
+  EXTRACT_NUMBER_PLATE_WITH_AI_URL: process.env.EXTRACT_NUMBER_PLATE_URL,
+  LOGIN_URL: `${API_BASE_URL}/api/v1/auth/login`,
+  UPLOAD_URL: `${API_BASE_URL}/api/v1/file/upload`,
+  CREATE_INSPECTION_URL: `${API_BASE_URL}/api/v1/create/inspection`,
+  FETCH_IN_PROGRESS_URL: `${API_BASE_URL}/api/v1/status/vehicle`,
+  FORGET_PASSWORD_URL: `${API_BASE_URL}/api/v1/auth/reset/email`,
+  RESET_PASSWORD_URL: `${API_BASE_URL}/api/v1/auth/reset/password`,
+  INSPECTION_TIRE_STATUS_URL: `${API_BASE_URL}/api/v1/display/tire`,
+  REMOVE_ALL_TIRES_URL: `${API_BASE_URL}/api/v1/delete/file`,
+  ANNOTATION_URL: `${API_BASE_URL}/api/v1/file/coordinate`,
+};
+
+export { S3_BUCKET_BASE_URL, AI_API_TOKEN };
+*/
 
 export const HARDWARE_BACK_PRESS = 'hardwareBackPress';
 export const ANDROID = 'android';
@@ -143,217 +168,4 @@ export const ANNOTATE_IMAGE = {
 };
 
 export const DAMAGE_TYPE = ['Minor', 'Major', 'Severe'];
-export const Image_Type = [
-  {
-    id: 23230,
-    category: 'license_plate_number',
-    isReviewed: true,
-    comments: null,
-    groupType: 'carVerificiationItems',
-    extension: 'image/jpg',
-    url: 'uploads/46/hfWZoqjVxR5IcoQgKlrQs',
-    inspectionId: 2923,
-    orientation: '0',
-    dateImage: '26-9-2024',
-    dimension: null,
-    statusAi: null,
-    commentAi: null,
-    longitude: null,
-    latitude: null,
-    pictureTag: 'before',
-    fileStatus: 'new',
-    coordinateArray: null,
-    vehicleId: 1986,
-    llamaMessage: null,
-    llamaCost: null,
-    createdAt: '2024-09-26T06:45:33.674Z',
-    updatedAt: '2024-09-26T09:51:52.244Z',
-    deletedAt: null,
-    InspectionChecks: [
-      {
-        id: 22711,
-        fileId: 23230,
-        status: null,
-        checkStatus: ' Good',
-        Check: {
-          id: 1,
-          name: 'Photo capturing Vin located on the vehicle or on the registration card',
-          category: 'license_plate_number',
-        },
-      },
-    ],
-  },
-  {
-    id: 23231,
-    category: 'odometer',
-    isReviewed: true,
-    comments: null,
-    groupType: 'carVerificiationItems',
-    extension: 'image/jpg',
-    url: 'uploads/46/z4ZFH52dVYNqChHeezNo5',
-    inspectionId: 2923,
-    orientation: '0',
-    dateImage: '26-9-2024',
-    dimension: null,
-    statusAi: 'fail',
-    commentAi: 'Not detected',
-    longitude: null,
-    latitude: null,
-    pictureTag: 'before',
-    fileStatus: 'new',
-    coordinateArray: null,
-    vehicleId: 1986,
-    llamaMessage: null,
-    llamaCost: null,
-    createdAt: '2024-09-26T06:46:12.465Z',
-    updatedAt: '2024-09-26T09:51:52.244Z',
-    deletedAt: null,
-    InspectionChecks: [
-      {
-        id: 22712,
-        fileId: 23231,
-        status: null,
-        checkStatus: ' Good',
-        Check: {id: 2, name: 'Speedometer', category: 'odometer'},
-      },
-    ],
-  },
-  {
-    id: 23232,
-    category: 'exterior_front',
-    isReviewed: false,
-    comments: null,
-    groupType: 'exteriorItems',
-    extension: 'image/jpg',
-    url: 'uploads/46/aNbhjr65jOy60p8GVgGv1',
-    inspectionId: 2923,
-    orientation: '0',
-    dateImage: '26-9-2024',
-    dimension: null,
-    statusAi: null,
-    commentAi: null,
-    longitude: null,
-    latitude: null,
-    pictureTag: 'before',
-    fileStatus: 'new',
-    coordinateArray: [
-      {
-        id: 0,
-        coordinates: {x: 84.2492904663086, y: 137.30824279785156},
-        type: 'Minor',
-        notes: 'Testing ',
-      },
-    ],
-    vehicleId: 1986,
-    llamaMessage: null,
-    llamaCost: '0',
-    createdAt: '2024-09-26T06:46:28.051Z',
-    updatedAt: '2024-09-26T09:51:52.244Z',
-    deletedAt: null,
-    InspectionChecks: [
-      {
-        id: 22713,
-        fileId: 23232,
-        status: null,
-        checkStatus: null,
-        Check: {
-          id: 52,
-          name: 'New damage detected',
-          category: 'exterior_front',
-        },
-      },
-    ],
-  },
-  {
-    id: 23232,
-    category: 'exterior_front',
-    isReviewed: false,
-    comments: null,
-    groupType: 'exteriorItems',
-    extension: 'image/jpg',
-    url: 'uploads/46/aNbhjr65jOy60p8GVgGv1',
-    inspectionId: 2923,
-    orientation: '0',
-    dateImage: '26-9-2024',
-    dimension: null,
-    statusAi: null,
-    commentAi: null,
-    longitude: null,
-    latitude: null,
-    pictureTag: 'before',
-    fileStatus: 'new',
-    coordinateArray: [
-      {
-        id: 0,
-        coordinates: {x: 84.2492904663086, y: 137.30824279785156},
-        type: 'Minor',
-        notes: 'Testing ',
-      },
-    ],
-    vehicleId: 1986,
-    llamaMessage: null,
-    llamaCost: '0',
-    createdAt: '2024-09-26T06:46:28.051Z',
-    updatedAt: '2024-09-26T09:51:52.244Z',
-    deletedAt: null,
-    InspectionChecks: [
-      {
-        id: 22713,
-        fileId: 23232,
-        status: null,
-        checkStatus: null,
-        Check: {
-          id: 52,
-          name: 'New damage detected',
-          category: 'exterior_front',
-        },
-      },
-    ],
-  },
-  {
-    id: 23232,
-    category: 'exterior_front',
-    isReviewed: false,
-    comments: null,
-    groupType: 'exteriorItems',
-    extension: 'image/jpg',
-    url: 'uploads/46/aNbhjr65jOy60p8GVgGv1',
-    inspectionId: 2923,
-    orientation: '0',
-    dateImage: '26-9-2024',
-    dimension: null,
-    statusAi: null,
-    commentAi: null,
-    longitude: null,
-    latitude: null,
-    pictureTag: 'before',
-    fileStatus: 'new',
-    coordinateArray: [
-      {
-        id: 0,
-        coordinates: {x: 84.2492904663086, y: 137.30824279785156},
-        type: 'Minor',
-        notes: 'Testing ',
-      },
-    ],
-    vehicleId: 1986,
-    llamaMessage: null,
-    llamaCost: '0',
-    createdAt: '2024-09-26T06:46:28.051Z',
-    updatedAt: '2024-09-26T09:51:52.244Z',
-    deletedAt: null,
-    InspectionChecks: [
-      {
-        id: 22713,
-        fileId: 23232,
-        status: null,
-        checkStatus: null,
-        Check: {
-          id: 52,
-          name: 'New damage detected',
-          category: 'exterior_front',
-        },
-      },
-    ],
-  },
-];
+export const Image_Type = [];

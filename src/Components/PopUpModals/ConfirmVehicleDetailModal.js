@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  Modal,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-} from 'react-native';
+import {View, Text, Modal, StyleSheet, TextInput} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -14,7 +7,6 @@ import {
 
 import {PrimaryGradientButton} from '../index';
 import {circleBorderRadius, colors, modalStyle} from '../../Assets/Styles';
-import {Cross} from '../../Assets/Icons';
 
 const ConfirmVehicleDetailModal = ({
   title = 'Vehicle Detail',
@@ -24,7 +16,7 @@ const ConfirmVehicleDetailModal = ({
   buttonText = 'Confirm',
   placeHolder = 'Enter License Plate Number',
   numberPlateText = '',
-  isLoading,
+  isLoading = false,
 }) => {
   const [numberPlate, setNumberPlate] = useState(numberPlateText);
 
@@ -59,7 +51,7 @@ const ConfirmVehicleDetailModal = ({
           <View style={modalStyle.footer}>
             <PrimaryGradientButton
               text={buttonText}
-              disabled={numberPlate.length === 0 || isLoading}
+              disabled={isLoading}
               buttonStyle={modalStyle.button}
               textStyle={modalStyle.yesText}
               onPress={() => onConfirmPress(numberPlate)}

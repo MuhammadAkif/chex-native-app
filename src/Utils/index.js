@@ -951,6 +951,9 @@ export const getAnnotationStatus = (files = [], id = '') => {
 };
 
 export const extractCoordinates = (files = [], id = null) => {
+  if (!isNotEmpty(files)) {
+    return [];
+  }
   let coordinates = [];
   for (let file = 0; file < files.length; file++) {
     if (id === files[file].id) {
@@ -973,3 +976,4 @@ export function assignNumber(arr = [], length = 0) {
     }
   }
 }
+export const fallBack = text => console.log(text);

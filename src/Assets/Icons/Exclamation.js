@@ -12,12 +12,14 @@ const Exclamation = ({
   width = wp('6%'),
   color = colors.red,
   style,
+  onPress,
 }) => (
   <Svg
     width={width}
     height={height}
     viewBox="0 0 512 512"
     style={style}
+    onPress={onPress}
     fill="none"
     xmlns="http://www.w3.org/2000/svg">
     <Path

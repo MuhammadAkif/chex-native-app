@@ -80,12 +80,11 @@ const NewInspectionContainer = ({route, navigation}) => {
     exteriorItems,
     tires,
     selectedInspectionID,
-    company_ID,
     plateNumber,
-    skipLeft,
+    /* skipLeft,
     skipLeftCorners,
     skipRight,
-    skipRightCorners,
+    skipRightCorners,*/
     isLicensePlateUploaded,
     vehicle_Type,
     variant,
@@ -480,38 +479,40 @@ const NewInspectionContainer = ({route, navigation}) => {
   const handleConfirmModalVisible = () =>
     setIsLicenseModalVisible(prevState => !prevState);
   const handleConfirmVehicleDetail = numberPlate => {
-    const body = {
-      licensePlateNumber: numberPlate,
-      companyId: data?.companyId,
-      inspectionId: selectedInspectionID,
-    };
-    setIsLoading(true);
-    axios
-      .post(EXTRACT_NUMBER_PLATE, body, config)
-      .then(res => {
-        const vehicleType = res?.data?.hasAdded;
-        dispatch({type: VEHICLE_TYPE, payload: vehicleType});
-        vehicleTireStatusToRender(selectedInspectionID).then(() =>
-          setLoadingIndicator(false),
-        );
-      })
-      .catch(e => {
-        const statusCode = e?.response?.data?.statusCode;
-        if (statusCode === 409) {
-          const vehicleType = e?.response?.data?.hasAdded;
+    if (isNotEmpty(numberPlate.trim())) {
+      const body = {
+        licensePlateNumber: numberPlate,
+        companyId: data?.companyId,
+        inspectionId: selectedInspectionID,
+      };
+      setIsLoading(true);
+      axios
+        .post(EXTRACT_NUMBER_PLATE, body, config)
+        .then(res => {
+          const vehicleType = res?.data?.hasAdded;
           dispatch({type: VEHICLE_TYPE, payload: vehicleType});
-          setInspectionID(e?.response?.data?.inspectionId);
-          setIsInspectionInProgressModalVisible(true);
-          setErrorTitle(e?.response?.data?.errorMessage);
-        } else if (e?.response?.data?.statusCode === 400) {
-          setInUseErrorTitle(e?.response?.data?.message);
-        }
-      })
-      .finally(() => {
-        setLoadingIndicator(false);
-        handleConfirmModalVisible();
-        setIsLoading(false);
-      });
+          vehicleTireStatusToRender(selectedInspectionID).then(() =>
+            setLoadingIndicator(false),
+          );
+        })
+        .catch(e => {
+          const statusCode = e?.response?.data?.statusCode;
+          if (statusCode === 409) {
+            const vehicleType = e?.response?.data?.hasAdded;
+            dispatch({type: VEHICLE_TYPE, payload: vehicleType});
+            setInspectionID(e?.response?.data?.inspectionId);
+            setIsInspectionInProgressModalVisible(true);
+            setErrorTitle(e?.response?.data?.errorMessage);
+          } else if (e?.response?.data?.statusCode === 400) {
+            setInUseErrorTitle(e?.response?.data?.message);
+          }
+        })
+        .finally(() => {
+          setLoadingIndicator(false);
+          handleConfirmModalVisible();
+          setIsLoading(false);
+        });
+    }
   };
 
   const handleYesPressOfInProgressInspection = () => {

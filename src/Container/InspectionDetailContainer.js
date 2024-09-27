@@ -24,10 +24,10 @@ const InspectionDetailContainer = ({navigation, route}) => {
     );
     return () => backHandler.remove();
   }, []);
-  useEffect(() => {
-    assignNumber(detailsFiles.files, detailsFiles.files.length);
-    console.log('detailsFiles.files -- ', detailsFiles.files);
-  }, [detailsFiles]);
+  // useEffect(() => {
+  //   assignNumber(detailsFiles.files, detailsFiles.files.length);
+  //   console.log('detailsFiles.files -- ', detailsFiles.files);
+  // }, [detailsFiles]);
   function handle_Hardware_Back_Press() {
     if (navigation.canGoBack()) {
       navigation.goBack();

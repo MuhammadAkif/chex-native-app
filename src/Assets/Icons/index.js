@@ -28,6 +28,7 @@ import Retry from './Retry';
 import External from './External';
 import Damage_Vehicle from './Damage_Vehicle';
 import Exclamation from './Exclamation';
+import Remove from './Remove';
 
 export {
   Check,
@@ -60,4 +61,5 @@ export {
   External,
   Damage_Vehicle,
   Exclamation,
+  Remove,
 };
