@@ -85,8 +85,8 @@ const InspectionReviewedContainer = ({navigation}) => {
         setIsLoading(false);
         const {finalStatus, remarks} = res?.data?.inspectionData;
         const beforeImages = FILTER_IMAGES(res?.data?.files, 'before');
-        let files = sortInspection_Reviewed_Items(beforeImages);
-        // let files = sortInspectionReviewedItems(beforeImages);
+        // let files = sortInspection_Reviewed_Items(beforeImages);
+        let files = sortInspectionReviewedItems(beforeImages);
         resetAllStates();
         navigation.navigate(ROUTES.INSPECTION_DETAIL, {
           files: files,

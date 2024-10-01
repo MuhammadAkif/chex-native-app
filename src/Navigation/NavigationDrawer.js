@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Alert} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -32,13 +32,15 @@ const screenOptions = {
   drawerType: 'front',
   drawerStatusBarAnimation: 'slide',
   headerLeft: () => <HeaderBackButton />,
+  swipeEdgeWidth: 150,
 };
 const drawerContent = props => <CustomDrawerContent {...props} />;
 const {TITLE, MESSAGE, BUTTON} = SESSION_EXPIRED;
 
 const NavigationDrawer = ({navigation}) => {
-  const Drawer = createDrawerNavigator();
+  const {Screen, Navigator} = createDrawerNavigator();
   const dispatch = useDispatch();
+  // const {Screen, Navigator} = Drawer;
 
   const {sessionExpired} = useSelector(state => state?.auth);
   const [isSessionExpired, setIsSessionExpired] = useState(false);
@@ -62,49 +64,45 @@ const NavigationDrawer = ({navigation}) => {
   };
   return (
     <>
-      <Drawer.Navigator
+      <Navigator
         backBehavior={'history'}
         drawerContent={drawerContent}
         screenOptions={screenOptions}
         initialRouteName={INSPECTION_SELECTION}>
-        <Drawer.Screen
+        <Screen
           name={INSPECTION_SELECTION}
           component={InspectionSelectionContainer}
           options={{
             headerShown: false,
           }}
         />
-        <Drawer.Screen
-          name={INTRO}
-          component={IntroContainer}
-          options={options}
-        />
-        <Drawer.Screen
+        <Screen name={INTRO} component={IntroContainer} options={options} />
+        <Screen
           name={LICENSE_PLATE_SELECTION}
           component={LicensePlateNumberSelectionContainer}
           options={options}
         />
-        <Drawer.Screen
+        <Screen
           name={NEW_INSPECTION}
           component={NewInspectionContainer}
           options={options}
         />
-        <Drawer.Screen
+        <Screen
           name={INSPECTION_REVIEWED}
           component={InspectionReviewedContainer}
           options={options}
         />
-        <Drawer.Screen
+        <Screen
           name={INSPECTION_DETAIL}
           component={InspectionDetailContainer}
           options={options}
         />
-        <Drawer.Screen
+        <Screen
           name={INSPECTION_IN_PROGRESS}
           component={InspectionInProgressContainer}
           options={options}
         />
-      </Drawer.Navigator>
+      </Navigator>
       {sessionExpired &&
         Alert.alert(TITLE, MESSAGE, [{text: BUTTON, onPress: handleOkPress}])}
     </>

@@ -29,34 +29,29 @@ const {
 } = ROUTES;
 
 const Navigation = () => {
-  const Stack = createNativeStackNavigator();
+  const {Screen, Navigator} = createNativeStackNavigator();
   const token = useSelector(state => state?.auth?.user?.token);
   const initialRouteName = token ? HOME : WELCOME;
+  const screenOptions = {headerShown: false, gestureEnabled: false};
 
   return (
     <NavigationContainer>
-      <Stack.Navigator
+      <Navigator
         initialRouteName={initialRouteName}
-        screenOptions={{headerShown: false, gestureEnabled: false}}>
-        <Stack.Screen name={WELCOME} component={WelcomeContainer} />
-        <Stack.Screen name={REGISTER} component={RegisterContainer} />
-        <Stack.Screen name={SIGN_IN} component={SignInContainer} />
-        <Stack.Screen
-          name={FORGET_PASSWORD}
-          component={ForgotPasswordContainer}
-        />
-        <Stack.Screen
-          name={RESET_PASSWORD}
-          component={ResetPasswordContainer}
-        />
-        <Stack.Screen name={CAMERA} component={CameraContainer} />
-        <Stack.Screen name={VIDEO} component={VideoContainer} />
-        <Stack.Screen name={HOME} component={NavigationDrawer} />
-        <Stack.Screen
+        screenOptions={screenOptions}>
+        <Screen name={WELCOME} component={WelcomeContainer} />
+        <Screen name={REGISTER} component={RegisterContainer} />
+        <Screen name={SIGN_IN} component={SignInContainer} />
+        <Screen name={FORGET_PASSWORD} component={ForgotPasswordContainer} />
+        <Screen name={RESET_PASSWORD} component={ResetPasswordContainer} />
+        <Screen name={CAMERA} component={CameraContainer} />
+        <Screen name={VIDEO} component={VideoContainer} />
+        <Screen name={HOME} component={NavigationDrawer} />
+        <Screen
           name={COMPLETED_INSPECTION}
           component={CompletedInspectionContainer}
         />
-      </Stack.Navigator>
+      </Navigator>
     </NavigationContainer>
   );
 };

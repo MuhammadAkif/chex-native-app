@@ -6,9 +6,7 @@ const ENV_TYPE_URL = {
   production: process.env.PRODUCTION_URL,
   development: process.env.DEVELOPMENT_URL,
 };
-export const API_BASE_URL =
-  'https://bed-paraguay-brave-documents.trycloudflare.com';
-// export const DEV_URL = ENV_TYPE_URL.development;
+export const API_BASE_URL = ENV_TYPE_URL.staging;
 const generateApiUrl = path => API_BASE_URL + path;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
 export const FETCH_NUMBER_PLATE_URL = generateApiUrl(
