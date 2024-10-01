@@ -12,8 +12,10 @@ import {SignInScreen} from '../../Screens';
 import {signInValidationSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
-import {ANDROID, HARDWARE_BACK_PRESS, LOGIN_URL} from '../../Constants';
+import {ANDROID, API_ENDPOINTS, HARDWARE_BACK_PRESS} from '../../Constants';
 import {SIGN_IN_ACTION} from '../../Store/Actions';
+
+const {LOGIN_URL} = API_ENDPOINTS;
 
 const SignInContainer = ({navigation, route}) => {
   const dispatch = useDispatch();

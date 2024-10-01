@@ -7,7 +7,6 @@ import axios from 'axios';
 import {InspectionReviewedScreen} from '../Screens';
 import {FETCH_INSPECTION_REVIEWED} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
-// import {DEV_URL} from '@env';
 import {API_BASE_URL, HARDWARE_BACK_PRESS} from '../Constants';
 import {
   fetchInProgressInspections,

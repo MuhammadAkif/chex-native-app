@@ -100,7 +100,7 @@ const InspectionInProgressContainer = ({navigation}) => {
     await axios
       .get(`${API_BASE_URL}/api/v1/files/details/${inspectionId}`)
       .then(res => {
-        const vehicleType = res?.data?.hasAdded;
+        const vehicleType = res?.data?.hasAdded || 'existing';
         dispatch({type: VEHICLE_TYPE, payload: vehicleType});
         get_Inspection_Details(dispatch, inspectionId).then();
         uploadInProgressMediaToStore(res?.data?.files, dispatch);

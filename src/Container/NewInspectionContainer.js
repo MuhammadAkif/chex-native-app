@@ -16,13 +16,10 @@ import {
 import {Types} from '../Store/Types';
 import {colors} from '../Assets/Styles';
 import {
-  ANNOTATION,
   API_BASE_URL,
-  EXTRACT_NUMBER_PLATE,
+  API_ENDPOINTS,
   HARDWARE_BACK_PRESS,
   INSPECTION,
-  INSPECTION_TIRE_STATUS,
-  REMOVE_ALL_TIRES,
 } from '../Constants';
 import {
   exteriorVariant,
@@ -41,6 +38,13 @@ import {
   ExteriorItemsExpandedCard,
   ExteriorItemsExpandedCard_Old,
 } from '../Components';
+
+const {
+  EXTRACT_NUMBER_PLATE_URL,
+  INSPECTION_TIRE_STATUS_URL,
+  REMOVE_ALL_TIRES_URL,
+  ANNOTATION_URL,
+} = API_ENDPOINTS;
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllCarVerification: false,
@@ -487,9 +491,9 @@ const NewInspectionContainer = ({route, navigation}) => {
       };
       setIsLoading(true);
       axios
-        .post(EXTRACT_NUMBER_PLATE, body, config)
+        .post(EXTRACT_NUMBER_PLATE_URL, body, config)
         .then(res => {
-          const vehicleType = res?.data?.hasAdded;
+          const vehicleType = res?.data?.hasAdded || 'existing';
           dispatch({type: VEHICLE_TYPE, payload: vehicleType});
           vehicleTireStatusToRender(selectedInspectionID).then(() =>
             setLoadingIndicator(false),
@@ -498,7 +502,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         .catch(e => {
           const statusCode = e?.response?.data?.statusCode;
           if (statusCode === 409) {
-            const vehicleType = e?.response?.data?.hasAdded;
+            const vehicleType = e?.response?.data?.hasAdded || 'existing';
             dispatch({type: VEHICLE_TYPE, payload: vehicleType});
             setInspectionID(e?.response?.data?.inspectionId);
             setIsInspectionInProgressModalVisible(true);
@@ -543,7 +547,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       inspectionId: inspection_ID,
     };
     await axios
-      .post(INSPECTION_TIRE_STATUS, body, config)
+      .post(INSPECTION_TIRE_STATUS_URL, body, config)
       .then(res => {
         const {
           data: {displayTire},
@@ -563,7 +567,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     let removeTiresList = extractIDs(tires) || [];
     const body = {fileId: removeTiresList};
     await axios
-      .post(REMOVE_ALL_TIRES, body, config)
+      .post(REMOVE_ALL_TIRES_URL, body, config)
       .then(res => {
         dispatch({type: CLEAR_TIRES});
       })
@@ -590,7 +594,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       fileId: fileID,
     };
     axios
-      .put(ANNOTATION, body, config)
+      .put(ANNOTATION_URL, body, config)
       .then(res => {
         callback();
         get_Inspection_Details(dispatch, selectedInspectionID);

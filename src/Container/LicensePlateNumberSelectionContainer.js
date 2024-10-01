@@ -5,18 +5,14 @@ import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
 import {LicensePlateNumberSelectionScreen} from '../Screens';
-import {
-  CREATE_INSPECTION_URL,
-  FETCH_NUMBER_PLATE_URL,
-  API_BASE_URL,
-  HARDWARE_BACK_PRESS,
-} from '../Constants';
-// import {DEV_URL} from '@env'
+import {API_BASE_URL, HARDWARE_BACK_PRESS, API_ENDPOINTS} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {colors} from '../Assets/Styles';
 import {NumberPlateSelectedAction} from '../Store/Actions';
 import {handle_Session_Expired, uploadInProgressMediaToStore} from '../Utils';
 import {Types} from '../Store/Types';
+
+const {CREATE_INSPECTION_URL, FETCH_NUMBER_PLATE_URL} = API_ENDPOINTS;
 
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const dispatch = useDispatch();

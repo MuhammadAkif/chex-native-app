@@ -10,12 +10,10 @@ import axios from 'axios';
 import {resetPasswordSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
-import {
-  ANDROID,
-  HARDWARE_BACK_PRESS,
-  RESET_PASSWORD_URL,
-} from '../../Constants';
+import {ANDROID, API_ENDPOINTS, HARDWARE_BACK_PRESS} from '../../Constants';
 import {ResetPasswordScreen} from '../../Screens';
+
+const {RESET_PASSWORD_URL} = API_ENDPOINTS;
 
 const ResetPasswordContainer = ({navigation, route}) => {
   const email = route?.params?.email;

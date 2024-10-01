@@ -5,14 +5,11 @@ import axios from 'axios';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import {
-  CREATE_INSPECTION_URL,
   API_BASE_URL,
-  FETCH_IN_PROGRESS_URL,
-  Image_Type,
   INSPECTION,
   INSPECTION_SUBCATEGORY,
   S3_BUCKET_BASEURL,
-  UPLOAD_URL,
+  API_ENDPOINTS,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
@@ -310,7 +307,7 @@ export const getSignedUrl = async (
 ) => {
   await axios
     .post(
-      UPLOAD_URL,
+      API_ENDPOINTS.UPLOAD_URL,
       {type: mime},
       {
         headers: {
@@ -413,7 +410,7 @@ export const fetchInProgressInspections = async (
   let data = '';
   await axios
     .post(
-      FETCH_IN_PROGRESS_URL,
+      API_ENDPOINTS.FETCH_IN_PROGRESS_URL,
       {
         status: status,
       },
@@ -663,7 +660,7 @@ export const handleNewInspectionPress = async (
     Authorization: `Bearer ${token}`,
   };
   await axios
-    .post(CREATE_INSPECTION_URL, body, {headers: headers})
+    .post(API_ENDPOINTS.CREATE_INSPECTION_URL, body, {headers: headers})
     .then(response => {
       // setInspectionID(response.data.id);
       dispatch(NumberPlateSelectedAction(response?.data?.id));

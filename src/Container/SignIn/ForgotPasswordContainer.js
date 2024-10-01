@@ -11,11 +11,9 @@ import {ForgotPasswordScreen} from '../../Screens';
 import {forgetPasswordSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
-import {
-  ANDROID,
-  FORGET_PASSWORD_URL,
-  HARDWARE_BACK_PRESS,
-} from '../../Constants';
+import {ANDROID, API_ENDPOINTS, HARDWARE_BACK_PRESS} from '../../Constants';
+
+const {FORGET_PASSWORD_URL} = API_ENDPOINTS;
 
 const ForgotPasswordContainer = ({navigation}) => {
   const emailRef = useRef();

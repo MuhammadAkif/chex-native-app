@@ -1,6 +1,6 @@
-// Api Endpoints start here
 import {IMAGES} from '../Assets/Images';
 
+// Api Endpoints start here
 const ENV_TYPE_URL = {
   staging: process.env.STAGING_URL,
   production: process.env.PRODUCTION_URL,
@@ -9,53 +9,26 @@ const ENV_TYPE_URL = {
 export const API_BASE_URL = ENV_TYPE_URL.staging;
 const generateApiUrl = path => API_BASE_URL + path;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
-export const FETCH_NUMBER_PLATE_URL = generateApiUrl(
-  '/api/v1/searchnumberplate',
-);
-export const EXTRACT_NUMBER_PLATE = generateApiUrl(
-  '/api/v1/extract/inspection/create',
-);
 export const EXTRACT_NUMBER_PLATE_WITH_AI =
   process.env.EXTRACT_NUMBER_PLATE_URL;
-export const LOGIN_URL = generateApiUrl('/api/v1/auth/login');
-export const UPLOAD_URL = generateApiUrl('/api/v1/file/upload');
-export const CREATE_INSPECTION_URL = generateApiUrl(
-  '/api/v1/create/inspection',
-);
-export const FETCH_IN_PROGRESS_URL = generateApiUrl('/api/v1/status/vehicle');
-export const FORGET_PASSWORD_URL = generateApiUrl('/api/v1/auth/reset/email');
-export const RESET_PASSWORD_URL = generateApiUrl('/api/v1/auth/reset/password');
-export const INSPECTION_TIRE_STATUS = generateApiUrl('/api/v1/display/tire');
-export const REMOVE_ALL_TIRES = generateApiUrl('/api/v1/delete/file');
-export const ANNOTATION = generateApiUrl('/api/v1/file/coordinate');
 export const AI_API_TOKEN = process.env.AI_API_TOKEN;
-// Api Endpoints ends here
 
-/*
-// Dynamically set the base URL based on the environment
-const ENV = process.env.NODE_ENV || 'development';
-const API_BASE_URL = process.env[`${ENV.toUpperCase()}_URL`] || 'http://localhost:3000';
-const S3_BUCKET_BASE_URL = process.env.S3_BUCKET_BASEURL;
-const AI_API_TOKEN = process.env.AI_API_TOKEN;
-
-// Group all API endpoints
+// API endpoints
 export const API_ENDPOINTS = {
-  FETCH_NUMBER_PLATE_URL: `${API_BASE_URL}/api/v1/searchnumberplate`,
-  EXTRACT_NUMBER_PLATE_URL: `${API_BASE_URL}/api/v1/extract/inspection/create`,
+  FETCH_NUMBER_PLATE_URL: generateApiUrl('/api/v1/searchnumberplate'),
+  EXTRACT_NUMBER_PLATE_URL: generateApiUrl('/api/v1/extract/inspection/create'),
   EXTRACT_NUMBER_PLATE_WITH_AI_URL: process.env.EXTRACT_NUMBER_PLATE_URL,
-  LOGIN_URL: `${API_BASE_URL}/api/v1/auth/login`,
-  UPLOAD_URL: `${API_BASE_URL}/api/v1/file/upload`,
-  CREATE_INSPECTION_URL: `${API_BASE_URL}/api/v1/create/inspection`,
-  FETCH_IN_PROGRESS_URL: `${API_BASE_URL}/api/v1/status/vehicle`,
-  FORGET_PASSWORD_URL: `${API_BASE_URL}/api/v1/auth/reset/email`,
-  RESET_PASSWORD_URL: `${API_BASE_URL}/api/v1/auth/reset/password`,
-  INSPECTION_TIRE_STATUS_URL: `${API_BASE_URL}/api/v1/display/tire`,
-  REMOVE_ALL_TIRES_URL: `${API_BASE_URL}/api/v1/delete/file`,
-  ANNOTATION_URL: `${API_BASE_URL}/api/v1/file/coordinate`,
+  LOGIN_URL: generateApiUrl('/api/v1/auth/login'),
+  UPLOAD_URL: generateApiUrl('/api/v1/file/upload'),
+  CREATE_INSPECTION_URL: generateApiUrl('/api/v1/create/inspection'),
+  FETCH_IN_PROGRESS_URL: generateApiUrl('/api/v1/status/vehicle'),
+  FORGET_PASSWORD_URL: generateApiUrl('/api/v1/auth/reset/email'),
+  RESET_PASSWORD_URL: generateApiUrl('/api/v1/auth/reset/password'),
+  INSPECTION_TIRE_STATUS_URL: generateApiUrl('/api/v1/display/tire'),
+  REMOVE_ALL_TIRES_URL: generateApiUrl('/api/v1/delete/file'),
+  ANNOTATION_URL: generateApiUrl('/api/v1/file/coordinate'),
 };
-
-export { S3_BUCKET_BASE_URL, AI_API_TOKEN };
-*/
+// Api Endpoints ends here
 
 export const HARDWARE_BACK_PRESS = 'hardwareBackPress';
 export const ANDROID = 'android';
