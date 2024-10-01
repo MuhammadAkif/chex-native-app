@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import {Types} from '../Types';
-import {DEV_URL} from '../../Constants';
+import {API_BASE_URL} from '../../Constants';
 import {handle_Session_Expired} from '../../Utils';
 
 export const FETCH_INSPECTION_IN_PROGRESS = inspectionInProgress => {
@@ -25,12 +25,15 @@ export const REMOVE_INSPECTION_IN_PROGRESS = (
       item => item.id !== inspectionId,
     );
     await axios
-      .delete(`${DEV_URL}/api/v1/delete/inspection/${inspectionId}?type=app`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+      .delete(
+        `${API_BASE_URL}/api/v1/delete/inspection/${inspectionId}?type=app`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
         },
-      })
+      )
       .then(res => {
         setIsLoading(false);
         dispatch({

@@ -42,9 +42,9 @@ const AnnotateImage = ({
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [damageDetails, setDamageDetails] = useState([]);
   const [currentMarkerDamageDetails, setCurrentMarkerDamageDetails] =
-    useState(null); // Track currently selected marker for editing
-  const [selectedMarkerId, setSelectedMarkerId] = useState(null); // Track the current marker's ID
-  const [canSubmit, setCanSubmit] = useState(false); // Track the current marker's ID
+    useState(null);
+  const [selectedMarkerId, setSelectedMarkerId] = useState(null);
+  const [canSubmit, setCanSubmit] = useState(false);
   useEffect(() => {
     const status = isButtonDisabled();
     setCanSubmit(status);
@@ -62,21 +62,19 @@ const AnnotateImage = ({
   }
 
   const handleDamageDetails = (key, value) => {
-    // Update current marker's details
     setCurrentMarkerDamageDetails(prevState => {
       const updatedMarker = {
         ...prevState,
         [key]: value,
       };
 
-      // Update damageDetails array with the updated marker
       setDamageDetails(prevState =>
         prevState.map(item =>
           item.id === selectedMarkerId ? updatedMarker : item,
         ),
       );
 
-      return updatedMarker; // Also return the updated marker to update the current state
+      return updatedMarker;
     });
   };
 
@@ -88,8 +86,8 @@ const AnnotateImage = ({
       notes: '',
     };
     setDamageDetails([...damageDetails, newMarker]);
-    setCurrentMarkerDamageDetails(newMarker); // Select this new marker for editing
-    setSelectedMarkerId(newMarker.id); // Set selected marker ID
+    setCurrentMarkerDamageDetails(newMarker);
+    setSelectedMarkerId(newMarker.id);
   };
 
   const updateDamageDetails = () => {
@@ -104,16 +102,16 @@ const AnnotateImage = ({
 
   const onImagePress = event => {
     const {locationX, locationY} = event.nativeEvent;
-    const coordinates = {x: locationX, y: locationY};
-    updateDamageDetails(); // Save any existing marker changes before adding a new one
-    addDamageDetails(coordinates); // Add new marker
+    const coordinates = {x: locationX - wp('5%'), y: locationY - wp('5%')};
+    updateDamageDetails();
+    addDamageDetails(coordinates);
   };
 
   const handleExclamationMarkPress = index => {
-    updateDamageDetails(); // Save current marker changes before switching
+    updateDamageDetails();
     const selectedMarker = damageDetails[index];
-    setCurrentMarkerDamageDetails(selectedMarker); // Load the clicked marker's details for editing
-    setSelectedMarkerId(selectedMarker.id); // Track the clicked marker's ID
+    setCurrentMarkerDamageDetails(selectedMarker);
+    setSelectedMarkerId(selectedMarker.id);
   };
 
   const handleSubmission = () => {
@@ -124,8 +122,12 @@ const AnnotateImage = ({
     handleCancel();
   };
   const isButtonDisabled = () => {
-    // Check if any item in the array has empty 'type' or 'notes'
     return damageDetails.some(item => !item.type || !item.notes);
+  };
+  const removeMarker = id => {
+    setDamageDetails(prevState => prevState.filter(marker => marker.id !== id));
+    setCurrentMarkerDamageDetails(null);
+    setSelectedMarkerId(null);
   };
 
   return (
@@ -163,16 +165,19 @@ const AnnotateImage = ({
                 style={[styles.image, {height: hp('25%')}]}
               />
               {damageDetails?.length > 0 &&
-                damageDetails.map((marker, index) => (
-                  <RenderIcons
-                    key={marker.id}
-                    marker={marker}
-                    index={index}
-                    handleExclamationMarkPress={() =>
-                      handleExclamationMarkPress(index)
-                    }
-                  />
-                ))}
+                damageDetails.map((marker, index) => {
+                  return (
+                    <RenderIcons
+                      key={marker.id}
+                      marker={marker}
+                      handleExclamationMarkPress={() =>
+                        handleExclamationMarkPress(index)
+                      }
+                      selectedMarkerId={selectedMarkerId}
+                      onCrossPressed={() => removeMarker(marker.id)}
+                    />
+                  );
+                })}
             </TouchableOpacity>
           </View>
           <View style={styles.body}>
@@ -205,7 +210,7 @@ const AnnotateImage = ({
                   placeholderTextColor={colors.gray}
                   value={currentMarkerDamageDetails?.notes}
                   onChangeText={text => handleDamageDetails('notes', text)}
-                  onBlur={updateDamageDetails} // Save changes when losing focus
+                  onBlur={updateDamageDetails}
                 />
               </View>
             </View>

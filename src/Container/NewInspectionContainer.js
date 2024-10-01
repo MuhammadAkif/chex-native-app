@@ -17,7 +17,7 @@ import {Types} from '../Store/Types';
 import {colors} from '../Assets/Styles';
 import {
   ANNOTATION,
-  DEV_URL,
+  API_BASE_URL,
   EXTRACT_NUMBER_PLATE,
   HARDWARE_BACK_PRESS,
   INSPECTION,
@@ -400,14 +400,14 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsLoading(true);
     axios
       .patch(
-        `${DEV_URL}/api/v1/inspection/${selectedInspectionID}`,
+        `${API_BASE_URL}/api/v1/inspection/${selectedInspectionID}`,
         null,
         config,
       )
       .then(() => {
         axios
           .put(
-            `${DEV_URL}/api/v1/inspection/location`,
+            `${API_BASE_URL}/api/v1/inspection/location`,
             {
               isLocation: true,
               inspectionId: selectedInspectionID,
@@ -457,7 +457,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsDiscardInspectionModalVisible(false);
     const imageID = EXTRACT_INSPECTION_ITEM_ID(key_);
     axios
-      .delete(`${DEV_URL}/api/v1/files/${imageID}`, config)
+      .delete(`${API_BASE_URL}/api/v1/files/${imageID}`, config)
       .then(() => {
         setModalMessageDetails(deleteSuccess);
         dispatch(RemoveMethod(key_));
@@ -520,7 +520,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setLoadingIndicator(true);
     setErrorTitle('');
     axios
-      .get(`${DEV_URL}/api/v1/files/details/${inspectionID}`)
+      .get(`${API_BASE_URL}/api/v1/files/details/${inspectionID}`)
       .then(res => {
         uploadInProgressMediaToStore(res?.data?.files, dispatch);
         vehicleTireStatusToRender(inspectionID).then();
@@ -583,7 +583,6 @@ const NewInspectionContainer = ({route, navigation}) => {
     setDisplayAnnotation(!displayAnnotation);
   };
   const handleAnnotationSubmit = async (details, callback) => {
-    // setLoadingIndicator(true);
     setIsLoading(true);
     const body = {
       coordinateArray: details,

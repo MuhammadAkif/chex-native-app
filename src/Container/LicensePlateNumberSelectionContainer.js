@@ -8,7 +8,7 @@ import {LicensePlateNumberSelectionScreen} from '../Screens';
 import {
   CREATE_INSPECTION_URL,
   FETCH_NUMBER_PLATE_URL,
-  DEV_URL,
+  API_BASE_URL,
   HARDWARE_BACK_PRESS,
 } from '../Constants';
 // import {DEV_URL} from '@env'
@@ -122,7 +122,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
     setIsLoading(true);
     setErrorTitle('');
     axios
-      .get(`${DEV_URL}/api/v1/files/details/${inspectionID}`)
+      .get(`${API_BASE_URL}/api/v1/files/details/${inspectionID}`)
       .then(res => {
         uploadInProgressMediaToStore(res?.data?.files, dispatch);
         setIsLoading(false);

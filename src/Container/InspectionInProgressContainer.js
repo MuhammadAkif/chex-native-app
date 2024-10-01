@@ -11,7 +11,7 @@ import {
   REMOVE_INSPECTION_IN_PROGRESS,
 } from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
-import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
+import {API_BASE_URL, HARDWARE_BACK_PRESS} from '../Constants';
 import {
   fetchInProgressInspections,
   get_Inspection_Details,
@@ -98,7 +98,7 @@ const InspectionInProgressContainer = ({navigation}) => {
     setIsLoading(true);
     setInspectionID(inspectionId);
     await axios
-      .get(`${DEV_URL}/api/v1/files/details/${inspectionId}`)
+      .get(`${API_BASE_URL}/api/v1/files/details/${inspectionId}`)
       .then(res => {
         const vehicleType = res?.data?.hasAdded;
         dispatch({type: VEHICLE_TYPE, payload: vehicleType});

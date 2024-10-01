@@ -6,7 +6,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import {
   CREATE_INSPECTION_URL,
-  DEV_URL,
+  API_BASE_URL,
   FETCH_IN_PROGRESS_URL,
   Image_Type,
   INSPECTION,
@@ -376,7 +376,7 @@ export const uploadFile = async (
 ) => {
   let imageID = 0;
   await axios
-    .post(`${DEV_URL}/api/v1/vehicle/${inspectionId}/file`, body, {
+    .post(`${API_BASE_URL}/api/v1/vehicle/${inspectionId}/file`, body, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
@@ -923,7 +923,7 @@ export function exteriorVariant(item, variant) {
 }
 export const get_Inspection_Details = async (dispatch, inspectionId) => {
   await axios
-    .get(`${DEV_URL}/api/v1/files/details/${inspectionId}`)
+    .get(`${API_BASE_URL}/api/v1/files/details/${inspectionId}`)
     .then(res => {
       const details = res?.data?.files;
       dispatch(File_Details(details, inspectionId));
@@ -976,4 +976,4 @@ export function assignNumber(arr = [], length = 0) {
     }
   }
 }
-export const fallBack = text => console.log(text);
+export const fallBack = (text = 'Fall back Pressed') => console.log(text);

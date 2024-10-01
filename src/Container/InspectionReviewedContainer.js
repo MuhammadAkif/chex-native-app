@@ -8,7 +8,7 @@ import {InspectionReviewedScreen} from '../Screens';
 import {FETCH_INSPECTION_REVIEWED} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
 // import {DEV_URL} from '@env';
-import {DEV_URL, HARDWARE_BACK_PRESS} from '../Constants';
+import {API_BASE_URL, HARDWARE_BACK_PRESS} from '../Constants';
 import {
   fetchInProgressInspections,
   FILTER_IMAGES,
@@ -80,7 +80,7 @@ const InspectionReviewedContainer = ({navigation}) => {
     setIsLoading(true);
     setSelectedInspectionID(inspectionID);
     axios
-      .get(`${DEV_URL}/api/v1/files/app/${inspectionID}`)
+      .get(`${API_BASE_URL}/api/v1/files/app/${inspectionID}`)
       .then(res => {
         setIsLoading(false);
         const {finalStatus, remarks} = res?.data?.inspectionData;

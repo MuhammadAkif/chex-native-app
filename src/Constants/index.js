@@ -6,22 +6,30 @@ const ENV_TYPE_URL = {
   production: process.env.PRODUCTION_URL,
   development: process.env.DEVELOPMENT_URL,
 };
-export const DEV_URL = ENV_TYPE_URL.development;
+export const API_BASE_URL =
+  'https://bed-paraguay-brave-documents.trycloudflare.com';
+// export const DEV_URL = ENV_TYPE_URL.development;
+const generateApiUrl = path => API_BASE_URL + path;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
-export const FETCH_NUMBER_PLATE_URL = DEV_URL + '/api/v1/searchnumberplate';
-export const EXTRACT_NUMBER_PLATE =
-  DEV_URL + '/api/v1/extract/inspection/create';
+export const FETCH_NUMBER_PLATE_URL = generateApiUrl(
+  '/api/v1/searchnumberplate',
+);
+export const EXTRACT_NUMBER_PLATE = generateApiUrl(
+  '/api/v1/extract/inspection/create',
+);
 export const EXTRACT_NUMBER_PLATE_WITH_AI =
   process.env.EXTRACT_NUMBER_PLATE_URL;
-export const LOGIN_URL = DEV_URL + '/api/v1/auth/login';
-export const UPLOAD_URL = DEV_URL + '/api/v1/file/upload';
-export const CREATE_INSPECTION_URL = DEV_URL + '/api/v1/create/inspection';
-export const FETCH_IN_PROGRESS_URL = DEV_URL + '/api/v1/status/vehicle';
-export const FORGET_PASSWORD_URL = DEV_URL + '/api/v1/auth/reset/email';
-export const RESET_PASSWORD_URL = DEV_URL + '/api/v1/auth/reset/password';
-export const INSPECTION_TIRE_STATUS = DEV_URL + '/api/v1/display/tire';
-export const REMOVE_ALL_TIRES = DEV_URL + '/api/v1/delete/file';
-export const ANNOTATION = DEV_URL + '/api/v1/file/coordinate';
+export const LOGIN_URL = generateApiUrl('/api/v1/auth/login');
+export const UPLOAD_URL = generateApiUrl('/api/v1/file/upload');
+export const CREATE_INSPECTION_URL = generateApiUrl(
+  '/api/v1/create/inspection',
+);
+export const FETCH_IN_PROGRESS_URL = generateApiUrl('/api/v1/status/vehicle');
+export const FORGET_PASSWORD_URL = generateApiUrl('/api/v1/auth/reset/email');
+export const RESET_PASSWORD_URL = generateApiUrl('/api/v1/auth/reset/password');
+export const INSPECTION_TIRE_STATUS = generateApiUrl('/api/v1/display/tire');
+export const REMOVE_ALL_TIRES = generateApiUrl('/api/v1/delete/file');
+export const ANNOTATION = generateApiUrl('/api/v1/file/coordinate');
 export const AI_API_TOKEN = process.env.AI_API_TOKEN;
 // Api Endpoints ends here
 
@@ -152,7 +160,7 @@ export const ANNOTATE_IMAGE_DETAILS = {
   title: 'Exterior Front',
   source: IMAGES.front_Left_Corner,
   description:
-    "To annotate an image of a vehicle's front, you can click directly on the area of interest within the image. Upon clicking, a damage icon will appear at the selected spot, allowing you to visually mark and highlight the specific location of any damage.",
+    "To annotate an image of a vehicle's, you can click directly on the area of interest within the image. Upon clicking, a damage icon will appear at the selected spot, allowing you to visually mark and highlight the specific location of any damage.",
   instruction: 'Do you want to Annotate\n',
   annotateText: 'Annotate',
   skipText: 'Skip',
