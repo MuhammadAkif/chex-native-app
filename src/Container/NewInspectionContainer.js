@@ -594,7 +594,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       fileId: fileID,
     };
     axios
-      .put(ANNOTATION_URL, body, config)
+      .post(ANNOTATION_URL, body, config)
       .then(res => {
         callback();
         get_Inspection_Details(dispatch, selectedInspectionID);

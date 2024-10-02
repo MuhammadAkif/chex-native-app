@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Keyboard,
+  Platform,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -24,7 +25,7 @@ import {
   RenderIcons,
   SecondaryButton,
 } from '../index';
-import {ANNOTATE_IMAGE, DAMAGE_TYPE} from '../../Constants';
+import {ANNOTATE_IMAGE, DAMAGE_TYPE, IOS} from '../../Constants';
 
 const AnnotateImage = ({
   modalVisible = false,
@@ -207,7 +208,7 @@ const AnnotateImage = ({
               <Text style={styles.subHeadingText}>Add Notes</Text>
               <View style={styles.statusDescriptionContainer}>
                 <TextInput
-                  style={styles.text}
+                  style={[styles.text, Platform.OS === IOS && styles.iOSStyle]}
                   placeholder={notes}
                   multiline={true}
                   editable={selectedMarkerId !== null}
@@ -325,7 +326,8 @@ const styles = StyleSheet.create({
   statusDescriptionContainer: {
     height: hp('12%'),
     width: '100%',
-    padding: '3%',
+    paddingVertical: Platform.OS === IOS ? hp('1%') : hp('0.3%'),
+    paddingHorizontal: wp('2%'),
     borderRadius: 10,
     backgroundColor: colors.lightGray,
   },
@@ -333,6 +335,8 @@ const styles = StyleSheet.create({
     fontSize: hp('1.8%'),
     color: colors.black,
     width: '100%',
+  },
+  iOSStyle: {
     height: hp('10%'),
   },
   box: {

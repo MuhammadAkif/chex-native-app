@@ -48,7 +48,11 @@ const DisplayMediaModal = ({
             style={styles.image}
           />
         ) : (
-          <View>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
             <FastImage
               source={{uri: source}}
               priority={'normal'}
@@ -96,8 +100,9 @@ const styles = StyleSheet.create({
   },
   image: {
     height: hp('25%'),
-    width: wp('90%'),
-    borderRadius: 10,
+    width: wp('80%'),
+    alignSelf: 'center',
+    borderRadius: 20,
   },
   crossIconContainer: {
     position: 'absolute',

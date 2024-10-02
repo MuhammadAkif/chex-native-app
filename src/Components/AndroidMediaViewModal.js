@@ -115,7 +115,6 @@ const styles = StyleSheet.create({
   },
   image: {
     height: hp('25%'),
-    // width: '100%',
     width: wp('80%'),
     alignSelf: 'center',
     borderRadius: 20,
