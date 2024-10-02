@@ -6,6 +6,8 @@ import {useFocusEffect} from '@react-navigation/native';
 import {Alert, BackHandler, Platform} from 'react-native';
 import {ANDROID, HARDWARE_BACK_PRESS} from '../Constants';
 
+const {SIGN_IN} = ROUTES;
+
 const WelcomeContainer = ({navigation}) => {
   useFocusEffect(
     useCallback(() => {
@@ -33,7 +35,7 @@ const WelcomeContainer = ({navigation}) => {
     }
   }
 
-  const handleSignInPress = () => navigation.navigate(ROUTES.SIGN_IN);
+  const handleSignInPress = () => navigation.navigate(SIGN_IN);
 
   return <WelcomeScreen handleSignInPress={handleSignInPress} />;
 };

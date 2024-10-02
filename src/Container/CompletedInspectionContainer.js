@@ -5,6 +5,8 @@ import CompletedInspectionScreen from '../Screens/CompletedInspectionScreen';
 import {HARDWARE_BACK_PRESS} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 
+const {INSPECTION_SELECTION} = ROUTES;
+
 const CompletedInspectionContainer = ({navigation}) => {
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -15,7 +17,7 @@ const CompletedInspectionContainer = ({navigation}) => {
   }, []);
   function handle_Hardware_Back_Press() {
     if (navigation.canGoBack()) {
-      navigation.navigate(ROUTES.INSPECTION_SELECTION);
+      navigation.navigate(INSPECTION_SELECTION);
       return true;
     }
     return false;

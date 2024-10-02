@@ -17,6 +17,8 @@ import {
   sortInspectionReviewedItems,
 } from '../Utils';
 
+const {INSPECTION_DETAIL} = ROUTES;
+
 const InspectionReviewedContainer = ({navigation}) => {
   const dispatch = useDispatch();
   const {
@@ -87,7 +89,7 @@ const InspectionReviewedContainer = ({navigation}) => {
         // let files = sortInspection_Reviewed_Items(beforeImages);
         let files = sortInspectionReviewedItems(beforeImages);
         resetAllStates();
-        navigation.navigate(ROUTES.INSPECTION_DETAIL, {
+        navigation.navigate(INSPECTION_DETAIL, {
           files: files,
           finalStatus: finalStatus,
           remarks: remarks,

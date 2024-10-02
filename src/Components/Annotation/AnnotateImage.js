@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  Keyboard,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -129,7 +130,7 @@ const AnnotateImage = ({
     setCurrentMarkerDamageDetails(null);
     setSelectedMarkerId(null);
   };
-
+  const closeKeyboard = () => Keyboard.dismiss();
   return (
     <Modal
       animationType="slide"
@@ -137,7 +138,10 @@ const AnnotateImage = ({
       visible={modalVisible}
       onRequestClose={handleVisible}
       style={styles.container}>
-      <View style={styles.centeredViewContainer}>
+      <TouchableOpacity
+        activeOpacity={1}
+        style={styles.centeredViewContainer}
+        onPress={closeKeyboard}>
         <View style={styles.centeredView}>
           <View
             style={[
@@ -231,7 +235,7 @@ const AnnotateImage = ({
             />
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
       <StatusBar
         backgroundColor="rgba(0, 27, 81, 0.9)"
         barStyle="light-content"

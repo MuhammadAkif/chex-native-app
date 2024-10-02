@@ -64,7 +64,11 @@ const AndroidMediaViewModal = ({
               />
             </View>
           ) : (
-            <>
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
               <FastImage
                 source={{uri: source}}
                 priority={'normal'}
@@ -80,7 +84,7 @@ const AndroidMediaViewModal = ({
                     disabled={true}
                   />
                 ))}
-            </>
+            </View>
           )}
         </View>
         <View style={styles.container} />
@@ -95,7 +99,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    width: wp('90%'),
+    width: wp('80%'),
+    alignItems: 'center',
   },
   headerContainer: {
     alignItems: 'center',
@@ -110,7 +115,9 @@ const styles = StyleSheet.create({
   },
   image: {
     height: hp('25%'),
-    width: '100%',
+    // width: '100%',
+    width: wp('80%'),
+    alignSelf: 'center',
     borderRadius: 20,
   },
   crossIconContainer: {

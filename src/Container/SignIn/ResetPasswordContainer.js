@@ -14,6 +14,7 @@ import {ANDROID, API_ENDPOINTS, HARDWARE_BACK_PRESS} from '../../Constants';
 import {ResetPasswordScreen} from '../../Screens';
 
 const {RESET_PASSWORD_URL} = API_ENDPOINTS;
+const {WELCOME, FORGET_PASSWORD, SIGN_IN} = ROUTES;
 
 const ResetPasswordContainer = ({navigation, route}) => {
   const email = route?.params?.email;
@@ -57,7 +58,7 @@ const ResetPasswordContainer = ({navigation, route}) => {
       navigation.goBack();
       return true;
     } else {
-      navigation.navigate(ROUTES.WELCOME);
+      navigation.navigate(WELCOME);
     }
     return false;
   }
@@ -95,8 +96,7 @@ const ResetPasswordContainer = ({navigation, route}) => {
   const hidePasswordHandler = () => setHidePassword(!hidePassword);
   const hideConfirmPasswordHandler = () =>
     setHideConfirmPassword(!hideConfirmPassword);
-  const handleForgetPassword = () =>
-    navigation.navigate(ROUTES.FORGET_PASSWORD);
+  const handleForgetPassword = () => navigation.navigate(FORGET_PASSWORD);
   const handleResetPassword = async (body, resetForm) => {
     let {verificationCode, password, confirmPassword} = body;
     axios
@@ -110,7 +110,7 @@ const ResetPasswordContainer = ({navigation, route}) => {
         setIsSubmitting(false);
         // dispatch(SIGN_IN_ACTION(response.data));
         resetForm();
-        navigation.navigate(ROUTES.SIGN_IN, {
+        navigation.navigate(SIGN_IN, {
           toastMessage: 'Your password has been changed successfully',
           passwordChanged: true,
         });
@@ -125,7 +125,7 @@ const ResetPasswordContainer = ({navigation, route}) => {
       });
   };
   const handleOkPress = () => setModalMessage(modalMessageInitialState);
-  const handleKnowYourPassword = () => navigation.navigate(ROUTES.SIGN_IN);
+  const handleKnowYourPassword = () => navigation.navigate(SIGN_IN);
   const handleNavigationBackPress = () => navigation.goBack();
 
   return (

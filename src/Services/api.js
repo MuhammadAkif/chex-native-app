@@ -17,3 +17,19 @@ export const login = async (endPoint, body) => {
     })
     .catch(err => err);
 };
+export const deleteRequest = async endPoint => {
+  const {token} = store.getState().auth.user;
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  };
+
+  return await axios
+    .delete(endPoint, config)
+    .then(response => {
+      return response;
+    })
+    .catch(err => err);
+};

@@ -16,6 +16,7 @@ import {ANDROID, API_ENDPOINTS, HARDWARE_BACK_PRESS} from '../../Constants';
 import {SIGN_IN_ACTION} from '../../Store/Actions';
 
 const {LOGIN_URL} = API_ENDPOINTS;
+const {WELCOME, FORGET_PASSWORD, HOME} = ROUTES;
 
 const SignInContainer = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -66,7 +67,7 @@ const SignInContainer = ({navigation, route}) => {
       navigation.goBack();
       return true;
     } else {
-      navigation.navigate(ROUTES.WELCOME);
+      navigation.navigate(WELCOME);
     }
     return false;
   }
@@ -101,8 +102,7 @@ const SignInContainer = ({navigation, route}) => {
   const handlePasswordFocus = () => passwordRef?.current?.focus();
   // Focus handling ends here
   const hidePasswordHandler = () => setHidePassword(!hidePassword);
-  const handleForgetPassword = () =>
-    navigation.navigate(ROUTES.FORGET_PASSWORD);
+  const handleForgetPassword = () => navigation.navigate(FORGET_PASSWORD);
   const checkUserData = async (body, resetForm) => {
     axios
       .post(LOGIN_URL, {
@@ -113,7 +113,7 @@ const SignInContainer = ({navigation, route}) => {
         setIsSubmitting(false);
         dispatch(SIGN_IN_ACTION(response.data));
         resetForm();
-        navigation.navigate(ROUTES.HOME);
+        navigation.navigate(HOME);
       })
       .catch(err => {
         setIsSubmitting(false);

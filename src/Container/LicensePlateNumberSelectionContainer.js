@@ -13,6 +13,7 @@ import {handle_Session_Expired, uploadInProgressMediaToStore} from '../Utils';
 import {Types} from '../Store/Types';
 
 const {CREATE_INSPECTION_URL, FETCH_NUMBER_PLATE_URL} = API_ENDPOINTS;
+const {NEW_INSPECTION, LICENSE_PLATE_SELECTION} = ROUTES;
 
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const dispatch = useDispatch();
@@ -98,8 +99,8 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
         setInspectionID(response.data.id);
         dispatch(NumberPlateSelectedAction(response.data.id));
         resetAllStates();
-        navigation.navigate(ROUTES.NEW_INSPECTION, {
-          routeName: ROUTES.LICENSE_PLATE_SELECTION,
+        navigation.navigate(NEW_INSPECTION, {
+          routeName: LICENSE_PLATE_SELECTION,
         });
       })
       .catch(err => {
@@ -123,8 +124,8 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
         uploadInProgressMediaToStore(res?.data?.files, dispatch);
         setIsLoading(false);
         dispatch(NumberPlateSelectedAction(inspectionID));
-        navigation.navigate(ROUTES.NEW_INSPECTION, {
-          routeName: ROUTES.LICENSE_PLATE_SELECTION,
+        navigation.navigate(NEW_INSPECTION, {
+          routeName: LICENSE_PLATE_SELECTION,
         });
       })
       .catch(error => {

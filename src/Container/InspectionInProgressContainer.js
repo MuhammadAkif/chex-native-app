@@ -20,8 +20,10 @@ import {
   uploadInProgressMediaToStore,
 } from '../Utils';
 import {Types} from '../Store/Types';
+import {deleteRequest} from '../Services/api';
 
 const {VEHICLE_TYPE} = Types;
+const {NEW_INSPECTION, INSPECTION_IN_PROGRESS} = ROUTES;
 
 const InspectionInProgressContainer = ({navigation}) => {
   const dispatch = useDispatch();
@@ -107,8 +109,8 @@ const InspectionInProgressContainer = ({navigation}) => {
         setIsLoading(false);
         dispatch(NumberPlateSelectedAction(inspectionId));
         resetAllStates();
-        navigation.navigate(ROUTES.NEW_INSPECTION, {
-          routeName: ROUTES.INSPECTION_IN_PROGRESS,
+        navigation.navigate(NEW_INSPECTION, {
+          routeName: INSPECTION_IN_PROGRESS,
         });
       })
       .catch(error => {
@@ -127,16 +129,39 @@ const InspectionInProgressContainer = ({navigation}) => {
   const handleYesPress = () => {
     setIsDiscardInspectionModalVisible(false);
     setIsLoading(true);
-    dispatch(
-      REMOVE_INSPECTION_IN_PROGRESS(
-        token,
-        deleteInspectionID,
-        inspectionInProgress,
-        setIsLoading,
-        setModalMessageDetails,
-      ),
-    );
+    removeInspection().then();
   };
+  async function removeInspection() {
+    let inspectionsInProgress = [];
+    inspectionsInProgress = inspectionInProgress.filter(
+      item => item.id !== deleteInspectionID,
+    );
+    await deleteRequest(
+      `${API_BASE_URL}/api/v1/delete/inspection/${deleteInspectionID}?type=app`,
+    )
+      .then(res => {
+        setIsLoading(false);
+        dispatch(REMOVE_INSPECTION_IN_PROGRESS(inspectionsInProgress));
+        setModalMessageDetails({
+          isVisible: true,
+          title: 'Deleted',
+          message: res?.data,
+        });
+      })
+      .catch(error => {
+        setIsLoading(false);
+        let errorMessage = error?.response?.data?.message[0];
+        const statusCode = error?.response?.data?.statusCode;
+        if (statusCode === 401) {
+          handle_Session_Expired(statusCode, dispatch);
+        }
+        setModalMessageDetails({
+          isVisible: true,
+          title: '',
+          message: errorMessage,
+        });
+      });
+  }
   const handleNoPress = () => setIsDiscardInspectionModalVisible(false);
   const handleOkPress = () =>
     setModalMessageDetails(modalMessageDetailsInitialState);

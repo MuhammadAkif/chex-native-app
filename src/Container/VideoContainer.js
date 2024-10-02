@@ -28,6 +28,8 @@ import {UpdateExteriorItemURI} from '../Store/Actions';
 import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
 import {HARDWARE_BACK_PRESS} from '../Constants';
 
+const {NEW_INSPECTION} = ROUTES;
+
 const VideoContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {
@@ -112,7 +114,7 @@ const VideoContainer = ({route, navigation}) => {
       handleRetryPress();
       return true;
     } else if (navigation.canGoBack()) {
-      navigation.navigate(ROUTES.NEW_INSPECTION);
+      navigation.navigate(NEW_INSPECTION);
       return true;
     }
     return false;
@@ -172,7 +174,7 @@ const VideoContainer = ({route, navigation}) => {
   };
   function uploadVideoToStore(imageID) {
     dispatch(UpdateExteriorItemURI(type, isVideoURI, imageID));
-    navigation.navigate(ROUTES.NEW_INSPECTION);
+    navigation.navigate(NEW_INSPECTION);
   }
   const handleError = () => {
     setIsModalVisible(false);

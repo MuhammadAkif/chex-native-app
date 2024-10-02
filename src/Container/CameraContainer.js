@@ -169,7 +169,7 @@ const CameraContainer = ({route, navigation}) => {
       dateImage: getCurrentDate(),
       hasAdded: vehicle_Type,
     };
-    if (groupType === 'exteriorItems') {
+    if (groupType === INSPECTION.EXTERIOR) {
       body = {...body, variant: variant};
     }
     if (category === 'CarVerification' && type === 'licensePlate') {

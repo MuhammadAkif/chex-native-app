@@ -62,12 +62,12 @@ const AnnotateImageModal = ({
       animationType="slide"
       transparent={true}
       visible={modalVisible}
-      onRequestClose={handleVisible}
+      onRequestClose={handleSkipPress}
       style={styles.container}>
       <View style={styles.centeredView}>
         <TouchableOpacity
           style={styles.crossIconContainer}
-          onPress={handleVisible}
+          onPress={handleSkipPress}
           disabled={isLoading}>
           <Cross height={hp('8%')} width={wp('10%')} color={white} />
         </TouchableOpacity>

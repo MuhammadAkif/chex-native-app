@@ -23,6 +23,14 @@ import {colors} from '../Assets/Styles';
 import {SIGN_OUT_ACTION} from '../Store/Actions';
 import {Types} from '../Store/Types';
 
+const {
+  SIGN_IN,
+  INSPECTION_SELECTION,
+  INTRO,
+  INSPECTION_DETAIL,
+  NEW_INSPECTION,
+} = ROUTES;
+
 const CustomDrawerContent = props => {
   const dispatch = useDispatch();
   const route = useRoute();
@@ -38,8 +46,8 @@ const CustomDrawerContent = props => {
   };
   useEffect(() => {
     if (
-      activeRouteName !== 'NEW INSPECTION' &&
-      previousScreen === 'NEW INSPECTION'
+      activeRouteName !== NEW_INSPECTION &&
+      previousScreen === NEW_INSPECTION
     ) {
       dispatch({type: Types.CLEAR_NEW_INSPECTION});
     }
@@ -52,7 +60,7 @@ const CustomDrawerContent = props => {
     if (active_Screen === 'Logout') {
       props.navigation.reset({
         index: 0,
-        routes: [{name: ROUTES.SIGN_IN}],
+        routes: [{name: SIGN_IN}],
       });
     } else {
       props.navigation.navigate(path);
@@ -60,7 +68,7 @@ const CustomDrawerContent = props => {
   };
   const handleLogout = () => {
     dispatch(SIGN_OUT_ACTION());
-    handleNavigationPress(ROUTES.SIGN_IN, 'Logout');
+    handleNavigationPress(SIGN_IN, 'Logout');
   };
   return (
     <ScrollView style={styles.body} {...props}>
@@ -86,9 +94,7 @@ const CustomDrawerContent = props => {
         activeColor={activeScreen === 'Home' ? activeColor : 'transparent'}
         Icon={
           <TouchableOpacity
-            onPress={() =>
-              handleNavigationPress(ROUTES.INSPECTION_SELECTION, 'Home')
-            }>
+            onPress={() => handleNavigationPress(INSPECTION_SELECTION, 'Home')}>
             <Home
               height={hp('3%')}
               width={wp('5%')}
@@ -96,9 +102,7 @@ const CustomDrawerContent = props => {
             />
           </TouchableOpacity>
         }
-        onPress={() =>
-          handleNavigationPress(ROUTES.INSPECTION_SELECTION, 'Home')
-        }
+        onPress={() => handleNavigationPress(INSPECTION_SELECTION, 'Home')}
       />
       <DrawerItemText
         text={'Things you will require'}
@@ -111,45 +115,8 @@ const CustomDrawerContent = props => {
             color={activeColorOfTextAndIcon('Intro')}
           />
         }
-        onPress={() => handleNavigationPress(ROUTES.INTRO, 'Intro ')}
+        onPress={() => handleNavigationPress(INTRO, 'Intro ')}
       />
-      {/*<DrawerItemText*/}
-      {/*  text={'Inspection Reviewed'}*/}
-      {/*  textColor={activeColorOfTextAndIcon('Inspection Reviewed')}*/}
-      {/*  activeColor={*/}
-      {/*    activeScreen === 'Inspection Reviewed' ? activeColor : 'transparent'*/}
-      {/*  }*/}
-      {/*  Icon={*/}
-      {/*    <InspectionReviewed*/}
-      {/*      height={hp('2.5%')}*/}
-      {/*      width={wp('5%')}*/}
-      {/*      color={activeColorOfTextAndIcon('Inspection Reviewed')}*/}
-      {/*    />*/}
-      {/*  }*/}
-      {/*  onPress={() =>*/}
-      {/*    handleNavigationPress(*/}
-      {/*      ROUTES.INSPECTION_REVIEWED,*/}
-      {/*      'Inspection Reviewed',*/}
-      {/*    )*/}
-      {/*  }*/}
-      {/*/>*/}
-      {/*<DrawerItemText*/}
-      {/*  text={'Inspection Detail'}*/}
-      {/*  textColor={activeColorOfTextAndIcon('Inspection Detail')}*/}
-      {/*  activeColor={*/}
-      {/*    activeScreen === 'Inspection Detail' ? activeColor : 'transparent'*/}
-      {/*  }*/}
-      {/*  Icon={*/}
-      {/*    <InspectionDetails*/}
-      {/*      height={hp('2.5%')}*/}
-      {/*      width={wp('5%')}*/}
-      {/*      color={activeColorOfTextAndIcon('Inspection Detail')}*/}
-      {/*    />*/}
-      {/*  }*/}
-      {/*  onPress={() =>*/}
-      {/*    handleNavigationPress(ROUTES.INSPECTION_DETAIL, 'Inspection Detail')*/}
-      {/*  }*/}
-      {/*/>*/}
       <DrawerItemText
         text={'Logout'}
         textColor={colors.red}

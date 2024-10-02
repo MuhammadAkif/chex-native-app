@@ -14,6 +14,7 @@ import {colors} from '../../Assets/Styles';
 import {ANDROID, API_ENDPOINTS, HARDWARE_BACK_PRESS} from '../../Constants';
 
 const {FORGET_PASSWORD_URL} = API_ENDPOINTS;
+const {WELCOME, RESET_PASSWORD, SIGN_IN} = ROUTES;
 
 const ForgotPasswordContainer = ({navigation}) => {
   const emailRef = useRef();
@@ -47,7 +48,7 @@ const ForgotPasswordContainer = ({navigation}) => {
       navigation.goBack();
       return true;
     } else {
-      navigation.navigate(ROUTES.WELCOME);
+      navigation.navigate(WELCOME);
     }
     return false;
   }
@@ -88,7 +89,7 @@ const ForgotPasswordContainer = ({navigation}) => {
       .then(response => {
         setIsSubmitting(false);
         resetForm();
-        navigation.navigate(ROUTES.RESET_PASSWORD, {
+        navigation.navigate(RESET_PASSWORD, {
           email: email,
           toastMessage: 'Verification code has been sent to your account',
         });
@@ -103,7 +104,7 @@ const ForgotPasswordContainer = ({navigation}) => {
       });
   };
   const handleOkPress = () => setModalMessage(modalMessageInitialState);
-  const handleKnowYourPassword = () => navigation.navigate(ROUTES.SIGN_IN);
+  const handleKnowYourPassword = () => navigation.navigate(SIGN_IN);
   return (
     <Formik
       initialValues={initialValues}

@@ -181,10 +181,10 @@ const NewInspectionContainer = ({route, navigation}) => {
         annotationDetails,
         is_Exterior,
       } = route.params;
-      if (isLicensePlate) {
-        setTimeout(() => setIsLicenseModalVisible(true), 1000);
-      }
-      setDisplayAnnotationPopUp(displayAnnotation || false);
+      setTimeout(() => {
+        setIsLicenseModalVisible(isLicensePlate || false);
+        setDisplayAnnotationPopUp(displayAnnotation || false);
+      }, 1000);
       setFileID(fileId || '');
       setAnnotationModalDetails(prevState => ({
         ...prevState,
@@ -449,7 +449,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   const handleYesPress = () => {
     let key_ = deleteItem?.key;
-    if (deleteItem?.category === 'exteriorItems') {
+    if (deleteItem?.category === INSPECTION.EXTERIOR) {
       key_ = exteriorVariant(key_, variant);
     }
     const handleRemoveImage = {
