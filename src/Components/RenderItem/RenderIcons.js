@@ -17,6 +17,10 @@ const RenderIcons = ({
   onCrossPressed = () => fallBack(),
 }) => {
   const activeIcon = marker.id === selectedMarkerId;
+  const background_Color = {
+    true: 'rgba(251, 49, 49, 0.4)',
+    false: 'transparent',
+  };
 
   return (
     <TouchableOpacity
@@ -25,7 +29,7 @@ const RenderIcons = ({
         zIndex: 1,
         top: marker.coordinates.y,
         left: marker.coordinates.x,
-        backgroundColor: activeIcon ? 'rgba(251, 49, 49, 0.4)' : 'transparent',
+        backgroundColor: background_Color[activeIcon],
         padding: wp('2%'),
       }}
       disabled={disabled}

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Alert} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -43,6 +43,7 @@ const NavigationDrawer = ({navigation}) => {
     INSPECTION_IN_PROGRESS,
     SIGN_IN,
   } = ROUTES;
+  const {TITLE, MESSAGE, BUTTON} = SESSION_EXPIRED;
   const options = {
     headerTitleAlign: 'center',
     headerTitle: ScreenHeaderTitle,
@@ -57,59 +58,55 @@ const NavigationDrawer = ({navigation}) => {
   };
   return (
     <>
-    <Navigator
-      backBehavior={'history'}
-      drawerContent={drawerContent}
-      screenOptions={{
-        headerTitle: NavigatorHeaderTitle,
-        drawerType: 'front',
-        drawerStatusBarAnimation: 'slide',
-        headerLeft: headerBackButton,
-        swipeEdgeWidth: 150,
-      }}
-      initialRouteName={INSPECTION_SELECTION}>
-      <Screen
-        name={INSPECTION_SELECTION}
-        component={InspectionSelectionContainer}
-        options={{
-          headerShown: false,
+      <Navigator
+        backBehavior={'history'}
+        drawerContent={drawerContent}
+        screenOptions={{
+          headerTitle: NavigatorHeaderTitle,
+          drawerType: 'front',
+          drawerStatusBarAnimation: 'slide',
+          headerLeft: headerBackButton,
+          swipeEdgeWidth: 150,
         }}
-      />
-      <Screen
-        name={INTRO}
-        component={IntroContainer}
-        options={options}
-      />
-      <Screen
-        name={LICENSE_PLATE_SELECTION}
-        component={LicensePlateNumberSelectionContainer}
-        options={options}
-      />
-      <Screen
-        name={NEW_INSPECTION}
-        component={NewInspectionContainer}
-        options={options}
-      />
-      <Screen
-        name={INSPECTION_REVIEWED}
-        component={InspectionReviewedContainer}
-        options={options}
-      />
-      <Screen
-        name={INSPECTION_DETAIL}
-        component={InspectionDetailContainer}
-        options={options}
-      />
-      <Screen
-        name={INSPECTION_IN_PROGRESS}
-        component={InspectionInProgressContainer}
-        options={options}
-      />
-    </Navigator>
-  {sessionExpired &&
-  Alert.alert(TITLE, MESSAGE, [{text: BUTTON, onPress: handleOkPress}])}
+        initialRouteName={INSPECTION_SELECTION}>
+        <Screen
+          name={INSPECTION_SELECTION}
+          component={InspectionSelectionContainer}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Screen name={INTRO} component={IntroContainer} options={options} />
+        <Screen
+          name={LICENSE_PLATE_SELECTION}
+          component={LicensePlateNumberSelectionContainer}
+          options={options}
+        />
+        <Screen
+          name={NEW_INSPECTION}
+          component={NewInspectionContainer}
+          options={options}
+        />
+        <Screen
+          name={INSPECTION_REVIEWED}
+          component={InspectionReviewedContainer}
+          options={options}
+        />
+        <Screen
+          name={INSPECTION_DETAIL}
+          component={InspectionDetailContainer}
+          options={options}
+        />
+        <Screen
+          name={INSPECTION_IN_PROGRESS}
+          component={InspectionInProgressContainer}
+          options={options}
+        />
+      </Navigator>
+      {sessionExpired &&
+        Alert.alert(TITLE, MESSAGE, [{text: BUTTON, onPress: handleOkPress}])}
+    </>
   );
-  </>
 };
 
 export default NavigationDrawer;
