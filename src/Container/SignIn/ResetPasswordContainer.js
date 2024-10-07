@@ -108,7 +108,6 @@ const ResetPasswordContainer = ({navigation, route}) => {
         password: password,
       })
       .then(response => {
-        setIsSubmitting(false);
         // dispatch(SIGN_IN_ACTION(response.data));
         resetForm();
         navigate(SIGN_IN, {
@@ -117,13 +116,13 @@ const ResetPasswordContainer = ({navigation, route}) => {
         });
       })
       .catch(err => {
-        setIsSubmitting(false);
         setModalMessage(prev => ({
           ...prev,
           isVisible: true,
           error: err?.response?.data?.errors,
         }));
-      });
+      })
+      .finally(() => setIsSubmitting(false));
   };
   const handleOkPress = () => setModalMessage(modalMessageInitialState);
   const handleKnowYourPassword = () => navigate(SIGN_IN);

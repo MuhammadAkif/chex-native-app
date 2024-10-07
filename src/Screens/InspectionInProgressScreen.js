@@ -74,7 +74,7 @@ const InspectionInProgressScreen = ({
                 styles={styles}
                 handleContinuePress={handleContinuePress}
                 onCrossPress={onCrossPress}
-                isLoading={isLoading||isNewInspectionLoading}
+                isLoading={isLoading || isNewInspectionLoading}
                 inspectionID={inspectionID}
               />
             )}
@@ -95,7 +95,7 @@ const InspectionInProgressScreen = ({
         isLoading={isNewInspectionLoading}
         buttonPress={onNewInspectionPress}
         textPress={() => handleHomePress(navigation)}
-        disabled={isLoading || isNewInspectionLoading}
+        disabled={isNewInspectionLoading}
       />
     </View>
   </View>

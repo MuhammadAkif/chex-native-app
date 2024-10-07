@@ -61,7 +61,7 @@ const InspectionReviewedContainer = ({navigation}) => {
     let inspectionReviewData = [];
     inspectionReviewData = await fetchInProgressInspections(
       token,
-      ['IN_REVIEW', 'REVIEWED', 'READY_FOR_REVIEW'],
+      INSPECTION_STATUSES,
       setIsLoading,
       dispatch,
     );

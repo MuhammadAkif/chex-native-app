@@ -8,6 +8,11 @@ import {
 import {colors} from '../Assets/Styles';
 import {HidePassword, ShowPassword} from '../Assets/Icons';
 
+const Password_Icon = {
+  true: HidePassword,
+  false: ShowPassword,
+};
+
 const CustomPasswordInput = forwardRef(
   (
     {
@@ -24,7 +29,7 @@ const CustomPasswordInput = forwardRef(
       valueName,
       touched,
       error,
-      enterKeyHint,
+      enterKeyHint = 'next',
       onPressIn,
       onPressOut,
       inputContainerStyle,
@@ -32,44 +37,39 @@ const CustomPasswordInput = forwardRef(
       isPasswordHidden,
     },
     ref,
-  ) => (
-    <View style={[styles.container, inputContainerStyle]}>
-      <TextInput
-        ref={ref}
-        placeholder={placeholder}
-        placeholderTextColor={colors.steelGray}
-        value={value}
-        onChange={onChange}
-        onPressIn={onPressIn}
-        onPressOut={onPressOut}
-        numberOfLines={1}
-        multiline={false}
-        onChangeText={onChangeText(valueName)}
-        onBlur={onBlur(valueName)}
-        secureTextEntry={secureTextEntry}
-        style={[styles.input, inputStyle, {color: colors.black}]}
-        inputMode={inputMode}
-        enterKeyHint={enterKeyHint || 'next'}
-        onSubmitEditing={onSubmitEditing}
-        keyboardType={keyboardType}
-      />
-      <TouchableOpacity onPress={hidePasswordHandler}>
-        {isPasswordHidden ? (
-          <HidePassword
+  ) => {
+    const ICON_COMPONENT = Password_Icon[isPasswordHidden];
+    return (
+      <View style={[styles.container, inputContainerStyle]}>
+        <TextInput
+          ref={ref}
+          placeholder={placeholder}
+          placeholderTextColor={colors.steelGray}
+          value={value}
+          onChange={onChange}
+          onPressIn={onPressIn}
+          onPressOut={onPressOut}
+          numberOfLines={1}
+          multiline={false}
+          onChangeText={onChangeText(valueName)}
+          onBlur={onBlur(valueName)}
+          secureTextEntry={secureTextEntry}
+          style={[styles.input, inputStyle, {color: colors.black}]}
+          inputMode={inputMode}
+          enterKeyHint={enterKeyHint}
+          onSubmitEditing={onSubmitEditing}
+          keyboardType={keyboardType}
+        />
+        <TouchableOpacity onPress={hidePasswordHandler}>
+          <ICON_COMPONENT
             height={hp('3%')}
             width={wp('6%')}
             color={colors.gray}
           />
-        ) : (
-          <ShowPassword
-            height={hp('3%')}
-            width={wp('6%')}
-            color={colors.gray}
-          />
-        )}
-      </TouchableOpacity>
-    </View>
-  ),
+        </TouchableOpacity>
+      </View>
+    );
+  },
 );
 
 const styles = StyleSheet.create({

@@ -8,6 +8,13 @@ import {
   S3_BUCKET_BASEURL,
 } from '../Constants';
 import {assignNumber} from '../Utils';
+import {CrossFilled, Tick} from '../Assets/Icons';
+import {colors} from '../Assets/Styles';
+
+const STATUS_ICON = {
+  true: Tick,
+  false: CrossFilled,
+};
 
 const InspectionDetailContainer = ({navigation, route}) => {
   const {canGoBack, goBack} = navigation;
@@ -18,6 +25,14 @@ const InspectionDetailContainer = ({navigation, route}) => {
     let {files, finalStatus, remarks} = route.params;
     detailsFiles = {files: files, finalStatus: finalStatus, remarks: remarks};
   }
+  const isPassed =
+    detailsFiles?.finalStatus &&
+    detailsFiles?.finalStatus.toLowerCase() === 'pass';
+  const ICON_COLOR = {
+    true: colors.deepGreen,
+    false: colors.red,
+  };
+  const ICON_COMPONENT = STATUS_ICON[isPassed];
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
@@ -38,12 +53,15 @@ const InspectionDetailContainer = ({navigation, route}) => {
   }
   const handleDisplayMedia = item => {
     let title = INSPECTION_TITLE[item?.category] || 'No Title';
+    const checkVideo = {
+      'video/mp4': true,
+      '.mp4': true,
+    };
     let mediaURL =
       item?.url.split('/')[0] === 'uploads'
-        ? `${S3_BUCKET_BASEURL}${item?.url}`
+        ? S3_BUCKET_BASEURL + item?.url
         : item?.url;
-    const isVideo =
-      item?.extension === 'video/mp4' || item?.extension === '.mp4';
+    const isVideo = checkVideo[item?.extension] || false;
     setModalDetails({
       source: mediaURL,
       title: title,
@@ -65,6 +83,9 @@ const InspectionDetailContainer = ({navigation, route}) => {
       modalDetails={modalDetails}
       handleDisplayMedia={handleDisplayMedia}
       handleDisplayMediaCrossPress={handleDisplayMediaCrossPress}
+      iconColor={ICON_COLOR[isPassed]}
+      ICON_COMPONENT={ICON_COMPONENT}
+      isPassed={isPassed}
     />
   );
 };

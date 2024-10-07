@@ -88,7 +88,6 @@ const ForgotPasswordContainer = ({navigation}) => {
     axios
       .post(FORGET_PASSWORD_URL, {email: email})
       .then(response => {
-        setIsSubmitting(false);
         resetForm();
         navigate(RESET_PASSWORD, {
           email: email,
@@ -96,13 +95,13 @@ const ForgotPasswordContainer = ({navigation}) => {
         });
       })
       .catch(err => {
-        setIsSubmitting(false);
         setModalMessage(prev => ({
           ...prev,
           isVisible: true,
           error: 'Email not found',
         }));
-      });
+      })
+      .finally(() => setIsSubmitting(false));
   };
   const handleOkPress = () => setModalMessage(modalMessageInitialState);
   const handleKnowYourPassword = () => navigate(SIGN_IN);

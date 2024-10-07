@@ -22,26 +22,16 @@ import {
 import {Types} from '../Store/Types';
 import {SESSION_EXPIRED} from '../Constants';
 
-const options = {
-  headerTitleAlign: 'center',
-  headerTitle: props => <HeaderTitle {...props} />,
-  headerBackground: () => <HeaderBackground />,
-};
-const screenOptions = {
-  headerTitle: () => <HeaderTitle />,
-  drawerType: 'front',
-  drawerStatusBarAnimation: 'slide',
-  headerLeft: () => <HeaderBackButton />,
-  swipeEdgeWidth: 150,
-};
+const ScreenHeaderTitle = props => <HeaderTitle {...props} />;
+const headerBackground = () => <HeaderBackground />;
 const drawerContent = props => <CustomDrawerContent {...props} />;
-const {TITLE, MESSAGE, BUTTON} = SESSION_EXPIRED;
+const NavigatorHeaderTitle = () => <HeaderTitle />;
+const headerBackButton = () => <HeaderBackButton />;
 
 const NavigationDrawer = ({navigation}) => {
   const {Screen, Navigator} = createDrawerNavigator();
   const {reset} = navigation;
   const dispatch = useDispatch();
-
   const {sessionExpired} = useSelector(state => state?.auth);
   const {
     INSPECTION_SELECTION,
@@ -53,7 +43,11 @@ const NavigationDrawer = ({navigation}) => {
     INSPECTION_IN_PROGRESS,
     SIGN_IN,
   } = ROUTES;
-
+  const options = {
+    headerTitleAlign: 'center',
+    headerTitle: ScreenHeaderTitle,
+    headerBackground: headerBackground,
+  };
   const handleOkPress = () => {
     dispatch({type: Types.SIGN_OUT});
     reset({
@@ -63,49 +57,59 @@ const NavigationDrawer = ({navigation}) => {
   };
   return (
     <>
-      <Navigator
-        backBehavior={'history'}
-        drawerContent={drawerContent}
-        screenOptions={screenOptions}
-        initialRouteName={INSPECTION_SELECTION}>
-        <Screen
-          name={INSPECTION_SELECTION}
-          component={InspectionSelectionContainer}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Screen name={INTRO} component={IntroContainer} options={options} />
-        <Screen
-          name={LICENSE_PLATE_SELECTION}
-          component={LicensePlateNumberSelectionContainer}
-          options={options}
-        />
-        <Screen
-          name={NEW_INSPECTION}
-          component={NewInspectionContainer}
-          options={options}
-        />
-        <Screen
-          name={INSPECTION_REVIEWED}
-          component={InspectionReviewedContainer}
-          options={options}
-        />
-        <Screen
-          name={INSPECTION_DETAIL}
-          component={InspectionDetailContainer}
-          options={options}
-        />
-        <Screen
-          name={INSPECTION_IN_PROGRESS}
-          component={InspectionInProgressContainer}
-          options={options}
-        />
-      </Navigator>
-      {sessionExpired &&
-        Alert.alert(TITLE, MESSAGE, [{text: BUTTON, onPress: handleOkPress}])}
-    </>
+    <Navigator
+      backBehavior={'history'}
+      drawerContent={drawerContent}
+      screenOptions={{
+        headerTitle: NavigatorHeaderTitle,
+        drawerType: 'front',
+        drawerStatusBarAnimation: 'slide',
+        headerLeft: headerBackButton,
+        swipeEdgeWidth: 150,
+      }}
+      initialRouteName={INSPECTION_SELECTION}>
+      <Screen
+        name={INSPECTION_SELECTION}
+        component={InspectionSelectionContainer}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Screen
+        name={INTRO}
+        component={IntroContainer}
+        options={options}
+      />
+      <Screen
+        name={LICENSE_PLATE_SELECTION}
+        component={LicensePlateNumberSelectionContainer}
+        options={options}
+      />
+      <Screen
+        name={NEW_INSPECTION}
+        component={NewInspectionContainer}
+        options={options}
+      />
+      <Screen
+        name={INSPECTION_REVIEWED}
+        component={InspectionReviewedContainer}
+        options={options}
+      />
+      <Screen
+        name={INSPECTION_DETAIL}
+        component={InspectionDetailContainer}
+        options={options}
+      />
+      <Screen
+        name={INSPECTION_IN_PROGRESS}
+        component={InspectionInProgressContainer}
+        options={options}
+      />
+    </Navigator>
+  {sessionExpired &&
+  Alert.alert(TITLE, MESSAGE, [{text: BUTTON, onPress: handleOkPress}])}
   );
+  </>
 };
 
 export default NavigationDrawer;

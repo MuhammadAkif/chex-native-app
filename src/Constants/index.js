@@ -151,3 +151,39 @@ export const ANNOTATE_IMAGE = {
 
 export const DAMAGE_TYPE = ['Minor', 'Major', 'Severe'];
 export const Image_Type = [];
+
+export const PROJECT_NAME = {
+  CHEX_AI: 'CHEX.AI',
+  CHEX: 'CHEX',
+  AI: '.AI',
+};
+
+export const DRAWER = {
+  HOME: 'HOME',
+  THINGS_YOU_WILL_REQUIRE: 'Things you will require',
+  LOGOUT: 'Logout',
+};
+
+export const INSPECTION_STATUSES = [
+  'IN_REVIEW',
+  'REVIEWED',
+  'READY_FOR_REVIEW',
+];
+export const STATUSES = {
+  REVIEWED: 'Reviewed',
+  READY_FOR_REVIEW: 'Ready For Review',
+  IN_REVIEW: 'In Review',
+};
+export const PHYSICAL_DEVICES = [
+  'wide-angle-camera',
+  'ultra-wide-angle-camera',
+  'telephoto-camera',
+];
+export const IS_BACK_CAMERA = {
+  front: true,
+  back: false,
+};
+export const SWITCH_CAMERA = {
+  true: 'front',
+  false: 'back',
+};

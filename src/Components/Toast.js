@@ -7,32 +7,44 @@ import {
 
 import {XMark, Check, Cross} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-const Toast = ({message, onCrossPress, isError, isForgetPassword}) => (
-  <View
-    style={[styles.centeredView, {top: isForgetPassword ? hp('5%') : null}]}>
-    <View style={styles.messageTextContainer}>
-      <View
-        style={[
-          styles.iconContainer,
-          {backgroundColor: isError ? colors.red : colors.brightGreen},
-        ]}>
-        {isError ? (
-          <Cross height={hp('3%')} width={wp('5%')} color={colors.white} />
-        ) : (
-          <Check height={hp('3%')} width={wp('5%')} color={colors.white} />
-        )}
+const Toast_Icons = {
+  true: Cross,
+  false: Check,
+};
+const Background_Color = {
+  true: colors.red,
+  false: colors.brightGreen,
+};
+const Container_Top = {
+  true: hp('5%'),
+  false: null,
+};
+
+const Toast = ({message, onCrossPress, isError = false, isForgetPassword}) => {
+  const ICON_COMPONENT = Toast_Icons[isError];
+  const BACKGROUND_COLOR = Background_Color[isError];
+  return (
+    <View style={[styles.centeredView, {top: Container_Top[isForgetPassword]}]}>
+      <View style={styles.messageTextContainer}>
+        <View
+          style={[styles.iconContainer, {backgroundColor: BACKGROUND_COLOR}]}>
+          <ICON_COMPONENT
+            height={hp('3%')}
+            width={wp('5%')}
+            color={colors.white}
+          />
+        </View>
+        <Text style={styles.messageText}>{message}</Text>
+        <TouchableOpacity
+          style={[styles.iconContainer, {backgroundColor: 'transparent'}]}
+          onPress={onCrossPress}>
+          <XMark height={hp('3%')} width={wp('5%')} color={colors.gray} />
+        </TouchableOpacity>
       </View>
-      <Text style={styles.messageText}>{message}</Text>
-      <TouchableOpacity
-        style={[styles.iconContainer, {backgroundColor: 'transparent'}]}
-        onPress={onCrossPress}>
-        <XMark height={hp('3%')} width={wp('5%')} color={colors.gray} />
-      </TouchableOpacity>
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

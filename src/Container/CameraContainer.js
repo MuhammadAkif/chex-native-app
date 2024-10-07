@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
-  ActivityIndicator,
   AppState,
   BackHandler,
   StatusBar,
@@ -20,6 +19,7 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
+import axios from 'axios';
 
 import {colors, PreviewStyles} from '../Assets/Styles';
 import {BackArrow} from '../Assets/Icons';
@@ -43,11 +43,19 @@ import {
   EXTRACT_NUMBER_PLATE_WITH_AI,
   HARDWARE_BACK_PRESS,
   INSPECTION,
+  IS_BACK_CAMERA,
+  PHYSICAL_DEVICES,
   S3_BUCKET_BASEURL,
+  SWITCH_CAMERA,
 } from '../Constants';
 import {Types} from '../Store/Types';
-import axios from 'axios';
 import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
+
+const handleUpdateStoreMedia = {
+  CarVerification: UpdateCarVerificationItemURI,
+  Exterior: UpdateExteriorItemURI,
+  Tires: UpdateTiresItemURI,
+};
 
 const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
 const {IS_LICENSE_PLATE_UPLOADED, plate_Number, CLEAR_INSPECTION_IMAGES} =
@@ -64,13 +72,11 @@ const CameraContainer = ({route, navigation}) => {
   const appState = useRef(AppState.currentState);
   const [selectedCamera, setSelectedCamera] = useState('back');
   const device = useCameraDevice(selectedCamera, {
-    physicalDevices: [
-      'wide-angle-camera',
-      'ultra-wide-angle-camera',
-      'telephoto-camera',
-    ],
+    physicalDevices: PHYSICAL_DEVICES,
   });
-  const [isBackCamera, setIsBackCamera] = useState(selectedCamera === 'front');
+  const [isBackCamera, setIsBackCamera] = useState(
+    IS_BACK_CAMERA[selectedCamera],
+  );
   const [isImageURL, setIsImageURL] = useState('');
   const [isImageFile, setIsImageFile] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -92,11 +98,6 @@ const CameraContainer = ({route, navigation}) => {
     isVideo,
     groupType,
   } = modalDetails;
-  const confirmButtonText = isLoading ? (
-    <ActivityIndicator size={'small'} color={colors.white} />
-  ) : (
-    EXPIRY_INSPECTION.confirmButton
-  );
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       appState.current = nextAppState;
@@ -123,11 +124,7 @@ const CameraContainer = ({route, navigation}) => {
   }, [isImageURL]);
 
   useEffect(() => {
-    if (isBackCamera) {
-      setSelectedCamera('front');
-    } else {
-      setSelectedCamera('back');
-    }
+    setSelectedCamera(SWITCH_CAMERA[isBackCamera]);
   }, [isBackCamera, device]);
 
   function handle_Hardware_Back_Press() {
@@ -194,11 +191,11 @@ const CameraContainer = ({route, navigation}) => {
       type_ = exteriorVariant(type_, variant);
     }
     const is_Exterior = category === 'Exterior';
-    category === 'CarVerification'
-      ? dispatch(UpdateCarVerificationItemURI(type_, isImageURL, imageID))
-      : category === 'Exterior'
-      ? dispatch(UpdateExteriorItemURI(type_, isImageURL, imageID))
-      : dispatch(UpdateTiresItemURI(type_, isImageURL, imageID));
+    const UPDATE_INSPECTION_IMAGES = handleUpdateStoreMedia[category];
+    dispatch(UPDATE_INSPECTION_IMAGES(type_, isImageURL, imageID));
+    navigate(ROUTES.NEW_INSPECTION, {
+      isLicensePlate: isLicensePlate,
+    });
     if (isLicensePlate) {
       dispatch({type: IS_LICENSE_PLATE_UPLOADED});
     }
@@ -334,7 +331,8 @@ const CameraContainer = ({route, navigation}) => {
           onConfirmPress={onNewInspectionPress}
           onCancelPress={handleExitPress}
           visible={true}
-          confirmButtonText={confirmButtonText}
+          isLoading={isLoading}
+          confirmButtonText={EXPIRY_INSPECTION.confirmButton}
         />
       )}
       <StatusBar

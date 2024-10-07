@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  Platform,
-  TouchableOpacity,
-  Keyboard,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Text, Platform, TouchableOpacity, Keyboard} from 'react-native';
 
 import {
   BackgroundImageView,
@@ -15,9 +8,8 @@ import {
   SignInLogo,
 } from '../../Components';
 import CustomInput from '../../Components/CustomInput';
-import {colors} from '../../Assets/Styles';
 import CustomPasswordInput from '../../Components/CustomPasswordInput';
-import {ANDROID} from '../../Constants';
+import {ANDROID, PROJECT_NAME} from '../../Constants';
 import Toast from '../../Components/Toast';
 
 const SignInScreen = ({
@@ -57,8 +49,8 @@ const SignInScreen = ({
           },
         ]}>
         <SignInLogo
-          titleText={'CHEX'}
-          dotTitleText={'.AI'}
+          titleText={PROJECT_NAME.CHEX}
+          dotTitleText={PROJECT_NAME.AI}
           subtitleText={'Virtual Inspections'}
           containerStyle={styles.logoContainer}
         />
@@ -101,13 +93,7 @@ const SignInScreen = ({
       <View style={styles.footerContainer}>
         <PrimaryGradientButton
           buttonStyle={styles.registerButtonText}
-          text={
-            isSubmitting ? (
-              <ActivityIndicator color={colors.white} size={'small'} />
-            ) : (
-              'Sign In'
-            )
-          }
+          text={'Sign In'}
           onPress={handleSubmit}
           disabled={isSubmitting}
         />

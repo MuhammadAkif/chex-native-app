@@ -10,6 +10,7 @@ import {
   S3_BUCKET_BASEURL,
   API_ENDPOINTS,
   generateApiUrl,
+  INSPECTION_TITLE,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
@@ -405,7 +406,7 @@ export const uploadFile = async (
 };
 export const fetchInProgressInspections = async (
   token,
-  status,
+  status = 'IN_PROGRESS',
   setIsLoading,
   dispatch,
 ) => {
@@ -491,7 +492,9 @@ export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
   };
   return errors[statusCode] || errors.noStatusCode;
 };
-
+export const extractTitle = (groupType, category) => {
+  return INSPECTION_TITLE[category] || 'No Title';
+};
 export const sortInspectionReviewedItems = list => {
   const customSortOrder = {
     groupType: ['carVerificiationItems', 'exteriorItems', 'tires'],

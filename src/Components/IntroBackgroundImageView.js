@@ -7,6 +7,7 @@ import {
 } from 'react-native-responsive-screen';
 
 import {WINDOW} from '../Constants';
+import {IMAGES} from '../Assets/Images';
 
 const {width} = Dimensions.get(WINDOW);
 const is_iOS =
@@ -19,7 +20,7 @@ const is_iOS =
 const IntroBackGroundImageView = ({children}) => (
   <>
     <FastImage
-      source={require('../Assets/Images/IntroVehicle.png')}
+      source={IMAGES.intro_Background}
       priority={'normal'}
       resizeMode={'contain'}
       style={styles.image}

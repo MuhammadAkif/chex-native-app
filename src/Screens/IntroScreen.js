@@ -1,26 +1,12 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Platform,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Text, StyleSheet, Platform} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import LinearGradient from 'react-native-linear-gradient';
 
-import {
-  buttonTextStyle,
-  colors,
-  dot,
-  NavigationDrawerBackgroundColor,
-} from '../Assets/Styles';
-import {IntroBackGroundImageView} from '../Components';
-import {Plus} from '../Assets/Icons';
+import {colors, dot, NavigationDrawerBackgroundColor} from '../Assets/Styles';
+import {IntroBackGroundImageView, PrimaryGradientButton} from '../Components';
 import {ANDROID} from '../Constants';
 import External from '../Assets/Icons/External';
 
@@ -48,7 +34,10 @@ const IntroScreen = ({
                 case don’t worry, follow the steps below in your phone settings:
               </Text>
             </View>
-            <Text style={styles.settingsText} onPress={handleOpenSettings} disabled={isLoading}>
+            <Text
+              style={styles.settingsText}
+              onPress={handleOpenSettings}
+              disabled={isLoading}>
               Settings {'>'} {isAndroid}Chex DSP {'>'} Allow Camera
               <Text onPress={handleOpenSettings} disabled={isLoading}>
                 {' '}
@@ -70,30 +59,12 @@ const IntroScreen = ({
             <View style={styles.emptyView} />
           </View>
           <View style={styles.footerContainer}>
-            <TouchableOpacity
+            <PrimaryGradientButton
               onPress={handleStartInspection}
-              disabled={isLoading}>
-              <LinearGradient
-                colors={['#FF7A00', '#F90']}
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 0}}
-                style={styles.buttonContainer}>
-                {isLoading ? (
-                  <ActivityIndicator size={'small'} color={colors.white} />
-                ) : (
-                  <>
-                    <Plus
-                      height={hp('5%')}
-                      width={wp('5%')}
-                      color={colors.white}
-                    />
-                    <Text style={[buttonTextStyle, {right: wp('6%')}]}>
-                      Start Inspection
-                    </Text>
-                  </>
-                )}
-              </LinearGradient>
-            </TouchableOpacity>
+              disabled={isLoading}
+              text={'+ Start Inspection'}
+              buttonStyle={styles.buttonContainer}
+            />
           </View>
         </IntroBackGroundImageView>
       </View>

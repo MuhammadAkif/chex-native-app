@@ -1,12 +1,10 @@
 import React, {useCallback, useState} from 'react';
-import {ActivityIndicator, Alert, BackHandler, Platform} from 'react-native';
+import { ActivityIndicator, Alert, BackHandler, Platform } from "react-native";
 import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {InspectionSelectionScreen} from '../Screens';
-import {ROUTES} from '../Navigation/ROUTES';
 import {ANDROID, HARDWARE_BACK_PRESS} from '../Constants';
-import {colors} from '../Assets/Styles';
 import {handleNewInspectionPress} from '../Utils';
 
 const InspectionSelectionContainer = ({navigation}) => {
@@ -62,16 +60,12 @@ const InspectionSelectionContainer = ({navigation}) => {
       resetAllStates,
     );
   };
-  const handleInspectionInProgressPress = () =>
-    navigate(INSPECTION_IN_PROGRESS);
-  const handleInspectionReviewedPress = () => navigate(INSPECTION_REVIEWED);
+  const handleNavigation = PATH => navigate(PATH);
 
   return (
     <InspectionSelectionScreen
       handleNewInspectionPress={onNewInspectionPress}
-      handleInspectionInProgressPress={handleInspectionInProgressPress}
-      handleInspectionReviewedPress={handleInspectionReviewedPress}
-      selectedText={selectedText}
+      handleNavigation={handleNavigation}
       isLoading={isLoading}
     />
   );

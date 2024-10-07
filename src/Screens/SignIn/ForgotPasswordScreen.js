@@ -95,13 +95,7 @@ const ForgetPasswordScreen = ({
       <View style={styles.footerContainer}>
         <PrimaryGradientButton
           buttonStyle={styles.registerButtonText}
-          text={
-            isSubmitting ? (
-              <ActivityIndicator color={colors.white} size={'small'} />
-            ) : (
-              'Submit'
-            )
-          }
+          text={'Submit'}
           onPress={handleSubmit}
           disabled={isSubmitting}
         />

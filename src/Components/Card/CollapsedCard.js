@@ -16,6 +16,26 @@ import {DownArrow, UpArrow, Check} from '../../Assets/Icons';
 import {WINDOW} from '../../Constants';
 
 const {height, width} = Dimensions.get(WINDOW);
+const isBothAvailableStyle = {
+  true: {
+    borderWidth: 1,
+    borderColor: colors.tealGreen,
+    backgroundColor: colors.icyBlue,
+  },
+  false: {
+    borderWidth: 0,
+    borderColor: null,
+    backgroundColor: colors.white,
+  },
+};
+const CheckIcon = () => (
+  <>
+    <View style={[styles.numberContainer, styles.checkContainer]}>
+      <Check height={hp('2%')} width={wp('5%')} color={colors.white} />
+    </View>
+  </>
+);
+const Index = index => <Text style={styles.numberContainer}>{index}</Text>;
 
 const CollapsedCard = ({
   text,
@@ -30,28 +50,31 @@ const CollapsedCard = ({
     false: colors.royalBlue,
   };
   const activeColor = disabled_Color[disabled];
+  const Label = {
+    true: CheckIcon,
+    false: () => Index(index),
+  };
+  const Arrow = {
+    true: UpArrow,
+    false: DownArrow,
+  };
+  const ActiveColor = {
+    true: colors.orangePeel,
+    false: colors.lightSteelBlue,
+  };
+  const ArrowComponent = Arrow[isActive];
+  const TextComponent = Label[isBothItemsAvailable];
   return (
     <TouchableOpacity
-      disabled={disabled}
       style={[
         styles.collapsedCardContainer,
         {
-          borderWidth: isBothItemsAvailable ? 1 : 0,
-          borderColor: isBothItemsAvailable ? colors.tealGreen : null,
-          backgroundColor: isBothItemsAvailable ? colors.icyBlue : colors.white,
+          ...isBothAvailableStyle[isBothItemsAvailable],
         },
       ]}
       onPress={onPress}>
       <View style={styles.collapsedCardContentContainer}>
-        {isBothItemsAvailable ? (
-          <View style={[styles.numberContainer, styles.checkContainer]}>
-            <Check height={hp('2%')} width={wp('5%')} color={colors.white} />
-          </View>
-        ) : (
-          <Text style={[styles.numberContainer, {color: activeColor}]}>
-            {index}
-          </Text>
-        )}
+        <TextComponent />
         <Text
           style={[
             styles.titleText,
@@ -61,23 +84,12 @@ const CollapsedCard = ({
           {text}
         </Text>
         <View
-          style={[
-            styles.iconContainer,
-            {borderColor: isActive ? colors.orangePeel : colors.lightSteelBlue},
-          ]}>
-          {isActive ? (
-            <UpArrow
-              height={hp('4%')}
-              width={wp('4%')}
-              color={colors.orangePeel}
-            />
-          ) : (
-            <DownArrow
-              height={hp('4%')}
-              width={wp('4%')}
-              color={colors.lightSteelBlue}
-            />
-          )}
+          style={[styles.iconContainer, {borderColor: ActiveColor[isActive]}]}>
+          <ArrowComponent
+            height={hp('4%')}
+            width={wp('4%')}
+            color={ActiveColor[isActive]}
+          />
         </View>
       </View>
     </TouchableOpacity>
@@ -107,7 +119,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.paleBlue,
     borderRadius: 5,
     right: wp('4%'),
-    // right: 12,
   },
   titleText: {
     fontSize: hp('2%'),

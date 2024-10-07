@@ -12,20 +12,20 @@ import {
   SignInLogo,
   SecondaryButton,
 } from '../Components';
+import {ROUTES} from '../Navigation/ROUTES';
+import {PROJECT_NAME} from '../Constants';
 
 const InspectionSelectionScreen = ({
   handleNewInspectionPress,
-  handleInspectionInProgressPress,
-  handleInspectionReviewedPress,
-  selectedText,
+  handleNavigation,
   isLoading,
 }) => (
   <BackgroundImageView>
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <SignInLogo
-          titleText={'CHEX'}
-          dotTitleText={'.AI'}
+          titleText={PROJECT_NAME.CHEX}
+          dotTitleText={PROJECT_NAME.AI}
           subtitleText={'Virtual Inspections'}
           containerStyle={styles.logoContainer}
         />
@@ -35,20 +35,19 @@ const InspectionSelectionScreen = ({
       </View>
       <View style={styles.bodyContainer}>
         <PrimaryGradientButton
-          text={selectedText}
-          // text={'+ New Inspection'}
+          text={'+ New Inspection'}
           buttonStyle={styles.buttonContainer}
           onPress={handleNewInspectionPress}
           disabled={isLoading}
         />
         <SecondaryButton
           text={'Inspection In Progress'}
-          onPress={handleInspectionInProgressPress}
+          onPress={() => handleNavigation(ROUTES.INSPECTION_IN_PROGRESS)}
           disabled={isLoading}
         />
         <SecondaryButton
           text={'Inspection Submitted'}
-          onPress={handleInspectionReviewedPress}
+          onPress={() => handleNavigation(ROUTES.INSPECTION_REVIEWED)}
           disabled={isLoading}
         />
       </View>

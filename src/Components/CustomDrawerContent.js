@@ -22,6 +22,8 @@ import {Home, Logout, Info} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {SIGN_OUT_ACTION} from '../Store/Actions';
 import {Types} from '../Store/Types';
+import {DRAWER, PROJECT_NAME} from '../Constants';
+import {IMAGES} from '../Assets/Images';
 
 const {
   SIGN_IN,
@@ -57,8 +59,8 @@ const CustomDrawerContent = props => {
 
   const handleNavigationPress = (path, active_Screen) => {
     // setActiveScreen(activeScreen);
-    toggleDrawer();
-    if (active_Screen === 'Logout') {
+    props.navigation.toggleDrawer();
+    if (active_Screen === DRAWER.LOGOUT) {
       reset({
         index: 0,
         routes: [{name: SIGN_IN}],
@@ -69,30 +71,30 @@ const CustomDrawerContent = props => {
   };
   const handleLogout = () => {
     dispatch(SIGN_OUT_ACTION());
-    handleNavigationPress(SIGN_IN, 'Logout');
+    handleNavigationPress(SIGN_IN, DRAWER.LOGOUT);
   };
   return (
     <ScrollView style={styles.body} {...props}>
       <View style={styles.header}>
         <FastImage
-          source={require('../Assets/Images/DrawerImage.png')}
+          source={IMAGES.drawer}
           priority={'normal'}
           resizeMode={'cover'}
           style={StyleSheet.absoluteFillObject}
         />
         <View style={styles.logoContainer}>
           <SignInLogo
-            titleText={'CHEX'}
-            dotTitleText={'.AI'}
+            titleText={PROJECT_NAME.CHEX}
+            dotTitleText={PROJECT_NAME.AI}
             textStyle={styles.logo}
             nestedTextStyle={styles.logo}
           />
         </View>
       </View>
       <DrawerItemText
-        text={'Home'}
-        textColor={activeColorOfTextAndIcon('Home')}
-        activeColor={activeScreen === 'Home' ? activeColor : 'transparent'}
+        text={DRAWER.HOME}
+        textColor={activeColorOfTextAndIcon(DRAWER.HOME)}
+        activeColor={activeScreen === DRAWER.HOME ? activeColor : 'transparent'}
         Icon={
           <TouchableOpacity
             onPress={() => handleNavigationPress(INSPECTION_SELECTION, 'Home')}>
@@ -106,7 +108,7 @@ const CustomDrawerContent = props => {
         onPress={() => handleNavigationPress(INSPECTION_SELECTION, 'Home')}
       />
       <DrawerItemText
-        text={'Things you will require'}
+        text={DRAWER.THINGS_YOU_WILL_REQUIRE}
         textColor={activeColorOfTextAndIcon('Intro')}
         activeColor={activeScreen === 'Intro' ? activeColor : 'transparent'}
         Icon={
@@ -119,7 +121,7 @@ const CustomDrawerContent = props => {
         onPress={() => handleNavigationPress(INTRO, 'Intro ')}
       />
       <DrawerItemText
-        text={'Logout'}
+        text={DRAWER.LOGOUT}
         textColor={colors.red}
         Icon={
           <TouchableOpacity onPress={handleLogout}>

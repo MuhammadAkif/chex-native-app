@@ -3,10 +3,12 @@ import {View, StyleSheet, StatusBar} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
+import {IMAGES} from '../Assets/Images';
+
 const CompletedInspectionBackgroundImage = ({children}) => (
   <>
     <FastImage
-      source={require('../Assets/Images/CompletedInspection.jpg')}
+      source={IMAGES.completed_Inspection_Background}
       priority={'normal'}
       resizeMode={'stretch'}
       style={styles.image}

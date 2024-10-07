@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, BackHandler, InteractionManager} from 'react-native';
+import {ActivityIndicator, BackHandler} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 
@@ -157,16 +157,6 @@ const NewInspectionContainer = ({route, navigation}) => {
   );
   const [fileID, setFileID] = useState('');
   const [isExterior, setIsExterior] = useState(false);
-  const submitText = isLoading ? (
-    <ActivityIndicator size={'small'} color={colors.white} />
-  ) : (
-    'Submit'
-  );
-  const confirmVehicleButtonText = isLoading ? (
-    <ActivityIndicator size={'small'} color={colors.white} />
-  ) : (
-    'Confirm'
-  );
   const ActiveExteriorItemsExpandedCard =
     exteriorItemsExpandedCards[vehicle_Type];
   const config = {
@@ -175,6 +165,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       Authorization: `Bearer ${token}`,
     },
   };
+
   useEffect(() => {
     if (route.params?.routeName === INSPECTION_IN_PROGRESS && checkTireStatus) {
       vehicleTireStatusToRender(selectedInspectionID).then(() =>
@@ -329,21 +320,21 @@ const NewInspectionContainer = ({route, navigation}) => {
     const allTires = !isObjectEmpty(tires);
     const allParts = allCarVerification && allExterior && allTires;
     const skipOnlyTires = allCarVerification && allExterior;
-    if (displayTires) {
-      setIsAllVehicleParts({
-        isAllCarVerification: allCarVerification,
-        isAllExterior: allExterior,
+    const shouldDisplayTire = {
+      true: {
         isAllTires: allTires,
         isAllParts: allParts,
-      });
-    } else {
-      setIsAllVehicleParts({
-        isAllCarVerification: allCarVerification,
-        isAllExterior: allExterior,
+      },
+      false: {
         isAllTires: false,
         isAllParts: skipOnlyTires,
-      });
-    }
+      },
+    };
+    setIsAllVehicleParts({
+      isAllCarVerification: allCarVerification,
+      isAllExterior: allExterior,
+      ...shouldDisplayTire[displayTires],
+    });
   }
 
   const handleBackPress = () => {
@@ -658,7 +649,6 @@ const NewInspectionContainer = ({route, navigation}) => {
       isVehicleAllPartsImagesAvailable={isAllVehicleParts.isAllParts}
       handleSubmitPress={handleSubmitPress}
       isLoading={isLoading}
-      submitText={submitText}
       handleMediaModalDetailsPress={handleMediaModalDetailsPress}
       handleMediaModalDetailsCrossPress={handleMediaModalDetailsCrossPress}
       mediaModalDetails={mediaModalDetails}
@@ -673,7 +663,6 @@ const NewInspectionContainer = ({route, navigation}) => {
       isLicenseModalVisible={isLicenseModalVisible}
       handleConfirmModalVisible={handleConfirmModalVisible}
       handleConfirmVehicleDetail={handleConfirmVehicleDetail}
-      confirmVehicleButtonText={confirmVehicleButtonText}
       plateNumber={plateNumber}
       errorTitle={errorTitle}
       handleYesPressOfInProgressInspection={

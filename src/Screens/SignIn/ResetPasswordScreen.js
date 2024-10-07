@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  Platform,
-  TouchableOpacity,
-  Keyboard,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Text, Platform, TouchableOpacity, Keyboard} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -156,13 +149,7 @@ const ResetPasswordScreen = ({
       <View style={styles.footerContainer}>
         <PrimaryGradientButton
           buttonStyle={styles.registerButtonText}
-          text={
-            isSubmitting ? (
-              <ActivityIndicator color={colors.white} size={'small'} />
-            ) : (
-              'Sign In'
-            )
-          }
+          text={'Sign In'}
           onPress={handleSubmit}
           disabled={isSubmitting}
         />

@@ -12,6 +12,7 @@ import {hasCameraAndMicrophoneAllowed} from './src/Utils';
 import {colors} from './src/Assets/Styles';
 import {DiscardInspectionModal} from './src/Components';
 import {UPDATE_APP} from './src/Constants';
+import {IMAGES} from './src/Assets/Images';
 
 function App() {
   const dispatch = useDispatch();
@@ -47,7 +48,7 @@ function App() {
   return displayGif ? (
     <>
       <FastImage
-        source={require('./src/Assets/Images/chexDSPSlpash-speed55s-no-repeat.gif')}
+        source={IMAGES.splash}
         resizeMode={'contain'}
         style={[StyleSheet.absoluteFill, {backgroundColor: colors.white}]}
       />

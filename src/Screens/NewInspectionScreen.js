@@ -49,7 +49,6 @@ const NewInspectionScreen = ({
   isVehicleAllPartsImagesAvailable,
   handleSubmitPress,
   isLoading,
-  submitText,
   handleMediaModalDetailsPress,
   handleMediaModalDetailsCrossPress,
   mediaModalDetails,
@@ -64,7 +63,6 @@ const NewInspectionScreen = ({
   isLicenseModalVisible,
   handleConfirmModalVisible,
   handleConfirmVehicleDetail,
-  confirmVehicleButtonText,
   plateNumber,
   errorTitle,
   handleYesPressOfInProgressInspection,
@@ -118,7 +116,6 @@ const NewInspectionScreen = ({
         isLoading={isLoading}
         onCrossPress={handleConfirmModalVisible}
         onConfirmPress={handleConfirmVehicleDetail}
-        buttonText={confirmVehicleButtonText}
         numberPlateText={plateNumber || ''}
       />
     )}
@@ -262,7 +259,7 @@ const NewInspectionScreen = ({
       {isVehicleAllPartsImagesAvailable && (
         <View style={NewInspectionStyles.footerContainer}>
           <PrimaryGradientButton
-            text={submitText}
+            text={'Submit'}
             onPress={handleSubmitPress}
             disabled={isLoading}
           />
