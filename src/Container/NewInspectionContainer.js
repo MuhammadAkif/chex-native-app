@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, BackHandler} from 'react-native';
+import {ActivityIndicator, BackHandler, InteractionManager} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 
@@ -16,8 +16,8 @@ import {
 import {Types} from '../Store/Types';
 import {colors} from '../Assets/Styles';
 import {
-  API_BASE_URL,
   API_ENDPOINTS,
+  generateApiUrl,
   HARDWARE_BACK_PRESS,
   INSPECTION,
 } from '../Constants';
@@ -44,6 +44,7 @@ const {
   INSPECTION_TIRE_STATUS_URL,
   REMOVE_ALL_TIRES_URL,
   ANNOTATION_URL,
+  LOCATION_URL,
 } = API_ENDPOINTS;
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
@@ -53,7 +54,13 @@ const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllParts: false,
 };
 
-const {INSPECTION_IN_PROGRESS, VIDEO, CAMERA, COMPLETED_INSPECTION} = ROUTES;
+const {
+  INSPECTION_SELECTION,
+  INSPECTION_IN_PROGRESS,
+  VIDEO,
+  CAMERA,
+  COMPLETED_INSPECTION,
+} = ROUTES;
 const {
   SKIP_LEFT,
   SKIP_LEFT_CORNERS,
@@ -79,6 +86,7 @@ const exteriorItemsExpandedCards = {
 
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
+  const {canGoBack, goBack, navigate} = navigation;
   let {
     carVerificationItems,
     exteriorItems,
@@ -180,17 +188,20 @@ const NewInspectionContainer = ({route, navigation}) => {
         fileId,
         annotationDetails,
         is_Exterior,
+        routeName,
       } = route.params;
-      setTimeout(() => {
-        setIsLicenseModalVisible(isLicensePlate || false);
-        setDisplayAnnotationPopUp(displayAnnotation || false);
-      }, 1000);
-      setFileID(fileId || '');
-      setAnnotationModalDetails(prevState => ({
-        ...prevState,
-        uri: annotationDetails?.uri || '',
-      }));
-      setIsExterior(is_Exterior || false);
+      if (routeName !== INSPECTION_SELECTION) {
+        setTimeout(() => {
+          setIsLicenseModalVisible(isLicensePlate || false);
+          setDisplayAnnotationPopUp(displayAnnotation || false);
+        }, 1000);
+        setFileID(fileId || '');
+        setAnnotationModalDetails(prevState => ({
+          ...prevState,
+          uri: annotationDetails?.uri || '',
+        }));
+        setIsExterior(is_Exterior || false);
+      }
     }
   }, [route]);
   useEffect(() => {
@@ -238,8 +249,8 @@ const NewInspectionContainer = ({route, navigation}) => {
   }, [carVerificationItems.licensePlate]);
   const shouldAnnotate = vehicle_Type === 'new' && isExterior;
   function handle_Hardware_Back_Press() {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
+    if (canGoBack()) {
+      goBack();
       return true;
     }
     return false;
@@ -337,8 +348,8 @@ const NewInspectionContainer = ({route, navigation}) => {
 
   const handleBackPress = () => {
     resetAllStates();
-    navigation.goBack();
-    // navigation.navigate(previousRoute);
+    goBack();
+    // navigate(previousRoute);
   };
   //Collapsed Cards Functions starts here
   const handleCardExpansion = key => {
@@ -387,13 +398,13 @@ const NewInspectionContainer = ({route, navigation}) => {
     setModalVisible(false);
     setModalDetails(modalDetailsInitialState);
     if (isVideo) {
-      navigation.navigate(VIDEO, {
+      navigate(VIDEO, {
         type: key,
         modalDetails: modalDetails,
         inspectionId: selectedInspectionID,
       });
     } else {
-      navigation.navigate(CAMERA, {
+      navigate(CAMERA, {
         type: key,
         modalDetails: modalDetails,
         inspectionId: selectedInspectionID,
@@ -402,16 +413,14 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   const handleSubmitPress = () => {
     setIsLoading(true);
+    const endPoint = generateApiUrl(`inspection/${selectedInspectionID}`);
+
     axios
-      .patch(
-        `${API_BASE_URL}/api/v1/inspection/${selectedInspectionID}`,
-        null,
-        config,
-      )
+      .patch(endPoint, null, config)
       .then(() => {
         axios
           .put(
-            `${API_BASE_URL}/api/v1/inspection/location`,
+            LOCATION_URL,
             {
               isLocation: true,
               inspectionId: selectedInspectionID,
@@ -422,7 +431,7 @@ const NewInspectionContainer = ({route, navigation}) => {
             setIsLoading(false);
             dispatch({type: CLEAR_NEW_INSPECTION});
             resetAllStates();
-            navigation.navigate(COMPLETED_INSPECTION);
+            navigate(COMPLETED_INSPECTION);
           })
           .catch(error => {
             setIsLoading(false);
@@ -460,8 +469,10 @@ const NewInspectionContainer = ({route, navigation}) => {
     const RemoveMethod = handleRemoveImage[deleteItem?.category];
     setIsDiscardInspectionModalVisible(false);
     const imageID = EXTRACT_INSPECTION_ITEM_ID(key_);
+    const endPoint = generateApiUrl(`files/${imageID}`);
+
     axios
-      .delete(`${API_BASE_URL}/api/v1/files/${imageID}`, config)
+      .delete(endPoint, config)
       .then(() => {
         setModalMessageDetails(deleteSuccess);
         dispatch(RemoveMethod(key_));
@@ -523,8 +534,10 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsInspectionInProgressModalVisible(false);
     setLoadingIndicator(true);
     setErrorTitle('');
+    const endPoint = generateApiUrl(`files/details/${inspectionID}`);
+
     axios
-      .get(`${API_BASE_URL}/api/v1/files/details/${inspectionID}`)
+      .get(endPoint)
       .then(res => {
         uploadInProgressMediaToStore(res?.data?.files, dispatch);
         vehicleTireStatusToRender(inspectionID).then();

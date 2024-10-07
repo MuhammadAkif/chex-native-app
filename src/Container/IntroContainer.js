@@ -7,6 +7,7 @@ import {HARDWARE_BACK_PRESS} from '../Constants';
 import {handleNewInspectionPress} from '../Utils';
 
 const IntroContainer = ({navigation}) => {
+  const {canGoBack, goBack} = navigation;
   const {
     user: {token, data},
   } = useSelector(state => state?.auth);
@@ -23,8 +24,8 @@ const IntroContainer = ({navigation}) => {
     setIsLoading(false);
   };
   function handle_Hardware_Back_Press() {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
+    if (canGoBack()) {
+      goBack();
       return true;
     }
     return false;

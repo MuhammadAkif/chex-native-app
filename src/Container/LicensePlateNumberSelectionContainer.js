@@ -5,7 +5,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
 import {LicensePlateNumberSelectionScreen} from '../Screens';
-import {API_BASE_URL, HARDWARE_BACK_PRESS, API_ENDPOINTS} from '../Constants';
+import {HARDWARE_BACK_PRESS, API_ENDPOINTS, generateApiUrl} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {colors} from '../Assets/Styles';
 import {NumberPlateSelectedAction} from '../Store/Actions';
@@ -17,6 +17,7 @@ const {NEW_INSPECTION, LICENSE_PLATE_SELECTION} = ROUTES;
 
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const dispatch = useDispatch();
+  const {canGoBack, goBack, navigate} = navigation;
   const {
     user: {token, data},
   } = useSelector(state => state?.auth);
@@ -53,8 +54,8 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
     return () => backHandler.remove();
   }, []);
   function handle_Hardware_Back_Press() {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
+    if (canGoBack()) {
+      goBack();
       return true;
     }
     return false;
@@ -99,7 +100,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
         setInspectionID(response.data.id);
         dispatch(NumberPlateSelectedAction(response.data.id));
         resetAllStates();
-        navigation.navigate(NEW_INSPECTION, {
+        navigate(NEW_INSPECTION, {
           routeName: LICENSE_PLATE_SELECTION,
         });
       })
@@ -118,13 +119,15 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
     setIsDiscardInspectionModalVisible(false);
     setIsLoading(true);
     setErrorTitle('');
+    const endPoint = generateApiUrl(`files/details/${inspectionID}`);
+
     axios
-      .get(`${API_BASE_URL}/api/v1/files/details/${inspectionID}`)
+      .get(endPoint)
       .then(res => {
         uploadInProgressMediaToStore(res?.data?.files, dispatch);
         setIsLoading(false);
         dispatch(NumberPlateSelectedAction(inspectionID));
-        navigation.navigate(NEW_INSPECTION, {
+        navigate(NEW_INSPECTION, {
           routeName: LICENSE_PLATE_SELECTION,
         });
       })

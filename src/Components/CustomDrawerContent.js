@@ -34,6 +34,7 @@ const {
 const CustomDrawerContent = props => {
   const dispatch = useDispatch();
   const route = useRoute();
+  const {toggleDrawer, reset, navigate} = props.navigation;
   const activeRouteName = getFocusedRouteNameFromRoute(route);
   const [previousScreen, setPreviousScreen] = useState('');
   const [activeScreen, setActiveScreen] = useState('');
@@ -56,14 +57,14 @@ const CustomDrawerContent = props => {
 
   const handleNavigationPress = (path, active_Screen) => {
     // setActiveScreen(activeScreen);
-    props.navigation.toggleDrawer();
+    toggleDrawer();
     if (active_Screen === 'Logout') {
-      props.navigation.reset({
+      reset({
         index: 0,
         routes: [{name: SIGN_IN}],
       });
     } else {
-      props.navigation.navigate(path);
+      navigate(path);
     }
   };
   const handleLogout = () => {

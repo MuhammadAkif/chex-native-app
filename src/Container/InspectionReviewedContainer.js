@@ -7,7 +7,7 @@ import axios from 'axios';
 import {InspectionReviewedScreen} from '../Screens';
 import {FETCH_INSPECTION_REVIEWED} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
-import {API_BASE_URL, HARDWARE_BACK_PRESS} from '../Constants';
+import {generateApiUrl, HARDWARE_BACK_PRESS} from '../Constants';
 import {
   fetchInProgressInspections,
   FILTER_IMAGES,
@@ -21,6 +21,7 @@ const {INSPECTION_DETAIL} = ROUTES;
 
 const InspectionReviewedContainer = ({navigation}) => {
   const dispatch = useDispatch();
+  const {canGoBack, goBack, navigate} = navigation;
   const {
     user: {token, data},
   } = useSelector(state => state.auth);
@@ -45,8 +46,8 @@ const InspectionReviewedContainer = ({navigation}) => {
     return () => backHandler.remove();
   }, []);
   function handle_Hardware_Back_Press() {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
+    if (canGoBack()) {
+      goBack();
       return true;
     }
     return false;
@@ -80,8 +81,10 @@ const InspectionReviewedContainer = ({navigation}) => {
   const inspectionDetailsPress = inspectionID => {
     setIsLoading(true);
     setSelectedInspectionID(inspectionID);
+    const endPoint = generateApiUrl(`files/app/${inspectionID}`);
+
     axios
-      .get(`${API_BASE_URL}/api/v1/files/app/${inspectionID}`)
+      .get(endPoint)
       .then(res => {
         setIsLoading(false);
         const {finalStatus, remarks} = res?.data?.inspectionData;
@@ -89,7 +92,7 @@ const InspectionReviewedContainer = ({navigation}) => {
         // let files = sortInspection_Reviewed_Items(beforeImages);
         let files = sortInspectionReviewedItems(beforeImages);
         resetAllStates();
-        navigation.navigate(INSPECTION_DETAIL, {
+        navigate(INSPECTION_DETAIL, {
           files: files,
           finalStatus: finalStatus,
           remarks: remarks,

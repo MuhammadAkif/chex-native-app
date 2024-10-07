@@ -39,11 +39,10 @@ const {TITLE, MESSAGE, BUTTON} = SESSION_EXPIRED;
 
 const NavigationDrawer = ({navigation}) => {
   const {Screen, Navigator} = createDrawerNavigator();
+  const {reset} = navigation;
   const dispatch = useDispatch();
-  // const {Screen, Navigator} = Drawer;
 
   const {sessionExpired} = useSelector(state => state?.auth);
-  const [isSessionExpired, setIsSessionExpired] = useState(false);
   const {
     INSPECTION_SELECTION,
     INTRO,
@@ -57,7 +56,7 @@ const NavigationDrawer = ({navigation}) => {
 
   const handleOkPress = () => {
     dispatch({type: Types.SIGN_OUT});
-    navigation.reset({
+    reset({
       index: 0,
       routes: [{name: SIGN_IN}],
     });

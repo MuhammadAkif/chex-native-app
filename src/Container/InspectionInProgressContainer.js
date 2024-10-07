@@ -11,7 +11,7 @@ import {
   REMOVE_INSPECTION_IN_PROGRESS,
 } from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
-import {API_BASE_URL, HARDWARE_BACK_PRESS} from '../Constants';
+import {generateApiUrl, HARDWARE_BACK_PRESS} from '../Constants';
 import {
   fetchInProgressInspections,
   get_Inspection_Details,
@@ -27,6 +27,7 @@ const {NEW_INSPECTION, INSPECTION_IN_PROGRESS} = ROUTES;
 
 const InspectionInProgressContainer = ({navigation}) => {
   const dispatch = useDispatch();
+  const {canGoBack, goBack, navigate} = navigation;
   const {
     user: {token, data},
   } = useSelector(state => state?.auth);
@@ -71,8 +72,8 @@ const InspectionInProgressContainer = ({navigation}) => {
     return () => backHandler.remove();
   }, []);
   function handle_Hardware_Back_Press() {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
+    if (canGoBack()) {
+      goBack();
       return true;
     }
     return false;
@@ -99,8 +100,9 @@ const InspectionInProgressContainer = ({navigation}) => {
   const handleContinuePress = async inspectionId => {
     setIsLoading(true);
     setInspectionID(inspectionId);
+    const endPoint = generateApiUrl(`files/details/${inspectionId}`);
     await axios
-      .get(`${API_BASE_URL}/api/v1/files/details/${inspectionId}`)
+      .get(endPoint)
       .then(res => {
         const vehicleType = res?.data?.hasAdded || 'existing';
         dispatch({type: VEHICLE_TYPE, payload: vehicleType});
@@ -109,7 +111,7 @@ const InspectionInProgressContainer = ({navigation}) => {
         setIsLoading(false);
         dispatch(NumberPlateSelectedAction(inspectionId));
         resetAllStates();
-        navigation.navigate(NEW_INSPECTION, {
+        navigate(NEW_INSPECTION, {
           routeName: INSPECTION_IN_PROGRESS,
         });
       })
@@ -136,9 +138,11 @@ const InspectionInProgressContainer = ({navigation}) => {
     inspectionsInProgress = inspectionInProgress.filter(
       item => item.id !== deleteInspectionID,
     );
-    await deleteRequest(
-      `${API_BASE_URL}/api/v1/delete/inspection/${deleteInspectionID}?type=app`,
-    )
+    const endPoint = generateApiUrl(
+      `delete/inspection/${deleteInspectionID}?type=app`,
+    );
+
+    await deleteRequest(endPoint)
       .then(res => {
         setIsLoading(false);
         dispatch(REMOVE_INSPECTION_IN_PROGRESS(inspectionsInProgress));

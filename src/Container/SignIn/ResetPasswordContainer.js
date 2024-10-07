@@ -17,6 +17,7 @@ const {RESET_PASSWORD_URL} = API_ENDPOINTS;
 const {WELCOME, FORGET_PASSWORD, SIGN_IN} = ROUTES;
 
 const ResetPasswordContainer = ({navigation, route}) => {
+  const {canGoBack, goBack, navigate} = navigation;
   const email = route?.params?.email;
   const toastMessage = route?.params?.toastMessage;
   const emailRef = useRef();
@@ -54,11 +55,11 @@ const ResetPasswordContainer = ({navigation, route}) => {
     };
   }, [modalMessage]);
   function handle_Hardware_Back_Press() {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
+    if (canGoBack()) {
+      goBack();
       return true;
     } else {
-      navigation.navigate(WELCOME);
+      navigate(WELCOME);
     }
     return false;
   }
@@ -96,7 +97,7 @@ const ResetPasswordContainer = ({navigation, route}) => {
   const hidePasswordHandler = () => setHidePassword(!hidePassword);
   const hideConfirmPasswordHandler = () =>
     setHideConfirmPassword(!hideConfirmPassword);
-  const handleForgetPassword = () => navigation.navigate(FORGET_PASSWORD);
+  const handleForgetPassword = () => navigate(FORGET_PASSWORD);
   const handleResetPassword = async (body, resetForm) => {
     let {verificationCode, password, confirmPassword} = body;
     axios
@@ -110,7 +111,7 @@ const ResetPasswordContainer = ({navigation, route}) => {
         setIsSubmitting(false);
         // dispatch(SIGN_IN_ACTION(response.data));
         resetForm();
-        navigation.navigate(SIGN_IN, {
+        navigate(SIGN_IN, {
           toastMessage: 'Your password has been changed successfully',
           passwordChanged: true,
         });
@@ -125,8 +126,8 @@ const ResetPasswordContainer = ({navigation, route}) => {
       });
   };
   const handleOkPress = () => setModalMessage(modalMessageInitialState);
-  const handleKnowYourPassword = () => navigation.navigate(SIGN_IN);
-  const handleNavigationBackPress = () => navigation.goBack();
+  const handleKnowYourPassword = () => navigate(SIGN_IN);
+  const handleNavigationBackPress = () => goBack();
 
   return (
     <Formik

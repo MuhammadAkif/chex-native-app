@@ -17,6 +17,7 @@ const {FORGET_PASSWORD_URL} = API_ENDPOINTS;
 const {WELCOME, RESET_PASSWORD, SIGN_IN} = ROUTES;
 
 const ForgotPasswordContainer = ({navigation}) => {
+  const {canGoBack, goBack, navigate} = navigation;
   const emailRef = useRef();
   const passwordRef = useRef();
   const modalMessageInitialState = {isVisible: false, message: '', error: ''};
@@ -44,11 +45,11 @@ const ForgotPasswordContainer = ({navigation}) => {
     };
   }, [modalMessage]);
   function handle_Hardware_Back_Press() {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
+    if (canGoBack()) {
+      goBack();
       return true;
     } else {
-      navigation.navigate(WELCOME);
+      navigate(WELCOME);
     }
     return false;
   }
@@ -89,7 +90,7 @@ const ForgotPasswordContainer = ({navigation}) => {
       .then(response => {
         setIsSubmitting(false);
         resetForm();
-        navigation.navigate(RESET_PASSWORD, {
+        navigate(RESET_PASSWORD, {
           email: email,
           toastMessage: 'Verification code has been sent to your account',
         });
@@ -104,7 +105,7 @@ const ForgotPasswordContainer = ({navigation}) => {
       });
   };
   const handleOkPress = () => setModalMessage(modalMessageInitialState);
-  const handleKnowYourPassword = () => navigation.navigate(SIGN_IN);
+  const handleKnowYourPassword = () => navigate(SIGN_IN);
   return (
     <Formik
       initialValues={initialValues}

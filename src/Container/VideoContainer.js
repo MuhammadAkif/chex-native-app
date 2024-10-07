@@ -31,6 +31,7 @@ import {HARDWARE_BACK_PRESS} from '../Constants';
 const {NEW_INSPECTION} = ROUTES;
 
 const VideoContainer = ({route, navigation}) => {
+  const {canGoBack, navigate, goBack} = navigation;
   const dispatch = useDispatch();
   const {
     user: {token},
@@ -113,8 +114,8 @@ const VideoContainer = ({route, navigation}) => {
     if (isVideoURI) {
       handleRetryPress();
       return true;
-    } else if (navigation.canGoBack()) {
-      navigation.navigate(NEW_INSPECTION);
+    } else if (canGoBack()) {
+      navigate(NEW_INSPECTION);
       return true;
     }
     return false;
@@ -124,7 +125,7 @@ const VideoContainer = ({route, navigation}) => {
     videoRef?.current?.stopRecording();
     setIsRecording(false);
   }
-  const handleNavigationBackPress = () => navigation.goBack();
+  const handleNavigationBackPress = () => goBack();
   const handleVisible = () => {
     setProgress(0);
     setIsModalVisible(false);
@@ -174,7 +175,7 @@ const VideoContainer = ({route, navigation}) => {
   };
   function uploadVideoToStore(imageID) {
     dispatch(UpdateExteriorItemURI(type, isVideoURI, imageID));
-    navigation.navigate(NEW_INSPECTION);
+    navigate(NEW_INSPECTION);
   }
   const handleError = () => {
     setIsModalVisible(false);

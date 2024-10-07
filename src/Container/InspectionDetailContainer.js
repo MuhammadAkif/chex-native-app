@@ -10,6 +10,7 @@ import {
 import {assignNumber} from '../Utils';
 
 const InspectionDetailContainer = ({navigation, route}) => {
+  const {canGoBack, goBack} = navigation;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalDetails, setModalDetails] = useState({});
   let detailsFiles = [];
@@ -29,8 +30,8 @@ const InspectionDetailContainer = ({navigation, route}) => {
   //   console.log('detailsFiles.files -- ', detailsFiles.files);
   // }, [detailsFiles]);
   function handle_Hardware_Back_Press() {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
+    if (canGoBack()) {
+      goBack();
       return true;
     }
     return false;

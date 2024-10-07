@@ -19,6 +19,7 @@ const {LOGIN_URL} = API_ENDPOINTS;
 const {WELCOME, FORGET_PASSWORD, HOME} = ROUTES;
 
 const SignInContainer = ({navigation, route}) => {
+  const {canGoBack, goBack, navigate} = navigation;
   const dispatch = useDispatch();
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -63,11 +64,11 @@ const SignInContainer = ({navigation, route}) => {
   }, [modalMessage]);
 
   function handle_Hardware_Back_Press() {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
+    if (canGoBack()) {
+      goBack();
       return true;
     } else {
-      navigation.navigate(WELCOME);
+      navigate(WELCOME);
     }
     return false;
   }
@@ -102,7 +103,7 @@ const SignInContainer = ({navigation, route}) => {
   const handlePasswordFocus = () => passwordRef?.current?.focus();
   // Focus handling ends here
   const hidePasswordHandler = () => setHidePassword(!hidePassword);
-  const handleForgetPassword = () => navigation.navigate(FORGET_PASSWORD);
+  const handleForgetPassword = () => navigate(FORGET_PASSWORD);
   const checkUserData = async (body, resetForm) => {
     axios
       .post(LOGIN_URL, {
@@ -113,7 +114,7 @@ const SignInContainer = ({navigation, route}) => {
         setIsSubmitting(false);
         dispatch(SIGN_IN_ACTION(response.data));
         resetForm();
-        navigation.navigate(HOME);
+        navigate(HOME);
       })
       .catch(err => {
         setIsSubmitting(false);

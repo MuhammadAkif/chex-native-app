@@ -54,6 +54,7 @@ const {IS_LICENSE_PLATE_UPLOADED, plate_Number, CLEAR_INSPECTION_IMAGES} =
   Types;
 const CameraContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
+  const {navigate, goBack, canGoBack} = navigation;
   const {
     user: {token, data},
   } = useSelector(state => state?.auth);
@@ -133,13 +134,13 @@ const CameraContainer = ({route, navigation}) => {
     if (isImageURL) {
       handleRetryPress();
       return true;
-    } else if (navigation.canGoBack()) {
-      navigation.navigate(NEW_INSPECTION);
+    } else if (canGoBack()) {
+      navigate(NEW_INSPECTION);
       return true;
     }
     return false;
   }
-  const handleNavigationBackPress = () => navigation.goBack();
+  const handleNavigationBackPress = () => goBack();
   const handleVisible = () => {
     setProgress(0);
     setIsModalVisible(false);
@@ -201,7 +202,7 @@ const CameraContainer = ({route, navigation}) => {
     if (isLicensePlate) {
       dispatch({type: IS_LICENSE_PLATE_UPLOADED});
     }
-    navigation.navigate(NEW_INSPECTION, {
+    navigate(NEW_INSPECTION, {
       isLicensePlate: isLicensePlate,
       displayAnnotation: vehicle_Type === 'new',
       fileId: imageID,
@@ -262,7 +263,7 @@ const CameraContainer = ({route, navigation}) => {
   };
   const handleExitPress = () => {
     resetAllStates();
-    navigation.navigate(INSPECTION_SELECTION);
+    navigate(INSPECTION_SELECTION);
   };
 
   return (

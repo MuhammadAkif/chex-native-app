@@ -6,8 +6,10 @@ const ENV_TYPE_URL = {
   production: process.env.PRODUCTION_URL,
   development: process.env.DEVELOPMENT_URL,
 };
+const version = '1';
+export const API_VERSION_PATH = '/api/v' + version + '/';
 export const API_BASE_URL = ENV_TYPE_URL.staging;
-const generateApiUrl = path => API_BASE_URL + path;
+export const generateApiUrl = path => API_BASE_URL + API_VERSION_PATH + path;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
 export const EXTRACT_NUMBER_PLATE_WITH_AI =
   process.env.EXTRACT_NUMBER_PLATE_URL;
@@ -15,18 +17,19 @@ export const AI_API_TOKEN = process.env.AI_API_TOKEN;
 
 // API endpoints
 export const API_ENDPOINTS = {
-  FETCH_NUMBER_PLATE_URL: generateApiUrl('/api/v1/searchnumberplate'),
-  EXTRACT_NUMBER_PLATE_URL: generateApiUrl('/api/v1/extract/inspection/create'),
+  FETCH_NUMBER_PLATE_URL: generateApiUrl('searchnumberplate'),
+  EXTRACT_NUMBER_PLATE_URL: generateApiUrl('extract/inspection/create'),
   EXTRACT_NUMBER_PLATE_WITH_AI_URL: process.env.EXTRACT_NUMBER_PLATE_URL,
-  LOGIN_URL: generateApiUrl('/api/v1/auth/login'),
-  UPLOAD_URL: generateApiUrl('/api/v1/file/upload'),
-  CREATE_INSPECTION_URL: generateApiUrl('/api/v1/create/inspection'),
-  FETCH_IN_PROGRESS_URL: generateApiUrl('/api/v1/status/vehicle'),
-  FORGET_PASSWORD_URL: generateApiUrl('/api/v1/auth/reset/email'),
-  RESET_PASSWORD_URL: generateApiUrl('/api/v1/auth/reset/password'),
-  INSPECTION_TIRE_STATUS_URL: generateApiUrl('/api/v1/display/tire'),
-  REMOVE_ALL_TIRES_URL: generateApiUrl('/api/v1/delete/file'),
-  ANNOTATION_URL: generateApiUrl('/api/v1/file/coordinate'),
+  LOGIN_URL: generateApiUrl('auth/login'),
+  UPLOAD_URL: generateApiUrl('file/upload'),
+  CREATE_INSPECTION_URL: generateApiUrl('create/inspection'),
+  FETCH_IN_PROGRESS_URL: generateApiUrl('status/vehicle'),
+  FORGET_PASSWORD_URL: generateApiUrl('auth/reset/email'),
+  RESET_PASSWORD_URL: generateApiUrl('auth/reset/password'),
+  INSPECTION_TIRE_STATUS_URL: generateApiUrl('display/tire'),
+  REMOVE_ALL_TIRES_URL: generateApiUrl('delete/file'),
+  ANNOTATION_URL: generateApiUrl('file/coordinate'),
+  LOCATION_URL: generateApiUrl('inspection/location'),
 };
 // Api Endpoints ends here
 

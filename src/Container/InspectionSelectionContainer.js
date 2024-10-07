@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {ActivityIndicator, Alert, BackHandler, Platform} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -10,6 +10,7 @@ import {colors} from '../Assets/Styles';
 import {handleNewInspectionPress} from '../Utils';
 
 const InspectionSelectionContainer = ({navigation}) => {
+  const {navigate} = navigation;
   const dispatch = useDispatch();
   const {
     user: {token, data},
@@ -62,9 +63,8 @@ const InspectionSelectionContainer = ({navigation}) => {
     );
   };
   const handleInspectionInProgressPress = () =>
-    navigation.navigate(INSPECTION_IN_PROGRESS);
-  const handleInspectionReviewedPress = () =>
-    navigation.navigate(INSPECTION_REVIEWED);
+    navigate(INSPECTION_IN_PROGRESS);
+  const handleInspectionReviewedPress = () => navigate(INSPECTION_REVIEWED);
 
   return (
     <InspectionSelectionScreen

@@ -10,11 +10,10 @@ import {colors} from '../Assets/Styles';
 import {Bars} from '../Assets/Icons';
 
 const HeaderBackButton = () => {
-  const navigation = useNavigation();
+  const {openDrawer} = useNavigation();
+  const onPress = () => openDrawer();
   return (
-    <TouchableOpacity
-      style={styles.container}
-      onPress={() => navigation.openDrawer()}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <Bars height={hp('5%')} width={wp('6%')} color={colors.white} />
     </TouchableOpacity>
   );

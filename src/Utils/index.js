@@ -5,11 +5,11 @@ import axios from 'axios';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import {
-  API_BASE_URL,
   INSPECTION,
   INSPECTION_SUBCATEGORY,
   S3_BUCKET_BASEURL,
   API_ENDPOINTS,
+  generateApiUrl,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
@@ -372,8 +372,10 @@ export const uploadFile = async (
   dispatch,
 ) => {
   let imageID = 0;
+  const endPoint = generateApiUrl(`vehicle/${inspectionId}/file`);
+
   await axios
-    .post(`${API_BASE_URL}/api/v1/vehicle/${inspectionId}/file`, body, {
+    .post(endPoint, body, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
@@ -666,7 +668,7 @@ export const handleNewInspectionPress = async (
       dispatch(NumberPlateSelectedAction(response?.data?.id));
       resetAllStates();
       navigation.navigate(ROUTES.NEW_INSPECTION, {
-        routeName: ROUTES.LICENSE_PLATE_SELECTION,
+        routeName: ROUTES.INSPECTION_SELECTION,
       });
     })
     .catch(err => {
@@ -847,8 +849,10 @@ export function exteriorVariant(item, variant) {
   return item + '_' + variant;
 }
 export const get_Inspection_Details = async (dispatch, inspectionId) => {
+  const endPoint = generateApiUrl(`files/details/${inspectionId}`);
+
   await axios
-    .get(`${API_BASE_URL}/api/v1/files/details/${inspectionId}`)
+    .get(endPoint)
     .then(res => {
       const details = res?.data?.files;
       dispatch(File_Details(details, inspectionId));

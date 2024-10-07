@@ -9,6 +9,7 @@ import {ANDROID, HARDWARE_BACK_PRESS} from '../Constants';
 const {SIGN_IN} = ROUTES;
 
 const WelcomeContainer = ({navigation}) => {
+  const {navigate} = navigation;
   useFocusEffect(
     useCallback(() => {
       const backHandler = BackHandler.addEventListener(
@@ -35,7 +36,7 @@ const WelcomeContainer = ({navigation}) => {
     }
   }
 
-  const handleSignInPress = () => navigation.navigate(SIGN_IN);
+  const handleSignInPress = () => navigate(SIGN_IN);
 
   return <WelcomeScreen handleSignInPress={handleSignInPress} />;
 };
