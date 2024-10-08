@@ -22,6 +22,7 @@ import {Check} from '../../Assets/Icons';
 import {ANDROID} from '../../Constants';
 
 const isAndroid = Platform.OS === ANDROID;
+const {orange, white, cobaltBlueLight} = colors;
 
 const RegisterScreen = ({
   values,
@@ -123,7 +124,7 @@ const RegisterScreen = ({
         <View style={styles.termsOfUseContainer}>
           <View style={styles.checkBox} onTouchStart={handleIsTermsSelected}>
             {isTermsSelected && (
-              <Check height={hp('3%')} width={wp('5%')} color={colors.orange} />
+              <Check height={hp('3%')} width={wp('5%')} color={orange} />
             )}
           </View>
           <Text style={styles.termsOfUseText} onPress={handleIsTermsSelected}>
@@ -144,7 +145,7 @@ const RegisterScreen = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 27, 81, 0.8)',
+    backgroundColor: cobaltBlueLight,
   },
   headerContainer: {
     flex: 2,
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
   registerTitleText: {
     fontSize: hp('3%'),
     fontWeight: 'bold',
-    color: colors.white,
+    color: white,
   },
   bodyContainer: {
     flex: 3,
@@ -193,12 +194,12 @@ const styles = StyleSheet.create({
     width: wp('6.5%'),
     alignItems: 'center',
     borderRadius: 5,
-    backgroundColor: colors.white,
+    backgroundColor: white,
     marginRight: 5,
   },
   termsOfUseText: {
     fontSize: hp('1.8%'),
-    color: colors.white,
+    color: white,
   },
 });
 

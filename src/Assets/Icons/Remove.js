@@ -7,11 +7,13 @@ import {
 
 import {colors} from '../Styles';
 
+const {white} = colors;
+
 const Remove = ({
   height = hp('3%'),
   width = wp('4%'),
   backgroundColor = '#FB3131',
-  color = colors.white,
+  color = white,
   style,
   onPress,
 }) => (

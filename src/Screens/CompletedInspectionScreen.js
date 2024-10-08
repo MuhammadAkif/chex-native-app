@@ -12,6 +12,8 @@ import {PrimaryGradientButton} from '../Components';
 import {handleHomePress} from '../Utils';
 import {PROJECT_NAME} from '../Constants';
 
+const {white, blueGray} = colors;
+
 const CompletedInspectionScreen = ({navigation}) => (
   <CompletedInspectionBackgroundImage>
     <View style={styles.container}>
@@ -58,7 +60,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   textColor: {
-    color: colors.white,
+    color: white,
   },
   titleText: {
     fontSize: hp('3.5%'),
@@ -72,7 +74,7 @@ const styles = StyleSheet.create({
     fontSize: hp('1.7%'),
     width: wp('70%'),
     textAlign: 'center',
-    color: colors.blueGray,
+    color: blueGray,
   },
   button: {
     borderRadius: 30,

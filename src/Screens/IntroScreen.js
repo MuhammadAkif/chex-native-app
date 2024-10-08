@@ -11,6 +11,7 @@ import {ANDROID} from '../Constants';
 import External from '../Assets/Icons/External';
 
 let isAndroid = Platform.OS === ANDROID && 'Apps > ';
+const {cobaltBlueTwo, white, black} = colors;
 const IntroScreen = ({
   handleStartInspection,
   handleOpenSettings,
@@ -44,7 +45,7 @@ const IntroScreen = ({
                 <External
                   height={hp('2%')}
                   width={wp('5%')}
-                  color={colors.cobaltBlueTwo}
+                  color={cobaltBlueTwo}
                 />
               </Text>
             </Text>
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    backgroundColor: colors.white,
+    backgroundColor: white,
   },
   bodyHeader: {
     height: hp('7%'),
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
   bodyHeaderTitle: {
     fontSize: hp('2.5%'),
     fontWeight: 'bold',
-    color: colors.black,
+    color: black,
   },
   introductionContainer: {
     flex: 3,
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   introTitle: {
-    color: colors.cobaltBlueTwo,
+    color: cobaltBlueTwo,
     fontWeight: 'bold',
     fontSize: hp('2.5%'),
   },
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
     width: wp('80%'),
     fontSize: hp('2.5%'),
     fontWeight: 'bold',
-    color: colors.cobaltBlueTwo,
+    color: cobaltBlueTwo,
     paddingRight: wp('5%'),
     textDecorationLine: 'underline',
   },

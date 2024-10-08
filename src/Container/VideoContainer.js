@@ -29,6 +29,7 @@ import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
 import {HARDWARE_BACK_PRESS} from '../Constants';
 
 const {NEW_INSPECTION} = ROUTES;
+const {white} = colors;
 
 const VideoContainer = ({route, navigation}) => {
   const {canGoBack, navigate, goBack} = navigation;
@@ -234,11 +235,7 @@ const VideoContainer = ({route, navigation}) => {
           )}
           <View style={PreviewStyles.headerContainer}>
             <TouchableOpacity onPress={handleNavigationBackPress}>
-              <BackArrow
-                height={hp('8%')}
-                width={wp('8%')}
-                color={colors.white}
-              />
+              <BackArrow height={hp('8%')} width={wp('8%')} color={white} />
             </TouchableOpacity>
             <View style={PreviewStyles.counterContainer}>
               <Text style={PreviewStyles.counterText}>{counter}</Text>

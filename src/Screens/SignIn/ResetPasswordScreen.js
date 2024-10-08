@@ -18,6 +18,8 @@ import {ANDROID} from '../../Constants';
 import {Toast} from '../../Components';
 import {BackArrow} from '../../Assets/Icons';
 
+const {white} = colors;
+
 const ResetPasswordScreen = ({
   values,
   handleChange,
@@ -51,7 +53,7 @@ const ResetPasswordScreen = ({
         <BackArrow
           height={hp('8%')}
           width={wp('8%')}
-          color={colors.white}
+          color={white}
           onPress={handleNavigationBackPress}
         />
       </View>
@@ -137,7 +139,7 @@ const ResetPasswordScreen = ({
           disabled={isSubmitting}
           style={styles.forgetPasswordContainer}>
           <Text
-            style={{color: colors.white, fontSize: hp('1.8%')}}
+            style={{color: white, fontSize: hp('1.8%')}}
             disabled={isSubmitting}>
             Know Your Password?{' '}
             <Text style={styles.forgotPasswordText} disabled={isSubmitting}>

@@ -20,6 +20,8 @@ import {colors} from '../../Assets/Styles';
 import {ANDROID} from '../../Constants';
 import {Toast} from '../../Components';
 
+const {white} = colors;
+
 const ForgetPasswordScreen = ({
   navigation,
   values,
@@ -83,7 +85,7 @@ const ForgetPasswordScreen = ({
           disabled={isSubmitting}
           style={styles.forgetPasswordContainer}>
           <Text
-            style={{color: colors.white, fontSize: hp('1.8%')}}
+            style={{color: white, fontSize: hp('1.8%')}}
             disabled={isSubmitting}>
             Know Your Password?{' '}
             <Text style={styles.forgotPasswordText} disabled={isSubmitting}>

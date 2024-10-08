@@ -10,6 +10,8 @@ import {extractDate} from '../../Utils';
 import {Cross} from '../../Assets/Icons';
 import {colors} from '../../Assets/Styles';
 
+const {red, white} = colors;
+
 const RenderInspectionInProgress = ({
   item,
   styles,
@@ -23,7 +25,7 @@ const RenderInspectionInProgress = ({
       style={styles.crossIconContainer}
       onPress={() => onCrossPress(item?.id)}
       disabled={isLoading}>
-      <Cross height={hp('2.3%')} width={wp('5%')} color={colors.red} />
+      <Cross height={hp('2.3%')} width={wp('5%')} color={red} />
     </TouchableOpacity>
     <View style={styles.tableContainer}>
       <Column
@@ -50,7 +52,7 @@ const RenderInspectionInProgress = ({
         disabled={isLoading}
         onPress={() => handleContinuePress(item?.id)}>
         {inspectionID === item?.id && isLoading ? (
-          <ActivityIndicator size={'small'} color={colors.white} />
+          <ActivityIndicator size={'small'} color={white} />
         ) : (
           <Text style={styles.buttonText}>Continue</Text>
         )}

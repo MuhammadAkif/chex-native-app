@@ -10,6 +10,8 @@ import {ImagePicker_New, ItemPickerLabel} from '../index';
 import {colors, ExpandedCardStyles} from '../../Assets/Styles';
 import {getAnnotationStatus} from '../../Utils';
 
+const {white} = colors;
+
 const ImagesPickerContainer = ({
   ExteriorDetails,
   pickerText,
@@ -99,7 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    backgroundColor: colors.white,
+    backgroundColor: white,
     ...ExpandedCardStyles.container,
     paddingVertical: hp('1%'),
   },

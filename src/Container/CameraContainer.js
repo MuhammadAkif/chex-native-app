@@ -56,6 +56,7 @@ const handleUpdateStoreMedia = {
   Exterior: UpdateExteriorItemURI,
   Tires: UpdateTiresItemURI,
 };
+const {white} = colors;
 
 const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
 const {IS_LICENSE_PLATE_UPLOADED, plate_Number, CLEAR_INSPECTION_IMAGES} =
@@ -310,11 +311,7 @@ const CameraContainer = ({route, navigation}) => {
           )}
           <View style={PreviewStyles.headerContainer}>
             <TouchableOpacity onPress={handleNavigationBackPress}>
-              <BackArrow
-                height={hp('8%')}
-                width={wp('8%')}
-                color={colors.white}
-              />
+              <BackArrow height={hp('8%')} width={wp('8%')} color={white} />
             </TouchableOpacity>
           </View>
           <CameraFooter

@@ -4,6 +4,8 @@ import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 import {buttonTextStyle, colors} from '../Assets/Styles';
 
+const {white} = colors;
+
 const HeaderTitle = () => (
   <Text style={[buttonTextStyle, styles.logoContainer]}>
     CHEX<Text style={styles.titleText_AI}>.AI</Text>
@@ -11,7 +13,7 @@ const HeaderTitle = () => (
 );
 const styles = StyleSheet.create({
   logoContainer: {
-    color: colors.white,
+    color: white,
     fontSize: hp('3%'),
   },
   titleText_AI: {

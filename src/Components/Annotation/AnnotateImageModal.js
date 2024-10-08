@@ -31,7 +31,7 @@ const {
   instruction,
   source: imagePath,
 } = ANNOTATE_IMAGE_DETAILS;
-const {white, orangePeel, royalBlue} = colors;
+const {white, orangePeel, royalBlue, cobaltBlueDark} = colors;
 
 const AnnotateImageModal = ({
   modalVisible,
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 27, 81, 0.9)',
+    backgroundColor: cobaltBlueDark,
     paddingTop: hp('7%'),
   },
   header: {

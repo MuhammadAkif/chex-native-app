@@ -11,6 +11,7 @@ import {INSPECTION_TITLE, S3_BUCKET_BASEURL, WINDOW} from '../../Constants';
 import {isNotEmpty} from '../../Utils';
 
 const {width} = Dimensions.get(WINDOW);
+const {black} = colors;
 
 const RenderInspectionDetail = ({item, handleDisplayMedia, categoryCount}) => {
   let mediaURL =
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: hp('1.7%'),
     lineHeight: 30,
-    color: colors.black,
+    color: black,
   },
   circle: {
     height: width * 0.09,

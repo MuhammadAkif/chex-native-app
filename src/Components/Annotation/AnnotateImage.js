@@ -27,6 +27,8 @@ import {
 } from '../index';
 import {ANNOTATE_IMAGE, DAMAGE_TYPE, IOS} from '../../Constants';
 
+const {white, gray, royalBlue, lightGray, black} = colors;
+
 const AnnotateImage = ({
   modalVisible = false,
   handleVisible,
@@ -52,7 +54,7 @@ const AnnotateImage = ({
     setCanSubmit(status);
   }, [damageDetails, isLoading]);
   const submitText = isLoading ? (
-    <ActivityIndicator size={'small'} color={colors.white} />
+    <ActivityIndicator size={'small'} color={white} />
   ) : (
     annotateButtonText
   );
@@ -215,7 +217,7 @@ const AnnotateImage = ({
                   placeholder={notes}
                   multiline={true}
                   editable={selectedMarkerId !== null}
-                  placeholderTextColor={colors.gray}
+                  placeholderTextColor={gray}
                   value={currentMarkerDamageDetails?.notes}
                   onChangeText={text => handleDamageDetails('notes', text)}
                   onBlur={updateDamageDetails}
@@ -264,7 +266,7 @@ const styles = StyleSheet.create({
     height: hp('80%'),
     width: wp('90%'),
     borderRadius: hp('1%'),
-    backgroundColor: colors.white,
+    backgroundColor: white,
   },
   header: {
     flex: 1,
@@ -275,7 +277,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: hp('3%'),
     fontWeight: '600',
-    color: colors.royalBlue,
+    color: royalBlue,
   },
   subHeadingContainer: {
     alignItems: 'center',
@@ -290,7 +292,7 @@ const styles = StyleSheet.create({
     rowGap: hp('2%'),
   },
   subHeadingText: {
-    color: colors.royalBlue,
+    color: royalBlue,
     fontSize: hp('1.8%'),
     fontWeight: '600',
   },
@@ -299,7 +301,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   textColor: {
-    color: colors.white,
+    color: white,
   },
   instructionsAndSubHeadingContainer: {
     alignItems: 'center',
@@ -321,10 +323,10 @@ const styles = StyleSheet.create({
   cancelButton: {
     width: wp('40%'),
     borderRadius: hp('10%'),
-    borderColor: colors.royalBlue,
+    borderColor: royalBlue,
   },
   cancelButtonText: {
-    color: colors.royalBlue,
+    color: royalBlue,
   },
   statusDescriptionContainer: {
     height: hp('12%'),
@@ -332,11 +334,11 @@ const styles = StyleSheet.create({
     paddingVertical: Platform.OS === IOS ? hp('1%') : hp('0.3%'),
     paddingHorizontal: wp('2%'),
     borderRadius: 10,
-    backgroundColor: colors.lightGray,
+    backgroundColor: lightGray,
   },
   text: {
     fontSize: hp('1.8%'),
-    color: colors.black,
+    color: black,
     width: '100%',
   },
   iOSStyle: {

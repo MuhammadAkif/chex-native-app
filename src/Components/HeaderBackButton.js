@@ -9,12 +9,14 @@ import {useNavigation} from '@react-navigation/native';
 import {colors} from '../Assets/Styles';
 import {Bars} from '../Assets/Icons';
 
+const {white} = colors;
+
 const HeaderBackButton = () => {
   const {openDrawer} = useNavigation();
   const onPress = () => openDrawer();
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Bars height={hp('5%')} width={wp('6%')} color={colors.white} />
+      <Bars height={hp('5%')} width={wp('6%')} color={white} />
     </TouchableOpacity>
   );
 };

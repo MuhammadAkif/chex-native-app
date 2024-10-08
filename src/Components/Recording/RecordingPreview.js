@@ -10,6 +10,8 @@ import {colors} from '../../Assets/Styles';
 import {PreviewFooter} from '../index';
 import {BackArrow} from '../../Assets/Icons';
 
+const {white} = colors;
+
 const RecordingPreview = ({
   isVideoURI,
   handleNavigationBackPress,
@@ -26,7 +28,7 @@ const RecordingPreview = ({
         <BackArrow
           height={hp('8%')}
           width={wp('8%')}
-          color={colors.white}
+          color={white}
           onPress={handleNavigationBackPress}
         />
       </View>

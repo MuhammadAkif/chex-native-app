@@ -34,6 +34,7 @@ const Accordion = {
   true: Expand,
   false: Collapse,
 };
+const {blueGray, orangePeel, cobaltBlueDark, white} = colors;
 
 const CaptureImageModal = ({
   modalVisible,
@@ -80,7 +81,7 @@ const CaptureImageModal = ({
           style={styles.crossIconContainer}
           onPress={handleVisible}
           disabled={isLoading}>
-          <Cross height={hp('8%')} width={wp('10%')} color={colors.white} />
+          <Cross height={hp('8%')} width={wp('10%')} color={white} />
         </TouchableOpacity>
         <View
           style={[
@@ -108,7 +109,7 @@ const CaptureImageModal = ({
                     <ACCORDION_COMPONENT
                       height={height}
                       width={width}
-                      color={colors.white}
+                      color={white}
                     />
                   </TouchableOpacity>
                   <VideoPlayer
@@ -143,7 +144,7 @@ const CaptureImageModal = ({
                 styles.instructionsContainer,
                 {top: calculatedStyles.instructionsContainerTop},
               ]}>
-              <Info height={hp('4%')} width={wp('7%')} color={colors.white} />
+              <Info height={hp('4%')} width={wp('7%')} color={white} />
               <Text style={[styles.instructionsText, styles.textColor]}>
                 {instructionalText}
               </Text>
@@ -154,7 +155,7 @@ const CaptureImageModal = ({
                 <Text
                   style={[
                     styles.instructionsText,
-                    {color: colors.blueGray, width: wp('75%')},
+                    {color: blueGray, width: wp('75%')},
                   ]}>
                   {instructionalSubHeadingText}
                 </Text>
@@ -176,8 +177,8 @@ const CaptureImageModal = ({
               value={progress}
               valueSuffix={'%'}
               radius={Platform.OS === ANDROID && isFullScreen ? 40 : 80}
-              progressValueColor={colors.white}
-              activeStrokeColor={colors.orangePeel}
+              progressValueColor={white}
+              activeStrokeColor={orangePeel}
               titleStyle={{fontWeight: 'bold'}}
             />
             <Text style={[styles.textColor, styles.loadingText]}>
@@ -195,7 +196,7 @@ const CaptureImageModal = ({
         <View style={styles.footerView} />
       </View>
       <StatusBar
-        backgroundColor="rgba(0, 27, 81, 0.9)"
+        backgroundColor={cobaltBlueDark}
         barStyle="light-content"
         translucent={true}
       />
@@ -211,7 +212,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 27, 81, 0.9)',
+    backgroundColor: cobaltBlueDark,
     paddingTop: hp('7%'),
   },
   header: {
@@ -241,7 +242,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
   },
   dot: {
-    backgroundColor: colors.white,
+    backgroundColor: white,
     marginRight: 10,
     top: 0,
   },
@@ -275,7 +276,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   textColor: {
-    color: colors.white,
+    color: white,
   },
   footerView: {
     flex: 0.1,

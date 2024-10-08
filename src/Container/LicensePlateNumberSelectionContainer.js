@@ -14,6 +14,7 @@ import {Types} from '../Store/Types';
 
 const {CREATE_INSPECTION_URL, FETCH_NUMBER_PLATE_URL} = API_ENDPOINTS;
 const {NEW_INSPECTION, LICENSE_PLATE_SELECTION} = ROUTES;
+const {white} = colors;
 
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const dispatch = useDispatch();
@@ -34,7 +35,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
     NP.toLowerCase().includes(search.toLowerCase()),
   );
   const selectedText = isLoading ? (
-    <ActivityIndicator size={'small'} color={colors.white} />
+    <ActivityIndicator size={'small'} color={white} />
   ) : (
     'Select'
   );

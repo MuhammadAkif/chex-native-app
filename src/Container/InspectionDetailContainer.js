@@ -15,6 +15,7 @@ const STATUS_ICON = {
   true: Tick,
   false: CrossFilled,
 };
+const {deepGreen, red} = colors;
 
 const InspectionDetailContainer = ({navigation, route}) => {
   const {canGoBack, goBack} = navigation;
@@ -29,8 +30,8 @@ const InspectionDetailContainer = ({navigation, route}) => {
     detailsFiles?.finalStatus &&
     detailsFiles?.finalStatus.toLowerCase() === 'pass';
   const ICON_COLOR = {
-    true: colors.deepGreen,
-    false: colors.red,
+    true: deepGreen,
+    false: red,
   };
   const ICON_COMPONENT = STATUS_ICON[isPassed];
   useEffect(() => {

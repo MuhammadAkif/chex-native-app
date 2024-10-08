@@ -7,6 +7,8 @@ import {
 
 import {buttonTextStyle, colors} from '../Assets/Styles';
 
+const {white} = colors;
+
 const SecondaryButton = ({text, buttonStyle, textStyle, onPress, disabled}) => (
   <TouchableOpacity
     onPress={onPress}
@@ -23,7 +25,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: colors.white,
+    borderColor: white,
   },
 });
 

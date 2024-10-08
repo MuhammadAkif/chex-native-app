@@ -8,6 +8,8 @@ import {
 import {colors} from '../Assets/Styles';
 import {FlipCamera, Record} from '../Assets/Icons';
 
+const {white, red} = colors;
+
 const CameraFooter = ({
   isCamera,
   isRecording,
@@ -19,14 +21,14 @@ const CameraFooter = ({
       <FlipCamera
         height={hp('8%')}
         width={wp('10%')}
-        color={colors.white}
+        color={white}
         onPress={handleSwitchCamera}
       />
     )}
     <Record
       height={hp('10%')}
       width={wp('20%')}
-      color={isCamera ? colors.white : colors.red}
+      color={isCamera ? white : red}
       onPress={handleCaptureNowPress}
     />
     {!isRecording && <View style={styles.emptyView} />}

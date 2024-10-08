@@ -8,6 +8,8 @@ import {
 import {PrimaryGradientButton} from '../index';
 import {circleBorderRadius, colors, modalStyle} from '../../Assets/Styles';
 
+const {red, gray, orange, black} = colors;
+
 const ConfirmVehicleDetailModal = ({
   title = 'Vehicle Detail',
   description = 'System was unable to detect the license plate number. Please type the license plate number below:',
@@ -17,37 +19,34 @@ const ConfirmVehicleDetailModal = ({
   placeHolder = 'Enter License Plate Number',
   numberPlateText = '',
   isLoading = false,
+  textLimit = 20,
 }) => {
   const [numberPlate, setNumberPlate] = useState(numberPlateText);
-
+  const text_Limit = numberPlate.length + '/' + textLimit;
   return (
     <Modal
       animationType="slide"
       transparent={true}
       visible={true}
-      // onRequestClose={onCrossPress}
       style={modalStyle.modalOuterContainer}>
       <View style={modalStyle.container}>
         <View style={modalStyle.modalContainer}>
-          {/*<TouchableOpacity style={styles.crossIcon} onPress={onCrossPress}>*/}
-          {/*  <Cross color={colors.white} height={hp('3.5%')} width={wp('7.5')} />*/}
-          {/*</TouchableOpacity>*/}
           <Text style={modalStyle.header}>{title}</Text>
           {numberPlateText?.length === 0 && (
-            <Text style={[modalStyle.body, {color: colors.red}]}>
-              {description}
-            </Text>
+            <Text style={[modalStyle.body, {color: red}]}>{description}</Text>
           )}
           <TextInput
             value={numberPlate}
             placeholder={placeHolder}
-            placeholderTextColor={colors.gray}
+            placeholderTextColor={gray}
             style={styles.numberPlateInput}
             enterKeyHint={'done'}
             editable={!isLoading}
             onChangeText={setNumberPlate}
+            maxLength={textLimit}
             onSubmitEditing={() => onConfirmPress(numberPlate)}
           />
+          <Text style={styles.textLimit}>{text_Limit}</Text>
           <View style={modalStyle.footer}>
             <PrimaryGradientButton
               text={buttonText}
@@ -64,7 +63,7 @@ const ConfirmVehicleDetailModal = ({
 };
 const styles = StyleSheet.create({
   crossIcon: {
-    backgroundColor: colors.orange,
+    backgroundColor: orange,
     borderRadius: circleBorderRadius,
     position: 'absolute',
     zIndex: 1,
@@ -73,11 +72,16 @@ const styles = StyleSheet.create({
   },
   numberPlateInput: {
     borderWidth: 1,
-    borderColor: colors.gray,
+    borderColor: gray,
     height: hp('4%'),
     width: wp('80%'),
     padding: hp('1%'),
-    color: colors.black,
+    color: black,
+  },
+  textLimit: {
+    width: '95%',
+    color: black,
+    textAlign: 'right',
   },
 });
 

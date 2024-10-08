@@ -14,6 +14,8 @@ import {colors, NewInspectionStyles, ShadowEffect} from '../Assets/Styles';
 import {handleHomePress} from '../Utils';
 import Toast from '../Components/Toast';
 
+const {black, white, royalBlue} = colors;
+
 const InspectionInProgressScreen = ({
   data,
   navigation,
@@ -113,7 +115,7 @@ const styles = StyleSheet.create({
   bodyHeaderTitleText: {
     fontSize: hp('2.5%'),
     fontWeight: 'bold',
-    color: colors.black,
+    color: black,
   },
   bodyHeaderBorderRadius: {
     borderTopLeftRadius: 0,
@@ -126,7 +128,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     width: wp('90%'),
-    backgroundColor: colors.white,
+    backgroundColor: white,
     paddingVertical: '3%',
     marginTop: '5%',
     ...ShadowEffect,
@@ -141,13 +143,13 @@ const styles = StyleSheet.create({
     paddingVertical: '3%',
   },
   columnTitleText: {
-    color: colors.royalBlue,
+    color: royalBlue,
     fontWeight: '500',
     fontSize: hp('1.9%'),
     paddingBottom: '3%',
   },
   columnDescriptionText: {
-    color: colors.black,
+    color: black,
     fontSize: hp('1.7%'),
   },
   buttonContainer: {
@@ -155,13 +157,13 @@ const styles = StyleSheet.create({
     paddingTop: hp('2%'),
   },
   button: {
-    backgroundColor: colors.royalBlue,
+    backgroundColor: royalBlue,
     borderRadius: 5,
     paddingVertical: hp('1%'),
     paddingHorizontal: wp('10%'),
   },
   buttonText: {
-    color: colors.white,
+    color: white,
     fontSize: hp('1.8%'),
     fontWeight: '600',
   },
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyDataText: {
-    color: colors.black,
+    color: black,
     fontSize: hp('2%'),
   },
   crossIconContainer: {

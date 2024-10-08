@@ -18,6 +18,8 @@ import {Cross} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {RenderIcons} from './index';
 
+const {cobaltBlueDark, white} = colors;
+
 const DisplayMediaModal = ({
   handleVisible,
   source,
@@ -35,7 +37,7 @@ const DisplayMediaModal = ({
       <TouchableOpacity
         style={styles.crossIconContainer}
         onPress={handleVisible}>
-        <Cross height={hp('8%')} width={wp('10%')} color={colors.white} />
+        <Cross height={hp('8%')} width={wp('10%')} color={white} />
       </TouchableOpacity>
       <View style={styles.header}>
         <Text style={[styles.titleText, styles.textColor]}>{title}</Text>
@@ -69,7 +71,11 @@ const DisplayMediaModal = ({
       </View>
       <View style={styles.footerView} />
     </View>
-    <StatusBar hidden={true} />
+    <StatusBar
+      backgroundColor={cobaltBlueDark}
+      barStyle="light-content"
+      translucent={true}
+    />
   </Modal>
 );
 
@@ -81,7 +87,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 27, 81, 0.9)',
+    backgroundColor: cobaltBlueDark,
     paddingTop: hp('7%'),
   },
   header: {
@@ -107,7 +113,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   textColor: {
-    color: colors.white,
+    color: white,
   },
   footerView: {
     flex: 0.4,

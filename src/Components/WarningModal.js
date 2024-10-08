@@ -8,6 +8,8 @@ import {
 import {PrimaryGradientButton} from './index';
 import {colors} from '../Assets/Styles';
 
+const {white, red} = colors;
+
 const WarningModal = ({onPress}) => (
   <View style={styles.container}>
     <View style={styles.modalContainer}>
@@ -38,12 +40,12 @@ const styles = StyleSheet.create({
     width: wp('90%'),
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: white,
     padding: 10,
   },
   header: {
     fontSize: hp('2%'),
-    color: colors.red,
+    color: red,
     fontWeight: 'bold',
     paddingVertical: 20,
     paddingHorizontal: 30,

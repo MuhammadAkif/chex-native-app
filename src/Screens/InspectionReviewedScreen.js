@@ -12,6 +12,8 @@ import {
 } from '../Components';
 import {handleHomePress} from '../Utils';
 
+const {black, royalBlue} = colors;
+
 const InspectionReviewedScreen = ({
   handleIsExpanded,
   isExpanded,
@@ -75,7 +77,7 @@ const styles = StyleSheet.create({
   bodyHeaderTitleText: {
     fontSize: hp('2.5%'),
     fontWeight: 'bold',
-    color: colors.black,
+    color: black,
   },
   buttonContainer: {
     height: hp('6%'),
@@ -92,7 +94,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: hp('1.9%'),
-    color: colors.royalBlue,
+    color: royalBlue,
   },
   homeText: {
     fontWeight: 'bold',

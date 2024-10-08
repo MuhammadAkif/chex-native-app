@@ -56,7 +56,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 1,
     backgroundColor: 'rgba(0, 27, 81, 0.9)',
-    // backgroundColor: 'rgba(0, 27, 81, 0.8)',
   },
 });
 export default VectorDesign;

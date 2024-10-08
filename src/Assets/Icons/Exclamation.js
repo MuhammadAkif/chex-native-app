@@ -7,10 +7,12 @@ import {
 
 import {colors} from '../Styles';
 
+const {red} = colors;
+
 const Exclamation = ({
   height = hp('3%'),
   width = wp('6%'),
-  color = colors.red,
+  color = red,
   style,
   onPress,
 }) => (

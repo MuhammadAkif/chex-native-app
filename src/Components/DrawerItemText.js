@@ -7,6 +7,8 @@ import {
 
 import {colors} from '../Assets/Styles';
 
+const {gray} = colors;
+
 const DrawerItemText = ({text, onPress, Icon, activeColor, textColor}) => (
   <TouchableOpacity
     style={[styles.container, {backgroundColor: activeColor}]}
@@ -20,7 +22,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: colors.gray,
+    borderBottomColor: gray,
     marginVertical: '1%',
     paddingVertical: '5%',
     justifyContent: 'space-evenly',

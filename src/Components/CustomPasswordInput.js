@@ -12,7 +12,7 @@ const Password_Icon = {
   true: HidePassword,
   false: ShowPassword,
 };
-
+const {steelGray, black, gray, lightSkyBlue} = colors;
 const CustomPasswordInput = forwardRef(
   (
     {
@@ -44,7 +44,7 @@ const CustomPasswordInput = forwardRef(
         <TextInput
           ref={ref}
           placeholder={placeholder}
-          placeholderTextColor={colors.steelGray}
+          placeholderTextColor={steelGray}
           value={value}
           onChange={onChange}
           onPressIn={onPressIn}
@@ -54,18 +54,14 @@ const CustomPasswordInput = forwardRef(
           onChangeText={onChangeText(valueName)}
           onBlur={onBlur(valueName)}
           secureTextEntry={secureTextEntry}
-          style={[styles.input, inputStyle, {color: colors.black}]}
+          style={[styles.input, inputStyle, {color: black}]}
           inputMode={inputMode}
           enterKeyHint={enterKeyHint}
           onSubmitEditing={onSubmitEditing}
           keyboardType={keyboardType}
         />
         <TouchableOpacity onPress={hidePasswordHandler}>
-          <ICON_COMPONENT
-            height={hp('3%')}
-            width={wp('6%')}
-            color={colors.gray}
-          />
+          <ICON_COMPONENT height={hp('3%')} width={wp('6%')} color={gray} />
         </TouchableOpacity>
       </View>
     );
@@ -79,7 +75,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: colors.lightSkyBlue,
+    backgroundColor: lightSkyBlue,
     borderRadius: 5,
   },
   input: {

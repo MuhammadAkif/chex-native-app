@@ -23,6 +23,7 @@ import {WINDOW} from '../../Constants';
 const iconHeight = hp('5%');
 const iconWidth = wp('5%');
 const {height, width} = Dimensions.get(WINDOW);
+const {orangePeel, blueGray} = colors;
 
 const ImagePicker_New = ({
   onPress,
@@ -44,11 +45,7 @@ const ImagePicker_New = ({
         <TouchableOpacity
           style={expandedCardStyles.crossContainer}
           onPress={onClearPress}>
-          <CrossFilled
-            height={hp('5%')}
-            width={wp('5%')}
-            color={colors.orangePeel}
-          />
+          <CrossFilled height={hp('5%')} width={wp('5%')} color={orangePeel} />
         </TouchableOpacity>
         <FastImage
           source={{uri: imageURL}}
@@ -70,11 +67,7 @@ const ImagePicker_New = ({
               width: width * 0.12,
             },
           ]}>
-          <Camera
-            height={iconHeight}
-            width={iconWidth}
-            color={colors.blueGray}
-          />
+          <Camera height={iconHeight} width={iconWidth} color={blueGray} />
         </View>
         <Text
           style={{

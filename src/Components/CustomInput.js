@@ -7,6 +7,8 @@ import {
 
 import {colors} from '../Assets/Styles';
 
+const {steelGray, black, lightSkyBlue} = colors;
+
 const CustomInput = forwardRef(
   (
     {
@@ -35,7 +37,7 @@ const CustomInput = forwardRef(
       <TextInput
         ref={ref}
         placeholder={placeholder}
-        placeholderTextColor={colors.steelGray}
+        placeholderTextColor={steelGray}
         value={value}
         onChange={onChange}
         onPressIn={onPressIn}
@@ -46,7 +48,7 @@ const CustomInput = forwardRef(
         onChangeText={onChangeText(valueName)}
         onBlur={onBlur(valueName)}
         secureTextEntry={secureTextEntry}
-        style={[styles.input, inputStyle, {color: colors.black}]}
+        style={[styles.input, inputStyle, {color: black}]}
         inputMode={inputMode}
         enterKeyHint={enterKeyHint || 'next'}
         onSubmitEditing={onSubmitEditing}
@@ -63,7 +65,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: colors.lightSkyBlue,
+    backgroundColor: lightSkyBlue,
     borderRadius: 5,
   },
   input: {

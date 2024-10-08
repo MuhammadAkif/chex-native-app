@@ -4,6 +4,8 @@ import {Camera} from 'react-native-vision-camera';
 
 import {colors} from '../Assets/Styles';
 
+const {white} = colors;
+
 const CameraScreen = forwardRef(
   ({isFocused, device, handleCaptureNowPress}, cameraRef) => {
     return (
@@ -35,7 +37,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   captureText: {
-    color: colors.white,
+    color: white,
     fontSize: 30,
   },
 });

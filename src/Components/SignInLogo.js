@@ -7,6 +7,8 @@ import {
 
 import {colors} from '../Assets/Styles';
 
+const {white} = colors;
+
 const SignInLogo = ({
   containerStyle,
   textStyle,
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
   },
   subTitleText: {
     fontSize: hp('3%'),
-    color: colors.white,
+    color: white,
     letterSpacing: 0.6,
   },
 });

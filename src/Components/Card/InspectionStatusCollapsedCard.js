@@ -21,18 +21,27 @@ const IS_IN_REVIEW = {
   'Ready For Review': true,
   Reviewed: false,
 };
+const {
+  orangePeel,
+  skyBlue,
+  deepGreen,
+  lightSteelBlue,
+  white,
+  royalBlue,
+  black,
+} = colors;
 const STATUS_BACKGROUND_COLOR = {
-  'Ready For Review': colors.orangePeel,
-  'In Review': colors.skyBlue,
-  Reviewed: colors.deepGreen,
+  'Ready For Review': orangePeel,
+  'In Review': skyBlue,
+  Reviewed: deepGreen,
 };
 const Arrow = {
   true: UpArrow,
   false: DownArrow,
 };
 const ActiveColor = {
-  true: colors.orangePeel,
-  false: colors.lightSteelBlue,
+  true: orangePeel,
+  false: lightSteelBlue,
 };
 
 const InspectionStatusCollapsedCard = ({
@@ -100,7 +109,7 @@ const styles = StyleSheet.create({
     width: wp('90%'),
     justifyContent: 'center',
     borderRadius: 5,
-    backgroundColor: colors.white,
+    backgroundColor: white,
     marginTop: 10,
     ...ShadowEffect,
   },
@@ -122,7 +131,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     alignItems: 'center',
     justifyContent: 'center',
-    borderColor: colors.orangePeel,
+    borderColor: orangePeel,
   },
   trackingIdAndDateContainer: {
     width: wp('70%'),
@@ -134,7 +143,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   labelText: {
-    color: colors.royalBlue,
+    color: royalBlue,
     fontSize: hp('1.8%'),
     fontWeight: '700',
     paddingVertical: '3%',
@@ -143,7 +152,7 @@ const styles = StyleSheet.create({
     fontSize: hp('1.5%'),
     paddingBottom: '3%',
     fontWeight: '600',
-    color: colors.black,
+    color: black,
   },
   statusContainer: {
     position: 'absolute',
@@ -155,7 +164,7 @@ const styles = StyleSheet.create({
     top: 0,
   },
   statusText: {
-    color: colors.white,
+    color: white,
     fontSize: hp('1.3%'),
     fontWeight: '600',
     textTransform: 'capitalize',

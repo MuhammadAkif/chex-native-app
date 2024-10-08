@@ -16,6 +16,7 @@ import {ANDROID} from '../../Constants';
 
 const height = hp('5%');
 const width = wp('5%');
+const {orangePeel, blueGray} = colors;
 
 const VideoPicker = ({
   onPress,
@@ -35,11 +36,7 @@ const VideoPicker = ({
         <TouchableOpacity
           style={expandedCardStyles.crossContainer}
           onPress={onClearPress}>
-          <CrossFilled
-            height={hp('5%')}
-            width={wp('5%')}
-            color={colors.orangePeel}
-          />
+          <CrossFilled height={hp('5%')} width={wp('5%')} color={orangePeel} />
         </TouchableOpacity>
         <Video
           source={{uri: videoURL}}
@@ -63,7 +60,7 @@ const VideoPicker = ({
         onPress={onPress}>
         <View style={expandedCardStyles.cameraIconContainer}>
           <View style={{left: '4%'}}>
-            <Play height={height} width={width} color={colors.blueGray} />
+            <Play height={height} width={width} color={blueGray} />
           </View>
         </View>
         <Text

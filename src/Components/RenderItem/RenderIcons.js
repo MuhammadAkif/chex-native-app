@@ -9,6 +9,8 @@ import {Exclamation, Remove} from '../../Assets/Icons';
 import {colors} from '../../Assets/Styles';
 import {fallBack} from '../../Utils';
 
+const {white} = colors;
+
 const RenderIcons = ({
   marker,
   handleExclamationMarkPress,
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   exclamation: {
-    backgroundColor: colors.white,
+    backgroundColor: white,
     height: wp('5%'),
     width: wp('5%'),
     borderRadius: wp('10%'),

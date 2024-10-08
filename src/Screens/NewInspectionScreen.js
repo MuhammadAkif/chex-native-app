@@ -28,6 +28,7 @@ const mediaViewModals = {
   android: AndroidMediaViewModal,
 };
 const ActiveMediaViewModal = mediaViewModals[Platform.OS];
+const {black, orange, white} = colors;
 
 const NewInspectionScreen = props => {
   const {
@@ -98,8 +99,8 @@ const NewInspectionScreen = props => {
           onNoPress={onNoPress}
           onYesPress={onYesPress}
           description={'Are you sure you want to delete this inspection item?'}
-          noButtonText={{color: colors.black}}
-          noButtonStyle={{borderColor: colors.orange}}
+          noButtonText={{color: black}}
+          noButtonStyle={{borderColor: orange}}
         />
       )}
       {isInspectionInProgressModalVisible && (
@@ -123,6 +124,8 @@ const NewInspectionScreen = props => {
           onCrossPress={handleConfirmModalVisible}
           onConfirmPress={handleConfirmVehicleDetail}
           numberPlateText={plateNumber || ''}
+          textLimit={20}
+          textLength={plateNumber?.length || '0'}
         />
       )}
       {vehicle_Type && (
@@ -159,7 +162,7 @@ const NewInspectionScreen = props => {
       <TouchableOpacity
         style={NewInspectionStyles.backIconContainer}
         onPress={handleBackPress}>
-        <BackArrow height={hp('3%')} width={wp('7%')} color={colors.white} />
+        <BackArrow height={hp('3%')} width={wp('7%')} color={white} />
       </TouchableOpacity>
       <View style={NewInspectionStyles.bodyContainer}>
         <View style={NewInspectionStyles.innerBody}>

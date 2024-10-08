@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StatusBar, StyleSheet, View} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -9,6 +9,8 @@ import FastImage from 'react-native-fast-image';
 import {colors, PreviewStyles} from '../../Assets/Styles';
 import {PreviewFooter} from '../index';
 import {BackArrow} from '../../Assets/Icons';
+
+const {white, cobaltBlueDark, cobaltBlueLight} = colors;
 
 const CameraPreview = ({
   isImageURL,
@@ -21,7 +23,7 @@ const CameraPreview = ({
       <BackArrow
         height={hp('8%')}
         width={wp('8%')}
-        color={colors.white}
+        color={white}
         onPress={handleNavigationBackPress}
       />
     </View>
@@ -36,6 +38,11 @@ const CameraPreview = ({
     <PreviewFooter
       onRetryPress={handleRetryPress}
       onNextPress={handleNextPress}
+    />
+    <StatusBar
+      backgroundColor={cobaltBlueLight}
+      barStyle="light-content"
+      translucent={true}
     />
   </View>
 );

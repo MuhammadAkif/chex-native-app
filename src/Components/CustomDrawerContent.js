@@ -32,6 +32,7 @@ const {
   INSPECTION_DETAIL,
   NEW_INSPECTION,
 } = ROUTES;
+const {cobaltBlue, black, red} = colors;
 
 const CustomDrawerContent = props => {
   const dispatch = useDispatch();
@@ -40,12 +41,12 @@ const CustomDrawerContent = props => {
   const activeRouteName = getFocusedRouteNameFromRoute(route);
   const [previousScreen, setPreviousScreen] = useState('');
   const [activeScreen, setActiveScreen] = useState('');
-  let activeColor = colors.cobaltBlue;
+  let activeColor = cobaltBlue;
   const activeColorOfTextAndIcon = screen => {
-    return colors.black;
+    return black;
     // return activeRouteName.toLowerCase() === screen.toLowerCase()
-    //   ? colors.white
-    //   : colors.black;
+    //   ? white
+    //   : black;
   };
   useEffect(() => {
     if (
@@ -59,7 +60,7 @@ const CustomDrawerContent = props => {
 
   const handleNavigationPress = (path, active_Screen) => {
     // setActiveScreen(activeScreen);
-    props.navigation.toggleDrawer();
+    toggleDrawer();
     if (active_Screen === DRAWER.LOGOUT) {
       reset({
         index: 0,
@@ -122,10 +123,10 @@ const CustomDrawerContent = props => {
       />
       <DrawerItemText
         text={DRAWER.LOGOUT}
-        textColor={colors.red}
+        textColor={red}
         Icon={
           <TouchableOpacity onPress={handleLogout}>
-            <Logout height={hp('3%')} width={wp('5%')} color={colors.red} />
+            <Logout height={hp('3%')} width={wp('5%')} color={red} />
           </TouchableOpacity>
         }
         onPress={handleLogout}

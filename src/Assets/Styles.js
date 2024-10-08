@@ -16,6 +16,8 @@ export const colors = {
   orange: '#FF9900',
   royalBlue: '#1468BA',
   cobaltBlue: '#4A93E9',
+  cobaltBlueDark: 'rgba(0, 27, 81, 1)',
+  cobaltBlueLight: 'rgba(0, 27, 81, 0.8)',
   lightSteelBlue: '#B8BFD2',
   paleBlue: '#E7EFF8',
   tealGreen: '#20C18D',
@@ -40,7 +42,7 @@ export const buttonTextStyle = {
   fontWeight: 'bold',
 };
 export const circleBorderRadius = Math.round(height + width) / 2;
-export const NavigationDrawerBackgroundColor = 'rgba(0, 27, 81, 0.8)';
+export const NavigationDrawerBackgroundColor = colors.cobaltBlueLight;
 export const dot = {
   height: 5,
   width: 5,

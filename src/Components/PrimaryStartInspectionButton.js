@@ -7,6 +7,9 @@ import {
 
 import {colors} from '../Assets/Styles';
 import {PrimaryGradientButton} from './index';
+
+const {royalBlue} = colors;
+
 const PrimaryStartInspectionButton = ({
   buttonPress,
   textPress,
@@ -41,13 +44,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   footer: {
-    paddingBottom: '10%',
+    height: hp('12%'),
     width: wp('100%'),
     alignItems: 'center',
+    justifyContent: 'center',
   },
   footerText: {
     fontSize: hp('1.9%'),
-    color: colors.royalBlue,
+    color: royalBlue,
   },
   homeText: {
     fontWeight: 'bold',

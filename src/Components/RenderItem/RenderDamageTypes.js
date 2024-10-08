@@ -7,13 +7,14 @@ import {
 
 import {colors} from '../../Assets/Styles';
 
+const {red, lightGray, white, steelGray} = colors;
 const activeColor = {
-  true: colors.red,
-  false: colors.lightGray,
+  true: red,
+  false: lightGray,
 };
 const activeTextTypeColor = {
-  true: colors.white,
-  false: colors.steelGray,
+  true: white,
+  false: steelGray,
 };
 const activeTextBold = {
   true: '700',

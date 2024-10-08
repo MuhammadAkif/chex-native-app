@@ -21,6 +21,8 @@ import {
 import {ANDROID} from '../Constants';
 import {INSPECTION_STATUS} from '../Utils/helpers';
 
+const {silverGray, lightGray, black} = colors;
+
 const InspectionDetailScreen = ({
   detailsFiles,
   finalStatus,
@@ -107,14 +109,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: '5%',
     borderRadius: 10,
-    backgroundColor: colors.silverGray,
+    backgroundColor: silverGray,
   },
   statusDescriptionContainer: {
     height: hp('12%'),
     width: '100%',
     padding: '3%',
     borderRadius: 10,
-    backgroundColor: colors.lightGray,
+    backgroundColor: lightGray,
   },
   headerText: {
     paddingHorizontal: '2%',
@@ -129,6 +131,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: '2%',
   },
-  textColor: {color: colors.black},
+  textColor: {color: black},
 });
 export default InspectionDetailScreen;

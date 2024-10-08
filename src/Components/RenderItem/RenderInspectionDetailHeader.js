@@ -13,6 +13,7 @@ const STATUS_ICON = {
   true: Tick,
   false: CrossFilled,
 };
+const {deepGreen, silverGray, lightGray, black} = colors;
 
 const RenderInspectionDetailHeader = ({
   finalStatus,
@@ -29,11 +30,7 @@ const RenderInspectionDetailHeader = ({
         <Text style={[styles.text, styles.textColor, {width: wp('30%')}]}>
           Final Status
         </Text>
-        <ICON_COMPONENT
-          height={hp('3%')}
-          width={wp('8%')}
-          color={colors.deepGreen}
-        />
+        <ICON_COMPONENT height={hp('3%')} width={wp('8%')} color={deepGreen} />
         <Text style={[styles.text, styles.statusText, styles.textColor]}>
           {INSPECTION_STATUS[isPassed]}
         </Text>
@@ -60,14 +57,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: '5%',
     borderRadius: 10,
-    backgroundColor: colors.silverGray,
+    backgroundColor: silverGray,
   },
   statusDescriptionContainer: {
     height: hp('12%'),
     width: '100%',
     padding: '3%',
     borderRadius: 10,
-    backgroundColor: colors.lightGray,
+    backgroundColor: lightGray,
   },
   headerText: {
     paddingHorizontal: '2%',
@@ -82,7 +79,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: '2%',
   },
-  textColor: {color: colors.black},
+  textColor: {color: black},
 });
 
 export default RenderInspectionDetailHeader;

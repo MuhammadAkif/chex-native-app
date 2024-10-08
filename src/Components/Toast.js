@@ -8,13 +8,14 @@ import {
 import {XMark, Check, Cross} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 
+const {red, gray, white, black, brightGreen} = colors;
 const Toast_Icons = {
   true: Cross,
   false: Check,
 };
 const Background_Color = {
-  true: colors.red,
-  false: colors.brightGreen,
+  true: red,
+  false: brightGreen,
 };
 const Container_Top = {
   true: hp('5%'),
@@ -29,17 +30,13 @@ const Toast = ({message, onCrossPress, isError = false, isForgetPassword}) => {
       <View style={styles.messageTextContainer}>
         <View
           style={[styles.iconContainer, {backgroundColor: BACKGROUND_COLOR}]}>
-          <ICON_COMPONENT
-            height={hp('3%')}
-            width={wp('5%')}
-            color={colors.white}
-          />
+          <ICON_COMPONENT height={hp('3%')} width={wp('5%')} color={white} />
         </View>
         <Text style={styles.messageText}>{message}</Text>
         <TouchableOpacity
           style={[styles.iconContainer, {backgroundColor: 'transparent'}]}
           onPress={onCrossPress}>
-          <XMark height={hp('3%')} width={wp('5%')} color={colors.gray} />
+          <XMark height={hp('3%')} width={wp('5%')} color={gray} />
         </TouchableOpacity>
       </View>
     </View>
@@ -64,19 +61,19 @@ const styles = StyleSheet.create({
   messageTextContainer: {
     flexDirection: 'row',
     width: wp('80%'),
-    backgroundColor: colors.white,
+    backgroundColor: white,
     justifyContent: 'space-between',
   },
   messageText: {
     paddingVertical: 8,
     paddingLeft: hp('1%'),
     width: wp('60%'),
-    color: colors.black,
+    color: black,
   },
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.brightGreen,
+    backgroundColor: brightGreen,
     paddingHorizontal: wp('2%'),
   },
 });

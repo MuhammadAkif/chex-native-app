@@ -23,6 +23,8 @@ import {
   NumberPlateInUseModal,
 } from '../Components';
 
+const {black, orange, steelGray, royalBlue, silverGray} = colors;
+
 const LicensePlateNumberSelectionScreen = ({
   handleSelectedNP,
   selectedNP,
@@ -45,8 +47,8 @@ const LicensePlateNumberSelectionScreen = ({
         onNoPress={onNoPress}
         onYesPress={onYesPress}
         description={errorTitle}
-        noButtonText={{color: colors.black}}
-        noButtonStyle={{borderColor: colors.orange}}
+        noButtonText={{color: black}}
+        noButtonStyle={{borderColor: orange}}
       />
     )}
     {numberPlateInUseError && (
@@ -63,7 +65,7 @@ const LicensePlateNumberSelectionScreen = ({
           value={search}
           onChangeText={handleSearchInput}
           placeholder={'License Plate Number'}
-          placeholderTextColor={colors.steelGray}
+          placeholderTextColor={steelGray}
           style={styles.searchInput}
         />
       </View>
@@ -71,7 +73,7 @@ const LicensePlateNumberSelectionScreen = ({
         <FlatList
           data={data}
           ListEmptyComponent={
-            <ActivityIndicator size={'large'} color={colors.royalBlue} />
+            <ActivityIndicator size={'large'} color={royalBlue} />
           }
           renderItem={({item}) => (
             <RenderLicensePlateNumber
@@ -107,15 +109,15 @@ const styles = StyleSheet.create({
     fontSize: hp('2%'),
     width: wp('90%'),
     paddingVertical: 15,
-    color: colors.black,
+    color: black,
   },
   searchInput: {
     height: hp('5%'),
     width: wp('90%'),
     fontSize: hp('1.8%'),
     padding: '3%',
-    color: colors.black,
-    backgroundColor: colors.silverGray,
+    color: black,
+    backgroundColor: silverGray,
   },
   innerBodyContainer: {
     flex: 1,

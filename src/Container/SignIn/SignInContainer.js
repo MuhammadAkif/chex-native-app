@@ -17,7 +17,7 @@ import {SIGN_IN_ACTION} from '../../Store/Actions';
 
 const {LOGIN_URL} = API_ENDPOINTS;
 const {WELCOME, FORGET_PASSWORD, HOME} = ROUTES;
-
+const {white, cobaltBlueLight} = colors;
 const SignInContainer = ({navigation, route}) => {
   const {canGoBack, goBack, navigate} = navigation;
   const dispatch = useDispatch();
@@ -171,7 +171,7 @@ const SignInContainer = ({navigation, route}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 27, 81, 0.8)',
+    backgroundColor: cobaltBlueLight,
   },
   headerContainer: {
     flex: Platform.OS === ANDROID ? 2 : 1.5,
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   registerTitleText: {
     fontSize: hp('3%'),
     fontWeight: 'bold',
-    color: colors.white,
+    color: white,
   },
   bodyContainer: {
     flex: 0.9,
@@ -215,16 +215,16 @@ const styles = StyleSheet.create({
     width: wp('6.5%'),
     alignItems: 'center',
     borderRadius: 5,
-    backgroundColor: colors.white,
+    backgroundColor: white,
     marginRight: 5,
   },
   termsOfUseText: {
     fontSize: hp('1.8%'),
-    color: colors.white,
+    color: white,
   },
   text: {
     fontSize: hp('1.8%'),
-    color: colors.white,
+    color: white,
   },
   forgetPasswordContainer: {
     width: wp('90%'),
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   forgotPasswordText: {
-    color: colors.white,
+    color: white,
     textDecorationLine: 'underline',
   },
 });
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
 const androidKeyboardOpenStyle = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 27, 81, 0.8)',
+    backgroundColor: cobaltBlueLight,
   },
   headerContainer: {
     flex: 0.1,
@@ -253,7 +253,7 @@ const androidKeyboardOpenStyle = StyleSheet.create({
   registerTitleText: {
     fontSize: hp('3%'),
     fontWeight: 'bold',
-    color: colors.white,
+    color: white,
   },
   bodyContainer: {
     flex: 1.5,
@@ -284,16 +284,16 @@ const androidKeyboardOpenStyle = StyleSheet.create({
     width: wp('6.5%'),
     alignItems: 'center',
     borderRadius: 5,
-    backgroundColor: colors.white,
+    backgroundColor: white,
     marginRight: 5,
   },
   termsOfUseText: {
     fontSize: hp('1.8%'),
-    color: colors.white,
+    color: white,
   },
   text: {
     fontSize: hp('1.8%'),
-    color: colors.white,
+    color: white,
   },
   forgetPasswordContainer: {
     width: wp('90%'),
@@ -301,7 +301,7 @@ const androidKeyboardOpenStyle = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   forgotPasswordText: {
-    color: colors.white,
+    color: white,
     textDecorationLine: 'underline',
   },
 });

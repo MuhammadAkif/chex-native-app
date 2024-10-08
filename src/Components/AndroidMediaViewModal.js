@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Modal, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+  StatusBar,
+} from 'react-native';
 import VideoPlayer from 'react-native-video-player';
 import {
   heightPercentageToDP as hp,
@@ -10,6 +17,8 @@ import FastImage from 'react-native-fast-image';
 import {Cross, Expand, Collapse} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {RenderIcons} from './index';
+
+const {white, cobaltBlueDark} = colors;
 
 const AndroidMediaViewModal = ({
   source,
@@ -42,7 +51,7 @@ const AndroidMediaViewModal = ({
           style={styles.crossIconContainer}
           onPress={handleVisible}
           disabled={isLoading}>
-          <Cross height={hp('8%')} width={wp('10%')} color={colors.white} />
+          <Cross height={hp('8%')} width={wp('10%')} color={white} />
         </TouchableOpacity>
         <View style={[styles.container, styles.headerContainer]}>
           <Text style={[styles.titleText, styles.textColor]}>{title}</Text>
@@ -53,11 +62,7 @@ const AndroidMediaViewModal = ({
               <TouchableOpacity
                 style={styles.expandIconContainer}
                 onPress={() => setIsFullScreen(!isFullScreen)}>
-                <ActiveIcon
-                  height={hp('5%')}
-                  width={wp('5%')}
-                  color={colors.white}
-                />
+                <ActiveIcon height={hp('5%')} width={wp('5%')} color={white} />
               </TouchableOpacity>
               <VideoPlayer
                 video={{uri: source}}
@@ -89,6 +94,11 @@ const AndroidMediaViewModal = ({
         </View>
         <View style={styles.container} />
       </View>
+      <StatusBar
+        backgroundColor={cobaltBlueDark}
+        barStyle="light-content"
+        translucent={true}
+      />
     </Modal>
   );
 };
@@ -110,7 +120,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 27, 81, 0.9)',
+    backgroundColor: cobaltBlueDark,
     paddingTop: hp('7%'),
   },
   image: {
@@ -128,7 +138,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: hp('3%'),
     fontWeight: '600',
-    color: colors.white,
+    color: white,
   },
   expandIconContainer: {
     position: 'absolute',

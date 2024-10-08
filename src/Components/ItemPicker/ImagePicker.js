@@ -15,6 +15,7 @@ import {Camera, CrossFilled} from '../../Assets/Icons';
 
 const height = hp('7%');
 const width = wp('7%');
+const {gray, paleBlue, royalBlue, orangePeel, blueGray} = colors;
 
 const ImagePicker = ({
   onPress,
@@ -26,16 +27,16 @@ const ImagePicker = ({
   handleMediaModalDetailsPress,
 }) => {
   const active_Colors = {
-    true: colors.gray,
+    true: gray,
     false: '#D1E3F7',
   };
   const active_BG_Colors = {
-    true: colors.gray,
-    false: colors.paleBlue,
+    true: gray,
+    false: paleBlue,
   };
   const active_Text_Colors = {
-    true: colors.gray,
-    false: colors.royalBlue,
+    true: gray,
+    false: royalBlue,
   };
   const activeColor = active_Colors[isLoading];
   const activeBackgroundColor = active_BG_Colors[isLoading];
@@ -53,7 +54,7 @@ const ImagePicker = ({
             <CrossFilled
               height={hp('5%')}
               width={wp('5%')}
-              color={colors.orangePeel}
+              color={orangePeel}
             />
           </TouchableOpacity>
           <FastImage
@@ -76,7 +77,7 @@ const ImagePicker = ({
               expandedCardStyles.cameraIconContainer,
               {backgroundColor: activeBackgroundColor},
             ]}>
-            <Camera height={height} width={width} color={colors.blueGray} />
+            <Camera height={height} width={width} color={blueGray} />
           </View>
           <Text
             style={[

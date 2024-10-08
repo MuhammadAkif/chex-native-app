@@ -16,22 +16,32 @@ import {DownArrow, UpArrow, Check} from '../../Assets/Icons';
 import {WINDOW} from '../../Constants';
 
 const {height, width} = Dimensions.get(WINDOW);
+const {
+  tealGreen,
+  icyBlue,
+  white,
+  gray,
+  royalBlue,
+  orangePeel,
+  lightSteelBlue,
+  paleBlue,
+} = colors;
 const isBothAvailableStyle = {
   true: {
     borderWidth: 1,
-    borderColor: colors.tealGreen,
-    backgroundColor: colors.icyBlue,
+    borderColor: tealGreen,
+    backgroundColor: icyBlue,
   },
   false: {
     borderWidth: 0,
     borderColor: null,
-    backgroundColor: colors.white,
+    backgroundColor: white,
   },
 };
 const CheckIcon = () => (
   <>
     <View style={[styles.numberContainer, styles.checkContainer]}>
-      <Check height={hp('2%')} width={wp('5%')} color={colors.white} />
+      <Check height={hp('2%')} width={wp('5%')} color={white} />
     </View>
   </>
 );
@@ -46,8 +56,8 @@ const CollapsedCard = ({
   disabled = false,
 }) => {
   const disabled_Color = {
-    true: colors.gray,
-    false: colors.royalBlue,
+    true: gray,
+    false: royalBlue,
   };
   const activeColor = disabled_Color[disabled];
   const Label = {
@@ -59,8 +69,8 @@ const CollapsedCard = ({
     false: DownArrow,
   };
   const ActiveColor = {
-    true: colors.orangePeel,
-    false: colors.lightSteelBlue,
+    true: orangePeel,
+    false: lightSteelBlue,
   };
   const ArrowComponent = Arrow[isActive];
   const TextComponent = Label[isBothItemsAvailable];
@@ -115,8 +125,8 @@ const styles = StyleSheet.create({
     fontSize: hp('2%'),
     paddingVertical: 5,
     paddingHorizontal: 10,
-    color: colors.royalBlue,
-    backgroundColor: colors.paleBlue,
+    color: royalBlue,
+    backgroundColor: paleBlue,
     borderRadius: 5,
     right: wp('4%'),
   },
@@ -125,7 +135,7 @@ const styles = StyleSheet.create({
     width: wp('70%'),
   },
   titleTextColor: {
-    color: colors.royalBlue,
+    color: royalBlue,
   },
   iconContainer: {
     height: width * 0.07,
@@ -134,12 +144,12 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     alignItems: 'center',
     justifyContent: 'center',
-    borderColor: colors.orangePeel,
+    borderColor: orangePeel,
   },
   checkContainer: {
     paddingHorizontal: '1%',
     paddingVertical: '1.8%',
-    backgroundColor: colors.tealGreen,
+    backgroundColor: tealGreen,
     right: wp('4%'),
   },
 });

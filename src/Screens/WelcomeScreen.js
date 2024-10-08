@@ -13,6 +13,8 @@ import {
 } from '../Components';
 import {colors} from '../Assets/Styles';
 
+const {cobaltBlue} = colors;
+
 const WelcomeScreen = ({handleSignInPress}) => (
   <BackgroundImageView>
     <View style={styles.container}>
@@ -55,7 +57,7 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     fontSize: hp('2%'),
-    color: colors.cobaltBlue,
+    color: cobaltBlue,
   },
   bodyContainer: {
     flex: 0.25,

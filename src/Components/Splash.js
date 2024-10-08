@@ -5,12 +5,14 @@ import FastImage from 'react-native-fast-image';
 import {IMAGES} from '../Assets/Images';
 import {colors} from '../Assets/Styles';
 
+const {white} = colors;
+
 const Splash = () => (
   <>
     <FastImage
       source={IMAGES.splash}
       resizeMode={'contain'}
-      style={[StyleSheet.absoluteFill, {backgroundColor: colors.white}]}
+      style={[StyleSheet.absoluteFill, {backgroundColor: white}]}
     />
     <StatusBar
       backgroundColor="transparent"

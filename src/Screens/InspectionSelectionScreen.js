@@ -16,6 +16,7 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {PROJECT_NAME} from '../Constants';
 
 const {INSPECTION_REVIEWED, INSPECTION_IN_PROGRESS} = ROUTES;
+const {white, black, cobaltBlueLight} = colors;
 
 const InspectionSelectionScreen = ({
   handleNewInspectionPress,
@@ -61,7 +62,7 @@ const InspectionSelectionScreen = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 27, 81, 0.8)',
+    backgroundColor: cobaltBlueLight,
   },
   headerContainer: {
     flex: 1.5,
@@ -94,10 +95,10 @@ const styles = StyleSheet.create({
   registerTitleText: {
     fontSize: hp('2%'),
     fontWeight: 'bold',
-    color: colors.white,
+    color: white,
   },
   text: {
-    color: colors.black,
+    color: black,
   },
 });
 

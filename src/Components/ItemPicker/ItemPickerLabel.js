@@ -7,6 +7,8 @@ import {
 
 import {colors, ExpandedCardStyles} from '../../Assets/Styles';
 
+const {black, orangePeel} = colors;
+
 const ItemPickerLabel = ({
   label = 'Exterior Front',
   addNoteText = 'Add Note',
@@ -30,11 +32,11 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: '600',
-    color: colors.black,
+    color: black,
   },
   note: {
     fontWeight: '600',
-    color: colors.orangePeel,
+    color: orangePeel,
   },
   fontSize: {
     fontSize: hp('1.8%'),
@@ -42,7 +44,7 @@ const styles = StyleSheet.create({
   plusText: {
     fontSize: hp('2.5%'),
     bottom: hp('0.1%'),
-    color: colors.orangePeel,
+    color: orangePeel,
   },
   addNoteContainer: {
     flexDirection: 'row',
