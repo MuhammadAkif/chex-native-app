@@ -7,7 +7,11 @@ import axios from 'axios';
 import {InspectionReviewedScreen} from '../Screens';
 import {FETCH_INSPECTION_REVIEWED} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
-import {generateApiUrl, HARDWARE_BACK_PRESS} from '../Constants';
+import {
+  generateApiUrl,
+  HARDWARE_BACK_PRESS,
+  INSPECTION_STATUSES,
+} from '../Constants';
 import {
   fetchInProgressInspections,
   FILTER_IMAGES,

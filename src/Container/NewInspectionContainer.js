@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, BackHandler} from 'react-native';
+import {BackHandler} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 
@@ -12,9 +12,9 @@ import {
   RemoveTiresItemURI,
   Update_Is_License_Plate_Uploaded,
   Category_Variant,
+  File_Details,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
-import {colors} from '../Assets/Styles';
 import {
   API_ENDPOINTS,
   generateApiUrl,
@@ -165,7 +165,6 @@ const NewInspectionContainer = ({route, navigation}) => {
       Authorization: `Bearer ${token}`,
     },
   };
-
   useEffect(() => {
     if (route.params?.routeName === INSPECTION_IN_PROGRESS && checkTireStatus) {
       vehicleTireStatusToRender(selectedInspectionID).then(() =>
@@ -530,10 +529,11 @@ const NewInspectionContainer = ({route, navigation}) => {
     axios
       .get(endPoint)
       .then(res => {
-        uploadInProgressMediaToStore(res?.data?.files, dispatch);
+        const details = res?.data?.files;
+        uploadInProgressMediaToStore(details, dispatch);
         vehicleTireStatusToRender(inspectionID).then();
-        // setIsLoading(false);
         dispatch(NumberPlateSelectedAction(inspectionID));
+        dispatch(File_Details(details, inspectionID));
       })
       .catch(error => {
         setLoadingIndicator(false);

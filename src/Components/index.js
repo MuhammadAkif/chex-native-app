@@ -54,6 +54,7 @@ import ImagePicker_New from './ItemPicker/ImagePicker_New';
 import ExpiredInspectionModal from './PopUpModals/ExpiredInspectionModal';
 import ImagesPickerContainer from './ItemPicker/ImagesPickerContainer';
 import ItemPickerLabel from './ItemPicker/ItemPickerLabel';
+import Splash from './Splash';
 
 export {
   BackgroundImageView,
@@ -112,4 +113,5 @@ export {
   ExpiredInspectionModal,
   ImagesPickerContainer,
   ItemPickerLabel,
+  Splash,
 };

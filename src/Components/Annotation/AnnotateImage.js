@@ -117,6 +117,9 @@ const AnnotateImage = ({
   };
 
   const handleSubmission = () => {
+    if (canSubmit || damageDetails?.length < 1) {
+      return;
+    }
     handleSubmit([...damageDetails], resetState);
   };
   const handleCancelPress = () => {
@@ -225,7 +228,7 @@ const AnnotateImage = ({
               text={submitText}
               buttonStyle={styles.submitButton}
               onPress={handleSubmission}
-              disabled={canSubmit || damageDetails?.length < 1 || isLoading}
+              disabled={isLoading}
             />
             <SecondaryButton
               text={cancelButtonText}

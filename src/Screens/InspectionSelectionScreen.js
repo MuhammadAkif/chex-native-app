@@ -15,6 +15,8 @@ import {
 import {ROUTES} from '../Navigation/ROUTES';
 import {PROJECT_NAME} from '../Constants';
 
+const {INSPECTION_REVIEWED, INSPECTION_IN_PROGRESS} = ROUTES;
+
 const InspectionSelectionScreen = ({
   handleNewInspectionPress,
   handleNavigation,
@@ -42,12 +44,12 @@ const InspectionSelectionScreen = ({
         />
         <SecondaryButton
           text={'Inspection In Progress'}
-          onPress={() => handleNavigation(ROUTES.INSPECTION_IN_PROGRESS)}
+          onPress={() => handleNavigation(INSPECTION_IN_PROGRESS)}
           disabled={isLoading}
         />
         <SecondaryButton
           text={'Inspection Submitted'}
-          onPress={() => handleNavigation(ROUTES.INSPECTION_REVIEWED)}
+          onPress={() => handleNavigation(INSPECTION_REVIEWED)}
           disabled={isLoading}
         />
       </View>

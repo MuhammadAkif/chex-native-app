@@ -20,8 +20,16 @@ const AndroidMediaViewModal = ({
   coordinates = [],
 }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
-  let height = hp('5%');
-  let width = wp('5%');
+  const toggleIcon = {
+    true: Expand,
+    false: Collapse,
+  };
+  const toggle_Height = {
+    true: hp('50%'),
+    false: hp('25%'),
+  };
+  const activeVideoHeight = toggle_Height[isFullScreen];
+  const ActiveIcon = toggleIcon[isFullScreen];
   return (
     <Modal
       animationType="slide"
@@ -45,30 +53,22 @@ const AndroidMediaViewModal = ({
               <TouchableOpacity
                 style={styles.expandIconContainer}
                 onPress={() => setIsFullScreen(!isFullScreen)}>
-                {isFullScreen ? (
-                  <Expand height={height} width={width} color={colors.white} />
-                ) : (
-                  <Collapse
-                    height={height}
-                    width={width}
-                    color={colors.white}
-                  />
-                )}
+                <ActiveIcon
+                  height={hp('5%')}
+                  width={wp('5%')}
+                  color={colors.white}
+                />
               </TouchableOpacity>
               <VideoPlayer
                 video={{uri: source}}
-                videoHeight={isFullScreen ? hp('50%') : hp('25%')}
+                videoHeight={activeVideoHeight}
                 videoWidth={wp('90%')}
                 autoplay={true}
                 fullScreenOnLongPress={true}
               />
             </View>
           ) : (
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
+            <View style={styles.imageContainer}>
               <FastImage
                 source={{uri: source}}
                 priority={'normal'}
@@ -135,6 +135,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     right: 0,
     zIndex: 1,
+  },
+  imageContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 export default AndroidMediaViewModal;

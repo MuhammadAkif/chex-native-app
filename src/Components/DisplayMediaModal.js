@@ -48,11 +48,7 @@ const DisplayMediaModal = ({
             style={styles.image}
           />
         ) : (
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
+          <View style={styles.imageContainer}>
             <FastImage
               source={{uri: source}}
               priority={'normal'}
@@ -115,6 +111,10 @@ const styles = StyleSheet.create({
   },
   footerView: {
     flex: 0.4,
+  },
+  imageContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

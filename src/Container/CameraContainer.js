@@ -185,23 +185,21 @@ const CameraContainer = ({route, navigation}) => {
   function uploadImageToStore(imageID) {
     const isLicensePlate =
       category === 'CarVerification' && type === 'licensePlate';
+    const is_Exterior = category === 'Exterior';
     const annotationDetails = {uri: isImageURL};
     let type_ = type;
-    if (category === 'Exterior') {
+    if (is_Exterior) {
       type_ = exteriorVariant(type_, variant);
     }
-    const is_Exterior = category === 'Exterior';
+    const displayAnnotation = is_Exterior && vehicle_Type === 'new';
     const UPDATE_INSPECTION_IMAGES = handleUpdateStoreMedia[category];
     dispatch(UPDATE_INSPECTION_IMAGES(type_, isImageURL, imageID));
-    navigate(ROUTES.NEW_INSPECTION, {
-      isLicensePlate: isLicensePlate,
-    });
     if (isLicensePlate) {
       dispatch({type: IS_LICENSE_PLATE_UPLOADED});
     }
     navigate(NEW_INSPECTION, {
       isLicensePlate: isLicensePlate,
-      displayAnnotation: vehicle_Type === 'new',
+      displayAnnotation: displayAnnotation,
       fileId: imageID,
       annotationDetails: annotationDetails,
       is_Exterior: is_Exterior,
