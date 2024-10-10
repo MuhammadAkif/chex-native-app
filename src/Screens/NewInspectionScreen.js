@@ -14,7 +14,6 @@ import {
   PrimaryGradientButton,
   DisplayMediaModal,
   DiscardInspectionModal,
-  Toast,
   AndroidMediaViewModal,
   ConfirmVehicleDetailModal,
 } from '../Components';
@@ -64,8 +63,6 @@ const NewInspectionScreen = props => {
     onYesPress,
     isDiscardInspectionModalVisible,
     handleBackPress,
-    modalMessageDetails,
-    handleOkPress,
     isLicenseModalVisible,
     handleConfirmModalVisible,
     handleConfirmVehicleDetail,
@@ -147,13 +144,6 @@ const NewInspectionScreen = props => {
           isLoading={isLoading}
         />
       )}
-      {modalMessageDetails.isVisible && (
-        <Toast
-          onCrossPress={handleOkPress}
-          isVisible={modalMessageDetails.isVisible}
-          message={modalMessageDetails.message}
-        />
-      )}
       <View style={NewInspectionStyles.headerContainer}>
         <Text style={NewInspectionStyles.headerTitleText}>
           Please complete inspection items within each category below
@@ -190,7 +180,7 @@ const NewInspectionScreen = props => {
                 title={mediaModalDetails?.title}
                 isVideo={mediaModalDetails?.isVideo}
                 source={mediaModalDetails?.source}
-                coordinates={mediaModalDetails.coordinates}
+                coordinates={mediaModalDetails?.coordinates?.damageDetails}
                 handleVisible={handleMediaModalDetailsCrossPress}
               />
             )}

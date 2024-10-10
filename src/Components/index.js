@@ -55,6 +55,7 @@ import ExpiredInspectionModal from './PopUpModals/ExpiredInspectionModal';
 import ImagesPickerContainer from './ItemPicker/ImagesPickerContainer';
 import ItemPickerLabel from './ItemPicker/ItemPickerLabel';
 import Splash from './Splash';
+import Mandatory from './Mandatory';
 
 export {
   BackgroundImageView,
@@ -114,4 +115,5 @@ export {
   ImagesPickerContainer,
   ItemPickerLabel,
   Splash,
+  Mandatory,
 };

@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  Platform,
-  TouchableOpacity,
-  Keyboard,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Text, Platform, TouchableOpacity, Keyboard} from 'react-native';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 import {
@@ -18,17 +11,13 @@ import {
 import CustomInput from '../../Components/CustomInput';
 import {colors} from '../../Assets/Styles';
 import {ANDROID} from '../../Constants';
-import {Toast} from '../../Components';
 
 const {white} = colors;
 
 const ForgetPasswordScreen = ({
-  navigation,
   values,
   handleChange,
   emailRef,
-  passwordRef,
-  handlePasswordFocus,
   handleSubmit,
   handleBlur,
   errors,
@@ -36,11 +25,6 @@ const ForgetPasswordScreen = ({
   styles,
   isKeyboardActive,
   isSubmitting,
-  hidePasswordHandler,
-  hidePassword,
-  handleForgetPassword,
-  modalMessage,
-  handleOkPress,
   handleKnowYourPassword,
 }) => (
   <BackgroundImageView>
@@ -103,14 +87,6 @@ const ForgetPasswordScreen = ({
         />
       </View>
     </TouchableOpacity>
-    {modalMessage?.isVisible && (
-      <Toast
-        onCrossPress={handleOkPress}
-        message={modalMessage.message || modalMessage.error}
-        isError={modalMessage.error !== ''}
-        isForgetPassword={true}
-      />
-    )}
   </BackgroundImageView>
 );
 

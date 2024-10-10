@@ -15,7 +15,6 @@ import CustomInput from '../../Components/CustomInput';
 import {colors, PreviewStyles} from '../../Assets/Styles';
 import CustomPasswordInput from '../../Components/CustomPasswordInput';
 import {ANDROID} from '../../Constants';
-import {Toast} from '../../Components';
 import {BackArrow} from '../../Assets/Icons';
 
 const {white} = colors;
@@ -39,8 +38,6 @@ const ResetPasswordScreen = ({
   hideConfirmPasswordHandler,
   hidePassword,
   hideConfirmPassword,
-  modalMessage,
-  handleOkPress,
   handleKnowYourPassword,
   handleNavigationBackPress,
 }) => (
@@ -151,20 +148,12 @@ const ResetPasswordScreen = ({
       <View style={styles.footerContainer}>
         <PrimaryGradientButton
           buttonStyle={styles.registerButtonText}
-          text={'Sign In'}
+          text={'Reset'}
           onPress={handleSubmit}
           disabled={isSubmitting}
         />
       </View>
     </TouchableOpacity>
-    {modalMessage?.isVisible && (
-      <Toast
-        onCrossPress={handleOkPress}
-        message={modalMessage.message || modalMessage.error}
-        isError={modalMessage.error !== ''}
-        isForgetPassword={true}
-      />
-    )}
   </BackgroundImageView>
 );
 

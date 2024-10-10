@@ -31,6 +31,7 @@ const PrimaryGradientButton = ({
   loaderSize = 'small',
   loaderColor = color.white,
   colors = ['#FF7A00', '#F90'],
+  activeOpacity = 0,
 }) => {
   const BUTTON = {
     true: () => Loader(loaderSize, loaderColor),
@@ -38,7 +39,10 @@ const PrimaryGradientButton = ({
   };
   const ButtonComponent = BUTTON[disabled];
   return (
-    <TouchableOpacity onPress={onPress} disabled={disabled}>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={activeOpacity}
+      disabled={disabled}>
       <LinearGradient
         colors={colors}
         start={{x: 0, y: 0}}

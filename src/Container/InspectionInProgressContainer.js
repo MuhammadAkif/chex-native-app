@@ -9,6 +9,7 @@ import {
   FETCH_INSPECTION_IN_PROGRESS,
   NumberPlateSelectedAction,
   REMOVE_INSPECTION_IN_PROGRESS,
+  showToast,
 } from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
 import {generateApiUrl, HARDWARE_BACK_PRESS} from '../Constants';
@@ -34,20 +35,13 @@ const InspectionInProgressContainer = ({navigation}) => {
   const inspectionInProgress = useSelector(
     state => state?.inspectionInProgress,
   );
-  const modalMessageDetailsInitialState = {
-    isVisible: false,
-    title: '',
-    message: '',
-  };
   const [isLoading, setIsLoading] = useState(false);
   const [isNewInspectionLoading, setIsNewInspectionLoading] = useState(false);
   const [inspectionID, setInspectionID] = useState(null);
   const [deleteInspectionID, setDeleteInspectionID] = useState(null);
   const [isDiscardInspectionModalVisible, setIsDiscardInspectionModalVisible] =
     useState(false);
-  const [modalMessageDetails, setModalMessageDetails] = useState(
-    modalMessageDetailsInitialState,
-  );
+
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
@@ -55,15 +49,6 @@ const InspectionInProgressContainer = ({navigation}) => {
       return () => resetAllStates();
     }, []),
   );
-  useEffect(() => {
-    let timeoutID = setTimeout(
-      () => setModalMessageDetails(modalMessageDetailsInitialState),
-      5000,
-    );
-    return () => {
-      clearTimeout(timeoutID);
-    };
-  }, [modalMessageDetails]);
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
@@ -83,7 +68,6 @@ const InspectionInProgressContainer = ({navigation}) => {
     setInspectionID(null);
     setIsDiscardInspectionModalVisible(false);
     setDeleteInspectionID(null);
-    setModalMessageDetails(modalMessageDetailsInitialState);
   }
   async function fetchInspectionInProgress() {
     let inProgressInspection = [];
@@ -144,31 +128,22 @@ const InspectionInProgressContainer = ({navigation}) => {
 
     await deleteRequest(endPoint)
       .then(res => {
-        setIsLoading(false);
         dispatch(REMOVE_INSPECTION_IN_PROGRESS(inspectionsInProgress));
-        setModalMessageDetails({
-          isVisible: true,
-          title: 'Deleted',
-          message: res?.data,
-        });
+        dispatch(showToast('Inspection has been deleted!', 'success'));
       })
       .catch(error => {
-        setIsLoading(false);
-        let errorMessage = error?.response?.data?.message[0];
+        let errorMessage =
+          error?.response?.data?.message[0] ||
+          'Something went wrong, Please try again.';
         const statusCode = error?.response?.data?.statusCode;
         if (statusCode === 401) {
           handle_Session_Expired(statusCode, dispatch);
         }
-        setModalMessageDetails({
-          isVisible: true,
-          title: '',
-          message: errorMessage,
-        });
-      });
+        dispatch(showToast(errorMessage, 'error'));
+      })
+      .finally(() => setIsLoading(false));
   }
   const handleNoPress = () => setIsDiscardInspectionModalVisible(false);
-  const handleOkPress = () =>
-    setModalMessageDetails(modalMessageDetailsInitialState);
   const onNewInspectionPress = async () => {
     await handleNewInspectionPress(
       dispatch,
@@ -193,8 +168,6 @@ const InspectionInProgressContainer = ({navigation}) => {
       onNoPress={handleNoPress}
       isDiscardInspectionModalVisible={isDiscardInspectionModalVisible}
       fetchInspectionInProgress={fetchInspectionInProgress}
-      modalMessageDetails={modalMessageDetails}
-      handleOkPress={handleOkPress}
       onNewInspectionPress={onNewInspectionPress}
     />
   );

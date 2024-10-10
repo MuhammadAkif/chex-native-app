@@ -12,7 +12,6 @@ import {
 } from '../Components';
 import {colors, NewInspectionStyles, ShadowEffect} from '../Assets/Styles';
 import {handleHomePress} from '../Utils';
-import Toast from '../Components/Toast';
 
 const {black, white, royalBlue} = colors;
 
@@ -28,8 +27,6 @@ const InspectionInProgressScreen = ({
   onNoPress,
   isDiscardInspectionModalVisible,
   fetchInspectionInProgress,
-  modalMessageDetails,
-  handleOkPress,
   onNewInspectionPress,
 }) => (
   <View style={NewInspectionStyles.container}>
@@ -38,12 +35,6 @@ const InspectionInProgressScreen = ({
         onYesPress={onYesPress}
         onNoPress={onNoPress}
         description={'Are You Sure Want To Discard Your Inspection?'}
-      />
-    )}
-    {modalMessageDetails.isVisible && (
-      <Toast
-        onCrossPress={handleOkPress}
-        message={modalMessageDetails.message}
       />
     )}
     <View style={NewInspectionStyles.bodyContainer}>

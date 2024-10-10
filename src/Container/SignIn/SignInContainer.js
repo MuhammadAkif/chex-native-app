@@ -13,7 +13,7 @@ import {signInValidationSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
 import {ANDROID, API_ENDPOINTS, HARDWARE_BACK_PRESS} from '../../Constants';
-import {SIGN_IN_ACTION} from '../../Store/Actions';
+import {showToast, SIGN_IN_ACTION} from '../../Store/Actions';
 
 const {LOGIN_URL} = API_ENDPOINTS;
 const {WELCOME, FORGET_PASSWORD, HOME} = ROUTES;
@@ -23,15 +23,9 @@ const SignInContainer = ({navigation, route}) => {
   const dispatch = useDispatch();
   const emailRef = useRef();
   const passwordRef = useRef();
-  const modalMessageInitialState = {isVisible: false, message: '', error: ''};
   const [isKeyboardActive, setKeyboardActive] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
-  const [modalMessage, setModalMessage] = useState({
-    isVisible: false,
-    message: '',
-    error: '',
-  });
   const initialValues = {
     name: '',
     password: '',
@@ -46,22 +40,9 @@ const SignInContainer = ({navigation, route}) => {
   }, []);
   useEffect(() => {
     if (route.params) {
-      setModalMessage({
-        isVisible: route?.params?.passwordChanged,
-        message: route?.params?.toastMessage,
-        error: '',
-      });
+      dispatch(showToast(route?.params?.toastMessage, 'success'));
     }
   }, [route.params]);
-  useEffect(() => {
-    let timeoutID = setTimeout(
-      () => setModalMessage(modalMessageInitialState),
-      5000,
-    );
-    return () => {
-      clearTimeout(timeoutID);
-    };
-  }, [modalMessage]);
 
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
@@ -126,7 +107,6 @@ const SignInContainer = ({navigation, route}) => {
       })
       .finally(() => setIsSubmitting(false));
   };
-  const handleOkPress = () => setModalMessage(modalMessageInitialState);
 
   return (
     <Formik
@@ -161,8 +141,6 @@ const SignInContainer = ({navigation, route}) => {
           hidePasswordHandler={hidePasswordHandler}
           hidePassword={hidePassword}
           handleForgetPassword={handleForgetPassword}
-          modalMessage={modalMessage}
-          handleOkPress={handleOkPress}
         />
       )}
     </Formik>

@@ -20,6 +20,7 @@ import {
   REMOVE_INSPECTION_IN_PROGRESS,
   CLEAR_INSPECTION_IN_PROGRESS,
 } from './InspectionInProgressAction';
+import {setLoading, showToast, hideToast} from './UIActions';
 
 export {
   UpdateCarVerificationItemURI,
@@ -39,4 +40,7 @@ export {
   Update_Is_License_Plate_Uploaded,
   Category_Variant,
   File_Details,
+  setLoading,
+  showToast,
+  hideToast,
 };

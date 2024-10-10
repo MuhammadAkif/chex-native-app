@@ -6,29 +6,29 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import axios from 'axios';
+import {useDispatch} from 'react-redux';
 
 import {ForgotPasswordScreen} from '../../Screens';
 import {forgetPasswordSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
 import {ANDROID, API_ENDPOINTS, HARDWARE_BACK_PRESS} from '../../Constants';
+import {showToast} from '../../Store/Actions';
 
 const {cobaltBlueLight, gray, white} = colors;
-
 const {FORGET_PASSWORD_URL} = API_ENDPOINTS;
 const {WELCOME, RESET_PASSWORD, SIGN_IN} = ROUTES;
+
 const ForgotPasswordContainer = ({navigation}) => {
+  const dispatch = useDispatch();
   const {canGoBack, goBack, navigate} = navigation;
   const emailRef = useRef();
-  const passwordRef = useRef();
-  const modalMessageInitialState = {isVisible: false, message: '', error: ''};
   const [isKeyboardActive, setKeyboardActive] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hidePassword, setHidePassword] = useState(true);
-  const [modalMessage, setModalMessage] = useState(modalMessageInitialState);
   const initialValues = {
     email: '',
   };
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
@@ -36,15 +36,24 @@ const ForgotPasswordContainer = ({navigation}) => {
     );
     return () => backHandler.remove();
   }, []);
+  // Add event listeners when the component mounts
   useEffect(() => {
-    let timeoutID = setTimeout(
-      () => setModalMessage(modalMessageInitialState),
-      5000,
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => handleKeyboard(true),
     );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => handleKeyboard(false),
+    );
+
+    // Remove event listeners when the component unmounts
     return () => {
-      clearTimeout(timeoutID);
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
     };
-  }, [modalMessage]);
+  }, []);
+
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
       goBack();
@@ -55,73 +64,40 @@ const ForgotPasswordContainer = ({navigation}) => {
     return false;
   }
   // Function to handle keyboard visibility changes
-  const handleKeyboardDidShow = () => {
-    setKeyboardActive(true);
-  };
-
-  const handleKeyboardDidHide = () => {
-    setKeyboardActive(false);
-  };
-
-  // Add event listeners when the component mounts
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      handleKeyboardDidShow,
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      handleKeyboardDidHide,
-    );
-
-    // Remove event listeners when the component unmounts
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-      setHidePassword(true);
-    };
-  }, []);
-  // Focus handling starts here
-  const handlePasswordFocus = () => passwordRef?.current?.focus();
-  // Focus handling ends here
-  const hidePasswordHandler = () => setHidePassword(!hidePassword);
+  function handleKeyboard(value) {
+    setKeyboardActive(value);
+  }
   const handleVerificationCodeSend = async (email, resetForm) => {
     axios
       .post(FORGET_PASSWORD_URL, {email: email})
       .then(response => {
+        const toastMessage = 'Verification code has been sent to your account';
         resetForm();
+        dispatch(showToast(toastMessage, 'success'));
         navigate(RESET_PASSWORD, {
           email: email,
-          toastMessage: 'Verification code has been sent to your account',
         });
       })
       .catch(err => {
-        setModalMessage(prev => ({
-          ...prev,
-          isVisible: true,
-          error: 'Email not found',
-        }));
+        dispatch(showToast('Email not found', 'error'));
       })
       .finally(() => setIsSubmitting(false));
   };
-  const handleOkPress = () => setModalMessage(modalMessageInitialState);
   const handleKnowYourPassword = () => navigate(SIGN_IN);
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={forgetPasswordSchema}
       onSubmit={(values, {resetForm}) => {
         setIsSubmitting(true);
-        handleVerificationCodeSend(values.email, resetForm);
+        handleVerificationCodeSend(values.email, resetForm).then();
       }}>
       {({values, errors, touched, handleChange, handleBlur, handleSubmit}) => (
         <ForgotPasswordScreen
-          navigation={navigation}
           values={values}
           handleChange={handleChange}
           emailRef={emailRef}
-          passwordRef={passwordRef}
-          handlePasswordFocus={handlePasswordFocus}
           handleSubmit={handleSubmit}
           handleBlur={handleBlur}
           errors={errors}
@@ -133,10 +109,6 @@ const ForgotPasswordContainer = ({navigation}) => {
           }
           isKeyboardActive={isKeyboardActive}
           isSubmitting={isSubmitting}
-          hidePasswordHandler={hidePasswordHandler}
-          hidePassword={hidePassword}
-          modalMessage={modalMessage}
-          handleOkPress={handleOkPress}
           handleKnowYourPassword={handleKnowYourPassword}
         />
       )}

@@ -13,10 +13,12 @@ import {
   Update_Is_License_Plate_Uploaded,
   Category_Variant,
   File_Details,
+  showToast,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {
   API_ENDPOINTS,
+  Delete_Messages,
   generateApiUrl,
   HARDWARE_BACK_PRESS,
   INSPECTION,
@@ -201,16 +203,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     );
     return () => backHandler.remove();
   }, []);
-  useEffect(() => {
-    let timeoutID = setTimeout(
-      () => setModalMessageDetails(modalMessageDetailsInitialState),
-      5000,
-    );
 
-    return () => {
-      clearTimeout(timeoutID);
-    };
-  }, [modalMessageDetails]);
   useEffect(() => {
     handleExteriorLeft();
     handleExteriorRight();
@@ -257,7 +250,6 @@ const NewInspectionContainer = ({route, navigation}) => {
     dispatch({type: CLEAR_NEW_INSPECTION});
     setIsDiscardInspectionModalVisible(false);
     setDeleteItem({category: null, key: null});
-    setModalMessageDetails(modalMessageDetailsInitialState);
     setIsDiscardInspectionModalVisible(false);
     setIsAllVehicleParts(IS_ALL_VEHICLE_PARTS_INITIAL_STATE);
     setInUseErrorTitle('');
@@ -464,23 +456,42 @@ const NewInspectionContainer = ({route, navigation}) => {
     axios
       .delete(endPoint, config)
       .then(() => {
-        setModalMessageDetails(deleteSuccess);
+        dispatch(showToast(Delete_Messages.success, 'success'));
         dispatch(RemoveMethod(key_));
       })
       .catch(e => {
+        const {success, failed} = Delete_Messages;
+        const message = {
+          types: {
+            true: 'success',
+            error: 'error',
+          },
+          messages: {
+            true: success,
+            false: failed,
+          },
+        };
         console.log('error deleting image => ', e);
         const statusCode = e?.response?.data?.statusCode;
+        const alreadyRemoved = statusCode === 404;
+        const activeMessage =
+          message.messages[alreadyRemoved] ||
+          'This image has already been deleted.';
+        const activeType = message.types[alreadyRemoved] || 'error';
         if (statusCode === 401) {
           handle_Session_Expired(statusCode, dispatch);
         }
+
+        if (alreadyRemoved) {
+          dispatch(RemoveMethod(key_));
+        }
+        dispatch(showToast(activeMessage, activeType));
       });
   };
   const handleNoPress = () => {
     setIsDiscardInspectionModalVisible(false);
     setDeleteItem({category: null, key: null});
   };
-  const handleOkPress = () =>
-    setModalMessageDetails(modalMessageDetailsInitialState);
   const handleConfirmModalVisible = () =>
     setIsLicenseModalVisible(prevState => !prevState);
   const handleConfirmVehicleDetail = numberPlate => {
@@ -658,8 +669,6 @@ const NewInspectionContainer = ({route, navigation}) => {
       isDiscardInspectionModalVisible={isDiscardInspectionModalVisible}
       handleOnCrossPress={handleOnCrossPress}
       handleBackPress={handleBackPress}
-      modalMessageDetails={modalMessageDetails}
-      handleOkPress={handleOkPress}
       isLicenseModalVisible={isLicenseModalVisible}
       handleConfirmModalVisible={handleConfirmModalVisible}
       handleConfirmVehicleDetail={handleConfirmVehicleDetail}

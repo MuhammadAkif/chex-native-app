@@ -10,7 +10,6 @@ import {
 import CustomInput from '../../Components/CustomInput';
 import CustomPasswordInput from '../../Components/CustomPasswordInput';
 import {ANDROID, PROJECT_NAME} from '../../Constants';
-import Toast from '../../Components/Toast';
 
 const SignInScreen = ({
   values,
@@ -28,8 +27,6 @@ const SignInScreen = ({
   hidePasswordHandler,
   hidePassword,
   handleForgetPassword,
-  modalMessage,
-  handleOkPress,
 }) => (
   <BackgroundImageView>
     <TouchableOpacity
@@ -99,14 +96,6 @@ const SignInScreen = ({
         />
       </View>
     </TouchableOpacity>
-    {modalMessage?.isVisible && (
-      <Toast
-        onCrossPress={handleOkPress}
-        message={modalMessage.message || modalMessage.error}
-        isError={modalMessage.error !== ''}
-        isForgetPassword={true}
-      />
-    )}
   </BackgroundImageView>
 );
 

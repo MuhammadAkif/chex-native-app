@@ -8,8 +8,9 @@ import {checkVersion} from 'react-native-check-version';
 import {Types} from './src/Store/Types';
 import Navigation from './src/Navigation/index';
 import {hasCameraAndMicrophoneAllowed} from './src/Utils';
-import {DiscardInspectionModal, Splash} from './src/Components';
+import {DiscardInspectionModal, Splash, Toast} from './src/Components';
 import {UPDATE_APP} from './src/Constants';
+import {hideToast} from './src/Store/Actions';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 
@@ -27,10 +28,12 @@ function App() {
       }, 3500);
     } else {
       dispatch({type: Types.CLEAR_NEW_INSPECTION});
+      dispatch(hideToast());
       hasCameraAndMicrophoneAllowed().then();
     }
     return () => {
       dispatch({type: Types.CLEAR_NEW_INSPECTION});
+      dispatch(hideToast());
     };
   }, [displayGif]);
 
@@ -49,6 +52,7 @@ function App() {
   ) : (
     <>
       <Navigation />
+      <Toast />
       {updateAvailable && (
         <DiscardInspectionModal
           onYesPress={handleUpdatePress}

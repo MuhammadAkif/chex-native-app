@@ -12,27 +12,24 @@ import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
 import {ANDROID, API_ENDPOINTS, HARDWARE_BACK_PRESS} from '../../Constants';
 import {ResetPasswordScreen} from '../../Screens';
+import {showToast} from '../../Store/Actions';
+import {useDispatch} from 'react-redux';
 
 const {RESET_PASSWORD_URL} = API_ENDPOINTS;
 const {WELCOME, FORGET_PASSWORD, SIGN_IN} = ROUTES;
 const {gray, white, cobaltBlueLight} = colors;
+
 const ResetPasswordContainer = ({navigation, route}) => {
+  const dispatch = useDispatch();
   const {canGoBack, goBack, navigate} = navigation;
   const email = route?.params?.email;
-  const toastMessage = route?.params?.toastMessage;
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
-  const modalMessageInitialState = {isVisible: false, message: '', error: ''};
   const [isKeyboardActive, setKeyboardActive] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
   const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
-  const [modalMessage, setModalMessage] = useState({
-    isVisible: true,
-    message: toastMessage,
-    error: '',
-  });
   const initialValues = {
     verificationCode: '',
     password: '',
@@ -45,15 +42,7 @@ const ResetPasswordContainer = ({navigation, route}) => {
     );
     return () => backHandler.remove();
   }, []);
-  useEffect(() => {
-    let timeoutID = setTimeout(
-      () => setModalMessage(modalMessageInitialState),
-      5000,
-    );
-    return () => {
-      clearTimeout(timeoutID);
-    };
-  }, [modalMessage]);
+
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
       goBack();
@@ -116,15 +105,13 @@ const ResetPasswordContainer = ({navigation, route}) => {
         });
       })
       .catch(err => {
-        setModalMessage(prev => ({
-          ...prev,
-          isVisible: true,
-          error: err?.response?.data?.errors,
-        }));
+        const message =
+          err?.response?.data?.errors ||
+          'Something went wrong, Please try again.';
+        dispatch(showToast(message, 'error'));
       })
       .finally(() => setIsSubmitting(false));
   };
-  const handleOkPress = () => setModalMessage(modalMessageInitialState);
   const handleKnowYourPassword = () => navigate(SIGN_IN);
   const handleNavigationBackPress = () => goBack();
 
@@ -161,8 +148,6 @@ const ResetPasswordContainer = ({navigation, route}) => {
           hidePassword={hidePassword}
           handleForgetPassword={handleForgetPassword}
           hideConfirmPassword={hideConfirmPassword}
-          modalMessage={modalMessage}
-          handleOkPress={handleOkPress}
           handleKnowYourPassword={handleKnowYourPassword}
           handleNavigationBackPress={handleNavigationBackPress}
         />

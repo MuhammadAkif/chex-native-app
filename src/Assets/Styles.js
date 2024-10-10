@@ -17,6 +17,7 @@ export const colors = {
   royalBlue: '#1468BA',
   cobaltBlue: '#4A93E9',
   cobaltBlueDark: 'rgba(0, 27, 81, 1)',
+  cobaltBlueMedium: 'rgba(0, 27, 81, 0.9)',
   cobaltBlueLight: 'rgba(0, 27, 81, 0.8)',
   lightSteelBlue: '#B8BFD2',
   paleBlue: '#E7EFF8',

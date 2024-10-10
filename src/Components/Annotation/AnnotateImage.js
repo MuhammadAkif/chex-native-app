@@ -8,15 +8,16 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,
   Keyboard,
   Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
+import {useDispatch} from 'react-redux';
 
 import {colors} from '../../Assets/Styles';
 import {
@@ -24,10 +25,32 @@ import {
   RenderDamageTypes,
   RenderIcons,
   SecondaryButton,
+  Toast,
+  Mandatory,
 } from '../index';
-import {ANNOTATE_IMAGE, DAMAGE_TYPE, IOS} from '../../Constants';
+import {
+  ANNOTATE_IMAGE,
+  AnnotationAlertMessage,
+  DAMAGE_TYPE,
+  IOS,
+} from '../../Constants';
+import {generateRandomString, isNotEmpty} from '../../Utils';
+import {showToast} from '../../Store/Actions';
 
-const {white, gray, royalBlue, lightGray, black} = colors;
+const {white, gray, royalBlue, lightGray, black, cobaltBlueMedium} = colors;
+const activeButtonColor = {
+  true: ['#FF7A00', '#F90'],
+  false: [gray, gray],
+};
+let shouldActiveOpacity = {
+  true: 0,
+  false: 1,
+};
+const toastInitialState = {
+  visible: false,
+  message:
+    'Please highlight the damage and select a severity level to proceed. Both are required.',
+};
 
 const AnnotateImage = ({
   modalVisible = false,
@@ -43,97 +66,71 @@ const AnnotateImage = ({
   handleSubmit,
   isLoading = false,
 }) => {
+  const dispatch = useDispatch();
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [damageDetails, setDamageDetails] = useState([]);
-  const [currentMarkerDamageDetails, setCurrentMarkerDamageDetails] =
-    useState(null);
+  const [damageDetails, setDamageDetails] = useState([]); // Only coordinates now
+  const [damageType, setDamageType] = useState(''); // Shared damage type
+  const [damageNotes, setDamageNotes] = useState(''); // Shared notes
   const [selectedMarkerId, setSelectedMarkerId] = useState(null);
   const [canSubmit, setCanSubmit] = useState(false);
+
+  const active_Opacity = shouldActiveOpacity[canSubmit];
+  const isButtonActive = activeButtonColor[canSubmit];
+
   useEffect(() => {
     const status = isButtonDisabled();
     setCanSubmit(status);
-  }, [damageDetails, isLoading]);
-  const submitText = isLoading ? (
-    <ActivityIndicator size={'small'} color={white} />
-  ) : (
-    annotateButtonText
-  );
+  }, [damageType, damageDetails, isLoading]);
+
   function resetState() {
     setIsFullScreen(false);
     setDamageDetails([]);
-    setCurrentMarkerDamageDetails(null);
+    setDamageType('');
+    setDamageNotes('');
     setSelectedMarkerId(null);
   }
 
-  const handleDamageDetails = (key, value) => {
-    setCurrentMarkerDamageDetails(prevState => {
-      const updatedMarker = {
-        ...prevState,
-        [key]: value,
-      };
-
-      setDamageDetails(prevState =>
-        prevState.map(item =>
-          item.id === selectedMarkerId ? updatedMarker : item,
-        ),
-      );
-
-      return updatedMarker;
-    });
-  };
-
   const addDamageDetails = coordinates => {
+    const id = generateRandomString();
     const newMarker = {
-      id: damageDetails.length,
+      id,
       coordinates,
-      type: '',
-      notes: '',
     };
     setDamageDetails([...damageDetails, newMarker]);
-    setCurrentMarkerDamageDetails(newMarker);
     setSelectedMarkerId(newMarker.id);
-  };
-
-  const updateDamageDetails = () => {
-    if (currentMarkerDamageDetails && selectedMarkerId !== null) {
-      setDamageDetails(prevState =>
-        prevState.map(item =>
-          item.id === selectedMarkerId ? currentMarkerDamageDetails : item,
-        ),
-      );
-    }
   };
 
   const onImagePress = event => {
     const {locationX, locationY} = event.nativeEvent;
     const coordinates = {x: locationX - wp('5%'), y: locationY - wp('5%')};
-    updateDamageDetails();
     addDamageDetails(coordinates);
   };
 
   const handleExclamationMarkPress = index => {
-    updateDamageDetails();
     const selectedMarker = damageDetails[index];
-    setCurrentMarkerDamageDetails(selectedMarker);
     setSelectedMarkerId(selectedMarker.id);
   };
-
   const handleSubmission = () => {
-    if (canSubmit || damageDetails?.length < 1) {
+    if (!canSubmit) {
+      dispatch(showToast(AnnotationAlertMessage, 'warning'));
       return;
     }
-    handleSubmit([...damageDetails], resetState);
+    const submissionData = {
+      damageDetails, // coordinates for each icon
+      damageType,
+      notes: damageNotes,
+    };
+    handleSubmit(submissionData, resetState);
   };
   const handleCancelPress = () => {
     resetState();
     handleCancel();
   };
   const isButtonDisabled = () => {
-    return damageDetails.some(item => !item.type || !item.notes);
+    return isNotEmpty(damageType) && damageDetails.length > 0;
   };
   const removeMarker = id => {
     setDamageDetails(prevState => prevState.filter(marker => marker.id !== id));
-    setCurrentMarkerDamageDetails(null);
     setSelectedMarkerId(null);
   };
   const closeKeyboard = () => Keyboard.dismiss();
@@ -148,105 +145,112 @@ const AnnotateImage = ({
         activeOpacity={1}
         style={styles.centeredViewContainer}
         onPress={closeKeyboard}>
-        <View style={styles.centeredView}>
-          <View
-            style={[
-              styles.header,
-              {
-                flex: instructionalSubHeadingText ? 1.5 : 1,
-                flexGrow: isExterior ? 2 : 1,
-              },
-            ]}>
-            <Text
+        <KeyboardAvoidingView behavior={'padding'}>
+          <View style={styles.centeredView}>
+            <View
               style={[
-                styles.titleText,
-                {bottom: isFullScreen ? hp('3%') : null},
+                styles.header,
+                {
+                  flex: instructionalSubHeadingText ? 1.5 : 1,
+                  flexGrow: isExterior ? 2 : 1,
+                },
               ]}>
-              {title}
-            </Text>
-            <TouchableOpacity
-              onPress={onImagePress}
-              activeOpacity={1}
-              disabled={isLoading}>
-              <FastImage
-                source={{uri: source}}
-                priority={'normal'}
-                resizeMode={'stretch'}
-                style={[styles.image, {height: hp('25%')}]}
-              />
-              {damageDetails?.length > 0 &&
-                damageDetails.map((marker, index) => {
-                  return (
-                    <RenderIcons
-                      key={marker.id}
-                      marker={marker}
-                      handleExclamationMarkPress={() =>
-                        handleExclamationMarkPress(index)
-                      }
-                      selectedMarkerId={selectedMarkerId}
-                      onCrossPressed={() => removeMarker(marker.id)}
-                    />
-                  );
-                })}
-            </TouchableOpacity>
-          </View>
-          <View style={styles.body}>
-            <View style={[styles.box, {height: hp('9%'), width: '90%'}]}>
-              <Text style={styles.subHeadingText}>
-                Identify Damage Severity Level
+              <Text
+                style={[
+                  styles.titleText,
+                  {bottom: isFullScreen ? hp('3%') : null},
+                ]}>
+                {title}
+                <Mandatory style={styles.titleText} />
               </Text>
-              <FlatList
-                data={DAMAGE_TYPE}
-                renderItem={({item}) => (
-                  <RenderDamageTypes
-                    item={item}
-                    selectedDamage={currentMarkerDamageDetails?.type}
-                    handleDamageDetails={handleDamageDetails}
-                    disabled={selectedMarkerId === null}
-                  />
-                )}
-                keyExtractor={item => item}
-                horizontal={true}
-              />
+              <TouchableOpacity
+                onPress={onImagePress}
+                activeOpacity={1}
+                disabled={isLoading}>
+                <FastImage
+                  source={{uri: source}}
+                  priority={'normal'}
+                  resizeMode={'stretch'}
+                  style={[styles.image, {height: hp('25%')}]}
+                />
+                {damageDetails?.length > 0 &&
+                  damageDetails.map((marker, index) => {
+                    return (
+                      <RenderIcons
+                        key={marker.id}
+                        marker={marker}
+                        handleExclamationMarkPress={() =>
+                          handleExclamationMarkPress(index)
+                        }
+                        selectedMarkerId={selectedMarkerId}
+                        onCrossPressed={() => removeMarker(marker.id)}
+                      />
+                    );
+                  })}
+              </TouchableOpacity>
             </View>
-            <View style={styles.box}>
-              <Text style={styles.subHeadingText}>Add Notes</Text>
-              <View style={styles.statusDescriptionContainer}>
-                <TextInput
-                  style={[styles.text, Platform.OS === IOS && styles.iOSStyle]}
-                  placeholder={notes}
-                  multiline={true}
-                  editable={selectedMarkerId !== null}
-                  placeholderTextColor={gray}
-                  value={currentMarkerDamageDetails?.notes}
-                  onChangeText={text => handleDamageDetails('notes', text)}
-                  onBlur={updateDamageDetails}
+            <View style={styles.body}>
+              <View style={[styles.box, {height: hp('9%'), width: '90%'}]}>
+                <Text style={styles.subHeadingText}>
+                  Identify Damage Severity Level
+                  <Mandatory style={styles.subHeadingText} />
+                </Text>
+                <FlatList
+                  data={DAMAGE_TYPE}
+                  renderItem={({item}) => (
+                    <RenderDamageTypes
+                      item={item}
+                      selectedDamage={damageType}
+                      handleDamageDetails={(key, value) => setDamageType(value)}
+                    />
+                  )}
+                  keyExtractor={item => item}
+                  horizontal={true}
                 />
               </View>
+              <View style={styles.box}>
+                <Text style={styles.subHeadingText}>Add Notes</Text>
+                <View style={styles.statusDescriptionContainer}>
+                  <TextInput
+                    style={[
+                      styles.text,
+                      Platform.OS === IOS && styles.iOSStyle,
+                    ]}
+                    placeholder={notes}
+                    multiline={true}
+                    placeholderTextColor={gray}
+                    value={damageNotes}
+                    onChangeText={text => setDamageNotes(text)}
+                  />
+                </View>
+              </View>
+            </View>
+            <View style={styles.footerContainer}>
+              <PrimaryGradientButton
+                text={annotateButtonText}
+                buttonStyle={styles.submitButton}
+                onPress={handleSubmission}
+                disabled={isLoading}
+                colors={isButtonActive}
+                activeOpacity={active_Opacity}
+              />
+              <SecondaryButton
+                text={cancelButtonText}
+                buttonStyle={styles.cancelButton}
+                textStyle={styles.cancelButtonText}
+                onPress={handleCancelPress}
+                disabled={isLoading}
+              />
             </View>
           </View>
-          <View style={styles.footerContainer}>
-            <PrimaryGradientButton
-              text={submitText}
-              buttonStyle={styles.submitButton}
-              onPress={handleSubmission}
-              disabled={isLoading}
-            />
-            <SecondaryButton
-              text={cancelButtonText}
-              buttonStyle={styles.cancelButton}
-              textStyle={styles.cancelButtonText}
-              onPress={handleCancelPress}
-              disabled={isLoading}
-            />
-          </View>
-        </View>
+        </KeyboardAvoidingView>
       </TouchableOpacity>
       <StatusBar
-        backgroundColor="rgba(0, 27, 81, 0.9)"
+        backgroundColor={cobaltBlueMedium}
         barStyle="light-content"
         translucent={true}
       />
+      <Toast isModal={true} />
     </Modal>
   );
 };
@@ -259,7 +263,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 27, 81, 0.9)',
+    backgroundColor: cobaltBlueMedium,
     paddingTop: hp('7%'),
   },
   centeredView: {

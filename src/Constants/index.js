@@ -187,3 +187,9 @@ export const SWITCH_CAMERA = {
   true: 'front',
   false: 'back',
 };
+export const AnnotationAlertMessage =
+  'Please highlight the damage and select a severity level to proceed. Both are required.';
+export const Delete_Messages = {
+  success: 'Deleted Successfully.',
+  failed: 'Failed to delete. Please try again.',
+};
