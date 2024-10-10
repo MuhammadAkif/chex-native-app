@@ -68,6 +68,16 @@ const CaptureImageModal = ({
     }),
     [instructionalSubHeadingText, isExterior, isFullScreen, isCarVerification],
   );
+  /*const button = () => (
+    <View style={styles.body}>
+      <PrimaryGradientButton
+        text={buttonText}
+        onPress={() => handleCaptureImage(isVideo, modalKey)}
+      />
+    </View>
+  );
+  const footers = {true: ProgressCircle, false: button};
+  const ActiveFooter = footers[isLoading];*/
 
   return (
     <Modal
