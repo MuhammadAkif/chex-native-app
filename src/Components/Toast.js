@@ -1,5 +1,12 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  StatusBar,
+  Platform,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -9,6 +16,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {XMark, Check, Cross, Exclamation} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {hideToast} from '../Store/Actions';
+import {ANDROID, IOS} from '../Constants';
 
 const {red, gray, white, black, brightGreen} = colors;
 const Toast_Icons = {
@@ -44,9 +52,13 @@ const Toast = props => {
   }
   const ICON_COMPONENT = Toast_Icons[type];
   const BACKGROUND_COLOR = Background_Color[type];
+  const containerStyle = {
+    ...styles.centeredView,
+    top: isModal && Platform.OS === ANDROID ? hp('0.7%') : hp('5%'),
+    marginTop: isModal && Platform.OS === IOS ? StatusBar.currentHeight : null,
+  };
   return (
-    <View
-      style={{...styles.centeredView, top: isModal ? hp('0.7%') : hp('5%')}}>
+    <View style={containerStyle}>
       <View style={styles.messageTextContainer}>
         <View
           style={{...styles.iconContainer, backgroundColor: BACKGROUND_COLOR}}>

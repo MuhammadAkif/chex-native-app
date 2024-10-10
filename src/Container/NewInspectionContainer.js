@@ -107,16 +107,6 @@ const NewInspectionContainer = ({route, navigation}) => {
   const {
     user: {token, data},
   } = useSelector(state => state?.auth);
-  const modalMessageDetailsInitialState = {
-    isVisible: false,
-    title: '',
-    message: '',
-  };
-  const deleteSuccess = {
-    isVisible: true,
-    title: '',
-    message: 'Deleted Successfully.',
-  };
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
   const [mediaModalDetails, setMediaModalDetails] = useState({});
@@ -146,9 +136,6 @@ const NewInspectionContainer = ({route, navigation}) => {
   const [modalDetails, setModalDetails] = useState(modalDetailsInitialState);
   const [annotationModalDetails, setAnnotationModalDetails] = useState(
     annotationModalInitialState,
-  );
-  const [modalMessageDetails, setModalMessageDetails] = useState(
-    modalMessageDetailsInitialState,
   );
   const [displayTires, setDisplayTires] = useState(true);
   const [displayAnnotationPopUp, setDisplayAnnotationPopUp] = useState(false);
@@ -369,6 +356,11 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   // Media Modal logic ends here
   const handleCaptureNowPress = (isVideo, key) => {
+    const paths = {
+      true: VIDEO,
+      false: CAMERA,
+    };
+    const path = paths[isVideo];
     const details = {
       title: modalDetails.title,
       type: key,
@@ -379,19 +371,11 @@ const NewInspectionContainer = ({route, navigation}) => {
     setAnnotationModalDetails(details);
     setModalVisible(false);
     setModalDetails(modalDetailsInitialState);
-    if (isVideo) {
-      navigate(VIDEO, {
-        type: key,
-        modalDetails: modalDetails,
-        inspectionId: selectedInspectionID,
-      });
-    } else {
-      navigate(CAMERA, {
-        type: key,
-        modalDetails: modalDetails,
-        inspectionId: selectedInspectionID,
-      });
-    }
+    navigate(path, {
+      type: key,
+      modalDetails: modalDetails,
+      inspectionId: selectedInspectionID,
+    });
   };
   const handleSubmitPress = () => {
     setIsLoading(true);

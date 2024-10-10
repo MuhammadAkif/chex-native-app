@@ -13,6 +13,7 @@ import {UPDATE_APP} from './src/Constants';
 import {hideToast} from './src/Store/Actions';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
+const {CLEAR_NEW_INSPECTION} = Types;
 
 function App() {
   const dispatch = useDispatch();
@@ -27,12 +28,12 @@ function App() {
         setDisplayGif(false);
       }, 3500);
     } else {
-      dispatch({type: Types.CLEAR_NEW_INSPECTION});
+      dispatch({type: CLEAR_NEW_INSPECTION});
       dispatch(hideToast());
       hasCameraAndMicrophoneAllowed().then();
     }
     return () => {
-      dispatch({type: Types.CLEAR_NEW_INSPECTION});
+      dispatch({type: CLEAR_NEW_INSPECTION});
       dispatch(hideToast());
     };
   }, [displayGif]);
