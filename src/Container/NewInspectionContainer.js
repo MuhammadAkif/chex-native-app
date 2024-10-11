@@ -282,6 +282,8 @@ const NewInspectionContainer = ({route, navigation}) => {
       exteriorFrontRightCorner,
       exteriorRearLeftCorner,
       exteriorRearRightCorner,
+      exteriorInteriorDriverSide,
+      exteriorInteriorPassengerSide,
       exteriorInsideCargoRoof,
     } = exteriorItems;
     const exteriorImages = {
@@ -291,6 +293,8 @@ const NewInspectionContainer = ({route, navigation}) => {
       exteriorFrontRightCorner,
       exteriorRearLeftCorner,
       exteriorRearRightCorner,
+      exteriorInteriorDriverSide,
+      exteriorInteriorPassengerSide,
       exteriorInsideCargoRoof,
     };
     const allCarVerification = !isObjectEmpty(carVerificationItems);
