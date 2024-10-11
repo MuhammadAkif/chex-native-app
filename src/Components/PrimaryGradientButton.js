@@ -41,7 +41,7 @@ const PrimaryGradientButton = ({
   return (
     <TouchableOpacity
       onPress={onPress}
-      activeOpacity={activeOpacity}
+      // activeOpacity={activeOpacity}
       disabled={disabled}>
       <LinearGradient
         colors={colors}

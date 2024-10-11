@@ -221,6 +221,34 @@ export const ExteriorInsideCargoRoofDetails = {
   groupType: INSPECTION.EXTERIOR,
   isVideo: false,
 };
+export const ExteriorInteriorPassengerSide = {
+  key: 'exteriorInteriorPassengerSide',
+  title: 'Interior Passenger Side',
+  source: IMAGES.interior_passenger_side,
+  instructionalText:
+    'Please take a photo of the interior of the vehicle with right passenger side door open with clear view of the following interior items:',
+  instructionalSubHeadingText: 'Passenger seat belt buckled',
+  buttonText: 'Capture Now',
+  category: 'Exterior',
+  subCategory: 'interior_passenger_side',
+  groupType: INSPECTION.EXTERIOR,
+  isVideo: false,
+};
+export const ExteriorInteriorDriverSide = {
+  key: 'exteriorInteriorDriverSide',
+  title: 'Interior Driver Side',
+  source: IMAGES.interior_driver_side,
+  instructionalText:
+    'Please take a photo of the interior of the vehicle with left driver side door open with clear view of the following items:',
+  instructionalSubHeadingText: 'Driver seat belt buckled',
+  instructionalSubHeadingText_1: 'Interior rearview mirror',
+  instructionalSubHeadingText_2: 'Brake pads',
+  buttonText: 'Capture Now',
+  category: 'Exterior',
+  subCategory: 'interior_driver_side',
+  groupType: INSPECTION.EXTERIOR,
+  isVideo: false,
+};
 //____________________________Tires_____________________________
 export const LeftFrontTireDetails = {
   key: 'leftFrontTire',
@@ -614,10 +642,13 @@ export const handleUpdateStoreMedia = {
 };
 export function uploadInProgressMediaToStore(files, dispatch) {
   for (let file = 0; file < files.length; file++) {
-    const imageURL =
-      files[file].url.split(':')[0] === 'https'
-        ? files[file].url
-        : `${S3_BUCKET_BASEURL}${files[file].url}`;
+    const url = files[file].url;
+    const completeURL = S3_BUCKET_BASEURL + url;
+    const image_URLs = {
+      true: url,
+      false: completeURL,
+    };
+    const imageURL = image_URLs[url.split(':')[0] === 'https'];
     let {groupType, id, category, llamaCost: variant} = files[file];
     let variant_ = parseInt(variant);
     if (variant_) {
@@ -723,6 +754,12 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
     exteriorInsideCargoRoofID,
     exteriorInsideCargoRoof_1ID,
     exteriorInsideCargoRoof_2ID,
+    exteriorInteriorDriverSideID,
+    exteriorInteriorDriverSide_1ID,
+    exteriorInteriorDriverSide_2ID,
+    exteriorInteriorPassengerSideID,
+    exteriorInteriorPassengerSide_1ID,
+    exteriorInteriorPassengerSide_2ID,
   } = exterior;
   const {licensePlateID, odometerID} = carVerification;
   const {leftFrontTireID, leftRearTireID, rightFrontTireID, rightRearTireID} =
@@ -757,6 +794,12 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
     exteriorInsideCargoRoof: exteriorInsideCargoRoofID,
     exteriorInsideCargoRoof_1: exteriorInsideCargoRoof_1ID,
     exteriorInsideCargoRoof_2: exteriorInsideCargoRoof_2ID,
+    exteriorInteriorDriverSide: exteriorInteriorDriverSideID,
+    exteriorInteriorDriverSide_1: exteriorInteriorDriverSide_1ID,
+    exteriorInteriorDriverSide_2: exteriorInteriorDriverSide_2ID,
+    exteriorInteriorPassengerSide: exteriorInteriorPassengerSideID,
+    exteriorInteriorPassengerSide_1: exteriorInteriorPassengerSide_1ID,
+    exteriorInteriorPassengerSide_2: exteriorInteriorPassengerSide_2ID,
     leftFrontTire: leftFrontTireID,
     leftRearTire: leftRearTireID,
     rightFrontTire: rightFrontTireID,

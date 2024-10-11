@@ -82,6 +82,7 @@ const CollapsedCard = ({
           ...isBothAvailableStyle[isBothItemsAvailable],
         },
       ]}
+      disabled={disabled}
       onPress={onPress}>
       <View style={styles.collapsedCardContentContainer}>
         <TextComponent />

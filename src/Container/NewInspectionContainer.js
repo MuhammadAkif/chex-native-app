@@ -631,6 +631,12 @@ const NewInspectionContainer = ({route, navigation}) => {
         modalDetails?.groupType === INSPECTION.CAR_VERIFICATION
       }
       instructionalSubHeadingText={modalDetails?.instructionalSubHeadingText}
+      instructionalSubHeadingText_1={
+        modalDetails?.instructionalSubHeadingText_1
+      }
+      instructionalSubHeadingText_2={
+        modalDetails?.instructionalSubHeadingText_2
+      }
       handleItemPickerPress={handleItemPickerPress}
       handleCaptureNowPress={handleCaptureNowPress}
       carVerificationItems={carVerificationItems}

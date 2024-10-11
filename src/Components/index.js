@@ -57,6 +57,7 @@ import ItemPickerLabel from './ItemPicker/ItemPickerLabel';
 import Splash from './Splash';
 import Mandatory from './Mandatory';
 import ProgressCircle from './ProgressCircle';
+import Sub_Heading from './Sub_Heading';
 
 export {
   BackgroundImageView,
@@ -118,4 +119,5 @@ export {
   Splash,
   Mandatory,
   ProgressCircle,
+  Sub_Heading,
 };

@@ -19,7 +19,7 @@ import VideoPlayer from 'react-native-video-player';
 
 import {Cross, Expand, Info} from '../Assets/Icons';
 import {colors, dot} from '../Assets/Styles';
-import {PrimaryGradientButton} from './index';
+import {PrimaryGradientButton, Sub_Heading} from './index';
 import Collapse from '../Assets/Icons/Collapse';
 import {ANDROID} from '../Constants';
 import {
@@ -43,6 +43,8 @@ const CaptureImageModal = ({
   source,
   instructionalText,
   instructionalSubHeadingText,
+  instructionalSubHeadingText_1,
+  instructionalSubHeadingText_2,
   buttonText,
   title,
   isVideo = false,
@@ -69,15 +71,15 @@ const CaptureImageModal = ({
     [instructionalSubHeadingText, isExterior, isFullScreen, isCarVerification],
   );
   /*const button = () => (
-    <View style={styles.body}>
-      <PrimaryGradientButton
-        text={buttonText}
-        onPress={() => handleCaptureImage(isVideo, modalKey)}
-      />
-    </View>
-  );
-  const footers = {true: ProgressCircle, false: button};
-  const ActiveFooter = footers[isLoading];*/
+   <View style={styles.body}>
+     <PrimaryGradientButton
+       text={buttonText}
+       onPress={() => handleCaptureImage(isVideo, modalKey)}
+     />
+   </View>
+ );
+ const footers = {true: ProgressCircle, false: button};
+ const ActiveFooter = footers[isLoading];*/
 
   return (
     <Modal
@@ -159,18 +161,9 @@ const CaptureImageModal = ({
                 {instructionalText}
               </Text>
             </View>
-            {instructionalSubHeadingText && (
-              <View style={styles.subHeadingContainer}>
-                <View style={[dot, styles.dot]} />
-                <Text
-                  style={[
-                    styles.instructionsText,
-                    {color: blueGray, width: wp('75%')},
-                  ]}>
-                  {instructionalSubHeadingText}
-                </Text>
-              </View>
-            )}
+            <Sub_Heading text={instructionalSubHeadingText} styles={styles} />
+            <Sub_Heading text={instructionalSubHeadingText_1} styles={styles} />
+            <Sub_Heading text={instructionalSubHeadingText_2} styles={styles} />
           </View>
         </View>
         {isLoading ? (
@@ -293,6 +286,7 @@ const styles = StyleSheet.create({
   },
   instructionsAndSubHeadingContainer: {
     alignItems: 'center',
+    rowGap: hp('0.5%'),
   },
   loadingText: {
     fontSize: hp('1.8%'),

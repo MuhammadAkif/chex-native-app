@@ -43,6 +43,8 @@ const NewInspectionScreen = props => {
     isCarVerification,
     isExterior,
     instructionalSubHeadingText,
+    instructionalSubHeadingText_1,
+    instructionalSubHeadingText_2,
     handleItemPickerPress,
     handleCaptureNowPress,
     carVerificationItems,
@@ -168,7 +170,13 @@ const NewInspectionScreen = props => {
                 buttonText={buttonText}
                 title={title}
                 isVideo={isVideo}
-                instructionalSubHeadingText={instructionalSubHeadingText}
+                instructionalSubHeadingText={instructionalSubHeadingText || ''}
+                instructionalSubHeadingText_1={
+                  instructionalSubHeadingText_1 || ''
+                }
+                instructionalSubHeadingText_2={
+                  instructionalSubHeadingText_2 || ''
+                }
                 modalKey={modalKey}
                 handleCaptureImage={handleCaptureNowPress}
                 isCarVerification={isCarVerification}

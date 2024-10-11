@@ -10,6 +10,8 @@ export const IMAGES = {
   rear_Left_Corner: require('./Rear_Left_Corner.png'),
   rear_Right_Corner: require('./Rear_Right_Corner.png'),
   inside_Cargo_Roof: require('./Inside_Cargo_Roof.png'),
+  interior_driver_side: require('./InteriorDriverside.jpg'),
+  interior_passenger_side: require('./InteriorPassengerSide.png'),
   tire: require('./Tires.jpeg'),
   splash: require('./chexDSPSlpash-speed55s-no-repeat.gif'),
   sign_In_Background: require('./SignInBackgroundImage.jpeg'),

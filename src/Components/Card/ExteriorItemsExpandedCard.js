@@ -12,6 +12,8 @@ import {
   ExteriorInsideCargoRoofDetails,
   ExteriorLeftDetails,
   ExteriorRightDetails,
+  ExteriorInteriorDriverSide,
+  ExteriorInteriorPassengerSide,
 } from '../../Utils';
 import {ImagesPickerContainer} from '../index';
 
@@ -132,6 +134,36 @@ const ExteriorItemsExpandedCard = ({
       />
     )}
     <ImagesPickerContainer
+      ExteriorDetails={ExteriorInteriorDriverSide}
+      pickerText={pickerText}
+      imageURL={exteriorItems?.exteriorInteriorDriverSide}
+      imageURLOne={exteriorItems?.exteriorInteriorDriverSide_1}
+      imageURLTwo={exteriorItems?.exteriorInteriorDriverSide_2}
+      imageURL_ID={exteriorItems?.exteriorInteriorDriverSideID}
+      imageURLOne_ID={exteriorItems?.exteriorInteriorDriverSide_1ID}
+      imageURLTwo_ID={exteriorItems?.exteriorInteriorDriverSide_2ID}
+      isLoading={isLoading}
+      handleItemPickerPress={handleItemPickerPress}
+      handleCrossPress={handleCrossPress}
+      handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+      exteriorItems={exteriorItems}
+    />
+    <ImagesPickerContainer
+      ExteriorDetails={ExteriorInteriorPassengerSide}
+      pickerText={pickerText}
+      imageURL={exteriorItems?.exteriorInteriorPassengerSide}
+      imageURLOne={exteriorItems?.exteriorInteriorPassengerSide_1}
+      imageURLTwo={exteriorItems?.exteriorInteriorPassengerSide_2}
+      imageURL_ID={exteriorItems?.exteriorInteriorPassengerSideID}
+      imageURLOne_ID={exteriorItems?.exteriorInteriorPassengerSide_1ID}
+      imageURLTwo_ID={exteriorItems?.exteriorInteriorPassengerSide_2ID}
+      isLoading={isLoading}
+      handleItemPickerPress={handleItemPickerPress}
+      handleCrossPress={handleCrossPress}
+      handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+      exteriorItems={exteriorItems}
+    />
+    <ImagesPickerContainer
       ExteriorDetails={ExteriorInsideCargoRoofDetails}
       pickerText={pickerText}
       imageURL={exteriorItems?.exteriorInsideCargoRoof}
@@ -146,50 +178,6 @@ const ExteriorItemsExpandedCard = ({
       handleMediaModalDetailsPress={handleMediaModalDetailsPress}
       exteriorItems={exteriorItems}
     />
-    {/*<View style={ExpandedCardStyles.itemPickerContainer}>*/}
-    {/*  {!skipLeft && (*/}
-    {/*    <ImagePicker*/}
-    {/*      text={ExteriorLeftDetails.title}*/}
-    {/*      pickerText={pickerText}*/}
-    {/*      imageURL={exteriorItems?.exteriorLeft}*/}
-    {/*      isLoading={isLoading}*/}
-    {/*      onPress={() => handleItemPickerPress(ExteriorLeftDetails)}*/}
-    {/*      onClearPress={() =>*/}
-    {/*        handleCrossPress(*/}
-    {/*          ExteriorLeftDetails.groupType,*/}
-    {/*          ExteriorLeftDetails.key,*/}
-    {/*        )*/}
-    {/*      }*/}
-    {/*      handleMediaModalDetailsPress={() =>*/}
-    {/*        handleMediaModalDetailsPress(*/}
-    {/*          ExteriorLeftDetails.title,*/}
-    {/*          exteriorItems?.exteriorLeft,*/}
-    {/*        )*/}
-    {/*      }*/}
-    {/*    />*/}
-    {/*  )}*/}
-    {/*  {!skipRight && (*/}
-    {/*    <ImagePicker*/}
-    {/*      text={ExteriorRightDetails.title}*/}
-    {/*      pickerText={pickerText}*/}
-    {/*      imageURL={exteriorItems?.exteriorRight}*/}
-    {/*      isLoading={isLoading}*/}
-    {/*      onPress={() => handleItemPickerPress(ExteriorRightDetails)}*/}
-    {/*      onClearPress={() =>*/}
-    {/*        handleCrossPress(*/}
-    {/*          ExteriorRightDetails.groupType,*/}
-    {/*          ExteriorRightDetails.key,*/}
-    {/*        )*/}
-    {/*      }*/}
-    {/*      handleMediaModalDetailsPress={() =>*/}
-    {/*        handleMediaModalDetailsPress(*/}
-    {/*          ExteriorRightDetails.title,*/}
-    {/*          exteriorItems?.exteriorRight,*/}
-    {/*        )*/}
-    {/*      }*/}
-    {/*    />*/}
-    {/*  )}*/}
-    {/*</View>*/}
   </View>
 );
 export default ExteriorItemsExpandedCard;

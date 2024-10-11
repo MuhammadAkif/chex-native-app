@@ -13,6 +13,8 @@ import {
   ExteriorInsideCargoRoofDetails,
   ExteriorLeftDetails,
   ExteriorRightDetails,
+  ExteriorInteriorDriverSide,
+  ExteriorInteriorPassengerSide,
 } from '../../Utils';
 
 const ExteriorItemsExpandedCard = ({
@@ -203,6 +205,48 @@ const ExteriorItemsExpandedCard = ({
           }
         />
       )}
+    </View>
+    <View style={ExpandedCardStyles.itemPickerContainer}>
+      {!skipLeftCorners && (
+        <ImagePicker
+          text={ExteriorInteriorDriverSide.title}
+          pickerText={pickerText}
+          imageURL={exteriorItems?.exteriorInteriorDriverSide}
+          isLoading={isLoading}
+          onPress={() => handleItemPickerPress(ExteriorInteriorDriverSide)}
+          onClearPress={() =>
+            handleCrossPress(
+              ExteriorInteriorDriverSide.groupType,
+              ExteriorInteriorDriverSide.key,
+            )
+          }
+          handleMediaModalDetailsPress={() =>
+            handleMediaModalDetailsPress(
+              ExteriorInteriorDriverSide.title,
+              exteriorItems?.exteriorInteriorDriverSide,
+            )
+          }
+        />
+      )}
+      <ImagePicker
+        text={ExteriorInteriorPassengerSide.title}
+        pickerText={pickerText}
+        imageURL={exteriorItems?.exteriorInteriorPassengerSide}
+        isLoading={isLoading}
+        onPress={() => handleItemPickerPress(ExteriorInteriorPassengerSide)}
+        onClearPress={() =>
+          handleCrossPress(
+            ExteriorInteriorPassengerSide.groupType,
+            ExteriorInteriorPassengerSide.key,
+          )
+        }
+        handleMediaModalDetailsPress={() =>
+          handleMediaModalDetailsPress(
+            ExteriorInteriorPassengerSide.title,
+            exteriorItems?.exteriorInteriorPassengerSide,
+          )
+        }
+      />
     </View>
     <View style={ExpandedCardStyles.itemPickerContainer}>
       <ImagePicker

@@ -90,7 +90,13 @@ const ImagePicker = ({
           </Text>
         </TouchableOpacity>
       )}
-      <Text style={expandedCardStyles.uploadImageText}>{text}</Text>
+      <Text
+        style={{
+          ...expandedCardStyles.uploadImageText,
+          ...expandedCardStyles.uploadImageTitleText,
+        }}>
+        {text}
+      </Text>
     </View>
   );
 };

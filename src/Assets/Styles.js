@@ -112,6 +112,10 @@ export const expandedCardStyles = StyleSheet.create({
     paddingTop: '2%',
     fontWeight: '500',
   },
+  uploadImageTitleText: {
+    width: wp('35%'),
+    textAlign: 'center',
+  },
   uploadImageAndTextContainer: {
     alignItems: 'center',
   },
