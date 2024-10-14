@@ -45,6 +45,7 @@ export const EXPIRY_INSPECTION = {
 };
 export const INSPECTION = {
   CAR_VERIFICATION: 'carVerificiationItems',
+  INTERIOR: 'interiorItems',
   EXTERIOR: 'exteriorItems',
   TIRES: 'tires',
 };

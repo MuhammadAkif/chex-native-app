@@ -12,8 +12,8 @@ import {
   ExteriorInsideCargoRoofDetails,
   ExteriorLeftDetails,
   ExteriorRightDetails,
-  ExteriorInteriorDriverSide,
-  ExteriorInteriorPassengerSide,
+  InteriorDriverSide,
+  InteriorPassengerSide,
 } from '../../Utils';
 import {ImagesPickerContainer} from '../index';
 
@@ -134,7 +134,7 @@ const ExteriorItemsExpandedCard = ({
       />
     )}
     <ImagesPickerContainer
-      ExteriorDetails={ExteriorInteriorDriverSide}
+      ExteriorDetails={InteriorDriverSide}
       pickerText={pickerText}
       imageURL={exteriorItems?.exteriorInteriorDriverSide}
       imageURLOne={exteriorItems?.exteriorInteriorDriverSide_1}
@@ -149,7 +149,7 @@ const ExteriorItemsExpandedCard = ({
       exteriorItems={exteriorItems}
     />
     <ImagesPickerContainer
-      ExteriorDetails={ExteriorInteriorPassengerSide}
+      ExteriorDetails={InteriorPassengerSide}
       pickerText={pickerText}
       imageURL={exteriorItems?.exteriorInteriorPassengerSide}
       imageURLOne={exteriorItems?.exteriorInteriorPassengerSide_1}

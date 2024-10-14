@@ -39,6 +39,8 @@ import {
 import {
   ExteriorItemsExpandedCard,
   ExteriorItemsExpandedCard_Old,
+  InteriorItemsAnnotationExpandedCard,
+  InteriorItemsExpandedCard,
 } from '../Components';
 
 const {
@@ -51,6 +53,7 @@ const {
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllCarVerification: false,
+  isAllInterior: false,
   isAllExterior: false,
   isAllTires: false,
   isAllParts: false,
@@ -80,10 +83,20 @@ const annotationModalInitialState = {
   fileId: '',
   source: '',
 };
+const selectedOptionInitialState = {
+  isCarVerification: true,
+  isInterior: false,
+  isExterior: false,
+  isTires: false,
+};
 
 const exteriorItemsExpandedCards = {
   existing: ExteriorItemsExpandedCard_Old,
   new: ExteriorItemsExpandedCard,
+};
+const interiorItemsExpandedCards = {
+  existing: InteriorItemsExpandedCard,
+  new: InteriorItemsAnnotationExpandedCard,
 };
 
 const NewInspectionContainer = ({route, navigation}) => {
@@ -92,6 +105,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   let {
     carVerificationItems,
     exteriorItems,
+    interiorItems,
     tires,
     selectedInspectionID,
     plateNumber,
@@ -110,11 +124,9 @@ const NewInspectionContainer = ({route, navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
   const [mediaModalDetails, setMediaModalDetails] = useState({});
-  const [selectedOption, setSelectedOption] = useState({
-    isCarVerification: true,
-    isExterior: false,
-    isTires: false,
-  });
+  const [selectedOption, setSelectedOption] = useState(
+    selectedOptionInitialState,
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [loadingIndicator, setLoadingIndicator] = useState(false);
   const [deleteItem, setDeleteItem] = useState({category: null, key: null});
@@ -148,6 +160,8 @@ const NewInspectionContainer = ({route, navigation}) => {
   const [isExterior, setIsExterior] = useState(false);
   const ActiveExteriorItemsExpandedCard =
     exteriorItemsExpandedCards[vehicle_Type];
+  const ActiveInteriorItemsExpandedCard =
+    interiorItemsExpandedCards[vehicle_Type];
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -197,7 +211,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   }, [exteriorItems]);
   useEffect(() => {
     handleIsAllVehicleParts();
-  }, [carVerificationItems, exteriorItems, tires, displayTires]);
+  }, [carVerificationItems, interiorItems, exteriorItems, tires, displayTires]);
   useEffect(() => {
     const isTiresUploaded = haveOneValue(tires);
     if (!displayTires && isTiresUploaded) {
@@ -226,11 +240,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     return false;
   }
   function resetAllStates() {
-    setSelectedOption({
-      isCarVerification: false,
-      isExterior: false,
-      isTires: false,
-    });
+    setSelectedOption(selectedOptionInitialState);
     setModalDetails(modalDetailsInitialState);
     setModalVisible(false);
     setIsLoading(false);
@@ -282,10 +292,10 @@ const NewInspectionContainer = ({route, navigation}) => {
       exteriorFrontRightCorner,
       exteriorRearLeftCorner,
       exteriorRearRightCorner,
-      exteriorInteriorDriverSide,
-      exteriorInteriorPassengerSide,
       exteriorInsideCargoRoof,
     } = exteriorItems;
+    const {exteriorInteriorDriverSide, exteriorInteriorPassengerSide} =
+      interiorItems;
     const exteriorImages = {
       exteriorFront,
       exteriorRear,
@@ -298,9 +308,11 @@ const NewInspectionContainer = ({route, navigation}) => {
       exteriorInsideCargoRoof,
     };
     const allCarVerification = !isObjectEmpty(carVerificationItems);
+    const allInterior = !isObjectEmpty(interiorItems);
     const allExterior = !isObjectEmpty(exteriorImages);
     const allTires = !isObjectEmpty(tires);
-    const allParts = allCarVerification && allExterior && allTires;
+    const allParts =
+      allCarVerification && allInterior && allExterior && allTires;
     const skipOnlyTires = allCarVerification && allExterior;
     const shouldDisplayTire = {
       true: {
@@ -314,6 +326,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     };
     setIsAllVehicleParts({
       isAllCarVerification: allCarVerification,
+      isAllInterior: allInterior,
       isAllExterior: allExterior,
       ...shouldDisplayTire[displayTires],
     });
@@ -644,11 +657,13 @@ const NewInspectionContainer = ({route, navigation}) => {
       handleItemPickerPress={handleItemPickerPress}
       handleCaptureNowPress={handleCaptureNowPress}
       carVerificationItems={carVerificationItems}
+      interiorItems={interiorItems}
       exteriorItems={exteriorItems}
       tires={tires}
       isBothCarVerificationImagesAvailable={
         isAllVehicleParts.isAllCarVerification
       }
+      isAllInteriorImagesAvailable={isAllVehicleParts.isAllInterior}
       isAllExteriorImagesAvailable={isAllVehicleParts.isAllExterior}
       isBothTiresImagesAvailable={isAllVehicleParts.isAllTires}
       isVehicleAllPartsImagesAvailable={isAllVehicleParts.isAllParts}
@@ -687,9 +702,11 @@ const NewInspectionContainer = ({route, navigation}) => {
       handleAnnotationSubmit={handleAnnotationSubmit}
       handleAnnotationCancel={handleAnnotationCancel}
       annotationModalDetails={annotationModalDetails}
-      isLicensePlateUploaded={isLicensePlateUploaded}
+      isLicensePlateUploaded={true}
+      // isLicensePlateUploaded={isLicensePlateUploaded}
       ActiveExteriorItemsExpandedCard={ActiveExteriorItemsExpandedCard}
       vehicle_Type={shouldAnnotate}
+      ActiveInteriorItemsExpandedCard={ActiveInteriorItemsExpandedCard}
     />
   );
 };

@@ -221,7 +221,8 @@ export const ExteriorInsideCargoRoofDetails = {
   groupType: INSPECTION.EXTERIOR,
   isVideo: false,
 };
-export const ExteriorInteriorPassengerSide = {
+//___________________________Interior______________________________
+export const InteriorPassengerSide = {
   key: 'exteriorInteriorPassengerSide',
   title: 'Interior Passenger Side',
   source: IMAGES.interior_passenger_side,
@@ -234,7 +235,7 @@ export const ExteriorInteriorPassengerSide = {
   groupType: INSPECTION.EXTERIOR,
   isVideo: false,
 };
-export const ExteriorInteriorDriverSide = {
+export const InteriorDriverSide = {
   key: 'exteriorInteriorDriverSide',
   title: 'Interior Driver Side',
   source: IMAGES.interior_driver_side,

@@ -48,9 +48,11 @@ const NewInspectionScreen = props => {
     handleItemPickerPress,
     handleCaptureNowPress,
     carVerificationItems,
+    interiorItems,
     exteriorItems,
     tires,
     isBothCarVerificationImagesAvailable,
+    isAllInteriorImagesAvailable,
     isAllExteriorImagesAvailable,
     isBothTiresImagesAvailable,
     isVehicleAllPartsImagesAvailable,
@@ -90,6 +92,7 @@ const NewInspectionScreen = props => {
     isLicensePlateUploaded,
     ActiveExteriorItemsExpandedCard,
     vehicle_Type,
+    ActiveInteriorItemsExpandedCard,
   } = props;
   return (
     <View style={NewInspectionStyles.container}>
@@ -210,8 +213,25 @@ const NewInspectionScreen = props => {
               />
             )}
             <CollapsedCard
-              text={'Exterior items'}
+              text={'Interior items'}
               index={2}
+              isActive={selectedOption?.isInterior}
+              isBothItemsAvailable={isAllInteriorImagesAvailable}
+              onPress={() => handleCardExpansion('isInterior')}
+              disabled={!isLicensePlateUploaded}
+            />
+            {selectedOption?.isInterior && (
+              <ActiveInteriorItemsExpandedCard
+                handleItemPickerPress={handleItemPickerPress}
+                interiorItems={interiorItems}
+                handleCrossPress={handleOnCrossPress}
+                isLoading={isLoading}
+                handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+              />
+            )}
+            <CollapsedCard
+              text={'Exterior items'}
+              index={3}
               isActive={selectedOption?.isExterior}
               isBothItemsAvailable={isAllExteriorImagesAvailable}
               onPress={() => handleCardExpansion('isExterior')}
@@ -234,7 +254,7 @@ const NewInspectionScreen = props => {
               <>
                 <CollapsedCard
                   text={'Tires'}
-                  index={3}
+                  index={4}
                   isActive={selectedOption?.isTires}
                   isBothItemsAvailable={isBothTiresImagesAvailable}
                   onPress={() => handleCardExpansion('isTires')}

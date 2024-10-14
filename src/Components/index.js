@@ -58,6 +58,8 @@ import Splash from './Splash';
 import Mandatory from './Mandatory';
 import ProgressCircle from './ProgressCircle';
 import Sub_Heading from './Sub_Heading';
+import InteriorItemsExpandedCard from './Card/InteriorItemsExpandedCard';
+import InteriorItemsAnnotationExpandedCard from './Card/Annotation/InteriorItemsAnnotationExpandedCard';
 
 export {
   BackgroundImageView,
@@ -120,4 +122,6 @@ export {
   Mandatory,
   ProgressCircle,
   Sub_Heading,
+  InteriorItemsExpandedCard,
+  InteriorItemsAnnotationExpandedCard,
 };
