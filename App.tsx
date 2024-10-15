@@ -4,7 +4,7 @@ import {useDispatch} from 'react-redux';
 import 'react-native-devsettings';
 import SplashScreen from 'react-native-splash-screen';
 import {checkVersion} from 'react-native-check-version';
-
+// backup deployment/staging/new_interior_categories_android_45(2.7)
 import {Types} from './src/Store/Types';
 import Navigation from './src/Navigation/index';
 import {hasCameraAndMicrophoneAllowed} from './src/Utils';
