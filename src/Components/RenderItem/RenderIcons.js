@@ -29,8 +29,8 @@ const RenderIcons = ({
       style={{
         position: 'absolute',
         zIndex: 1,
-        top: marker.coordinates.y,
-        left: marker.coordinates.x,
+        top: marker.y,
+        left: marker.x,
         backgroundColor: background_Color[activeIcon],
         padding: wp('2%'),
       }}

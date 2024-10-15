@@ -28,6 +28,7 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {
   UpdateCarVerificationItemURI,
   UpdateExteriorItemURI,
+  UpdateInteriorItemURI,
   UpdateTiresItemURI,
 } from '../Store/Actions';
 import {
@@ -53,6 +54,7 @@ import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionM
 
 const handleUpdateStoreMedia = {
   CarVerification: UpdateCarVerificationItemURI,
+  Interior: UpdateInteriorItemURI,
   Exterior: UpdateExteriorItemURI,
   Tires: UpdateTiresItemURI,
 };
@@ -150,8 +152,6 @@ const CameraContainer = ({route, navigation}) => {
       const filePath = `file://${file.path}`;
       setIsImageFile(file);
       setIsImageURL(filePath);
-      // const result = await fetch(filePath);
-      // const data = await result.blob();
     }
   };
   const handleRetryPress = () => {
@@ -159,16 +159,18 @@ const CameraContainer = ({route, navigation}) => {
     setIsImageFile({});
   };
   const handleResponse = async key => {
+    const {INTERIOR, EXTERIOR} = INSPECTION;
     let extension = isImageFile.path.split('.').pop();
+    const mime = 'image/' + extension;
     let body = {
       category: subCategory,
       url: key,
-      extension: `image/${extension}`,
+      extension: mime,
       groupType: groupType,
       dateImage: getCurrentDate(),
       hasAdded: vehicle_Type,
     };
-    if (groupType === INSPECTION.EXTERIOR) {
+    if (groupType === INTERIOR || groupType === EXTERIOR) {
       body = {...body, variant: variant};
     }
     if (category === 'CarVerification' && type === 'licensePlate') {
@@ -186,13 +188,16 @@ const CameraContainer = ({route, navigation}) => {
   function uploadImageToStore(imageID) {
     const isLicensePlate =
       category === 'CarVerification' && type === 'licensePlate';
+    const is_Interior = category === 'Interior';
     const is_Exterior = category === 'Exterior';
     const annotationDetails = {uri: isImageURL};
     let type_ = type;
-    if (is_Exterior) {
+    if (is_Exterior || is_Interior) {
       type_ = exteriorVariant(type_, variant);
     }
-    const displayAnnotation = is_Exterior && vehicle_Type === 'new';
+    const displayAnnotation =
+      (is_Interior && vehicle_Type === 'new') ||
+      (is_Exterior && vehicle_Type === 'new');
     const UPDATE_INSPECTION_IMAGES = handleUpdateStoreMedia[category];
     dispatch(UPDATE_INSPECTION_IMAGES(type_, isImageURL, imageID));
     if (isLicensePlate) {
@@ -203,7 +208,7 @@ const CameraContainer = ({route, navigation}) => {
       displayAnnotation: displayAnnotation,
       fileId: imageID,
       annotationDetails: annotationDetails,
-      is_Exterior: is_Exterior,
+      is_Exterior: is_Exterior || is_Interior,
     });
   }
   const handleExtractNumberPlate = async imageURL => {
@@ -229,11 +234,11 @@ const CameraContainer = ({route, navigation}) => {
   };
   const handleNextPress = () => {
     let extension = isImageFile.path.split('.')[2];
-
+    const mime = 'image/' + extension;
     setIsModalVisible(true);
     getSignedUrl(
       token,
-      `image/${extension}`,
+      mime,
       isImageFile.path,
       setProgress,
       handleResponse,

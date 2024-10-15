@@ -5,6 +5,14 @@ export function UpdateCarVerificationItemURI(item, uri, id) {
   return dispatch =>
     dispatch({type: Types.CAR_VERIFICATION_ITEMS, payload: payload});
 }
+export function UpdateInteriorItemURI(item, uri, id) {
+  let payload = {item: item, uri: uri, id: id};
+  return dispatch =>
+    dispatch({
+      type: Types.INTERIOR_ITEMS,
+      payload: payload,
+    });
+}
 export function UpdateExteriorItemURI(item, uri, id) {
   let payload = {item: item, uri: uri, id: id};
   return dispatch =>
@@ -26,6 +34,14 @@ export function RemoveCarVerificationItemURI(item) {
   return dispatch =>
     dispatch({type: Types.REMOVE_CAR_VERIFICATION_ITEM_URI, payload: payload});
 }
+export function RemoveInteriorItemURI(item) {
+  let payload = {item: item, uri: '', id: 0};
+  return dispatch =>
+    dispatch({
+      type: Types.REMOVE_INTERIOR_ITEM_URI,
+      payload: payload,
+    });
+}
 export function RemoveExteriorItemURI(item) {
   let payload = {item: item, uri: '', id: 0};
   return dispatch =>
@@ -42,12 +58,11 @@ export function RemoveTiresItemURI(item) {
       payload: payload,
     });
 }
-export function NumberPlateSelectedAction(selectedInspectionID) {
-  let payload = {selectedInspectionID: selectedInspectionID};
+export function NumberPlateSelectedAction(selectedInspectionID = null) {
   return dispatch =>
     dispatch({
       type: Types.SELECTED_INSPECTION_ID,
-      payload: payload,
+      payload: selectedInspectionID,
     });
 }
 export function Update_Is_License_Plate_Uploaded(payload) {

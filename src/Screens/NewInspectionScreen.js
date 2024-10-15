@@ -93,6 +93,7 @@ const NewInspectionScreen = props => {
     ActiveExteriorItemsExpandedCard,
     vehicle_Type,
     ActiveInteriorItemsExpandedCard,
+    coordinates,
   } = props;
   return (
     <View style={NewInspectionStyles.container}>
@@ -191,7 +192,7 @@ const NewInspectionScreen = props => {
                 title={mediaModalDetails?.title}
                 isVideo={mediaModalDetails?.isVideo}
                 source={mediaModalDetails?.source}
-                coordinates={mediaModalDetails?.coordinates?.damageDetails}
+                coordinates={coordinates}
                 handleVisible={handleMediaModalDetailsCrossPress}
               />
             )}

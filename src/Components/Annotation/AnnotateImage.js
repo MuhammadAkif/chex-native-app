@@ -34,7 +34,7 @@ import {
   DAMAGE_TYPE,
   IOS,
 } from '../../Constants';
-import {generateRandomString, isNotEmpty} from '../../Utils';
+import {generateRandomString, isNotEmpty, mergeData} from '../../Utils';
 import {showToast} from '../../Store/Actions';
 
 const {white, gray, royalBlue, lightGray, black, cobaltBlueMedium} = colors;
@@ -45,11 +45,6 @@ const activeButtonColor = {
 let shouldActiveOpacity = {
   true: 0,
   false: 1,
-};
-const toastInitialState = {
-  visible: false,
-  message:
-    'Please highlight the damage and select a severity level to proceed. Both are required.',
 };
 
 const AnnotateImage = ({
@@ -93,13 +88,22 @@ const AnnotateImage = ({
   const addDamageDetails = coordinates => {
     const id = generateRandomString();
     const newMarker = {
+      ...coordinates,
       id,
-      coordinates,
+      width: 50,
+      height: 50,
+      accuracyMatrix: {
+        tp: 0,
+        fp: 0,
+        fn: 1,
+      },
+      byAI: false,
+      deleted: false,
+      isMobile: true,
     };
     setDamageDetails([...damageDetails, newMarker]);
     setSelectedMarkerId(newMarker.id);
   };
-
   const onImagePress = event => {
     const {locationX, locationY} = event.nativeEvent;
     const coordinates = {x: locationX - wp('5%'), y: locationY - wp('5%')};
@@ -115,9 +119,11 @@ const AnnotateImage = ({
       dispatch(showToast(AnnotationAlertMessage, 'warning'));
       return;
     }
+    const label = damageType;
+    const coordinateArray = mergeData(damageDetails, label);
     const submissionData = {
-      damageDetails, // coordinates for each icon
-      damageType,
+      coordinateArray, // coordinates for each icon
+      label,
       notes: damageNotes,
     };
     handleSubmit(submissionData, resetState);
@@ -134,6 +140,7 @@ const AnnotateImage = ({
     setSelectedMarkerId(null);
   };
   const closeKeyboard = () => Keyboard.dismiss();
+
   return (
     <Modal
       animationType="slide"

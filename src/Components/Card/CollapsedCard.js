@@ -55,7 +55,6 @@ const CollapsedCard = ({
   isBothItemsAvailable,
   disabled = false,
 }) => {
-  console.log({text, index, onPress, isActive, isBothItemsAvailable, disabled});
   const disabled_Color = {
     true: gray,
     false: royalBlue,

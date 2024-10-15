@@ -23,7 +23,7 @@ import {
 import {Types} from '../Store/Types';
 import {deleteRequest} from '../Services/api';
 
-const {VEHICLE_TYPE} = Types;
+const {VEHICLE_TYPE, CLEAR_NEW_INSPECTION} = Types;
 const {NEW_INSPECTION, INSPECTION_IN_PROGRESS} = ROUTES;
 
 const InspectionInProgressContainer = ({navigation}) => {
@@ -92,7 +92,6 @@ const InspectionInProgressContainer = ({navigation}) => {
         dispatch({type: VEHICLE_TYPE, payload: vehicleType});
         get_Inspection_Details(dispatch, inspectionId).then();
         uploadInProgressMediaToStore(res?.data?.files, dispatch);
-        setIsLoading(false);
         dispatch(NumberPlateSelectedAction(inspectionId));
         resetAllStates();
         navigate(NEW_INSPECTION, {
@@ -100,12 +99,16 @@ const InspectionInProgressContainer = ({navigation}) => {
         });
       })
       .catch(error => {
-        setIsLoading(false);
+        dispatch({type: CLEAR_NEW_INSPECTION});
         const statusCode = error?.response?.data?.statusCode;
         if (statusCode === 401) {
           handle_Session_Expired(statusCode, dispatch);
         }
         console.log('error of inspection in progress => ', error);
+      })
+      .finally(() => {
+        setInspectionID(null);
+        setIsLoading(false);
       });
   };
   const onCrossPress = id => {

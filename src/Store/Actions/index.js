@@ -1,8 +1,10 @@
 import {
   UpdateCarVerificationItemURI,
+  UpdateInteriorItemURI,
   UpdateExteriorItemURI,
   UpdateTiresItemURI,
   RemoveCarVerificationItemURI,
+  RemoveInteriorItemURI,
   RemoveExteriorItemURI,
   RemoveTiresItemURI,
   NumberPlateSelectedAction,
@@ -24,9 +26,11 @@ import {setLoading, showToast, hideToast} from './UIActions';
 
 export {
   UpdateCarVerificationItemURI,
+  UpdateInteriorItemURI,
   UpdateExteriorItemURI,
   UpdateTiresItemURI,
   RemoveCarVerificationItemURI,
+  RemoveInteriorItemURI,
   RemoveExteriorItemURI,
   RemoveTiresItemURI,
   NumberPlateSelectedAction,

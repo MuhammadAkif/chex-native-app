@@ -13,7 +13,7 @@ const containerStyle = {
 
 const InteriorItemsAnnotationExpandedCard = ({
   handleItemPickerPress,
-  exteriorItems,
+  interiorItems,
   handleCrossPress,
   isLoading,
   handleMediaModalDetailsPress,
@@ -23,32 +23,30 @@ const InteriorItemsAnnotationExpandedCard = ({
     <ImagesPickerContainer
       ExteriorDetails={InteriorDriverSide}
       pickerText={pickerText}
-      imageURL={exteriorItems?.exteriorInteriorDriverSide}
-      imageURLOne={exteriorItems?.exteriorInteriorDriverSide_1}
-      imageURLTwo={exteriorItems?.exteriorInteriorDriverSide_2}
-      imageURL_ID={exteriorItems?.exteriorInteriorDriverSideID}
-      imageURLOne_ID={exteriorItems?.exteriorInteriorDriverSide_1ID}
-      imageURLTwo_ID={exteriorItems?.exteriorInteriorDriverSide_2ID}
+      imageURL={interiorItems?.driverSide}
+      imageURLOne={interiorItems?.driverSide_1}
+      imageURLTwo={interiorItems?.driverSide_2}
+      imageURL_ID={interiorItems?.driverSideID}
+      imageURLOne_ID={interiorItems?.driverSide_1ID}
+      imageURLTwo_ID={interiorItems?.driverSide_2ID}
       isLoading={isLoading}
       handleItemPickerPress={handleItemPickerPress}
       handleCrossPress={handleCrossPress}
       handleMediaModalDetailsPress={handleMediaModalDetailsPress}
-      exteriorItems={exteriorItems}
     />
     <ImagesPickerContainer
       ExteriorDetails={InteriorPassengerSide}
       pickerText={pickerText}
-      imageURL={exteriorItems?.exteriorInteriorPassengerSide}
-      imageURLOne={exteriorItems?.exteriorInteriorPassengerSide_1}
-      imageURLTwo={exteriorItems?.exteriorInteriorPassengerSide_2}
-      imageURL_ID={exteriorItems?.exteriorInteriorPassengerSideID}
-      imageURLOne_ID={exteriorItems?.exteriorInteriorPassengerSide_1ID}
-      imageURLTwo_ID={exteriorItems?.exteriorInteriorPassengerSide_2ID}
+      imageURL={interiorItems?.passengerSide}
+      imageURLOne={interiorItems?.passengerSide_1}
+      imageURLTwo={interiorItems?.passengerSide_2}
+      imageURL_ID={interiorItems?.passengerSideID}
+      imageURLOne_ID={interiorItems?.passengerSide_1ID}
+      imageURLTwo_ID={interiorItems?.passengerSide_2ID}
       isLoading={isLoading}
       handleItemPickerPress={handleItemPickerPress}
       handleCrossPress={handleCrossPress}
       handleMediaModalDetailsPress={handleMediaModalDetailsPress}
-      exteriorItems={exteriorItems}
     />
   </View>
 );

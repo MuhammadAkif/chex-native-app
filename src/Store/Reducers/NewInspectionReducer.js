@@ -76,7 +76,7 @@ const initialState = {
     exteriorInsideCargoRoof_1ID: '',
     exteriorInsideCargoRoof_2: '',
     exteriorInsideCargoRoof_2ID: '',
-    exteriorInteriorDriverSide: '',
+    /* exteriorInteriorDriverSide: '',
     exteriorInteriorDriverSideID: '',
     exteriorInteriorDriverSide_1: '',
     exteriorInteriorDriverSide_1ID: '',
@@ -87,7 +87,7 @@ const initialState = {
     exteriorInteriorPassengerSide_1: '',
     exteriorInteriorPassengerSide_1ID: '',
     exteriorInteriorPassengerSide_2: '',
-    exteriorInteriorPassengerSide_2ID: '',
+    exteriorInteriorPassengerSide_2ID: '',*/
   },
   tires: {
     leftFrontTire: '',
@@ -132,6 +132,15 @@ const newInspectionReducer = (state = initialState, action) => {
           [`${action.payload.item}ID`]: action.payload.id,
         },
       };
+    case Types.INTERIOR_ITEMS:
+      return {
+        ...state,
+        interiorItems: {
+          ...state.interiorItems,
+          [action.payload.item]: action.payload.uri,
+          [`${action.payload.item}ID`]: action.payload.id,
+        },
+      };
     case Types.TIRES:
       return {
         ...state,
@@ -151,6 +160,15 @@ const newInspectionReducer = (state = initialState, action) => {
         ...state,
         carVerificationItems: {
           ...state.carVerificationItems,
+          [action.payload.item]: action.payload.uri,
+          [`${action.payload.item}ID`]: action.payload.id,
+        },
+      };
+    case Types.REMOVE_INTERIOR_ITEM_URI:
+      return {
+        ...state,
+        interiorItems: {
+          ...state.interiorItems,
           [action.payload.item]: action.payload.uri,
           [`${action.payload.item}ID`]: action.payload.id,
         },
@@ -183,7 +201,7 @@ const newInspectionReducer = (state = initialState, action) => {
     case Types.SELECTED_INSPECTION_ID:
       return {
         ...state,
-        selectedInspectionID: action.payload.selectedInspectionID,
+        selectedInspectionID: action.payload,
       };
     case Types.company_ID:
       return {

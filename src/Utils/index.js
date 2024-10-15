@@ -18,6 +18,7 @@ import {
   NumberPlateSelectedAction,
   UpdateCarVerificationItemURI,
   UpdateExteriorItemURI,
+  UpdateInteriorItemURI,
   UpdateTiresItemURI,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
@@ -223,20 +224,20 @@ export const ExteriorInsideCargoRoofDetails = {
 };
 //___________________________Interior______________________________
 export const InteriorPassengerSide = {
-  key: 'exteriorInteriorPassengerSide',
+  key: 'passengerSide',
   title: 'Interior Passenger Side',
   source: IMAGES.interior_passenger_side,
   instructionalText:
     'Please take a photo of the interior of the vehicle with right passenger side door open with clear view of the following interior items:',
   instructionalSubHeadingText: 'Passenger seat belt buckled',
   buttonText: 'Capture Now',
-  category: 'Exterior',
+  category: 'Interior',
   subCategory: 'interior_passenger_side',
-  groupType: INSPECTION.EXTERIOR,
+  groupType: INSPECTION.INTERIOR,
   isVideo: false,
 };
 export const InteriorDriverSide = {
-  key: 'exteriorInteriorDriverSide',
+  key: 'driverSide',
   title: 'Interior Driver Side',
   source: IMAGES.interior_driver_side,
   instructionalText:
@@ -245,9 +246,9 @@ export const InteriorDriverSide = {
   instructionalSubHeadingText_1: 'Interior rearview mirror',
   instructionalSubHeadingText_2: 'Brake pads',
   buttonText: 'Capture Now',
-  category: 'Exterior',
+  category: 'Interior',
   subCategory: 'interior_driver_side',
-  groupType: INSPECTION.EXTERIOR,
+  groupType: INSPECTION.INTERIOR,
   isVideo: false,
 };
 //____________________________Tires_____________________________
@@ -638,6 +639,7 @@ export const sortInspection_Reviewed_Items = list => {
 
 export const handleUpdateStoreMedia = {
   carVerificiationItems: UpdateCarVerificationItemURI,
+  interiorItems: UpdateInteriorItemURI,
   exteriorItems: UpdateExteriorItemURI,
   tires: UpdateTiresItemURI,
 };
@@ -725,6 +727,7 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
   const {
     carVerificationItems: carVerification,
     exteriorItems: exterior,
+    interiorItems: interior,
     tires,
   } = store.getState().newInspection;
   const {
@@ -755,13 +758,15 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
     exteriorInsideCargoRoofID,
     exteriorInsideCargoRoof_1ID,
     exteriorInsideCargoRoof_2ID,
-    exteriorInteriorDriverSideID,
-    exteriorInteriorDriverSide_1ID,
-    exteriorInteriorDriverSide_2ID,
-    exteriorInteriorPassengerSideID,
-    exteriorInteriorPassengerSide_1ID,
-    exteriorInteriorPassengerSide_2ID,
   } = exterior;
+  const {
+    driverSideID,
+    driverSide_1ID,
+    driverSide_2ID,
+    passengerSideID,
+    passengerSide_1ID,
+    passengerSide_2ID,
+  } = interior;
   const {licensePlateID, odometerID} = carVerification;
   const {leftFrontTireID, leftRearTireID, rightFrontTireID, rightRearTireID} =
     tires;
@@ -795,12 +800,12 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
     exteriorInsideCargoRoof: exteriorInsideCargoRoofID,
     exteriorInsideCargoRoof_1: exteriorInsideCargoRoof_1ID,
     exteriorInsideCargoRoof_2: exteriorInsideCargoRoof_2ID,
-    exteriorInteriorDriverSide: exteriorInteriorDriverSideID,
-    exteriorInteriorDriverSide_1: exteriorInteriorDriverSide_1ID,
-    exteriorInteriorDriverSide_2: exteriorInteriorDriverSide_2ID,
-    exteriorInteriorPassengerSide: exteriorInteriorPassengerSideID,
-    exteriorInteriorPassengerSide_1: exteriorInteriorPassengerSide_1ID,
-    exteriorInteriorPassengerSide_2: exteriorInteriorPassengerSide_2ID,
+    driverSide: driverSideID,
+    driverSide_1: driverSide_1ID,
+    driverSide_2: driverSide_2ID,
+    passengerSide: passengerSideID,
+    passengerSide_1: passengerSide_1ID,
+    passengerSide_2: passengerSide_2ID,
     leftFrontTire: leftFrontTireID,
     leftRearTire: leftRearTireID,
     rightFrontTire: rightFrontTireID,
@@ -953,3 +958,20 @@ export function assignNumber(arr = [], length = 0) {
   }
 }
 export const fallBack = (text = 'Fall back Pressed') => console.log(text);
+
+export const mergeData = (list = [], label = '') => {
+  console.log({list, label});
+  if (list?.length < 1 || !Array.isArray(list)) {
+    console.log('Empty Array or invalid array');
+    return list;
+  }
+  const newList = [];
+  for (let i = 0; i < list.length; i++) {
+    const body = {
+      ...list[i],
+      label: label,
+    };
+    newList.push(body);
+  }
+  return newList;
+};

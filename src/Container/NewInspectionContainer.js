@@ -14,6 +14,7 @@ import {
   Category_Variant,
   File_Details,
   showToast,
+  RemoveInteriorItemURI,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {
@@ -168,6 +169,14 @@ const NewInspectionContainer = ({route, navigation}) => {
       Authorization: `Bearer ${token}`,
     },
   };
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      HARDWARE_BACK_PRESS,
+      handle_Hardware_Back_Press,
+    );
+    return () => backHandler.remove();
+  }, []);
   useEffect(() => {
     if (route.params?.routeName === INSPECTION_IN_PROGRESS && checkTireStatus) {
       vehicleTireStatusToRender(selectedInspectionID).then(() =>
@@ -198,14 +207,6 @@ const NewInspectionContainer = ({route, navigation}) => {
     }
   }, [route]);
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      HARDWARE_BACK_PRESS,
-      handle_Hardware_Back_Press,
-    );
-    return () => backHandler.remove();
-  }, []);
-
-  useEffect(() => {
     handleExteriorLeft();
     handleExteriorRight();
   }, [exteriorItems]);
@@ -231,6 +232,9 @@ const NewInspectionContainer = ({route, navigation}) => {
     const licenseBoolean = isNotEmpty(carVerificationItems.licensePlate);
     dispatch(Update_Is_License_Plate_Uploaded(licenseBoolean));
   }, [carVerificationItems.licensePlate]);
+  useEffect(() => {
+    !isLicensePlateUploaded && setSelectedOption(selectedOptionInitialState);
+  }, [isLicensePlateUploaded]);
   const shouldAnnotate = vehicle_Type === 'new' && isExterior;
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
@@ -239,6 +243,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     }
     return false;
   }
+
   function resetAllStates() {
     setSelectedOption(selectedOptionInitialState);
     setModalDetails(modalDetailsInitialState);
@@ -294,8 +299,22 @@ const NewInspectionContainer = ({route, navigation}) => {
       exteriorRearRightCorner,
       exteriorInsideCargoRoof,
     } = exteriorItems;
-    const {exteriorInteriorDriverSide, exteriorInteriorPassengerSide} =
-      interiorItems;
+    const {
+      driverSide,
+      driverSide_1,
+      driverSide_2,
+      passengerSide,
+      passengerSide_1,
+      passengerSide_2,
+    } = interiorItems;
+    const interiorImages = {
+      driverSide,
+      // driverSide_1,
+      // driverSide_2,
+      passengerSide,
+      // passengerSide_1,
+      // passengerSide_2,
+    };
     const exteriorImages = {
       exteriorFront,
       exteriorRear,
@@ -303,12 +322,10 @@ const NewInspectionContainer = ({route, navigation}) => {
       exteriorFrontRightCorner,
       exteriorRearLeftCorner,
       exteriorRearRightCorner,
-      exteriorInteriorDriverSide,
-      exteriorInteriorPassengerSide,
       exteriorInsideCargoRoof,
     };
     const allCarVerification = !isObjectEmpty(carVerificationItems);
-    const allInterior = !isObjectEmpty(interiorItems);
+    const allInterior = !isObjectEmpty(interiorImages);
     const allExterior = !isObjectEmpty(exteriorImages);
     const allTires = !isObjectEmpty(tires);
     const allParts =
@@ -346,6 +363,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   //Collapsed Cards Functions ends here
   const handleItemPickerPress = (details, variant = 0) => {
+    displayAnnotationPopUp && setDisplayAnnotationPopUp(false);
     dispatch(Category_Variant(variant));
     setModalDetails(details);
     setModalVisible(true);
@@ -440,12 +458,17 @@ const NewInspectionContainer = ({route, navigation}) => {
     setDeleteItem({category: category, key: key});
   };
   const handleYesPress = () => {
+    const {INTERIOR, EXTERIOR} = INSPECTION;
     let key_ = deleteItem?.key;
-    if (deleteItem?.category === INSPECTION.EXTERIOR) {
+    if (
+      deleteItem?.category === EXTERIOR ||
+      deleteItem?.category === INTERIOR
+    ) {
       key_ = exteriorVariant(key_, variant);
     }
     const handleRemoveImage = {
       carVerificationItems: RemoveCarVerificationItemURI,
+      interiorItems: RemoveInteriorItemURI,
       exteriorItems: RemoveExteriorItemURI,
       tires: RemoveTiresItemURI,
     };
@@ -531,7 +554,6 @@ const NewInspectionContainer = ({route, navigation}) => {
         });
     }
   };
-
   const handleYesPressOfInProgressInspection = () => {
     setIsInspectionInProgressModalVisible(false);
     setLoadingIndicator(true);
@@ -702,11 +724,11 @@ const NewInspectionContainer = ({route, navigation}) => {
       handleAnnotationSubmit={handleAnnotationSubmit}
       handleAnnotationCancel={handleAnnotationCancel}
       annotationModalDetails={annotationModalDetails}
-      isLicensePlateUploaded={true}
-      // isLicensePlateUploaded={isLicensePlateUploaded}
+      isLicensePlateUploaded={isLicensePlateUploaded}
       ActiveExteriorItemsExpandedCard={ActiveExteriorItemsExpandedCard}
       vehicle_Type={shouldAnnotate}
       ActiveInteriorItemsExpandedCard={ActiveInteriorItemsExpandedCard}
+      coordinates={mediaModalDetails?.coordinates?.coordinateArray || []}
     />
   );
 };
