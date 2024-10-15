@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
 import 'react-native-devsettings';
-
+// main branch backup
 import Navigation from './src/Navigation/index';
 import {hasCameraAndMicrophoneAllowed} from './src/Utils';
 import {Types} from './src/Store/Types';
