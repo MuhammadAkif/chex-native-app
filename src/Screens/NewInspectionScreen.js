@@ -42,6 +42,7 @@ const NewInspectionScreen = props => {
     modalKey,
     isCarVerification,
     isExterior,
+    isInterior,
     instructionalSubHeadingText,
     instructionalSubHeadingText_1,
     instructionalSubHeadingText_2,
@@ -184,7 +185,7 @@ const NewInspectionScreen = props => {
                 modalKey={modalKey}
                 handleCaptureImage={handleCaptureNowPress}
                 isCarVerification={isCarVerification}
-                isExterior={isExterior}
+                isExterior={isExterior || isInterior}
               />
             )}
             {mediaModalVisible && (

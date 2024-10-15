@@ -666,6 +666,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       isVideo={modalDetails?.isVideo}
       modalKey={modalDetails?.key}
       isExterior={modalDetails?.groupType === INSPECTION.EXTERIOR}
+      isInterior={modalDetails?.groupType === INSPECTION.INTERIOR}
       isCarVerification={
         modalDetails?.groupType === INSPECTION.CAR_VERIFICATION
       }
