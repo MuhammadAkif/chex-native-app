@@ -48,7 +48,7 @@ const NewInspectionScreen = props => {
     instructionalSubHeadingText_2,
     handleItemPickerPress,
     handleCaptureNowPress,
-    carVerificationItems,
+    carVerificiationItems,
     interiorItems,
     exteriorItems,
     tires,
@@ -207,7 +207,7 @@ const NewInspectionScreen = props => {
             {selectedOption?.isCarVerification && (
               <CarVerificationExpandedCard
                 handleItemPickerPress={handleItemPickerPress}
-                carVerificationItems={carVerificationItems}
+                carVerificiationItems={carVerificiationItems}
                 handleCrossPress={handleOnCrossPress}
                 isLoading={isLoading}
                 handleMediaModalDetailsPress={handleMediaModalDetailsPress}

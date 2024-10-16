@@ -44,10 +44,10 @@ export const EXPIRY_INSPECTION = {
   cancelButton: 'Exit',
 };
 export const INSPECTION = {
-  CAR_VERIFICATION: 'carVerificiationItems',
-  INTERIOR: 'interiorItems',
-  EXTERIOR: 'exteriorItems',
-  TIRES: 'tires',
+  carVerificiationItems: 'carVerificiationItems',
+  interiorItems: 'interiorItems',
+  exteriorItems: 'exteriorItems',
+  tires: 'tires',
 };
 export const INSPECTION_SUBCATEGORY = {
   license_plate_number: 'licensePlate',

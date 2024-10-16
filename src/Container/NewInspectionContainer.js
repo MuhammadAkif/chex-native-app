@@ -7,14 +7,11 @@ import {NewInspectionScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
   NumberPlateSelectedAction,
-  RemoveCarVerificationItemURI,
-  RemoveExteriorItemURI,
-  RemoveTiresItemURI,
   Update_Is_License_Plate_Uploaded,
   Category_Variant,
   File_Details,
   showToast,
-  RemoveInteriorItemURI,
+  RemoveVehicleImages,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {
@@ -104,7 +101,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {canGoBack, goBack, navigate} = navigation;
   let {
-    carVerificationItems,
+    carVerificiationItems,
     exteriorItems,
     interiorItems,
     tires,
@@ -212,7 +209,13 @@ const NewInspectionContainer = ({route, navigation}) => {
   }, [exteriorItems]);
   useEffect(() => {
     handleIsAllVehicleParts();
-  }, [carVerificationItems, interiorItems, exteriorItems, tires, displayTires]);
+  }, [
+    carVerificiationItems,
+    interiorItems,
+    exteriorItems,
+    tires,
+    displayTires,
+  ]);
   useEffect(() => {
     const isTiresUploaded = haveOneValue(tires);
     if (!displayTires && isTiresUploaded) {
@@ -229,9 +232,9 @@ const NewInspectionContainer = ({route, navigation}) => {
     }
   }, [selectedInspectionID]);
   useEffect(() => {
-    const licenseBoolean = isNotEmpty(carVerificationItems.licensePlate);
+    const licenseBoolean = isNotEmpty(carVerificiationItems.licensePlate);
     dispatch(Update_Is_License_Plate_Uploaded(licenseBoolean));
-  }, [carVerificationItems.licensePlate]);
+  }, [carVerificiationItems.licensePlate]);
   useEffect(() => {
     !isLicensePlateUploaded && setSelectedOption(selectedOptionInitialState);
   }, [isLicensePlateUploaded]);
@@ -324,7 +327,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       exteriorRearRightCorner,
       exteriorInsideCargoRoof,
     };
-    const allCarVerification = !isObjectEmpty(carVerificationItems);
+    const allCarVerification = !isObjectEmpty(carVerificiationItems);
     const allInterior = !isObjectEmpty(interiorImages);
     const allExterior = !isObjectEmpty(exteriorImages);
     const allTires = !isObjectEmpty(tires);
@@ -458,21 +461,14 @@ const NewInspectionContainer = ({route, navigation}) => {
     setDeleteItem({category: category, key: key});
   };
   const handleYesPress = () => {
-    const {INTERIOR, EXTERIOR} = INSPECTION;
+    const {interiorItems, exteriorItems} = INSPECTION;
     let key_ = deleteItem?.key;
     if (
-      deleteItem?.category === EXTERIOR ||
-      deleteItem?.category === INTERIOR
+      deleteItem?.category === exteriorItems ||
+      deleteItem?.category === interiorItems
     ) {
       key_ = exteriorVariant(key_, variant);
     }
-    const handleRemoveImage = {
-      carVerificationItems: RemoveCarVerificationItemURI,
-      interiorItems: RemoveInteriorItemURI,
-      exteriorItems: RemoveExteriorItemURI,
-      tires: RemoveTiresItemURI,
-    };
-    const RemoveMethod = handleRemoveImage[deleteItem?.category];
     setIsDiscardInspectionModalVisible(false);
     const imageID = EXTRACT_INSPECTION_ITEM_ID(key_);
     const endPoint = generateApiUrl(`files/${imageID}`);
@@ -481,7 +477,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       .delete(endPoint, config)
       .then(() => {
         dispatch(showToast(Delete_Messages.success, 'success'));
-        dispatch(RemoveMethod(key_));
+        dispatch(RemoveVehicleImages(deleteItem?.category, key_));
       })
       .catch(e => {
         const {success, failed} = Delete_Messages;
@@ -507,7 +503,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         }
 
         if (alreadyRemoved) {
-          dispatch(RemoveMethod(key_));
+          dispatch(RemoveVehicleImages(deleteItem?.category, key_));
         }
         dispatch(showToast(activeMessage, activeType));
       });
@@ -665,10 +661,10 @@ const NewInspectionContainer = ({route, navigation}) => {
       title={modalDetails?.title}
       isVideo={modalDetails?.isVideo}
       modalKey={modalDetails?.key}
-      isExterior={modalDetails?.groupType === INSPECTION.EXTERIOR}
-      isInterior={modalDetails?.groupType === INSPECTION.INTERIOR}
+      isExterior={modalDetails?.groupType === INSPECTION.exteriorItems}
+      isInterior={modalDetails?.groupType === INSPECTION.interiorItems}
       isCarVerification={
-        modalDetails?.groupType === INSPECTION.CAR_VERIFICATION
+        modalDetails?.groupType === INSPECTION.carVerificiationItems
       }
       instructionalSubHeadingText={modalDetails?.instructionalSubHeadingText}
       instructionalSubHeadingText_1={
@@ -679,7 +675,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       }
       handleItemPickerPress={handleItemPickerPress}
       handleCaptureNowPress={handleCaptureNowPress}
-      carVerificationItems={carVerificationItems}
+      carVerificiationItems={carVerificiationItems}
       interiorItems={interiorItems}
       exteriorItems={exteriorItems}
       tires={tires}

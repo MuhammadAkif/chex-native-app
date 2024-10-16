@@ -25,12 +25,7 @@ import {colors, PreviewStyles} from '../Assets/Styles';
 import {BackArrow} from '../Assets/Icons';
 import {CameraFooter, CameraPreview, CaptureImageModal} from '../Components';
 import {ROUTES} from '../Navigation/ROUTES';
-import {
-  UpdateCarVerificationItemURI,
-  UpdateExteriorItemURI,
-  UpdateInteriorItemURI,
-  UpdateTiresItemURI,
-} from '../Store/Actions';
+import {UpdateVehicleImages} from '../Store/Actions';
 import {
   exteriorVariant,
   getCurrentDate,
@@ -52,12 +47,6 @@ import {
 import {Types} from '../Store/Types';
 import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
 
-const handleUpdateStoreMedia = {
-  CarVerification: UpdateCarVerificationItemURI,
-  Interior: UpdateInteriorItemURI,
-  Exterior: UpdateExteriorItemURI,
-  Tires: UpdateTiresItemURI,
-};
 const {white} = colors;
 
 const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
@@ -159,7 +148,7 @@ const CameraContainer = ({route, navigation}) => {
     setIsImageFile({});
   };
   const handleResponse = async key => {
-    const {INTERIOR, EXTERIOR} = INSPECTION;
+    const {interiorItems, exteriorItems} = INSPECTION;
     let extension = isImageFile.path.split('.').pop();
     const mime = 'image/' + extension;
     let body = {
@@ -170,7 +159,7 @@ const CameraContainer = ({route, navigation}) => {
       dateImage: getCurrentDate(),
       hasAdded: vehicle_Type,
     };
-    if (groupType === INTERIOR || groupType === EXTERIOR) {
+    if (groupType === interiorItems || groupType === exteriorItems) {
       body = {...body, variant: variant};
     }
     if (category === 'CarVerification' && type === 'licensePlate') {
@@ -198,8 +187,7 @@ const CameraContainer = ({route, navigation}) => {
     const displayAnnotation =
       (is_Interior && vehicle_Type === 'new') ||
       (is_Exterior && vehicle_Type === 'new');
-    const UPDATE_INSPECTION_IMAGES = handleUpdateStoreMedia[category];
-    dispatch(UPDATE_INSPECTION_IMAGES(type_, isImageURL, imageID));
+    dispatch(UpdateVehicleImages(groupType, type_, isImageURL, imageID));
     if (isLicensePlate) {
       dispatch({type: IS_LICENSE_PLATE_UPLOADED});
     }
@@ -278,8 +266,8 @@ const CameraContainer = ({route, navigation}) => {
           title={title}
           progress={progress}
           handleNavigationBackPress={handleNavigationBackPress}
-          isExterior={groupType === INSPECTION.EXTERIOR}
-          isCarVerification={groupType === INSPECTION.CAR_VERIFICATION}
+          isExterior={groupType === INSPECTION.exteriorItems}
+          isCarVerification={groupType === INSPECTION.carVerificiationItems}
           // handleVisible={handleVisible}
         />
       )}

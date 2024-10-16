@@ -1,12 +1,6 @@
 import {
-  UpdateCarVerificationItemURI,
-  UpdateInteriorItemURI,
-  UpdateExteriorItemURI,
-  UpdateTiresItemURI,
-  RemoveCarVerificationItemURI,
-  RemoveInteriorItemURI,
-  RemoveExteriorItemURI,
-  RemoveTiresItemURI,
+  UpdateVehicleImages,
+  RemoveVehicleImages,
   NumberPlateSelectedAction,
   Update_Is_License_Plate_Uploaded,
   Category_Variant,
@@ -25,14 +19,8 @@ import {
 import {setLoading, showToast, hideToast} from './UIActions';
 
 export {
-  UpdateCarVerificationItemURI,
-  UpdateInteriorItemURI,
-  UpdateExteriorItemURI,
-  UpdateTiresItemURI,
-  RemoveCarVerificationItemURI,
-  RemoveInteriorItemURI,
-  RemoveExteriorItemURI,
-  RemoveTiresItemURI,
+  UpdateVehicleImages,
+  RemoveVehicleImages,
   NumberPlateSelectedAction,
   SIGN_IN_ACTION,
   SIGN_OUT_ACTION,

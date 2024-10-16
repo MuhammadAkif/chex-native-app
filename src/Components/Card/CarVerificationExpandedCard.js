@@ -7,59 +7,59 @@ import {LicensePlateDetails, OdometerDetails} from '../../Utils';
 
 const CarVerificationExpandedCard = ({
   handleItemPickerPress,
-  carVerificationItems,
+  carVerificiationItems,
   handleCrossPress,
   isLoading,
   handleMediaModalDetailsPress,
   pickerText = 'Upload Image',
   isLicensePlateUploaded,
-}) => (
-  <View style={expandedCardStyles.expandedCardContainer}>
-    <View
-      style={[
-        expandedCardStyles.uploadImageAndTextContainer,
-        {paddingVertical: 10},
-      ]}>
-      <ImagePicker
-        onPress={() => handleItemPickerPress(LicensePlateDetails)}
-        pickerText={pickerText}
-        text={LicensePlateDetails.title}
-        isLoading={isLoading}
-        imageURL={carVerificationItems?.licensePlate}
-        onClearPress={() =>
-          handleCrossPress('carVerificationItems', LicensePlateDetails.key)
-        }
-        handleMediaModalDetailsPress={() =>
-          handleMediaModalDetailsPress(
-            LicensePlateDetails.title,
-            carVerificationItems?.licensePlate,
-          )
-        }
-      />
+}) => {
+  const {title, groupType, key} = LicensePlateDetails;
+
+  return (
+    <View style={expandedCardStyles.expandedCardContainer}>
+      <View
+        style={[
+          expandedCardStyles.uploadImageAndTextContainer,
+          {paddingVertical: 10},
+        ]}>
+        <ImagePicker
+          onPress={() => handleItemPickerPress(LicensePlateDetails)}
+          pickerText={pickerText}
+          text={title}
+          isLoading={isLoading}
+          imageURL={carVerificiationItems?.licensePlate}
+          onClearPress={() => handleCrossPress(groupType, key)}
+          handleMediaModalDetailsPress={() =>
+            handleMediaModalDetailsPress(
+              title,
+              carVerificiationItems?.licensePlate,
+            )
+          }
+        />
+      </View>
+      <View
+        style={[
+          expandedCardStyles.uploadImageAndTextContainer,
+          {paddingVertical: 10},
+        ]}>
+        <ImagePicker
+          onPress={() => handleItemPickerPress(OdometerDetails)}
+          pickerText={pickerText}
+          text={OdometerDetails.title}
+          isLoading={isLicensePlateUploaded || isLoading}
+          imageURL={carVerificiationItems?.odometer}
+          onClearPress={() => handleCrossPress(groupType, OdometerDetails.key)}
+          handleMediaModalDetailsPress={() =>
+            handleMediaModalDetailsPress(
+              OdometerDetails.title,
+              carVerificiationItems?.odometer,
+            )
+          }
+        />
+      </View>
     </View>
-    <View
-      style={[
-        expandedCardStyles.uploadImageAndTextContainer,
-        {paddingVertical: 10},
-      ]}>
-      <ImagePicker
-        onPress={() => handleItemPickerPress(OdometerDetails)}
-        pickerText={pickerText}
-        text={OdometerDetails.title}
-        isLoading={isLicensePlateUploaded || isLoading}
-        imageURL={carVerificationItems?.odometer}
-        onClearPress={() =>
-          handleCrossPress('carVerificationItems', OdometerDetails.key)
-        }
-        handleMediaModalDetailsPress={() =>
-          handleMediaModalDetailsPress(
-            OdometerDetails.title,
-            carVerificationItems?.odometer,
-          )
-        }
-      />
-    </View>
-  </View>
-);
+  );
+};
 
 export default CarVerificationExpandedCard;

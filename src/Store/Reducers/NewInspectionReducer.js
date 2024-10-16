@@ -1,7 +1,7 @@
 import {Types} from '../Types';
 
 const initialState = {
-  carVerificationItems: {
+  carVerificiationItems: {
     licensePlate: '',
     licensePlateID: '',
     odometer: '',
@@ -111,149 +111,112 @@ const initialState = {
   variant: 0,
   fileDetails: null,
 };
-
+const {
+  ITEMS_IMAGES,
+  REMOVE_IMAGES,
+  CLEAR_TIRES,
+  CLEAR_INSPECTION_IMAGES,
+  SELECTED_INSPECTION_ID,
+  company_ID,
+  plate_Number,
+  SKIP_LEFT,
+  SKIP_LEFT_CORNERS,
+  SKIP_RIGHT,
+  SKIP_RIGHT_CORNERS,
+  IS_LICENSE_PLATE_UPLOADED,
+  VEHICLE_TYPE,
+  CATEGORY_VARIANT,
+  FILE_DETAILS,
+  CLEAR_NEW_INSPECTION,
+} = Types;
 const newInspectionReducer = (state = initialState, action) => {
   switch (action.type) {
-    case Types.CAR_VERIFICATION_ITEMS:
+    case ITEMS_IMAGES:
       return {
         ...state,
-        carVerificationItems: {
-          ...state.carVerificationItems,
+        [action.payload.group]: {
+          ...state[action.payload.group],
           [action.payload.item]: action.payload.uri,
-          [`${action.payload.item}ID`]: action.payload.id,
+          [action.payload.item_Id]: action.payload.id,
         },
       };
-    case Types.EXTERIOR_ITEMS:
+    case REMOVE_IMAGES:
       return {
         ...state,
-        exteriorItems: {
-          ...state.exteriorItems,
+        [action.payload.group]: {
+          ...state[action.payload.group],
           [action.payload.item]: action.payload.uri,
-          [`${action.payload.item}ID`]: action.payload.id,
+          [action.payload.item_Id]: action.payload.id,
         },
       };
-    case Types.INTERIOR_ITEMS:
-      return {
-        ...state,
-        interiorItems: {
-          ...state.interiorItems,
-          [action.payload.item]: action.payload.uri,
-          [`${action.payload.item}ID`]: action.payload.id,
-        },
-      };
-    case Types.TIRES:
-      return {
-        ...state,
-        tires: {
-          ...state.tires,
-          [action.payload.item]: action.payload.uri,
-          [`${action.payload.item}ID`]: action.payload.id,
-        },
-      };
-    case Types.CLEAR_TIRES:
+    case CLEAR_TIRES:
       return {
         ...state,
         tires: initialState.tires,
       };
-    case Types.REMOVE_CAR_VERIFICATION_ITEM_URI:
+    case CLEAR_INSPECTION_IMAGES:
       return {
         ...state,
-        carVerificationItems: {
-          ...state.carVerificationItems,
-          [action.payload.item]: action.payload.uri,
-          [`${action.payload.item}ID`]: action.payload.id,
-        },
-      };
-    case Types.REMOVE_INTERIOR_ITEM_URI:
-      return {
-        ...state,
-        interiorItems: {
-          ...state.interiorItems,
-          [action.payload.item]: action.payload.uri,
-          [`${action.payload.item}ID`]: action.payload.id,
-        },
-      };
-    case Types.REMOVE_EXTERIOR_ITEM_URI:
-      return {
-        ...state,
-        exteriorItems: {
-          ...state.exteriorItems,
-          [action.payload.item]: action.payload.uri,
-          [`${action.payload.item}ID`]: action.payload.id,
-        },
-      };
-    case Types.REMOVE_TIRES_ITEM_URI:
-      return {
-        ...state,
-        tires: {
-          ...state.tires,
-          [action.payload.item]: action.payload.uri,
-          [`${action.payload.item}ID`]: action.payload.id,
-        },
-      };
-    case Types.CLEAR_INSPECTION_IMAGES:
-      return {
-        ...state,
-        carVerificationItems: initialState.carVerificationItems,
+        carVerificiationItems: initialState.carVerificiationItems,
         exteriorItems: initialState.exteriorItems,
         tires: initialState.tires,
       };
-    case Types.SELECTED_INSPECTION_ID:
+    case SELECTED_INSPECTION_ID:
       return {
         ...state,
         selectedInspectionID: action.payload,
       };
-    case Types.company_ID:
+    case company_ID:
       return {
         ...state,
         company_ID: action.payload,
       };
-    case Types.plate_Number:
+    case plate_Number:
       return {
         ...state,
         plateNumber: action.payload,
       };
-    case Types.SKIP_LEFT:
+    case SKIP_LEFT:
       return {
         ...state,
         skipLeft: action.payload,
       };
-    case Types.SKIP_LEFT_CORNERS:
+    case SKIP_LEFT_CORNERS:
       return {
         ...state,
         skipLeftCorners: action.payload,
       };
-    case Types.SKIP_RIGHT:
+    case SKIP_RIGHT:
       return {
         ...state,
         skipRight: action.payload,
       };
-    case Types.SKIP_RIGHT_CORNERS:
+    case SKIP_RIGHT_CORNERS:
       return {
         ...state,
         skipRightCorners: action.payload,
       };
-    case Types.IS_LICENSE_PLATE_UPLOADED:
+    case IS_LICENSE_PLATE_UPLOADED:
       return {
         ...state,
         isLicensePlateUploaded: action.payload,
       };
-    case Types.VEHICLE_TYPE:
+    case VEHICLE_TYPE:
       return {
         ...state,
         vehicle_Type: action.payload,
       };
-    case Types.CATEGORY_VARIANT:
+    case CATEGORY_VARIANT:
       return {
         ...state,
         variant: action.payload,
       };
-    case Types.FILE_DETAILS:
+    case FILE_DETAILS:
       return {
         ...state,
         fileDetails: action.payload,
       };
-    case Types.CLEAR_NEW_INSPECTION:
+    case CLEAR_NEW_INSPECTION:
       return initialState;
     default:
       return state;

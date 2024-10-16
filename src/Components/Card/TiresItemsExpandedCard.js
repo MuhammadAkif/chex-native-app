@@ -16,6 +16,7 @@ const TiresItemsExpandedCard = ({
   handleCrossPress,
   isLoading,
   handleMediaModalDetailsPress,
+  pickerText = 'Upload Image',
 }) => (
   <View
     style={[
@@ -25,7 +26,7 @@ const TiresItemsExpandedCard = ({
     <View style={ExpandedCardStyles.itemPickerContainer}>
       <ImagePicker
         text={LeftFrontTireDetails.title}
-        pickerText={'Upload Image'}
+        pickerText={pickerText}
         imageURL={tires?.leftFrontTire}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(LeftFrontTireDetails)}
@@ -44,7 +45,7 @@ const TiresItemsExpandedCard = ({
       />
       <ImagePicker
         text={LeftRearTireDetails.title}
-        pickerText={'Upload Image'}
+        pickerText={pickerText}
         imageURL={tires?.leftRearTire}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(LeftRearTireDetails)}
@@ -65,7 +66,7 @@ const TiresItemsExpandedCard = ({
     <View style={ExpandedCardStyles.itemPickerContainer}>
       <ImagePicker
         text={RightFrontTireDetails.title}
-        pickerText={'Upload Image'}
+        pickerText={pickerText}
         imageURL={tires?.rightFrontTire}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(RightFrontTireDetails)}
@@ -84,7 +85,7 @@ const TiresItemsExpandedCard = ({
       />
       <ImagePicker
         text={RightRearTireDetails.title}
-        pickerText={'Upload Image'}
+        pickerText={pickerText}
         imageURL={tires?.rightRearTire}
         isLoading={isLoading}
         onPress={() => handleItemPickerPress(RightRearTireDetails)}

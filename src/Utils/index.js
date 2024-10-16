@@ -10,21 +10,18 @@ import {
   S3_BUCKET_BASEURL,
   API_ENDPOINTS,
   generateApiUrl,
-  INSPECTION_TITLE,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
   File_Details,
   NumberPlateSelectedAction,
-  UpdateCarVerificationItemURI,
-  UpdateExteriorItemURI,
-  UpdateInteriorItemURI,
-  UpdateTiresItemURI,
+  UpdateVehicleImages,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {IMAGES} from '../Assets/Images';
 import {store} from '../Store';
 
+// Validation Schema
 export const validationSchema = yup.object().shape({
   firstName: yup.string().required('Field required'),
   lastName: yup.string().required('Field required'),
@@ -62,7 +59,6 @@ export const forgetPasswordSchema = yup.object().shape({
     .min(2, 'Email must be at least 2 characters')
     .email('Invalid email address'),
 });
-
 export const resetPasswordSchema = yup.object().shape({
   verificationCode: yup
     .string()
@@ -88,7 +84,7 @@ export const LicensePlateDetails = {
   instructionalSubHeadingText: '',
   category: 'CarVerification',
   subCategory: 'license_plate_number',
-  groupType: INSPECTION.CAR_VERIFICATION,
+  groupType: INSPECTION.carVerificiationItems,
   buttonText: 'Capture Now',
 };
 export const OdometerDetails = {
@@ -101,7 +97,7 @@ export const OdometerDetails = {
   instructionalSubHeadingText: '',
   category: 'CarVerification',
   subCategory: 'odometer',
-  groupType: INSPECTION.CAR_VERIFICATION,
+  groupType: INSPECTION.carVerificiationItems,
   buttonText: 'Capture Now',
 };
 //___________________________Exterior______________________________
@@ -115,7 +111,7 @@ export const ExteriorFrontDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'exterior_front',
-  groupType: INSPECTION.EXTERIOR,
+  groupType: INSPECTION.exteriorItems,
   isVideo: false,
 };
 export const ExteriorRearDetails = {
@@ -128,7 +124,7 @@ export const ExteriorRearDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'exterior_rear',
-  groupType: INSPECTION.EXTERIOR,
+  groupType: INSPECTION.exteriorItems,
   isVideo: false,
 };
 export const ExteriorLeftDetails = {
@@ -141,7 +137,7 @@ export const ExteriorLeftDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'exterior_left',
-  groupType: INSPECTION.EXTERIOR,
+  groupType: INSPECTION.exteriorItems,
   isVideo: false,
 };
 export const ExteriorRightDetails = {
@@ -154,7 +150,7 @@ export const ExteriorRightDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'exterior_right',
-  groupType: INSPECTION.EXTERIOR,
+  groupType: INSPECTION.exteriorItems,
   isVideo: false,
 };
 export const ExteriorFrontLeftCornerDetails = {
@@ -167,7 +163,7 @@ export const ExteriorFrontLeftCornerDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'front_left_corner',
-  groupType: INSPECTION.EXTERIOR,
+  groupType: INSPECTION.exteriorItems,
   isVideo: false,
 };
 export const ExteriorFrontRightCornerDetails = {
@@ -180,7 +176,7 @@ export const ExteriorFrontRightCornerDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'front_right_corner',
-  groupType: INSPECTION.EXTERIOR,
+  groupType: INSPECTION.exteriorItems,
   isVideo: false,
 };
 export const ExteriorRearLeftCornerDetails = {
@@ -193,7 +189,7 @@ export const ExteriorRearLeftCornerDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'rear_left_corner',
-  groupType: INSPECTION.EXTERIOR,
+  groupType: INSPECTION.exteriorItems,
   isVideo: false,
 };
 export const ExteriorRearRightCornerDetails = {
@@ -206,7 +202,7 @@ export const ExteriorRearRightCornerDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'rear_right_corner',
-  groupType: INSPECTION.EXTERIOR,
+  groupType: INSPECTION.exteriorItems,
   isVideo: false,
 };
 export const ExteriorInsideCargoRoofDetails = {
@@ -219,7 +215,7 @@ export const ExteriorInsideCargoRoofDetails = {
   buttonText: 'Capture Now',
   category: 'Exterior',
   subCategory: 'inside_cargo_roof',
-  groupType: INSPECTION.EXTERIOR,
+  groupType: INSPECTION.exteriorItems,
   isVideo: false,
 };
 //___________________________Interior______________________________
@@ -233,7 +229,7 @@ export const InteriorPassengerSide = {
   buttonText: 'Capture Now',
   category: 'Interior',
   subCategory: 'interior_passenger_side',
-  groupType: INSPECTION.INTERIOR,
+  groupType: INSPECTION.interiorItems,
   isVideo: false,
 };
 export const InteriorDriverSide = {
@@ -248,7 +244,7 @@ export const InteriorDriverSide = {
   buttonText: 'Capture Now',
   category: 'Interior',
   subCategory: 'interior_driver_side',
-  groupType: INSPECTION.INTERIOR,
+  groupType: INSPECTION.interiorItems,
   isVideo: false,
 };
 //____________________________Tires_____________________________
@@ -263,7 +259,7 @@ export const LeftFrontTireDetails = {
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'left_front_tire',
-  groupType: INSPECTION.TIRES,
+  groupType: INSPECTION.tires,
   isVideo: false,
 };
 export const LeftRearTireDetails = {
@@ -277,7 +273,7 @@ export const LeftRearTireDetails = {
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'left_rear_tire',
-  groupType: INSPECTION.TIRES,
+  groupType: INSPECTION.tires,
   isVideo: false,
 };
 export const RightFrontTireDetails = {
@@ -291,7 +287,7 @@ export const RightFrontTireDetails = {
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'right_front_tire',
-  groupType: INSPECTION.TIRES,
+  groupType: INSPECTION.tires,
   isVideo: false,
 };
 export const RightRearTireDetails = {
@@ -305,7 +301,7 @@ export const RightRearTireDetails = {
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'right_rear_tire',
-  groupType: INSPECTION.TIRES,
+  groupType: INSPECTION.tires,
   isVideo: false,
 };
 //New Inspection Objects starts here
@@ -490,20 +486,6 @@ export const extractDate = dataAndTime => {
 };
 export const handleHomePress = navigation =>
   navigation.navigate(ROUTES.INSPECTION_SELECTION);
-export const convertToBase64 = async (url, mime) => {
-  let base64Path = '';
-  await RNFetchBlob.config({
-    fileCache: true,
-  })
-    .fetch('GET', url)
-    .then(resp => resp.readFile('base64'))
-    .then(base64 => {
-      base64Path = `data:${mime};base64,${base64}`;
-    })
-    .catch(error => console.log('error converting base64 => ', error));
-  return base64Path;
-};
-
 export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
   const errors = {
     409: {
@@ -522,13 +504,16 @@ export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
   };
   return errors[statusCode] || errors.noStatusCode;
 };
-export const extractTitle = (groupType, category) => {
-  return INSPECTION_TITLE[category] || 'No Title';
-};
 export const sortInspectionReviewedItems = list => {
   const customSortOrder = {
-    groupType: ['carVerificiationItems', 'exteriorItems', 'tires'],
+    groupType: [
+      'carVerificiationItems',
+      'interiorItems',
+      'exteriorItems',
+      'tires',
+    ],
     carVerificiationItems: ['license_plate_number', 'odometer'],
+    interiorItems: ['interior_passenger_side', 'interior_driver_side'],
     exteriorItems: [
       // 'Exterior-Left',
       // 'Exterior-Right',
@@ -637,12 +622,6 @@ export const sortInspection_Reviewed_Items = list => {
   return finalSortedList;
 };
 
-export const handleUpdateStoreMedia = {
-  carVerificiationItems: UpdateCarVerificationItemURI,
-  interiorItems: UpdateInteriorItemURI,
-  exteriorItems: UpdateExteriorItemURI,
-  tires: UpdateTiresItemURI,
-};
 export function uploadInProgressMediaToStore(files, dispatch) {
   for (let file = 0; file < files.length; file++) {
     const url = files[file].url;
@@ -657,9 +636,13 @@ export function uploadInProgressMediaToStore(files, dispatch) {
     if (variant_) {
       category += '_' + variant_;
     }
-    const UPDATE_INSPECTION_IMAGES = handleUpdateStoreMedia[groupType];
     dispatch(
-      UPDATE_INSPECTION_IMAGES(INSPECTION_SUBCATEGORY[category], imageURL, id),
+      UpdateVehicleImages(
+        groupType,
+        INSPECTION_SUBCATEGORY[category],
+        imageURL,
+        id,
+      ),
     );
   }
 }
@@ -725,7 +708,7 @@ export function handle_Session_Expired(statusCode = null, dispatch) {
 
 export const EXTRACT_INSPECTION_ITEM_ID = key => {
   const {
-    carVerificationItems: carVerification,
+    carVerificiationItems: carVerification,
     exteriorItems: exterior,
     interiorItems: interior,
     tires,
@@ -867,12 +850,12 @@ export const FILTER_IMAGES = (arr = [], toFilter = 'before') => {
   } else {
     return arr.filter(item => {
       if (
-        item?.groupType === INSPECTION.CAR_VERIFICATION ||
-        item?.groupType === INSPECTION.TIRES
+        item?.groupType === INSPECTION.carVerificiationItems ||
+        item?.groupType === INSPECTION.tires
       ) {
         return item;
       } else if (
-        item?.groupType === INSPECTION.EXTERIOR &&
+        item?.groupType === INSPECTION.exteriorItems &&
         item?.pictureTag === toFilter
       ) {
         return item;
@@ -960,7 +943,6 @@ export function assignNumber(arr = [], length = 0) {
 export const fallBack = (text = 'Fall back Pressed') => console.log(text);
 
 export const mergeData = (list = [], label = '') => {
-  console.log({list, label});
   if (list?.length < 1 || !Array.isArray(list)) {
     console.log('Empty Array or invalid array');
     return list;
