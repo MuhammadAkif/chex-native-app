@@ -9,6 +9,7 @@ import {
 import {circleBorderRadius, colors} from '../../Assets/Styles';
 import {INSPECTION_TITLE, S3_BUCKET_BASEURL, WINDOW} from '../../Constants';
 import {isNotEmpty} from '../../Utils';
+import {formatTitle} from '../../Utils/helpers';
 
 const {width} = Dimensions.get(WINDOW);
 const {black} = colors;
@@ -18,7 +19,8 @@ const RenderInspectionDetail = ({item, handleDisplayMedia, categoryCount}) => {
     item?.url?.split('/')[0] === 'uploads'
       ? S3_BUCKET_BASEURL + item?.url
       : item?.url;
-  let title = INSPECTION_TITLE[item?.category] || 'No Title';
+  // let title = INSPECTION_TITLE[item?.category] || 'No Title';
+  let title = formatTitle(item?.category);
   return (
     <TouchableOpacity
       disabled={!isNotEmpty(mediaURL)}

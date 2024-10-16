@@ -10,6 +10,7 @@ import {
 import {assignNumber} from '../Utils';
 import {CrossFilled, Tick} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
+import {formatTitle} from '../Utils/helpers';
 
 const STATUS_ICON = {
   true: Tick,
@@ -53,7 +54,8 @@ const InspectionDetailContainer = ({navigation, route}) => {
     return false;
   }
   const handleDisplayMedia = item => {
-    let title = INSPECTION_TITLE[item?.category] || 'No Title';
+    let title = formatTitle(item?.category);
+    // let title = INSPECTION_TITLE[item?.category] || 'No Title';
     const checkVideo = {
       'video/mp4': true,
       '.mp4': true,
