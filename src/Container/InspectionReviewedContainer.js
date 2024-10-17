@@ -19,6 +19,7 @@ import {
   handleNewInspectionPress,
   sortInspection_Reviewed_Items,
   sortInspectionReviewedItems,
+  updateFiles,
 } from '../Utils';
 
 const {INSPECTION_DETAIL} = ROUTES;
@@ -93,8 +94,9 @@ const InspectionReviewedContainer = ({navigation}) => {
         setIsLoading(false);
         const {finalStatus, remarks} = res?.data?.inspectionData;
         const beforeImages = FILTER_IMAGES(res?.data?.files, 'before');
-        let files = sortInspection_Reviewed_Items(beforeImages);
-        // let files = sortInspectionReviewedItems(beforeImages);
+        // let files = sortInspection_Reviewed_Items(beforeImages);
+        const updatedBeforeImages = updateFiles(beforeImages);
+        let files = sortInspectionReviewedItems(updatedBeforeImages);
         resetAllStates();
         navigate(INSPECTION_DETAIL, {
           files: files,
@@ -108,7 +110,7 @@ const InspectionReviewedContainer = ({navigation}) => {
         if (statusCode === 401) {
           handle_Session_Expired(statusCode, dispatch);
         }
-        console.log('error of inspection in progress => ', error);
+        console.log('error of inspection in reviewed => ', error);
       });
   };
   const onNewInspectionPress = async () => {

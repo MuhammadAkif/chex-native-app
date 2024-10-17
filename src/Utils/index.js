@@ -24,6 +24,7 @@ import {
 import {Types} from '../Store/Types';
 import {IMAGES} from '../Assets/Images';
 import {store} from '../Store';
+import {customSortOrder} from './helpers';
 
 export const validationSchema = yup.object().shape({
   firstName: yup.string().required('Field required'),
@@ -526,28 +527,6 @@ export const extractTitle = (groupType, category) => {
   return INSPECTION_TITLE[category] || 'No Title';
 };
 export const sortInspectionReviewedItems = list => {
-  const customSortOrder = {
-    groupType: ['carVerificiationItems', 'exteriorItems', 'tires'],
-    carVerificiationItems: ['license_plate_number', 'odometer'],
-    exteriorItems: [
-      // 'Exterior-Left',
-      // 'Exterior-Right',
-      'Exterior-Front',
-      'Exterior-Rear',
-      'Front-Left-Corner',
-      'Front-Right-Corner',
-      'Rear-Left-Corner',
-      'Rear-Right-Corner',
-      'Inside-Cargo-Roof',
-    ],
-    tires: [
-      'Left-Front-Tire',
-      'Left-Right-Tire',
-      'Right-Front-Tire',
-      'Right-Rear-Tire',
-    ],
-  };
-
   function customSort(a, b) {
     const groupTypeComparison =
       customSortOrder.groupType.indexOf(a.groupType) -
@@ -557,61 +536,14 @@ export const sortInspectionReviewedItems = list => {
     }
 
     return (
-      customSortOrder[a.groupType].indexOf(a.category) -
-      customSortOrder[b.groupType].indexOf(b.category)
+      customSortOrder[a.groupType].indexOf(a.name) -
+      customSortOrder[b.groupType].indexOf(b.name)
     );
   }
 
   return list.sort(customSort);
 };
 export const sortInspection_Reviewed_Items = list => {
-  const customSortOrder = {
-    groupType: [
-      'carVerificiationItems',
-      'interiorItems',
-      'exteriorItems',
-      'tires',
-    ],
-    carVerificiationItems: ['license_plate_number', 'odometer'],
-    interiorItems: [
-      'interior_passenger_side',
-      'interior_passenger_side',
-      'interior_passenger_side',
-      'interior_driver_side',
-      'interior_driver_side',
-      'interior_driver_side',
-    ],
-    exteriorItems: [
-      'Exterior-Front',
-      'Exterior-Front',
-      'Exterior-Front',
-      'Exterior-Rear',
-      'Exterior-Rear',
-      'Exterior-Rear',
-      'Front-Left-Corner',
-      'Front-Left-Corner',
-      'Front-Left-Corner',
-      'Front-Right-Corner',
-      'Front-Right-Corner',
-      'Front-Right-Corner',
-      'Rear-Left-Corner',
-      'Rear-Left-Corner',
-      'Rear-Left-Corner',
-      'Rear-Right-Corner',
-      'Rear-Right-Corner',
-      'Rear-Right-Corner',
-      'Inside-Cargo-Roof',
-      'Inside-Cargo-Roof',
-      'Inside-Cargo-Roof',
-    ],
-    tires: [
-      'Left-Front-Tire',
-      'Left-Right-Tire',
-      'Right-Front-Tire',
-      'Right-Rear-Tire',
-    ],
-  };
-
   // Step 1: Count occurrences
   const countMap = {};
   list.forEach(item => {
@@ -987,4 +919,17 @@ export const mergeData = (list = [], label = '') => {
     newList.push(body);
   }
   return newList;
+};
+export const updateFiles = (files = []) => {
+  if (files?.length < 1) {
+    return files;
+  }
+  const files_Updated = [];
+  for (let i = 0; i < files.length; i++) {
+    const variant = files[i].llamaCost || '';
+    let name = files[i].category + variant;
+    const data = {...files[i], name: name};
+    files_Updated.push(data);
+  }
+  return files_Updated;
 };
