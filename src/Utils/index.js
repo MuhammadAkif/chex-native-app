@@ -566,8 +566,21 @@ export const sortInspectionReviewedItems = list => {
 };
 export const sortInspection_Reviewed_Items = list => {
   const customSortOrder = {
-    groupType: ['carVerificiationItems', 'exteriorItems', 'tires'],
+    groupType: [
+      'carVerificiationItems',
+      'interiorItems',
+      'exteriorItems',
+      'tires',
+    ],
     carVerificiationItems: ['license_plate_number', 'odometer'],
+    interiorItems: [
+      'interior_passenger_side',
+      'interior_passenger_side',
+      'interior_passenger_side',
+      'interior_driver_side',
+      'interior_driver_side',
+      'interior_driver_side',
+    ],
     exteriorItems: [
       'Exterior-Front',
       'Exterior-Front',
