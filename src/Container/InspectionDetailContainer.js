@@ -2,14 +2,11 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {BackHandler} from 'react-native';
 
 import {InspectionDetailScreen} from '../Screens';
-import {
-  HARDWARE_BACK_PRESS,
-  INSPECTION_TITLE,
-  S3_BUCKET_BASEURL,
-} from '../Constants';
+import {HARDWARE_BACK_PRESS, S3_BUCKET_BASEURL} from '../Constants';
 import {assignNumber} from '../Utils';
 import {CrossFilled, Tick} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
+import {formatTitle} from '../Utils/helpers';
 
 const STATUS_ICON = {
   true: Tick,
@@ -53,7 +50,8 @@ const InspectionDetailContainer = ({navigation, route}) => {
     return false;
   }
   const handleDisplayMedia = item => {
-    let title = INSPECTION_TITLE[item?.category] || 'No Title';
+    let title = formatTitle(item?.category);
+    // let title = INSPECTION_TITLE[item?.category] || 'No Title';
     const checkVideo = {
       'video/mp4': true,
       '.mp4': true,

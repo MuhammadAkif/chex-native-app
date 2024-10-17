@@ -29,6 +29,7 @@ import External from './External';
 import Damage_Vehicle from './Damage_Vehicle';
 import Exclamation from './Exclamation';
 import Remove from './Remove';
+import Filter from './Filter';
 
 export {
   Check,
@@ -62,4 +63,5 @@ export {
   Damage_Vehicle,
   Exclamation,
   Remove,
+  Filter,
 };

@@ -10,6 +10,7 @@ import {
   S3_BUCKET_BASEURL,
   API_ENDPOINTS,
   generateApiUrl,
+  customSortOrder,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
@@ -549,41 +550,34 @@ export const sortInspectionReviewedItems = list => {
 
   return list.sort(customSort);
 };
-export const sortInspection_Reviewed_Items = list => {
-  const customSortOrder = {
-    groupType: ['carVerificiationItems', 'exteriorItems', 'tires'],
-    carVerificiationItems: ['license_plate_number', 'odometer'],
-    exteriorItems: [
-      'Exterior-Front',
-      'Exterior-Front',
-      'Exterior-Front',
-      'Exterior-Rear',
-      'Exterior-Rear',
-      'Exterior-Rear',
-      'Front-Left-Corner',
-      'Front-Left-Corner',
-      'Front-Left-Corner',
-      'Front-Right-Corner',
-      'Front-Right-Corner',
-      'Front-Right-Corner',
-      'Rear-Left-Corner',
-      'Rear-Left-Corner',
-      'Rear-Left-Corner',
-      'Rear-Right-Corner',
-      'Rear-Right-Corner',
-      'Rear-Right-Corner',
-      'Inside-Cargo-Roof',
-      'Inside-Cargo-Roof',
-      'Inside-Cargo-Roof',
-    ],
-    tires: [
-      'Left-Front-Tire',
-      'Left-Right-Tire',
-      'Right-Front-Tire',
-      'Right-Rear-Tire',
-    ],
-  };
+export function sortImagesByOrder(list) {
+  return list.sort((a, b) => {
+    // Sort by groupType
+    const groupTypeAIndex = customSortOrder.groupType.indexOf(a.groupType);
+    const groupTypeBIndex = customSortOrder.groupType.indexOf(b.groupType);
 
+    if (groupTypeAIndex !== groupTypeBIndex) {
+      return groupTypeAIndex - groupTypeBIndex;
+    }
+
+    // Sort by category within the groupType
+    const categoryAIndex = customSortOrder[a.groupType]?.indexOf(a.category);
+    const categoryBIndex = customSortOrder[b.groupType]?.indexOf(b.category);
+
+    if (categoryAIndex !== categoryBIndex) {
+      return (categoryAIndex ?? Infinity) - (categoryBIndex ?? Infinity);
+    }
+
+    // Sort by llamaCost (numerically)
+    const llamaCostA =
+      a.llamaCost !== null ? parseInt(a.llamaCost, 10) : Infinity;
+    const llamaCostB =
+      b.llamaCost !== null ? parseInt(b.llamaCost, 10) : Infinity;
+
+    return llamaCostA - llamaCostB;
+  });
+}
+export const sortInspection_Reviewed_Items = list => {
   // Step 1: Count occurrences
   const countMap = {};
   list.forEach(item => {
@@ -705,7 +699,6 @@ export function handle_Session_Expired(statusCode = null, dispatch) {
     dispatch({type: Types.SESSION_EXPIRED});
   }
 }
-
 export const EXTRACT_INSPECTION_ITEM_ID = key => {
   const {
     carVerificiationItems: carVerification,
@@ -796,7 +789,6 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
   };
   return GET_EXTERIOR_ITEM[key] || "Inspection ID doesn't exists";
 };
-
 export const isNotEmpty = value =>
   value !== null && value !== undefined && value !== '' && value !== 0;
 export const isObjectEmpty = (object = {}) => {
@@ -840,7 +832,6 @@ export const checkExterior = () => {
     rightCheck
   );
 };
-
 export const FILTER_IMAGES = (arr = [], toFilter = 'before') => {
   if (!Array.isArray(arr)) {
     return;
@@ -863,7 +854,6 @@ export const FILTER_IMAGES = (arr = [], toFilter = 'before') => {
     });
   }
 };
-
 export function extractIDs(obj) {
   const idsArray = [];
 
@@ -876,7 +866,6 @@ export function extractIDs(obj) {
   }
   return idsArray;
 }
-
 export function exteriorVariant(item, variant) {
   if (variant === 0) {
     return item;
@@ -913,7 +902,6 @@ export const getAnnotationStatus = (files = [], id = '') => {
   }
   return false;
 };
-
 export const extractCoordinates = (files = [], id = null) => {
   if (!isNotEmpty(files)) {
     return [];
@@ -926,7 +914,6 @@ export const extractCoordinates = (files = [], id = null) => {
   }
   return coordinates;
 };
-
 export function assignNumber(arr = [], length = 0) {
   const countMap = {};
   for (let i = 0; i < length; i++) {
@@ -941,7 +928,6 @@ export function assignNumber(arr = [], length = 0) {
   }
 }
 export const fallBack = (text = 'Fall back Pressed') => console.log(text);
-
 export const mergeData = (list = [], label = '') => {
   if (list?.length < 1 || !Array.isArray(list)) {
     console.log('Empty Array or invalid array');

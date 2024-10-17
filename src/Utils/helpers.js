@@ -1,4 +1,5 @@
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {isNotEmpty} from './index';
 
 export const headerFlex = {
   true: 1.5,
@@ -24,3 +25,16 @@ export const INSPECTION_STATUS = {
   true: 'No Damage Detected',
   false: 'Damage Detected',
 };
+
+export function formatTitle(title = 'No Title') {
+  if (!isNotEmpty(title)) {
+    return 'No title';
+  }
+  // Split title by underscores and capitalize each word
+  return title
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+export const extractStatusesCount = list => {};

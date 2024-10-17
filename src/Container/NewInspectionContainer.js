@@ -295,12 +295,26 @@ const NewInspectionContainer = ({route, navigation}) => {
   function handleIsAllVehicleParts() {
     const {
       exteriorFront,
+      exteriorFront_1,
+      exteriorFront_2,
       exteriorRear,
+      exteriorRear_1,
+      exteriorRear_2,
       exteriorFrontLeftCorner,
+      exteriorFrontLeftCorner_1,
+      exteriorFrontLeftCorner_2,
       exteriorFrontRightCorner,
+      exteriorFrontRightCorner_1,
+      exteriorFrontRightCorner_2,
       exteriorRearLeftCorner,
+      exteriorRearLeftCorner_1,
+      exteriorRearLeftCorner_2,
       exteriorRearRightCorner,
+      exteriorRearRightCorner_1,
+      exteriorRearRightCorner_2,
       exteriorInsideCargoRoof,
+      exteriorInsideCargoRoof_1,
+      exteriorInsideCargoRoof_2,
     } = exteriorItems;
     const {
       driverSide,
@@ -310,22 +324,43 @@ const NewInspectionContainer = ({route, navigation}) => {
       passengerSide_1,
       passengerSide_2,
     } = interiorItems;
+    const driver_Side = driverSide || driverSide_1 || driverSide_2;
+    const passenger_Side = passengerSide || passengerSide_1 || passengerSide_2;
+    const exterior_Front = exteriorFront || exteriorFront_1 || exteriorFront_2;
+    const exterior_Rear = exteriorRear || exteriorRear_1 || exteriorRear_2;
+    const exteriorFront_LeftCorner =
+      exteriorFrontLeftCorner ||
+      exteriorFrontLeftCorner_1 ||
+      exteriorFrontLeftCorner_2;
+    const exteriorFront_RightCorner =
+      exteriorFrontRightCorner ||
+      exteriorFrontRightCorner_1 ||
+      exteriorFrontRightCorner_2;
+    const exteriorRear_LeftCorner =
+      exteriorRearLeftCorner ||
+      exteriorRearLeftCorner_1 ||
+      exteriorRearLeftCorner_2;
+    const exteriorRear_RightCorner =
+      exteriorRearRightCorner ||
+      exteriorRearRightCorner_1 ||
+      exteriorRearRightCorner_2;
+    const exteriorInside_CargoRoof =
+      exteriorInsideCargoRoof ||
+      exteriorInsideCargoRoof_1 ||
+      exteriorInsideCargoRoof_2;
     const interiorImages = {
-      driverSide,
-      // driverSide_1,
-      // driverSide_2,
-      passengerSide,
-      // passengerSide_1,
-      // passengerSide_2,
+      driver_Side,
+      passenger_Side,
     };
+
     const exteriorImages = {
-      exteriorFront,
-      exteriorRear,
-      exteriorFrontLeftCorner,
-      exteriorFrontRightCorner,
-      exteriorRearLeftCorner,
-      exteriorRearRightCorner,
-      exteriorInsideCargoRoof,
+      exterior_Front,
+      exterior_Rear,
+      exteriorFront_LeftCorner,
+      exteriorFront_RightCorner,
+      exteriorRear_LeftCorner,
+      exteriorRear_RightCorner,
+      exteriorInside_CargoRoof,
     };
     const allCarVerification = !isObjectEmpty(carVerificiationItems);
     const allInterior = !isObjectEmpty(interiorImages);

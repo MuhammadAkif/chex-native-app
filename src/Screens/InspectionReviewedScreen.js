@@ -1,18 +1,31 @@
 import React from 'react';
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Touchable,
+  TouchableOpacity,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-import {colors, NewInspectionStyles} from '../Assets/Styles';
+import {
+  circleBorderRadius,
+  colors,
+  NewInspectionStyles,
+} from '../Assets/Styles';
 import {
   PrimaryStartInspectionButton,
   RenderInspectionReviewed,
 } from '../Components';
 import {handleHomePress} from '../Utils';
+import {Filter} from '../Assets/Icons';
+import Filter_RBSheet from '../Components/Filter_RBSheet';
 
-const {black, royalBlue} = colors;
+const {black, royalBlue, white, orange} = colors;
 
 const InspectionReviewedScreen = ({
   handleIsExpanded,
@@ -25,11 +38,19 @@ const InspectionReviewedScreen = ({
   fetchInspectionInProgress,
   selectedInspectionID,
   onNewInspectionPress,
+  onFilterPress,
+  filter,
 }) => (
   <View style={NewInspectionStyles.container}>
     <View style={NewInspectionStyles.bodyContainer}>
       <View style={styles.bodyHeaderContainer}>
         <Text style={styles.bodyHeaderTitleText}>Inspection Reviewed</Text>
+        <TouchableOpacity
+          style={styles.filterContainer}
+          onPress={onFilterPress}>
+          <Filter height={hp('2%')} width={wp('5%')} />
+          <Text style={{...styles.homeText, ...styles.filterText}}>Filter</Text>
+        </TouchableOpacity>
       </View>
       <View style={NewInspectionStyles.innerBody}>
         <FlatList
@@ -62,14 +83,17 @@ const InspectionReviewedScreen = ({
         disabled={isNewInspectionLoading}
       />
     </View>
+    {/*<Filter_RBSheet filter={filter} />*/}
   </View>
 );
 
 const styles = StyleSheet.create({
   bodyHeaderContainer: {
     width: wp('100%'),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingVertical: '3%',
-    paddingLeft: '10%',
+    paddingHorizontal: wp('5%'),
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     marginBottom: '3%',
@@ -98,6 +122,18 @@ const styles = StyleSheet.create({
   },
   homeText: {
     fontWeight: 'bold',
+  },
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: orange,
+    columnGap: hp('1%'),
+    paddingHorizontal: wp('5%'),
+    borderRadius: circleBorderRadius,
+  },
+  filterText: {
+    color: white,
   },
 });
 

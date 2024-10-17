@@ -31,7 +31,6 @@ const PrimaryGradientButton = ({
   loaderSize = 'small',
   loaderColor = color.white,
   colors = ['#FF7A00', '#F90'],
-  activeOpacity = 0,
 }) => {
   const BUTTON = {
     true: () => Loader(loaderSize, loaderColor),

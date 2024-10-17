@@ -17,6 +17,7 @@ import {
   FILTER_IMAGES,
   handle_Session_Expired,
   handleNewInspectionPress,
+  sortImagesByOrder,
   sortInspection_Reviewed_Items,
   sortInspectionReviewedItems,
 } from '../Utils';
@@ -34,7 +35,8 @@ const InspectionReviewedContainer = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isNewInspectionLoading, setIsNewInspectionLoading] = useState(false);
   const [selectedInspectionID, setSelectedInspectionID] = useState(null);
-
+  const [filter, setFilter] = useState(true);
+  //console.log('inspectionReviewed.length > ', inspectionReviewed[0]);
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
@@ -93,8 +95,9 @@ const InspectionReviewedContainer = ({navigation}) => {
         setIsLoading(false);
         const {finalStatus, remarks} = res?.data?.inspectionData;
         const beforeImages = FILTER_IMAGES(res?.data?.files, 'before');
-        // let files = sortInspection_Reviewed_Items(beforeImages);
-        let files = sortInspectionReviewedItems(beforeImages);
+        // let files = sortImagesByOrder(beforeImages);
+        let files = sortInspection_Reviewed_Items(beforeImages);
+        // let files = sortInspectionReviewedItems(beforeImages);
         resetAllStates();
         navigate(INSPECTION_DETAIL, {
           files: files,
@@ -121,6 +124,9 @@ const InspectionReviewedContainer = ({navigation}) => {
       resetAllStates,
     );
   };
+  function onFilterPress() {
+    setFilter(!filter);
+  }
   return (
     <InspectionReviewedScreen
       handleIsExpanded={handleIsExpanded}
@@ -133,6 +139,8 @@ const InspectionReviewedContainer = ({navigation}) => {
       fetchInspectionInProgress={fetchInspectionInProgress}
       selectedInspectionID={selectedInspectionID}
       onNewInspectionPress={onNewInspectionPress}
+      onFilterPress={onFilterPress}
+      filter={filter}
     />
   );
 };
