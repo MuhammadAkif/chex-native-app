@@ -37,4 +37,15 @@ export function formatTitle(title = 'No Title') {
     .join(' ');
 }
 
-export const extractStatusesCount = list => {};
+export const extractStatusesCount = (list = []) => {
+  if (list.length < 1) {
+    return 'No status counts';
+  }
+  let counts = {reviewed: 0, in_review: 0, ready_for_review: 0};
+
+  for (let i = 0; i < list.length; i++) {
+    const status = list[i].status.toLowerCase();
+    counts[status] += 1;
+  }
+  return counts;
+};

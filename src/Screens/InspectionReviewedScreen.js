@@ -83,7 +83,7 @@ const InspectionReviewedScreen = ({
         disabled={isNewInspectionLoading}
       />
     </View>
-    {/*<Filter_RBSheet filter={filter} />*/}
+    <Filter_RBSheet filter={filter} />
   </View>
 );
 

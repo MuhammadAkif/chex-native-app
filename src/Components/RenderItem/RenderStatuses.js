@@ -9,6 +9,10 @@ import {circleBorderRadius, colors} from '../../Assets/Styles';
 import {Check} from '../../Assets/Icons';
 
 const {royalBlue, white, silverGray, orangePeel} = colors;
+const switchCheck = {
+  true: orangePeel,
+  false: silverGray,
+};
 
 const RenderStatuses = ({
   item,
@@ -18,7 +22,8 @@ const RenderStatuses = ({
   labelTextStyle = {},
 }) => {
   const {name, count, selected, id} = item;
-  const on_Press = () => onPress(item);
+  const ActiveCheck = switchCheck[selected];
+  const on_Press = () => onPress(item, index);
   return (
     <TouchableOpacity
       onPress={on_Press}
@@ -30,7 +35,7 @@ const RenderStatuses = ({
         </View>
       </View>
       <View style={styles.checkContainer}>
-        <Check height={hp('2%')} width={wp('5%')} color={orangePeel} />
+        <Check height={hp('2%')} width={wp('5%')} color={ActiveCheck} />
       </View>
     </TouchableOpacity>
   );

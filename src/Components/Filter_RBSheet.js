@@ -4,10 +4,12 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import {useSelector} from 'react-redux';
 
 import {ButtonFooter, Custom_RBSheet, RenderStatuses} from './index';
 import {Cross} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
+import {extractStatusesCount} from '../Utils/helpers';
 
 const {gray} = colors;
 const statusesInitialState = [
@@ -31,13 +33,27 @@ const statusesInitialState = [
   },
 ];
 
-const Filter_RBSheet = props => {
-  const [statuses, setStatuses] = useState(statusesInitialState);
-  const {filter} = props;
+const Filter_RBSheet = ({filter}) => {
+  const inspectionReviewed = useSelector(state => state?.inspectionReviewed);
   const rbSheetRef = useRef(null);
+  const [statuses, setStatuses] = useState(statusesInitialState);
+
   useEffect(() => {
-    filter ? openSheet() : closeSheet();
+    openSheet();
   }, []);
+  useEffect(() => {
+    handleStatusesUpdate();
+  }, [inspectionReviewed]);
+
+  function handleStatusesUpdate() {
+    const counts = extractStatusesCount(inspectionReviewed);
+    const updatedStatuses = statuses.map(status => ({
+      ...status,
+      count: counts[status.name.toLowerCase().replace(/\s/g, '_')] || 0,
+    }));
+
+    setStatuses(updatedStatuses);
+  }
 
   const openSheetPress = () => {
     openSheet();
@@ -53,7 +69,12 @@ const Filter_RBSheet = props => {
   }
   function handleApplyPress() {}
   function handleClearPress() {}
-  function handleStatusPress() {}
+  const handleStatusPress = (item, index) => {
+    const updatedStatuses = statuses.map((status, i) =>
+      i === index ? {...status, selected: !status.selected} : status,
+    );
+    setStatuses(updatedStatuses);
+  };
 
   return (
     <Custom_RBSheet ref={rbSheetRef} useNativeDriver={false} height={hp('40%')}>
