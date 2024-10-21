@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -9,7 +9,7 @@ import {useSelector} from 'react-redux';
 import {ButtonFooter, Custom_RBSheet, RenderStatuses} from './index';
 import {Cross} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
-import {extractStatusesCount} from '../Utils/helpers';
+import {extract_StatusesCount, extractStatusesCount} from '../Utils/helpers';
 
 const {gray} = colors;
 const statusesInitialState = [
@@ -18,70 +18,111 @@ const statusesInitialState = [
     name: 'Reviewed',
     count: 0,
     selected: true,
+    key: 'reviewed',
   },
   {
     id: 2,
     name: 'In Review',
     count: 0,
-    selected: false,
+    selected: true,
+    key: 'in_review',
   },
   {
     id: 3,
     name: 'Ready For Review',
     count: 0,
     selected: true,
+    key: 'ready_for_review',
   },
 ];
 
-const Filter_RBSheet = ({filter}) => {
-  const inspectionReviewed = useSelector(state => state?.inspectionReviewed);
+const Filter_RBSheet = ({filter, setFilter, inspections, setInspections}) => {
+  const {inspectionReviewed, filter: filter_} = useSelector(
+    state => state?.inspectionReviewed,
+  );
   const rbSheetRef = useRef(null);
   const [statuses, setStatuses] = useState(statusesInitialState);
 
+  const toggleFiler = {
+    true: openSheet,
+    false: closeSheet,
+  };
+  const activeSheet = toggleFiler[filter];
   useEffect(() => {
-    openSheet();
-  }, []);
+    activeSheet();
+  }, [filter]);
   useEffect(() => {
     handleStatusesUpdate();
   }, [inspectionReviewed]);
-
-  function handleStatusesUpdate() {
-    const counts = extractStatusesCount(inspectionReviewed);
+  extract_StatusesCount(inspectionReviewed, filter_);
+  function handleStatusesUpdate(inspectionsList = inspectionReviewed) {
+    const counts = extractStatusesCount(inspectionsList);
     const updatedStatuses = statuses.map(status => ({
       ...status,
-      count: counts[status.name.toLowerCase().replace(/\s/g, '_')] || 0,
+      count: counts[status.key] || 0,
     }));
 
     setStatuses(updatedStatuses);
   }
 
-  const openSheetPress = () => {
-    openSheet();
-  };
-  const closeSheetPress = () => {
-    closeSheet();
-  };
   function openSheet() {
     rbSheetRef.current.open();
   }
   function closeSheet() {
     rbSheetRef.current.close();
   }
-  function handleApplyPress() {}
-  function handleClearPress() {}
-  const handleStatusPress = (item, index) => {
+  function handleStatusPress(item, index) {
     const updatedStatuses = statuses.map((status, i) =>
       i === index ? {...status, selected: !status.selected} : status,
     );
     setStatuses(updatedStatuses);
+  }
+  function changeFilter() {
+    const selected_Status = [];
+    for (let i = 0; i < statuses.length; i++) {
+      const {selected, key} = statuses[i];
+      if (selected) {
+        selected_Status.push(key);
+      }
+    }
+    setInspections(filteredInspections(selected_Status));
+    setFilter(false);
+  }
+  const filteredInspections = selected_Status => {
+    const status_ = [];
+    for (let i = 0; i < inspectionReviewed.length; i++) {
+      const {status} = inspectionReviewed[i];
+      if (selected_Status.includes(status.toLowerCase())) {
+        status_.push(inspectionReviewed[i]);
+      }
+    }
+    return status_;
   };
+
+  function handleApplyPress() {
+    changeFilter();
+  }
+  function handleClearPress() {
+    const resetStatuses = statuses.map(status => ({
+      ...status,
+      selected: true, // Reset to the default selected state
+    }));
+    setInspections(inspectionReviewed || []);
+    setStatuses(resetStatuses);
+    setFilter(false);
+  }
+  function handleCrossPress() {
+    setFilter(false);
+  }
 
   return (
     <Custom_RBSheet ref={rbSheetRef} useNativeDriver={false} height={hp('40%')}>
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Filter</Text>
-          <Cross height={hp('5%')} width={wp('5%')} color={gray} />
+          <TouchableOpacity onPress={handleCrossPress}>
+            <Cross height={hp('6%')} width={wp('6%')} color={gray} />
+          </TouchableOpacity>
         </View>
         <View style={styles.body}>
           <FlatList

@@ -40,6 +40,9 @@ const InspectionReviewedScreen = ({
   onNewInspectionPress,
   onFilterPress,
   filter,
+  setInspections,
+  setFilter,
+  inspections,
 }) => (
   <View style={NewInspectionStyles.container}>
     <View style={NewInspectionStyles.bodyContainer}>
@@ -83,7 +86,12 @@ const InspectionReviewedScreen = ({
         disabled={isNewInspectionLoading}
       />
     </View>
-    <Filter_RBSheet filter={filter} />
+    <Filter_RBSheet
+      filter={filter}
+      setFilter={setFilter}
+      inspections={inspections}
+      setInspections={setInspections}
+    />
   </View>
 );
 

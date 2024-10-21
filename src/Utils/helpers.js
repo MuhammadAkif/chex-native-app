@@ -49,3 +49,22 @@ export const extractStatusesCount = (list = []) => {
   }
   return counts;
 };
+export const extract_StatusesCount = (list = [], filter = {}) => {
+  let filter_ = filter;
+  if (list.length < 1) {
+    return 'No status counts';
+  }
+  let counts = {reviewed: 0, in_review: 0, ready_for_review: 0};
+
+  for (let i = 0; i < list.length; i++) {
+    const status = list[i].status.toLowerCase();
+    counts[status] += 1;
+  }
+
+  for (let key in filter_) {
+    if (key !== 'inspections') {
+      filter_[key].count = counts[key];
+    }
+  }
+  return filter_;
+};

@@ -28,6 +28,7 @@ const Custom_RBSheet = (props, ref) => {
     height = hp('30%'),
     customModalProps = custom_ModalProps,
     customAvoidingViewProps = custom_AvoidingViewProps,
+    closeOnPressBack = false,
     children,
   } = props;
 
@@ -35,6 +36,7 @@ const Custom_RBSheet = (props, ref) => {
     <RBSheet
       ref={ref}
       height={height}
+      closeOnPressBack={closeOnPressBack}
       useNativeDriver={useNativeDriver}
       customStyles={{...custom_Styles, ...customStyles}}
       customModalProps={{...custom_ModalProps, ...customModalProps}}

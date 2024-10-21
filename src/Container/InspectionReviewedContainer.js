@@ -30,13 +30,14 @@ const InspectionReviewedContainer = ({navigation}) => {
   const {
     user: {token, data},
   } = useSelector(state => state.auth);
-  const inspectionReviewed = useSelector(state => state?.inspectionReviewed);
+  const {inspectionReviewed} = useSelector(state => state?.inspectionReviewed);
   const [isExpanded, setIsExpanded] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isNewInspectionLoading, setIsNewInspectionLoading] = useState(false);
   const [selectedInspectionID, setSelectedInspectionID] = useState(null);
-  const [filter, setFilter] = useState(true);
-  //console.log('inspectionReviewed.length > ', inspectionReviewed[0]);
+  const [filter, setFilter] = useState(false);
+  const [inspections, setInspections] = useState(inspectionReviewed || []);
+
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
@@ -49,8 +50,16 @@ const InspectionReviewedContainer = ({navigation}) => {
       HARDWARE_BACK_PRESS,
       handle_Hardware_Back_Press,
     );
-    return () => backHandler.remove();
+    return () => {
+      backHandler.remove();
+      resetAllStates();
+    };
   }, []);
+  useEffect(() => {
+    setInspections(inspectionReviewed || []);
+  }, [inspectionReviewed]);
+
+  //Logic starts here
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
       goBack();
@@ -62,6 +71,9 @@ const InspectionReviewedContainer = ({navigation}) => {
     setIsLoading(false);
     setIsExpanded([]);
     setSelectedInspectionID(null);
+    setIsNewInspectionLoading(false);
+    setInspections(inspectionReviewed);
+    setFilter(false);
   }
   async function fetchInspectionInProgress() {
     let inspectionReviewData = [];
@@ -127,12 +139,14 @@ const InspectionReviewedContainer = ({navigation}) => {
   function onFilterPress() {
     setFilter(!filter);
   }
+  //Logic ends here
+
   return (
     <InspectionReviewedScreen
       handleIsExpanded={handleIsExpanded}
       isExpanded={isExpanded}
       navigation={navigation}
-      data={inspectionReviewed}
+      data={inspections}
       inspectionDetailsPress={inspectionDetailsPress}
       isLoading={isLoading}
       isNewInspectionLoading={isNewInspectionLoading}
@@ -140,7 +154,10 @@ const InspectionReviewedContainer = ({navigation}) => {
       selectedInspectionID={selectedInspectionID}
       onNewInspectionPress={onNewInspectionPress}
       onFilterPress={onFilterPress}
-      filter={filter}
+      filter={false}
+      setInspections={setInspections}
+      setFilter={setFilter}
+      inspections={inspections}
     />
   );
 };
