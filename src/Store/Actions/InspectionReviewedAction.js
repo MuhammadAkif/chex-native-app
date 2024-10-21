@@ -4,7 +4,7 @@ export const FETCH_INSPECTION_REVIEWED = inspectionReviewData => {
   return async dispatch => {
     dispatch({
       type: Types.GET_INSPECTION_REVIEWED,
-      payload: {inspectionReviewData},
+      payload: inspectionReviewData,
     });
   };
 };

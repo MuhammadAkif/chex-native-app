@@ -154,7 +154,7 @@ const InspectionReviewedContainer = ({navigation}) => {
       selectedInspectionID={selectedInspectionID}
       onNewInspectionPress={onNewInspectionPress}
       onFilterPress={onFilterPress}
-      filter={false}
+      filter={filter}
       setInspections={setInspections}
       setFilter={setFilter}
       inspections={inspections}

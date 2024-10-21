@@ -1,9 +1,6 @@
 import React, {forwardRef} from 'react';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 const custom_Styles = {
   wrapper: {
@@ -43,7 +40,8 @@ const Custom_RBSheet = (props, ref) => {
       customAvoidingViewProps={{
         ...custom_AvoidingViewProps,
         ...customAvoidingViewProps,
-      }}>
+      }}
+      {...props}>
       {children}
     </RBSheet>
   );

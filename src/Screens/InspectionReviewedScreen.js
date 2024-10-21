@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Touchable,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -24,8 +17,9 @@ import {
 import {handleHomePress} from '../Utils';
 import {Filter} from '../Assets/Icons';
 import Filter_RBSheet from '../Components/Filter_RBSheet';
+import EmptyComponent from '../Components/EmptyComponent';
 
-const {black, royalBlue, white, orange} = colors;
+const {black, royalBlue, gray, white, orange} = colors;
 
 const InspectionReviewedScreen = ({
   handleIsExpanded,
@@ -77,6 +71,7 @@ const InspectionReviewedScreen = ({
           }}
           refreshing={isLoading && selectedInspectionID === null}
           keyExtractor={item => item?.id}
+          ListEmptyComponent={EmptyComponent}
         />
       </View>
       <PrimaryStartInspectionButton
@@ -91,6 +86,7 @@ const InspectionReviewedScreen = ({
       setFilter={setFilter}
       inspections={inspections}
       setInspections={setInspections}
+      navigation={navigation}
     />
   </View>
 );
@@ -142,6 +138,12 @@ const styles = StyleSheet.create({
   },
   filterText: {
     color: white,
+  },
+  noDataText: {
+    fontSize: hp('2%'),
+    color: gray,
+    textAlign: 'center',
+    marginTop: hp('2%'),
   },
 });
 
