@@ -56,13 +56,14 @@ const InspectionDetailContainer = ({navigation, route}) => {
       'video/mp4': true,
       '.mp4': true,
     };
-    let mediaURL =
-      item?.url.split('/')[0] === 'uploads'
-        ? S3_BUCKET_BASEURL + item?.url
-        : item?.url;
+    const mediaUrl = {
+      true: S3_BUCKET_BASEURL + item?.url,
+      false: item?.url,
+    };
+    let currentMediaUrl = mediaUrl[item?.url.split('/')[0] === 'uploads'];
     const isVideo = checkVideo[item?.extension] || false;
     setModalDetails({
-      source: mediaURL,
+      source: currentMediaUrl,
       title: title,
       isVideo: isVideo,
     });

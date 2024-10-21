@@ -5,32 +5,51 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import Video from 'react-native-video';
 
 import {circleBorderRadius, colors} from '../../Assets/Styles';
 import {S3_BUCKET_BASEURL, WINDOW} from '../../Constants';
 import {isNotEmpty} from '../../Utils';
-import {formatTitle} from '../../Utils/helpers';
+import {checkVideo, formatTitle} from '../../Utils/helpers';
 
 const {width} = Dimensions.get(WINDOW);
 const {black} = colors;
 
+const Video_Component = ({uri = ''}) => (
+  <Video
+    source={{uri}}
+    controls={true}
+    playInBackground={false}
+    resizeMode={'contain'}
+    style={styles.image}
+    paused={true}
+  />
+);
+const Image_Component = ({uri = ''}) => (
+  <FastImage source={{uri}} resizeMode={'stretch'} style={styles.image} />
+);
+const mediaOption = {
+  true: Video_Component,
+  false: Image_Component,
+};
+
 const RenderInspectionDetail = ({item, handleDisplayMedia, categoryCount}) => {
-  let mediaURL =
-    item?.url?.split('/')[0] === 'uploads'
-      ? S3_BUCKET_BASEURL + item?.url
-      : item?.url;
-  let title = formatTitle(item?.category);
-  // let title = INSPECTION_TITLE[item?.category] || 'No Title';
+  const {category, extension, url} = item;
+  let title = formatTitle(category);
+  const isVideo = checkVideo[extension] || false;
+  const mediaUrl = {
+    true: S3_BUCKET_BASEURL + url,
+    false: url,
+  };
+  let currentMediaUrl = mediaUrl[url.split('/')[0] === 'uploads'];
+  const ActiveMedia = mediaOption[isVideo];
+
   return (
     <TouchableOpacity
-      disabled={!isNotEmpty(mediaURL)}
+      disabled={!isNotEmpty(currentMediaUrl)}
       style={styles.container}
       onPress={() => handleDisplayMedia(item)}>
-      <FastImage
-        source={{uri: mediaURL}}
-        resizeMode={'stretch'}
-        style={styles.image}
-      />
+      <ActiveMedia uri={currentMediaUrl} />
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );

@@ -24,7 +24,7 @@ import {colors, PreviewStyles} from '../Assets/Styles';
 import {BackArrow} from '../Assets/Icons';
 import {CameraFooter, CaptureImageModal, RecordingPreview} from '../Components';
 import {ROUTES} from '../Navigation/ROUTES';
-import {UpdateVehicleImages} from '../Store/Actions';
+import {updateVehicleImage} from '../Store/Actions';
 import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
 import {HARDWARE_BACK_PRESS} from '../Constants';
 
@@ -175,7 +175,7 @@ const VideoContainer = ({route, navigation}) => {
     );
   };
   function uploadVideoToStore(imageID) {
-    dispatch(UpdateVehicleImages(groupType, type, isVideoURI, imageID));
+    dispatch(updateVehicleImage(groupType, type, isVideoURI, imageID));
     navigate(NEW_INSPECTION);
   }
   const handleError = () => {

@@ -68,3 +68,8 @@ export const extract_StatusesCount = (list = [], filter = {}) => {
   }
   return filter_;
 };
+
+export const checkVideo = {
+  'video/mp4': true,
+  '.mp4': true,
+};

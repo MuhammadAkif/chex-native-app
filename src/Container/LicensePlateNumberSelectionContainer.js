@@ -8,7 +8,7 @@ import {LicensePlateNumberSelectionScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS, API_ENDPOINTS, generateApiUrl} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {colors} from '../Assets/Styles';
-import {NumberPlateSelectedAction} from '../Store/Actions';
+import {numberPlateSelected} from '../Store/Actions';
 import {handle_Session_Expired, uploadInProgressMediaToStore} from '../Utils';
 import {Types} from '../Store/Types';
 
@@ -89,7 +89,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       licensePlateNumber: selectedNP,
       companyId: data?.companyId,
     };
-    dispatch({type: Types.company_ID, payload: data?.companyId});
+    dispatch({type: Types.COMPANY_ID, payload: data?.companyId});
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -99,7 +99,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       .then(response => {
         setIsLoading(false);
         setInspectionID(response.data.id);
-        dispatch(NumberPlateSelectedAction(response.data.id));
+        dispatch(numberPlateSelected(response.data.id));
         resetAllStates();
         navigate(NEW_INSPECTION, {
           routeName: LICENSE_PLATE_SELECTION,
@@ -127,7 +127,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       .then(res => {
         uploadInProgressMediaToStore(res?.data?.files, dispatch);
         setIsLoading(false);
-        dispatch(NumberPlateSelectedAction(inspectionID));
+        dispatch(numberPlateSelected(inspectionID));
         navigate(NEW_INSPECTION, {
           routeName: LICENSE_PLATE_SELECTION,
         });

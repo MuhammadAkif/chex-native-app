@@ -6,9 +6,9 @@ import axios from 'axios';
 
 import {InspectionInProgressScreen} from '../Screens';
 import {
-  FETCH_INSPECTION_IN_PROGRESS,
-  NumberPlateSelectedAction,
-  REMOVE_INSPECTION_IN_PROGRESS,
+  fetch_InspectionInProgress,
+  numberPlateSelected,
+  removeInspectionInProgress,
   showToast,
 } from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
@@ -32,7 +32,7 @@ const InspectionInProgressContainer = ({navigation}) => {
   const {
     user: {token, data},
   } = useSelector(state => state?.auth);
-  const inspectionInProgress = useSelector(
+  const {inspectionInProgress} = useSelector(
     state => state?.inspectionInProgress,
   );
   const [isLoading, setIsLoading] = useState(false);
@@ -77,7 +77,7 @@ const InspectionInProgressContainer = ({navigation}) => {
       setIsLoading,
       dispatch,
     );
-    dispatch(FETCH_INSPECTION_IN_PROGRESS(inProgressInspection));
+    dispatch(fetch_InspectionInProgress(inProgressInspection));
 
     return null;
   }
@@ -92,7 +92,7 @@ const InspectionInProgressContainer = ({navigation}) => {
         dispatch({type: VEHICLE_TYPE, payload: vehicleType});
         get_Inspection_Details(dispatch, inspectionId).then();
         uploadInProgressMediaToStore(res?.data?.files, dispatch);
-        dispatch(NumberPlateSelectedAction(inspectionId));
+        dispatch(numberPlateSelected(inspectionId));
         resetAllStates();
         navigate(NEW_INSPECTION, {
           routeName: INSPECTION_IN_PROGRESS,
@@ -131,7 +131,7 @@ const InspectionInProgressContainer = ({navigation}) => {
 
     await deleteRequest(endPoint)
       .then(res => {
-        dispatch(REMOVE_INSPECTION_IN_PROGRESS(inspectionsInProgress));
+        dispatch(removeInspectionInProgress(inspectionsInProgress));
         dispatch(showToast('Inspection has been deleted!', 'success'));
       })
       .catch(error => {

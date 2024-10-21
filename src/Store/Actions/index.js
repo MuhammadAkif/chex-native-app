@@ -1,37 +1,37 @@
 import {
-  UpdateVehicleImages,
-  RemoveVehicleImages,
-  NumberPlateSelectedAction,
-  Update_Is_License_Plate_Uploaded,
-  Category_Variant,
-  File_Details,
+  updateVehicleImage,
+  removeVehicleImage,
+  numberPlateSelected,
+  updateIsLicensePlateUploaded,
+  categoryVariant,
+  fileDetails,
 } from './NewInspectionAction';
-import {SIGN_IN_ACTION, SIGN_OUT_ACTION} from './AuthAction';
+import {signIn, signOut} from './AuthAction';
 import {
-  FETCH_INSPECTION_REVIEWED,
-  CLEAR_INSPECTION_REVIEWED,
+  fetchInspectionReviewed,
+  clearInspectionReviewed,
 } from './InspectionReviewedAction';
 import {
-  FETCH_INSPECTION_IN_PROGRESS,
-  REMOVE_INSPECTION_IN_PROGRESS,
-  CLEAR_INSPECTION_IN_PROGRESS,
+  fetch_InspectionInProgress,
+  removeInspectionInProgress,
+  clearInspectionInProgress,
 } from './InspectionInProgressAction';
 import {setLoading, showToast, hideToast} from './UIActions';
 
 export {
-  UpdateVehicleImages,
-  RemoveVehicleImages,
-  NumberPlateSelectedAction,
-  SIGN_IN_ACTION,
-  SIGN_OUT_ACTION,
-  FETCH_INSPECTION_REVIEWED,
-  CLEAR_INSPECTION_REVIEWED,
-  FETCH_INSPECTION_IN_PROGRESS,
-  REMOVE_INSPECTION_IN_PROGRESS,
-  CLEAR_INSPECTION_IN_PROGRESS,
-  Update_Is_License_Plate_Uploaded,
-  Category_Variant,
-  File_Details,
+  updateVehicleImage,
+  removeVehicleImage,
+  numberPlateSelected,
+  signIn,
+  signOut,
+  fetchInspectionReviewed,
+  clearInspectionReviewed,
+  fetch_InspectionInProgress,
+  removeInspectionInProgress,
+  clearInspectionInProgress,
+  updateIsLicensePlateUploaded,
+  categoryVariant,
+  fileDetails,
   setLoading,
   showToast,
   hideToast,

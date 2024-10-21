@@ -1,26 +1,20 @@
 import {Types} from '../Types';
 
-export const FETCH_INSPECTION_IN_PROGRESS = inspectionInProgress => {
-  return async dispatch => {
-    dispatch({
-      type: Types.GET_INSPECTION_IN_PROGRESS,
-      payload: {inspectionInProgress},
-    });
-  };
-};
-export const REMOVE_INSPECTION_IN_PROGRESS = inspectionsInProgress => {
-  return async dispatch => {
-    dispatch({
-      type: Types.REMOVE_INSPECTION_IN_PROGRESS,
-      payload: {inspectionsInProgress: inspectionsInProgress},
-    });
-  };
-};
+const {
+  GET_INSPECTION_IN_PROGRESS,
+  REMOVE_INSPECTION_IN_PROGRESS,
+  CLEAR_INSPECTION_IN_PROGRESS,
+} = Types;
 
-export const CLEAR_INSPECTION_IN_PROGRESS = () => {
-  return dispatch => {
-    dispatch({
-      type: Types.CLEAR_INSPECTION_IN_PROGRESS,
-    });
-  };
-};
+export const fetch_InspectionInProgress = inspectionInProgress => ({
+  type: GET_INSPECTION_IN_PROGRESS,
+  payload: inspectionInProgress,
+});
+export const removeInspectionInProgress = inspectionsInProgress => ({
+  type: REMOVE_INSPECTION_IN_PROGRESS,
+  payload: inspectionsInProgress,
+});
+
+export const clearInspectionInProgress = () => ({
+  type: CLEAR_INSPECTION_IN_PROGRESS,
+});

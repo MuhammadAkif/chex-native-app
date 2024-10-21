@@ -14,9 +14,9 @@ import {
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
-  File_Details,
-  NumberPlateSelectedAction,
-  UpdateVehicleImages,
+  fileDetails,
+  numberPlateSelected,
+  updateVehicleImage,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {IMAGES} from '../Assets/Images';
@@ -506,34 +506,6 @@ export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
   return errors[statusCode] || errors.noStatusCode;
 };
 export const sortInspectionReviewedItems = list => {
-  const customSortOrder = {
-    groupType: [
-      'carVerificiationItems',
-      'interiorItems',
-      'exteriorItems',
-      'tires',
-    ],
-    carVerificiationItems: ['license_plate_number', 'odometer'],
-    interiorItems: ['interior_passenger_side', 'interior_driver_side'],
-    exteriorItems: [
-      // 'Exterior-Left',
-      // 'Exterior-Right',
-      'Exterior-Front',
-      'Exterior-Rear',
-      'Front-Left-Corner',
-      'Front-Right-Corner',
-      'Rear-Left-Corner',
-      'Rear-Right-Corner',
-      'Inside-Cargo-Roof',
-    ],
-    tires: [
-      'Left-Front-Tire',
-      'Left-Right-Tire',
-      'Right-Front-Tire',
-      'Right-Rear-Tire',
-    ],
-  };
-
   function customSort(a, b) {
     const groupTypeComparison =
       customSortOrder.groupType.indexOf(a.groupType) -
@@ -543,12 +515,25 @@ export const sortInspectionReviewedItems = list => {
     }
 
     return (
-      customSortOrder[a.groupType].indexOf(a.category) -
-      customSortOrder[b.groupType].indexOf(b.category)
+      customSortOrder[a.groupType].indexOf(a.name) -
+      customSortOrder[b.groupType].indexOf(b.name)
     );
   }
 
   return list.sort(customSort);
+};
+export const updateFiles = (files = []) => {
+  if (files?.length < 1) {
+    return files;
+  }
+  const files_Updated = [];
+  for (let i = 0; i < files.length; i++) {
+    const variant = files[i].llamaCost || '';
+    let name = files[i].category + variant;
+    const data = {...files[i], name: name};
+    files_Updated.push(data);
+  }
+  return files_Updated;
 };
 export function sortImagesByOrder(list) {
   return list.sort((a, b) => {
@@ -596,8 +581,8 @@ export const sortInspection_Reviewed_Items = list => {
     }
 
     return (
-      customSortOrder[a.groupType].indexOf(a.category) -
-      customSortOrder[b.groupType].indexOf(b.category) // Sort by category second
+      customSortOrder[a.groupType].indexOf(a.name) -
+      customSortOrder[b.groupType].indexOf(b.name) // Sort by category second
     );
   });
 
@@ -631,7 +616,7 @@ export function uploadInProgressMediaToStore(files, dispatch) {
       category += '_' + variant_;
     }
     dispatch(
-      UpdateVehicleImages(
+      updateVehicleImage(
         groupType,
         INSPECTION_SUBCATEGORY[category],
         imageURL,
@@ -670,7 +655,7 @@ export const handleNewInspectionPress = async (
     licensePlateNumber: generateRandomString(),
     companyId: companyId,
   };
-  dispatch({type: Types.company_ID, payload: companyId});
+  dispatch({type: Types.COMPANY_ID, payload: companyId});
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,
@@ -679,7 +664,7 @@ export const handleNewInspectionPress = async (
     .post(API_ENDPOINTS.CREATE_INSPECTION_URL, body, {headers: headers})
     .then(response => {
       // setInspectionID(response.data.id);
-      dispatch(NumberPlateSelectedAction(response?.data?.id));
+      dispatch(numberPlateSelected(response?.data?.id));
       resetAllStates();
       navigation.navigate(ROUTES.NEW_INSPECTION, {
         routeName: ROUTES.INSPECTION_SELECTION,
@@ -879,7 +864,7 @@ export const get_Inspection_Details = async (dispatch, inspectionId) => {
     .get(endPoint)
     .then(res => {
       const details = res?.data?.files;
-      dispatch(File_Details(details, inspectionId));
+      dispatch(fileDetails(details, inspectionId));
     })
     .catch(error => {
       const statusCode = error?.response?.data?.statusCode;

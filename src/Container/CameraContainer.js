@@ -25,7 +25,7 @@ import {colors, PreviewStyles} from '../Assets/Styles';
 import {BackArrow} from '../Assets/Icons';
 import {CameraFooter, CameraPreview, CaptureImageModal} from '../Components';
 import {ROUTES} from '../Navigation/ROUTES';
-import {UpdateVehicleImages} from '../Store/Actions';
+import {updateVehicleImage} from '../Store/Actions';
 import {
   exteriorVariant,
   getCurrentDate,
@@ -50,8 +50,11 @@ import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionM
 const {white} = colors;
 
 const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
-const {IS_LICENSE_PLATE_UPLOADED, plate_Number, CLEAR_INSPECTION_IMAGES} =
-  Types;
+const {
+  IS_LICENSE_PLATE_UPLOADED,
+  LICENSE_PLATE_NUMBER,
+  CLEAR_INSPECTION_IMAGES,
+} = Types;
 const CameraContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {navigate, goBack, canGoBack} = navigation;
@@ -187,7 +190,7 @@ const CameraContainer = ({route, navigation}) => {
     const displayAnnotation =
       (is_Interior && vehicle_Type === 'new') ||
       (is_Exterior && vehicle_Type === 'new');
-    dispatch(UpdateVehicleImages(groupType, type_, isImageURL, imageID));
+    dispatch(updateVehicleImage(groupType, type_, isImageURL, imageID));
     if (isLicensePlate) {
       dispatch({type: IS_LICENSE_PLATE_UPLOADED});
     }
@@ -207,7 +210,7 @@ const CameraContainer = ({route, navigation}) => {
     await axios
       .post(EXTRACT_NUMBER_PLATE_WITH_AI, body, {headers: headers})
       .then(res => {
-        dispatch({type: plate_Number, payload: res?.data?.plateNumber});
+        dispatch({type: LICENSE_PLATE_NUMBER, payload: res?.data?.plateNumber});
       })
       .catch(error => console.log('AI error => ', error));
   };

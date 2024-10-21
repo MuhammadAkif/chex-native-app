@@ -112,13 +112,13 @@ const initialState = {
   fileDetails: null,
 };
 const {
-  ITEMS_IMAGES,
-  REMOVE_IMAGES,
+  UPDATE_VEHICLE_IMAGE,
+  REMOVE_IMAGE,
   CLEAR_TIRES,
   CLEAR_INSPECTION_IMAGES,
   SELECTED_INSPECTION_ID,
-  company_ID,
-  plate_Number,
+  COMPANY_ID,
+  LICENSE_PLATE_NUMBER,
   SKIP_LEFT,
   SKIP_LEFT_CORNERS,
   SKIP_RIGHT,
@@ -130,23 +130,25 @@ const {
   CLEAR_NEW_INSPECTION,
 } = Types;
 const newInspectionReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case ITEMS_IMAGES:
+  const {type, payload} = action;
+
+  switch (type) {
+    case UPDATE_VEHICLE_IMAGE:
       return {
         ...state,
-        [action.payload.group]: {
-          ...state[action.payload.group],
-          [action.payload.item]: action.payload.uri,
-          [action.payload.item_Id]: action.payload.id,
+        [payload.group]: {
+          ...state[payload.group],
+          [payload.item]: payload.uri,
+          [payload.itemId]: payload.id,
         },
       };
-    case REMOVE_IMAGES:
+    case REMOVE_IMAGE:
       return {
         ...state,
-        [action.payload.group]: {
-          ...state[action.payload.group],
-          [action.payload.item]: action.payload.uri,
-          [action.payload.item_Id]: action.payload.id,
+        [payload.group]: {
+          ...state[payload.group],
+          [payload.item]: payload.uri,
+          [payload.itemId]: payload.id,
         },
       };
     case CLEAR_TIRES:
@@ -164,57 +166,57 @@ const newInspectionReducer = (state = initialState, action) => {
     case SELECTED_INSPECTION_ID:
       return {
         ...state,
-        selectedInspectionID: action.payload,
+        selectedInspectionID: payload,
       };
-    case company_ID:
+    case COMPANY_ID:
       return {
         ...state,
-        company_ID: action.payload,
+        company_ID: payload,
       };
-    case plate_Number:
+    case LICENSE_PLATE_NUMBER:
       return {
         ...state,
-        plateNumber: action.payload,
+        plateNumber: payload,
       };
     case SKIP_LEFT:
       return {
         ...state,
-        skipLeft: action.payload,
+        skipLeft: payload,
       };
     case SKIP_LEFT_CORNERS:
       return {
         ...state,
-        skipLeftCorners: action.payload,
+        skipLeftCorners: payload,
       };
     case SKIP_RIGHT:
       return {
         ...state,
-        skipRight: action.payload,
+        skipRight: payload,
       };
     case SKIP_RIGHT_CORNERS:
       return {
         ...state,
-        skipRightCorners: action.payload,
+        skipRightCorners: payload,
       };
     case IS_LICENSE_PLATE_UPLOADED:
       return {
         ...state,
-        isLicensePlateUploaded: action.payload,
+        isLicensePlateUploaded: payload,
       };
     case VEHICLE_TYPE:
       return {
         ...state,
-        vehicle_Type: action.payload,
+        vehicle_Type: payload,
       };
     case CATEGORY_VARIANT:
       return {
         ...state,
-        variant: action.payload,
+        variant: payload,
       };
     case FILE_DETAILS:
       return {
         ...state,
-        fileDetails: action.payload,
+        fileDetails: payload,
       };
     case CLEAR_NEW_INSPECTION:
       return initialState;

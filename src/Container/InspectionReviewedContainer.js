@@ -5,7 +5,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
 import {InspectionReviewedScreen} from '../Screens';
-import {FETCH_INSPECTION_REVIEWED} from '../Store/Actions';
+import {fetchInspectionReviewed} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
   generateApiUrl,
@@ -17,9 +17,8 @@ import {
   FILTER_IMAGES,
   handle_Session_Expired,
   handleNewInspectionPress,
-  sortImagesByOrder,
-  sortInspection_Reviewed_Items,
   sortInspectionReviewedItems,
+  updateFiles,
 } from '../Utils';
 
 const {INSPECTION_DETAIL} = ROUTES;
@@ -83,7 +82,7 @@ const InspectionReviewedContainer = ({navigation}) => {
       setIsLoading,
       dispatch,
     );
-    dispatch(FETCH_INSPECTION_REVIEWED(inspectionReviewData));
+    dispatch(fetchInspectionReviewed(inspectionReviewData));
 
     return null;
   }
@@ -107,9 +106,8 @@ const InspectionReviewedContainer = ({navigation}) => {
         setIsLoading(false);
         const {finalStatus, remarks} = res?.data?.inspectionData;
         const beforeImages = FILTER_IMAGES(res?.data?.files, 'before');
-        // let files = sortImagesByOrder(beforeImages);
-        let files = sortInspection_Reviewed_Items(beforeImages);
-        // let files = sortInspectionReviewedItems(beforeImages);
+        const updatedBeforeImages = updateFiles(beforeImages);
+        let files = sortInspectionReviewedItems(updatedBeforeImages);
         resetAllStates();
         navigate(INSPECTION_DETAIL, {
           files: files,

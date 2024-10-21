@@ -1,40 +1,47 @@
 import {Types} from '../Types';
 
-export function UpdateVehicleImages(group, item, uri, id) {
-  const item_Id = item + 'ID';
-  let payload = {group: group, item: item, item_Id: item_Id, uri: uri, id: id};
-  return dispatch => dispatch({type: Types.ITEMS_IMAGES, payload: payload});
-}
-export function RemoveVehicleImages(group, item) {
-  const item_Id = item + 'ID';
-  let payload = {group: group, item: item, item_Id: item_Id, uri: '', id: 0};
-  return dispatch => dispatch({type: Types.REMOVE_IMAGES, payload: payload});
-}
-export function NumberPlateSelectedAction(selectedInspectionID = null) {
-  return dispatch =>
+const {
+  UPDATE_VEHICLE_IMAGE,
+  REMOVE_IMAGE,
+  SELECTED_INSPECTION_ID,
+  IS_LICENSE_PLATE_UPLOADED,
+  CATEGORY_VARIANT,
+  FILE_DETAILS,
+} = Types;
+const itemsImagePayload = (item = '', group = '', uri = '', id = 0) => {
+  const itemId = `${item}ID`;
+  return {group, item, itemId, uri, id};
+};
+export function updateVehicleImage(group, item, uri, id) {
+  return dispatch => {
+    const payload = itemsImagePayload(item, group, uri, id);
+
     dispatch({
-      type: Types.SELECTED_INSPECTION_ID,
-      payload: selectedInspectionID,
+      type: UPDATE_VEHICLE_IMAGE,
+      payload,
     });
+  };
 }
-export function Update_Is_License_Plate_Uploaded(payload) {
-  return dispatch =>
-    dispatch({
-      type: Types.IS_LICENSE_PLATE_UPLOADED,
-      payload: payload,
-    });
+export function removeVehicleImage(group, item) {
+  return dispatch => {
+    const payload = itemsImagePayload(item, group, '', 0);
+
+    dispatch({type: REMOVE_IMAGE, payload: payload});
+  };
 }
-export function Category_Variant(payload) {
-  return dispatch =>
-    dispatch({
-      type: Types.CATEGORY_VARIANT,
-      payload: payload,
-    });
-}
-export function File_Details(payload) {
-  return dispatch =>
-    dispatch({
-      type: Types.FILE_DETAILS,
-      payload: payload,
-    });
-}
+export const numberPlateSelected = (selectedInspectionID = null) => ({
+  type: SELECTED_INSPECTION_ID,
+  payload: selectedInspectionID,
+});
+export const updateIsLicensePlateUploaded = payload => ({
+  type: IS_LICENSE_PLATE_UPLOADED,
+  payload: payload,
+});
+export const categoryVariant = payload => ({
+  type: CATEGORY_VARIANT,
+  payload: payload,
+});
+export const fileDetails = payload => ({
+  type: FILE_DETAILS,
+  payload: payload,
+});

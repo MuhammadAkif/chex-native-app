@@ -13,7 +13,7 @@ import {signInValidationSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
 import {ANDROID, API_ENDPOINTS, HARDWARE_BACK_PRESS} from '../../Constants';
-import {showToast, SIGN_IN_ACTION} from '../../Store/Actions';
+import {showToast, signIn} from '../../Store/Actions';
 
 const {LOGIN_URL} = API_ENDPOINTS;
 const {WELCOME, FORGET_PASSWORD, HOME} = ROUTES;
@@ -92,7 +92,7 @@ const SignInContainer = ({navigation, route}) => {
         password: body.password,
       })
       .then(response => {
-        dispatch(SIGN_IN_ACTION(response.data));
+        dispatch(signIn(response.data));
         resetForm();
         navigate(HOME);
       })

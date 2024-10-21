@@ -13,19 +13,21 @@ const initialState = {
 };
 
 const UIReducer = (state = initialState, action) => {
-  switch (action.type) {
+  const {type, payload} = action;
+
+  switch (type) {
     case SET_LOADING:
       return {
         ...state,
-        loading: action.payload,
+        loading: payload,
       };
     case SHOW_TOAST:
       return {
         ...state,
         toast: {
           visible: true,
-          message: action.payload.message,
-          type: action.payload.type,
+          message: payload.message,
+          type: payload.type,
         },
       };
     case HIDE_TOAST:

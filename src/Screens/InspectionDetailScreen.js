@@ -18,10 +18,14 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {ANDROID} from '../Constants';
 import {INSPECTION_STATUS} from '../Utils/helpers';
 
 const {silverGray, lightGray, black} = colors;
+const mediaViewModals = {
+  ios: DisplayMediaModal,
+  android: AndroidMediaViewModal,
+};
+const ActiveMediaViewModal = mediaViewModals[Platform.OS];
 
 const InspectionDetailScreen = ({
   detailsFiles,
@@ -36,16 +40,8 @@ const InspectionDetailScreen = ({
   isPassed,
 }) => (
   <View style={NewInspectionStyles.container}>
-    {Platform.OS === 'ios' && isModalVisible && (
-      <DisplayMediaModal
-        handleVisible={handleDisplayMediaCrossPress}
-        title={modalDetails?.title}
-        isVideo={modalDetails?.isVideo}
-        source={modalDetails?.source}
-      />
-    )}
-    {Platform.OS === ANDROID && isModalVisible && (
-      <AndroidMediaViewModal
+    {isModalVisible && (
+      <ActiveMediaViewModal
         handleVisible={handleDisplayMediaCrossPress}
         title={modalDetails?.title}
         isVideo={modalDetails?.isVideo}

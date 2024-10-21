@@ -6,12 +6,12 @@ import axios from 'axios';
 import {NewInspectionScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
-  NumberPlateSelectedAction,
-  Update_Is_License_Plate_Uploaded,
-  Category_Variant,
-  File_Details,
+  numberPlateSelected,
+  updateIsLicensePlateUploaded,
+  categoryVariant,
+  fileDetails,
   showToast,
-  RemoveVehicleImages,
+  removeVehicleImage,
 } from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {
@@ -233,7 +233,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   }, [selectedInspectionID]);
   useEffect(() => {
     const licenseBoolean = isNotEmpty(carVerificiationItems.licensePlate);
-    dispatch(Update_Is_License_Plate_Uploaded(licenseBoolean));
+    dispatch(updateIsLicensePlateUploaded(licenseBoolean));
   }, [carVerificiationItems.licensePlate]);
   useEffect(() => {
     !isLicensePlateUploaded && setSelectedOption(selectedOptionInitialState);
@@ -324,47 +324,63 @@ const NewInspectionContainer = ({route, navigation}) => {
       passengerSide_1,
       passengerSide_2,
     } = interiorItems;
-    const driver_Side = driverSide || driverSide_1 || driverSide_2;
-    const passenger_Side = passengerSide || passengerSide_1 || passengerSide_2;
-    const exterior_Front = exteriorFront || exteriorFront_1 || exteriorFront_2;
-    const exterior_Rear = exteriorRear || exteriorRear_1 || exteriorRear_2;
-    const exteriorFront_LeftCorner =
-      exteriorFrontLeftCorner ||
-      exteriorFrontLeftCorner_1 ||
-      exteriorFrontLeftCorner_2;
-    const exteriorFront_RightCorner =
-      exteriorFrontRightCorner ||
-      exteriorFrontRightCorner_1 ||
-      exteriorFrontRightCorner_2;
-    const exteriorRear_LeftCorner =
-      exteriorRearLeftCorner ||
-      exteriorRearLeftCorner_1 ||
-      exteriorRearLeftCorner_2;
-    const exteriorRear_RightCorner =
-      exteriorRearRightCorner ||
-      exteriorRearRightCorner_1 ||
-      exteriorRearRightCorner_2;
-    const exteriorInside_CargoRoof =
-      exteriorInsideCargoRoof ||
-      exteriorInsideCargoRoof_1 ||
-      exteriorInsideCargoRoof_2;
+    //Annotation or without annotation
+    const annotationInteriorImages = {
+      driverSide,
+      driverSide_1,
+      driverSide_2,
+      passengerSide,
+      passengerSide_1,
+      passengerSide_2,
+    };
     const interiorImages = {
-      driver_Side,
-      passenger_Side,
+      driverSide,
+      passengerSide,
+    };
+    const annotationExteriorImages = {
+      exteriorFront,
+      exteriorFront_1,
+      exteriorFront_2,
+      exteriorRear,
+      exteriorRear_1,
+      exteriorRear_2,
+      exteriorFrontLeftCorner,
+      exteriorFrontLeftCorner_1,
+      exteriorFrontLeftCorner_2,
+      exteriorFrontRightCorner,
+      exteriorFrontRightCorner_1,
+      exteriorFrontRightCorner_2,
+      exteriorRearLeftCorner,
+      exteriorRearLeftCorner_1,
+      exteriorRearLeftCorner_2,
+      exteriorRearRightCorner,
+      exteriorRearRightCorner_1,
+      exteriorRearRightCorner_2,
+      exteriorInsideCargoRoof,
+      exteriorInsideCargoRoof_1,
+      exteriorInsideCargoRoof_2,
+    };
+    const exteriorImages = {
+      exteriorFront,
+      exteriorRear,
+      exteriorFrontLeftCorner,
+      exteriorFrontRightCorner,
+      exteriorRearLeftCorner,
+      exteriorRearRightCorner,
+      exteriorInsideCargoRoof,
     };
 
-    const exteriorImages = {
-      exterior_Front,
-      exterior_Rear,
-      exteriorFront_LeftCorner,
-      exteriorFront_RightCorner,
-      exteriorRear_LeftCorner,
-      exteriorRear_RightCorner,
-      exteriorInside_CargoRoof,
+    const interiors = {
+      existing: interiorImages,
+      new: annotationInteriorImages,
+    };
+    const exteriors = {
+      existing: exteriorImages,
+      new: annotationExteriorImages,
     };
     const allCarVerification = !isObjectEmpty(carVerificiationItems);
-    const allInterior = !isObjectEmpty(interiorImages);
-    const allExterior = !isObjectEmpty(exteriorImages);
+    const allInterior = !isObjectEmpty(interiors[vehicle_Type]);
+    const allExterior = !isObjectEmpty(exteriors[vehicle_Type]);
     const allTires = !isObjectEmpty(tires);
     const allParts =
       allCarVerification && allInterior && allExterior && allTires;
@@ -386,7 +402,6 @@ const NewInspectionContainer = ({route, navigation}) => {
       ...shouldDisplayTire[displayTires],
     });
   }
-
   const handleBackPress = () => {
     resetAllStates();
     goBack();
@@ -402,7 +417,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   //Collapsed Cards Functions ends here
   const handleItemPickerPress = (details, variant = 0) => {
     displayAnnotationPopUp && setDisplayAnnotationPopUp(false);
-    dispatch(Category_Variant(variant));
+    dispatch(categoryVariant(variant));
     setModalDetails(details);
     setModalVisible(true);
   };
@@ -491,7 +506,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
 
   const handleOnCrossPress = (category, key, variant = 0) => {
-    dispatch(Category_Variant(variant));
+    dispatch(categoryVariant(variant));
     setIsDiscardInspectionModalVisible(true);
     setDeleteItem({category: category, key: key});
   };
@@ -512,7 +527,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       .delete(endPoint, config)
       .then(() => {
         dispatch(showToast(Delete_Messages.success, 'success'));
-        dispatch(RemoveVehicleImages(deleteItem?.category, key_));
+        dispatch(removeVehicleImage(deleteItem?.category, key_));
       })
       .catch(e => {
         const {success, failed} = Delete_Messages;
@@ -538,7 +553,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         }
 
         if (alreadyRemoved) {
-          dispatch(RemoveVehicleImages(deleteItem?.category, key_));
+          dispatch(removeVehicleImage(deleteItem?.category, key_));
         }
         dispatch(showToast(activeMessage, activeType));
       });
@@ -597,8 +612,8 @@ const NewInspectionContainer = ({route, navigation}) => {
         const details = res?.data?.files;
         uploadInProgressMediaToStore(details, dispatch);
         vehicleTireStatusToRender(inspectionID).then();
-        dispatch(NumberPlateSelectedAction(inspectionID));
-        dispatch(File_Details(details, inspectionID));
+        dispatch(numberPlateSelected(inspectionID));
+        dispatch(fileDetails(details, inspectionID));
       })
       .catch(error => {
         setLoadingIndicator(false);

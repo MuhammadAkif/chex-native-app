@@ -7,11 +7,13 @@ const initialState = {
 };
 
 const inspectionReviewedReducer = (state = initialState, action) => {
-  switch (action.type) {
+  const {type, payload} = action;
+
+  switch (type) {
     case GET_INSPECTION_REVIEWED:
       return {
         ...state,
-        inspectionReviewed: action.payload,
+        inspectionReviewed: payload,
       };
     case CLEAR_INSPECTION_REVIEWED:
       return initialState;

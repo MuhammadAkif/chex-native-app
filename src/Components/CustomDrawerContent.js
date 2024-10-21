@@ -20,7 +20,7 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {DrawerItemText} from './index';
 import {Home, Logout, Info} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
-import {hideToast, SIGN_OUT_ACTION} from '../Store/Actions';
+import {hideToast, signOut} from '../Store/Actions';
 import {Types} from '../Store/Types';
 import {DRAWER, PROJECT_NAME} from '../Constants';
 import {IMAGES} from '../Assets/Images';
@@ -67,7 +67,7 @@ const CustomDrawerContent = props => {
     }
   };
   const handleLogout = () => {
-    dispatch(SIGN_OUT_ACTION());
+    dispatch(signOut());
     handleNavigationPress(SIGN_IN, DRAWER.LOGOUT);
   };
   return (
