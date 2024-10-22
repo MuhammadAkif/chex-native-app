@@ -384,7 +384,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     const allTires = !isObjectEmpty(tires);
     const allParts =
       allCarVerification && allInterior && allExterior && allTires;
-    const skipOnlyTires = allCarVerification && allExterior;
+    const skipOnlyTires = allCarVerification && allInterior && allExterior;
     const shouldDisplayTire = {
       true: {
         isAllTires: allTires,
