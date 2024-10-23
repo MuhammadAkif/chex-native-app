@@ -322,62 +322,37 @@ const NewInspectionContainer = ({route, navigation}) => {
       passengerSide_2,
     } = interiorItems;
     //Annotation or without annotation
-    const annotationInteriorImages = {
-      driverSide,
-      driverSide_1,
-      driverSide_2,
-      passengerSide,
-      passengerSide_1,
-      passengerSide_2,
+    const interior__ = {
+      driverSide: driverSide || driverSide_1 || driverSide_2,
+      passengerSide: passengerSide || passengerSide_1 || passengerSide_2,
     };
-    const interiorImages = {
-      driverSide,
-      passengerSide,
-    };
-    const annotationExteriorImages = {
-      exteriorFront,
-      exteriorFront_1,
-      exteriorFront_2,
-      exteriorRear,
-      exteriorRear_1,
-      exteriorRear_2,
-      exteriorFrontLeftCorner,
-      exteriorFrontLeftCorner_1,
-      exteriorFrontLeftCorner_2,
-      exteriorFrontRightCorner,
-      exteriorFrontRightCorner_1,
-      exteriorFrontRightCorner_2,
-      exteriorRearLeftCorner,
-      exteriorRearLeftCorner_1,
-      exteriorRearLeftCorner_2,
-      exteriorRearRightCorner,
-      exteriorRearRightCorner_1,
-      exteriorRearRightCorner_2,
-      exteriorInsideCargoRoof,
-      exteriorInsideCargoRoof_1,
-      exteriorInsideCargoRoof_2,
-    };
-    const exteriorImages = {
-      exteriorFront,
-      exteriorRear,
-      exteriorFrontLeftCorner,
-      exteriorFrontRightCorner,
-      exteriorRearLeftCorner,
-      exteriorRearRightCorner,
-      exteriorInsideCargoRoof,
-    };
-
-    const interiors = {
-      existing: interiorImages,
-      new: annotationInteriorImages,
-    };
-    const exteriors = {
-      existing: exteriorImages,
-      new: annotationExteriorImages,
+    const exterior__ = {
+      exteriorFront: exteriorFront || exteriorFront_1 || exteriorFront_2,
+      exteriorRear: exteriorRear || exteriorRear_1 || exteriorRear_2,
+      exteriorFrontLeftCorner:
+        exteriorFrontLeftCorner ||
+        exteriorFrontLeftCorner_1 ||
+        exteriorFrontLeftCorner_2,
+      exteriorFrontRightCorner:
+        exteriorFrontRightCorner ||
+        exteriorFrontRightCorner_1 ||
+        exteriorFrontRightCorner_2,
+      exteriorRearLeftCorner:
+        exteriorRearLeftCorner ||
+        exteriorRearLeftCorner_1 ||
+        exteriorRearLeftCorner_2,
+      exteriorRearRightCorner:
+        exteriorRearRightCorner ||
+        exteriorRearRightCorner_1 ||
+        exteriorRearRightCorner_2,
+      exteriorInsideCargoRoof:
+        exteriorInsideCargoRoof ||
+        exteriorInsideCargoRoof_1 ||
+        exteriorInsideCargoRoof_2,
     };
     const allCarVerification = !isObjectEmpty(carVerificationItems);
-    const allInterior = !isObjectEmpty(interiors[vehicle_Type]);
-    const allExterior = !isObjectEmpty(exteriors[vehicle_Type]);
+    const allInterior = !isObjectEmpty(interior__);
+    const allExterior = !isObjectEmpty(exterior__);
     const allTires = !isObjectEmpty(tires);
     const allParts =
       allCarVerification && allInterior && allExterior && allTires;
