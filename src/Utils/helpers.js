@@ -93,3 +93,14 @@ export const customSortOrder = {
     'right_rear_tire',
   ],
 };
+
+export const styleMapping = {
+  exterior_left: {height: hp('25%')},
+  exterior_right: {height: hp('25%')},
+  exterior_front: {height: hp('50%')},
+  exterior_rear: {height: hp('50%')},
+  front_left_corner: {height: hp('30%')},
+  front_right_corner: {height: hp('30%')},
+  rear_left_corner: {height: hp('30%')},
+  rear_right_corner: {height: hp('30%')},
+};

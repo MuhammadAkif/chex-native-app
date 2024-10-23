@@ -51,6 +51,8 @@ import {
 } from '../Constants';
 import {Types} from '../Store/Types';
 import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
+import {IMAGES} from '../Assets/Images';
+import {styleMapping} from '../Utils/helpers';
 
 const handleUpdateStoreMedia = {
   CarVerification: UpdateCarVerificationItemURI,
@@ -92,6 +94,7 @@ const CameraContainer = ({route, navigation}) => {
     {fps: 30},
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [orientation, setOrientation] = useState('portrait');
   const {
     category,
     subCategory,
@@ -101,6 +104,13 @@ const CameraContainer = ({route, navigation}) => {
     isVideo,
     groupType,
   } = modalDetails;
+  const frameStyles = {
+    portrait: {...styles.portraitFrame, ...styleMapping[subCategory]},
+    landscape: styles.landscapeFrame,
+  };
+  const activeFrameStyle = frameStyles[orientation];
+  const frameUri = IMAGES[orientation][subCategory] || '';
+
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       appState.current = nextAppState;
@@ -301,17 +311,27 @@ const CameraContainer = ({route, navigation}) => {
             />
           ) : (
             selectedCamera && (
-              <Camera
-                ref={cameraRef}
-                style={StyleSheet.absoluteFill}
-                device={device}
-                photo={true}
-                audio={false}
-                isActive={isFocused && appState.current === 'active'}
-                enableZoomGesture={true}
-                includeBase64={true}
-                format={format}
-              />
+              <>
+                <View style={styles.frameContainer}>
+                  <FastImage
+                    resizeMode={'stretch'}
+                    priorit={'high'}
+                    style={activeFrameStyle}
+                    source={frameUri}
+                  />
+                </View>
+                <Camera
+                  ref={cameraRef}
+                  style={StyleSheet.absoluteFill}
+                  device={device}
+                  photo={true}
+                  audio={false}
+                  isActive={isFocused && appState.current === 'active'}
+                  enableZoomGesture={true}
+                  includeBase64={true}
+                  format={format}
+                />
+              </>
             )
           )}
           <View style={PreviewStyles.headerContainer}>
@@ -343,5 +363,29 @@ const CameraContainer = ({route, navigation}) => {
     </>
   );
 };
-
+const styles = StyleSheet.create({
+  frameContainer: {
+    ...StyleSheet.absoluteFill,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  landscapeFrame: {
+    height: hp('30%'),
+    width: wp('100%'),
+    transform: [
+      {scale: 1.5}, // Scaling the element by 1.5 times
+      {rotate: '90deg'}, // Rotating by 45 degrees,
+    ],
+  },
+  portraitFrame: {
+    // height: hp('25%'),
+    //exterior_left, exterior_right
+    // height: hp('25%'),
+    //exterior_front, exterior_rear
+    // height: hp('50%'),
+    //front_left_corner, front_right_corner, rear_left_corner, rear_right_corner"
+    // height: hp('30%'),
+    width: wp('95%'),
+  },
+});
 export default CameraContainer;
