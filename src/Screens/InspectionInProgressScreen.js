@@ -56,33 +56,32 @@ const InspectionInProgressScreen = ({
         </Text>
       </View>
       <View style={NewInspectionStyles.innerBody}>
-        {data.length ? (
-          <FlatList
-            data={data}
-            onRefresh={fetchInspectionInProgress}
-            refreshing={isLoading && inspectionID === null}
-            renderItem={({item}) => (
-              <RenderInspectionInProgress
-                item={item}
-                styles={styles}
-                handleContinuePress={handleContinuePress}
-                onCrossPress={onCrossPress}
-                isLoading={isLoading || isNewInspectionLoading}
-                inspectionID={inspectionID}
-              />
-            )}
-          />
-        ) : (
-          <View style={styles.emptyDataContainer}>
-            {isLoading ? (
-              <Text style={styles.emptyDataText}>Loading...</Text>
-            ) : (
-              <Text style={styles.emptyDataText}>
-                No Inspection in progress
-              </Text>
-            )}
-          </View>
-        )}
+        <FlatList
+          data={data}
+          onRefresh={fetchInspectionInProgress}
+          refreshing={isLoading && inspectionID === null}
+          renderItem={({item}) => (
+            <RenderInspectionInProgress
+              item={item}
+              styles={styles}
+              handleContinuePress={handleContinuePress}
+              onCrossPress={onCrossPress}
+              isLoading={isLoading || isNewInspectionLoading}
+              inspectionID={inspectionID}
+            />
+          )}
+          ListEmptyComponent={
+            <View style={styles.emptyDataContainer}>
+              {isLoading ? (
+                <Text style={styles.emptyDataText}>Loading...</Text>
+              ) : (
+                <Text style={styles.emptyDataText}>
+                  No Inspection in progress
+                </Text>
+              )}
+            </View>
+          }
+        />
       </View>
       <PrimaryStartInspectionButton
         isLoading={isNewInspectionLoading}
@@ -159,7 +158,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   emptyDataContainer: {
-    flex: 1,
+    height: hp('50%'),
     width: wp('100%'),
     justifyContent: 'center',
     alignItems: 'center',

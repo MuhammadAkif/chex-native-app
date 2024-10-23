@@ -1,9 +1,8 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {BackHandler} from 'react-native';
 
 import {InspectionDetailScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS, S3_BUCKET_BASEURL} from '../Constants';
-import {assignNumber} from '../Utils';
 import {CrossFilled, Tick} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {formatTitle} from '../Utils/helpers';
@@ -31,6 +30,7 @@ const InspectionDetailContainer = ({navigation, route}) => {
     false: red,
   };
   const ICON_COMPONENT = STATUS_ICON[isPassed];
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
@@ -38,10 +38,7 @@ const InspectionDetailContainer = ({navigation, route}) => {
     );
     return () => backHandler.remove();
   }, []);
-  // useEffect(() => {
-  //   assignNumber(detailsFiles.files, detailsFiles.files.length);
-  //   console.log('detailsFiles.files -- ', detailsFiles.files);
-  // }, [detailsFiles]);
+
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
       goBack();
@@ -51,7 +48,6 @@ const InspectionDetailContainer = ({navigation, route}) => {
   }
   const handleDisplayMedia = item => {
     let title = formatTitle(item?.category);
-    // let title = INSPECTION_TITLE[item?.category] || 'No Title';
     const checkVideo = {
       'video/mp4': true,
       '.mp4': true,

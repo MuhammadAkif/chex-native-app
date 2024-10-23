@@ -6,9 +6,9 @@ const {
   CLEAR_INSPECTION_IN_PROGRESS,
 } = Types;
 
-export const fetch_InspectionInProgress = inspectionInProgress => ({
+export const fetch_InspectionInProgress = (inspectionInProgress = []) => ({
   type: GET_INSPECTION_IN_PROGRESS,
-  payload: inspectionInProgress,
+  payload: inspectionInProgress || [],
 });
 export const removeInspectionInProgress = inspectionsInProgress => ({
   type: REMOVE_INSPECTION_IN_PROGRESS,

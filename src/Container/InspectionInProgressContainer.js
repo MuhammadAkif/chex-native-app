@@ -160,7 +160,7 @@ const InspectionInProgressContainer = ({navigation}) => {
 
   return (
     <InspectionInProgressScreen
-      data={inspectionInProgress}
+      data={inspectionInProgress || []}
       navigation={navigation}
       handleContinuePress={handleContinuePress}
       onCrossPress={onCrossPress}

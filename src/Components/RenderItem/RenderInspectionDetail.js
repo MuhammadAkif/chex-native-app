@@ -5,51 +5,34 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import Video from 'react-native-video';
 
 import {circleBorderRadius, colors} from '../../Assets/Styles';
 import {S3_BUCKET_BASEURL, WINDOW} from '../../Constants';
 import {isNotEmpty} from '../../Utils';
-import {checkVideo, formatTitle} from '../../Utils/helpers';
+import {formatTitle} from '../../Utils/helpers';
 
 const {width} = Dimensions.get(WINDOW);
 const {black} = colors;
 
-const Video_Component = ({uri = ''}) => (
-  <Video
-    source={{uri}}
-    controls={true}
-    playInBackground={false}
-    resizeMode={'contain'}
-    style={styles.image}
-    paused={true}
-  />
-);
 const Image_Component = ({uri = ''}) => (
   <FastImage source={{uri}} resizeMode={'stretch'} style={styles.image} />
 );
-const mediaOption = {
-  true: Video_Component,
-  false: Image_Component,
-};
 
 const RenderInspectionDetail = ({item, handleDisplayMedia, categoryCount}) => {
-  const {category, extension, url} = item;
+  const {category, url} = item;
   let title = formatTitle(category);
-  const isVideo = checkVideo[extension] || false;
   const mediaUrl = {
     true: S3_BUCKET_BASEURL + url,
     false: url,
   };
   let currentMediaUrl = mediaUrl[url.split('/')[0] === 'uploads'];
-  const ActiveMedia = mediaOption[isVideo];
 
   return (
     <TouchableOpacity
       disabled={!isNotEmpty(currentMediaUrl)}
       style={styles.container}
       onPress={() => handleDisplayMedia(item)}>
-      <ActiveMedia uri={currentMediaUrl} />
+      <Image_Component uri={currentMediaUrl} />
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );
