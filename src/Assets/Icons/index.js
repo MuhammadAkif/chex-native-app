@@ -30,6 +30,8 @@ import Damage_Vehicle from './Damage_Vehicle';
 import Exclamation from './Exclamation';
 import Remove from './Remove';
 import Filter from './Filter';
+import Landscape from './Landscape';
+import Portrait from './Portrait';
 
 export {
   Check,
@@ -64,4 +66,6 @@ export {
   Exclamation,
   Remove,
   Filter,
+  Landscape,
+  Portrait,
 };

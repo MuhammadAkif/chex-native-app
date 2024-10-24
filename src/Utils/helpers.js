@@ -1,5 +1,9 @@
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 import {isNotEmpty} from './index';
+import {Landscape, Portrait} from '../Assets/Icons';
 
 export const headerFlex = {
   true: 1.5,
@@ -49,27 +53,34 @@ export const extractStatusesCount = (list = []) => {
   }
   return counts;
 };
-export const extract_StatusesCount = (list = [], filter = {}) => {
-  let filter_ = filter;
-  if (list.length < 1) {
-    return 'No status counts';
-  }
-  let counts = {reviewed: 0, in_review: 0, ready_for_review: 0};
-
-  for (let i = 0; i < list.length; i++) {
-    const status = list[i].status.toLowerCase();
-    counts[status] += 1;
-  }
-
-  for (let key in filter_) {
-    if (key !== 'inspections') {
-      filter_[key].count = counts[key];
-    }
-  }
-  return filter_;
+export const styleMapping = {
+  portrait: {
+    exterior_left: {height: hp('25%')},
+    exterior_right: {height: hp('25%')},
+    exterior_front: {height: hp('50%')},
+    exterior_rear: {height: hp('50%')},
+    front_left_corner: {height: hp('30%')},
+    front_right_corner: {height: hp('30%')},
+    rear_left_corner: {height: hp('30%')},
+    rear_right_corner: {height: hp('30%')},
+  },
+  landscape: {
+    exterior_left: {width: wp('100%')},
+    exterior_right: {width: wp('100%')},
+    exterior_front: {width: wp('60%')},
+    exterior_rear: {width: wp('60%')},
+    front_left_corner: {width: wp('80%')},
+    front_right_corner: {width: wp('80%')},
+    rear_left_corner: {width: wp('80%')},
+    rear_right_corner: {width: wp('80%')},
+  },
 };
 
-export const checkVideo = {
-  'video/mp4': true,
-  '.mp4': true,
+export const switchFrameIcon = {
+  portrait: Landscape,
+  landscape: Portrait,
+};
+export const switchOrientation = {
+  portrait: 'landscape',
+  landscape: 'portrait',
 };

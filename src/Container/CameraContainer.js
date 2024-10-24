@@ -31,6 +31,7 @@ import {
   getCurrentDate,
   getSignedUrl,
   handleNewInspectionPress,
+  isNotEmpty,
   uploadFile,
 } from '../Utils';
 import {
@@ -46,8 +47,15 @@ import {
 } from '../Constants';
 import {Types} from '../Store/Types';
 import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
+import {IMAGES} from '../Assets/Images';
+import {
+  styleMapping,
+  switchFrameIcon,
+  switchOrientation,
+} from '../Utils/helpers';
 
 const {white} = colors;
+const defaultOrientation = 'portrait';
 
 const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
 const {
@@ -84,6 +92,7 @@ const CameraContainer = ({route, navigation}) => {
     {fps: 30},
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [orientation, setOrientation] = useState(defaultOrientation);
   const {
     category,
     subCategory,
@@ -93,6 +102,21 @@ const CameraContainer = ({route, navigation}) => {
     isVideo,
     groupType,
   } = modalDetails;
+  const frameStyles = {
+    portrait: {
+      ...styles.portraitFrame,
+      ...styleMapping[orientation][subCategory],
+    },
+    landscape: {
+      ...styles.landscapeFrame,
+      ...styleMapping[orientation][subCategory],
+    },
+  };
+  const activeFrameStyle = frameStyles[orientation];
+  const frameUri = IMAGES[orientation][subCategory] || '';
+  const RightIcon = switchFrameIcon[orientation];
+  const haveFrame = isNotEmpty(frameUri);
+
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       appState.current = nextAppState;
@@ -103,13 +127,6 @@ const CameraContainer = ({route, navigation}) => {
       resetAllStates();
     };
   }, []);
-  function resetAllStates() {
-    setIsImageURL('');
-    setIsImageFile({});
-    setIsModalVisible(false);
-    setProgress(0);
-    setIsExpiryInspectionVisible(false);
-  }
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
@@ -117,11 +134,18 @@ const CameraContainer = ({route, navigation}) => {
     );
     return () => backHandler.remove();
   }, [isImageURL]);
-
   useEffect(() => {
     setSelectedCamera(SWITCH_CAMERA[isBackCamera]);
   }, [isBackCamera, device]);
 
+  function resetAllStates() {
+    setIsImageURL('');
+    setIsImageFile({});
+    setIsModalVisible(false);
+    setProgress(0);
+    setIsExpiryInspectionVisible(false);
+    setOrientation(defaultOrientation);
+  }
   function handle_Hardware_Back_Press() {
     if (isImageURL) {
       handleRetryPress();
@@ -257,7 +281,8 @@ const CameraContainer = ({route, navigation}) => {
     resetAllStates();
     navigate(INSPECTION_SELECTION);
   };
-
+  const handleOnRightIconPress = () =>
+    setOrientation(prevState => switchOrientation[prevState]);
   return (
     <>
       {isModalVisible && (
@@ -292,20 +317,32 @@ const CameraContainer = ({route, navigation}) => {
             />
           ) : (
             selectedCamera && (
-              <Camera
-                ref={cameraRef}
-                style={StyleSheet.absoluteFill}
-                device={device}
-                photo={true}
-                audio={false}
-                isActive={isFocused && appState.current === 'active'}
-                enableZoomGesture={true}
-                includeBase64={true}
-                format={format}
-              />
+              <>
+                {haveFrame && (
+                  <View style={styles.frameContainer}>
+                    <FastImage
+                      resizeMode={'stretch'}
+                      priority={'high'}
+                      style={activeFrameStyle}
+                      source={frameUri}
+                    />
+                  </View>
+                )}
+                <Camera
+                  ref={cameraRef}
+                  style={StyleSheet.absoluteFill}
+                  device={device}
+                  photo={true}
+                  audio={false}
+                  isActive={isFocused && appState.current === 'active'}
+                  enableZoomGesture={true}
+                  includeBase64={true}
+                  format={format}
+                />
+              </>
             )
           )}
-          <View style={PreviewStyles.headerContainer}>
+          <View style={{...PreviewStyles.headerContainer, zIndex: 19}}>
             <TouchableOpacity onPress={handleNavigationBackPress}>
               <BackArrow height={hp('8%')} width={wp('8%')} color={white} />
             </TouchableOpacity>
@@ -314,6 +351,9 @@ const CameraContainer = ({route, navigation}) => {
             isCamera={true}
             handleSwitchCamera={handleSwitchCamera}
             handleCaptureNowPress={handleCaptureNowPress}
+            RightIcon={RightIcon}
+            onRightIconPress={handleOnRightIconPress}
+            displayFrame={haveFrame}
           />
         </View>
       )}
@@ -334,5 +374,19 @@ const CameraContainer = ({route, navigation}) => {
     </>
   );
 };
-
+const styles = StyleSheet.create({
+  frameContainer: {
+    ...StyleSheet.absoluteFill,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 19,
+  },
+  landscapeFrame: {
+    height: hp('30%'),
+    transform: [{scale: 1.5}, {rotate: '-90deg'}],
+  },
+  portraitFrame: {
+    width: wp('95%'),
+  },
+});
 export default CameraContainer;
