@@ -130,6 +130,7 @@ export const expandedCardStyles = StyleSheet.create({
     zIndex: 1,
     right: '5%',
     top: -3,
+    padding: wp('1.5%'),
   },
 });
 export const NewInspectionStyles = StyleSheet.create({

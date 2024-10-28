@@ -160,6 +160,7 @@ const newInspectionReducer = (state = initialState, action) => {
       return {
         ...state,
         carVerificiationItems: initialState.carVerificiationItems,
+        interiorItems: initialState.interiorItems,
         exteriorItems: initialState.exteriorItems,
         tires: initialState.tires,
       };

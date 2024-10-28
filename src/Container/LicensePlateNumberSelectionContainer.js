@@ -8,9 +8,8 @@ import {LicensePlateNumberSelectionScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS, API_ENDPOINTS, generateApiUrl} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {colors} from '../Assets/Styles';
-import {numberPlateSelected} from '../Store/Actions';
+import {numberPlateSelected, setCompanyId} from '../Store/Actions';
 import {handle_Session_Expired, uploadInProgressMediaToStore} from '../Utils';
-import {Types} from '../Store/Types';
 
 const {CREATE_INSPECTION_URL, FETCH_NUMBER_PLATE_URL} = API_ENDPOINTS;
 const {NEW_INSPECTION, LICENSE_PLATE_SELECTION} = ROUTES;
@@ -89,7 +88,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       licensePlateNumber: selectedNP,
       companyId: data?.companyId,
     };
-    dispatch({type: Types.COMPANY_ID, payload: data?.companyId});
+    dispatch(setCompanyId(data?.companyId));
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,

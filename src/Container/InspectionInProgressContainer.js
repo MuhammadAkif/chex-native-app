@@ -6,9 +6,11 @@ import axios from 'axios';
 
 import {InspectionInProgressScreen} from '../Screens';
 import {
+  clearNewInspection,
   fetch_InspectionInProgress,
   numberPlateSelected,
   removeInspectionInProgress,
+  setVehicleType,
   showToast,
 } from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
@@ -20,10 +22,8 @@ import {
   handleNewInspectionPress,
   uploadInProgressMediaToStore,
 } from '../Utils';
-import {Types} from '../Store/Types';
 import {deleteRequest} from '../Services/api';
 
-const {VEHICLE_TYPE, CLEAR_NEW_INSPECTION} = Types;
 const {NEW_INSPECTION, INSPECTION_IN_PROGRESS} = ROUTES;
 
 const InspectionInProgressContainer = ({navigation}) => {
@@ -89,7 +89,7 @@ const InspectionInProgressContainer = ({navigation}) => {
       .get(endPoint)
       .then(res => {
         const vehicleType = res?.data?.hasAdded || 'existing';
-        dispatch({type: VEHICLE_TYPE, payload: vehicleType});
+        dispatch(setVehicleType(vehicleType));
         get_Inspection_Details(dispatch, inspectionId).then();
         uploadInProgressMediaToStore(res?.data?.files, dispatch);
         dispatch(numberPlateSelected(inspectionId));
@@ -99,7 +99,7 @@ const InspectionInProgressContainer = ({navigation}) => {
         });
       })
       .catch(error => {
-        dispatch({type: CLEAR_NEW_INSPECTION});
+        dispatch(clearNewInspection());
         const statusCode = error?.response?.data?.statusCode;
         if (statusCode === 401) {
           handle_Session_Expired(statusCode, dispatch);

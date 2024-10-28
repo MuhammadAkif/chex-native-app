@@ -16,11 +16,15 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {
   fileDetails,
   numberPlateSelected,
+  setCompanyId,
   updateVehicleImage,
+  sessionExpired,
 } from '../Store/Actions';
-import {Types} from '../Store/Types';
 import {IMAGES} from '../Assets/Images';
 import {store} from '../Store';
+
+const {UPLOAD_URL, FETCH_IN_PROGRESS_URL, CREATE_INSPECTION_URL} =
+  API_ENDPOINTS;
 
 // Validation Schema
 export const validationSchema = yup.object().shape({
@@ -332,11 +336,15 @@ export const getSignedUrl = async (
   handleResponse,
   handleError,
   dispatch,
+  /*inspectionId,
+  categoryName,
+  source = 'app',*/
 ) => {
   await axios
     .post(
-      API_ENDPOINTS.UPLOAD_URL,
+      UPLOAD_URL,
       {type: mime},
+      // {type: mime, source, inspectionId, categoryName},
       {
         headers: {
           'Content-Type': 'application/json',
@@ -440,7 +448,7 @@ export const fetchInProgressInspections = async (
   let data = '';
   await axios
     .post(
-      API_ENDPOINTS.FETCH_IN_PROGRESS_URL,
+      FETCH_IN_PROGRESS_URL,
       {
         status: status,
       },
@@ -655,13 +663,13 @@ export const handleNewInspectionPress = async (
     licensePlateNumber: generateRandomString(),
     companyId: companyId,
   };
-  dispatch({type: Types.COMPANY_ID, payload: companyId});
+  dispatch(setCompanyId(companyId));
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,
   };
   await axios
-    .post(API_ENDPOINTS.CREATE_INSPECTION_URL, body, {headers: headers})
+    .post(CREATE_INSPECTION_URL, body, {headers: headers})
     .then(response => {
       // setInspectionID(response.data.id);
       dispatch(numberPlateSelected(response?.data?.id));
@@ -681,7 +689,7 @@ export const handleNewInspectionPress = async (
 };
 export function handle_Session_Expired(statusCode = null, dispatch) {
   if (statusCode === 401) {
-    dispatch({type: Types.SESSION_EXPIRED});
+    dispatch(sessionExpired());
   }
 }
 export const EXTRACT_INSPECTION_ITEM_ID = key => {

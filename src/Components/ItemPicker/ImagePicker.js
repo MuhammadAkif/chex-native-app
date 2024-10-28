@@ -52,7 +52,7 @@ const ImagePicker = ({
             style={expandedCardStyles.crossContainer}
             onPress={onClearPress}>
             <CrossFilled
-              height={hp('5%')}
+              height={hp('3%')}
               width={wp('5%')}
               color={orangePeel}
             />

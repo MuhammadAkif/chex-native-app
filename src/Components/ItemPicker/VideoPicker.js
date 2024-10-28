@@ -36,7 +36,7 @@ const VideoPicker = ({
         <TouchableOpacity
           style={expandedCardStyles.crossContainer}
           onPress={onClearPress}>
-          <CrossFilled height={hp('5%')} width={wp('5%')} color={orangePeel} />
+          <CrossFilled height={hp('3%')} width={wp('5%')} color={orangePeel} />
         </TouchableOpacity>
         <Video
           source={{uri: videoURL}}

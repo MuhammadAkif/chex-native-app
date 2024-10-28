@@ -29,19 +29,22 @@ const CameraFooter = ({
 
   return (
     <View style={styles.cameraOptionContainer}>
-      <FlipCamera
-        height={hp('8%')}
-        width={wp('10%')}
-        color={white}
+      <TouchableOpacity
         onPress={handleSwitchCamera}
-      />
+        activeOpacity={1}
+        style={styles.iconPadding}>
+        <FlipCamera height={hp('5%')} width={wp('10%')} color={white} />
+      </TouchableOpacity>
       <Record
         height={hp('10%')}
         width={wp('20%')}
         color={isCamera ? white : red}
         onPress={handleCaptureNowPress}
       />
-      <TouchableOpacity onPress={onRightIconPress} activeOpacity={1}>
+      <TouchableOpacity
+        onPress={onRightIconPress}
+        activeOpacity={1}
+        style={styles.iconPadding}>
         <ActiveRightIcon />
       </TouchableOpacity>
     </View>
@@ -60,6 +63,9 @@ const styles = StyleSheet.create({
   emptyView: {
     height: hp('5%'),
     width: wp('10%'),
+  },
+  iconPadding: {
+    padding: wp('2%'),
   },
 });
 

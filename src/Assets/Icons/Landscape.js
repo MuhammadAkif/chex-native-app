@@ -6,21 +6,14 @@ import {
 } from 'react-native-responsive-screen';
 
 import {colors} from '../Styles';
-import {fallBack} from '../../Utils';
 
 const {white} = colors;
 
-const Landscape = ({
-  height = hp('6%'),
-  width = wp('10%'),
-  color = white,
-  onPress = fallBack,
-}) => (
+const Landscape = ({height = hp('5%'), width = wp('10%'), color = white}) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={width}
     height={height}
-    onPress={onPress}
     fill="none"
     viewBox="0 0 72 72">
     <Mask

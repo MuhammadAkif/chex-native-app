@@ -19,8 +19,8 @@ import {
   HeaderBackground,
   CustomDrawerContent,
 } from '../Components';
-import {Types} from '../Store/Types';
 import {SESSION_EXPIRED} from '../Constants';
+import {signOut} from '../Store/Actions';
 
 const ScreenHeaderTitle = props => <HeaderTitle {...props} />;
 const headerBackground = () => <HeaderBackground />;
@@ -50,7 +50,7 @@ const NavigationDrawer = ({navigation}) => {
     headerBackground: headerBackground,
   };
   const handleOkPress = () => {
-    dispatch({type: Types.SIGN_OUT});
+    dispatch(signOut());
     reset({
       index: 0,
       routes: [{name: SIGN_IN}],

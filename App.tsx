@@ -4,16 +4,14 @@ import {useDispatch} from 'react-redux';
 import 'react-native-devsettings';
 import SplashScreen from 'react-native-splash-screen';
 import {checkVersion} from 'react-native-check-version';
-// backup deployment/staging/new_interior_categories_android_45(2.7)
-import {Types} from './src/Store/Types';
+
 import Navigation from './src/Navigation/index';
 import {hasCameraAndMicrophoneAllowed} from './src/Utils';
 import {DiscardInspectionModal, Splash, Toast} from './src/Components';
 import {UPDATE_APP} from './src/Constants';
-import {hideToast} from './src/Store/Actions';
+import {clearNewInspection, hideToast} from './src/Store/Actions';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
-const {CLEAR_NEW_INSPECTION} = Types;
 
 function App() {
   const dispatch = useDispatch();
@@ -28,12 +26,12 @@ function App() {
         setDisplayGif(false);
       }, 3500);
     } else {
-      dispatch({type: CLEAR_NEW_INSPECTION});
+      dispatch(clearNewInspection());
       dispatch(hideToast());
       hasCameraAndMicrophoneAllowed().then();
     }
     return () => {
-      dispatch({type: CLEAR_NEW_INSPECTION});
+      dispatch(clearNewInspection());
       dispatch(hideToast());
     };
   }, [displayGif]);

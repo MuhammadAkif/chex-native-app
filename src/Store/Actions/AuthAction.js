@@ -6,13 +6,10 @@ const {
   CLEAR_INSPECTION_IN_PROGRESS,
   CLEAR_NEW_INSPECTION,
   SIGN_OUT,
+  SESSION_EXPIRED,
 } = Types;
 
-export const signIn = user => {
-  return dispatch => {
-    dispatch({type: SIGN_IN, payload: user});
-  };
-};
+export const signIn = user => ({type: SIGN_IN, payload: user});
 export const signOut = () => {
   return dispatch => {
     dispatch({type: CLEAR_INSPECTION_REVIEWED});
@@ -21,3 +18,6 @@ export const signOut = () => {
     dispatch({type: SIGN_OUT});
   };
 };
+export const sessionExpired = () => ({
+  type: SESSION_EXPIRED,
+});

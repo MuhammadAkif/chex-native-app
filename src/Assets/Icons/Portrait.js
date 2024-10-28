@@ -6,22 +6,15 @@ import {
 } from 'react-native-responsive-screen';
 
 import {colors} from '../Styles';
-import {fallBack} from '../../Utils';
 
 const {white} = colors;
 
-const Portrait = ({
-  height = hp('6%'),
-  width = wp('10%'),
-  color = white,
-  onPress = fallBack,
-}) => (
+const Portrait = ({height = hp('5%'), width = wp('10%'), color = white}) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={width}
     height={height}
     fill="none"
-    onPress={onPress}
     viewBox="0 0 71 72">
     <Mask
       id="mask0_4124_116"

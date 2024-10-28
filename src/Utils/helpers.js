@@ -84,3 +84,29 @@ export const switchOrientation = {
   portrait: 'landscape',
   landscape: 'portrait',
 };
+
+const vehichle_Categories = {
+  carVerificiationItems: {
+    license_plate_number: 'license_plate_number',
+    odometer: 'odometer',
+  },
+  interiorItems: {
+    interior_passenger_side: 'interior_passenger_side',
+    interior_driver_side: 'interior_driver_side',
+  },
+  exteriorItems: {
+    exterior_front: 'exterior_front',
+    exterior_rear: 'exterior_rear',
+    front_left_corner: 'front_left_corner',
+    front_right_corner: 'front_right_corner',
+    rear_left_corner: 'rear_left_corner',
+    rear_right_corner: 'rear_right_corner',
+    inside_cargo_roof: 'inside_cargo_roof',
+  },
+  tires: {
+    left_front_tire: 'left_front_tire',
+    left_rear_tire: 'left_rear_tire',
+    right_front_tire: 'right_front_tire',
+    right_rear_tire: 'right_rear_tire',
+  },
+};

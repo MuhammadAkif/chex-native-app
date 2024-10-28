@@ -9,11 +9,16 @@ import {
   numberPlateSelected,
   updateIsLicensePlateUploaded,
   categoryVariant,
-  fileDetails,
   showToast,
   removeVehicleImage,
+  clearNewInspection,
+  clearTires,
+  skipLeft,
+  skipLeftCorners,
+  skipRight,
+  skipRightCorners,
+  setVehicleType,
 } from '../Store/Actions';
-import {Types} from '../Store/Types';
 import {
   API_ENDPOINTS,
   Delete_Messages,
@@ -64,15 +69,6 @@ const {
   CAMERA,
   COMPLETED_INSPECTION,
 } = ROUTES;
-const {
-  SKIP_LEFT,
-  SKIP_LEFT_CORNERS,
-  SKIP_RIGHT,
-  SKIP_RIGHT_CORNERS,
-  CLEAR_NEW_INSPECTION,
-  CLEAR_TIRES,
-  VEHICLE_TYPE,
-} = Types;
 
 const annotationModalInitialState = {
   title: '',
@@ -252,7 +248,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setModalDetails(modalDetailsInitialState);
     setModalVisible(false);
     setIsLoading(false);
-    dispatch({type: CLEAR_NEW_INSPECTION});
+    dispatch(clearNewInspection());
     setIsDiscardInspectionModalVisible(false);
     setDeleteItem({category: null, key: null});
     setIsDiscardInspectionModalVisible(false);
@@ -268,28 +264,28 @@ const NewInspectionContainer = ({route, navigation}) => {
   }
   function handleExteriorLeft() {
     if (isNotEmpty(exteriorItems?.exteriorLeft)) {
-      dispatch({type: SKIP_LEFT_CORNERS, payload: true});
+      dispatch(skipLeftCorners(true));
     } else if (
       isNotEmpty(exteriorItems?.exteriorFrontLeftCorner) ||
       isNotEmpty(exteriorItems?.exteriorRearLeftCorner)
     ) {
-      dispatch({type: SKIP_LEFT, payload: true});
+      dispatch(skipLeft(true));
     } else {
-      dispatch({type: SKIP_LEFT, payload: false});
-      dispatch({type: SKIP_LEFT_CORNERS, payload: false});
+      dispatch(skipLeft(false));
+      dispatch(skipLeftCorners(false));
     }
   }
   function handleExteriorRight() {
     if (isNotEmpty(exteriorItems?.exteriorRight)) {
-      dispatch({type: SKIP_RIGHT_CORNERS, payload: true});
+      dispatch(skipRightCorners(true));
     } else if (
       isNotEmpty(exteriorItems?.exteriorFrontRightCorner) ||
       isNotEmpty(exteriorItems?.exteriorRearRightCorner)
     ) {
-      dispatch({type: SKIP_RIGHT, payload: true});
+      dispatch(skipRight(true));
     } else {
-      dispatch({type: SKIP_RIGHT, payload: false});
-      dispatch({type: SKIP_RIGHT_CORNERS, payload: false});
+      dispatch(skipRight(false));
+      dispatch(skipRightCorners(false));
     }
   }
   function handleIsAllVehicleParts() {
@@ -458,7 +454,7 @@ const NewInspectionContainer = ({route, navigation}) => {
           )
           .then(() => {
             setIsLoading(false);
-            dispatch({type: CLEAR_NEW_INSPECTION});
+            dispatch(clearNewInspection());
             resetAllStates();
             navigate(COMPLETED_INSPECTION);
           })
@@ -551,7 +547,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         .post(EXTRACT_NUMBER_PLATE_URL, body, config)
         .then(res => {
           const vehicleType = res?.data?.hasAdded || 'existing';
-          dispatch({type: VEHICLE_TYPE, payload: vehicleType});
+          dispatch(setVehicleType(vehicleType));
           vehicleTireStatusToRender(selectedInspectionID).then(() =>
             setLoadingIndicator(false),
           );
@@ -560,7 +556,7 @@ const NewInspectionContainer = ({route, navigation}) => {
           const statusCode = e?.response?.data?.statusCode;
           if (statusCode === 409) {
             const vehicleType = e?.response?.data?.hasAdded || 'existing';
-            dispatch({type: VEHICLE_TYPE, payload: vehicleType});
+            dispatch(setVehicleType(vehicleType));
             setInspectionID(e?.response?.data?.inspectionId);
             setIsInspectionInProgressModalVisible(true);
             setErrorTitle(e?.response?.data?.errorMessage);
@@ -628,7 +624,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     await axios
       .post(REMOVE_ALL_TIRES_URL, body, config)
       .then(res => {
-        dispatch({type: CLEAR_TIRES});
+        dispatch(clearTires());
       })
       .catch(e => {})
       .finally(() => {
