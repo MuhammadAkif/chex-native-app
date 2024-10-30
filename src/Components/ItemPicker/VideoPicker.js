@@ -17,6 +17,16 @@ import {ANDROID} from '../../Constants';
 const height = hp('5%');
 const width = wp('5%');
 const {orangePeel, blueGray} = colors;
+const {
+  uploadImageAndTextContainer,
+  crossContainer,
+  uploadImageContainer,
+  cameraIconContainer,
+  textColor,
+  pickerTextSize,
+  uploadImageText,
+} = expandedCardStyles;
+const {container} = ItemPickerStyles;
 
 const VideoPicker = ({
   onPress,
@@ -27,15 +37,13 @@ const VideoPicker = ({
   isLoading,
   handleMediaModalDetailsPress,
 }) => (
-  <View style={expandedCardStyles.uploadImageAndTextContainer}>
+  <View style={uploadImageAndTextContainer}>
     {videoURL ? (
       <TouchableOpacity
-        style={ItemPickerStyles.container}
+        style={container}
         disabled={isLoading}
         onPress={handleMediaModalDetailsPress}>
-        <TouchableOpacity
-          style={expandedCardStyles.crossContainer}
-          onPress={onClearPress}>
+        <TouchableOpacity style={crossContainer} onPress={onClearPress}>
           <CrossFilled height={hp('3%')} width={wp('5%')} color={orangePeel} />
         </TouchableOpacity>
         <Video
@@ -55,25 +63,18 @@ const VideoPicker = ({
         />
       </TouchableOpacity>
     ) : (
-      <TouchableOpacity
-        style={expandedCardStyles.uploadImageContainer}
-        onPress={onPress}>
-        <View style={expandedCardStyles.cameraIconContainer}>
+      <TouchableOpacity style={uploadImageContainer} onPress={onPress}>
+        <View style={cameraIconContainer}>
           <View style={{left: '4%'}}>
             <Play height={height} width={width} color={blueGray} />
           </View>
         </View>
-        <Text
-          style={[
-            expandedCardStyles.uploadImageText,
-            expandedCardStyles.textColor,
-            expandedCardStyles.pickerTextSize,
-          ]}>
+        <Text style={[uploadImageText, textColor, pickerTextSize]}>
           {pickerText}
         </Text>
       </TouchableOpacity>
     )}
-    <Text style={expandedCardStyles.uploadImageText}>{text}</Text>
+    <Text style={uploadImageText}>{text}</Text>
   </View>
 );
 

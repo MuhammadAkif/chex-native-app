@@ -87,30 +87,33 @@ const InspectionInProgressContainer = ({navigation}) => {
     const endPoint = generateApiUrl(`files/details/${inspectionId}`);
     await axios
       .get(endPoint)
-      .then(res => {
-        const vehicleType = res?.data?.hasAdded || 'existing';
-        dispatch(setVehicleType(vehicleType));
-        get_Inspection_Details(dispatch, inspectionId).then();
-        uploadInProgressMediaToStore(res?.data?.files, dispatch);
-        dispatch(numberPlateSelected(inspectionId));
-        resetAllStates();
-        navigate(NEW_INSPECTION, {
-          routeName: INSPECTION_IN_PROGRESS,
-        });
-      })
-      .catch(error => {
-        dispatch(clearNewInspection());
-        const statusCode = error?.response?.data?.statusCode;
-        if (statusCode === 401) {
-          handle_Session_Expired(statusCode, dispatch);
-        }
-        console.log('error of inspection in progress => ', error);
-      })
+      .then(res => onContinuePressSuccess(res, inspectionId))
+      .catch(onContinuePressFail)
       .finally(() => {
         setInspectionID(null);
         setIsLoading(false);
       });
   };
+  function onContinuePressSuccess(res, inspectionId) {
+    const {hasAdded = 'existing', files = {}} = res?.data || {};
+    const vehicleType = hasAdded || 'existing';
+    dispatch(setVehicleType(vehicleType));
+    get_Inspection_Details(dispatch, inspectionId).then();
+    uploadInProgressMediaToStore(files, dispatch);
+    dispatch(numberPlateSelected(inspectionId));
+    resetAllStates();
+    navigate(NEW_INSPECTION, {
+      routeName: INSPECTION_IN_PROGRESS,
+    });
+  }
+  function onContinuePressFail(error) {
+    const {statusCode = null} = error?.response?.data || {};
+    dispatch(clearNewInspection());
+    if (statusCode === 401) {
+      handle_Session_Expired(statusCode, dispatch);
+    }
+    console.log('error of inspection in progress => ', error);
+  }
   const onCrossPress = id => {
     setDeleteInspectionID(id);
     setIsDiscardInspectionModalVisible(true);

@@ -24,6 +24,15 @@ const iconHeight = hp('5%');
 const iconWidth = wp('5%');
 const {height, width} = Dimensions.get(WINDOW);
 const {orangePeel, blueGray} = colors;
+const {
+  uploadImageAndTextContainer,
+  crossContainer,
+  uploadImageContainer,
+  cameraIconContainer,
+  uploadImageText,
+  textColor,
+} = expandedCardStyles;
+const {container} = ItemPickerStyles;
 
 const ImagePicker_New = ({
   onPress,
@@ -36,15 +45,13 @@ const ImagePicker_New = ({
   isAnnotated,
   displayImage = true,
 }) => (
-  <View style={expandedCardStyles.uploadImageAndTextContainer}>
+  <View style={uploadImageAndTextContainer}>
     {imageURL && displayImage ? (
       <TouchableOpacity
-        style={[ItemPickerStyles.container, styles.size]}
+        style={[container, styles.size]}
         disabled={isLoading}
         onPress={handleMediaModalDetailsPress}>
-        <TouchableOpacity
-          style={expandedCardStyles.crossContainer}
-          onPress={onClearPress}>
+        <TouchableOpacity style={crossContainer} onPress={onClearPress}>
           <CrossFilled height={hp('3%')} width={wp('5%')} color={orangePeel} />
         </TouchableOpacity>
         <FastImage
@@ -57,11 +64,11 @@ const ImagePicker_New = ({
       </TouchableOpacity>
     ) : (
       <TouchableOpacity
-        style={[expandedCardStyles.uploadImageContainer, styles.size]}
+        style={[uploadImageContainer, styles.size]}
         onPress={onPress}>
         <View
           style={[
-            expandedCardStyles.cameraIconContainer,
+            cameraIconContainer,
             {
               height: width * 0.12,
               width: width * 0.12,
@@ -71,8 +78,8 @@ const ImagePicker_New = ({
         </View>
         <Text
           style={{
-            ...expandedCardStyles.uploadImageText,
-            ...expandedCardStyles.textColor,
+            ...uploadImageText,
+            ...textColor,
             fontSize: hp('1.35%'),
           }}>
           {pickerText}
@@ -91,6 +98,12 @@ const styles = StyleSheet.create({
   size: {
     height: hp('12%'),
     width: wp('25%'),
+  },
+  image: {
+    ...StyleSheet.absoluteFill,
+    height: null,
+    width: null,
+    borderRadius: wp('5%'),
   },
 });
 

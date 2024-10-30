@@ -102,28 +102,31 @@ const InspectionReviewedContainer = ({navigation}) => {
 
     axios
       .get(endPoint)
-      .then(res => {
-        setIsLoading(false);
-        const {finalStatus, remarks} = res?.data?.inspectionData;
-        const beforeImages = FILTER_IMAGES(res?.data?.files, 'before');
-        const updatedBeforeImages = updateFiles(beforeImages);
-        let files = sortInspectionReviewedItems(updatedBeforeImages);
-        resetAllStates();
-        navigate(INSPECTION_DETAIL, {
-          files: files,
-          finalStatus: finalStatus,
-          remarks: remarks,
-        });
-      })
-      .catch(error => {
-        setIsLoading(false);
-        const statusCode = error?.response?.data?.statusCode;
-        if (statusCode === 401) {
-          handle_Session_Expired(statusCode, dispatch);
-        }
-        console.log('error of inspection in progress => ', error);
-      });
+      .then(onInspectionDetailsPressSuccess)
+      .catch(onInspectionDetailsPressFail);
   };
+  function onInspectionDetailsPressSuccess(res) {
+    const {inspectionData = null, files = {}} = res?.data || {};
+    setIsLoading(false);
+    const {finalStatus, remarks} = inspectionData;
+    const beforeImages = FILTER_IMAGES(files, 'before');
+    const updatedBeforeImages = updateFiles(beforeImages);
+    let files_ = sortInspectionReviewedItems(updatedBeforeImages);
+    resetAllStates();
+    navigate(INSPECTION_DETAIL, {
+      files: files_,
+      finalStatus: finalStatus,
+      remarks: remarks,
+    });
+  }
+  function onInspectionDetailsPressFail(error) {
+    const {statusCode = null} = error?.response?.data || {};
+    setIsLoading(false);
+    if (statusCode === 401) {
+      handle_Session_Expired(statusCode, dispatch);
+    }
+    console.log('error of inspection in progress => ', error);
+  }
   const onNewInspectionPress = async () => {
     await handleNewInspectionPress(
       dispatch,

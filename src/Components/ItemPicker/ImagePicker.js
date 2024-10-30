@@ -16,6 +16,17 @@ import {Camera, CrossFilled} from '../../Assets/Icons';
 const height = hp('7%');
 const width = wp('7%');
 const {gray, paleBlue, royalBlue, orangePeel, blueGray} = colors;
+const {
+  uploadImageAndTextContainer,
+  crossContainer,
+  uploadImageContainer,
+  cameraIconContainer,
+  uploadImageText,
+  textColor,
+  pickerTextSize,
+  uploadImageTitleText,
+} = expandedCardStyles;
+const {container} = ItemPickerStyles;
 
 const ImagePicker = ({
   onPress,
@@ -42,15 +53,13 @@ const ImagePicker = ({
   const activeBackgroundColor = active_BG_Colors[isLoading];
   const activeTextColor = active_Text_Colors[isLoading];
   return (
-    <View style={expandedCardStyles.uploadImageAndTextContainer}>
+    <View style={uploadImageAndTextContainer}>
       {imageURL ? (
         <TouchableOpacity
-          style={ItemPickerStyles.container}
+          style={container}
           disabled={isLoading}
           onPress={handleMediaModalDetailsPress}>
-          <TouchableOpacity
-            style={expandedCardStyles.crossContainer}
-            onPress={onClearPress}>
+          <TouchableOpacity style={crossContainer} onPress={onClearPress}>
             <CrossFilled
               height={hp('3%')}
               width={wp('5%')}
@@ -66,24 +75,21 @@ const ImagePicker = ({
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
-          style={[
-            expandedCardStyles.uploadImageContainer,
-            {borderColor: activeColor},
-          ]}
+          style={[uploadImageContainer, {borderColor: activeColor}]}
           disabled={isLoading}
           onPress={onPress}>
           <View
             style={[
-              expandedCardStyles.cameraIconContainer,
+              cameraIconContainer,
               {backgroundColor: activeBackgroundColor},
             ]}>
             <Camera height={height} width={width} color={blueGray} />
           </View>
           <Text
             style={[
-              expandedCardStyles.uploadImageText,
-              expandedCardStyles.textColor,
-              expandedCardStyles.pickerTextSize,
+              uploadImageText,
+              textColor,
+              pickerTextSize,
               {color: activeTextColor},
             ]}>
             {pickerText}
@@ -92,13 +98,20 @@ const ImagePicker = ({
       )}
       <Text
         style={{
-          ...expandedCardStyles.uploadImageText,
-          ...expandedCardStyles.uploadImageTitleText,
+          ...uploadImageText,
+          ...uploadImageTitleText,
         }}>
         {text}
       </Text>
     </View>
   );
 };
-
+const styles = StyleSheet.create({
+  image: {
+    ...StyleSheet.absoluteFill,
+    height: null,
+    width: null,
+    borderRadius: 3,
+  },
+});
 export default ImagePicker;

@@ -8,6 +8,7 @@ import {Image_Type} from '../../Constants';
 import {RenderImagePicker, ImagePicker_New} from '../index';
 
 const ItemSeparatorComponent = () => <View style={{width: wp('3%')}} />;
+const {itemPickerOuterContainer} = ExpandedCardStyles;
 
 const ImagePickerWithFooterList = ({
   categoryDetails,
@@ -21,7 +22,7 @@ const ImagePickerWithFooterList = ({
 }) => {
   const {title, groupType, key} = categoryDetails;
   return (
-    <View style={ExpandedCardStyles.itemPickerOuterContainer}>
+    <View style={itemPickerOuterContainer}>
       <ItemPickerLabel label={title} />
       <View style={styles.listContainer}>
         <FlatList

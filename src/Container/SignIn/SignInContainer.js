@@ -87,26 +87,26 @@ const SignInContainer = ({navigation, route}) => {
   const handleForgetPassword = () => navigate(FORGET_PASSWORD);
   const checkUserData = async (body, resetForm) => {
     axios
-      .post(LOGIN_URL, {
-        username: body.username,
-        password: body.password,
-      })
-      .then(response => {
-        dispatch(signIn(response.data));
-        resetForm();
-        navigate(HOME);
-      })
-      .catch(err => {
-        const isWrongPassword =
-          err?.response?.data?.errors[0] === 'password is  incorrect';
-        if (isWrongPassword) {
-          Alert.alert('Login Failed', 'Wrong password. Please try again.');
-        } else {
-          Alert.alert('Login Failed', err?.response?.data?.errors[0]);
-        }
-      })
+      .post(LOGIN_URL, body)
+      .then(res => onCheckUserDataSuccess(res, resetForm))
+      .catch(onCheckUserDataFail)
       .finally(() => setIsSubmitting(false));
   };
+  function onCheckUserDataSuccess(response, resetForm) {
+    const {data = null} = response;
+    dispatch(signIn(data));
+    resetForm();
+    navigate(HOME);
+  }
+  function onCheckUserDataFail(err) {
+    const {errors = null} = err?.response?.data;
+    const isWrongPassword = errors[0] === 'password is  incorrect';
+    if (isWrongPassword) {
+      Alert.alert('Login Failed', 'Wrong password. Please try again.');
+    } else {
+      Alert.alert('Login Failed', errors[0]);
+    }
+  }
 
   return (
     <Formik

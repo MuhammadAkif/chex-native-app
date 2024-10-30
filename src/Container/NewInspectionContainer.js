@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {BackHandler} from 'react-native';
+import {BackHandler, Platform} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
 
@@ -91,6 +91,10 @@ const exteriorItemsExpandedCards = {
 const interiorItemsExpandedCards = {
   existing: InteriorItemsExpandedCard,
   new: InteriorItemsAnnotationExpandedCard,
+};
+const delay = {
+  ios: 1000,
+  android: 0,
 };
 
 const NewInspectionContainer = ({route, navigation}) => {
@@ -189,7 +193,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         setTimeout(() => {
           setIsLicenseModalVisible(isLicensePlate || false);
           setDisplayAnnotationPopUp(displayAnnotation || false);
-        }, 1000);
+        }, delay[Platform.OS]);
         setFileID(fileId || '');
         setAnnotationModalDetails(prevState => ({
           ...prevState,
@@ -438,56 +442,57 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   const handleSubmitPress = () => {
     setIsLoading(true);
+    // const endPoint = generateApiUrl(`auto/reviewed/${selectedInspectionID}`);
     const endPoint = generateApiUrl(`inspection/${selectedInspectionID}`);
 
     axios
+      // .put(endPoint, null, config)
       .patch(endPoint, null, config)
-      .then(() => {
-        axios
-          .put(
-            LOCATION_URL,
-            {
-              isLocation: true,
-              inspectionId: selectedInspectionID,
-            },
-            {},
-          )
-          .then(() => {
-            setIsLoading(false);
-            dispatch(clearNewInspection());
-            resetAllStates();
-            navigate(COMPLETED_INSPECTION);
-          })
-          .catch(error => {
-            setIsLoading(false);
-            const statusCode = error?.response?.data?.statusCode;
-            if (statusCode === 401) {
-              handle_Session_Expired(statusCode, dispatch);
-            }
-          });
-      })
-      .catch(error => {
-        setIsLoading(false);
-        console.log('Completed Inspection error :', error);
-        const statusCode = error?.response?.data?.statusCode;
-        if (statusCode === 401) {
-          handle_Session_Expired(statusCode, dispatch);
-        }
-      });
+      .then(handleGetLocation)
+      .catch(onSubmitPressFail)
+      .finally(() => setIsLoading(false));
   };
-
+  async function handleGetLocation() {
+    const location_Data = {
+      isLocation: true,
+      inspectionId: selectedInspectionID,
+    };
+    await axios
+      .put(LOCATION_URL, location_Data, {})
+      .then(onGetLocationSuccess)
+      .catch(onGetLocationFail);
+  }
+  function onGetLocationSuccess() {
+    dispatch(clearNewInspection());
+    resetAllStates();
+    navigate(COMPLETED_INSPECTION);
+  }
+  function onGetLocationFail(error) {
+    const {statusCode = null} = error?.response?.data;
+    setIsLoading(false);
+    if (statusCode === 401) {
+      handle_Session_Expired(statusCode, dispatch);
+    }
+  }
+  function onSubmitPressFail(error) {
+    const {statusCode = null} = error?.response?.data;
+    console.log('Completed Inspection error :', error);
+    if (statusCode === 401) {
+      handle_Session_Expired(statusCode, dispatch);
+    }
+  }
   const handleOnCrossPress = (category, key, variant = 0) => {
     dispatch(categoryVariant(variant));
     setIsDiscardInspectionModalVisible(true);
     setDeleteItem({category: category, key: key});
   };
   const handleYesPress = () => {
-    const {interiorItems, exteriorItems} = INSPECTION;
-    let key_ = deleteItem?.key;
-    if (
-      deleteItem?.category === exteriorItems ||
-      deleteItem?.category === interiorItems
-    ) {
+    const {key, category} = deleteItem;
+    const {interiorItems: interior, exteriorItems: exterior} = INSPECTION;
+    const types = [interior, exterior];
+    const haveType = types.includes(category);
+    let key_ = key;
+    if (haveType) {
       key_ = exteriorVariant(key_, variant);
     }
     setIsDiscardInspectionModalVisible(false);
@@ -496,39 +501,41 @@ const NewInspectionContainer = ({route, navigation}) => {
 
     axios
       .delete(endPoint, config)
-      .then(() => {
-        dispatch(showToast(Delete_Messages.success, 'success'));
-        dispatch(removeVehicleImage(deleteItem?.category, key_));
-      })
-      .catch(e => {
-        const {success, failed} = Delete_Messages;
-        const message = {
-          types: {
-            true: 'success',
-            error: 'error',
-          },
-          messages: {
-            true: success,
-            false: failed,
-          },
-        };
-        console.log('error deleting image => ', e);
-        const statusCode = e?.response?.data?.statusCode;
-        const alreadyRemoved = statusCode === 404;
-        const activeMessage =
-          message.messages[alreadyRemoved] ||
-          'This image has already been deleted.';
-        const activeType = message.types[alreadyRemoved] || 'error';
-        if (statusCode === 401) {
-          handle_Session_Expired(statusCode, dispatch);
-        }
-
-        if (alreadyRemoved) {
-          dispatch(removeVehicleImage(deleteItem?.category, key_));
-        }
-        dispatch(showToast(activeMessage, activeType));
-      });
+      .then(() => onImageDeleteSuccess(category, key_))
+      .catch(e => onImageDeleteFail(e, category, key_));
   };
+  function onImageDeleteSuccess(category, key_) {
+    dispatch(showToast(Delete_Messages.success, 'success'));
+    dispatch(removeVehicleImage(category, key_));
+  }
+  function onImageDeleteFail(e, category, key_) {
+    const {success, failed} = Delete_Messages;
+    const message = {
+      types: {
+        true: 'success',
+        error: 'error',
+      },
+      messages: {
+        true: success,
+        false: failed,
+      },
+    };
+    console.log('error deleting image => ', e);
+    const statusCode = e?.response?.data?.statusCode;
+    const alreadyRemoved = statusCode === 404;
+    const activeMessage =
+      message.messages[alreadyRemoved] ||
+      'This image has already been deleted.';
+    const activeType = message.types[alreadyRemoved] || 'error';
+    if (statusCode === 401) {
+      handle_Session_Expired(statusCode, dispatch);
+    }
+
+    if (alreadyRemoved) {
+      dispatch(removeVehicleImage(category, key_));
+    }
+    dispatch(showToast(activeMessage, activeType));
+  }
   const handleNoPress = () => {
     setIsDiscardInspectionModalVisible(false);
     setDeleteItem({category: null, key: null});
@@ -545,25 +552,8 @@ const NewInspectionContainer = ({route, navigation}) => {
       setIsLoading(true);
       axios
         .post(EXTRACT_NUMBER_PLATE_URL, body, config)
-        .then(res => {
-          const vehicleType = res?.data?.hasAdded || 'existing';
-          dispatch(setVehicleType(vehicleType));
-          vehicleTireStatusToRender(selectedInspectionID).then(() =>
-            setLoadingIndicator(false),
-          );
-        })
-        .catch(e => {
-          const statusCode = e?.response?.data?.statusCode;
-          if (statusCode === 409) {
-            const vehicleType = e?.response?.data?.hasAdded || 'existing';
-            dispatch(setVehicleType(vehicleType));
-            setInspectionID(e?.response?.data?.inspectionId);
-            setIsInspectionInProgressModalVisible(true);
-            setErrorTitle(e?.response?.data?.errorMessage);
-          } else if (e?.response?.data?.statusCode === 400) {
-            setInUseErrorTitle(e?.response?.data?.message);
-          }
-        })
+        .then(onNumberPlateExtractSuccess)
+        .catch(onNumberPlateExtractFailure)
         .finally(() => {
           setLoadingIndicator(false);
           handleConfirmModalVisible();
@@ -571,6 +561,32 @@ const NewInspectionContainer = ({route, navigation}) => {
         });
     }
   };
+  function onNumberPlateExtractSuccess(res) {
+    const vehicleType = res?.data?.hasAdded || 'existing';
+    dispatch(setVehicleType(vehicleType));
+    vehicleTireStatusToRender(selectedInspectionID).then(() =>
+      setLoadingIndicator(false),
+    );
+  }
+  function onNumberPlateExtractFailure(e) {
+    const {
+      statusCode = null,
+      hasAdded = 'existing',
+      inspectionId = null,
+      errorMessage = 'An error occurred',
+      message = 'An error occurred',
+    } = e?.response?.data || {};
+    e?.response?.data;
+    if (statusCode === 409) {
+      const vehicleType = hasAdded || 'existing';
+      dispatch(setVehicleType(vehicleType));
+      setInspectionID(inspectionId);
+      setIsInspectionInProgressModalVisible(true);
+      setErrorTitle(errorMessage);
+    } else if (statusCode === 400) {
+      setInUseErrorTitle(message);
+    }
+  }
   const handleYesPressOfInProgressInspection = () => {
     setIsInspectionInProgressModalVisible(false);
     setLoadingIndicator(true);
@@ -579,22 +595,24 @@ const NewInspectionContainer = ({route, navigation}) => {
 
     axios
       .get(endPoint)
-      .then(res => {
-        const details = res?.data?.files;
-        uploadInProgressMediaToStore(details, dispatch);
-        vehicleTireStatusToRender(inspectionID).then();
-        dispatch(numberPlateSelected(inspectionID));
-        dispatch(fileDetails(details, inspectionID));
-      })
-      .catch(error => {
-        setLoadingIndicator(false);
-        const statusCode = error?.response?.data?.statusCode;
-        if (statusCode === 401) {
-          handle_Session_Expired(statusCode, dispatch);
-        }
-        console.log('error of selected inspection in progress => ', error);
-      });
+      .then(onInProgressInspectionSuccess)
+      .catch(onInProgressInspectionFail);
   };
+  function onInProgressInspectionSuccess(res) {
+    const details = res?.data?.files;
+    uploadInProgressMediaToStore(details, dispatch);
+    vehicleTireStatusToRender(inspectionID).then();
+    dispatch(numberPlateSelected(inspectionID));
+    dispatch(fileDetails(details, inspectionID));
+  }
+  function onInProgressInspectionFail(error) {
+    const {statusCode = null} = error?.response?.data || {};
+    setLoadingIndicator(false);
+    if (statusCode === 401) {
+      handle_Session_Expired(statusCode, dispatch);
+    }
+    console.log('error of selected inspection in progress => ', error);
+  }
   //Tire Rendering logic start here
   async function vehicleTireStatusToRender(inspection_ID) {
     setLoadingIndicator(true);
@@ -603,20 +621,22 @@ const NewInspectionContainer = ({route, navigation}) => {
     };
     await axios
       .post(INSPECTION_TIRE_STATUS_URL, body, config)
-      .then(res => {
-        const {
-          data: {displayTire},
-        } = res;
-        setDisplayTires(displayTire);
-        setLoadingIndicator(!displayTire);
-      })
-      .catch(e => {
-        console.log(
-          'error while check tire status again inspection => ',
-          e.message,
-        );
-      })
+      .then(onVehicleTireStatusToRenderSuccess)
+      .catch(onVehicleTireStatusToRenderFail)
       .finally(() => setLoadingIndicator(false));
+  }
+  function onVehicleTireStatusToRenderSuccess(res) {
+    const {
+      data: {displayTire},
+    } = res;
+    setDisplayTires(displayTire);
+    setLoadingIndicator(!displayTire);
+  }
+  function onVehicleTireStatusToRenderFail(e) {
+    console.log(
+      'error while check tire status again inspection => ',
+      e.message,
+    );
   }
   async function handleRemovedAllTires() {
     let removeTiresList = extractIDs(tires) || [];
@@ -650,22 +670,24 @@ const NewInspectionContainer = ({route, navigation}) => {
     };
     axios
       .post(ANNOTATION_URL, body, config)
-      .then(res => {
-        callback();
-        get_Inspection_Details(dispatch, selectedInspectionID);
-      })
-      .catch(error => {
-        console.log({error});
-        const statusCode = error?.response?.data?.statusCode;
-        if (statusCode === 401) {
-          handle_Session_Expired(statusCode, dispatch);
-        }
-      })
+      .then(res => onAnnotationSubmitSuccess(res, callback))
+      .catch(onAnnotationSubmitFail)
       .finally(() => {
         setIsLoading(false);
         setDisplayAnnotation(!displayAnnotation);
       });
   };
+  function onAnnotationSubmitSuccess(res, callback) {
+    callback();
+    get_Inspection_Details(dispatch, selectedInspectionID).then();
+  }
+  function onAnnotationSubmitFail(error) {
+    const {statusCode = null} = error?.response?.data;
+    console.log({error});
+    if (statusCode === 401) {
+      handle_Session_Expired(statusCode, dispatch);
+    }
+  }
   const handleAnnotationCancel = () => {
     get_Inspection_Details(dispatch, selectedInspectionID).then();
     setDisplayAnnotation(!displayAnnotation);

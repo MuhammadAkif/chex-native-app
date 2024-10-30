@@ -8,14 +8,14 @@ import {
 import {colors, ExpandedCardStyles} from '../../Assets/Styles';
 
 const {black, orangePeel} = colors;
+const {itemPickerContainer} = ExpandedCardStyles;
 
 const ItemPickerLabel = ({
   label = 'Exterior Front',
   addNoteText = 'Add Note',
   onAddNotePress,
 }) => (
-  <View
-    style={{...ExpandedCardStyles.itemPickerContainer, ...styles.container}}>
+  <View style={{...itemPickerContainer, ...styles.container}}>
     <Text style={{...styles.label, ...styles.fontSize}}>{label}</Text>
     {/*<TouchableOpacity onPress={onAddNotePress} style={styles.addNoteContainer}>*/}
     {/*  <Text style={styles.plusText}>+ </Text>*/}

@@ -20,6 +20,7 @@ import Filter_RBSheet from '../Components/Filter_RBSheet';
 import EmptyComponent from '../Components/EmptyComponent';
 
 const {black, royalBlue, gray, white, orange} = colors;
+const {container, bodyContainer, innerBody} = NewInspectionStyles;
 
 const InspectionReviewedScreen = ({
   handleIsExpanded,
@@ -38,8 +39,8 @@ const InspectionReviewedScreen = ({
   setFilter,
   inspections,
 }) => (
-  <View style={NewInspectionStyles.container}>
-    <View style={NewInspectionStyles.bodyContainer}>
+  <View style={container}>
+    <View style={bodyContainer}>
       <View style={styles.bodyHeaderContainer}>
         <Text style={styles.bodyHeaderTitleText}>Inspection Reviewed</Text>
         <TouchableOpacity
@@ -49,7 +50,7 @@ const InspectionReviewedScreen = ({
           <Text style={{...styles.homeText, ...styles.filterText}}>Filter</Text>
         </TouchableOpacity>
       </View>
-      <View style={NewInspectionStyles.innerBody}>
+      <View style={innerBody}>
         <FlatList
           data={data}
           renderItem={({item}) => (

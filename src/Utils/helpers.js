@@ -29,6 +29,10 @@ export const INSPECTION_STATUS = {
   true: 'No Damage Detected',
   false: 'Damage Detected',
 };
+export const progressZIndex = {
+  true: -1,
+  false: 1,
+};
 
 export function formatTitle(title = 'No Title') {
   if (!isNotEmpty(title)) {

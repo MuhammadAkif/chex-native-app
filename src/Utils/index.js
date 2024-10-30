@@ -336,43 +336,63 @@ export const getSignedUrl = async (
   handleResponse,
   handleError,
   dispatch,
-  /*inspectionId,
+  inspectionId,
   categoryName,
-  source = 'app',*/
+  variant = 0,
+  source = 'app',
 ) => {
+  const data = {type: mime, source, inspectionId, categoryName, variant};
+  // const data = {type: mime},
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  };
   await axios
-    .post(
-      UPLOAD_URL,
-      {type: mime},
-      // {type: mime, source, inspectionId, categoryName},
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    )
-    .then(res => {
-      const {url, key} = res.data;
-      uploadToS3(
-        url,
-        key,
+    .post(UPLOAD_URL, data, config)
+    .then(res =>
+      onGetSignedUrlSuccess(
+        res,
         path,
         mime,
         setProgress,
         handleResponse,
         handleError,
         dispatch,
-      );
-    })
-    .catch(error => {
-      error_Handler(handleError);
-      const statusCode = error?.response?.data?.statusCode;
-      if (statusCode === 401) {
-        handle_Session_Expired(statusCode, dispatch);
-      }
-    });
+      ),
+    )
+    .catch(error => onGetSignedUrlFail(error, handleError, dispatch));
 };
+function onGetSignedUrlSuccess(
+  res,
+  path,
+  mime,
+  setProgress,
+  handleResponse,
+  handleError,
+  dispatch,
+) {
+  const {url, key} = res.data;
+  uploadToS3(
+    url,
+    key,
+    path,
+    mime,
+    setProgress,
+    handleResponse,
+    handleError,
+    dispatch,
+  ).then();
+}
+function onGetSignedUrlFail(error, handleError, dispatch) {
+  const {statusCode = null} = error?.response?.data || {};
+  error_Handler(handleError);
+  if (statusCode === 401) {
+    handle_Session_Expired(statusCode, dispatch);
+  }
+}
 export const uploadToS3 = async (
   preSignedUrl,
   key,
@@ -392,13 +412,15 @@ export const uploadToS3 = async (
       const percentCompleted = Math.round((written * 100) / total);
       setProgress(percentCompleted);
     })
-    .then(() => {
-      handleResponse(key);
-    })
-    .catch(() => {
-      error_Handler(handleError);
-    });
+    .then(res => onUploadToS3Success(res, handleResponse, key))
+    .catch(error => onUploadToS3Fail(error, handleError));
 };
+function onUploadToS3Success(res, handleResponse, key) {
+  handleResponse(key);
+}
+function onUploadToS3Fail(error, handleError) {
+  error_Handler(handleError);
+}
 export const uploadFile = async (
   callback,
   body,
@@ -409,36 +431,37 @@ export const uploadFile = async (
 ) => {
   let imageID = 0;
   const endPoint = generateApiUrl(`vehicle/${inspectionId}/file`);
-
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  };
   await axios
-    .post(endPoint, body, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then(res => {
-      callback(res?.data?.id);
-    })
-    .catch(error => {
-      const inspectionDeleted = error?.response?.data?.statusCode === 403;
-      const {title, message} = newInspectionUploadError(
-        error?.response?.data?.statusCode,
-      );
-      const statusCode = error?.response?.data?.statusCode;
-      if (statusCode === 401) {
-        handle_Session_Expired(statusCode, dispatch);
-      }
-      if (inspectionDeleted) {
-        handleError(inspectionDeleted);
-      } else {
-        Alert.alert(title, message, [
-          {text: 'Retry', onPress: () => handleError(inspectionDeleted)},
-        ]);
-      }
-    });
+    .post(endPoint, body, config)
+    .then(res => onUploadFileSuccess(res, callback))
+    .catch(error => onUploadFileFail(error, dispatch, handleError));
   return imageID;
 };
+function onUploadFileSuccess(res, callback) {
+  const {id = null} = res?.data || {};
+  callback(id);
+}
+function onUploadFileFail(error, dispatch, handleError) {
+  const {statusCode = null} = error?.response?.data || {};
+  const inspectionDeleted = statusCode === 403;
+  const {title, message} = newInspectionUploadError(statusCode || '');
+  if (statusCode === 401) {
+    handle_Session_Expired(statusCode, dispatch);
+  }
+  if (inspectionDeleted) {
+    handleError(inspectionDeleted);
+  } else {
+    Alert.alert(title, message, [
+      {text: 'Retry', onPress: () => handleError(inspectionDeleted)},
+    ]);
+  }
+}
 export const fetchInProgressInspections = async (
   token,
   status = 'IN_PROGRESS',
@@ -446,36 +469,41 @@ export const fetchInProgressInspections = async (
   dispatch,
 ) => {
   let data = '';
+  const body = {
+    status: status,
+  };
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  };
   await axios
-    .post(
-      FETCH_IN_PROGRESS_URL,
-      {
-        status: status,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    )
+    .post(FETCH_IN_PROGRESS_URL, body, config)
     .then(response => {
-      data = response.data;
-      if (setIsLoading) {
-        setIsLoading(false);
-      }
+      data = onFetchInProgressInspectionsSuccess(response, setIsLoading);
     })
-    .catch(error => {
-      if (setIsLoading) {
-        setIsLoading(false);
-      }
-      const statusCode = error?.response?.data?.statusCode;
-      if (statusCode === 401) {
-        handle_Session_Expired(statusCode, dispatch);
-      }
-    });
+    .catch(error =>
+      onFetchInProgressInspectionsFail(error, dispatch, setIsLoading),
+    );
   return data;
 };
+function onFetchInProgressInspectionsSuccess(response, setIsLoading) {
+  const {data = {}} = response || {};
+  if (setIsLoading) {
+    setIsLoading(false);
+  }
+  return data;
+}
+function onFetchInProgressInspectionsFail(error, dispatch, setIsLoading) {
+  const {statusCode = null} = error?.response?.data || {};
+  if (setIsLoading) {
+    setIsLoading(false);
+  }
+  if (statusCode === 401) {
+    handle_Session_Expired(statusCode, dispatch);
+  }
+}
 export const getCurrentDate = () => {
   const currentDate = new Date();
 
@@ -670,23 +698,39 @@ export const handleNewInspectionPress = async (
   };
   await axios
     .post(CREATE_INSPECTION_URL, body, {headers: headers})
-    .then(response => {
-      // setInspectionID(response.data.id);
-      dispatch(numberPlateSelected(response?.data?.id));
-      resetAllStates();
-      navigation.navigate(ROUTES.NEW_INSPECTION, {
-        routeName: ROUTES.INSPECTION_SELECTION,
-      });
-    })
-    .catch(err => {
-      console.log('err => ', err?.response?.data?.statusCode);
-      const statusCode = err?.response?.data?.statusCode;
-      if (statusCode === 401) {
-        handle_Session_Expired(statusCode, dispatch);
-      }
-    })
+    .then(response =>
+      onNewInspectionPressSuccess(
+        response,
+        dispatch,
+        navigation,
+        resetAllStates,
+      ),
+    )
+    .catch(err => onNewInspectionPressFail(err, dispatch))
     .finally(() => setIsLoading(false));
 };
+function onNewInspectionPressSuccess(
+  response,
+  dispatch,
+  navigation,
+  resetAllStates,
+) {
+  const {id = null} = response?.data || {};
+  const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
+
+  dispatch(numberPlateSelected(id));
+  resetAllStates();
+  navigation.navigate(NEW_INSPECTION, {
+    routeName: INSPECTION_SELECTION,
+  });
+}
+function onNewInspectionPressFail(err, dispatch) {
+  const {statusCode = null} = err?.response?.data || {};
+  console.log('err => ', statusCode);
+  if (statusCode === 401) {
+    handle_Session_Expired(statusCode, dispatch);
+  }
+}
 export function handle_Session_Expired(statusCode = null, dispatch) {
   if (statusCode === 401) {
     dispatch(sessionExpired());
@@ -826,6 +870,8 @@ export const checkExterior = () => {
   );
 };
 export const FILTER_IMAGES = (arr = [], toFilter = 'before') => {
+  const {carVerificiationItems, exteriorItems, interiorItems, tires} =
+    INSPECTION;
   if (!Array.isArray(arr)) {
     return;
   }
@@ -833,14 +879,12 @@ export const FILTER_IMAGES = (arr = [], toFilter = 'before') => {
     return arr.filter(item => item?.pictureTag === toFilter);
   } else {
     return arr.filter(item => {
-      if (
-        item?.groupType === INSPECTION.carVerificiationItems ||
-        item?.groupType === INSPECTION.tires
-      ) {
+      const {groupType, pictureTag} = item;
+      if (groupType === carVerificiationItems || groupType === tires) {
         return item;
       } else if (
-        item?.groupType === INSPECTION.exteriorItems &&
-        item?.pictureTag === toFilter
+        (groupType === exteriorItems || groupType === interiorItems) &&
+        pictureTag === toFilter
       ) {
         return item;
       }
@@ -870,18 +914,20 @@ export const get_Inspection_Details = async (dispatch, inspectionId) => {
 
   await axios
     .get(endPoint)
-    .then(res => {
-      const details = res?.data?.files;
-      dispatch(fileDetails(details, inspectionId));
-    })
-    .catch(error => {
-      const statusCode = error?.response?.data?.statusCode;
-      if (statusCode === 401) {
-        handle_Session_Expired(statusCode, dispatch);
-      }
-      console.log('error of inspection in progress => ', error);
-    });
+    .then(res => onGet_Inspection_DetailsSuccess(res, dispatch, inspectionId))
+    .catch(error => onGet_Inspection_DetailsFail(error, dispatch));
 };
+function onGet_Inspection_DetailsSuccess(res, dispatch, inspectionId) {
+  const {files = {}} = res?.data || {};
+  dispatch(fileDetails(files, inspectionId));
+}
+function onGet_Inspection_DetailsFail(error, dispatch) {
+  const {statusCode = null} = error?.response?.data || {};
+  if (statusCode === 401) {
+    handle_Session_Expired(statusCode, dispatch);
+  }
+  console.log('error of inspection in progress => ', error);
+}
 export const getAnnotationStatus = (files = [], id = '') => {
   if (!isNotEmpty(files) || !isNotEmpty(id)) {
     return false;
@@ -920,7 +966,7 @@ export function assignNumber(arr = [], length = 0) {
     }
   }
 }
-export const fallBack = (text = 'Fall back Pressed') => console.log(text);
+export const fallBack = () => {};
 export const mergeData = (list = [], label = '') => {
   if (list?.length < 1 || !Array.isArray(list)) {
     console.log('Empty Array or invalid array');
@@ -936,3 +982,8 @@ export const mergeData = (list = [], label = '') => {
   }
   return newList;
 };
+export function checkRelevantType(type) {
+  const {interiorItems, exteriorItems} = INSPECTION;
+  const relevantGroupTypes = [interiorItems, exteriorItems];
+  return relevantGroupTypes.includes(type) || false;
+}

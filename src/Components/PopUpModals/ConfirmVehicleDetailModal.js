@@ -9,6 +9,16 @@ import {PrimaryGradientButton} from '../index';
 import {circleBorderRadius, colors, modalStyle} from '../../Assets/Styles';
 
 const {red, gray, orange, black} = colors;
+const {
+  modalOuterContainer,
+  container,
+  modalContainer,
+  header,
+  body,
+  footer,
+  button,
+  yesText,
+} = modalStyle;
 
 const ConfirmVehicleDetailModal = ({
   title = 'Vehicle Detail',
@@ -28,12 +38,12 @@ const ConfirmVehicleDetailModal = ({
       animationType="slide"
       transparent={true}
       visible={true}
-      style={modalStyle.modalOuterContainer}>
-      <View style={modalStyle.container}>
-        <View style={modalStyle.modalContainer}>
-          <Text style={modalStyle.header}>{title}</Text>
+      style={modalOuterContainer}>
+      <View style={container}>
+        <View style={modalContainer}>
+          <Text style={header}>{title}</Text>
           {numberPlateText?.length === 0 && (
-            <Text style={[modalStyle.body, {color: red}]}>{description}</Text>
+            <Text style={[body, {color: red}]}>{description}</Text>
           )}
           <TextInput
             value={numberPlate}
@@ -47,12 +57,12 @@ const ConfirmVehicleDetailModal = ({
             onSubmitEditing={() => onConfirmPress(numberPlate)}
           />
           <Text style={styles.textLimit}>{text_Limit}</Text>
-          <View style={modalStyle.footer}>
+          <View style={footer}>
             <PrimaryGradientButton
               text={buttonText}
               disabled={isLoading}
-              buttonStyle={modalStyle.button}
-              textStyle={modalStyle.yesText}
+              buttonStyle={button}
+              textStyle={yesText}
               onPress={() => onConfirmPress(numberPlate)}
             />
           </View>

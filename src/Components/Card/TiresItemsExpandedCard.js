@@ -10,6 +10,9 @@ import {
   RightRearTireDetails,
 } from '../../Utils';
 
+const {container, itemPickerContainer} = ExpandedCardStyles;
+const {expandedCardContainer} = expandedCardStyles;
+
 const TiresItemsExpandedCard = ({
   handleItemPickerPress,
   tires,
@@ -18,12 +21,8 @@ const TiresItemsExpandedCard = ({
   handleMediaModalDetailsPress,
   pickerText = 'Upload Image',
 }) => (
-  <View
-    style={[
-      expandedCardStyles.expandedCardContainer,
-      ExpandedCardStyles.container,
-    ]}>
-    <View style={ExpandedCardStyles.itemPickerContainer}>
+  <View style={[expandedCardContainer, container]}>
+    <View style={itemPickerContainer}>
       <ImagePicker
         text={LeftFrontTireDetails.title}
         pickerText={pickerText}
@@ -63,7 +62,7 @@ const TiresItemsExpandedCard = ({
         }
       />
     </View>
-    <View style={ExpandedCardStyles.itemPickerContainer}>
+    <View style={itemPickerContainer}>
       <ImagePicker
         text={RightFrontTireDetails.title}
         pickerText={pickerText}

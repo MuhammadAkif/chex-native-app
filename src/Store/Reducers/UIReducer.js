@@ -33,11 +33,7 @@ const UIReducer = (state = initialState, action) => {
     case HIDE_TOAST:
       return {
         ...state,
-        toast: {
-          visible: false,
-          message: '',
-          type: '',
-        },
+        toast: initialState.toast,
       };
     default:
       return state;

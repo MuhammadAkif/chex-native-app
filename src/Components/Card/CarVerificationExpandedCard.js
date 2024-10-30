@@ -5,6 +5,8 @@ import {expandedCardStyles} from '../../Assets/Styles';
 import ImagePicker from '../ItemPicker/ImagePicker';
 import {LicensePlateDetails, OdometerDetails} from '../../Utils';
 
+const {expandedCardContainer, uploadImageAndTextContainer} = expandedCardStyles;
+
 const CarVerificationExpandedCard = ({
   handleItemPickerPress,
   carVerificiationItems,
@@ -17,12 +19,8 @@ const CarVerificationExpandedCard = ({
   const {title, groupType, key} = LicensePlateDetails;
 
   return (
-    <View style={expandedCardStyles.expandedCardContainer}>
-      <View
-        style={[
-          expandedCardStyles.uploadImageAndTextContainer,
-          {paddingVertical: 10},
-        ]}>
+    <View style={expandedCardContainer}>
+      <View style={[uploadImageAndTextContainer, {paddingVertical: 10}]}>
         <ImagePicker
           onPress={() => handleItemPickerPress(LicensePlateDetails)}
           pickerText={pickerText}
@@ -38,11 +36,7 @@ const CarVerificationExpandedCard = ({
           }
         />
       </View>
-      <View
-        style={[
-          expandedCardStyles.uploadImageAndTextContainer,
-          {paddingVertical: 10},
-        ]}>
+      <View style={[uploadImageAndTextContainer, {paddingVertical: 10}]}>
         <ImagePicker
           onPress={() => handleItemPickerPress(OdometerDetails)}
           pickerText={pickerText}

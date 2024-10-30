@@ -30,6 +30,8 @@ import {HARDWARE_BACK_PRESS} from '../Constants';
 
 const {NEW_INSPECTION} = ROUTES;
 const {white} = colors;
+const {container, headerContainer, counterContainer, counterText} =
+  PreviewStyles;
 
 const VideoContainer = ({route, navigation}) => {
   const {canGoBack, navigate, goBack} = navigation;
@@ -219,7 +221,7 @@ const VideoContainer = ({route, navigation}) => {
           handleNextPress={handleNextPress}
         />
       ) : (
-        <View style={PreviewStyles.container}>
+        <View style={container}>
           {selectedCamera && (
             <Camera
               ref={videoRef}
@@ -233,12 +235,12 @@ const VideoContainer = ({route, navigation}) => {
               format={format}
             />
           )}
-          <View style={PreviewStyles.headerContainer}>
+          <View style={headerContainer}>
             <TouchableOpacity onPress={handleNavigationBackPress}>
               <BackArrow height={hp('8%')} width={wp('8%')} color={white} />
             </TouchableOpacity>
-            <View style={PreviewStyles.counterContainer}>
-              <Text style={PreviewStyles.counterText}>{counter}</Text>
+            <View style={counterContainer}>
+              <Text style={counterText}>{counter}</Text>
             </View>
           </View>
           <CameraFooter

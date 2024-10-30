@@ -17,6 +17,9 @@ import {
 } from '../../Utils';
 import {ImagesPickerContainer} from '../index';
 
+const {expandedCardContainer} = expandedCardStyles;
+const {container} = ExpandedCardStyles;
+
 const ExteriorItemsExpandedCard = ({
   handleItemPickerPress,
   exteriorItems,
@@ -31,8 +34,8 @@ const ExteriorItemsExpandedCard = ({
 }) => (
   <View
     style={{
-      ...expandedCardStyles.expandedCardContainer,
-      ...ExpandedCardStyles.container,
+      ...expandedCardContainer,
+      ...container,
       paddingVertical: 0,
     }}>
     <ImagesPickerContainer

@@ -24,6 +24,7 @@ import {
 } from '../Components';
 
 const {black, orange, steelGray, royalBlue, silverGray} = colors;
+const {container, bodyContainer} = NewInspectionStyles;
 
 const LicensePlateNumberSelectionScreen = ({
   handleSelectedNP,
@@ -41,7 +42,7 @@ const LicensePlateNumberSelectionScreen = ({
   handleOkPress,
   numberPlateInUseError,
 }) => (
-  <View style={NewInspectionStyles.container}>
+  <View style={container}>
     {isDiscardInspectionModalVisible && (
       <DiscardInspectionModal
         onNoPress={onNoPress}
@@ -55,7 +56,7 @@ const LicensePlateNumberSelectionScreen = ({
       <NumberPlateInUseModal onOkPress={handleOkPress} />
     )}
     <TouchableOpacity
-      style={[NewInspectionStyles.bodyContainer, styles.container]}
+      style={[bodyContainer, styles.container]}
       activeOpacity={1}
       onPress={Keyboard.dismiss}>
       <View style={styles.headerContainer}>

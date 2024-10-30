@@ -31,6 +31,7 @@ import {
   updateVehicleImage,
 } from '../Store/Actions';
 import {
+  checkRelevantType,
   exteriorVariant,
   getCurrentDate,
   getSignedUrl,
@@ -49,7 +50,6 @@ import {
   S3_BUCKET_BASEURL,
   SWITCH_CAMERA,
 } from '../Constants';
-import {Types} from '../Store/Types';
 import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
 import {IMAGES} from '../Assets/Images';
 import {
@@ -60,12 +60,12 @@ import {
 
 const {white} = colors;
 const defaultOrientation = 'portrait';
+const {container, headerContainer} = PreviewStyles;
 
 const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
-const {IS_LICENSE_PLATE_UPLOADED} = Types;
 
 const CameraContainer = ({route, navigation}) => {
-  //const {selectedInspectionID} = useSelector(state => state.newInspection);
+  const {selectedInspectionID} = useSelector(state => state.newInspection);
   const dispatch = useDispatch();
   const {navigate, goBack, canGoBack} = navigation;
   const {
@@ -177,7 +177,8 @@ const CameraContainer = ({route, navigation}) => {
     setIsImageFile({});
   };
   const handleResponse = async key => {
-    const {interiorItems, exteriorItems} = INSPECTION;
+    const url = S3_BUCKET_BASEURL + key;
+    const haveType = checkRelevantType(groupType);
     let extension = isImageFile.path.split('.').pop();
     const mime = 'image/' + extension;
     let body = {
@@ -188,41 +189,42 @@ const CameraContainer = ({route, navigation}) => {
       dateImage: getCurrentDate(),
       hasAdded: vehicle_Type,
     };
-    if (groupType === interiorItems || groupType === exteriorItems) {
+    if (haveType) {
       body = {...body, variant: variant};
     }
     if (category === 'CarVerification' && type === 'licensePlate') {
       await handleExtractNumberPlate(`${S3_BUCKET_BASEURL}${key}`);
     }
-    await uploadFile(
-      uploadImageToStore,
-      body,
-      inspectionId,
-      token,
-      handleError,
-      dispatch,
-    );
+    /*Setting delay because the backend needs processing time to do some actions*/
+    setTimeout(async () => {
+      await uploadFile(
+        uploadImageToStore,
+        body,
+        inspectionId,
+        token,
+        handleError,
+        dispatch,
+      );
+    }, 2000);
   };
   function uploadImageToStore(imageID) {
     const isLicensePlate =
       category === 'CarVerification' && type === 'licensePlate';
-    const is_Interior = category === 'Interior';
-    const is_Exterior = category === 'Exterior';
+    const types = ['Interior', 'Exterior'];
+    const haveType = types.includes(category);
     const annotationDetails = {uri: isImageURL};
     let type_ = type;
-    if (is_Exterior || is_Interior) {
+    if (haveType) {
       type_ = exteriorVariant(type_, variant);
     }
-    const displayAnnotation =
-      (is_Interior && vehicle_Type === 'new') ||
-      (is_Exterior && vehicle_Type === 'new');
+    const displayAnnotation = haveType && vehicle_Type === 'new';
     dispatch(updateVehicleImage(groupType, type_, isImageURL, imageID));
     const params = {
       isLicensePlate: isLicensePlate,
       displayAnnotation: displayAnnotation,
       fileId: imageID,
       annotationDetails: annotationDetails,
-      is_Exterior: is_Exterior || is_Interior,
+      is_Exterior: haveType,
     };
     navigate(NEW_INSPECTION, params);
   }
@@ -233,11 +235,16 @@ const CameraContainer = ({route, navigation}) => {
     };
     await axios
       .post(EXTRACT_NUMBER_PLATE_WITH_AI, body, {headers: headers})
-      .then(res => {
-        dispatch(setLicensePlateNumber(res?.data?.plateNumber));
-      })
-      .catch(error => console.log('AI error => ', error));
+      .then(onExtractNumberPlateSuccess)
+      .catch(onExtractNumberPlateFail);
   };
+  function onExtractNumberPlateSuccess(res) {
+    const {plateNumber = null} = res?.data || {};
+    dispatch(setLicensePlateNumber(plateNumber));
+  }
+  function onExtractNumberPlateFail(error) {
+    console.log('AI error => ', error);
+  }
   const handleError = (inspectionDeleted = false) => {
     if (inspectionDeleted) {
       setIsModalVisible(false);
@@ -259,8 +266,9 @@ const CameraContainer = ({route, navigation}) => {
       handleResponse,
       handleError,
       dispatch,
-      /* selectedInspectionID,
-      subCategory,*/
+      selectedInspectionID,
+      subCategory,
+      variant || 0,
     ).then();
   };
 
@@ -296,7 +304,7 @@ const CameraContainer = ({route, navigation}) => {
           title={title}
           progress={progress}
           handleNavigationBackPress={handleNavigationBackPress}
-          isExterior={groupType === INSPECTION.exteriorItems}
+          isExterior={checkRelevantType(groupType)}
           isCarVerification={groupType === INSPECTION.carVerificiationItems}
           // handleVisible={handleVisible}
         />
@@ -309,7 +317,7 @@ const CameraContainer = ({route, navigation}) => {
           isImageURL={isImageURL}
         />
       ) : (
-        <View style={PreviewStyles.container}>
+        <View style={container}>
           {isImageURL ? (
             <FastImage
               priority={'normal'}
@@ -344,7 +352,7 @@ const CameraContainer = ({route, navigation}) => {
               </>
             )
           )}
-          <View style={{...PreviewStyles.headerContainer, zIndex: 19}}>
+          <View style={{...headerContainer, zIndex: 19}}>
             <TouchableOpacity onPress={handleNavigationBackPress}>
               <BackArrow height={hp('8%')} width={wp('8%')} color={white} />
             </TouchableOpacity>

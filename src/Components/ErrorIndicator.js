@@ -3,9 +3,11 @@ import {View, Text} from 'react-native';
 
 import {errorStyle} from '../Assets/Styles';
 
+const {errorsContainer, errorsTextStyle} = errorStyle;
+
 const ErrorIndicator = ({error}) => (
-  <View style={errorStyle.errorsContainer}>
-    <Text style={errorStyle.errorsTextStyle}>{error}</Text>
+  <View style={errorsContainer}>
+    <Text style={errorsTextStyle}>{error}</Text>
   </View>
 );
 

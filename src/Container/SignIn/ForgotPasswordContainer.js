@@ -70,19 +70,23 @@ const ForgotPasswordContainer = ({navigation}) => {
   const handleVerificationCodeSend = async (email, resetForm) => {
     axios
       .post(FORGET_PASSWORD_URL, {email: email})
-      .then(response => {
-        const toastMessage = 'Verification code has been sent to your account';
-        resetForm();
-        dispatch(showToast(toastMessage, 'success'));
-        navigate(RESET_PASSWORD, {
-          email: email,
-        });
-      })
-      .catch(err => {
-        dispatch(showToast('Email not found', 'error'));
-      })
+      .then(response =>
+        onVerificationCodeSendSuccess(response, resetForm, email),
+      )
+      .catch(onVerificationCodeSendFail)
       .finally(() => setIsSubmitting(false));
   };
+  function onVerificationCodeSendSuccess(response, resetForm, email) {
+    const toastMessage = 'Verification code has been sent to your account';
+    resetForm();
+    dispatch(showToast(toastMessage, 'success'));
+    navigate(RESET_PASSWORD, {
+      email: email,
+    });
+  }
+  function onVerificationCodeSendFail(response) {
+    dispatch(showToast('Email not found', 'error'));
+  }
   const handleKnowYourPassword = () => navigate(SIGN_IN);
 
   return (

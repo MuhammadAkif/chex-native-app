@@ -4,10 +4,11 @@ import {View} from 'react-native';
 import {ExpandedCardStyles, expandedCardStyles} from '../../../Assets/Styles';
 import {InteriorDriverSide, InteriorPassengerSide} from '../../../Utils';
 import {ImagesPickerContainer} from '../../index';
-
+const {expandedCardContainer} = expandedCardStyles;
+const {container} = ExpandedCardStyles;
 const containerStyle = {
-  ...expandedCardStyles.expandedCardContainer,
-  ...ExpandedCardStyles.container,
+  ...expandedCardContainer,
+  ...container,
   paddingVertical: 0,
 };
 

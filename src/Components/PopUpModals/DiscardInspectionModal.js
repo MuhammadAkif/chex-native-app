@@ -4,6 +4,19 @@ import {View, Text, Modal} from 'react-native';
 import {PrimaryGradientButton, SecondaryButton} from '../index';
 import {modalStyle} from '../../Assets/Styles';
 
+const {
+  modalOuterContainer,
+  container,
+  modalContainer,
+  header,
+  body,
+  footer,
+  button,
+  yesText,
+  noButton,
+  noTextStyle,
+} = modalStyle;
+
 const DiscardInspectionModal = ({
   description,
   onYesPress,
@@ -19,28 +32,24 @@ const DiscardInspectionModal = ({
     transparent={true}
     visible={true}
     onRequestClose={onNoPress}
-    style={modalStyle.modalOuterContainer}>
-    <View style={modalStyle.container}>
-      <View style={modalStyle.modalContainer}>
-        {title && <Text style={modalStyle.header}>{title}</Text>}
-        <Text style={modalStyle.body}>{description}</Text>
-        <View style={modalStyle.footer}>
+    style={modalOuterContainer}>
+    <View style={container}>
+      <View style={modalContainer}>
+        {title && <Text style={header}>{title}</Text>}
+        <Text style={body}>{description}</Text>
+        <View style={footer}>
           <PrimaryGradientButton
             text={yesButtonText}
-            buttonStyle={modalStyle.button}
-            textStyle={modalStyle.yesText}
+            buttonStyle={button}
+            textStyle={yesText}
             onPress={onYesPress}
           />
           {dualButton && (
             <SecondaryButton
               text={'No'}
-              buttonStyle={[
-                modalStyle.button,
-                modalStyle.noButton,
-                noButtonStyle,
-              ]}
+              buttonStyle={[button, noButton, noButtonStyle]}
               onPress={onNoPress}
-              textStyle={[modalStyle.noTextStyle, noButtonText]}
+              textStyle={[noTextStyle, noButtonText]}
             />
           )}
         </View>

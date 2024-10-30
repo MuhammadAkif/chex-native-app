@@ -11,6 +11,7 @@ import {colors, ExpandedCardStyles} from '../../Assets/Styles';
 import {getAnnotationStatus} from '../../Utils';
 
 const {white} = colors;
+const {container} = ExpandedCardStyles;
 
 const ImagesPickerContainer = ({
   ExteriorDetails,
@@ -26,21 +27,24 @@ const ImagesPickerContainer = ({
   handleCrossPress,
   handleMediaModalDetailsPress,
 }) => {
-  const [imageURL_Annotated, setImageURL_Annotated] = useState(false);
-  const [imageURLOne_Annotated, setImageURLOne_Annotated] = useState(false);
-  const [imageURLTwo_Annotated, setImageURLTwo_Annotated] = useState(false);
+  const [annotations, setAnnotations] = useState({
+    imageURL: false,
+    imageURLOne: false,
+    imageURLTwo: false,
+  });
   const {fileDetails, exteriorItems} = useSelector(
     state => state.newInspection,
   );
   let {title, groupType, key} = ExteriorDetails;
+
   useEffect(() => {
-    let image_Annotated = getAnnotationStatus(fileDetails, imageURL_ID);
-    let imageOne_Annotated = getAnnotationStatus(fileDetails, imageURLOne_ID);
-    let imageTwo_Annotated = getAnnotationStatus(fileDetails, imageURLTwo_ID);
-    setImageURL_Annotated(image_Annotated);
-    setImageURLOne_Annotated(imageOne_Annotated);
-    setImageURLTwo_Annotated(imageTwo_Annotated);
+    setAnnotations({
+      imageURL: getAnnotationStatus(fileDetails, imageURL_ID),
+      imageURLOne: getAnnotationStatus(fileDetails, imageURLOne_ID),
+      imageURLTwo: getAnnotationStatus(fileDetails, imageURLTwo_ID),
+    });
   }, [fileDetails, exteriorItems]);
+
   return (
     <View style={styles.OuterContainer}>
       <ItemPickerLabel label={title} />
@@ -55,7 +59,7 @@ const ImagesPickerContainer = ({
           handleMediaModalDetailsPress={() =>
             handleMediaModalDetailsPress(title, imageURL, false, imageURL_ID)
           }
-          isAnnotated={imageURL_Annotated}
+          isAnnotated={annotations.imageURL}
         />
         <ImagePicker_New
           text={title}
@@ -72,7 +76,7 @@ const ImagesPickerContainer = ({
               imageURLOne_ID,
             )
           }
-          isAnnotated={imageURLOne_Annotated}
+          isAnnotated={annotations.imageURLOne}
         />
         <ImagePicker_New
           text={title}
@@ -89,7 +93,7 @@ const ImagesPickerContainer = ({
               imageURLTwo_ID,
             )
           }
-          isAnnotated={imageURLTwo_Annotated}
+          isAnnotated={annotations.imageURLTwo}
         />
       </View>
     </View>
@@ -102,7 +106,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-evenly',
     backgroundColor: white,
-    ...ExpandedCardStyles.container,
+    ...container,
     paddingVertical: hp('1%'),
   },
   container: {

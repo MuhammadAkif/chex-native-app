@@ -18,6 +18,7 @@ import {ANDROID} from '../../Constants';
 import {BackArrow} from '../../Assets/Icons';
 
 const {white} = colors;
+const {headerContainer} = PreviewStyles;
 
 const ResetPasswordScreen = ({
   values,
@@ -46,7 +47,7 @@ const ResetPasswordScreen = ({
       activeOpacity={1}
       style={styles.container}
       onPress={() => Keyboard.dismiss()}>
-      <View style={[PreviewStyles.headerContainer, {paddingTop: hp('2%')}]}>
+      <View style={[headerContainer, {paddingTop: hp('2%')}]}>
         <BackArrow
           height={hp('8%')}
           width={wp('8%')}

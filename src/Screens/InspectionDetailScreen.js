@@ -26,6 +26,7 @@ const mediaViewModals = {
   android: AndroidMediaViewModal,
 };
 const ActiveMediaViewModal = mediaViewModals[Platform.OS];
+const {container, bodyContainer} = NewInspectionStyles;
 
 const InspectionDetailScreen = ({
   detailsFiles,
@@ -39,7 +40,7 @@ const InspectionDetailScreen = ({
   ICON_COMPONENT,
   isPassed,
 }) => (
-  <View style={NewInspectionStyles.container}>
+  <View style={container}>
     {isModalVisible && (
       <ActiveMediaViewModal
         handleVisible={handleDisplayMediaCrossPress}
@@ -48,8 +49,7 @@ const InspectionDetailScreen = ({
         source={modalDetails?.source}
       />
     )}
-    <View
-      style={[NewInspectionStyles.bodyContainer, {paddingHorizontal: '5%'}]}>
+    <View style={[bodyContainer, {paddingHorizontal: '5%'}]}>
       <View style={styles.headerContainer}>
         <Text style={[styles.headerText, styles.textColor]}>
           Inspection Details

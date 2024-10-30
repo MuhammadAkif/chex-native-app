@@ -1,6 +1,5 @@
 import React from 'react';
 import {Text, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
-import FastImage from 'react-native-fast-image';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -10,13 +9,10 @@ import {circleBorderRadius, colors} from '../../Assets/Styles';
 import {S3_BUCKET_BASEURL, WINDOW} from '../../Constants';
 import {isNotEmpty} from '../../Utils';
 import {formatTitle} from '../../Utils/helpers';
+import {Custom_Image} from '../index';
 
 const {width} = Dimensions.get(WINDOW);
 const {black} = colors;
-
-const Image_Component = ({uri = ''}) => (
-  <FastImage source={{uri}} resizeMode={'stretch'} style={styles.image} />
-);
 
 const RenderInspectionDetail = ({item, handleDisplayMedia, categoryCount}) => {
   const {category, url} = item;
@@ -32,7 +28,7 @@ const RenderInspectionDetail = ({item, handleDisplayMedia, categoryCount}) => {
       disabled={!isNotEmpty(currentMediaUrl)}
       style={styles.container}
       onPress={() => handleDisplayMedia(item)}>
-      <Image_Component uri={currentMediaUrl} />
+      <Custom_Image source={{uri: currentMediaUrl}} />
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );
@@ -64,6 +60,10 @@ const styles = StyleSheet.create({
     top: hp('5%'),
     left: wp('18.5%'),
     zIndex: 1,
+  },
+  loadingText: {
+    fontSize: hp('1.8%'),
+    paddingTop: hp('1%'),
   },
 });
 

@@ -65,6 +65,9 @@ import Filter_RBSheet from './Filter_RBSheet';
 import ButtonFooter from './ButtonFooter';
 import RenderStatuses from './RenderItem/RenderStatuses';
 import EmptyComponent from './EmptyComponent';
+import ProgressBar from './ProgressBar';
+import Image from './Image';
+import Custom_Image from './Custom_Image';
 
 export {
   BackgroundImageView,
@@ -134,4 +137,7 @@ export {
   ButtonFooter,
   RenderStatuses,
   EmptyComponent,
+  ProgressBar,
+  Image,
+  Custom_Image,
 };

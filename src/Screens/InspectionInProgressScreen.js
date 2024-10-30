@@ -14,6 +14,13 @@ import {colors, NewInspectionStyles, ShadowEffect} from '../Assets/Styles';
 import {handleHomePress} from '../Utils';
 
 const {black, white, royalBlue} = colors;
+const {
+  container,
+  bodyContainer,
+  bodyHeaderContainer,
+  bodyHeaderTitleText,
+  innerBody,
+} = NewInspectionStyles;
 
 const InspectionInProgressScreen = ({
   data,
@@ -29,7 +36,7 @@ const InspectionInProgressScreen = ({
   fetchInspectionInProgress,
   onNewInspectionPress,
 }) => (
-  <View style={NewInspectionStyles.container}>
+  <View style={container}>
     {isDiscardInspectionModalVisible && (
       <DiscardInspectionModal
         onYesPress={onYesPress}
@@ -37,25 +44,17 @@ const InspectionInProgressScreen = ({
         description={'Are You Sure Want To Discard Your Inspection?'}
       />
     )}
-    <View style={NewInspectionStyles.bodyContainer}>
+    <View style={bodyContainer}>
       <View style={styles.bodyHeaderContainer}>
         <Text style={styles.bodyHeaderTitleText}>Inspections in Progress</Text>
       </View>
-      <View
-        style={[
-          NewInspectionStyles.bodyHeaderContainer,
-          styles.bodyHeaderBorderRadius,
-        ]}>
-        <Text
-          style={[
-            NewInspectionStyles.bodyHeaderTitleText,
-            styles.headerHeaderTextTitle,
-          ]}>
+      <View style={[bodyHeaderContainer, styles.bodyHeaderBorderRadius]}>
+        <Text style={[bodyHeaderTitleText, styles.headerHeaderTextTitle]}>
           Please select inspection below to continue. Once you submit, we will
           review and issue certificate
         </Text>
       </View>
-      <View style={NewInspectionStyles.innerBody}>
+      <View style={innerBody}>
         <FlatList
           data={data}
           onRefresh={fetchInspectionInProgress}

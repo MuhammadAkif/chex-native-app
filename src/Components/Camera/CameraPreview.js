@@ -10,7 +10,9 @@ import {colors, PreviewStyles} from '../../Assets/Styles';
 import {PreviewFooter} from '../index';
 import {BackArrow} from '../../Assets/Icons';
 
-const {white, cobaltBlueDark, cobaltBlueLight} = colors;
+const {white, cobaltBlueLight} = colors;
+const {recordingPreviewContainer, headerContainer, videoContainer} =
+  PreviewStyles;
 
 const CameraPreview = ({
   isImageURL,
@@ -18,8 +20,8 @@ const CameraPreview = ({
   handleRetryPress,
   handleNextPress,
 }) => (
-  <View style={PreviewStyles.recordingPreviewContainer}>
-    <View style={PreviewStyles.headerContainer}>
+  <View style={recordingPreviewContainer}>
+    <View style={headerContainer}>
       <BackArrow
         height={hp('8%')}
         width={wp('8%')}
@@ -27,7 +29,7 @@ const CameraPreview = ({
         onPress={handleNavigationBackPress}
       />
     </View>
-    <View style={PreviewStyles.videoContainer}>
+    <View style={videoContainer}>
       <FastImage
         source={{uri: isImageURL}}
         priority={'normal'}

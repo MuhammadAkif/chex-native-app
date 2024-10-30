@@ -17,6 +17,9 @@ import {
   InteriorPassengerSide,
 } from '../../Utils';
 
+const {expandedCardContainer} = expandedCardStyles;
+const {container, itemPickerContainer} = ExpandedCardStyles;
+
 const ExteriorItemsExpandedCard = ({
   handleItemPickerPress,
   exteriorItems,
@@ -29,12 +32,8 @@ const ExteriorItemsExpandedCard = ({
   skipRight = false,
   skipRightCorners = false,
 }) => (
-  <View
-    style={[
-      expandedCardStyles.expandedCardContainer,
-      ExpandedCardStyles.container,
-    ]}>
-    <View style={ExpandedCardStyles.itemPickerContainer}>
+  <View style={[expandedCardContainer, container]}>
+    <View style={itemPickerContainer}>
       <ImagePicker
         text={ExteriorFrontDetails.title}
         pickerText={pickerText}
@@ -74,7 +73,7 @@ const ExteriorItemsExpandedCard = ({
         }
       />
     </View>
-    {/*<View style={ExpandedCardStyles.itemPickerContainer}>*/}
+    {/*<View style={itemPickerContainer}>*/}
     {/*  {!skipLeft && (*/}
     {/*    <ImagePicker*/}
     {/*      text={ExteriorLeftDetails.title}*/}
@@ -118,7 +117,7 @@ const ExteriorItemsExpandedCard = ({
     {/*    />*/}
     {/*  )}*/}
     {/*</View>*/}
-    <View style={ExpandedCardStyles.itemPickerContainer}>
+    <View style={itemPickerContainer}>
       {!skipLeftCorners && (
         <ImagePicker
           text={ExteriorFrontLeftCornerDetails.title}
@@ -162,7 +161,7 @@ const ExteriorItemsExpandedCard = ({
         />
       )}
     </View>
-    <View style={ExpandedCardStyles.itemPickerContainer}>
+    <View style={itemPickerContainer}>
       {!skipLeftCorners && (
         <ImagePicker
           text={ExteriorRearLeftCornerDetails.title}
@@ -206,7 +205,7 @@ const ExteriorItemsExpandedCard = ({
         />
       )}
     </View>
-    {/*<View style={ExpandedCardStyles.itemPickerContainer}>*/}
+    {/*<View style={itemPickerContainer}>*/}
     {/*    <ImagePicker*/}
     {/*      text={ExteriorInteriorDriverSide.title}*/}
     {/*      pickerText={pickerText}*/}
@@ -246,7 +245,7 @@ const ExteriorItemsExpandedCard = ({
     {/*    }*/}
     {/*  />*/}
     {/*</View>*/}
-    <View style={ExpandedCardStyles.itemPickerContainer}>
+    <View style={itemPickerContainer}>
       <ImagePicker
         text={ExteriorInsideCargoRoofDetails.title}
         pickerText={pickerText}

@@ -231,7 +231,6 @@ export const PreviewStyles = StyleSheet.create({
     color: colors.white,
   },
 });
-
 export const ExpandedCardStyles = StyleSheet.create({
   container: {
     flexDirection: 'column',
@@ -249,7 +248,6 @@ export const ExpandedCardStyles = StyleSheet.create({
     flexDirection: 'column',
   },
 });
-
 export const ItemPickerStyles = StyleSheet.create({
   container: {
     height: hp('15%'),
@@ -258,7 +256,6 @@ export const ItemPickerStyles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
 export const modalLoadingIndicatorStyles = StyleSheet.create({
   container: {
     flex: 1,
@@ -271,7 +268,6 @@ export const modalLoadingIndicatorStyles = StyleSheet.create({
     paddingTop: hp('7%'),
   },
 });
-
 export const modalStyle = StyleSheet.create({
   modalOuterContainer: {
     flex: 1,

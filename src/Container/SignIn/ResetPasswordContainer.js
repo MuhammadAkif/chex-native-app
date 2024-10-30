@@ -89,29 +89,30 @@ const ResetPasswordContainer = ({navigation, route}) => {
   const handleForgetPassword = () => navigate(FORGET_PASSWORD);
   const handleResetPassword = async (body, resetForm) => {
     let {verificationCode, password, confirmPassword} = body;
+    const data = {
+      OTP: verificationCode,
+      confirmPassword: confirmPassword,
+      email: email,
+      password: password,
+    };
     axios
-      .post(RESET_PASSWORD_URL, {
-        OTP: verificationCode,
-        confirmPassword: confirmPassword,
-        email: email,
-        password: password,
-      })
-      .then(response => {
-        // dispatch(SIGN_IN_ACTION(response.data));
-        resetForm();
-        navigate(SIGN_IN, {
-          toastMessage: 'Your password has been changed successfully',
-          passwordChanged: true,
-        });
-      })
-      .catch(err => {
-        const message =
-          err?.response?.data?.errors ||
-          'Something went wrong, Please try again.';
-        dispatch(showToast(message, 'error'));
-      })
+      .post(RESET_PASSWORD_URL, data)
+      .then(response => onResetPasswordSuccess(response, resetForm))
+      .catch(onResetPasswordFail)
       .finally(() => setIsSubmitting(false));
   };
+  function onResetPasswordSuccess(response, resetForm) {
+    resetForm();
+    navigate(SIGN_IN, {
+      toastMessage: 'Your password has been changed successfully',
+      passwordChanged: true,
+    });
+  }
+  function onResetPasswordFail(err) {
+    const {errors = 'Failed to reset password'} = err?.response?.data;
+    const message = errors || 'Something went wrong, Please try again.';
+    dispatch(showToast(message, 'error'));
+  }
   const handleKnowYourPassword = () => navigate(SIGN_IN);
   const handleNavigationBackPress = () => goBack();
 

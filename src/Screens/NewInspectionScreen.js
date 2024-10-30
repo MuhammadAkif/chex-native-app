@@ -28,6 +28,16 @@ const mediaViewModals = {
 };
 const ActiveMediaViewModal = mediaViewModals[Platform.OS];
 const {black, orange, white} = colors;
+const {
+  container,
+  headerContainer,
+  headerTitleText,
+  backIconContainer,
+  bodyContainer,
+  innerBody,
+  scrollViewContainer,
+  footerContainer,
+} = NewInspectionStyles;
 
 const NewInspectionScreen = props => {
   const {
@@ -97,7 +107,7 @@ const NewInspectionScreen = props => {
     coordinates,
   } = props;
   return (
-    <View style={NewInspectionStyles.container}>
+    <View style={container}>
       {isDiscardInspectionModalVisible && (
         <DiscardInspectionModal
           onNoPress={onNoPress}
@@ -151,20 +161,18 @@ const NewInspectionScreen = props => {
           isLoading={isLoading}
         />
       )}
-      <View style={NewInspectionStyles.headerContainer}>
-        <Text style={NewInspectionStyles.headerTitleText}>
+      <View style={headerContainer}>
+        <Text style={headerTitleText}>
           Please complete inspection items within each category below
         </Text>
       </View>
-      <TouchableOpacity
-        style={NewInspectionStyles.backIconContainer}
-        onPress={handleBackPress}>
+      <TouchableOpacity style={backIconContainer} onPress={handleBackPress}>
         <BackArrow height={hp('3%')} width={wp('7%')} color={white} />
       </TouchableOpacity>
-      <View style={NewInspectionStyles.bodyContainer}>
-        <View style={NewInspectionStyles.innerBody}>
+      <View style={bodyContainer}>
+        <View style={innerBody}>
           <ScrollView
-            contentContainerStyle={NewInspectionStyles.scrollViewContainer}
+            contentContainerStyle={scrollViewContainer}
             showsVerticalScrollIndicator={false}>
             {modalVisible && (
               <CaptureImageModal
@@ -276,7 +284,7 @@ const NewInspectionScreen = props => {
           </ScrollView>
         </View>
         {isVehicleAllPartsImagesAvailable && (
-          <View style={NewInspectionStyles.footerContainer}>
+          <View style={footerContainer}>
             <PrimaryGradientButton
               text={'Submit'}
               onPress={handleSubmitPress}

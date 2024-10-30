@@ -12,11 +12,10 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import FastImage from 'react-native-fast-image';
 
 import {Cross, Expand, Collapse} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
-import {RenderIcons} from './index';
+import {Custom_Image, RenderIcons} from './index';
 
 const {white, cobaltBlueDark} = colors;
 
@@ -39,6 +38,7 @@ const AndroidMediaViewModal = ({
   };
   const activeVideoHeight = toggle_Height[isFullScreen];
   const ActiveIcon = toggleIcon[isFullScreen];
+
   return (
     <Modal
       animationType="slide"
@@ -74,12 +74,7 @@ const AndroidMediaViewModal = ({
             </View>
           ) : (
             <View style={styles.imageContainer}>
-              <FastImage
-                source={{uri: source}}
-                priority={'normal'}
-                resizeMode={'stretch'}
-                style={styles.image}
-              />
+              <Custom_Image source={{uri: source}} imageStyle={styles.image} />
               {coordinates.length > 0 &&
                 coordinates.map((marker, index) => (
                   <RenderIcons
