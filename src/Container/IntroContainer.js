@@ -13,6 +13,7 @@ const IntroContainer = ({navigation}) => {
   } = useSelector(state => state?.auth);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
@@ -20,6 +21,7 @@ const IntroContainer = ({navigation}) => {
     );
     return () => backHandler.remove();
   }, []);
+
   const resetAllStates = () => {
     setIsLoading(false);
   };

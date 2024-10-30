@@ -56,6 +56,7 @@ const InspectionInProgressContainer = ({navigation}) => {
     );
     return () => backHandler.remove();
   }, []);
+
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
       goBack();

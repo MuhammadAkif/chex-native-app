@@ -9,7 +9,10 @@ import {
 } from '../../Components';
 import CustomInput from '../../Components/CustomInput';
 import CustomPasswordInput from '../../Components/CustomPasswordInput';
-import {ANDROID, PROJECT_NAME} from '../../Constants';
+import {Platforms, PROJECT_NAME} from '../../Constants';
+
+const {OS} = Platform;
+const {ANDROID, IOS} = Platforms;
 
 const SignInScreen = ({
   values,
@@ -37,12 +40,7 @@ const SignInScreen = ({
         style={[
           styles.headerContainer,
           {
-            flex:
-              Platform.OS === ANDROID
-                ? 2
-                : Platform.OS === 'ios' && isKeyboardActive
-                ? 1
-                : 1.5,
+            flex: OS === ANDROID ? 2 : OS === IOS && isKeyboardActive ? 1 : 1.5,
           },
         ]}>
         <SignInLogo

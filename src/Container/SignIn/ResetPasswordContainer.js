@@ -6,15 +6,17 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import axios from 'axios';
+import {useDispatch} from 'react-redux';
 
 import {resetPasswordSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
-import {ANDROID, API_ENDPOINTS, HARDWARE_BACK_PRESS} from '../../Constants';
+import {API_ENDPOINTS, HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
 import {ResetPasswordScreen} from '../../Screens';
 import {showToast} from '../../Store/Actions';
-import {useDispatch} from 'react-redux';
 
+const {OS} = Platform;
+const {ANDROID} = Platforms;
 const {RESET_PASSWORD_URL} = API_ENDPOINTS;
 const {WELCOME, FORGET_PASSWORD, SIGN_IN} = ROUTES;
 const {gray, white, cobaltBlueLight} = colors;
@@ -35,6 +37,7 @@ const ResetPasswordContainer = ({navigation, route}) => {
     password: '',
     confirmPassword: '',
   };
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
@@ -42,26 +45,6 @@ const ResetPasswordContainer = ({navigation, route}) => {
     );
     return () => backHandler.remove();
   }, []);
-
-  function handle_Hardware_Back_Press() {
-    if (canGoBack()) {
-      goBack();
-      return true;
-    } else {
-      navigate(WELCOME);
-    }
-    return false;
-  }
-  // Function to handle keyboard visibility changes
-  const handleKeyboardDidShow = () => {
-    setKeyboardActive(true);
-  };
-
-  const handleKeyboardDidHide = () => {
-    setKeyboardActive(false);
-  };
-
-  // Add event listeners when the component mounts
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -79,7 +62,25 @@ const ResetPasswordContainer = ({navigation, route}) => {
       setHidePassword(true);
     };
   }, []);
+
   // Focus handling starts here
+  function handle_Hardware_Back_Press() {
+    if (canGoBack()) {
+      goBack();
+      return true;
+    } else {
+      navigate(WELCOME);
+    }
+    return false;
+  }
+  // Function to handle keyboard visibility changes
+  function handleKeyboardDidShow() {
+    setKeyboardActive(true);
+  }
+  function handleKeyboardDidHide() {
+    setKeyboardActive(false);
+  }
+
   const handlePasswordFocus = () => passwordRef?.current?.focus();
   const handleConfirmPasswordFocus = () => confirmPasswordRef?.current?.focus();
   // Focus handling ends here
@@ -115,15 +116,15 @@ const ResetPasswordContainer = ({navigation, route}) => {
   }
   const handleKnowYourPassword = () => navigate(SIGN_IN);
   const handleNavigationBackPress = () => goBack();
-
+  function onSubmit(values, resetForm) {
+    setIsSubmitting(true);
+    handleResetPassword(values, resetForm).then();
+  }
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={resetPasswordSchema}
-      onSubmit={(values, {resetForm}) => {
-        setIsSubmitting(true);
-        handleResetPassword(values, resetForm).then();
-      }}>
+      onSubmit={(values, {resetForm}) => onSubmit(values, resetForm)}>
       {({values, errors, touched, handleChange, handleBlur, handleSubmit}) => (
         <ResetPasswordScreen
           values={values}
@@ -138,7 +139,7 @@ const ResetPasswordContainer = ({navigation, route}) => {
           errors={errors}
           touched={touched}
           styles={
-            Platform.OS === ANDROID && isKeyboardActive
+            OS === ANDROID && isKeyboardActive
               ? androidKeyboardOpenStyle
               : styles
           }
@@ -162,7 +163,7 @@ const styles = StyleSheet.create({
     backgroundColor: cobaltBlueLight,
   },
   headerContainer: {
-    flex: Platform.OS === ANDROID ? 2 : 1,
+    flex: OS === ANDROID ? 2 : 1,
     justifyContent: 'space-around',
     alignItems: 'center',
   },

@@ -13,7 +13,9 @@ import {
 
 import {colors, ShadowEffect} from '../../Assets/Styles';
 import {DownArrow, UpArrow, Check} from '../../Assets/Icons';
-import {WINDOW} from '../../Constants';
+import {Platforms} from '../../Constants';
+
+const {WINDOW} = Platforms;
 
 const {height, width} = Dimensions.get(WINDOW);
 const {

@@ -18,8 +18,9 @@ import {
   ItemPickerStyles,
 } from '../../Assets/Styles';
 import {Camera, CrossFilled, Damage_Vehicle} from '../../Assets/Icons';
-import {WINDOW} from '../../Constants';
+import {Platforms} from '../../Constants';
 
+const {WINDOW} = Platforms;
 const iconHeight = hp('5%');
 const iconWidth = wp('5%');
 const {height, width} = Dimensions.get(WINDOW);

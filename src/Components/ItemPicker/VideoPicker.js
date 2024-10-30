@@ -12,8 +12,10 @@ import {
   ItemPickerStyles,
 } from '../../Assets/Styles';
 import {CrossFilled, Play} from '../../Assets/Icons';
-import {ANDROID} from '../../Constants';
+import {Platforms} from '../../Constants';
 
+const {OS} = Platform;
+const {ANDROID} = Platforms;
 const height = hp('5%');
 const width = wp('5%');
 const {orangePeel, blueGray} = colors;
@@ -51,7 +53,7 @@ const VideoPicker = ({
           controls={false}
           repeat={false}
           resizeMode={'contain'}
-          paused={Platform.OS !== ANDROID}
+          paused={OS !== ANDROID}
           playInBackground={false}
           style={StyleSheet.absoluteFill}
           muted={true}

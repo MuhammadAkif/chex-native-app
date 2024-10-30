@@ -17,6 +17,7 @@ import {PROJECT_NAME} from '../Constants';
 
 const {INSPECTION_REVIEWED, INSPECTION_IN_PROGRESS} = ROUTES;
 const {white, black, cobaltBlueLight} = colors;
+const {CHEX, AI} = PROJECT_NAME;
 
 const InspectionSelectionScreen = ({
   handleNewInspectionPress,
@@ -27,8 +28,8 @@ const InspectionSelectionScreen = ({
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <SignInLogo
-          titleText={PROJECT_NAME.CHEX}
-          dotTitleText={PROJECT_NAME.AI}
+          titleText={CHEX}
+          dotTitleText={AI}
           subtitleText={'Virtual Inspections'}
           containerStyle={styles.logoContainer}
         />

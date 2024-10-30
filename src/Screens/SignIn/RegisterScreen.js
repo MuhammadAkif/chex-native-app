@@ -19,9 +19,11 @@ import {
 import {colors} from '../../Assets/Styles';
 import CustomInput from '../../Components/CustomInput';
 import {Check} from '../../Assets/Icons';
-import {ANDROID} from '../../Constants';
+import {Platforms} from '../../Constants';
 
-const isAndroid = Platform.OS === ANDROID;
+const {OS} = Platform;
+const {ANDROID, IOS} = Platforms;
+const isAndroid = OS === ANDROID;
 const {orange, white, cobaltBlueLight} = colors;
 
 const RegisterScreen = ({
@@ -55,7 +57,7 @@ const RegisterScreen = ({
         <Text style={styles.registerTitleText}>Register</Text>
       </View>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={OS === IOS ? 'padding' : 'height'}
         style={styles.bodyContainer}>
         {/*<ScrollView contentContainerStyle={styles.bodyInnerContainer}>*/}
         <CustomInput

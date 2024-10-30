@@ -12,9 +12,11 @@ import {ForgotPasswordScreen} from '../../Screens';
 import {forgetPasswordSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
-import {ANDROID, API_ENDPOINTS, HARDWARE_BACK_PRESS} from '../../Constants';
+import {API_ENDPOINTS, HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
 import {showToast} from '../../Store/Actions';
 
+const {OS} = Platform;
+const {ANDROID} = Platforms;
 const {cobaltBlueLight, gray, white} = colors;
 const {FORGET_PASSWORD_URL} = API_ENDPOINTS;
 const {WELCOME, RESET_PASSWORD, SIGN_IN} = ROUTES;
@@ -88,7 +90,7 @@ const ForgotPasswordContainer = ({navigation}) => {
     dispatch(showToast('Email not found', 'error'));
   }
   const handleKnowYourPassword = () => navigate(SIGN_IN);
-
+  const handleOnPress = () => Keyboard.dismiss();
   return (
     <Formik
       initialValues={initialValues}
@@ -107,13 +109,14 @@ const ForgotPasswordContainer = ({navigation}) => {
           errors={errors}
           touched={touched}
           styles={
-            Platform.OS === ANDROID && isKeyboardActive
+            OS === ANDROID && isKeyboardActive
               ? androidKeyboardOpenStyle
               : styles
           }
           isKeyboardActive={isKeyboardActive}
           isSubmitting={isSubmitting}
           handleKnowYourPassword={handleKnowYourPassword}
+          handleOnPress={handleOnPress}
         />
       )}
     </Formik>
@@ -125,7 +128,7 @@ const styles = StyleSheet.create({
     backgroundColor: cobaltBlueLight,
   },
   headerContainer: {
-    flex: Platform.OS === ANDROID ? 2 : 1.5,
+    flex: OS === ANDROID ? 2 : 1.5,
     justifyContent: 'space-around',
     alignItems: 'center',
   },

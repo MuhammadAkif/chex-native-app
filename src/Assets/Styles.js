@@ -4,9 +4,9 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-import {WINDOW} from '../Constants';
+import {Platforms} from '../Constants';
 
-const {height, width} = Dimensions.get(WINDOW);
+const {height, width} = Dimensions.get(Platforms.WINDOW);
 
 export const colors = {
   white: '#FFFFFF',

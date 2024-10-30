@@ -12,12 +12,15 @@ import {SignInScreen} from '../../Screens';
 import {signInValidationSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
-import {ANDROID, API_ENDPOINTS, HARDWARE_BACK_PRESS} from '../../Constants';
+import {API_ENDPOINTS, HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
 import {showToast, signIn} from '../../Store/Actions';
 
+const {OS} = Platform;
+const {ANDROID} = Platforms;
 const {LOGIN_URL} = API_ENDPOINTS;
 const {WELCOME, FORGET_PASSWORD, HOME} = ROUTES;
 const {white, cobaltBlueLight} = colors;
+
 const SignInContainer = ({navigation, route}) => {
   const {canGoBack, goBack, navigate} = navigation;
   const dispatch = useDispatch();
@@ -43,26 +46,6 @@ const SignInContainer = ({navigation, route}) => {
       dispatch(showToast(route?.params?.toastMessage, 'success'));
     }
   }, [route.params]);
-
-  function handle_Hardware_Back_Press() {
-    if (canGoBack()) {
-      goBack();
-      return true;
-    } else {
-      navigate(WELCOME);
-    }
-    return false;
-  }
-  // Function to handle keyboard visibility changes
-  const handleKeyboardDidShow = () => {
-    setKeyboardActive(true);
-  };
-
-  const handleKeyboardDidHide = () => {
-    setKeyboardActive(false);
-  };
-
-  // Add event listeners when the component mounts
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -80,6 +63,23 @@ const SignInContainer = ({navigation, route}) => {
       setHidePassword(true);
     };
   }, []);
+
+  function handleKeyboardDidShow() {
+    setKeyboardActive(true);
+  }
+  function handleKeyboardDidHide() {
+    setKeyboardActive(false);
+  }
+  function handle_Hardware_Back_Press() {
+    if (canGoBack()) {
+      goBack();
+      return true;
+    } else {
+      navigate(WELCOME);
+    }
+    return false;
+  }
+
   // Focus handling starts here
   const handlePasswordFocus = () => passwordRef?.current?.focus();
   // Focus handling ends here
@@ -107,19 +107,19 @@ const SignInContainer = ({navigation, route}) => {
       Alert.alert('Login Failed', errors[0]);
     }
   }
-
+  function onSubmit(values, resetForm) {
+    setIsSubmitting(true);
+    let body = {
+      username: values.name.trim(),
+      password: values.password.trim(),
+    };
+    checkUserData(body, resetForm).then();
+  }
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={signInValidationSchema}
-      onSubmit={(values, {resetForm}) => {
-        setIsSubmitting(true);
-        let body = {
-          username: values.name.trim(),
-          password: values.password.trim(),
-        };
-        checkUserData(body, resetForm).then();
-      }}>
+      onSubmit={(values, {resetForm}) => onSubmit(values, resetForm)}>
       {({values, errors, touched, handleChange, handleBlur, handleSubmit}) => (
         <SignInScreen
           values={values}
@@ -132,7 +132,7 @@ const SignInContainer = ({navigation, route}) => {
           errors={errors}
           touched={touched}
           styles={
-            Platform.OS === ANDROID && isKeyboardActive
+            OS === ANDROID && isKeyboardActive
               ? androidKeyboardOpenStyle
               : styles
           }
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: cobaltBlueLight,
   },
   headerContainer: {
-    flex: Platform.OS === ANDROID ? 2 : 1.5,
+    flex: OS === ANDROID ? 2 : 1.5,
     justifyContent: 'space-around',
     alignItems: 'center',
   },

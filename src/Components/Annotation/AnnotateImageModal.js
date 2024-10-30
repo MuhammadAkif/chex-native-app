@@ -21,8 +21,10 @@ import {Cross, Exclamation, Expand, Info} from '../../Assets/Icons';
 import {colors} from '../../Assets/Styles';
 import {PrimaryGradientButton} from '../index';
 import Collapse from '../../Assets/Icons/Collapse';
-import {ANDROID, ANNOTATE_IMAGE_DETAILS} from '../../Constants';
+import {ANNOTATE_IMAGE_DETAILS, Platforms} from '../../Constants';
 
+const {OS} = Platform;
+const {ANDROID} = Platforms;
 const {
   title: Title,
   annotateText,
@@ -89,7 +91,7 @@ const AnnotateImageModal = ({
           </Text>
           {isVideo ? (
             <>
-              {Platform.OS === ANDROID ? (
+              {OS === ANDROID ? (
                 <View style={styles.image}>
                   <TouchableOpacity
                     style={{
@@ -174,14 +176,14 @@ const AnnotateImageModal = ({
               styles.body,
               {
                 justifyContent: 'center',
-                top: Platform.OS === ANDROID && isFullScreen ? hp('8%') : null,
+                top: OS === ANDROID && isFullScreen ? hp('8%') : null,
               },
             ]}>
             <CircularProgress
               maxValue={100}
               value={progress}
               valueSuffix={'%'}
-              radius={Platform.OS === ANDROID && isFullScreen ? 40 : 80}
+              radius={OS === ANDROID && isFullScreen ? 40 : 80}
               progressValueColor={white}
               activeStrokeColor={orangePeel}
               titleStyle={{fontWeight: 'bold'}}
@@ -261,10 +263,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   video: {
-    height: Platform.OS === ANDROID ? '100%' : hp('25%'),
-    width: Platform.OS === ANDROID ? '90%' : wp('90%'),
+    height: OS === ANDROID ? '100%' : hp('25%'),
+    width: OS === ANDROID ? '90%' : wp('90%'),
     borderRadius: 10,
-    left: Platform.OS === ANDROID ? wp('5%') : null,
+    left: OS === ANDROID ? wp('5%') : null,
   },
   crossIconContainer: {
     position: 'absolute',

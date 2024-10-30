@@ -32,11 +32,13 @@ export const API_ENDPOINTS = {
   LOCATION_URL: generateApiUrl('inspection/location'),
 };
 // Api Endpoints ends here
-
+export const Platforms = {
+  ANDROID: 'android',
+  IOS: 'ios',
+  WINDOW: 'window',
+};
 export const HARDWARE_BACK_PRESS = 'hardwareBackPress';
 export const ANDROID = 'android';
-export const WINDOW = 'window';
-export const IOS = 'ios';
 
 export const EXPIRY_INSPECTION = {
   description: 'The Inspection Has Expired. Please Start A New Inspection.',

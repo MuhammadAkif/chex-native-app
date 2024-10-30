@@ -14,9 +14,11 @@ import {
 import CustomInput from '../../Components/CustomInput';
 import {colors, PreviewStyles} from '../../Assets/Styles';
 import CustomPasswordInput from '../../Components/CustomPasswordInput';
-import {ANDROID} from '../../Constants';
+import {Platforms} from '../../Constants';
 import {BackArrow} from '../../Assets/Icons';
 
+const {OS} = Platform;
+const {ANDROID, IOS} = Platforms;
 const {white} = colors;
 const {headerContainer} = PreviewStyles;
 
@@ -56,31 +58,27 @@ const ResetPasswordScreen = ({
         />
       </View>
       <View
-        style={[
-          styles.headerContainer,
-          {
-            flex:
-              Platform.OS === ANDROID
-                ? 1
-                : Platform.OS === 'ios' && isKeyboardActive
-                ? 0.5
-                : Platform.OS === 'ios'
-                ? 1
-                : 1.5,
-          },
-        ]}>
+        style={{
+          ...styles.headerContainer,
+          flex:
+            OS === ANDROID
+              ? 1
+              : OS === IOS && isKeyboardActive
+              ? 0.5
+              : OS === IOS
+              ? 1
+              : 1.5,
+        }}>
         <SignInLogo
           titleText={'Forget Password'}
           textStyle={{fontSize: hp('3%')}}
           containerStyle={styles.logoContainer}
         />
         <Text
-          style={[
-            styles.registerTitleText,
-            {
-              bottom: Platform.OS === 'ios' && isKeyboardActive ? hp('1%') : 0,
-            },
-          ]}>
+          style={{
+            ...styles.registerTitleText,
+            bottom: OS === IOS && isKeyboardActive ? hp('1%') : 0,
+          }}>
           Please check your email for unique pin and type below
         </Text>
       </View>

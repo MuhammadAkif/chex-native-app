@@ -13,6 +13,7 @@ import {handleHomePress} from '../Utils';
 import {PROJECT_NAME} from '../Constants';
 
 const {white, blueGray} = colors;
+const {CHEX_AI} = PROJECT_NAME;
 
 const CompletedInspectionScreen = ({navigation}) => (
   <CompletedInspectionBackgroundImage>
@@ -25,13 +26,13 @@ const CompletedInspectionScreen = ({navigation}) => (
         style={styles.body}>
         <View style={{flex: 1}} />
         <View style={styles.bodyFooterContainer}>
-          <Text style={[styles.textColor, styles.titleText]}>
+          <Text style={{...styles.textColor, ...styles.titleText}}>
             Thank you for using
           </Text>
-          <Text style={[styles.textColor, styles.subheadingText]}>
-            {PROJECT_NAME.CHEX_AI}
+          <Text style={{...styles.textColor, ...styles.subheadingText}}>
+            {CHEX_AI}
           </Text>
-          <Text style={[styles.textColor, styles.subTitleText]}>
+          <Text style={{...styles.textColor, ...styles.subTitleText}}>
             You may now exit our app. Our representatives will reach out to you
             if we need any further help
           </Text>

@@ -21,7 +21,7 @@ import {Cross, Expand, Info} from '../Assets/Icons';
 import {colors, dot} from '../Assets/Styles';
 import {PrimaryGradientButton, Sub_Heading} from './index';
 import Collapse from '../Assets/Icons/Collapse';
-import {ANDROID} from '../Constants';
+import {Platforms} from '../Constants';
 import {
   headerFlex,
   headerFlexGrow,
@@ -30,6 +30,8 @@ import {
   instructionsContainerTop,
 } from '../Utils/helpers';
 
+const {OS} = Platform;
+const {ANDROID} = Platforms;
 const Accordion = {
   true: Expand,
   false: Collapse,
@@ -113,7 +115,7 @@ const CaptureImageModal = ({
           </Text>
           {isVideo ? (
             <>
-              {Platform.OS === ANDROID ? (
+              {OS === ANDROID ? (
                 <View style={styles.image}>
                   <TouchableOpacity
                     style={styles.iconContainer}
@@ -172,14 +174,14 @@ const CaptureImageModal = ({
               styles.body,
               {
                 justifyContent: 'center',
-                top: Platform.OS === ANDROID && isFullScreen ? hp('8%') : null,
+                top: OS === ANDROID && isFullScreen ? hp('8%') : null,
               },
             ]}>
             <CircularProgress
               maxValue={100}
               value={progress}
               valueSuffix={'%'}
-              radius={Platform.OS === ANDROID && isFullScreen ? 40 : 80}
+              radius={OS === ANDROID && isFullScreen ? 40 : 80}
               progressValueColor={white}
               activeStrokeColor={orangePeel}
               titleStyle={{fontWeight: 'bold'}}
@@ -260,17 +262,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   video: {
-    height: Platform.OS === ANDROID ? '100%' : hp('25%'),
-    width: Platform.OS === ANDROID ? '90%' : wp('90%'),
+    height: OS === ANDROID ? '100%' : hp('25%'),
+    width: OS === ANDROID ? '90%' : wp('90%'),
     borderRadius: 10,
-    left: Platform.OS === ANDROID ? wp('5%') : null,
+    left: OS === ANDROID ? wp('5%') : null,
   },
   imageStyle: {
     height: hp('50%'),
     width: wp('90%'),
     borderRadius: 10,
     marginVertical: hp('2%'),
-    left: Platform.OS === ANDROID ? wp('5%') : null,
+    left: OS === ANDROID ? wp('5%') : null,
   },
   crossIconContainer: {
     position: 'absolute',

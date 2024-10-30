@@ -13,8 +13,9 @@ import {
 
 import {Check} from '../../Assets/Icons';
 import {colors} from '../../Assets/Styles';
-import {WINDOW} from '../../Constants';
+import {Platforms} from '../../Constants';
 
+const {WINDOW} = Platforms;
 const {width} = Dimensions.get(WINDOW);
 const {orange, silverGray, royalBlue} = colors;
 

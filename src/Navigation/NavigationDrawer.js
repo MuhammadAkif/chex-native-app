@@ -27,7 +27,13 @@ const headerBackground = () => <HeaderBackground />;
 const drawerContent = props => <CustomDrawerContent {...props} />;
 const NavigatorHeaderTitle = () => <HeaderTitle />;
 const headerBackButton = () => <HeaderBackButton />;
-
+const screenOptions = {
+  headerTitle: NavigatorHeaderTitle,
+  drawerType: 'front',
+  drawerStatusBarAnimation: 'slide',
+  headerLeft: headerBackButton,
+  swipeEdgeWidth: 150,
+};
 const NavigationDrawer = ({navigation}) => {
   const {Screen, Navigator} = createDrawerNavigator();
   const {reset} = navigation;
@@ -61,13 +67,7 @@ const NavigationDrawer = ({navigation}) => {
       <Navigator
         backBehavior={'history'}
         drawerContent={drawerContent}
-        screenOptions={{
-          headerTitle: NavigatorHeaderTitle,
-          drawerType: 'front',
-          drawerStatusBarAnimation: 'slide',
-          headerLeft: headerBackButton,
-          swipeEdgeWidth: 150,
-        }}
+        screenOptions={screenOptions}
         initialRouteName={INSPECTION_SELECTION}>
         <Screen
           name={INSPECTION_SELECTION}

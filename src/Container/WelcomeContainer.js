@@ -4,12 +4,15 @@ import {Alert, BackHandler, Platform} from 'react-native';
 
 import {WelcomeScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
-import {ANDROID, HARDWARE_BACK_PRESS} from '../Constants';
+import {HARDWARE_BACK_PRESS, Platforms} from '../Constants';
 
 const {SIGN_IN} = ROUTES;
+const {OS} = Platform;
+const {ANDROID} = Platforms;
 
 const WelcomeContainer = ({navigation}) => {
   const {navigate} = navigation;
+
   useFocusEffect(
     useCallback(() => {
       const backHandler = BackHandler.addEventListener(
@@ -19,8 +22,9 @@ const WelcomeContainer = ({navigation}) => {
       return () => backHandler.remove();
     }, []),
   );
+
   function handle_Hardware_Back_Press() {
-    if (Platform.OS === ANDROID) {
+    if (OS === ANDROID) {
       Alert.alert('Hold on!', 'Are you sure you want to exit app?', [
         {
           text: 'Cancel',

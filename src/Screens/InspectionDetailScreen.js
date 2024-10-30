@@ -49,13 +49,13 @@ const InspectionDetailScreen = ({
         source={modalDetails?.source}
       />
     )}
-    <View style={[bodyContainer, {paddingHorizontal: '5%'}]}>
+    <View style={{...bodyContainer, paddingHorizontal: '5%'}}>
       <View style={styles.headerContainer}>
-        <Text style={[styles.headerText, styles.textColor]}>
+        <Text style={{...styles.headerText, ...styles.textColor}}>
           Inspection Details
         </Text>
         <View style={styles.finalStatusContainer}>
-          <Text style={[styles.text, styles.textColor, {width: wp('30%')}]}>
+          <Text style={{...styles.text, ...styles.textColor, width: wp('30%')}}>
             Final Status
           </Text>
           <ICON_COMPONENT
@@ -63,13 +63,14 @@ const InspectionDetailScreen = ({
             width={wp('8%')}
             color={iconColor}
           />
-          <Text style={[styles.text, styles.statusText, styles.textColor]}>
+          <Text
+            style={{...styles.text, ...styles.statusText, ...styles.textColor}}>
             {INSPECTION_STATUS[isPassed]}
           </Text>
         </View>
         <View style={styles.statusDescriptionContainer}>
           <ScrollView>
-            <Text style={[styles.text, styles.textColor]}>{remarks}</Text>
+            <Text style={{...styles.text, ...styles.textColor}}>{remarks}</Text>
           </ScrollView>
         </View>
       </View>

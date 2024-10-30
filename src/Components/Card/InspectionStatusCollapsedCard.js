@@ -13,8 +13,9 @@ import {
 
 import {circleBorderRadius, colors, ShadowEffect} from '../../Assets/Styles';
 import {DownArrow, UpArrow} from '../../Assets/Icons';
-import {WINDOW} from '../../Constants';
+import {Platforms} from '../../Constants';
 
+const {WINDOW} = Platforms;
 const {width} = Dimensions.get(WINDOW);
 const IS_IN_REVIEW = {
   'In Review': true,

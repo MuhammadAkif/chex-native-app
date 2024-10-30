@@ -48,8 +48,8 @@ const InspectionInProgressScreen = ({
       <View style={styles.bodyHeaderContainer}>
         <Text style={styles.bodyHeaderTitleText}>Inspections in Progress</Text>
       </View>
-      <View style={[bodyHeaderContainer, styles.bodyHeaderBorderRadius]}>
-        <Text style={[bodyHeaderTitleText, styles.headerHeaderTextTitle]}>
+      <View style={{...bodyHeaderContainer, ...styles.bodyHeaderBorderRadius}}>
+        <Text style={{...bodyHeaderTitleText, ...styles.headerHeaderTextTitle}}>
           Please select inspection below to continue. Once you submit, we will
           review and issue certificate
         </Text>

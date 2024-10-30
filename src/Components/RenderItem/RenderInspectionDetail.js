@@ -6,11 +6,12 @@ import {
 } from 'react-native-responsive-screen';
 
 import {circleBorderRadius, colors} from '../../Assets/Styles';
-import {S3_BUCKET_BASEURL, WINDOW} from '../../Constants';
+import {Platforms, S3_BUCKET_BASEURL} from '../../Constants';
 import {isNotEmpty} from '../../Utils';
 import {formatTitle} from '../../Utils/helpers';
 import {Custom_Image} from '../index';
 
+const {WINDOW} = Platforms;
 const {width} = Dimensions.get(WINDOW);
 const {black} = colors;
 

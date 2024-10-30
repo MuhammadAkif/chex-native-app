@@ -9,6 +9,7 @@ const {INSPECTION_SELECTION} = ROUTES;
 
 const CompletedInspectionContainer = ({navigation}) => {
   const {canGoBack, navigate} = navigation;
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
@@ -16,6 +17,7 @@ const CompletedInspectionContainer = ({navigation}) => {
     );
     return () => backHandler.remove();
   }, []);
+
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
       navigate(INSPECTION_SELECTION);
@@ -23,6 +25,7 @@ const CompletedInspectionContainer = ({navigation}) => {
     }
     return false;
   }
+
   return <CompletedInspectionScreen navigation={navigation} />;
 };
 

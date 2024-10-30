@@ -7,11 +7,15 @@ import {
 
 import {colors, dot, NavigationDrawerBackgroundColor} from '../Assets/Styles';
 import {IntroBackGroundImageView, PrimaryGradientButton} from '../Components';
-import {ANDROID} from '../Constants';
-import External from '../Assets/Icons/External';
+import {Platforms} from '../Constants';
+import {External} from '../Assets/Icons';
 
-let isAndroid = Platform.OS === ANDROID && 'Apps > ';
+const {OS} = Platform;
+const {ANDROID} = Platforms;
+let isAndroid = OS === ANDROID && 'Apps > ';
+
 const {cobaltBlueTwo, white, black} = colors;
+
 const IntroScreen = ({
   handleStartInspection,
   handleOpenSettings,

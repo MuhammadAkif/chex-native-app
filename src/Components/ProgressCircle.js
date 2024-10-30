@@ -6,9 +6,11 @@ import {
 } from 'react-native-responsive-screen';
 import CircularProgress from 'react-native-circular-progress-indicator';
 
-import {ANDROID} from '../Constants';
+import {Platforms} from '../Constants';
 import {colors} from '../Assets/Styles';
 
+const {OS} = Platform;
+const {ANDROID} = Platforms;
 const {orangePeel, white} = colors;
 const {loadingTexts} = {true: 'Finalizing Upload', false: 'Uploading'};
 const platformRadius = {true: 40, false: 80};
@@ -19,7 +21,7 @@ const ProgressCircle = ({
   isFullScreen = false,
   progress = 0,
 }) => {
-  const androidFullScreen = Platform.OS === ANDROID && isFullScreen;
+  const androidFullScreen = OS === ANDROID && isFullScreen;
   const loadingText = loadingTexts[progress === 100];
   const radius = platformRadius[androidFullScreen];
   const top = progressContainerTop[androidFullScreen];

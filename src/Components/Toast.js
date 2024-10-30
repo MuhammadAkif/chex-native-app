@@ -16,8 +16,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {XMark, Check, Cross, Exclamation} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {hideToast} from '../Store/Actions';
-import {ANDROID, IOS} from '../Constants';
+import {Platforms} from '../Constants';
 
+const {OS} = Platform;
+const {ANDROID, IOS} = Platforms;
 const {red, gray, white, black, brightGreen} = colors;
 const Toast_Icons = {
   error: Cross,
@@ -35,8 +37,8 @@ const Toast = props => {
   const {
     toast: {visible, message, type},
   } = useSelector(state => state.ui);
-
   const dispatch = useDispatch();
+
   useEffect(() => {
     let timeoutID = setTimeout(() => visible && onCrossPress(), 5000);
 
@@ -44,6 +46,7 @@ const Toast = props => {
       clearTimeout(timeoutID);
     };
   }, [visible]);
+
   if (!visible) {
     return null;
   }
@@ -54,8 +57,8 @@ const Toast = props => {
   const BACKGROUND_COLOR = Background_Color[type];
   const containerStyle = {
     ...styles.centeredView,
-    top: isModal && Platform.OS === ANDROID ? hp('0.7%') : hp('5%'),
-    marginTop: isModal && Platform.OS === IOS ? StatusBar.currentHeight : null,
+    top: isModal && OS === ANDROID ? hp('0.7%') : hp('5%'),
+    marginTop: isModal && OS === IOS ? StatusBar.currentHeight : null,
   };
   return (
     <View style={containerStyle}>

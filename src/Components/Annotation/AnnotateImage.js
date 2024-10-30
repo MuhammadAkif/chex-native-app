@@ -32,11 +32,13 @@ import {
   ANNOTATE_IMAGE,
   AnnotationAlertMessage,
   DAMAGE_TYPE,
-  IOS,
+  Platforms,
 } from '../../Constants';
 import {generateRandomString, isNotEmpty, mergeData} from '../../Utils';
 import {showToast} from '../../Store/Actions';
 
+const {OS} = Platform;
+const {IOS} = Platforms;
 const {white, gray, royalBlue, lightGray, black, cobaltBlueMedium} = colors;
 const activeButtonColor = {
   true: ['#FF7A00', '#F90'],
@@ -219,10 +221,7 @@ const AnnotateImage = ({
                 <Text style={styles.subHeadingText}>Add Notes</Text>
                 <View style={styles.statusDescriptionContainer}>
                   <TextInput
-                    style={[
-                      styles.text,
-                      Platform.OS === IOS && styles.iOSStyle,
-                    ]}
+                    style={[styles.text, OS === IOS && styles.iOSStyle]}
                     placeholder={notes}
                     multiline={true}
                     placeholderTextColor={gray}
@@ -342,7 +341,7 @@ const styles = StyleSheet.create({
   statusDescriptionContainer: {
     height: hp('12%'),
     width: '100%',
-    paddingVertical: Platform.OS === IOS ? hp('1%') : hp('0.3%'),
+    paddingVertical: OS === IOS ? hp('1%') : hp('0.3%'),
     paddingHorizontal: wp('2%'),
     borderRadius: 10,
     backgroundColor: lightGray,

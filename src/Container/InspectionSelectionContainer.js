@@ -4,8 +4,11 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {InspectionSelectionScreen} from '../Screens';
-import {ANDROID, HARDWARE_BACK_PRESS} from '../Constants';
+import {HARDWARE_BACK_PRESS, Platforms} from '../Constants';
 import {handleNewInspectionPress} from '../Utils';
+
+const {ANDROID} = Platforms;
+const {OS} = Platform;
 
 const InspectionSelectionContainer = ({navigation}) => {
   const {navigate} = navigation;
@@ -15,11 +18,21 @@ const InspectionSelectionContainer = ({navigation}) => {
   } = useSelector(state => state?.auth);
   const [isLoading, setIsLoading] = useState(false);
 
+  useFocusEffect(
+    useCallback(() => {
+      const backHandler = BackHandler.addEventListener(
+        HARDWARE_BACK_PRESS,
+        handle_Hardware_Back_Press,
+      );
+      return () => backHandler.remove();
+    }, []),
+  );
+
   function resetAllStates() {
     setIsLoading(false);
   }
-  const handle_Hardware_Back_Press = () => {
-    if (Platform.OS === ANDROID) {
+  function handle_Hardware_Back_Press() {
+    if (OS === ANDROID) {
       Alert.alert('Hold on!', 'Are you sure you want to exit app?', [
         {
           text: 'Cancel',
@@ -33,16 +46,7 @@ const InspectionSelectionContainer = ({navigation}) => {
       ]);
       return true;
     }
-  };
-  useFocusEffect(
-    useCallback(() => {
-      const backHandler = BackHandler.addEventListener(
-        HARDWARE_BACK_PRESS,
-        handle_Hardware_Back_Press,
-      );
-      return () => backHandler.remove();
-    }, []),
-  );
+  }
 
   const onNewInspectionPress = async () => {
     await handleNewInspectionPress(

@@ -69,7 +69,7 @@ const {
   CAMERA,
   COMPLETED_INSPECTION,
 } = ROUTES;
-
+const {OS} = Platform;
 const annotationModalInitialState = {
   title: '',
   type: '',
@@ -193,7 +193,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         setTimeout(() => {
           setIsLicenseModalVisible(isLicensePlate || false);
           setDisplayAnnotationPopUp(displayAnnotation || false);
-        }, delay[Platform.OS]);
+        }, delay[OS]);
         setFileID(fileId || '');
         setAnnotationModalDetails(prevState => ({
           ...prevState,
@@ -238,6 +238,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   useEffect(() => {
     !isLicensePlateUploaded && setSelectedOption(selectedOptionInitialState);
   }, [isLicensePlateUploaded]);
+
   const shouldAnnotate = vehicle_Type === 'new' && isExterior;
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
