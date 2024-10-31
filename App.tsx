@@ -20,34 +20,37 @@ function App() {
 
   useEffect(() => {
     handleAppLaunch();
-
     return () => {
       dispatch(clearNewInspection());
       dispatch(hideToast());
     };
-  }, [displayGif]);
+  }, []);
 
   function handleAppLaunch() {
     versionCheck().then();
     SplashScreen.hide();
     if (displayGif) {
-      setTimeout(() => {
-        setDisplayGif(false);
-      }, 3500);
+      const timeoutId = setTimeout(() => setDisplayGif(false), 3500);
+      return () => clearTimeout(timeoutId);
     } else {
       dispatch(clearNewInspection());
       dispatch(hideToast());
       hasCameraAndMicrophoneAllowed().then();
     }
   }
+
   async function versionCheck() {
     const version = await checkVersion();
     if (version.needsUpdate) {
       setUpdateAvailable(version.url);
     }
   }
+
   const handleUpdatePress = async () => {
-    await Linking.openURL(updateAvailable);
+    if (updateAvailable) {
+      console.log({updateAvailable});
+      await Linking.openURL(updateAvailable);
+    }
   };
 
   return displayGif ? (
