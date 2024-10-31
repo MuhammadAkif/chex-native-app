@@ -48,7 +48,6 @@ function App() {
 
   const handleUpdatePress = async () => {
     if (updateAvailable) {
-      console.log({updateAvailable});
       await Linking.openURL(updateAvailable);
     }
   };
