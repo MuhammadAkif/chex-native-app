@@ -8,7 +8,10 @@ import {
 import {colors} from '../Assets/Styles';
 import {FlipCamera, Landscape, Record} from '../Assets/Icons';
 import {fallBack} from '../Utils';
+import {Platforms} from '../Constants';
 
+const {OS} = Platform;
+const {IOS} = Platforms;
 const {white, red} = colors;
 const EmptyView = () => <View style={styles.emptyView} />;
 
@@ -52,7 +55,7 @@ const CameraFooter = ({
 };
 const styles = StyleSheet.create({
   cameraOptionContainer: {
-    flex: Platform.OS === 'ios' ? 0.2 : 0,
+    flex: OS === IOS ? 0.2 : 0,
     width: wp('100%'),
     flexDirection: 'row',
     alignItems: 'center',

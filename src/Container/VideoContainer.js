@@ -7,6 +7,7 @@ import {
   View,
   Text,
   BackHandler,
+  Platform,
 } from 'react-native';
 import {
   Camera,
@@ -26,8 +27,10 @@ import {CameraFooter, CaptureImageModal, RecordingPreview} from '../Components';
 import {ROUTES} from '../Navigation/ROUTES';
 import {updateVehicleImage} from '../Store/Actions';
 import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
-import {HARDWARE_BACK_PRESS} from '../Constants';
+import {HARDWARE_BACK_PRESS, Platforms} from '../Constants';
 
+const {OS} = Platform;
+const {ANDROID} = Platforms;
 const {NEW_INSPECTION} = ROUTES;
 const {white} = colors;
 const {container, headerContainer, counterContainer, counterText} =
@@ -145,7 +148,7 @@ const VideoContainer = ({route, navigation}) => {
           onRecordingFinished: video => {
             setIsVideoFile(video);
             const path = `file://${video.path}`;
-            // Platform.OS === 'android' ? video.path : `file://${video.path}`;
+            // OS === ANDROID ? video.path : `file://${video.path}`;
             setIsVideoURI(path);
           },
           onRecordingError: error => console.error(error.message),

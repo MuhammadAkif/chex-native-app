@@ -19,6 +19,7 @@ import {
 } from '../../Assets/Styles';
 import {Camera, CrossFilled, Damage_Vehicle} from '../../Assets/Icons';
 import {Platforms} from '../../Constants';
+import {Custom_Image} from '../index';
 
 const {WINDOW} = Platforms;
 const iconHeight = hp('5%');
@@ -49,7 +50,7 @@ const ImagePicker_New = ({
   <View style={uploadImageAndTextContainer}>
     {imageURL && displayImage ? (
       <TouchableOpacity
-        style={[container, styles.size]}
+        style={{...container, ...styles.size}}
         disabled={isLoading}
         onPress={handleMediaModalDetailsPress}>
         <TouchableOpacity style={crossContainer} onPress={onClearPress}>
@@ -61,20 +62,22 @@ const ImagePicker_New = ({
           resizeMode={'stretch'}
           style={[StyleSheet.absoluteFill, {borderRadius: wp('5%')}]}
         />
+        {/*<Custom_Image
+          source={{uri: imageURL}}
+          imageStyle={{height: '100%', width: '100%', borderRadius: wp('5%')}}
+        />*/}
         {isAnnotated && <Damage_Vehicle style={styles.icon} />}
       </TouchableOpacity>
     ) : (
       <TouchableOpacity
-        style={[uploadImageContainer, styles.size]}
+        style={{...uploadImageContainer, ...styles.size}}
         onPress={onPress}>
         <View
-          style={[
-            cameraIconContainer,
-            {
-              height: width * 0.12,
-              width: width * 0.12,
-            },
-          ]}>
+          style={{
+            ...cameraIconContainer,
+            height: width * 0.12,
+            width: width * 0.12,
+          }}>
           <Camera height={iconHeight} width={iconWidth} color={blueGray} />
         </View>
         <Text

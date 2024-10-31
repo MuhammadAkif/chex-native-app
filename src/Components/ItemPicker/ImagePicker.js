@@ -12,6 +12,7 @@ import {
   ItemPickerStyles,
 } from '../../Assets/Styles';
 import {Camera, CrossFilled} from '../../Assets/Icons';
+import {Custom_Image} from '../index';
 
 const height = hp('7%');
 const width = wp('7%');
@@ -72,6 +73,10 @@ const ImagePicker = ({
             resizeMode={'stretch'}
             style={[StyleSheet.absoluteFill, {borderRadius: 3}]}
           />
+          {/*<Custom_Image
+            source={{uri: imageURL}}
+            imageStyle={{height: '100%', width: '100%'}}
+          />*/}
         </TouchableOpacity>
       ) : (
         <TouchableOpacity

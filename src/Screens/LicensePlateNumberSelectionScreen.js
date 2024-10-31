@@ -22,7 +22,10 @@ import {
   RenderLicensePlateNumber,
   NumberPlateInUseModal,
 } from '../Components';
+import {Platforms} from '../Constants';
 
+const {OS} = Platform;
+const {IOS} = Platforms;
 const {black, orange, steelGray, royalBlue, silverGray} = colors;
 const {container, bodyContainer} = NewInspectionStyles;
 
@@ -104,7 +107,7 @@ const styles = StyleSheet.create({
     width: wp('100%'),
   },
   headerContainer: {
-    flex: Platform.OS === 'ios' ? 0.3 : null,
+    flex: OS === IOS ? 0.3 : null,
   },
   bodyHeader: {
     fontSize: hp('2%'),

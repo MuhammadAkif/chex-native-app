@@ -20,12 +20,13 @@ import {
 } from 'react-native-responsive-screen';
 import {INSPECTION_STATUS} from '../Utils/helpers';
 
+const {OS} = Platform;
 const {silverGray, lightGray, black} = colors;
 const mediaViewModals = {
   ios: DisplayMediaModal,
   android: AndroidMediaViewModal,
 };
-const ActiveMediaViewModal = mediaViewModals[Platform.OS];
+const ActiveMediaViewModal = mediaViewModals[OS];
 const {container, bodyContainer} = NewInspectionStyles;
 
 const InspectionDetailScreen = ({

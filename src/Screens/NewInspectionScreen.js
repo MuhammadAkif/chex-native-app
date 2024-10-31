@@ -22,11 +22,12 @@ import LoadingIndicator from '../Components/LoadingIndicator';
 import AnnotateImageModal from '../Components/Annotation/AnnotateImageModal';
 import AnnotateImage from '../Components/Annotation/AnnotateImage';
 
+const {OS} = Platform;
 const mediaViewModals = {
   ios: DisplayMediaModal,
   android: AndroidMediaViewModal,
 };
-const ActiveMediaViewModal = mediaViewModals[Platform.OS];
+const ActiveMediaViewModal = mediaViewModals[OS];
 const {black, orange, white} = colors;
 const {
   container,

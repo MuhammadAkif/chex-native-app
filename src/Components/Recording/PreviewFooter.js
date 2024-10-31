@@ -3,6 +3,10 @@ import {View, StyleSheet, Platform} from 'react-native';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {PrimaryGradientButton, SecondaryButton} from '../index';
+import {Platforms} from '../../Constants';
+
+const {OS} = Platform;
+const {IOS} = Platforms;
 
 const PreviewFooter = ({onRetryPress, onNextPress}) => (
   <View style={styles.container}>
@@ -21,7 +25,7 @@ const PreviewFooter = ({onRetryPress, onNextPress}) => (
 
 const styles = StyleSheet.create({
   container: {
-    flex: Platform.OS === 'ios' ? 0.2 : 0,
+    flex: OS === IOS ? 0.2 : 0,
     width: wp('100%'),
     flexDirection: 'row',
     justifyContent: 'space-evenly',

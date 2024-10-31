@@ -213,7 +213,7 @@ export const PreviewStyles = StyleSheet.create({
     width: wp('100%'),
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingTop: Platform.OS === 'ios' && '8%',
+    paddingTop: Platform.OS === Platforms.IOS && '8%',
     paddingHorizontal: '5%',
     alignItems: 'center',
     zIndex: 1,
