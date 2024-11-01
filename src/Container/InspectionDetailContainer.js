@@ -5,7 +5,7 @@ import {InspectionDetailScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS, S3_BUCKET_BASEURL} from '../Constants';
 import {CrossFilled, Tick} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
-import {formatTitle} from '../Utils/helpers';
+import {checkAndCompleteUrl, formatTitle} from '../Utils/helpers';
 
 const STATUS_ICON = {
   true: Tick,
@@ -52,16 +52,12 @@ const InspectionDetailContainer = ({navigation, route}) => {
       'video/mp4': true,
       '.mp4': true,
     };
-    const mediaUrl = {
-      true: S3_BUCKET_BASEURL + item?.url,
-      false: item?.url,
-    };
-    let currentMediaUrl = mediaUrl[item?.url.split('/')[0] === 'uploads'];
+    let {completedUrl: source} = checkAndCompleteUrl(item?.url);
     const isVideo = checkVideo[item?.extension] || false;
     setModalDetails({
-      source: currentMediaUrl,
-      title: title,
-      isVideo: isVideo,
+      source,
+      title,
+      isVideo,
     });
     setIsModalVisible(true);
   };

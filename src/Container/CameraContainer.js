@@ -37,6 +37,7 @@ import {
   getCurrentDate,
   getSignedUrl,
   handleNewInspectionPress,
+  hasCameraAndMicrophoneAllowed,
   isNotEmpty,
   uploadFile,
 } from '../Utils';
@@ -121,6 +122,7 @@ const CameraContainer = ({route, navigation}) => {
   const haveFrame = isNotEmpty(frameUri);
 
   useEffect(() => {
+    hasCameraAndMicrophoneAllowed().then();
     const subscription = AppState.addEventListener('change', nextAppState => {
       appState.current = nextAppState;
     });
@@ -166,6 +168,7 @@ const CameraContainer = ({route, navigation}) => {
   };
   const handleSwitchCamera = () => setIsBackCamera(!isBackCamera);
   const handleCaptureNowPress = async () => {
+    hasCameraAndMicrophoneAllowed().then();
     if (cameraRef.current) {
       let file = await cameraRef?.current?.takePhoto();
       const filePath = `file://${file.path}`;

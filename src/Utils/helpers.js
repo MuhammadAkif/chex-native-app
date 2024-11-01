@@ -114,3 +114,62 @@ const vehichle_Categories = {
     right_rear_tire: 'right_rear_tire',
   },
 };
+
+export function checkAndCompleteUrl(url, paramsToCheck = []) {
+  const domainsToCheck = [
+    'chex-dsp.s3.amazonaws.com',
+    'chex-ai-uploads.s3.amazonaws.com',
+  ];
+  const defaultDomains = {
+    dsp: 'https://chex-dsp.s3.amazonaws.com',
+    uploads: 'https://chex-ai-uploads.s3.amazonaws.com',
+  };
+
+  const result = {
+    completedUrl: url,
+    isValidUrl: true,
+    parameters: {},
+    domainMatch: false,
+    errors: [],
+  };
+
+  // Handle edge case: Empty or null URL
+  if (!url || typeof url !== 'string') {
+    result.isValidUrl = false;
+    result.errors.push('Invalid URL: URL is empty or not a string.');
+    return result;
+  }
+
+  // Check if the URL is already complete
+  if (!url.startsWith('http')) {
+    // Determine the correct default domain based on the path prefix
+    const pathPrefix = url.split('/')[0];
+    let baseDomain = defaultDomains[pathPrefix] || defaultDomains.uploads;
+
+    // Construct the complete URL
+    url = `${baseDomain.replace(/\/+$/, '')}/${url.replace(/^\/+/, '')}`; // Removes extra slashes
+    result.completedUrl = url;
+  }
+
+  try {
+    const urlObj = new URL(url);
+
+    // Check for specified parameters in the URL if paramsToCheck is not empty
+    if (paramsToCheck.length > 0) {
+      paramsToCheck.forEach(param => {
+        result.parameters[param] = urlObj.searchParams.has(param);
+      });
+    }
+
+    // Check if the URL's domain matches any specified domains
+    result.domainMatch = domainsToCheck.some(domain =>
+      urlObj.hostname.includes(domain),
+    );
+  } catch (error) {
+    // Handle invalid URL format
+    result.isValidUrl = false;
+    result.errors.push('Invalid URL format.');
+  }
+
+  return result;
+}

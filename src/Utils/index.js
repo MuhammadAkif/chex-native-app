@@ -22,6 +22,7 @@ import {
 } from '../Store/Actions';
 import {IMAGES} from '../Assets/Images';
 import {store} from '../Store';
+import {checkAndCompleteUrl} from './helpers';
 
 const {UPLOAD_URL, FETCH_IN_PROGRESS_URL, CREATE_INSPECTION_URL} =
   API_ENDPOINTS;
@@ -663,11 +664,7 @@ export function uploadInProgressMediaToStore(files, dispatch) {
   for (let file = 0; file < files.length; file++) {
     const url = files[file].url;
     const completeURL = S3_BUCKET_BASEURL + url;
-    const image_URLs = {
-      true: url,
-      false: completeURL,
-    };
-    const imageURL = image_URLs[url.split(':')[0] === 'https'];
+    let {completedUrl: imageURL} = checkAndCompleteUrl(url);
     let {groupType, id, category, llamaCost: variant} = files[file];
     let variant_ = parseInt(variant);
     if (variant_) {

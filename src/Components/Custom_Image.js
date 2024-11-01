@@ -51,19 +51,20 @@ const Custom_Image = ({
       source={source}
       resizeMode="stretch"
       style={[styles.image, imageStyle]}
-      onProgress={on_Progress}
-      onLoadEnd={on_LoadEnd}>
-      {loadingProgress.display && (
-        <ProgressBar
-          value={loadingProgress.progress * 100}
-          containerStyle={[
-            styles.image,
-            imageStyle,
-            loadingContainerStyle,
-            {zIndex},
-          ]}
-        />
-      )}
+      // onProgress={on_Progress}
+      // onLoadEnd={on_LoadEnd}
+    >
+      {/*{loadingProgress.display && (*/}
+      {/*  <ProgressBar*/}
+      {/*    value={loadingProgress.progress * 100}*/}
+      {/*    containerStyle={[*/}
+      {/*      styles.image,*/}
+      {/*      imageStyle,*/}
+      {/*      loadingContainerStyle,*/}
+      {/*      {zIndex},*/}
+      {/*    ]}*/}
+      {/*  />*/}
+      {/*)}*/}
     </Image>
   );
 };

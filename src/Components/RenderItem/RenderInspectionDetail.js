@@ -8,7 +8,7 @@ import {
 import {circleBorderRadius, colors} from '../../Assets/Styles';
 import {Platforms, S3_BUCKET_BASEURL} from '../../Constants';
 import {isNotEmpty} from '../../Utils';
-import {formatTitle} from '../../Utils/helpers';
+import {checkAndCompleteUrl, formatTitle} from '../../Utils/helpers';
 import {Custom_Image} from '../index';
 
 const {WINDOW} = Platforms;
@@ -18,18 +18,13 @@ const {black} = colors;
 const RenderInspectionDetail = ({item, handleDisplayMedia, categoryCount}) => {
   const {category, url} = item;
   let title = formatTitle(category);
-  const mediaUrl = {
-    true: S3_BUCKET_BASEURL + url,
-    false: url,
-  };
-  let currentMediaUrl = mediaUrl[url.split('/')[0] === 'uploads'];
-
+  let {completedUrl: source} = checkAndCompleteUrl(url);
   return (
     <TouchableOpacity
-      disabled={!isNotEmpty(currentMediaUrl)}
+      disabled={!isNotEmpty(source)}
       style={styles.container}
       onPress={() => handleDisplayMedia(item)}>
-      <Custom_Image source={{uri: currentMediaUrl}} />
+      <Custom_Image source={{uri: source}} />
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );
