@@ -14,6 +14,7 @@ import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
 import {API_ENDPOINTS, HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
 import {showToast, signIn} from '../../Store/Actions';
+import {login} from '../../services/authServices';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
@@ -86,6 +87,12 @@ const SignInContainer = ({navigation, route}) => {
   const hidePasswordHandler = () => setHidePassword(!hidePassword);
   const handleForgetPassword = () => navigate(FORGET_PASSWORD);
   const checkUserData = async (body, resetForm) => {
+    /*const {username, password} = body;
+    dispatch(signIn(username, password))
+      .then(res => onCheckUserDataSuccess(resetForm))
+      .catch(onCheckUserDataFail)
+      .finally(() => setIsSubmitting(false));*/
+
     axios
       .post(LOGIN_URL, body)
       .then(res => onCheckUserDataSuccess(res, resetForm))

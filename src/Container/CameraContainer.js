@@ -20,6 +20,7 @@ import {
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import axios from 'axios';
+import ImagePicker from 'react-native-image-crop-picker';
 
 import {colors, PreviewStyles} from '../Assets/Styles';
 import {BackArrow} from '../Assets/Icons';
@@ -179,7 +180,7 @@ const CameraContainer = ({route, navigation}) => {
   const handleResponse = async key => {
     const url = S3_BUCKET_BASEURL + key;
     const haveType = checkRelevantType(groupType);
-    let extension = isImageFile.path.split('.').pop();
+    let extension = isImageFile.path.split('.').pop() || 'jpeg';
     const mime = 'image/' + extension;
     let body = {
       category: subCategory,
@@ -255,7 +256,7 @@ const CameraContainer = ({route, navigation}) => {
     }
   };
   const handleNextPress = () => {
-    let extension = isImageFile.path.split('.')[2];
+    let extension = isImageFile.path.split('.')[2] || 'jpeg';
     const mime = 'image/' + extension;
     setIsModalVisible(true);
     getSignedUrl(
@@ -293,6 +294,20 @@ const CameraContainer = ({route, navigation}) => {
   };
   const handleOnRightIconPress = () =>
     setOrientation(prevState => switchOrientation[prevState]);
+  const handleImagePicker = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+      // includeBase64: true,
+    })
+      .then(image => {
+        const {sourceURL} = image;
+        setIsImageFile(image);
+        setIsImageURL(sourceURL);
+      })
+      .catch(error => console.log(error.code));
+  };
   return (
     <>
       {isModalVisible && (
@@ -364,6 +379,7 @@ const CameraContainer = ({route, navigation}) => {
             RightIcon={RightIcon}
             onRightIconPress={handleOnRightIconPress}
             displayFrame={haveFrame}
+            handleImagePicker={handleImagePicker}
           />
         </View>
       )}

@@ -19,14 +19,6 @@ function App() {
   const [updateAvailable, setUpdateAvailable] = useState('');
 
   useEffect(() => {
-    handleAppLaunch();
-    return () => {
-      dispatch(clearNewInspection());
-      dispatch(hideToast());
-    };
-  }, []);
-
-  function handleAppLaunch() {
     versionCheck().then();
     SplashScreen.hide();
     if (displayGif) {
@@ -37,7 +29,11 @@ function App() {
       dispatch(hideToast());
       hasCameraAndMicrophoneAllowed().then();
     }
-  }
+    return () => {
+      dispatch(clearNewInspection());
+      dispatch(hideToast());
+    };
+  }, [displayGif]);
 
   async function versionCheck() {
     const version = await checkVersion();

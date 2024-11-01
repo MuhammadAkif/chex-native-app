@@ -22,7 +22,7 @@ import {
   handleNewInspectionPress,
   uploadInProgressMediaToStore,
 } from '../Utils';
-import {deleteRequest} from '../Services/api';
+import {deleteRequest} from '../services/api';
 
 const {NEW_INSPECTION, INSPECTION_IN_PROGRESS} = ROUTES;
 

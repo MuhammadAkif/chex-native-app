@@ -14,6 +14,7 @@ import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
 import {API_ENDPOINTS, HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
 import {showToast} from '../../Store/Actions';
+import {forgotPassword} from '../../services/authServices';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
@@ -70,6 +71,7 @@ const ForgotPasswordContainer = ({navigation}) => {
     setKeyboardActive(value);
   }
   const handleVerificationCodeSend = async (email, resetForm) => {
+    // await forgotPassword(email)
     axios
       .post(FORGET_PASSWORD_URL, {email: email})
       .then(response =>

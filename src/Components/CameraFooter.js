@@ -6,7 +6,7 @@ import {
 } from 'react-native-responsive-screen';
 
 import {colors} from '../Assets/Styles';
-import {FlipCamera, Landscape, Record} from '../Assets/Icons';
+import {FlipCamera, Landscape, PhotoLibrary, Record} from '../Assets/Icons';
 import {fallBack} from '../Utils';
 import {Platforms} from '../Constants';
 
@@ -23,6 +23,7 @@ const CameraFooter = ({
   displayFrame = false,
   onRightIconPress = fallBack,
   RightIcon = Landscape,
+  handleImagePicker,
 }) => {
   const switchRightIcon = {
     true: RightIcon,

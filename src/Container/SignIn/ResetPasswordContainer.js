@@ -14,6 +14,7 @@ import {colors} from '../../Assets/Styles';
 import {API_ENDPOINTS, HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
 import {ResetPasswordScreen} from '../../Screens';
 import {showToast} from '../../Store/Actions';
+import {resetPassword} from '../../services/authServices';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
@@ -89,6 +90,13 @@ const ResetPasswordContainer = ({navigation, route}) => {
     setHideConfirmPassword(!hideConfirmPassword);
   const handleForgetPassword = () => navigate(FORGET_PASSWORD);
   const handleResetPassword = async (body, resetForm) => {
+    /*let {verificationCode: OTP, password, confirmPassword} = body;
+
+        await resetPassword(OTP, confirmPassword, email || '', password)
+      .then(response => onResetPasswordSuccess(response, resetForm))
+      .catch(onResetPasswordFail)
+      .finally(() => setIsSubmitting(false));*/
+
     let {verificationCode, password, confirmPassword} = body;
     const data = {
       OTP: verificationCode,

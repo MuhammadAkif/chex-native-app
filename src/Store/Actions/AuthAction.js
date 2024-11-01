@@ -1,4 +1,5 @@
 import {Types} from '../Types';
+import {login} from '../../services/authServices';
 
 const {
   SIGN_IN,
@@ -9,7 +10,15 @@ const {
   SESSION_EXPIRED,
 } = Types;
 
+/*export const signIn = (username, password) => async dispatch => {
+  await login(username, password)
+    .then(res => dispatch({type: SIGN_IN, payload: res}))
+    .catch(error => {
+      throw error;
+    });
+};*/
 export const signIn = user => ({type: SIGN_IN, payload: user});
+
 export const signOut = () => {
   return dispatch => {
     dispatch({type: CLEAR_INSPECTION_REVIEWED});
