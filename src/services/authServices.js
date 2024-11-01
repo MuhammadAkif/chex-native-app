@@ -22,6 +22,7 @@ export const forgotPassword = async email => {
     throw error;
   }
 };
+
 export const resetPassword = async (OTP, confirmPassword, email, password) => {
   try {
     const body = {

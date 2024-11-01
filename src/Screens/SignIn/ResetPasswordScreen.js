@@ -70,7 +70,7 @@ const ResetPasswordScreen = ({
               : 1.5,
         }}>
         <SignInLogo
-          titleText={'Forget Password'}
+          titleText={'Reset Password'}
           textStyle={{fontSize: hp('3%')}}
           containerStyle={styles.logoContainer}
         />

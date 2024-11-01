@@ -1,4 +1,4 @@
-import {Alert} from 'react-native';
+import {Alert, PermissionsAndroid} from 'react-native';
 import * as yup from 'yup';
 import {Camera} from 'react-native-vision-camera';
 import axios from 'axios';
@@ -321,6 +321,28 @@ export const hasCameraAndMicrophoneAllowed = async () => {
     await Camera.requestMicrophonePermission();
   }
 };
+export async function requestStorageAccessPermission() {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      {
+        title: 'Access to Storage',
+        message: 'We need access to your storage to display images',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
+
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('Storage permission granted');
+    } else {
+      console.log('Storage permission denied');
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+}
 function error_Handler(callback = null) {
   Alert.alert(
     'Upload Failed',

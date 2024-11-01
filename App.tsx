@@ -6,7 +6,10 @@ import SplashScreen from 'react-native-splash-screen';
 import {checkVersion} from 'react-native-check-version';
 
 import Navigation from './src/Navigation/index';
-import {hasCameraAndMicrophoneAllowed} from './src/Utils';
+import {
+  hasCameraAndMicrophoneAllowed,
+  requestStorageAccessPermission,
+} from './src/Utils';
 import {DiscardInspectionModal, Splash, Toast} from './src/Components';
 import {UPDATE_APP} from './src/Constants';
 import {clearNewInspection, hideToast} from './src/Store/Actions';
@@ -28,6 +31,7 @@ function App() {
       dispatch(clearNewInspection());
       dispatch(hideToast());
       hasCameraAndMicrophoneAllowed().then();
+      requestStorageAccessPermission().then();
     }
     return () => {
       dispatch(clearNewInspection());

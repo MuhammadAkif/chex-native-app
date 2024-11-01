@@ -444,11 +444,9 @@ const NewInspectionContainer = ({route, navigation}) => {
   const handleSubmitPress = () => {
     setIsLoading(true);
     const endPoint = generateApiUrl(`auto/reviewed/${selectedInspectionID}`);
-    // const endPoint = generateApiUrl(`inspection/${selectedInspectionID}`);
 
     axios
       .put(endPoint, null, config)
-      // .patch(endPoint, null, config)
       .then(handleGetLocation)
       .catch(onSubmitPressFail)
       .finally(() => setIsLoading(false));

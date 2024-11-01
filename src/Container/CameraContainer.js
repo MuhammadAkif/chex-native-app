@@ -302,9 +302,9 @@ const CameraContainer = ({route, navigation}) => {
       // includeBase64: true,
     })
       .then(image => {
-        const {sourceURL} = image;
+        const {sourceURL, path} = image;
         setIsImageFile(image);
-        setIsImageURL(sourceURL);
+        setIsImageURL(sourceURL || path);
       })
       .catch(error => console.log(error.code));
   };

@@ -21,7 +21,10 @@ export const API_ENDPOINTS = {
   EXTRACT_NUMBER_PLATE_URL: generateApiUrl('extract/inspection/create'),
   EXTRACT_NUMBER_PLATE_WITH_AI_URL: process.env.EXTRACT_NUMBER_PLATE_URL,
   LOGIN_URL: generateApiUrl('auth/login'),
-  UPLOAD_URL: generateApiUrl('file/upload'),
+  /*New file upload api*/
+  UPLOAD_URL: generateApiUrl('automation/file/upload'),
+  /*Old file upload api*/
+  // UPLOAD_URL: generateApiUrl('file/upload'),
   CREATE_INSPECTION_URL: generateApiUrl('create/inspection'),
   FETCH_IN_PROGRESS_URL: generateApiUrl('status/vehicle'),
   FORGET_PASSWORD_URL: generateApiUrl('auth/reset/email'),
