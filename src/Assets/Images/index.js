@@ -27,7 +27,7 @@ export const IMAGES = {
     front_left_corner: require('./Portrait/Left_front.png'),
     front_right_corner: require('./Portrait/Right_front.png'),
     rear_left_corner: require('./Portrait/Left_back.png'),
-    rear_right_corner: require('./Portrait/Rigt_back.png'),
+    rear_right_corner: require('./Portrait/Right_back.png'),
   },
   landscape: {
     exterior_left: require('./landscape/Left_side.png'),
@@ -37,6 +37,6 @@ export const IMAGES = {
     front_left_corner: require('./landscape/Left_front.png'),
     front_right_corner: require('./landscape/Right_front.png'),
     rear_left_corner: require('./landscape/Left_back.png'),
-    rear_right_corner: require('./landscape/Rigt_back.png'),
+    rear_right_corner: require('./landscape/Right_back.png'),
   },
 };

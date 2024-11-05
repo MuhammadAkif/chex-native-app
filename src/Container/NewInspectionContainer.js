@@ -1,31 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import {BackHandler, Platform} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import axios from 'axios';
 
 import {NewInspectionScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
-  numberPlateSelected,
   updateIsLicensePlateUploaded,
   categoryVariant,
   showToast,
   removeVehicleImage,
   clearNewInspection,
-  clearTires,
+  clear_Tires,
   skipLeft,
   skipLeftCorners,
   skipRight,
   skipRightCorners,
   setVehicleType,
+  file_Details,
 } from '../Store/Actions';
-import {
-  API_ENDPOINTS,
-  Delete_Messages,
-  generateApiUrl,
-  HARDWARE_BACK_PRESS,
-  INSPECTION,
-} from '../Constants';
+import {Delete_Messages, HARDWARE_BACK_PRESS, INSPECTION} from '../Constants';
 import {
   exteriorVariant,
   EXTRACT_INSPECTION_ITEM_ID,
@@ -37,7 +30,6 @@ import {
   isNotEmpty,
   isObjectEmpty,
   LicensePlateDetails,
-  uploadInProgressMediaToStore,
 } from '../Utils';
 import {
   ExteriorItemsExpandedCard,
@@ -45,14 +37,15 @@ import {
   InteriorItemsAnnotationExpandedCard,
   InteriorItemsExpandedCard,
 } from '../Components';
-
-const {
-  EXTRACT_NUMBER_PLATE_URL,
-  INSPECTION_TIRE_STATUS_URL,
-  REMOVE_ALL_TIRES_URL,
-  ANNOTATION_URL,
-  LOCATION_URL,
-} = API_ENDPOINTS;
+import {
+  clearTires,
+  deleteImageFromDatabase,
+  extractNumberPlate,
+  imageAnnotation,
+  inspectionSubmission,
+  location,
+  vehicleTireStatus,
+} from '../services/inspection';
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllCarVerification: false,
@@ -160,12 +153,6 @@ const NewInspectionContainer = ({route, navigation}) => {
     exteriorItemsExpandedCards[vehicle_Type];
   const ActiveInteriorItemsExpandedCard =
     interiorItemsExpandedCards[vehicle_Type];
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  };
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -441,23 +428,15 @@ const NewInspectionContainer = ({route, navigation}) => {
       inspectionId: selectedInspectionID,
     });
   };
-  const handleSubmitPress = () => {
+  const handleSubmitPress = async () => {
     setIsLoading(true);
-    const endPoint = generateApiUrl(`auto/reviewed/${selectedInspectionID}`);
-
-    axios
-      .put(endPoint, null, config)
+    await inspectionSubmission(selectedInspectionID)
       .then(handleGetLocation)
       .catch(onSubmitPressFail)
       .finally(() => setIsLoading(false));
   };
   async function handleGetLocation() {
-    const location_Data = {
-      isLocation: true,
-      inspectionId: selectedInspectionID,
-    };
-    await axios
-      .put(LOCATION_URL, location_Data, {})
+    await location(selectedInspectionID)
       .then(onGetLocationSuccess)
       .catch(onGetLocationFail);
   }
@@ -485,7 +464,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsDiscardInspectionModalVisible(true);
     setDeleteItem({category: category, key: key});
   };
-  const handleYesPress = () => {
+  const handleYesPress = async () => {
     const {key, category} = deleteItem;
     const {interiorItems: interior, exteriorItems: exterior} = INSPECTION;
     const types = [interior, exterior];
@@ -496,10 +475,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     }
     setIsDiscardInspectionModalVisible(false);
     const imageID = EXTRACT_INSPECTION_ITEM_ID(key_);
-    const endPoint = generateApiUrl(`files/${imageID}`);
 
-    axios
-      .delete(endPoint, config)
+    await deleteImageFromDatabase(imageID)
       .then(() => onImageDeleteSuccess(category, key_))
       .catch(e => onImageDeleteFail(e, category, key_));
   };
@@ -541,16 +518,14 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   const handleConfirmModalVisible = () =>
     setIsLicenseModalVisible(prevState => !prevState);
-  const handleConfirmVehicleDetail = numberPlate => {
+  const handleConfirmVehicleDetail = async numberPlate => {
     if (isNotEmpty(numberPlate.trim())) {
-      const body = {
-        licensePlateNumber: numberPlate,
-        companyId: data?.companyId,
-        inspectionId: selectedInspectionID,
-      };
       setIsLoading(true);
-      axios
-        .post(EXTRACT_NUMBER_PLATE_URL, body, config)
+      await extractNumberPlate(
+        numberPlate,
+        data?.companyId,
+        selectedInspectionID,
+      )
         .then(onNumberPlateExtractSuccess)
         .catch(onNumberPlateExtractFailure)
         .finally(() => {
@@ -586,23 +561,16 @@ const NewInspectionContainer = ({route, navigation}) => {
       setInUseErrorTitle(message);
     }
   }
-  const handleYesPressOfInProgressInspection = () => {
+  const handleYesPressOfInProgressInspection = async () => {
     setIsInspectionInProgressModalVisible(false);
     setLoadingIndicator(true);
     setErrorTitle('');
-    const endPoint = generateApiUrl(`files/details/${inspectionID}`);
-
-    axios
-      .get(endPoint)
+    dispatch(file_Details(inspectionID))
       .then(onInProgressInspectionSuccess)
       .catch(onInProgressInspectionFail);
   };
   function onInProgressInspectionSuccess(res) {
-    const details = res?.data?.files;
-    uploadInProgressMediaToStore(details, dispatch);
     vehicleTireStatusToRender(inspectionID).then();
-    dispatch(numberPlateSelected(inspectionID));
-    dispatch(fileDetails(details, inspectionID));
   }
   function onInProgressInspectionFail(error) {
     const {statusCode = null} = error?.response?.data || {};
@@ -615,11 +583,8 @@ const NewInspectionContainer = ({route, navigation}) => {
   //Tire Rendering logic start here
   async function vehicleTireStatusToRender(inspection_ID) {
     setLoadingIndicator(true);
-    const body = {
-      inspectionId: inspection_ID,
-    };
-    await axios
-      .post(INSPECTION_TIRE_STATUS_URL, body, config)
+
+    await vehicleTireStatus(inspection_ID)
       .then(onVehicleTireStatusToRenderSuccess)
       .catch(onVehicleTireStatusToRenderFail)
       .finally(() => setLoadingIndicator(false));
@@ -639,13 +604,12 @@ const NewInspectionContainer = ({route, navigation}) => {
   }
   async function handleRemovedAllTires() {
     let removeTiresList = extractIDs(tires) || [];
-    const body = {fileId: removeTiresList};
-    await axios
-      .post(REMOVE_ALL_TIRES_URL, body, config)
+
+    await clearTires(removeTiresList)
       .then(res => {
-        dispatch(clearTires());
+        dispatch(clear_Tires());
       })
-      .catch(e => {})
+      .catch()
       .finally(() => {
         setLoadingIndicator(false);
       });
@@ -662,13 +626,8 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   const handleAnnotationSubmit = async (details, callback) => {
     setIsLoading(true);
-    const body = {
-      coordinateArray: details,
-      inspectionId: selectedInspectionID,
-      fileId: fileID,
-    };
-    axios
-      .post(ANNOTATION_URL, body, config)
+
+    await imageAnnotation(details, selectedInspectionID, fileID)
       .then(res => onAnnotationSubmitSuccess(res, callback))
       .catch(onAnnotationSubmitFail)
       .finally(() => {
@@ -676,9 +635,9 @@ const NewInspectionContainer = ({route, navigation}) => {
         setDisplayAnnotation(!displayAnnotation);
       });
   };
-  function onAnnotationSubmitSuccess(res, callback) {
+  async function onAnnotationSubmitSuccess(res, callback) {
     callback();
-    get_Inspection_Details(dispatch, selectedInspectionID).then();
+    await get_Inspection_Details(dispatch, selectedInspectionID);
   }
   function onAnnotationSubmitFail(error) {
     const {statusCode = null} = error?.response?.data;
@@ -692,6 +651,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setDisplayAnnotation(!displayAnnotation);
   };
   //Annotation logic ends here
+
   return (
     <NewInspectionScreen
       selectedOption={selectedOption}

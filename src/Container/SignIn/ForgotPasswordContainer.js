@@ -5,21 +5,19 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import axios from 'axios';
 import {useDispatch} from 'react-redux';
 
 import {ForgotPasswordScreen} from '../../Screens';
 import {forgetPasswordSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
-import {API_ENDPOINTS, HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
+import {HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
 import {showToast} from '../../Store/Actions';
 import {forgotPassword} from '../../services/authServices';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
 const {cobaltBlueLight, gray, white} = colors;
-const {FORGET_PASSWORD_URL} = API_ENDPOINTS;
 const {WELCOME, RESET_PASSWORD, SIGN_IN} = ROUTES;
 
 const ForgotPasswordContainer = ({navigation}) => {
@@ -71,9 +69,7 @@ const ForgotPasswordContainer = ({navigation}) => {
     setKeyboardActive(value);
   }
   const handleVerificationCodeSend = async (email, resetForm) => {
-    // await forgotPassword(email)
-    axios
-      .post(FORGET_PASSWORD_URL, {email: email})
+    await forgotPassword(email)
       .then(response =>
         onVerificationCodeSendSuccess(response, resetForm, email),
       )

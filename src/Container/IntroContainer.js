@@ -40,7 +40,6 @@ const IntroContainer = ({navigation}) => {
       dispatch,
       setIsLoading,
       data?.companyId,
-      token,
       navigation,
       resetAllStates,
     );

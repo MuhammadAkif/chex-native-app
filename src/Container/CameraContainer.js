@@ -19,7 +19,6 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
-import axios from 'axios';
 import ImagePicker from 'react-native-image-crop-picker';
 
 import {colors, PreviewStyles} from '../Assets/Styles';
@@ -122,7 +121,6 @@ const CameraContainer = ({route, navigation}) => {
   const haveFrame = isNotEmpty(frameUri);
 
   useEffect(() => {
-    hasCameraAndMicrophoneAllowed().then();
     const subscription = AppState.addEventListener('change', nextAppState => {
       appState.current = nextAppState;
     });
@@ -232,23 +230,9 @@ const CameraContainer = ({route, navigation}) => {
     };
     navigate(NEW_INSPECTION, params);
   }
-  const handleExtractNumberPlate = async imageURL => {
-    const body = {image_url: imageURL};
-    const headers = {
-      api_token: AI_API_TOKEN,
-    };
-    await axios
-      .post(EXTRACT_NUMBER_PLATE_WITH_AI, body, {headers: headers})
-      .then(onExtractNumberPlateSuccess)
-      .catch(onExtractNumberPlateFail);
+  const handleExtractNumberPlate = async imageUrl => {
+    dispatch(setLicensePlateNumber(imageUrl));
   };
-  function onExtractNumberPlateSuccess(res) {
-    const {plateNumber = null} = res?.data || {};
-    dispatch(setLicensePlateNumber(plateNumber));
-  }
-  function onExtractNumberPlateFail(error) {
-    console.log('AI error => ', error);
-  }
   const handleError = (inspectionDeleted = false) => {
     if (inspectionDeleted) {
       setIsModalVisible(false);
@@ -281,7 +265,6 @@ const CameraContainer = ({route, navigation}) => {
       dispatch,
       setIsLoading,
       data?.companyId,
-      token,
       navigation,
       resetAllStates,
     )

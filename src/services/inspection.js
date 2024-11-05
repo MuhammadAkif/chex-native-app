@@ -1,0 +1,216 @@
+import api from './api';
+import {
+  AI_API_TOKEN,
+  API_ENDPOINTS,
+  EXTRACT_NUMBER_PLATE_WITH_AI,
+  generateApiUrl,
+} from '../Constants';
+import {generateRandomString} from '../Utils';
+
+const {
+  EXTRACT_NUMBER_PLATE_URL,
+  INSPECTION_TIRE_STATUS_URL,
+  REMOVE_ALL_TIRES_URL,
+  ANNOTATION_URL,
+  LOCATION_URL,
+  CREATE_INSPECTION_URL,
+  FETCH_IN_PROGRESS_URL,
+  UPLOAD_URL,
+} = API_ENDPOINTS;
+
+export const createInspection = async companyId => {
+  const body = {
+    licensePlateNumber: generateRandomString(),
+    companyId,
+  };
+  try {
+    return await api.post(CREATE_INSPECTION_URL, body);
+  } catch (error) {
+    console.error('Create inspection error:', error);
+    throw error;
+  }
+};
+
+export const removeInspection = async inspectionId => {
+  const endPoint = generateApiUrl(`delete/inspection/${inspectionId}?type=app`);
+  try {
+    return await api.delete(endPoint);
+  } catch (error) {
+    console.error('Inspection remove error:', error);
+    throw error;
+  }
+};
+
+export const getInspectionDetails = async inspectionId => {
+  const endPoint = generateApiUrl(`files/details/${inspectionId}`);
+  console.log('Fetching inspection details');
+
+  try {
+    return await api.get(endPoint);
+  } catch (error) {
+    console.error('Fetching inspection details error:', error);
+    throw error;
+  }
+};
+
+export const extractNumberPlate = async (
+  licensePlateNumber,
+  companyId,
+  inspectionId,
+) => {
+  const body = {
+    licensePlateNumber,
+    companyId,
+    inspectionId,
+  };
+
+  try {
+    return await api.post(EXTRACT_NUMBER_PLATE_URL, body);
+  } catch (error) {
+    console.error('License plate extraction error:', error);
+    throw error;
+  }
+};
+
+export const vehicleTireStatus = async inspectionId => {
+  const body = {
+    inspectionId,
+  };
+  try {
+    return await api.post(INSPECTION_TIRE_STATUS_URL, body);
+  } catch (error) {
+    console.error('Vehicle tire status check error:', error);
+    throw error;
+  }
+};
+
+export const clearTires = async (fileIds = []) => {
+  const body = {fileId: fileIds};
+
+  try {
+    return await api.post(REMOVE_ALL_TIRES_URL, body);
+  } catch (error) {
+    console.error('Tires removing error:', error);
+    throw error;
+  }
+};
+
+export const imageAnnotation = async (
+  coordinateArray,
+  inspectionId,
+  fileId,
+) => {
+  const body = {coordinateArray, inspectionId, fileId};
+
+  try {
+    return await api.post(ANNOTATION_URL, body);
+  } catch (error) {
+    console.error('Image annotation submission error:', error);
+    throw error;
+  }
+};
+
+export const inspectionDetails = async inspectionId => {
+  const endPoint = generateApiUrl(`files/app/${inspectionId}`);
+  console.log('getting inspections');
+
+  try {
+    return await api.get(endPoint);
+  } catch (error) {
+    console.error('Inspection details error:', error);
+    throw error;
+  }
+};
+
+export const fetchAllInspections = async status => {
+  console.log('fetchAllInspections inspections');
+  const body = {
+    status,
+  };
+  try {
+    return await api.post(FETCH_IN_PROGRESS_URL, body);
+  } catch (error) {
+    console.error('Inspection details error:', error);
+    throw error;
+  }
+};
+
+export const extractLicensePlateAI = async image_url => {
+  const body = {image_url};
+  const headers = {
+    api_token: AI_API_TOKEN,
+  };
+  try {
+    return await api.post(EXTRACT_NUMBER_PLATE_WITH_AI, body, {
+      headers: headers,
+    });
+  } catch (error) {
+    console.error('License Plate AI Extraction error:', error);
+    throw error;
+  }
+};
+
+export const s3SignedUrl = async (
+  type = '',
+  source = '',
+  inspectionId = '',
+  categoryName = '',
+  variant = '',
+) => {
+  const data = {type, source, inspectionId, categoryName, variant};
+  // const data = {type: mime},
+
+  try {
+    return await api.post(UPLOAD_URL, data);
+  } catch (error) {
+    console.error('Getting s3 signed url error:', error);
+    throw error;
+  }
+};
+
+export const uploadFileToDatabase = async (inspectionId, body) => {
+  const endPoint = generateApiUrl(`vehicle/${inspectionId}/file`);
+
+  try {
+    return await api.post(endPoint, body);
+  } catch (error) {
+    console.error('Getting s3 signed url error:', error);
+    throw error;
+  }
+};
+
+export const deleteImageFromDatabase = async fileId => {
+  const endPoint = generateApiUrl(`files/${fileId}`);
+
+  try {
+    return await api.delete(endPoint);
+  } catch (error) {
+    console.error('Delete image from database error:', error);
+    throw error;
+  }
+};
+
+export const location = async inspectionId => {
+  const body = {
+    isLocation: true,
+    inspectionId,
+  };
+
+  try {
+    return await api.put(LOCATION_URL, body);
+  } catch (error) {
+    console.error('location error:', error);
+    throw error;
+  }
+};
+
+export const inspectionSubmission = async inspectionId => {
+  const endPoint = generateApiUrl(`auto/reviewed/${inspectionId}`);
+
+  try {
+    return await api.put(endPoint, null);
+  } catch (error) {
+    console.error('Inspection submission error:', error);
+    throw error;
+  }
+};

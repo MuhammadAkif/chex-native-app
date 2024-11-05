@@ -1,4 +1,9 @@
 import {Types} from '../Types';
+import {
+  extractLicensePlateAI,
+  getInspectionDetails,
+} from '../../services/inspection';
+import {uploadInProgressMediaToStore} from '../../Utils';
 
 const {
   UPDATE_VEHICLE_IMAGE,
@@ -52,12 +57,37 @@ export const categoryVariant = payload => ({
   type: CATEGORY_VARIANT,
   payload: payload,
 });
-export const fileDetails = payload => ({
+export const file_Details = inspectionId => async dispatch => {
+  try {
+    const response = await getInspectionDetails(inspectionId);
+    const {files = {}} = response?.data || {};
+
+    dispatch(setFileDetails(files));
+    uploadInProgressMediaToStore(files, dispatch);
+    dispatch(numberPlateSelected(inspectionId));
+    return response;
+  } catch (error) {
+    console.error('Inspection details getting error:', error);
+    throw error;
+  }
+};
+
+export const setFileDetails = files => ({
   type: FILE_DETAILS,
-  payload: payload,
+  payload: files,
 });
+
 export const clearNewInspection = () => ({type: CLEAR_NEW_INSPECTION});
-export const clearTires = () => ({type: CLEAR_TIRES});
+export const clear_Tires = () => ({type: CLEAR_TIRES});
+/*export const clear_Tires = fileIds => async dispatch => {
+  try {
+    await clearTires(fileIds);
+    dispatch({type: CLEAR_TIRES});
+  } catch (error) {
+    console.error('Remove Tires  error:', error);
+    throw error;
+  }
+};*/
 export const skipLeft = shouldSkip => ({
   type: SKIP_LEFT,
   payload: shouldSkip,
@@ -78,10 +108,20 @@ export const setVehicleType = vehicleType => ({
   type: VEHICLE_TYPE,
   payload: vehicleType,
 });
-export const setLicensePlateNumber = plateNumber => ({
-  type: LICENSE_PLATE_NUMBER,
-  payload: plateNumber,
-});
+export const setLicensePlateNumber = image_url => async dispatch => {
+  try {
+    const response = await extractLicensePlateAI(image_url);
+    const {plateNumber = null} = response?.data || {};
+
+    dispatch({
+      type: LICENSE_PLATE_NUMBER,
+      payload: plateNumber,
+    });
+  } catch (error) {
+    console.error('Setting license plate error:', error);
+    throw error;
+  }
+};
 export const clearInspectionImages = () => ({
   type: CLEAR_INSPECTION_IMAGES,
 });

@@ -2,27 +2,19 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {BackHandler} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
-import axios from 'axios';
 
 import {InspectionInProgressScreen} from '../Screens';
 import {
   clearNewInspection,
-  fetch_InspectionInProgress,
-  numberPlateSelected,
-  removeInspectionInProgress,
+  fetchInspectionInProgress,
+  deleteInspection,
   setVehicleType,
   showToast,
+  file_Details,
 } from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
-import {generateApiUrl, HARDWARE_BACK_PRESS} from '../Constants';
-import {
-  fetchInProgressInspections,
-  get_Inspection_Details,
-  handle_Session_Expired,
-  handleNewInspectionPress,
-  uploadInProgressMediaToStore,
-} from '../Utils';
-import {deleteRequest} from '../services/api';
+import {HARDWARE_BACK_PRESS} from '../Constants';
+import {handle_Session_Expired, handleNewInspectionPress} from '../Utils';
 
 const {NEW_INSPECTION, INSPECTION_IN_PROGRESS} = ROUTES;
 
@@ -30,7 +22,7 @@ const InspectionInProgressContainer = ({navigation}) => {
   const dispatch = useDispatch();
   const {canGoBack, goBack, navigate} = navigation;
   const {
-    user: {token, data},
+    user: {data},
   } = useSelector(state => state?.auth);
   const {inspectionInProgress} = useSelector(
     state => state?.inspectionInProgress,
@@ -45,7 +37,7 @@ const InspectionInProgressContainer = ({navigation}) => {
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
-      fetchInspectionInProgress().then();
+      fetchInProgressInspections().then();
       return () => resetAllStates();
     }, []),
   );
@@ -70,24 +62,15 @@ const InspectionInProgressContainer = ({navigation}) => {
     setIsDiscardInspectionModalVisible(false);
     setDeleteInspectionID(null);
   }
-  async function fetchInspectionInProgress() {
-    let inProgressInspection = [];
-    inProgressInspection = await fetchInProgressInspections(
-      token,
-      'IN_PROGRESS',
-      setIsLoading,
-      dispatch,
-    );
-    dispatch(fetch_InspectionInProgress(inProgressInspection));
+  async function fetchInProgressInspections() {
+    dispatch(fetchInspectionInProgress()).finally(() => setIsLoading(false));
 
     return null;
   }
   const handleContinuePress = async inspectionId => {
     setIsLoading(true);
     setInspectionID(inspectionId);
-    const endPoint = generateApiUrl(`files/details/${inspectionId}`);
-    await axios
-      .get(endPoint)
+    dispatch(file_Details(inspectionId))
       .then(res => onContinuePressSuccess(res, inspectionId))
       .catch(onContinuePressFail)
       .finally(() => {
@@ -96,12 +79,9 @@ const InspectionInProgressContainer = ({navigation}) => {
       });
   };
   function onContinuePressSuccess(res, inspectionId) {
-    const {hasAdded = 'existing', files = {}} = res?.data || {};
+    const {hasAdded = 'existing'} = res?.data || {};
     const vehicleType = hasAdded || 'existing';
     dispatch(setVehicleType(vehicleType));
-    get_Inspection_Details(dispatch, inspectionId).then();
-    uploadInProgressMediaToStore(files, dispatch);
-    dispatch(numberPlateSelected(inspectionId));
     resetAllStates();
     navigate(NEW_INSPECTION, {
       routeName: INSPECTION_IN_PROGRESS,
@@ -122,22 +102,10 @@ const InspectionInProgressContainer = ({navigation}) => {
   const handleYesPress = () => {
     setIsDiscardInspectionModalVisible(false);
     setIsLoading(true);
-    removeInspection().then();
+    remove_Inspection().then();
   };
-  async function removeInspection() {
-    let inspectionsInProgress = [];
-    inspectionsInProgress = inspectionInProgress.filter(
-      item => item.id !== deleteInspectionID,
-    );
-    const endPoint = generateApiUrl(
-      `delete/inspection/${deleteInspectionID}?type=app`,
-    );
-
-    await deleteRequest(endPoint)
-      .then(res => {
-        dispatch(removeInspectionInProgress(inspectionsInProgress));
-        dispatch(showToast('Inspection has been deleted!', 'success'));
-      })
+  async function remove_Inspection() {
+    dispatch(deleteInspection(deleteInspectionID))
       .catch(error => {
         let errorMessage =
           error?.response?.data?.message[0] ||
@@ -156,7 +124,6 @@ const InspectionInProgressContainer = ({navigation}) => {
       dispatch,
       setIsNewInspectionLoading,
       data?.companyId,
-      token,
       navigation,
       resetAllStates,
     );
@@ -174,7 +141,7 @@ const InspectionInProgressContainer = ({navigation}) => {
       onYesPress={handleYesPress}
       onNoPress={handleNoPress}
       isDiscardInspectionModalVisible={isDiscardInspectionModalVisible}
-      fetchInspectionInProgress={fetchInspectionInProgress}
+      fetchInspectionInProgress={fetchInProgressInspections}
       onNewInspectionPress={onNewInspectionPress}
     />
   );

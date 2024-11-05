@@ -2,7 +2,7 @@ import {Types} from '../Types';
 
 const {
   GET_INSPECTION_IN_PROGRESS,
-  REMOVE_INSPECTION_IN_PROGRESS,
+  REMOVE_INSPECTION,
   CLEAR_INSPECTION_IN_PROGRESS,
 } = Types;
 
@@ -18,7 +18,7 @@ const inspectionInProgressReducer = (state = initialState, action) => {
         ...state,
         inspectionInProgress: payload,
       };
-    case REMOVE_INSPECTION_IN_PROGRESS:
+    case REMOVE_INSPECTION:
       return {
         ...state,
         inspectionInProgress: payload,

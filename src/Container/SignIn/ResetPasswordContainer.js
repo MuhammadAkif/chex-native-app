@@ -5,20 +5,18 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import axios from 'axios';
 import {useDispatch} from 'react-redux';
 
 import {resetPasswordSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
-import {API_ENDPOINTS, HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
+import {HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
 import {ResetPasswordScreen} from '../../Screens';
 import {showToast} from '../../Store/Actions';
 import {resetPassword} from '../../services/authServices';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
-const {RESET_PASSWORD_URL} = API_ENDPOINTS;
 const {WELCOME, FORGET_PASSWORD, SIGN_IN} = ROUTES;
 const {gray, white, cobaltBlueLight} = colors;
 
@@ -90,22 +88,9 @@ const ResetPasswordContainer = ({navigation, route}) => {
     setHideConfirmPassword(!hideConfirmPassword);
   const handleForgetPassword = () => navigate(FORGET_PASSWORD);
   const handleResetPassword = async (body, resetForm) => {
-    /*let {verificationCode: OTP, password, confirmPassword} = body;
-
-        await resetPassword(OTP, confirmPassword, email || '', password)
-      .then(response => onResetPasswordSuccess(response, resetForm))
-      .catch(onResetPasswordFail)
-      .finally(() => setIsSubmitting(false));*/
-
     let {verificationCode, password, confirmPassword} = body;
-    const data = {
-      OTP: verificationCode,
-      confirmPassword: confirmPassword,
-      email: email,
-      password: password,
-    };
-    axios
-      .post(RESET_PASSWORD_URL, data)
+
+    await resetPassword(verificationCode, confirmPassword, email, password)
       .then(response => onResetPasswordSuccess(response, resetForm))
       .catch(onResetPasswordFail)
       .finally(() => setIsSubmitting(false));

@@ -6,19 +6,16 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import axios from 'axios';
 
 import {SignInScreen} from '../../Screens';
 import {signInValidationSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
-import {API_ENDPOINTS, HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
+import {HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
 import {showToast, signIn} from '../../Store/Actions';
-import {login} from '../../services/authServices';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
-const {LOGIN_URL} = API_ENDPOINTS;
 const {WELCOME, FORGET_PASSWORD, HOME} = ROUTES;
 const {white, cobaltBlueLight} = colors;
 
@@ -87,21 +84,14 @@ const SignInContainer = ({navigation, route}) => {
   const hidePasswordHandler = () => setHidePassword(!hidePassword);
   const handleForgetPassword = () => navigate(FORGET_PASSWORD);
   const checkUserData = async (body, resetForm) => {
-    /*const {username, password} = body;
+    const {username, password} = body;
+
     dispatch(signIn(username, password))
       .then(res => onCheckUserDataSuccess(resetForm))
       .catch(onCheckUserDataFail)
-      .finally(() => setIsSubmitting(false));*/
-
-    axios
-      .post(LOGIN_URL, body)
-      .then(res => onCheckUserDataSuccess(res, resetForm))
-      .catch(onCheckUserDataFail)
       .finally(() => setIsSubmitting(false));
   };
-  function onCheckUserDataSuccess(response, resetForm) {
-    const {data = null} = response;
-    dispatch(signIn(data));
+  function onCheckUserDataSuccess(resetForm) {
     resetForm();
     navigate(HOME);
   }

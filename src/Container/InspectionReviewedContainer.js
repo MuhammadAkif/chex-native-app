@@ -2,24 +2,19 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {BackHandler} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
-import axios from 'axios';
 
 import {InspectionReviewedScreen} from '../Screens';
 import {fetchInspectionReviewed} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
+import {HARDWARE_BACK_PRESS} from '../Constants';
 import {
-  generateApiUrl,
-  HARDWARE_BACK_PRESS,
-  INSPECTION_STATUSES,
-} from '../Constants';
-import {
-  fetchInProgressInspections,
   FILTER_IMAGES,
   handle_Session_Expired,
   handleNewInspectionPress,
   sortInspectionReviewedItems,
   updateFiles,
 } from '../Utils';
+import {inspectionDetails} from '../services/inspection';
 
 const {INSPECTION_DETAIL} = ROUTES;
 
@@ -27,7 +22,7 @@ const InspectionReviewedContainer = ({navigation}) => {
   const dispatch = useDispatch();
   const {canGoBack, goBack, navigate} = navigation;
   const {
-    user: {token, data},
+    user: {data},
   } = useSelector(state => state.auth);
   const {inspectionReviewed} = useSelector(state => state?.inspectionReviewed);
   const [isExpanded, setIsExpanded] = useState([]);
@@ -40,7 +35,7 @@ const InspectionReviewedContainer = ({navigation}) => {
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
-      fetchInspectionInProgress().then();
+      fetchInspection().then();
       return () => resetAllStates();
     }, []),
   );
@@ -74,17 +69,8 @@ const InspectionReviewedContainer = ({navigation}) => {
     setInspections(inspectionReviewed);
     setFilter(false);
   }
-  async function fetchInspectionInProgress() {
-    let inspectionReviewData = [];
-    inspectionReviewData = await fetchInProgressInspections(
-      token,
-      INSPECTION_STATUSES,
-      setIsLoading,
-      dispatch,
-    );
-    dispatch(fetchInspectionReviewed(inspectionReviewData));
-
-    return null;
+  async function fetchInspection() {
+    dispatch(fetchInspectionReviewed()).finally(() => setIsLoading(false));
   }
   const handleIsExpanded = id => {
     let latestData = [];
@@ -95,13 +81,11 @@ const InspectionReviewedContainer = ({navigation}) => {
       setIsExpanded([...isExpanded, id]);
     }
   };
-  const inspectionDetailsPress = inspectionID => {
+  const inspectionDetailsPress = async inspectionID => {
     setIsLoading(true);
     setSelectedInspectionID(inspectionID);
-    const endPoint = generateApiUrl(`files/app/${inspectionID}`);
 
-    axios
-      .get(endPoint)
+    await inspectionDetails(inspectionID)
       .then(onInspectionDetailsPressSuccess)
       .catch(onInspectionDetailsPressFail);
   };
@@ -132,7 +116,6 @@ const InspectionReviewedContainer = ({navigation}) => {
       dispatch,
       setIsNewInspectionLoading,
       data?.companyId,
-      token,
       navigation,
       resetAllStates,
     );
@@ -151,7 +134,7 @@ const InspectionReviewedContainer = ({navigation}) => {
       inspectionDetailsPress={inspectionDetailsPress}
       isLoading={isLoading}
       isNewInspectionLoading={isNewInspectionLoading}
-      fetchInspectionInProgress={fetchInspectionInProgress}
+      fetchInspectionInProgress={fetchInspection}
       selectedInspectionID={selectedInspectionID}
       onNewInspectionPress={onNewInspectionPress}
       onFilterPress={onFilterPress}

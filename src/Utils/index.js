@@ -1,20 +1,15 @@
-import {Alert, PermissionsAndroid} from 'react-native';
+import {Alert} from 'react-native';
 import * as yup from 'yup';
 import {Camera} from 'react-native-vision-camera';
-import axios from 'axios';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import {
   INSPECTION,
   INSPECTION_SUBCATEGORY,
-  S3_BUCKET_BASEURL,
-  API_ENDPOINTS,
-  generateApiUrl,
   customSortOrder,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
-  fileDetails,
   numberPlateSelected,
   setCompanyId,
   updateVehicleImage,
@@ -23,9 +18,13 @@ import {
 import {IMAGES} from '../Assets/Images';
 import {store} from '../Store';
 import {checkAndCompleteUrl} from './helpers';
-
-const {UPLOAD_URL, FETCH_IN_PROGRESS_URL, CREATE_INSPECTION_URL} =
-  API_ENDPOINTS;
+import {
+  createInspection,
+  getInspectionDetails,
+  s3SignedUrl,
+  uploadFileToDatabase,
+} from '../services/inspection';
+import {setFileDetails} from '../Store/Actions/NewInspectionAction';
 
 // Validation Schema
 export const validationSchema = yup.object().shape({
@@ -322,28 +321,6 @@ export const hasCameraAndMicrophoneAllowed = async () => {
     await Camera.requestMicrophonePermission();
   }
 };
-export async function requestStorageAccessPermission() {
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-      {
-        title: 'Access to Storage',
-        message: 'We need access to your storage to display images',
-        buttonNeutral: 'Ask Me Later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK',
-      },
-    );
-
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log('Storage permission granted');
-    } else {
-      console.log('Storage permission denied');
-    }
-  } catch (err) {
-    console.warn(err);
-  }
-}
 function error_Handler(callback = null) {
   Alert.alert(
     'Upload Failed',
@@ -364,17 +341,7 @@ export const getSignedUrl = async (
   variant = 0,
   source = 'app',
 ) => {
-  const data = {type: mime, source, inspectionId, categoryName, variant};
-  // const data = {type: mime},
-
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  await axios
-    .post(UPLOAD_URL, data, config)
+  await s3SignedUrl(mime, source, inspectionId, categoryName, variant)
     .then(res =>
       onGetSignedUrlSuccess(
         res,
@@ -453,15 +420,7 @@ export const uploadFile = async (
   dispatch,
 ) => {
   let imageID = 0;
-  const endPoint = generateApiUrl(`vehicle/${inspectionId}/file`);
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  await axios
-    .post(endPoint, body, config)
+  await uploadFileToDatabase(inspectionId, body)
     .then(res => onUploadFileSuccess(res, callback))
     .catch(error => onUploadFileFail(error, dispatch, handleError));
   return imageID;
@@ -483,48 +442,6 @@ function onUploadFileFail(error, dispatch, handleError) {
     Alert.alert(title, message, [
       {text: 'Retry', onPress: () => handleError(inspectionDeleted)},
     ]);
-  }
-}
-export const fetchInProgressInspections = async (
-  token,
-  status = 'IN_PROGRESS',
-  setIsLoading,
-  dispatch,
-) => {
-  let data = '';
-  const body = {
-    status: status,
-  };
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  await axios
-    .post(FETCH_IN_PROGRESS_URL, body, config)
-    .then(response => {
-      data = onFetchInProgressInspectionsSuccess(response, setIsLoading);
-    })
-    .catch(error =>
-      onFetchInProgressInspectionsFail(error, dispatch, setIsLoading),
-    );
-  return data;
-};
-function onFetchInProgressInspectionsSuccess(response, setIsLoading) {
-  const {data = {}} = response || {};
-  if (setIsLoading) {
-    setIsLoading(false);
-  }
-  return data;
-}
-function onFetchInProgressInspectionsFail(error, dispatch, setIsLoading) {
-  const {statusCode = null} = error?.response?.data || {};
-  if (setIsLoading) {
-    setIsLoading(false);
-  }
-  if (statusCode === 401) {
-    handle_Session_Expired(statusCode, dispatch);
   }
 }
 export const getCurrentDate = () => {
@@ -663,7 +580,7 @@ export const sortInspection_Reviewed_Items = list => {
 export function uploadInProgressMediaToStore(files, dispatch) {
   for (let file = 0; file < files.length; file++) {
     const url = files[file].url;
-    const completeURL = S3_BUCKET_BASEURL + url;
+
     let {completedUrl: imageURL} = checkAndCompleteUrl(url);
     let {groupType, id, category, llamaCost: variant} = files[file];
     let variant_ = parseInt(variant);
@@ -701,22 +618,13 @@ export const handleNewInspectionPress = async (
   dispatch,
   setIsLoading,
   companyId,
-  token,
   navigation,
   resetAllStates,
 ) => {
   setIsLoading(true);
-  const body = {
-    licensePlateNumber: generateRandomString(),
-    companyId: companyId,
-  };
+
   dispatch(setCompanyId(companyId));
-  const headers = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  };
-  await axios
-    .post(CREATE_INSPECTION_URL, body, {headers: headers})
+  await createInspection(companyId)
     .then(response =>
       onNewInspectionPressSuccess(
         response,
@@ -929,16 +837,13 @@ export function exteriorVariant(item, variant) {
   return item + '_' + variant;
 }
 export const get_Inspection_Details = async (dispatch, inspectionId) => {
-  const endPoint = generateApiUrl(`files/details/${inspectionId}`);
-
-  await axios
-    .get(endPoint)
-    .then(res => onGet_Inspection_DetailsSuccess(res, dispatch, inspectionId))
+  await getInspectionDetails(inspectionId)
+    .then(res => onGet_Inspection_DetailsSuccess(res, dispatch))
     .catch(error => onGet_Inspection_DetailsFail(error, dispatch));
 };
-function onGet_Inspection_DetailsSuccess(res, dispatch, inspectionId) {
+function onGet_Inspection_DetailsSuccess(res, dispatch) {
   const {files = {}} = res?.data || {};
-  dispatch(fileDetails(files, inspectionId));
+  dispatch(setFileDetails(files));
 }
 function onGet_Inspection_DetailsFail(error, dispatch) {
   const {statusCode = null} = error?.response?.data || {};

@@ -6,10 +6,7 @@ import SplashScreen from 'react-native-splash-screen';
 import {checkVersion} from 'react-native-check-version';
 
 import Navigation from './src/Navigation/index';
-import {
-  hasCameraAndMicrophoneAllowed,
-  requestStorageAccessPermission,
-} from './src/Utils';
+import {hasCameraAndMicrophoneAllowed} from './src/Utils';
 import {DiscardInspectionModal, Splash, Toast} from './src/Components';
 import {UPDATE_APP} from './src/Constants';
 import {clearNewInspection, hideToast} from './src/Store/Actions';
@@ -22,7 +19,18 @@ function App() {
   const [updateAvailable, setUpdateAvailable] = useState('');
 
   useEffect(() => {
-    versionCheck().then();
+    (async () => {
+      await initializeApp();
+    })();
+
+    return () => {
+      dispatch(clearNewInspection());
+      dispatch(hideToast());
+    };
+  }, [displayGif]);
+
+  async function initializeApp() {
+    await versionCheck();
     SplashScreen.hide();
     if (displayGif) {
       const timeoutId = setTimeout(() => setDisplayGif(false), 3500);
@@ -30,14 +38,9 @@ function App() {
     } else {
       dispatch(clearNewInspection());
       dispatch(hideToast());
-      hasCameraAndMicrophoneAllowed().then();
-      requestStorageAccessPermission().then();
+      await hasCameraAndMicrophoneAllowed();
     }
-    return () => {
-      dispatch(clearNewInspection());
-      dispatch(hideToast());
-    };
-  }, [displayGif]);
+  }
 
   async function versionCheck() {
     const version = await checkVersion();

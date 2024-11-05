@@ -53,7 +53,6 @@ const InspectionSelectionContainer = ({navigation}) => {
       dispatch,
       setIsLoading,
       data?.companyId,
-      token,
       navigation,
       resetAllStates,
     );
