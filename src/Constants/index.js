@@ -13,6 +13,7 @@ export const generateApiUrl = path => API_BASE_URL + API_VERSION_PATH + path;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
 export const EXTRACT_NUMBER_PLATE_WITH_AI =
   process.env.EXTRACT_NUMBER_PLATE_URL;
+export const nightImageCheckAI = process.env.NIGHT_IMAGE_CHECK;
 export const AI_API_TOKEN = process.env.AI_API_TOKEN;
 
 // API endpoints
@@ -267,4 +268,14 @@ export const customSortOrder = {
     'right_front_tire',
     'right_rear_tire',
   ],
+};
+export const darkImageError = {
+  title: 'Image Quality Issue',
+  message:
+    'The uploaded image appears too dark. Please try uploading a clearer image with better lighting.',
+};
+export const uploadFailed = {
+  title: 'Upload Failed',
+  message:
+    'Please check your internet connection and try again. If issues persist, reduce file size or switch networks. Contact support if needed. Apologies for any inconvenience.',
 };

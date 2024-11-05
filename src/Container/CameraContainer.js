@@ -41,9 +41,7 @@ import {
   uploadFile,
 } from '../Utils';
 import {
-  AI_API_TOKEN,
   EXPIRY_INSPECTION,
-  EXTRACT_NUMBER_PLATE_WITH_AI,
   HARDWARE_BACK_PRESS,
   INSPECTION,
   IS_BACK_CAMERA,

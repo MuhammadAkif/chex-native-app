@@ -4,6 +4,7 @@ import {
   API_ENDPOINTS,
   EXTRACT_NUMBER_PLATE_WITH_AI,
   generateApiUrl,
+  nightImageCheckAI,
 } from '../Constants';
 import {generateRandomString} from '../Utils';
 
@@ -209,6 +210,17 @@ export const inspectionSubmission = async inspectionId => {
     return await api.put(endPoint, null);
   } catch (error) {
     console.error('Inspection submission error:', error);
+    throw error;
+  }
+};
+
+export const isImageDarkWithAI = async image_url => {
+  const body = {image_url};
+  const config = {headers: {api_token: AI_API_TOKEN}};
+  try {
+    return await api.post(nightImageCheckAI, body, config);
+  } catch (error) {
+    console.error('Night image check error:', error.message);
     throw error;
   }
 };

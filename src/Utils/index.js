@@ -7,6 +7,8 @@ import {
   INSPECTION,
   INSPECTION_SUBCATEGORY,
   customSortOrder,
+  uploadFailed,
+  darkImageError,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
@@ -19,6 +21,7 @@ import {IMAGES} from '../Assets/Images';
 import {store} from '../Store';
 import {checkAndCompleteUrl} from './helpers';
 import {
+  isImageDarkWithAI,
   createInspection,
   getInspectionDetails,
   s3SignedUrl,
@@ -321,12 +324,10 @@ export const hasCameraAndMicrophoneAllowed = async () => {
     await Camera.requestMicrophonePermission();
   }
 };
-function error_Handler(callback = null) {
-  Alert.alert(
-    'Upload Failed',
-    'Please check your internet connection and try again. If issues persist, reduce file size or switch networks. Contact support if needed. Apologies for any inconvenience.',
-    [{text: 'Retry', onPress: callback}],
-  );
+function error_Handler(callback = null, message = uploadFailed.message) {
+  Alert.alert(uploadFailed.title, message, [
+    {text: 'Retry', onPress: callback},
+  ]);
 }
 export const getSignedUrl = async (
   token,
@@ -402,14 +403,35 @@ export const uploadToS3 = async (
       const percentCompleted = Math.round((written * 100) / total);
       setProgress(percentCompleted);
     })
-    .then(res => onUploadToS3Success(res, handleResponse, key))
+    .then(res => onUploadToS3Success(handleResponse, key, handleError))
     .catch(error => onUploadToS3Fail(error, handleError));
 };
-function onUploadToS3Success(res, handleResponse, key) {
-  handleResponse(key);
+async function onUploadToS3Success(handleResponse, key, handleError) {
+  const {completedUrl: image_url} = checkAndCompleteUrl(key);
+
+  try {
+    const {
+      data: {status = false},
+    } = await isImageDarkWithAI(image_url);
+
+    console.log('Night Image Check Status:', status);
+
+    if (!status) {
+      throw new Error(darkImageError.message);
+    }
+
+    handleResponse(key);
+  } catch (error) {
+    throw error;
+  }
 }
+
 function onUploadToS3Fail(error, handleError) {
-  error_Handler(handleError);
+  console.log('check error: ', error.message);
+  const {message} = error;
+  const message_ =
+    message === darkImageError.message ? message : uploadFailed.message;
+  error_Handler(handleError, message_);
 }
 export const uploadFile = async (
   callback,
