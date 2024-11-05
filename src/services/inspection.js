@@ -43,7 +43,6 @@ export const removeInspection = async inspectionId => {
 
 export const getInspectionDetails = async inspectionId => {
   const endPoint = generateApiUrl(`files/details/${inspectionId}`);
-  console.log('Fetching inspection details');
 
   try {
     return await api.get(endPoint);
@@ -112,7 +111,6 @@ export const imageAnnotation = async (
 
 export const inspectionDetails = async inspectionId => {
   const endPoint = generateApiUrl(`files/app/${inspectionId}`);
-  console.log('getting inspections');
 
   try {
     return await api.get(endPoint);
@@ -123,10 +121,10 @@ export const inspectionDetails = async inspectionId => {
 };
 
 export const fetchAllInspections = async status => {
-  console.log('fetchAllInspections inspections');
   const body = {
     status,
   };
+
   try {
     return await api.post(FETCH_IN_PROGRESS_URL, body);
   } catch (error) {
