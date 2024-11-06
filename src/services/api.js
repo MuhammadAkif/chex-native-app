@@ -2,23 +2,6 @@ import axios from 'axios';
 import {store} from '../Store';
 import {API_BASE_URL} from '../Constants';
 
-export const deleteRequest = async endPoint => {
-  const {token} = store.getState().auth.user;
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + token,
-    },
-  };
-
-  return await axios
-    .delete(endPoint, config)
-    .then(response => {
-      return response;
-    })
-    .catch(err => err);
-};
-
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,

@@ -324,8 +324,12 @@ export const hasCameraAndMicrophoneAllowed = async () => {
     await Camera.requestMicrophonePermission();
   }
 };
-function error_Handler(callback = null, message = uploadFailed.message) {
-  Alert.alert(uploadFailed.title, message, [
+export function error_Handler(
+  callback = null,
+  title = uploadFailed.title,
+  message = uploadFailed.message,
+) {
+  Alert.alert(title || uploadFailed.title, message || uploadFailed.message, [
     {text: 'Retry', onPress: callback},
   ]);
 }
@@ -342,21 +346,29 @@ export const getSignedUrl = async (
   variant = 0,
   source = 'app',
 ) => {
-  await s3SignedUrl(mime, source, inspectionId, categoryName, variant)
-    .then(res =>
-      onGetSignedUrlSuccess(
-        res,
-        path,
-        mime,
-        setProgress,
-        handleResponse,
-        handleError,
-        dispatch,
-      ),
-    )
-    .catch(error => onGetSignedUrlFail(error, handleError, dispatch));
+  try {
+    const response = await s3SignedUrl(
+      mime,
+      source,
+      inspectionId,
+      categoryName,
+      variant,
+    );
+    await onGetSignedUrlSuccess(
+      response,
+      path,
+      mime,
+      setProgress,
+      handleResponse,
+      handleError,
+      dispatch,
+    );
+  } catch (error) {
+    onGetSignedUrlFail(error, handleError, dispatch);
+    throw error;
+  }
 };
-function onGetSignedUrlSuccess(
+async function onGetSignedUrlSuccess(
   res,
   path,
   mime,
@@ -365,25 +377,24 @@ function onGetSignedUrlSuccess(
   handleError,
   dispatch,
 ) {
-  const {url, key} = res.data;
-  uploadToS3(
-    url,
-    key,
-    path,
-    mime,
-    setProgress,
-    handleResponse,
-    handleError,
-    dispatch,
-  ).then();
-}
-function onGetSignedUrlFail(error, handleError, dispatch) {
-  const {statusCode = null} = error?.response?.data || {};
-  error_Handler(handleError);
-  if (statusCode === 401) {
-    handle_Session_Expired(statusCode, dispatch);
+  try {
+    const {url, key} = res.data;
+
+    await uploadToS3(
+      url,
+      key,
+      path,
+      mime,
+      setProgress,
+      handleResponse,
+      handleError,
+      dispatch,
+    );
+  } catch (error) {
+    throw error;
   }
 }
+function onGetSignedUrlFail(error, handleError, dispatch) {}
 export const uploadToS3 = async (
   preSignedUrl,
   key,
@@ -393,18 +404,20 @@ export const uploadToS3 = async (
   handleResponse,
   handleError,
 ) => {
-  RNFetchBlob.fetch(
-    'PUT',
-    preSignedUrl,
-    {'Content-Type': mime, Connection: 'close'},
-    RNFetchBlob.wrap(path),
-  )
-    .uploadProgress((written, total) => {
+  try {
+    await RNFetchBlob.fetch(
+      'PUT',
+      preSignedUrl,
+      {'Content-Type': mime, Connection: 'close'},
+      RNFetchBlob.wrap(path),
+    ).uploadProgress((written, total) => {
       const percentCompleted = Math.round((written * 100) / total);
       setProgress(percentCompleted);
-    })
-    .then(res => onUploadToS3Success(handleResponse, key, handleError))
-    .catch(error => onUploadToS3Fail(error, handleError));
+    });
+    await onUploadToS3Success(handleResponse, key, handleError);
+  } catch (error) {
+    throw error;
+  }
 };
 async function onUploadToS3Success(handleResponse, key, handleError) {
   const {completedUrl: image_url} = checkAndCompleteUrl(key);
@@ -426,13 +439,6 @@ async function onUploadToS3Success(handleResponse, key, handleError) {
   }
 }
 
-function onUploadToS3Fail(error, handleError) {
-  console.log('check error: ', error.message);
-  const {message} = error;
-  const message_ =
-    message === darkImageError.message ? message : uploadFailed.message;
-  error_Handler(handleError, message_);
-}
 export const uploadFile = async (
   callback,
   body,
@@ -441,31 +447,18 @@ export const uploadFile = async (
   handleError,
   dispatch,
 ) => {
-  let imageID = 0;
-  await uploadFileToDatabase(inspectionId, body)
-    .then(res => onUploadFileSuccess(res, callback))
-    .catch(error => onUploadFileFail(error, dispatch, handleError));
-  return imageID;
+  try {
+    const response = await uploadFileToDatabase(inspectionId, body);
+    onUploadFileSuccess(response, callback);
+  } catch (error) {
+    throw error;
+  }
 };
 function onUploadFileSuccess(res, callback) {
   const {id = null} = res?.data || {};
   callback(id);
 }
-function onUploadFileFail(error, dispatch, handleError) {
-  const {statusCode = null} = error?.response?.data || {};
-  const inspectionDeleted = statusCode === 403;
-  const {title, message} = newInspectionUploadError(statusCode || '');
-  if (statusCode === 401) {
-    handle_Session_Expired(statusCode, dispatch);
-  }
-  if (inspectionDeleted) {
-    handleError(inspectionDeleted);
-  } else {
-    Alert.alert(title, message, [
-      {text: 'Retry', onPress: () => handleError(inspectionDeleted)},
-    ]);
-  }
-}
+
 export const getCurrentDate = () => {
   const currentDate = new Date();
 

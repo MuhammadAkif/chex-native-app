@@ -23,7 +23,12 @@ import ImagePicker from 'react-native-image-crop-picker';
 
 import {colors, PreviewStyles} from '../Assets/Styles';
 import {BackArrow} from '../Assets/Icons';
-import {CameraFooter, CameraPreview, CaptureImageModal} from '../Components';
+import {
+  CameraFooter,
+  CameraPreview,
+  CaptureImageModal,
+  DiscardInspectionModal,
+} from '../Components';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
   clearInspectionImages,
@@ -35,12 +40,15 @@ import {
   exteriorVariant,
   getCurrentDate,
   getSignedUrl,
+  handle_Session_Expired,
   handleNewInspectionPress,
   hasCameraAndMicrophoneAllowed,
   isNotEmpty,
+  newInspectionUploadError,
   uploadFile,
 } from '../Utils';
 import {
+  darkImageError,
   EXPIRY_INSPECTION,
   HARDWARE_BACK_PRESS,
   INSPECTION,
@@ -48,6 +56,7 @@ import {
   PHYSICAL_DEVICES,
   S3_BUCKET_BASEURL,
   SWITCH_CAMERA,
+  uploadFailed,
 } from '../Constants';
 import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
 import {IMAGES} from '../Assets/Images';
@@ -62,6 +71,7 @@ const defaultOrientation = 'portrait';
 const {container, headerContainer} = PreviewStyles;
 
 const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
+const isUploadFailedInitialState = {visible: false, title: '', message: ''};
 
 const CameraContainer = ({route, navigation}) => {
   const {selectedInspectionID} = useSelector(state => state.newInspection);
@@ -87,6 +97,9 @@ const CameraContainer = ({route, navigation}) => {
   const [isExpiryInspectionVisible, setIsExpiryInspectionVisible] =
     useState(false);
   const [progress, setProgress] = useState(0);
+  const [isUploadFailed, setIsUploadFailed] = useState(
+    isUploadFailedInitialState,
+  );
   const {type, modalDetails, inspectionId} = route.params;
   const format = useCameraFormat(device, [
     {videoResolution: {width: 1280, height: 720}},
@@ -128,6 +141,7 @@ const CameraContainer = ({route, navigation}) => {
       resetAllStates();
     };
   }, []);
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
@@ -146,7 +160,9 @@ const CameraContainer = ({route, navigation}) => {
     setProgress(0);
     setIsExpiryInspectionVisible(false);
     setOrientation(defaultOrientation);
+    setIsUploadFailed(isUploadFailedInitialState);
   }
+
   function handle_Hardware_Back_Press() {
     if (isImageURL) {
       handleRetryPress();
@@ -157,12 +173,16 @@ const CameraContainer = ({route, navigation}) => {
     }
     return false;
   }
+
   const handleNavigationBackPress = () => goBack();
+
   const handleVisible = () => {
     setProgress(0);
     setIsModalVisible(false);
   };
+
   const handleSwitchCamera = () => setIsBackCamera(!isBackCamera);
+
   const handleCaptureNowPress = async () => {
     hasCameraAndMicrophoneAllowed().then();
     if (cameraRef.current) {
@@ -172,12 +192,13 @@ const CameraContainer = ({route, navigation}) => {
       setIsImageURL(filePath);
     }
   };
+
   const handleRetryPress = () => {
     setIsImageURL('');
     setIsImageFile({});
   };
+
   const handleResponse = async key => {
-    const url = S3_BUCKET_BASEURL + key;
     const haveType = checkRelevantType(groupType);
     let extension = isImageFile.path.split('.').pop() || 'jpeg';
     const mime = 'image/' + extension;
@@ -197,16 +218,42 @@ const CameraContainer = ({route, navigation}) => {
     }
     /*Setting delay because the backend needs processing time to do some actions*/
     setTimeout(async () => {
-      await uploadFile(
-        uploadImageToStore,
-        body,
-        inspectionId,
-        token,
-        handleError,
-        dispatch,
-      );
+      try {
+        await uploadFile(
+          uploadImageToStore,
+          body,
+          inspectionId,
+          token,
+          handleError,
+          dispatch,
+        );
+      } catch (error) {
+        onUploadFailed(error);
+      }
     }, 2000);
   };
+
+  function onUploadFailed(error) {
+    const {statusCode = null} = error?.response?.data || {};
+    const {message} = error;
+    const {title = uploadFailed.title, message: msg = uploadFailed.message} =
+      newInspectionUploadError(statusCode || '');
+    let body = {visible: true, title, message: msg};
+    const isDarkImage = message === darkImageError.message;
+    const message_ = isDarkImage ? message : uploadFailed.message;
+    setIsModalVisible(false);
+
+    if (isDarkImage) {
+      body = {...body, message: message_};
+      setIsUploadFailed(body);
+    } else if (statusCode === 401) {
+      handle_Session_Expired(statusCode, dispatch);
+    } else if (statusCode === 403) {
+      handleError(true);
+    } else {
+      setIsUploadFailed(body);
+    }
+  }
   function uploadImageToStore(imageID) {
     const isLicensePlate =
       category === 'CarVerification' && type === 'licensePlate';
@@ -228,35 +275,45 @@ const CameraContainer = ({route, navigation}) => {
     };
     navigate(NEW_INSPECTION, params);
   }
+
   const handleExtractNumberPlate = async imageUrl => {
     dispatch(setLicensePlateNumber(imageUrl));
   };
+
   const handleError = (inspectionDeleted = false) => {
+    setIsUploadFailed(isUploadFailedInitialState);
     if (inspectionDeleted) {
-      setIsModalVisible(false);
       setIsExpiryInspectionVisible(true);
     } else {
-      setIsModalVisible(false);
       setProgress(0);
     }
   };
-  const handleNextPress = () => {
-    let extension = isImageFile.path.split('.')[2] || 'jpeg';
+
+  const handleNextPress = async () => {
+    let extension = isImageFile.path.split('.').pop() || 'jpeg';
     const mime = 'image/' + extension;
     setIsModalVisible(true);
-    getSignedUrl(
-      token,
-      mime,
-      isImageFile.path,
-      setProgress,
-      handleResponse,
-      handleError,
-      dispatch,
-      selectedInspectionID,
-      subCategory,
-      variant || 0,
-    ).then();
+    try {
+      await getSignedUrl(
+        token,
+        mime,
+        isImageFile.path,
+        setProgress,
+        handleResponse,
+        handleError,
+        dispatch,
+        selectedInspectionID,
+        subCategory,
+        variant || 0,
+      );
+    } catch (error) {
+      onUploadFailed(error);
+    }
   };
+
+  function onRetryPress() {
+    handleError(false);
+  }
 
   const onNewInspectionPress = async () => {
     await handleNewInspectionPress(
@@ -272,12 +329,15 @@ const CameraContainer = ({route, navigation}) => {
       .catch(error => console.log(error))
       .finally(() => setIsLoading(false));
   };
+
   const handleExitPress = () => {
     resetAllStates();
     navigate(INSPECTION_SELECTION);
   };
+
   const handleOnRightIconPress = () =>
     setOrientation(prevState => switchOrientation[prevState]);
+
   const handleImagePicker = () => {
     ImagePicker.openPicker({
       width: 300,
@@ -292,6 +352,7 @@ const CameraContainer = ({route, navigation}) => {
       })
       .catch(error => console.log(error.code));
   };
+
   return (
     <>
       {isModalVisible && (
@@ -376,6 +437,19 @@ const CameraContainer = ({route, navigation}) => {
           confirmButtonText={EXPIRY_INSPECTION.confirmButton}
         />
       )}
+      {isUploadFailed.visible && (
+        <DiscardInspectionModal
+          onYesPress={onRetryPress}
+          title={isUploadFailed.title}
+          description={isUploadFailed.message}
+          yesButtonText={'Retry'}
+          dualButton={false}
+          onNoPress={undefined}
+          noButtonText={undefined}
+          noButtonStyle={undefined}
+        />
+      )}
+
       <StatusBar
         backgroundColor="transparent"
         barStyle="light-content"
