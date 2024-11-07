@@ -68,7 +68,7 @@ import EmptyComponent from './EmptyComponent';
 import ProgressBar from './ProgressBar';
 import Image from './Image';
 import Custom_Image from './Custom_Image';
-import SessionExpiredPopup from './SessionExpiredPopup';
+import AlertPopup from './AlertPopup';
 
 export {
   BackgroundImageView,
@@ -141,5 +141,5 @@ export {
   ProgressBar,
   Image,
   Custom_Image,
-  SessionExpiredPopup,
+  AlertPopup,
 };

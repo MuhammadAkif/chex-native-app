@@ -279,3 +279,11 @@ export const uploadFailed = {
   message:
     'Please check your internet connection and try again. If issues persist, reduce file size or switch networks. Contact support if needed. Apologies for any inconvenience.',
 };
+export const exitAppInfo = {
+  title: 'Hold on!',
+  message: 'Are you sure you want to exit app?',
+  button: {
+    yes: 'Yes',
+    cancel: 'Cancel',
+  },
+};

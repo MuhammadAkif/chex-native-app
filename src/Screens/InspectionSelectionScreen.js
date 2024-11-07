@@ -11,18 +11,27 @@ import {
   PrimaryGradientButton,
   SignInLogo,
   SecondaryButton,
+  AlertPopup,
 } from '../Components';
 import {ROUTES} from '../Navigation/ROUTES';
-import {PROJECT_NAME} from '../Constants';
+import {exitAppInfo, PROJECT_NAME} from '../Constants';
 
 const {INSPECTION_REVIEWED, INSPECTION_IN_PROGRESS} = ROUTES;
 const {white, black, cobaltBlueLight} = colors;
 const {CHEX, AI} = PROJECT_NAME;
+const {
+  title,
+  message,
+  button: {yes, cancel},
+} = exitAppInfo;
 
 const InspectionSelectionScreen = ({
   handleNewInspectionPress,
   handleNavigation,
   isLoading,
+  showExitPopup,
+  onExitPress,
+  onExitCancelPress,
 }) => (
   <BackgroundImageView>
     <View style={styles.container}>
@@ -56,6 +65,15 @@ const InspectionSelectionScreen = ({
         />
       </View>
       <View style={styles.emptyFooterView} />
+      <AlertPopup
+        visible={showExitPopup}
+        onYesPress={onExitPress}
+        onCancelPress={onExitCancelPress}
+        title={title}
+        message={message}
+        yesButtonText={yes}
+        cancelButtonText={cancel}
+      />
     </View>
   </BackgroundImageView>
 );

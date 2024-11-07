@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {Alert, BackHandler, Platform} from 'react-native';
+import {BackHandler, Platform} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -14,36 +14,28 @@ const InspectionSelectionContainer = ({navigation}) => {
   const {navigate} = navigation;
   const dispatch = useDispatch();
   const {
-    user: {token, data},
+    user: {data},
   } = useSelector(state => state?.auth);
   const [isLoading, setIsLoading] = useState(false);
+  const [showExitPopup, setShowExitPopup] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       const backHandler = BackHandler.addEventListener(
         HARDWARE_BACK_PRESS,
-        handle_Hardware_Back_Press,
+        hardwareBackPress,
       );
       return () => backHandler.remove();
     }, []),
   );
 
   function resetAllStates() {
+    setShowExitPopup(false);
     setIsLoading(false);
   }
-  function handle_Hardware_Back_Press() {
+  function hardwareBackPress() {
     if (OS === ANDROID) {
-      Alert.alert('Hold on!', 'Are you sure you want to exit app?', [
-        {
-          text: 'Cancel',
-          onPress: () => null,
-          style: 'cancel',
-        },
-        {
-          text: 'YES',
-          onPress: () => BackHandler.exitApp(),
-        },
-      ]);
+      setShowExitPopup(true);
       return true;
     }
   }
@@ -58,12 +50,23 @@ const InspectionSelectionContainer = ({navigation}) => {
     );
   };
   const handleNavigation = path => navigate(path);
+  function onExitPress() {
+    resetAllStates();
+    BackHandler.exitApp();
+  }
+  function onExitCancelPress() {
+    setShowExitPopup(false);
+    return null;
+  }
 
   return (
     <InspectionSelectionScreen
       handleNewInspectionPress={onNewInspectionPress}
       handleNavigation={handleNavigation}
       isLoading={isLoading}
+      showExitPopup={showExitPopup}
+      onExitPress={onExitPress}
+      onExitCancelPress={onExitCancelPress}
     />
   );
 };

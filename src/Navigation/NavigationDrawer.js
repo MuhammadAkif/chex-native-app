@@ -1,6 +1,4 @@
 import React from 'react';
-import {Alert} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
 import {ROUTES} from './ROUTES';
@@ -19,8 +17,6 @@ import {
   HeaderBackground,
   CustomDrawerContent,
 } from '../Components';
-import {SESSION_EXPIRED} from '../Constants';
-import {signOut} from '../Store/Actions';
 
 const ScreenHeaderTitle = props => <HeaderTitle {...props} />;
 const headerBackground = () => <HeaderBackground />;
@@ -36,9 +32,6 @@ const screenOptions = {
 };
 const NavigationDrawer = ({navigation}) => {
   const {Screen, Navigator} = createDrawerNavigator();
-  const {reset} = navigation;
-  const dispatch = useDispatch();
-  const {sessionExpired} = useSelector(state => state?.auth);
   const {
     INSPECTION_SELECTION,
     INTRO,
@@ -47,21 +40,13 @@ const NavigationDrawer = ({navigation}) => {
     INSPECTION_REVIEWED,
     INSPECTION_DETAIL,
     INSPECTION_IN_PROGRESS,
-    SIGN_IN,
   } = ROUTES;
-  const {TITLE, MESSAGE, BUTTON} = SESSION_EXPIRED;
   const options = {
     headerTitleAlign: 'center',
     headerTitle: ScreenHeaderTitle,
     headerBackground: headerBackground,
   };
-  const handleOkPress = () => {
-    dispatch(signOut());
-    reset({
-      index: 0,
-      routes: [{name: SIGN_IN}],
-    });
-  };
+
   return (
     <>
       <Navigator
@@ -103,8 +88,6 @@ const NavigationDrawer = ({navigation}) => {
           options={options}
         />
       </Navigator>
-      {sessionExpired &&
-        Alert.alert(TITLE, MESSAGE, [{text: BUTTON, onPress: handleOkPress}])}
     </>
   );
 };
