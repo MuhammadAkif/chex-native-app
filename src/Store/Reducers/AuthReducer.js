@@ -6,13 +6,18 @@ const initialState = {
   sessionExpired: false,
 };
 
+/**
+ *
+ * @param state
+ * @param action
+ * @returns {{sessionExpired: boolean, user: {token: null}}|{sessionExpired: boolean, user: {token: null}}|{sessionExpired: boolean, user}}
+ */
 const authReducer = (state = initialState, action) => {
   const {type, payload} = action;
 
   switch (type) {
     case SIGN_IN:
       return {
-        ...state,
         user: payload,
         sessionExpired: false,
       };

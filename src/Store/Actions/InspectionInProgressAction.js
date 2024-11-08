@@ -9,6 +9,10 @@ const {
   CLEAR_INSPECTION_IN_PROGRESS,
 } = Types;
 
+/**
+ *
+ * @returns {(function(*): Promise<void>)|*}
+ */
 export const fetchInspectionInProgress = () => async dispatch => {
   try {
     const {data: inspections} = await fetchAllInspections('IN_PROGRESS');
@@ -22,6 +26,12 @@ export const fetchInspectionInProgress = () => async dispatch => {
     throw error;
   }
 };
+
+/**
+ *
+ * @param inspectionId
+ * @returns {(function(*): Promise<void>)|*}
+ */
 export const deleteInspection = inspectionId => async dispatch => {
   const {inspectionInProgress} = store.getState().inspectionInProgress;
 
@@ -42,6 +52,10 @@ export const deleteInspection = inspectionId => async dispatch => {
   }
 };
 
+/**
+ *
+ * @returns {{type: string}}
+ */
 export const clearInspectionInProgress = () => ({
   type: CLEAR_INSPECTION_IN_PROGRESS,
 });

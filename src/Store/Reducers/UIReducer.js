@@ -12,6 +12,13 @@ const initialState = {
   },
 };
 
+/**
+ *
+ * @param state
+ * @param action
+ * @returns {{toast: {visible: boolean, message: string, type: string}, loading: boolean}|{toast: {visible: boolean, message: string, type: string}, loading: boolean}|{toast: {visible: boolean, message: string, type: string}, loading}|{toast: {visible: boolean, message, type}, loading: boolean}}
+ * @constructor
+ */
 const UIReducer = (state = initialState, action) => {
   const {type, payload} = action;
 

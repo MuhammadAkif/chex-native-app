@@ -10,6 +10,7 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {colors} from '../Assets/Styles';
 import {numberPlateSelected, setCompanyId} from '../Store/Actions';
 import {handle_Session_Expired, uploadInProgressMediaToStore} from '../Utils';
+import {useAuth} from '../hooks';
 
 const {CREATE_INSPECTION_URL, FETCH_NUMBER_PLATE_URL} = API_ENDPOINTS;
 const {NEW_INSPECTION, LICENSE_PLATE_SELECTION} = ROUTES;
@@ -18,9 +19,7 @@ const {white} = colors;
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
   const dispatch = useDispatch();
   const {canGoBack, goBack, navigate} = navigation;
-  const {
-    user: {token, data},
-  } = useSelector(state => state?.auth);
+  const {token, user} = useAuth();
   const [selectedNP, setSelectedNP] = useState(null);
   const [search, setSearch] = useState('');
   const [numberPlate, setNumberPlate] = useState([]);
@@ -71,7 +70,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
   function fetchNP() {
     axios
       .post(FETCH_NUMBER_PLATE_URL, {
-        companyId: data?.companyId,
+        companyId: user?.companyId,
       })
       .then(response => {
         setNumberPlate(response.data);
@@ -86,9 +85,9 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
     setIsLoading(true);
     const body = {
       licensePlateNumber: selectedNP,
-      companyId: data?.companyId,
+      companyId: user?.companyId,
     };
-    dispatch(setCompanyId(data?.companyId));
+    dispatch(setCompanyId(user?.companyId));
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,

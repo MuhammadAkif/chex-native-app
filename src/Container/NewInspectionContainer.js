@@ -46,6 +46,7 @@ import {
   location,
   vehicleTireStatus,
 } from '../services/inspection';
+import {useAuth} from '../hooks';
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllCarVerification: false,
@@ -109,9 +110,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     variant,
     fileDetails,
   } = useSelector(state => state.newInspection);
-  const {
-    user: {token, data},
-  } = useSelector(state => state?.auth);
+  const {user} = useAuth();
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
   const [mediaModalDetails, setMediaModalDetails] = useState({});
@@ -153,7 +152,6 @@ const NewInspectionContainer = ({route, navigation}) => {
     exteriorItemsExpandedCards[vehicle_Type];
   const ActiveInteriorItemsExpandedCard =
     interiorItemsExpandedCards[vehicle_Type];
-
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
@@ -169,12 +167,12 @@ const NewInspectionContainer = ({route, navigation}) => {
     }
     if (route.params) {
       const {
-        isLicensePlate,
-        displayAnnotation,
-        fileId,
-        annotationDetails,
-        is_Exterior,
-        routeName,
+        isLicensePlate = false,
+        displayAnnotation = false,
+        fileId = null,
+        annotationDetails = null,
+        isExterior = false,
+        routeName = '',
       } = route.params;
       if (routeName !== INSPECTION_SELECTION) {
         setTimeout(() => {
@@ -186,7 +184,7 @@ const NewInspectionContainer = ({route, navigation}) => {
           ...prevState,
           uri: annotationDetails?.uri || '',
         }));
-        setIsExterior(is_Exterior || false);
+        setIsExterior(isExterior || false);
       }
     }
   }, [route]);
@@ -401,6 +399,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     });
     setMediaModalVisible(true);
   };
+
   const handleMediaModalDetailsCrossPress = () => {
     setMediaModalVisible(false);
     setMediaModalDetails({});
@@ -523,7 +522,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       setIsLoading(true);
       await extractNumberPlate(
         numberPlate,
-        data?.companyId,
+        user?.companyId,
         selectedInspectionID,
       )
         .then(onNumberPlateExtractSuccess)

@@ -9,7 +9,7 @@ import {handleNewInspectionPress} from '../Utils';
 const IntroContainer = ({navigation}) => {
   const {canGoBack, goBack} = navigation;
   const {
-    user: {token, data},
+    user: {data},
   } = useSelector(state => state?.auth);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -36,13 +36,18 @@ const IntroContainer = ({navigation}) => {
     await Linking.openSettings().then();
   };
   const onNewInspectionPress = async () => {
-    await handleNewInspectionPress(
-      dispatch,
-      setIsLoading,
-      data?.companyId,
-      navigation,
-      resetAllStates,
-    );
+    try {
+      await handleNewInspectionPress(
+        dispatch,
+        setIsLoading,
+        data?.companyId,
+        navigation,
+      );
+      resetAllStates();
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
   return (
     <IntroScreen

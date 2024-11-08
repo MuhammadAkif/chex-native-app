@@ -333,130 +333,164 @@ export function error_Handler(
     {text: 'Retry', onPress: callback},
   ]);
 }
+
+/**
+ * Retrieves a signed URL for uploading an image and handles the upload progress.
+ *
+ * @param {string} mimeType - The MIME type of the image.
+ * @param {string} imagePath - The local path of the image to upload.
+ * @param {function} onProgressUpdate - Callback to handle upload progress updates.
+ * @param {function} onSuccess - Callback to handle successful upload response.
+ * @param {string} inspectionId - Unique identifier for the inspection that requires the image upload.
+ * @param {string} subcategory - The subcategory for this inspection.
+ * @param {number|string} variant - Image variant identifier (e.g., 0, 1, 2).
+ * @param {string} source - Platform source (e.g., 'app', 'web').
+ * @returns {Promise<void>} Resolves when the upload process completes successfully.
+ */
 export const getSignedUrl = async (
-  token,
-  mime,
-  path,
-  setProgress,
-  handleResponse,
-  handleError,
-  dispatch,
+  mimeType,
+  imagePath,
+  onProgressUpdate,
+  onSuccess,
   inspectionId,
-  categoryName,
+  subcategory,
   variant = 0,
   source = 'app',
 ) => {
   try {
     const response = await s3SignedUrl(
-      mime,
+      mimeType,
       source,
       inspectionId,
-      categoryName,
+      subcategory,
       variant,
     );
     await onGetSignedUrlSuccess(
       response,
-      path,
-      mime,
-      setProgress,
-      handleResponse,
-      handleError,
-      dispatch,
+      imagePath,
+      mimeType,
+      onProgressUpdate,
+      onSuccess,
     );
   } catch (error) {
-    onGetSignedUrlFail(error, handleError, dispatch);
     throw error;
   }
 };
+
+/**
+ * Handles the successful retrieval of a signed URL and initiates the upload to S3.
+ *
+ * @param {Object} response - The response object containing signed URL data.
+ * @param {string} filePath - The local file path of the image to upload.
+ * @param {string} mimeType - The MIME type of the file.
+ * @param {function} onProgressUpdate - Callback to update the upload progress.
+ * @param {function} onSuccess - Callback to handle successful upload response.
+ * @returns {Promise<void>} Resolves when the upload to S3 completes successfully.
+ */
 async function onGetSignedUrlSuccess(
-  res,
-  path,
-  mime,
-  setProgress,
-  handleResponse,
-  handleError,
-  dispatch,
+  response,
+  filePath,
+  mimeType,
+  onProgressUpdate,
+  onSuccess,
 ) {
   try {
-    const {url, key} = res.data;
+    const {url, key} = response.data;
 
-    await uploadToS3(
-      url,
-      key,
-      path,
-      mime,
-      setProgress,
-      handleResponse,
-      handleError,
-      dispatch,
-    );
+    await uploadToS3(url, key, filePath, mimeType, onProgressUpdate, onSuccess);
   } catch (error) {
     throw error;
   }
 }
-function onGetSignedUrlFail(error, handleError, dispatch) {}
+
+/**
+ * Uploads a file to S3 using a pre-signed URL and monitors upload progress.
+ *
+ * @param {string} preSignedUrl - The pre-signed S3 URL to upload the file to.
+ * @param {string} fileKey - The unique key for the file in S3.
+ * @param {string} filePath - The local path of the file to be uploaded.
+ * @param {string} mimeType - The MIME type of the file.
+ * @param {function} onProgressUpdate - Callback to update the upload progress percentage.
+ * @param {function} onSuccess - Callback to handle a successful upload response.
+ * @returns {Promise<void>} Resolves when the upload completes successfully.
+ */
 export const uploadToS3 = async (
   preSignedUrl,
-  key,
-  path,
-  mime,
-  setProgress,
-  handleResponse,
-  handleError,
+  fileKey,
+  filePath,
+  mimeType,
+  onProgressUpdate,
+  onSuccess,
 ) => {
   try {
     await RNFetchBlob.fetch(
       'PUT',
       preSignedUrl,
-      {'Content-Type': mime, Connection: 'close'},
-      RNFetchBlob.wrap(path),
+      {'Content-Type': mimeType, Connection: 'close'},
+      RNFetchBlob.wrap(filePath),
     ).uploadProgress((written, total) => {
       const percentCompleted = Math.round((written * 100) / total);
-      setProgress(percentCompleted);
+      onProgressUpdate(percentCompleted);
     });
-    await onUploadToS3Success(handleResponse, key, handleError);
+    await onUploadToS3Success(onSuccess, fileKey);
   } catch (error) {
     throw error;
   }
 };
-async function onUploadToS3Success(handleResponse, key, handleError) {
-  /*const {completedUrl: image_url} = checkAndCompleteUrl(key);*/
+
+/**
+ * Handles the success response after uploading a file to S3.
+ *
+ * @param {function} onSuccess - Callback to handle a successful upload response, receiving the file key.
+ * @param {string} fileKey - The unique identifier (key) for the uploaded file in S3.
+ * @returns {Promise<void>} Resolves when post-upload checks are completed successfully.
+ */
+async function onUploadToS3Success(onSuccess, fileKey) {
+  const {completedUrl: imageUrl} = checkAndCompleteUrl(fileKey);
 
   try {
-    /*const {
+    const {
       data: {status = false},
-    } = await isImageDarkWithAI(image_url);
+    } = await isImageDarkWithAI(imageUrl);
 
     console.log('Night Image Check Status:', status);
 
     if (!status) {
       throw new Error(darkImageError.message);
-    }*/
+    }
 
-    handleResponse(key);
+    onSuccess(fileKey);
   } catch (error) {
     throw error;
   }
 }
 
-export const uploadFile = async (
-  callback,
-  body,
-  inspectionId,
-  token,
-  handleError,
-  dispatch,
-) => {
+/**
+ * Uploads a file associated with a specific inspection ID to the database and triggers a success callback.
+ *
+ * @param {function} onSuccess - Callback function to handle successful file upload response.
+ * @param {Object} fileData - The data object representing the file to be uploaded.
+ * @param {string} inspectionId - Unique identifier for the inspection associated with the file upload.
+ * @returns {Promise<void>} Resolves when the file is successfully uploaded.
+ */
+export const uploadFile = async (onSuccess, fileData, inspectionId) => {
   try {
-    const response = await uploadFileToDatabase(inspectionId, body);
-    onUploadFileSuccess(response, callback);
+    const response = await uploadFileToDatabase(inspectionId, fileData);
+    onUploadFileSuccess(response, onSuccess);
   } catch (error) {
     throw error;
   }
 };
-function onUploadFileSuccess(res, callback) {
-  const {id = null} = res?.data || {};
-  callback(id);
+
+/**
+ * Handles a successful file upload response and triggers a callback with the file ID.
+ *
+ * @param {Object} response - The response object from the upload containing file metadata.
+ * @param {function} onSuccess - Callback function to handle the successful file ID.
+ */
+function onUploadFileSuccess(response, onSuccess) {
+  const {id = null} = response?.data || {};
+  onSuccess(id);
 }
 
 export const getCurrentDate = () => {
@@ -592,26 +626,37 @@ export const sortInspection_Reviewed_Items = list => {
   return finalSortedList;
 };
 
+/**
+ * Processes and uploads media files to the store, updating vehicle image data.
+ *
+ * @param {Array} files - List of media files in progress to be uploaded, each containing metadata.
+ * @param {function} dispatch - Redux dispatch function to update the store with each file's upload progress.
+ */
 export function uploadInProgressMediaToStore(files, dispatch) {
-  for (let file = 0; file < files.length; file++) {
-    const url = files[file].url;
+  files.forEach(file => {
+    const {url, groupType, id, category, llamaCost: variant} = file;
 
-    let {completedUrl: imageURL} = checkAndCompleteUrl(url);
-    let {groupType, id, category, llamaCost: variant} = files[file];
-    let variant_ = parseInt(variant);
-    if (variant_) {
-      category += '_' + variant_;
-    }
+    // Generate completed image URL
+    const {completedUrl: imageURL} = checkAndCompleteUrl(url);
+
+    // Format the category with the variant, if applicable
+    const variantNumber = parseInt(variant, 10);
+    const formattedCategory = variantNumber
+      ? `${category}_${variantNumber}`
+      : category;
+
+    // Dispatch an action to update the vehicle image in the store
     dispatch(
       updateVehicleImage(
         groupType,
-        INSPECTION_SUBCATEGORY[category],
+        INSPECTION_SUBCATEGORY[formattedCategory],
         imageURL,
         id,
       ),
     );
-  }
+  });
 }
+
 export const generateRandomString = () => {
   const characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -629,46 +674,77 @@ export const generateRandomString = () => {
   return randomString;
 };
 
+/**
+ * Initiates the creation of a new inspection by setting the company ID, calling the inspection creation API,
+ * and handling success or failure responses.
+ *
+ * @param {Dispatch<AnyAction>} dispatch - Redux dispatch function to update state.
+ * @param {function} setIsLoading - Function to set the loading state (true during the API call, false after).
+ * @param {string} companyId - The unique identifier for the company for which the inspection is being created.
+ * @param {Object} navigation - Navigation object to manage navigation within the app.
+ * @returns {Promise<void>} Resolves after the inspection is successfully created or fails.
+ */
 export const handleNewInspectionPress = async (
   dispatch,
   setIsLoading,
   companyId,
   navigation,
-  resetAllStates,
 ) => {
   setIsLoading(true);
 
-  dispatch(setCompanyId(companyId));
-  await createInspection(companyId)
-    .then(response =>
-      onNewInspectionPressSuccess(
-        response,
-        dispatch,
-        navigation,
-        resetAllStates,
-      ),
-    )
-    .catch(err => onNewInspectionPressFail(err, dispatch))
-    .finally(() => setIsLoading(false));
+  try {
+    // Set the company ID in the state before creating the inspection
+    dispatch(setCompanyId(companyId));
+
+    // Call the API to create a new inspection
+    const response = await createInspection(companyId);
+
+    // Handle the successful creation of a new inspection
+    onNewInspectionPressSuccess(response, dispatch, navigation);
+  } catch (error) {
+    // Handle errors that occur during the inspection creation process
+    onNewInspectionPressFail(error, dispatch);
+    throw error;
+  } finally {
+    // Reset the loading state after the process completes
+    setIsLoading(false);
+  }
 };
-function onNewInspectionPressSuccess(
-  response,
-  dispatch,
-  navigation,
-  resetAllStates,
-) {
+
+/**
+ * Handles the success response after a new inspection is created,
+ * updates the Redux store, and navigates to the next screen.
+ *
+ * @param {Object} response - The response object from the inspection creation API, typically containing the inspection ID.
+ * @param {function} dispatch - Redux dispatch function used to update the store.
+ * @param {Object} navigation - Navigation object used to manage navigation in the app.
+ */
+function onNewInspectionPressSuccess(response, dispatch, navigation) {
   const {id = null} = response?.data || {};
   const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
 
+  // Dispatch action to update the state with the newly created inspection ID
   dispatch(numberPlateSelected(id));
-  resetAllStates();
+
+  // Navigate to the inspection selection screen after a successful creation
   navigation.navigate(NEW_INSPECTION, {
     routeName: INSPECTION_SELECTION,
   });
 }
+
+/**
+ * Handles the failure of the new inspection creation process by checking for specific error codes
+ * and performing appropriate actions, such as handling session expiration.
+ *
+ * @param {Object} err - The error object received from the API response, which contains the status code and error details.
+ * @param {function} dispatch - Redux dispatch function used to update the store or trigger actions based on the error.
+ */
 function onNewInspectionPressFail(err, dispatch) {
   const {statusCode = null} = err?.response?.data || {};
-  console.log('err => ', statusCode);
+
+  console.log('Error statusCode => ', statusCode); // Log the error status code for debugging
+
+  // Handle session expiration for 401 status code (Unauthorized)
   if (statusCode === 401) {
     handle_Session_Expired(statusCode, dispatch);
   }

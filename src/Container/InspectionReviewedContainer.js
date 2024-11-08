@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 
 import {InspectionReviewedScreen} from '../Screens';
-import {fetchInspectionReviewed} from '../Store/Actions';
+import {clearInspectionImages, fetchInspectionReviewed} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
 import {HARDWARE_BACK_PRESS} from '../Constants';
 import {
@@ -112,13 +112,19 @@ const InspectionReviewedContainer = ({navigation}) => {
     console.log('error of inspection in progress => ', error);
   }
   const onNewInspectionPress = async () => {
-    await handleNewInspectionPress(
-      dispatch,
-      setIsNewInspectionLoading,
-      data?.companyId,
-      navigation,
-      resetAllStates,
-    );
+    try {
+      await handleNewInspectionPress(
+        dispatch,
+        setIsNewInspectionLoading,
+        data?.companyId,
+        navigation,
+      );
+      resetAllStates();
+      dispatch(clearInspectionImages());
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
   function onFilterPress() {
     setFilter(!filter);

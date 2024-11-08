@@ -120,13 +120,18 @@ const InspectionInProgressContainer = ({navigation}) => {
   }
   const handleNoPress = () => setIsDiscardInspectionModalVisible(false);
   const onNewInspectionPress = async () => {
-    await handleNewInspectionPress(
-      dispatch,
-      setIsNewInspectionLoading,
-      data?.companyId,
-      navigation,
-      resetAllStates,
-    );
+    try {
+      await handleNewInspectionPress(
+        dispatch,
+        setIsNewInspectionLoading,
+        data?.companyId,
+        navigation,
+      );
+      resetAllStates();
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
 
   return (

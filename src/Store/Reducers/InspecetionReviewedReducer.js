@@ -6,6 +6,12 @@ const initialState = {
   inspectionReviewed: [],
 };
 
+/**
+ *
+ * @param state
+ * @param action
+ * @returns {{inspectionReviewed}|{inspectionReviewed: *[]}}
+ */
 const inspectionReviewedReducer = (state = initialState, action) => {
   const {type, payload} = action;
 

@@ -28,6 +28,16 @@ const itemsImagePayload = (item = '', group = '', uri = '', id = 0) => {
   const itemId = `${item}ID`;
   return {group, item, itemId, uri, id};
 };
+
+/**
+ * Creates and dispatches an action to update a vehicle image in the store.
+ *
+ * @param {string} group - The group or category the image belongs to (e.g., Interior, Exterior).
+ * @param {string} item - The specific item type within the group (e.g., licensePlate, door).
+ * @param {string} uri - The URI of the image to be uploaded.
+ * @param {string} id - The unique identifier of the image.
+ * @returns {function} Dispatches an action to update the vehicle image.
+ */
 export function updateVehicleImage(group, item, uri, id) {
   return dispatch => {
     const payload = itemsImagePayload(item, group, uri, id);
@@ -38,6 +48,7 @@ export function updateVehicleImage(group, item, uri, id) {
     });
   };
 }
+
 export function removeVehicleImage(group, item) {
   return dispatch => {
     const payload = itemsImagePayload(item, group, '', 0);

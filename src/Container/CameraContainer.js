@@ -65,6 +65,7 @@ import {
   switchFrameIcon,
   switchOrientation,
 } from '../Utils/helpers';
+import {useAuth} from '../hooks';
 
 const {white} = colors;
 const defaultOrientation = 'portrait';
@@ -77,20 +78,18 @@ const CameraContainer = ({route, navigation}) => {
   const {selectedInspectionID} = useSelector(state => state.newInspection);
   const dispatch = useDispatch();
   const {navigate, goBack, canGoBack} = navigation;
-  const {
-    user: {token, data},
-  } = useSelector(state => state?.auth);
+  const {user} = useAuth();
   const {vehicle_Type, variant} = useSelector(state => state.newInspection);
   const isFocused = useIsFocused();
   const cameraRef = useRef();
   const appState = useRef(AppState.currentState);
   const [selectedCamera, setSelectedCamera] = useState('back');
-  const device = useCameraDevice(selectedCamera, {
+  /*const device = useCameraDevice(selectedCamera, {
     physicalDevices: PHYSICAL_DEVICES,
   });
   const [isBackCamera, setIsBackCamera] = useState(
     IS_BACK_CAMERA[selectedCamera],
-  );
+  );*/
   const [isImageURL, setIsImageURL] = useState('');
   const [isImageFile, setIsImageFile] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -101,10 +100,10 @@ const CameraContainer = ({route, navigation}) => {
     isUploadFailedInitialState,
   );
   const {type, modalDetails, inspectionId} = route.params;
-  const format = useCameraFormat(device, [
+  /*const format = useCameraFormat(device, [
     {videoResolution: {width: 1280, height: 720}},
     {fps: 30},
-  ]);
+  ]);*/
   const [isLoading, setIsLoading] = useState(false);
   const [orientation, setOrientation] = useState(defaultOrientation);
   const {
@@ -149,9 +148,9 @@ const CameraContainer = ({route, navigation}) => {
     );
     return () => backHandler.remove();
   }, [isImageURL]);
-  useEffect(() => {
+  /*useEffect(() => {
     setSelectedCamera(SWITCH_CAMERA[isBackCamera]);
-  }, [isBackCamera, device]);
+  }, [isBackCamera, device]);*/
 
   function resetAllStates() {
     setIsImageURL('');
@@ -219,60 +218,83 @@ const CameraContainer = ({route, navigation}) => {
     /*Setting delay because the backend needs processing time to do some actions*/
     setTimeout(async () => {
       try {
-        await uploadFile(
-          uploadImageToStore,
-          body,
-          inspectionId,
-          token,
-          handleError,
-          dispatch,
-        );
+        await uploadFile(uploadImageToStore, body, inspectionId);
       } catch (error) {
         onUploadFailed(error);
       }
     }, 2000);
   };
 
+  /**
+   * Handles the failure of an image upload by displaying relevant error messages and managing session states.
+   *
+   * @param {Object} error - The error object from the upload process, which may contain status code and message.
+   */
   function onUploadFailed(error) {
     const {statusCode = null} = error?.response?.data || {};
     const {message} = error;
-    const {title = uploadFailed.title, message: msg = uploadFailed.message} =
-      newInspectionUploadError(statusCode || '');
-    let body = {visible: true, title, message: msg};
+
+    const {
+      title = uploadFailed.title,
+      message: defaultErrorMessage = uploadFailed.message,
+    } = newInspectionUploadError(statusCode || '');
+
     const isDarkImage = message === darkImageError.message;
-    const message_ = isDarkImage ? message : uploadFailed.message;
+    const displayMessage = isDarkImage ? message : defaultErrorMessage;
+
     setIsModalVisible(false);
 
+    const errorBody = {
+      visible: true,
+      title,
+      message: displayMessage,
+    };
+    console.log({statusCode});
     if (isDarkImage) {
-      body = {...body, message: message_};
-      setIsUploadFailed(body);
+      setIsUploadFailed(errorBody);
     } else if (statusCode === 401) {
       handle_Session_Expired(statusCode, dispatch);
     } else if (statusCode === 403) {
       handleError(true);
     } else {
-      setIsUploadFailed(body);
+      setIsUploadFailed(errorBody);
     }
   }
+
+  /**
+   * Uploads an image to the store and navigates to the inspection screen with relevant parameters.
+   *
+   * @param {string} imageID - The unique identifier of the image to be uploaded.
+   */
   function uploadImageToStore(imageID) {
     const isLicensePlate =
       category === 'CarVerification' && type === 'licensePlate';
-    const types = ['Interior', 'Exterior'];
-    const haveType = types.includes(category);
+    const validTypes = ['Interior', 'Exterior'];
+    const hasValidType = validTypes.includes(category);
     const annotationDetails = {uri: isImageURL};
-    let type_ = type;
-    if (haveType) {
-      type_ = exteriorVariant(type_, variant);
+
+    // Determine the type for exterior variant if applicable
+    let selectedType = type;
+    if (hasValidType) {
+      selectedType = exteriorVariant(selectedType, variant);
     }
-    const displayAnnotation = haveType && vehicle_Type === 'new';
-    dispatch(updateVehicleImage(groupType, type_, isImageURL, imageID));
+
+    // Check if annotations should be displayed
+    const displayAnnotation = hasValidType && vehicle_Type === 'new';
+
+    // Dispatch an action to update the vehicle image in the store
+    dispatch(updateVehicleImage(groupType, selectedType, isImageURL, imageID));
+
+    // Prepare navigation parameters
     const params = {
-      isLicensePlate: isLicensePlate,
-      displayAnnotation: displayAnnotation,
+      isLicensePlate,
+      displayAnnotation,
       fileId: imageID,
-      annotationDetails: annotationDetails,
-      is_Exterior: haveType,
+      annotationDetails,
+      isExterior: hasValidType,
     };
+
+    // Navigate to the new inspection screen with prepared parameters
     navigate(NEW_INSPECTION, params);
   }
 
@@ -281,6 +303,7 @@ const CameraContainer = ({route, navigation}) => {
   };
 
   const handleError = (inspectionDeleted = false) => {
+    console.log({inspectionDeleted});
     setIsUploadFailed(isUploadFailedInitialState);
     if (inspectionDeleted) {
       setIsExpiryInspectionVisible(true);
@@ -289,19 +312,22 @@ const CameraContainer = ({route, navigation}) => {
     }
   };
 
+  /**
+   * Handles the next button press, initiating the process to get a signed URL and upload an image.
+   *
+   * @returns {Promise<void>} Resolves once the signed URL is obtained and upload is initiated.
+   */
   const handleNextPress = async () => {
-    let extension = isImageFile.path.split('.').pop() || 'jpeg';
-    const mime = 'image/' + extension;
+    const fileExtension = isImageFile.path.split('.').pop() || 'jpeg';
+    const mimeType = `image/${fileExtension}`;
+
     setIsModalVisible(true);
     try {
       await getSignedUrl(
-        token,
-        mime,
+        mimeType,
         isImageFile.path,
         setProgress,
         handleResponse,
-        handleError,
-        dispatch,
         selectedInspectionID,
         subCategory,
         variant || 0,
@@ -316,18 +342,19 @@ const CameraContainer = ({route, navigation}) => {
   }
 
   const onNewInspectionPress = async () => {
-    await handleNewInspectionPress(
-      dispatch,
-      setIsLoading,
-      data?.companyId,
-      navigation,
-      resetAllStates,
-    )
-      .then(() => {
-        dispatch(clearInspectionImages());
-      })
-      .catch(error => console.log(error))
-      .finally(() => setIsLoading(false));
+    try {
+      await handleNewInspectionPress(
+        dispatch,
+        setIsLoading,
+        user?.companyId,
+        navigation,
+      );
+      resetAllStates();
+      dispatch(clearInspectionImages());
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
 
   const handleExitPress = () => {
@@ -338,12 +365,14 @@ const CameraContainer = ({route, navigation}) => {
   const handleOnRightIconPress = () =>
     setOrientation(prevState => switchOrientation[prevState]);
 
+  /**
+   * Opens the image picker, allowing the user to select an image and sets the selected image data.
+   */
   const handleImagePicker = () => {
     ImagePicker.openPicker({
       width: 300,
       height: 400,
       cropping: true,
-      // includeBase64: true,
     })
       .then(image => {
         const {sourceURL, path} = image;
@@ -398,7 +427,7 @@ const CameraContainer = ({route, navigation}) => {
                     />
                   </View>
                 )}
-                <Camera
+                {/*<Camera
                   ref={cameraRef}
                   style={StyleSheet.absoluteFill}
                   device={device}
@@ -408,7 +437,7 @@ const CameraContainer = ({route, navigation}) => {
                   enableZoomGesture={true}
                   includeBase64={true}
                   format={format}
-                />
+                />*/}
               </>
             )
           )}

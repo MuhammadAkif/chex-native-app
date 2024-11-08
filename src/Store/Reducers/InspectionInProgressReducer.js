@@ -9,6 +9,13 @@ const {
 const initialState = {
   inspectionInProgress: [],
 };
+
+/**
+ *
+ * @param state
+ * @param action
+ * @returns {{inspectionInProgress: *[]}|{inspectionInProgress}}
+ */
 const inspectionInProgressReducer = (state = initialState, action) => {
   const {type, payload} = action;
 

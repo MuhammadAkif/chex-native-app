@@ -59,6 +59,8 @@ const AnnotateImageModal = ({
     true: hp('20%'),
     false: hp('30%'),
   };
+  console.log('AnnotateImageModal : ', {modalVisible});
+
   return (
     <Modal
       animationType="slide"
