@@ -420,10 +420,10 @@ export const uploadToS3 = async (
   }
 };
 async function onUploadToS3Success(handleResponse, key, handleError) {
-  /*const {completedUrl: image_url} = checkAndCompleteUrl(key);*/
+  const {completedUrl: image_url} = checkAndCompleteUrl(key);
 
   try {
-    /*const {
+    const {
       data: {status = false},
     } = await isImageDarkWithAI(image_url);
 
@@ -431,7 +431,7 @@ async function onUploadToS3Success(handleResponse, key, handleError) {
 
     if (!status) {
       throw new Error(darkImageError.message);
-    }*/
+    }
 
     handleResponse(key);
   } catch (error) {
