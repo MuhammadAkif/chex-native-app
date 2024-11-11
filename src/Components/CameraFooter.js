@@ -16,7 +16,7 @@ const {white, red} = colors;
 const EmptyView = () => <View style={styles.emptyView} />;
 
 const CameraFooter = ({
-  isCamera,
+  isCamera = true,
   isRecording,
   handleSwitchCamera,
   handleCaptureNowPress,
@@ -34,10 +34,10 @@ const CameraFooter = ({
   return (
     <View style={styles.cameraOptionContainer}>
       <TouchableOpacity
-        onPress={handleImagePicker}
+        onPress={handleSwitchCamera}
         activeOpacity={1}
         style={styles.iconPadding}>
-        <PhotoLibrary height={hp('5%')} width={wp('10%')} color={white} />
+        <FlipCamera height={hp('5%')} width={wp('10%')} color={white} />
       </TouchableOpacity>
       <Record
         height={hp('10%')}

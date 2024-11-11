@@ -69,6 +69,9 @@ import ProgressBar from './ProgressBar';
 import Image from './Image';
 import Custom_Image from './Custom_Image';
 import AlertPopup from './AlertPopup';
+import CustomCamera from './CustomCamera';
+import CameraView from './Camera/CameraView';
+import CameraHeader from './Camera/CameraHeader';
 
 export {
   BackgroundImageView,
@@ -142,4 +145,7 @@ export {
   Image,
   Custom_Image,
   AlertPopup,
+  CustomCamera,
+  CameraView,
+  CameraHeader,
 };

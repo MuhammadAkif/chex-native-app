@@ -1,4 +1,5 @@
 import useTimer from './useTimer';
 import useAuth from './useAuth';
+import useMediaPicker from './useMediaPicker';
 
-export {useTimer, useAuth};
+export {useTimer, useAuth, useMediaPicker};
