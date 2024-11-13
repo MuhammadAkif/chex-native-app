@@ -173,3 +173,20 @@ export function checkAndCompleteUrl(url, paramsToCheck = []) {
 
   return result;
 }
+
+/**
+ * Extracts the MIME type of image based on its file path.
+ * If no extension is found, defaults to 'jpeg'.
+ *
+ * @returns {string} The MIME type, defaulting to 'image/jpeg'.
+ * @param path
+ */
+export const getFileMimeType = path => {
+  if (!path) {
+    console.warn('Invalid file path passed to getImageMimeType.');
+    return 'image/jpeg';
+  }
+
+  const extension = path.split('.').pop() || 'jpeg';
+  return `image/${extension}`;
+};

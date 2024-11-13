@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TouchableOpacity, StyleSheet} from 'react-native';
+import {TouchableOpacity, StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     paddingHorizontal: wp('5%'),
     paddingVertical: hp('5%'),
-    zIndex: 10,
+    zIndex: 100,
     padding: wp('2%'),
   },
   button: {},

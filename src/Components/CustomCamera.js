@@ -36,7 +36,6 @@ const CustomCamera = ({
     media.uri = `file://${media.path}`;
     onCapture(media);
     setCapturedMedia(media);
-    console.log({media});
   };
 
   const onBack = () => {

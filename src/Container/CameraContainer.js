@@ -41,6 +41,7 @@ import {
 import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
 import {IMAGES} from '../Assets/Images';
 import {
+  getFileMimeType,
   styleMapping,
   switchFrameIcon,
   switchOrientation,
@@ -136,8 +137,8 @@ const CameraContainer = ({route, navigation}) => {
 
   const handleResponse = async key => {
     const haveType = checkRelevantType(groupType);
-    let extension = isImageFile.path.split('.').pop() || 'jpeg';
-    const mime = 'image/' + extension;
+    const mime = getFileMimeType(isImageFile.path);
+
     let body = {
       category: subCategory,
       url: key,
@@ -186,7 +187,6 @@ const CameraContainer = ({route, navigation}) => {
       title,
       message: displayMessage,
     };
-    console.log({statusCode});
     if (isDarkImage) {
       setIsUploadFailed(errorBody);
     } else if (statusCode === 401) {
@@ -242,7 +242,6 @@ const CameraContainer = ({route, navigation}) => {
   };
 
   const handleError = (inspectionDeleted = false) => {
-    console.log({inspectionDeleted});
     setIsUploadFailed(isUploadFailedInitialState);
     if (inspectionDeleted) {
       setIsExpiryInspectionVisible(true);
@@ -257,8 +256,7 @@ const CameraContainer = ({route, navigation}) => {
    * @returns {Promise<void>} Resolves once the signed URL is obtained and upload is initiated.
    */
   const handleNextPress = async () => {
-    const fileExtension = isImageFile.path.split('.').pop() || 'jpeg';
-    const mimeType = `image/${fileExtension}`;
+    const mimeType = getFileMimeType(isImageFile.path);
 
     setIsModalVisible(true);
     try {

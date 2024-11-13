@@ -1,6 +1,10 @@
 import {useState} from 'react';
 import {useCameraDevice, useCameraFormat} from 'react-native-vision-camera';
+import {Dimensions} from 'react-native';
+
 import {PHYSICAL_DEVICES, SWITCH_CAMERA} from '../Constants';
+
+const {height, width} = Dimensions.get('window');
 
 export const useCameraCapture = cameraRef => {
   const [isRecording, setIsRecording] = useState(false);
@@ -10,8 +14,8 @@ export const useCameraCapture = cameraRef => {
     physicalDevices: PHYSICAL_DEVICES,
   });
   const format = useCameraFormat(device, [
-    {videoResolution: {width: 1280, height: 720}},
-    {fps: 30},
+    {videoResolution: {width: width, height: height}},
+    {fps: 60},
   ]);
 
   const capturePhoto = async () => {
