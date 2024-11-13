@@ -1,11 +1,18 @@
 import {useState} from 'react';
 import {useCameraDevice, useCameraFormat} from 'react-native-vision-camera';
-import {Dimensions} from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
 import {PHYSICAL_DEVICES, SWITCH_CAMERA} from '../Constants';
 
-const {height, width} = Dimensions.get('window');
-
+/**
+ * Custom hook to manage camera capture functionalities, including photo capture, video recording, and camera switching.
+ *
+ * @param {React.MutableRefObject} cameraRef - A reference to the camera instance.
+ * @returns {Object} An object containing camera capture functions, states, and device information.
+ */
 export const useCameraCapture = cameraRef => {
   const [isRecording, setIsRecording] = useState(false);
   const [cameraPosition, setCameraPosition] = useState('back');
@@ -14,23 +21,38 @@ export const useCameraCapture = cameraRef => {
     physicalDevices: PHYSICAL_DEVICES,
   });
   const format = useCameraFormat(device, [
-    {videoResolution: {width: width, height: height}},
+    {videoResolution: {width: wp('100%'), height: hp('80%')}},
     {fps: 60},
   ]);
 
+  /**
+   * Captures a photo using the camera.
+   * @returns {Promise<Object>} The captured photo data.
+   */
   const capturePhoto = async () => {
     if (cameraRef.current) {
       return await cameraRef.current.takePhoto();
     }
   };
-
-  const startRecording = async () => {
+  /**
+   * Starts recording a video.
+   * @param {Function} onSuccess - Callback function to handle successful recording.
+   * @param {Function} onError - Callback function to handle recording errors.
+   */
+  const startRecording = async (onSuccess, onError) => {
     if (cameraRef.current) {
       setIsRecording(true);
-      await cameraRef.current.startRecording();
+      await cameraRef.current.startRecording({
+        onRecordingFinished: onSuccess,
+        onRecordingError: onError,
+      });
     }
   };
 
+  /**
+   * Stops video recording.
+   * @returns {Promise<Object>} The recorded video data.
+   */
   const stopRecording = async () => {
     if (cameraRef.current && isRecording) {
       setIsRecording(false);
@@ -38,6 +60,9 @@ export const useCameraCapture = cameraRef => {
     }
   };
 
+  /**
+   * Toggles the camera position between front and back.
+   */
   const switchCamera = () => {
     setCameraPosition(SWITCH_CAMERA[cameraPosition === 'back']);
   };

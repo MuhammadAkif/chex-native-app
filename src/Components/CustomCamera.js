@@ -13,6 +13,7 @@ const CustomCamera = ({
   displayFrame = false,
   onFramePress = fallBack,
   RightIcon,
+  children,
 }) => {
   const [capturedMedia, setCapturedMedia] = useState(null);
 
@@ -69,8 +70,9 @@ const CustomCamera = ({
         onBackPress={onBack}
         displayFrame={displayFrame}
         onFramePress={onFramePress}
-        RightIcon={RightIcon}
-      />
+        RightIcon={RightIcon}>
+        {children}
+      </CameraView>
     </View>
   );
 };

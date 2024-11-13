@@ -326,18 +326,18 @@ const CameraContainer = ({route, navigation}) => {
           onNextPress={handleNextPress}
           displayFrame={haveFrame}
           onFramePress={handleOnRightIconPress}
-          RightIcon={RightIcon}
-        />
-        {!hideFrame && haveFrame && (
-          <View style={styles.frameContainer}>
-            <FastImage
-              resizeMode={'stretch'}
-              priority={'high'}
-              style={activeFrameStyle}
-              source={frameUri}
-            />
-          </View>
-        )}
+          RightIcon={RightIcon}>
+          {!hideFrame && haveFrame && (
+            <View style={styles.frameContainer}>
+              <FastImage
+                resizeMode={'stretch'}
+                priority={'high'}
+                style={activeFrameStyle}
+                source={frameUri}
+              />
+            </View>
+          )}
+        </CustomCamera>
       </View>
       {isExpiryInspectionVisible && (
         <ExpiredInspectionModal
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFill,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 19,
+    zIndex: 1,
   },
   landscapeFrame: {
     height: hp('30%'),
