@@ -110,7 +110,9 @@ const NewInspectionContainer = ({route, navigation}) => {
     fileDetails,
   } = useSelector(state => state.newInspection);
   const {
-    user: {token, data},
+    user: {
+      data: {companyId},
+    },
   } = useSelector(state => state?.auth);
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
@@ -430,7 +432,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   const handleSubmitPress = async () => {
     setIsLoading(true);
-    await inspectionSubmission(selectedInspectionID)
+    await inspectionSubmission(selectedInspectionID, companyId)
       .then(handleGetLocation)
       .catch(onSubmitPressFail)
       .finally(() => setIsLoading(false));
@@ -521,11 +523,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   const handleConfirmVehicleDetail = async numberPlate => {
     if (isNotEmpty(numberPlate.trim())) {
       setIsLoading(true);
-      await extractNumberPlate(
-        numberPlate,
-        data?.companyId,
-        selectedInspectionID,
-      )
+      await extractNumberPlate(numberPlate, companyId, selectedInspectionID)
         .then(onNumberPlateExtractSuccess)
         .catch(onNumberPlateExtractFailure)
         .finally(() => {
@@ -628,20 +626,21 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsLoading(true);
 
     await imageAnnotation(details, selectedInspectionID, fileID)
-      .then(res => onAnnotationSubmitSuccess(res, callback))
+      .then(onAnnotationSubmitSuccess)
       .catch(onAnnotationSubmitFail)
       .finally(() => {
         setIsLoading(false);
         setDisplayAnnotation(!displayAnnotation);
+        callback();
       });
   };
-  async function onAnnotationSubmitSuccess(res, callback) {
-    callback();
+  async function onAnnotationSubmitSuccess(res) {
     await get_Inspection_Details(dispatch, selectedInspectionID);
   }
-  function onAnnotationSubmitFail(error) {
+  function onAnnotationSubmitFail(error, callback) {
     const {statusCode = null} = error?.response?.data;
     console.log({error});
+    callback();
     if (statusCode === 401) {
       handle_Session_Expired(statusCode, dispatch);
     }

@@ -345,6 +345,7 @@ export const getSignedUrl = async (
   categoryName,
   variant = 0,
   source = 'app',
+  companyId,
 ) => {
   try {
     const response = await s3SignedUrl(
@@ -353,6 +354,7 @@ export const getSignedUrl = async (
       inspectionId,
       categoryName,
       variant,
+      companyId,
     );
     await onGetSignedUrlSuccess(
       response,

@@ -155,8 +155,9 @@ export const s3SignedUrl = async (
   inspectionId = '',
   categoryName = '',
   variant = '',
+  companyId = '',
 ) => {
-  const data = {type, source, inspectionId, categoryName, variant};
+  const data = {type, source, inspectionId, categoryName, variant, companyId};
   // const data = {type: mime},
 
   try {
@@ -203,11 +204,15 @@ export const location = async inspectionId => {
   }
 };
 
-export const inspectionSubmission = async inspectionId => {
+export const inspectionSubmission = async (
+  inspectionId = '',
+  companyId = '',
+) => {
   const endPoint = generateApiUrl(`auto/reviewed/${inspectionId}`);
-
+  const body = {companyId};
   try {
-    return await api.put(endPoint, null);
+    return await api.post(endPoint, body);
+    // return await api.put(endPoint, null);
   } catch (error) {
     console.error('Inspection submission error:', error);
     throw error;

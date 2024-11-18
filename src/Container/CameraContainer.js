@@ -305,6 +305,8 @@ const CameraContainer = ({route, navigation}) => {
         selectedInspectionID,
         subCategory,
         variant || 0,
+        'app',
+        data?.companyId,
       );
     } catch (error) {
       onUploadFailed(error);
