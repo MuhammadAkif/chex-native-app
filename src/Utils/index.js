@@ -345,6 +345,7 @@ export function error_Handler(
  * @param {string} subcategory - The subcategory for this inspection.
  * @param {number|string} variant - Image variant identifier (e.g., 0, 1, 2).
  * @param {string} source - Platform source (e.g., 'app', 'web').
+ * @param companyId - Inspection company id (e.g., 0, 1, 2).
  * @returns {Promise<void>} Resolves when the upload process completes successfully.
  */
 export const getSignedUrl = async (
@@ -356,6 +357,7 @@ export const getSignedUrl = async (
   subcategory,
   variant = 0,
   source = 'app',
+  companyId = '',
 ) => {
   try {
     const response = await s3SignedUrl(
@@ -364,6 +366,7 @@ export const getSignedUrl = async (
       inspectionId,
       subcategory,
       variant,
+      companyId,
     );
     await onGetSignedUrlSuccess(
       response,

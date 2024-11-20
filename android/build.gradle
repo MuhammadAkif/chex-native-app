@@ -16,11 +16,20 @@ buildscript {
          maven { url 'https://maven.google.com' }
          maven { url "https://www.jitpack.io" }
          // react-native-crop-image-picker config ends here
+
+         // safety-tag-sdk
+         maven {
+         credentials {
+                     username "$mavenUser"
+                     password "$mavenPassword"
+                 }
+            url "https://gitlab.pixida.partners/safety-tag-release/sdk"
+          }
+
     }
     dependencies {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-//         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0") // Updated Kotlin Gradle Plugin version
     }
 }

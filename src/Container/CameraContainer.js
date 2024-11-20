@@ -60,6 +60,7 @@ const CameraContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {navigate, goBack, canGoBack} = navigation;
   const {user} = useAuth();
+  const {companyId} = user;
   const {vehicle_Type, variant} = useSelector(state => state.newInspection);
   const [isImageFile, setIsImageFile] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -268,6 +269,8 @@ const CameraContainer = ({route, navigation}) => {
         selectedInspectionID,
         subCategory,
         variant || 0,
+        'app',
+        companyId,
       );
     } catch (error) {
       onUploadFailed(error);
