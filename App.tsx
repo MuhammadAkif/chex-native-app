@@ -66,6 +66,7 @@ function App() {
       await Linking.openURL(updateAvailable);
     }
   };
+
   const onSessionExpirePress = () => {
     // @ts-ignore
     dispatch(signOut());
