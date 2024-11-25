@@ -157,8 +157,8 @@ export const s3SignedUrl = async (
   variant = '',
   companyId = '',
 ) => {
-  const data = {type, source, inspectionId, categoryName, variant, companyId};
-  // const data = {type: mime},
+  // const data = {type, source, inspectionId, categoryName, variant, companyId};
+  const data = {type};
 
   try {
     return await api.post(UPLOAD_URL, data);
@@ -185,7 +185,7 @@ export const deleteImageFromDatabase = async fileId => {
   try {
     return await api.delete(endPoint);
   } catch (error) {
-    console.error('Delete image from database error:', error);
+    console.error('Deleting image from database error:', error);
     throw error;
   }
 };
@@ -208,11 +208,14 @@ export const inspectionSubmission = async (
   inspectionId = '',
   companyId = '',
 ) => {
-  const endPoint = generateApiUrl(`auto/reviewed/${inspectionId}`);
-  const body = {companyId};
+  const endPoint = generateApiUrl(`inspection/${inspectionId}`);
+  /*const endPoint = generateApiUrl(`auto/reviewed/${inspectionId}`);
+  const body = {companyId};*/
   try {
-    return await api.post(endPoint, body);
+    //For auto-inspection
+    // return await api.post(endPoint, body);
     // return await api.put(endPoint, null);
+    return await api.patch(endPoint, null);
   } catch (error) {
     console.error('Inspection submission error:', error);
     throw error;
