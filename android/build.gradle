@@ -21,7 +21,7 @@ buildscript {
         /*  maven {
          credentials {
                      username "chex_ai_deploy_token"
-                     password "gldt-fLemrhUJmeYhMZbkaSzT"
+                     password "token"
                  }
             url "https://gitlab.pixida.partners/safety-tag-release/sdk"
           } */
@@ -30,7 +30,7 @@ buildscript {
                       name "chex_ai_deploy_token"
                       credentials(HttpHeaderCredentials) {
                           name = "chex_ai_deploy_token"
-                          value = "gldt-fLemrhUJmeYhMZbkaSzT"
+                          value = "token"
                       }
                       authentication {
                           header(HttpHeaderAuthentication)
