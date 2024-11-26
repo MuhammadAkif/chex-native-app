@@ -1,5 +1,4 @@
-import {useState} from 'react';
-
+import {useState, useCallback} from 'react';
 import {pickMedia} from '../services/MediaPicker';
 
 /**
@@ -16,6 +15,7 @@ import {pickMedia} from '../services/MediaPicker';
 function useMediaPicker(defaultParams = {}) {
   const [media, setMedia] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // Optional: add loading state for user feedback
 
   /**
    * Opens the media picker with given or default parameters.
@@ -23,19 +23,26 @@ function useMediaPicker(defaultParams = {}) {
    * @param {Object} params - Customizable options for the media picker (overrides defaultParams).
    * @returns {Promise<void>}
    */
-  const selectMedia = async (params = {}) => {
-    try {
-      const result = await pickMedia({...defaultParams, ...params});
-      setMedia(result); // The result may be an array if multiple files are selected
-      setError(null); // Reset error if the selection is successful
-    } catch (err) {
-      console.error('Error selecting media:', err);
-      setError(err);
-      throw err;
-    }
-  };
+  const selectMedia = useCallback(
+    async (params = {}) => {
+      setLoading(true);
+      setError(null); // Reset the error state when a new selection starts
+      setMedia(null); // Reset media state before picking new media
 
-  return {media, error, selectMedia};
+      try {
+        const result = await pickMedia({...defaultParams, ...params});
+        setMedia(result); // The result may be an array if multiple files are selected
+      } catch (err) {
+        console.error('Error selecting media:', err);
+        setError(err); // Set the error to be handled by the component
+      } finally {
+        setLoading(false); // Stop the loading state after the operation completes
+      }
+    },
+    [defaultParams],
+  );
+
+  return {media, error, loading, selectMedia};
 }
 
 export default useMediaPicker;

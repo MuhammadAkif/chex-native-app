@@ -9,6 +9,7 @@ import {useCameraCapture} from '../../hooks/useCameraCapture';
 import {CameraFooter, CameraHeader} from '../index';
 import {fallBack} from '../../Utils';
 import {colors} from '../../Assets/Styles';
+import useMediaPicker from '../../hooks/useMediaPicker';
 
 const {cobaltBlueMedium} = colors;
 
@@ -48,6 +49,7 @@ const CameraView = ({
     device,
     format,
   } = useCameraCapture(cameraRef);
+  const {media, error, selectMedia} = useMediaPicker();
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
@@ -58,6 +60,18 @@ const CameraView = ({
       subscription.remove();
     };
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      onError(error); // Handle errors in the parent component
+    }
+  }, [error, onError]);
+
+  useEffect(() => {
+    if (media) {
+      onCapture(media); // Handle captured media in the parent component
+    }
+  }, [media, onCapture]);
 
   /**
    * Handles taking a photo.
@@ -96,6 +110,19 @@ const CameraView = ({
     onError(error);
   };
 
+  /**
+   * Handles selecting media (images or videos) from the user's device.
+   * This function triggers the media picker and waits for the user to select media.
+   * Once the selection is made, it updates the state with the selected media.
+   *
+   * @async
+   * @function
+   * @returns {Promise<void>} Resolves when the media selection is complete.
+   */
+  const onImagePick = async () => {
+    await selectMedia();
+  };
+
   if (!device) {
     return <Text style={styles.centerText}>Loading Camera...</Text>;
   }
@@ -119,6 +146,7 @@ const CameraView = ({
       <CameraFooter
         isCamera={true}
         handleSwitchCamera={switchCamera}
+        handleImagePicker={onImagePick}
         handleCaptureNowPress={onTakePhoto}
         onRightIconPress={onFramePress}
         displayFrame={displayFrame}

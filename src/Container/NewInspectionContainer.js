@@ -110,7 +110,9 @@ const NewInspectionContainer = ({route, navigation}) => {
     variant,
     fileDetails,
   } = useSelector(state => state.newInspection);
-  const {user} = useAuth();
+  const {
+    user: {companyId},
+  } = useAuth();
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
   const [mediaModalDetails, setMediaModalDetails] = useState({});
@@ -429,7 +431,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   const handleSubmitPress = async () => {
     setIsLoading(true);
-    await inspectionSubmission(selectedInspectionID)
+    await inspectionSubmission(selectedInspectionID, companyId)
       .then(handleGetLocation)
       .catch(onSubmitPressFail)
       .finally(() => setIsLoading(false));
@@ -520,11 +522,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   const handleConfirmVehicleDetail = async numberPlate => {
     if (isNotEmpty(numberPlate.trim())) {
       setIsLoading(true);
-      await extractNumberPlate(
-        numberPlate,
-        user?.companyId,
-        selectedInspectionID,
-      )
+      await extractNumberPlate(numberPlate, companyId, selectedInspectionID)
         .then(onNumberPlateExtractSuccess)
         .catch(onNumberPlateExtractFailure)
         .finally(() => {
@@ -627,15 +625,15 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsLoading(true);
 
     await imageAnnotation(details, selectedInspectionID, fileID)
-      .then(res => onAnnotationSubmitSuccess(res, callback))
+      .then(onAnnotationSubmitSuccess)
       .catch(onAnnotationSubmitFail)
       .finally(() => {
+        callback();
         setIsLoading(false);
         setDisplayAnnotation(!displayAnnotation);
       });
   };
-  async function onAnnotationSubmitSuccess(res, callback) {
-    callback();
+  async function onAnnotationSubmitSuccess(res) {
     await get_Inspection_Details(dispatch, selectedInspectionID);
   }
   function onAnnotationSubmitFail(error) {
