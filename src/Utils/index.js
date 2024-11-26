@@ -9,6 +9,7 @@ import {
   customSortOrder,
   uploadFailed,
   darkImageError,
+  S3_BUCKET_BASEURL,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
@@ -422,7 +423,8 @@ export const uploadToS3 = async (
   }
 };
 async function onUploadToS3Success(handleResponse, key, handleError) {
-  const {completedUrl: image_url} = checkAndCompleteUrl(key);
+  const image_url = S3_BUCKET_BASEURL + key;
+  // const {completedUrl: image_url} = checkAndCompleteUrl(key);
 
   try {
     const {

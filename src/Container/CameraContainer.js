@@ -217,20 +217,20 @@ const CameraContainer = ({route, navigation}) => {
       await handleExtractNumberPlate(`${S3_BUCKET_BASEURL}${key}`);
     }
     /*Setting delay because the backend needs processing time to do some actions*/
-    // setTimeout(async () => {
-    try {
-      await uploadFile(
-        uploadImageToStore,
-        body,
-        inspectionId,
-        token,
-        handleError,
-        dispatch,
-      );
-    } catch (error) {
-      onUploadFailed(error);
-    }
-    // }, 2000);
+    setTimeout(async () => {
+      try {
+        await uploadFile(
+          uploadImageToStore,
+          body,
+          inspectionId,
+          token,
+          handleError,
+          dispatch,
+        );
+      } catch (error) {
+        onUploadFailed(error);
+      }
+    }, 2000);
   };
 
   function onUploadFailed(error) {
