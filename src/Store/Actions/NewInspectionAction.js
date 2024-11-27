@@ -22,6 +22,7 @@ const {
   LICENSE_PLATE_NUMBER,
   CLEAR_INSPECTION_IMAGES,
   COMPANY_ID,
+  SET_REQUIRED,
 } = Types;
 
 const itemsImagePayload = (item = '', group = '', uri = '', id = 0) => {
@@ -128,4 +129,8 @@ export const clearInspectionImages = () => ({
 export const setCompanyId = companyId => ({
   type: COMPANY_ID,
   payload: companyId,
+});
+export const setRequired = (required = null) => ({
+  type: SET_REQUIRED,
+  payload: required,
 });

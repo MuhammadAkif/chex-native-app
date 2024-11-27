@@ -431,8 +431,6 @@ async function onUploadToS3Success(handleResponse, key, handleError) {
       data: {status = false},
     } = await isImageDarkWithAI(image_url);
 
-    console.log('Night Image Check Status:', status);
-
     if (!status) {
       throw new Error(darkImageError.message);
     }

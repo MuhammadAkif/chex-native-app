@@ -15,6 +15,7 @@ import {
   setLicensePlateNumber,
   clearInspectionImages,
   setCompanyId,
+  setRequired,
 } from './NewInspectionAction';
 import {signIn, signOut, sessionExpired} from './AuthAction';
 import {
@@ -56,4 +57,5 @@ export {
   clearInspectionImages,
   setCompanyId,
   sessionExpired,
+  setRequired,
 };

@@ -17,6 +17,7 @@ import {
   skipRightCorners,
   setVehicleType,
   file_Details,
+  setRequired,
 } from '../Store/Actions';
 import {Delete_Messages, HARDWARE_BACK_PRESS, INSPECTION} from '../Constants';
 import {
@@ -151,6 +152,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   );
   const [fileID, setFileID] = useState('');
   const [isExterior, setIsExterior] = useState(false);
+  const [requiredFields, setRequiredFields] = useState({});
   const ActiveExteriorItemsExpandedCard =
     exteriorItemsExpandedCards[vehicle_Type];
   const ActiveInteriorItemsExpandedCard =
@@ -169,6 +171,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         setCheckTireStatus(false),
       );
     }
+    handleIsAllVehicleParts();
     if (route.params) {
       const {
         isLicensePlate,
@@ -204,6 +207,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     exteriorItems,
     tires,
     displayTires,
+    modalVisible,
   ]);
   useEffect(() => {
     const isTiresUploaded = haveOneValue(tires);
@@ -255,6 +259,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setDisplayAnnotationPopUp(false);
     setDisplayAnnotation(false);
     setIsExterior(false);
+    setRequiredFields({});
   }
   function handleExteriorLeft() {
     if (isNotEmpty(exteriorItems?.exteriorLeft)) {
@@ -343,6 +348,9 @@ const NewInspectionContainer = ({route, navigation}) => {
         exteriorInsideCargoRoof_1 ||
         exteriorInsideCargoRoof_2,
     };
+    if (vehicle_Type === 'new') {
+      updateRequiredFields(interior__, exterior__);
+    }
     const allCarVerification = !isObjectEmpty(carVerificiationItems);
     const allInterior = !isObjectEmpty(interior__);
     const allExterior = !isObjectEmpty(exterior__);
@@ -367,11 +375,18 @@ const NewInspectionContainer = ({route, navigation}) => {
       ...shouldDisplayTire[displayTires],
     });
   }
+
+  function toggleFieldRequired(required = null) {
+    dispatch(setRequired(required));
+  }
   const handleBackPress = () => {
     resetAllStates();
     goBack();
     // navigate(previousRoute);
   };
+  function updateRequiredFields(interiorFields, exteriorFields) {
+    setRequiredFields({...interiorFields, ...exteriorFields});
+  }
   //Collapsed Cards Functions starts here
   const handleCardExpansion = key => {
     setSelectedOption(prevState => ({
@@ -381,11 +396,23 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   //Collapsed Cards Functions ends here
   const handleItemPickerPress = (details, variant = 0) => {
+    const haveType = checkCategory(details.category || null);
     displayAnnotationPopUp && setDisplayAnnotationPopUp(false);
     dispatch(categoryVariant(variant));
+    if (haveType) {
+      const {key} = details;
+      const isRequired = isNotEmpty(requiredFields[key]);
+      toggleFieldRequired(!isRequired);
+    } else {
+      toggleFieldRequired(true);
+    }
     setModalDetails(details);
     setModalVisible(true);
   };
+  function checkCategory(category) {
+    const types = ['Interior', 'Exterior'];
+    return types.includes(category);
+  }
   const handleModalVisible = () => setModalVisible(!modalVisible);
   // Media Modal logic starts here
   const handleMediaModalDetailsPress = (

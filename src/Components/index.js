@@ -69,6 +69,7 @@ import ProgressBar from './ProgressBar';
 import Image from './Image';
 import Custom_Image from './Custom_Image';
 import AlertPopup from './AlertPopup';
+import RequiredIndicator from './RequiredIndicator';
 
 export {
   BackgroundImageView,
@@ -142,4 +143,5 @@ export {
   Image,
   Custom_Image,
   AlertPopup,
+  RequiredIndicator,
 };

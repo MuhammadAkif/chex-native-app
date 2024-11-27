@@ -20,7 +20,12 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {DrawerItemText} from './index';
 import {Home, Logout, Info} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
-import {clearNewInspection, hideToast, signOut} from '../Store/Actions';
+import {
+  clearNewInspection,
+  hideToast,
+  setRequired,
+  signOut,
+} from '../Store/Actions';
 import {DRAWER, PROJECT_NAME} from '../Constants';
 import {IMAGES} from '../Assets/Images';
 
@@ -48,6 +53,7 @@ const CustomDrawerContent = props => {
       previousScreen === NEW_INSPECTION
     ) {
       dispatch(clearNewInspection());
+      dispatch(setRequired());
     }
     toast.visible && dispatch(hideToast());
     setPreviousScreen(activeRouteName);

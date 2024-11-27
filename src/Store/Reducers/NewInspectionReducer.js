@@ -76,18 +76,6 @@ const initialState = {
     exteriorInsideCargoRoof_1ID: '',
     exteriorInsideCargoRoof_2: '',
     exteriorInsideCargoRoof_2ID: '',
-    /* exteriorInteriorDriverSide: '',
-    exteriorInteriorDriverSideID: '',
-    exteriorInteriorDriverSide_1: '',
-    exteriorInteriorDriverSide_1ID: '',
-    exteriorInteriorDriverSide_2: '',
-    exteriorInteriorDriverSide_2ID: '',
-    exteriorInteriorPassengerSide: '',
-    exteriorInteriorPassengerSideID: '',
-    exteriorInteriorPassengerSide_1: '',
-    exteriorInteriorPassengerSide_1ID: '',
-    exteriorInteriorPassengerSide_2: '',
-    exteriorInteriorPassengerSide_2ID: '',*/
   },
   tires: {
     leftFrontTire: '',
@@ -110,6 +98,7 @@ const initialState = {
   vehicle_Type: 'existing',
   variant: 0,
   fileDetails: null,
+  fileRequired: null,
 };
 const {
   UPDATE_VEHICLE_IMAGE,
@@ -128,6 +117,7 @@ const {
   CATEGORY_VARIANT,
   FILE_DETAILS,
   CLEAR_NEW_INSPECTION,
+  SET_REQUIRED,
 } = Types;
 const newInspectionReducer = (state = initialState, action) => {
   const {type, payload} = action;
@@ -219,6 +209,8 @@ const newInspectionReducer = (state = initialState, action) => {
         ...state,
         fileDetails: payload,
       };
+    case SET_REQUIRED:
+      return {...state, fileRequired: action.payload};
     case CLEAR_NEW_INSPECTION:
       return initialState;
     default:
