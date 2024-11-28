@@ -150,6 +150,7 @@ const ExteriorItemsExpandedCard = ({
       handleCrossPress={handleCrossPress}
       handleMediaModalDetailsPress={handleMediaModalDetailsPress}
       exteriorItems={exteriorItems}
+      borderBottomWidth={0}
     />
   </View>
 );

@@ -62,7 +62,7 @@ const ImagePicker = ({
           onPress={handleMediaModalDetailsPress}>
           <TouchableOpacity style={crossContainer} onPress={onClearPress}>
             <CrossFilled
-              height={hp('3%')}
+              height={hp('2.5%')}
               width={wp('5%')}
               color={orangePeel}
             />

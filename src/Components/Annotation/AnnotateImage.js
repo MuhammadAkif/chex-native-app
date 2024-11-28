@@ -95,9 +95,9 @@ const AnnotateImage = ({
       width: 50,
       height: 50,
       accuracyMatrix: {
-        tp: 0,
+        tp: 1,
         fp: 0,
-        fn: 1,
+        fn: 0,
       },
       byAI: false,
       deleted: false,

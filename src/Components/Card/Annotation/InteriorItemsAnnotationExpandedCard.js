@@ -48,6 +48,7 @@ const InteriorItemsAnnotationExpandedCard = ({
       handleItemPickerPress={handleItemPickerPress}
       handleCrossPress={handleCrossPress}
       handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+      borderBottomWidth={0}
     />
   </View>
 );

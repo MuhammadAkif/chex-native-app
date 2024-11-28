@@ -106,6 +106,7 @@ const NewInspectionScreen = props => {
     vehicle_Type,
     ActiveInteriorItemsExpandedCard,
     coordinates,
+    displayInstructions,
   } = props;
   return (
     <View style={container}>
@@ -226,6 +227,7 @@ const NewInspectionScreen = props => {
             <CollapsedCard
               text={'Interior items'}
               index={2}
+              displayInstructions={displayInstructions}
               isActive={selectedOption?.isInterior}
               isBothItemsAvailable={isAllInteriorImagesAvailable}
               onPress={() => handleCardExpansion('isInterior')}
@@ -242,6 +244,7 @@ const NewInspectionScreen = props => {
             )}
             <CollapsedCard
               text={'Exterior items'}
+              displayInstructions={displayInstructions}
               index={3}
               isActive={selectedOption?.isExterior}
               isBothItemsAvailable={isAllExteriorImagesAvailable}

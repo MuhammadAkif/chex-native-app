@@ -754,6 +754,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       vehicle_Type={shouldAnnotate}
       ActiveInteriorItemsExpandedCard={ActiveInteriorItemsExpandedCard}
       coordinates={mediaModalDetails?.coordinates?.coordinateArray || []}
+      displayInstructions={vehicle_Type === 'new'}
     />
   );
 };
