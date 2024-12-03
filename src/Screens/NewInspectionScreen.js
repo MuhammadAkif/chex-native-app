@@ -16,6 +16,7 @@ import {
   DiscardInspectionModal,
   AndroidMediaViewModal,
   ConfirmVehicleDetailModal,
+  CommentBox,
 } from '../Components';
 import {BackArrow} from '../Assets/Icons';
 import LoadingIndicator from '../Components/LoadingIndicator';
@@ -107,6 +108,9 @@ const NewInspectionScreen = props => {
     ActiveInteriorItemsExpandedCard,
     coordinates,
     displayInstructions,
+    onSubmitInspectionPress,
+    onCancelInspection,
+    displayCommentBox,
   } = props;
   return (
     <View style={container}>
@@ -291,12 +295,17 @@ const NewInspectionScreen = props => {
           <View style={footerContainer}>
             <PrimaryGradientButton
               text={'Submit'}
-              onPress={handleSubmitPress}
+              onPress={onSubmitInspectionPress}
               disabled={isLoading}
             />
           </View>
         )}
       </View>
+      <CommentBox
+        visible={displayCommentBox.visible}
+        onSubmit={handleSubmitPress}
+        onCancel={onCancelInspection}
+      />
       <LoadingIndicator isLoading={loadingIndicator} />
     </View>
   );

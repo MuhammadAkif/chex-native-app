@@ -70,6 +70,7 @@ import Image from './Image';
 import Custom_Image from './Custom_Image';
 import AlertPopup from './AlertPopup';
 import RequiredIndicator from './RequiredIndicator';
+import CommentBox from './CommentBox/CommentBox';
 
 export {
   BackgroundImageView,
@@ -144,4 +145,5 @@ export {
   Custom_Image,
   AlertPopup,
   RequiredIndicator,
+  CommentBox,
 };

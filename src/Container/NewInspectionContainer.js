@@ -91,6 +91,8 @@ const delay = {
   android: 0,
 };
 
+const DISPLAY_COMMENT_INITIALSTATE = {visible: false, comments: ''};
+
 const NewInspectionContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {canGoBack, goBack, navigate} = navigation;
@@ -153,6 +155,9 @@ const NewInspectionContainer = ({route, navigation}) => {
   const [fileID, setFileID] = useState('');
   const [isExterior, setIsExterior] = useState(false);
   const [requiredFields, setRequiredFields] = useState({});
+  const [displayCommentBox, setDisplayCommentBox] = useState(
+    DISPLAY_COMMENT_INITIALSTATE,
+  );
   const ActiveExteriorItemsExpandedCard =
     exteriorItemsExpandedCards[vehicle_Type];
   const ActiveInteriorItemsExpandedCard =
@@ -260,6 +265,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setDisplayAnnotation(false);
     setIsExterior(false);
     setRequiredFields({});
+    setDisplayCommentBox(DISPLAY_COMMENT_INITIALSTATE);
   }
   function handleExteriorLeft() {
     if (isNotEmpty(exteriorItems?.exteriorLeft)) {
@@ -457,6 +463,12 @@ const NewInspectionContainer = ({route, navigation}) => {
       inspectionId: selectedInspectionID,
     });
   };
+  function onSubmitInspectionPress() {
+    setDisplayCommentBox(prevState => ({...prevState, visible: true}));
+  }
+  function onCancelInspection() {
+    setDisplayCommentBox(DISPLAY_COMMENT_INITIALSTATE);
+  }
   const handleSubmitPress = async () => {
     setIsLoading(true);
     await inspectionSubmission(selectedInspectionID, companyId)
@@ -755,6 +767,9 @@ const NewInspectionContainer = ({route, navigation}) => {
       ActiveInteriorItemsExpandedCard={ActiveInteriorItemsExpandedCard}
       coordinates={mediaModalDetails?.coordinates?.coordinateArray || []}
       displayInstructions={vehicle_Type === 'new'}
+      onSubmitInspectionPress={onSubmitInspectionPress}
+      onCancelInspection={onCancelInspection}
+      displayCommentBox={displayCommentBox}
     />
   );
 };
