@@ -296,7 +296,7 @@ const NewInspectionScreen = props => {
             <PrimaryGradientButton
               text={'Submit'}
               onPress={onSubmitInspectionPress}
-              disabled={isLoading}
+              // disabled={isLoading}
             />
           </View>
         )}
@@ -305,6 +305,7 @@ const NewInspectionScreen = props => {
         visible={displayCommentBox.visible}
         onSubmit={handleSubmitPress}
         onCancel={onCancelInspection}
+        isLoading={isLoading}
       />
       <LoadingIndicator isLoading={loadingIndicator} />
     </View>
