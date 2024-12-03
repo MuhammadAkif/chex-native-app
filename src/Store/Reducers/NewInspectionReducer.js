@@ -118,6 +118,7 @@ const {
   FILE_DETAILS,
   CLEAR_NEW_INSPECTION,
   SET_REQUIRED,
+  BATCH_UPDATE_VEHICLE_IMAGES,
 } = Types;
 const newInspectionReducer = (state = initialState, action) => {
   const {type, payload} = action;
@@ -213,6 +214,19 @@ const newInspectionReducer = (state = initialState, action) => {
       return {...state, fileRequired: action.payload};
     case CLEAR_NEW_INSPECTION:
       return initialState;
+    case BATCH_UPDATE_VEHICLE_IMAGES:
+      const updatedState = {...state};
+
+      payload.forEach(update => {
+        const {groupType, item, imageURL, id} = update;
+        updatedState[groupType] = {
+          ...updatedState[groupType],
+          [item]: imageURL,
+          [`${item}ID`]: id,
+        };
+      });
+
+      return updatedState;
     default:
       return state;
   }

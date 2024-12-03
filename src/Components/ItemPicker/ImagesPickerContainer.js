@@ -46,6 +46,9 @@ const ImagesPickerContainer = ({
   const displayLabel = imageURL || imageURLOne || imageURLTwo;
   const labelVisible = hideAddLAbel ? !hideAddLAbel : isNotEmpty(displayLabel);
   const {zero, one, two} = visibleTiles;
+  const displayImage = imageURL || zero;
+  const displayImageOne = imageURLOne || one;
+  const displayImageTwo = imageURLTwo || two;
 
   useEffect(() => {
     updateTiles();
@@ -94,7 +97,7 @@ const ImagesPickerContainer = ({
           styles.singleTileContainer,
           {borderBottomWidth},
         ]}>
-        {zero && (
+        {displayImage && (
           <ImagePicker_New
             text={title}
             pickerText={pickerText}
@@ -108,7 +111,7 @@ const ImagesPickerContainer = ({
             isAnnotated={annotations.imageURL}
           />
         )}
-        {one && (
+        {displayImageOne && (
           <ImagePicker_New
             text={title}
             pickerText={pickerText}
@@ -127,7 +130,7 @@ const ImagesPickerContainer = ({
             isAnnotated={annotations.imageURLOne}
           />
         )}
-        {two && (
+        {displayImageTwo && (
           <ImagePicker_New
             text={title}
             pickerText={pickerText}

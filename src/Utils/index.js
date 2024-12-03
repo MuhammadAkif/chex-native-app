@@ -17,6 +17,7 @@ import {
   setCompanyId,
   updateVehicleImage,
   sessionExpired,
+  batchUpdateVehicleImages,
 } from '../Store/Actions';
 import {IMAGES} from '../Assets/Images';
 import {store} from '../Store';
@@ -595,24 +596,26 @@ export const sortInspection_Reviewed_Items = list => {
 };
 
 export function uploadInProgressMediaToStore(files, dispatch) {
-  for (let file = 0; file < files.length; file++) {
-    const url = files[file].url;
+  // Batch all updates into a single dispatch
+  const updates = files.map(file => {
+    const {url, groupType, id, category, llamaCost: variant} = file;
+    const {completedUrl: imageURL} = checkAndCompleteUrl(url);
 
-    let {completedUrl: imageURL} = checkAndCompleteUrl(url);
-    let {groupType, id, category, llamaCost: variant} = files[file];
-    let variant_ = parseInt(variant);
-    if (variant_) {
-      category += '_' + variant_;
+    let categoryKey = category;
+    if (parseInt(variant)) {
+      categoryKey += '_' + variant;
     }
-    dispatch(
-      updateVehicleImage(
-        groupType,
-        INSPECTION_SUBCATEGORY[category],
-        imageURL,
-        id,
-      ),
-    );
-  }
+
+    return {
+      groupType,
+      item: INSPECTION_SUBCATEGORY[categoryKey],
+      imageURL,
+      id,
+    };
+  });
+
+  // Dispatch a single action with all updates
+  dispatch(batchUpdateVehicleImages(updates));
 }
 export const generateRandomString = () => {
   const characters =

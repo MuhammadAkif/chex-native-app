@@ -16,6 +16,7 @@ import {
   clearInspectionImages,
   setCompanyId,
   setRequired,
+  batchUpdateVehicleImages,
 } from './NewInspectionAction';
 import {signIn, signOut, sessionExpired} from './AuthAction';
 import {
@@ -58,4 +59,5 @@ export {
   setCompanyId,
   sessionExpired,
   setRequired,
+  batchUpdateVehicleImages,
 };

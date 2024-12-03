@@ -23,6 +23,7 @@ const {
   CLEAR_INSPECTION_IMAGES,
   COMPANY_ID,
   SET_REQUIRED,
+  BATCH_UPDATE_VEHICLE_IMAGES,
 } = Types;
 
 const itemsImagePayload = (item = '', group = '', uri = '', id = 0) => {
@@ -133,4 +134,8 @@ export const setCompanyId = companyId => ({
 export const setRequired = (required = null) => ({
   type: SET_REQUIRED,
   payload: required,
+});
+export const batchUpdateVehicleImages = updates => ({
+  type: BATCH_UPDATE_VEHICLE_IMAGES,
+  payload: updates,
 });
