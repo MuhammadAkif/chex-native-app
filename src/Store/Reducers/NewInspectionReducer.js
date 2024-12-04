@@ -99,6 +99,7 @@ const initialState = {
   variant: 0,
   fileDetails: null,
   fileRequired: null,
+  mileage: '',
 };
 const {
   UPDATE_VEHICLE_IMAGE,

@@ -773,6 +773,12 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
   };
   return GET_EXTERIOR_ITEM[key] || "Inspection ID doesn't exists";
 };
+
+/**
+ * Checks if a value is not empty, meaning it is neither null, undefined, empty string, nor zero.
+ * @param {*} value - The value to check
+ * @returns {boolean} - Returns true if the value is not empty, otherwise false
+ */
 export const isNotEmpty = value =>
   value !== null && value !== undefined && value !== '' && value !== 0;
 export const isObjectEmpty = (object = {}) => {
@@ -930,4 +936,34 @@ export function checkRelevantType(type) {
   const {interiorItems, exteriorItems} = INSPECTION;
   const relevantGroupTypes = [interiorItems, exteriorItems];
   return relevantGroupTypes.includes(type) || false;
+}
+
+/**
+ * Extracts non-empty values from the input object that don't have 'ID' in their key.
+ *
+ * @param {Object} file - The object containing various fields to check
+ * @returns {Array} - An array of values that are non-empty and do not have 'ID' in their key
+ */
+export function extractValidUrls(file = {}) {
+  // Check if a file is an object and is not null
+  if (typeof file !== 'object' || file === null) {
+    console.log('Input is not a valid object');
+    return [];
+  }
+
+  const list = [];
+
+  for (let key in file) {
+    // Skip the property if it is from the prototype chain
+    if (!file.hasOwnProperty(key)) {
+      continue;
+    }
+
+    // Only process if the key does not contain 'ID' and the value is not empty
+    if (!key.includes('ID') && isNotEmpty(file[key])) {
+      list.push(file[key]);
+    }
+  }
+
+  return list;
 }

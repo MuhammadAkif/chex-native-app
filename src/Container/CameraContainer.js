@@ -257,6 +257,7 @@ const CameraContainer = ({route, navigation}) => {
   function uploadImageToStore(imageID) {
     const isLicensePlate =
       category === 'CarVerification' && type === 'licensePlate';
+    const isOdometer = category === 'CarVerification' && type === 'odometer';
     const types = ['Interior', 'Exterior'];
     const haveType = types.includes(category);
     const annotationDetails = {uri: isImageURL};
@@ -268,6 +269,7 @@ const CameraContainer = ({route, navigation}) => {
     dispatch(updateVehicleImage(groupType, type_, isImageURL, imageID));
     const params = {
       isLicensePlate: isLicensePlate,
+      isOdometer: isOdometer,
       displayAnnotation: displayAnnotation,
       fileId: imageID,
       annotationDetails: annotationDetails,

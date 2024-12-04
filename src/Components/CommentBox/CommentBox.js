@@ -6,14 +6,15 @@ import InputField from './InputField';
 import TextLimit from './TextLimit';
 import {modalStyle} from '../../Assets/Styles';
 import {FooterButtons} from '../index';
+import {fallBack} from '../../Utils';
 
 const {modalOuterContainer, header, body} = modalStyle;
 
 const CommentBox = ({
   title = 'Add a Comment',
   description = 'Please provide your comments or feedback below',
-  onSubmit,
-  onCancel,
+  onSubmit = fallBack,
+  onCancel = fallBack,
   placeHolder = 'Type your comment or feedback here',
   numberPlateText = '',
   isLoading = false,

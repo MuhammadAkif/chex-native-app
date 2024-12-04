@@ -108,9 +108,9 @@ const NewInspectionScreen = props => {
     ActiveInteriorItemsExpandedCard,
     coordinates,
     displayInstructions,
-    onSubmitInspectionPress,
-    onCancelInspection,
-    displayCommentBox,
+    odometerVisible,
+    handleConfirmMileage,
+    mileage,
   } = props;
   return (
     <View style={container}>
@@ -146,6 +146,20 @@ const NewInspectionScreen = props => {
           numberPlateText={plateNumber || ''}
           textLimit={20}
           textLength={plateNumber?.length || '0'}
+        />
+      )}
+      {odometerVisible && (
+        <ConfirmVehicleDetailModal
+          title={'Mileage'}
+          description={
+            'System was unable to detect the mileage. Please type the mileage below:'
+          }
+          isLoading={isLoading}
+          onCrossPress={handleConfirmModalVisible}
+          onConfirmPress={handleConfirmMileage}
+          numberPlateText={mileage || ''}
+          textLimit={20}
+          textLength={mileage?.length || '0'}
         />
       )}
       {vehicle_Type && (
@@ -295,18 +309,12 @@ const NewInspectionScreen = props => {
           <View style={footerContainer}>
             <PrimaryGradientButton
               text={'Submit'}
-              onPress={onSubmitInspectionPress}
-              // disabled={isLoading}
+              onPress={handleSubmitPress}
+              disabled={isLoading}
             />
           </View>
         )}
       </View>
-      <CommentBox
-        visible={displayCommentBox.visible}
-        onSubmit={handleSubmitPress}
-        onCancel={onCancelInspection}
-        isLoading={isLoading}
-      />
       <LoadingIndicator isLoading={loadingIndicator} />
     </View>
   );
