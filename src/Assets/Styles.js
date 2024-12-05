@@ -128,8 +128,8 @@ export const expandedCardStyles = StyleSheet.create({
   crossContainer: {
     position: 'absolute',
     zIndex: 1,
-    right: '5%',
-    top: -3,
+    right: -wp('0.8%'),
+    top: -hp('0.2'),
     padding: wp('1.5%'),
   },
 });

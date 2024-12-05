@@ -22,6 +22,10 @@ const {
   LICENSE_PLATE_NUMBER,
   CLEAR_INSPECTION_IMAGES,
   COMPANY_ID,
+  SET_REQUIRED,
+  BATCH_UPDATE_VEHICLE_IMAGES,
+  SET_MILEAGE,
+  SET_FEEDBACK,
 } = Types;
 
 const itemsImagePayload = (item = '', group = '', uri = '', id = 0) => {
@@ -139,4 +143,20 @@ export const clearInspectionImages = () => ({
 export const setCompanyId = companyId => ({
   type: COMPANY_ID,
   payload: companyId,
+});
+export const setRequired = (required = null) => ({
+  type: SET_REQUIRED,
+  payload: required,
+});
+export const batchUpdateVehicleImages = updates => ({
+  type: BATCH_UPDATE_VEHICLE_IMAGES,
+  payload: updates,
+});
+export const setMileage = (mileage = '') => ({
+  type: SET_MILEAGE,
+  payload: mileage,
+});
+export const setFeedback = (feedback = '') => ({
+  type: SET_FEEDBACK,
+  payload: feedback,
 });

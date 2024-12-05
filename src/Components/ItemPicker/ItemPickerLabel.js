@@ -12,15 +12,20 @@ const {itemPickerContainer} = ExpandedCardStyles;
 
 const ItemPickerLabel = ({
   label = 'Exterior Front',
-  addNoteText = 'Add Note',
+  addNoteText = 'Add Image',
+  labelVisible = false,
   onAddNotePress,
 }) => (
-  <View style={{...itemPickerContainer, ...styles.container}}>
-    <Text style={{...styles.label, ...styles.fontSize}}>{label}</Text>
-    {/*<TouchableOpacity onPress={onAddNotePress} style={styles.addNoteContainer}>*/}
-    {/*  <Text style={styles.plusText}>+ </Text>*/}
-    {/*  <Text style={{...styles.note, ...styles.fontSize}}>{addNoteText}</Text>*/}
-    {/*</TouchableOpacity>*/}
+  <View style={[itemPickerContainer, styles.container]}>
+    <Text style={[styles.label, styles.fontSize]}>{label}</Text>
+    {labelVisible && (
+      <TouchableOpacity
+        onPress={onAddNotePress}
+        accessibilityLabel={'This is label'}
+        style={styles.addNoteContainer}>
+        <Text style={[styles.note, styles.labelSize]}>+ {addNoteText}</Text>
+      </TouchableOpacity>
+    )}
   </View>
 );
 const styles = StyleSheet.create({
@@ -41,10 +46,8 @@ const styles = StyleSheet.create({
   fontSize: {
     fontSize: hp('1.8%'),
   },
-  plusText: {
-    fontSize: hp('2.5%'),
-    bottom: hp('0.1%'),
-    color: orangePeel,
+  labelSize: {
+    fontSize: hp('1.4%'),
   },
   addNoteContainer: {
     flexDirection: 'row',

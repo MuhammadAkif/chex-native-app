@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {BackHandler} from 'react-native';
 
-import CompletedInspectionScreen from '../Screens/CompletedInspectionScreen';
+import {CompletedInspectionScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 
@@ -25,7 +25,6 @@ const CompletedInspectionContainer = ({navigation}) => {
     }
     return false;
   }
-
   return <CompletedInspectionScreen navigation={navigation} />;
 };
 

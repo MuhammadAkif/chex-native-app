@@ -16,6 +16,7 @@ import {
   setCompanyId,
   updateVehicleImage,
   sessionExpired,
+  batchUpdateVehicleImages,
 } from '../Store/Actions';
 import {IMAGES} from '../Assets/Images';
 import {store} from '../Store';
@@ -356,6 +357,7 @@ export const getSignedUrl = async (
   subcategory,
   variant = 0,
   source = 'app',
+  companyId,
 ) => {
   try {
     const response = await s3SignedUrl(
@@ -364,6 +366,7 @@ export const getSignedUrl = async (
       inspectionId,
       subcategory,
       variant,
+      companyId,
     );
     await onGetSignedUrlSuccess(
       response,
@@ -449,7 +452,7 @@ async function onUploadToS3Success(onSuccess, fileKey) {
   const {completedUrl: imageUrl} = checkAndCompleteUrl(fileKey);
 
   try {
-    const {
+    /* const {
       data: {status = false},
     } = await isImageDarkWithAI(imageUrl);
 
@@ -457,7 +460,7 @@ async function onUploadToS3Success(onSuccess, fileKey) {
 
     if (!status) {
       throw new Error(darkImageError.message);
-    }
+    }*/
 
     onSuccess(fileKey);
   } catch (error) {
@@ -633,30 +636,29 @@ export const sortInspection_Reviewed_Items = list => {
  * @param {function} dispatch - Redux dispatch function to update the store with each file's upload progress.
  */
 export function uploadInProgressMediaToStore(files, dispatch) {
-  files.forEach(file => {
+  // Batch all updates into a single dispatch
+  const updates = files.map(file => {
     const {url, groupType, id, category, llamaCost: variant} = file;
 
     // Generate completed image URL
     const {completedUrl: imageURL} = checkAndCompleteUrl(url);
 
-    // Format the category with the variant, if applicable
-    const variantNumber = parseInt(variant, 10);
-    const formattedCategory = variantNumber
-      ? `${category}_${variantNumber}`
-      : category;
+    let categoryKey = category;
+    if (parseInt(variant)) {
+      categoryKey += '_' + variant;
+    }
 
-    // Dispatch an action to update the vehicle image in the store
-    dispatch(
-      updateVehicleImage(
-        groupType,
-        INSPECTION_SUBCATEGORY[formattedCategory],
-        imageURL,
-        id,
-      ),
-    );
+    return {
+      groupType,
+      item: INSPECTION_SUBCATEGORY[categoryKey],
+      imageURL,
+      id,
+    };
   });
-}
 
+  // Dispatch a single action with all updates
+  dispatch(batchUpdateVehicleImages(updates));
+}
 export const generateRandomString = () => {
   const characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -844,6 +846,12 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
   };
   return GET_EXTERIOR_ITEM[key] || "Inspection ID doesn't exists";
 };
+
+/**
+ * Checks if a value is not empty, meaning it is neither null, undefined, empty string, nor zero.
+ * @param {*} value - The value to check
+ * @returns {boolean} - Returns true if the value is not empty, otherwise false
+ */
 export const isNotEmpty = value =>
   value !== null && value !== undefined && value !== '' && value !== 0;
 export const isObjectEmpty = (object = {}) => {
@@ -1001,4 +1009,34 @@ export function checkRelevantType(type) {
   const {interiorItems, exteriorItems} = INSPECTION;
   const relevantGroupTypes = [interiorItems, exteriorItems];
   return relevantGroupTypes.includes(type) || false;
+}
+
+/**
+ * Extracts non-empty values from the input object that don't have 'ID' in their key.
+ *
+ * @param {Object} file - The object containing various fields to check
+ * @returns {Array} - An array of values that are non-empty and do not have 'ID' in their key
+ */
+export function extractValidUrls(file = {}) {
+  // Check if a file is an object and is not null
+  if (typeof file !== 'object' || file === null) {
+    console.log('Input is not a valid object');
+    return [];
+  }
+
+  const list = [];
+
+  for (let key in file) {
+    // Skip the property if it is from the prototype chain
+    if (!file.hasOwnProperty(key)) {
+      continue;
+    }
+
+    // Only process if the key does not contain 'ID' and the value is not empty
+    if (!key.includes('ID') && isNotEmpty(file[key])) {
+      list.push(file[key]);
+    }
+  }
+
+  return list;
 }

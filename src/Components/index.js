@@ -72,6 +72,11 @@ import AlertPopup from './AlertPopup';
 import CustomCamera from './CustomCamera';
 import CameraView from './Camera/CameraView';
 import CameraHeader from './Camera/CameraHeader';
+import RequiredIndicator from './RequiredIndicator';
+import CommentBox from './CommentBox/CommentBox';
+import Comment from './CommentBox/Comment';
+import FooterButtons from './FooterButtons';
+import NewInspectionFooter from './NewInspectionFooter';
 
 export {
   BackgroundImageView,
@@ -148,4 +153,9 @@ export {
   CustomCamera,
   CameraView,
   CameraHeader,
+  RequiredIndicator,
+  CommentBox,
+  FooterButtons,
+  Comment,
+  NewInspectionFooter,
 };

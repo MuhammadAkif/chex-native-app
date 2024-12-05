@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {BackHandler} from 'react-native';
 
 import {InspectionDetailScreen} from '../Screens';
-import {HARDWARE_BACK_PRESS, S3_BUCKET_BASEURL} from '../Constants';
+import {HARDWARE_BACK_PRESS} from '../Constants';
 import {CrossFilled, Tick} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {checkAndCompleteUrl, formatTitle} from '../Utils/helpers';

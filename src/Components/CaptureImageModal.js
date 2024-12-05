@@ -16,10 +16,11 @@ import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import VideoPlayer from 'react-native-video-player';
+import {useSelector} from 'react-redux';
 
 import {Cross, Expand, Info} from '../Assets/Icons';
-import {colors, dot} from '../Assets/Styles';
-import {PrimaryGradientButton, Sub_Heading} from './index';
+import {colors} from '../Assets/Styles';
+import {PrimaryGradientButton, RequiredIndicator, Sub_Heading} from './index';
 import Collapse from '../Assets/Icons/Collapse';
 import {Platforms} from '../Constants';
 import {
@@ -55,7 +56,9 @@ const CaptureImageModal = ({
   progress = 0,
   isCarVerification = false,
   isExterior = true,
+  labelRequired = null,
 }) => {
+  const {fileRequired = null} = useSelector(state => state.newInspection);
   const [isFullScreen, setIsFullScreen] = useState(false);
 
   const height = hp('5%');
@@ -105,14 +108,17 @@ const CaptureImageModal = ({
               flexGrow: calculatedStyles.headerFlexGrow,
             },
           ]}>
-          <Text
-            style={[
-              styles.titleText,
-              styles.textColor,
-              {bottom: calculatedStyles.headerTextBottom},
-            ]}>
-            {title}
-          </Text>
+          <View style={styles.headerLabels}>
+            <RequiredIndicator required={labelRequired || fileRequired} />
+            <Text
+              style={[
+                styles.titleText,
+                styles.textColor,
+                {bottom: calculatedStyles.headerTextBottom},
+              ]}>
+              {title}
+            </Text>
+          </View>
           {isVideo ? (
             <>
               {OS === ANDROID ? (
@@ -223,7 +229,7 @@ const styles = StyleSheet.create({
   header: {
     flex: 1,
     width: wp('100%'),
-    justifyContent: 'space-evenly',
+    // justifyContent: 'space-evenly',
     alignItems: 'center',
     rowGap: hp('3%'),
   },
@@ -300,6 +306,10 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     margin: 10,
+  },
+  headerLabels: {
+    alignItems: 'center',
+    rowGap: hp('0.5%'),
   },
 });
 

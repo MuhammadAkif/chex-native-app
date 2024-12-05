@@ -54,13 +54,17 @@ const ImagePicker_New = ({
         disabled={isLoading}
         onPress={handleMediaModalDetailsPress}>
         <TouchableOpacity style={crossContainer} onPress={onClearPress}>
-          <CrossFilled height={hp('3%')} width={wp('5%')} color={orangePeel} />
+          <CrossFilled
+            height={hp('2.5%')}
+            width={wp('7%')}
+            color={orangePeel}
+          />
         </TouchableOpacity>
         <FastImage
           source={{uri: imageURL}}
           priority={'normal'}
           resizeMode={'stretch'}
-          style={[StyleSheet.absoluteFill, {borderRadius: wp('5%')}]}
+          style={[StyleSheet.absoluteFill, {borderRadius: wp('4%')}]}
         />
         {/*<Custom_Image
           source={{uri: imageURL}}

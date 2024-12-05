@@ -17,6 +17,7 @@ import {
   skipRightCorners,
   setVehicleType,
   file_Details,
+  setRequired,
 } from '../Store/Actions';
 import {Delete_Messages, HARDWARE_BACK_PRESS, INSPECTION} from '../Constants';
 import {
@@ -46,7 +47,7 @@ import {
   location,
   vehicleTireStatus,
 } from '../services/inspection';
-import {useAuth} from '../hooks';
+import {useAuth, useBoolean} from '../hooks';
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllCarVerification: false,
@@ -109,6 +110,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     vehicle_Type,
     variant,
     fileDetails,
+    mileage = '',
   } = useSelector(state => state.newInspection);
   const {
     user: {companyId},
@@ -150,10 +152,18 @@ const NewInspectionContainer = ({route, navigation}) => {
   );
   const [fileID, setFileID] = useState('');
   const [isExterior, setIsExterior] = useState(false);
+  const [requiredFields, setRequiredFields] = useState({});
+  const {
+    value: odometerVisible,
+    reset: resetOdometerVisible,
+    toggle: toggleOdometer,
+  } = useBoolean(false);
+
   const ActiveExteriorItemsExpandedCard =
     exteriorItemsExpandedCards[vehicle_Type];
   const ActiveInteriorItemsExpandedCard =
     interiorItemsExpandedCards[vehicle_Type];
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
@@ -167,9 +177,11 @@ const NewInspectionContainer = ({route, navigation}) => {
         setCheckTireStatus(false),
       );
     }
+    handleIsAllVehicleParts();
     if (route.params) {
       const {
         isLicensePlate = false,
+        isOdometer = false,
         displayAnnotation = false,
         fileId = null,
         annotationDetails = null,
@@ -179,6 +191,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       if (routeName !== INSPECTION_SELECTION) {
         setTimeout(() => {
           setIsLicenseModalVisible(isLicensePlate || false);
+          isOdometer && toggleOdometer();
           setDisplayAnnotationPopUp(displayAnnotation || false);
         }, delay[OS]);
         setFileID(fileId || '');
@@ -202,6 +215,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     exteriorItems,
     tires,
     displayTires,
+    modalVisible,
   ]);
   useEffect(() => {
     const isTiresUploaded = haveOneValue(tires);
@@ -253,6 +267,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     setDisplayAnnotationPopUp(false);
     setDisplayAnnotation(false);
     setIsExterior(false);
+    setRequiredFields({});
+    resetOdometerVisible();
   }
   function handleExteriorLeft() {
     if (isNotEmpty(exteriorItems?.exteriorLeft)) {
@@ -341,6 +357,9 @@ const NewInspectionContainer = ({route, navigation}) => {
         exteriorInsideCargoRoof_1 ||
         exteriorInsideCargoRoof_2,
     };
+    if (vehicle_Type === 'new') {
+      updateRequiredFields(interior__, exterior__);
+    }
     const allCarVerification = !isObjectEmpty(carVerificiationItems);
     const allInterior = !isObjectEmpty(interior__);
     const allExterior = !isObjectEmpty(exterior__);
@@ -365,11 +384,18 @@ const NewInspectionContainer = ({route, navigation}) => {
       ...shouldDisplayTire[displayTires],
     });
   }
+
+  function toggleFieldRequired(required = null) {
+    dispatch(setRequired(required));
+  }
   const handleBackPress = () => {
     resetAllStates();
     goBack();
     // navigate(previousRoute);
   };
+  function updateRequiredFields(interiorFields, exteriorFields) {
+    setRequiredFields({...interiorFields, ...exteriorFields});
+  }
   //Collapsed Cards Functions starts here
   const handleCardExpansion = key => {
     setSelectedOption(prevState => ({
@@ -379,11 +405,23 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   //Collapsed Cards Functions ends here
   const handleItemPickerPress = (details, variant = 0) => {
+    const haveType = checkCategory(details.category || null);
     displayAnnotationPopUp && setDisplayAnnotationPopUp(false);
     dispatch(categoryVariant(variant));
+    if (haveType) {
+      const {key} = details;
+      const isRequired = isNotEmpty(requiredFields[key]);
+      toggleFieldRequired(!isRequired);
+    } else {
+      toggleFieldRequired(true);
+    }
     setModalDetails(details);
     setModalVisible(true);
   };
+  function checkCategory(category) {
+    const types = ['Interior', 'Exterior'];
+    return types.includes(category);
+  }
   const handleModalVisible = () => setModalVisible(!modalVisible);
   // Media Modal logic starts here
   const handleMediaModalDetailsPress = (
@@ -532,6 +570,16 @@ const NewInspectionContainer = ({route, navigation}) => {
         });
     }
   };
+  const handleConfirmMileage = mile_age => {
+    try {
+      if (isNotEmpty(mile_age.trim())) {
+        setIsLoading(true);
+        toggleOdometer();
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
   function onNumberPlateExtractSuccess(res) {
     const vehicleType = res?.data?.hasAdded || 'existing';
     dispatch(setVehicleType(vehicleType));
@@ -547,7 +595,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       errorMessage = 'An error occurred',
       message = 'An error occurred',
     } = e?.response?.data || {};
-    e?.response?.data;
+
     if (statusCode === 409) {
       const vehicleType = hasAdded || 'existing';
       dispatch(setVehicleType(vehicleType));
@@ -628,9 +676,9 @@ const NewInspectionContainer = ({route, navigation}) => {
       .then(onAnnotationSubmitSuccess)
       .catch(onAnnotationSubmitFail)
       .finally(() => {
-        callback();
         setIsLoading(false);
         setDisplayAnnotation(!displayAnnotation);
+        callback();
       });
   };
   async function onAnnotationSubmitSuccess(res) {
@@ -707,10 +755,10 @@ const NewInspectionContainer = ({route, navigation}) => {
       isInspectionInProgressModalVisible={isInspectionInProgressModalVisible}
       inUseErrorTitle={inUseErrorTitle}
       handleCardExpansion={handleCardExpansion}
-      // skipLeft={skipLeft}
-      // skipLeftCorners={skipLeftCorners}
-      // skipRight={skipRight}
-      // skipRightCorners={skipRightCorners}
+      /*skipLeft={skipLeft}
+      skipLeftCorners={skipLeftCorners}
+      skipRight={skipRight}
+      skipRightCorners={skipRightCorners}*/
       displayTires={displayTires}
       loadingIndicator={loadingIndicator}
       displayAnnotationPopUp={displayAnnotationPopUp}
@@ -725,6 +773,10 @@ const NewInspectionContainer = ({route, navigation}) => {
       vehicle_Type={shouldAnnotate}
       ActiveInteriorItemsExpandedCard={ActiveInteriorItemsExpandedCard}
       coordinates={mediaModalDetails?.coordinates?.coordinateArray || []}
+      displayInstructions={vehicle_Type === 'new'}
+      odometerVisible={odometerVisible}
+      handleConfirmMileage={handleConfirmMileage}
+      mileage={mileage}
     />
   );
 };

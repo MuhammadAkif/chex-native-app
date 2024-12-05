@@ -10,6 +10,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import {useSelector} from 'react-redux';
 
 import {colors, ShadowEffect} from '../../Assets/Styles';
 import {DownArrow, UpArrow, Check} from '../../Assets/Icons';
@@ -56,7 +57,9 @@ const CollapsedCard = ({
   isActive,
   isBothItemsAvailable,
   disabled = false,
+  displayInstructions = false,
 }) => {
+  const {vehicle_Type} = useSelector(state => state.newInspection);
   const disabled_Color = {
     true: gray,
     false: royalBlue,
@@ -95,6 +98,13 @@ const CollapsedCard = ({
             {color: activeColor},
           ]}>
           {text}
+          {displayInstructions && vehicle_Type && (
+            <Text style={styles.instructions}>
+              {'\n'}
+              For each sub-category upload up to 3 images{'\n'}(1 required, 2
+              optional)
+            </Text>
+          )}
         </Text>
         <View
           style={[styles.iconContainer, {borderColor: ActiveColor[isActive]}]}>
@@ -154,6 +164,9 @@ const styles = StyleSheet.create({
     paddingVertical: '1.8%',
     backgroundColor: tealGreen,
     right: wp('4%'),
+  },
+  instructions: {
+    fontSize: hp('1.3%'),
   },
 });
 

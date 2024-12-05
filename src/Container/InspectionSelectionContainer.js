@@ -15,9 +15,6 @@ const InspectionSelectionContainer = ({navigation}) => {
   const {navigate} = navigation;
   const dispatch = useDispatch();
   const {user} = useAuth();
-  /*const {
-    user: {data},
-  } = useSelector(state => state?.auth);*/
   const [isLoading, setIsLoading] = useState(false);
   const [showExitPopup, setShowExitPopup] = useState(false);
 

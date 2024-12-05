@@ -38,10 +38,7 @@ const PrimaryGradientButton = ({
   };
   const ButtonComponent = BUTTON[disabled];
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      // activeOpacity={activeOpacity}
-      disabled={disabled}>
+    <TouchableOpacity onPress={onPress} disabled={disabled}>
       <LinearGradient
         colors={colors}
         start={{x: 0, y: 0}}
@@ -56,7 +53,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     height: hp('6%'),
     width: wp('70%'),
-    borderRadius: 20,
+    borderRadius: wp('5%'),
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -117,12 +117,14 @@ const vehichle_Categories = {
 
 export function checkAndCompleteUrl(url, paramsToCheck = []) {
   const domainsToCheck = [
+    'chex-dsp-files.s3.amazonaws.com/',
     'chex-dsp.s3.amazonaws.com',
     'chex-ai-uploads.s3.amazonaws.com',
   ];
   const defaultDomains = {
     dsp: 'https://chex-dsp.s3.amazonaws.com',
     uploads: 'https://chex-ai-uploads.s3.amazonaws.com',
+    'dsp-files': 'https://chex-dsp-files.s3.amazonaws.com',
   };
 
   const result = {

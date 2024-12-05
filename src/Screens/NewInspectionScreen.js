@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Text, ScrollView, TouchableOpacity, Platform} from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Platform,
+  StyleSheet,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -16,6 +23,8 @@ import {
   DiscardInspectionModal,
   AndroidMediaViewModal,
   ConfirmVehicleDetailModal,
+  Comment,
+  NewInspectionFooter,
 } from '../Components';
 import {BackArrow} from '../Assets/Icons';
 import LoadingIndicator from '../Components/LoadingIndicator';
@@ -106,6 +115,10 @@ const NewInspectionScreen = props => {
     vehicle_Type,
     ActiveInteriorItemsExpandedCard,
     coordinates,
+    displayInstructions,
+    odometerVisible,
+    handleConfirmMileage,
+    mileage,
   } = props;
   return (
     <View style={container}>
@@ -141,6 +154,20 @@ const NewInspectionScreen = props => {
           numberPlateText={plateNumber || ''}
           textLimit={20}
           textLength={plateNumber?.length || '0'}
+        />
+      )}
+      {odometerVisible && (
+        <ConfirmVehicleDetailModal
+          title={'Mileage'}
+          description={
+            'System was unable to detect the mileage. Please type the mileage below:'
+          }
+          isLoading={isLoading}
+          onCrossPress={handleConfirmModalVisible}
+          onConfirmPress={handleConfirmMileage}
+          numberPlateText={mileage || ''}
+          textLimit={20}
+          textLength={mileage?.length || '0'}
         />
       )}
       {vehicle_Type && (
@@ -226,6 +253,7 @@ const NewInspectionScreen = props => {
             <CollapsedCard
               text={'Interior items'}
               index={2}
+              displayInstructions={displayInstructions}
               isActive={selectedOption?.isInterior}
               isBothItemsAvailable={isAllInteriorImagesAvailable}
               onPress={() => handleCardExpansion('isInterior')}
@@ -242,6 +270,7 @@ const NewInspectionScreen = props => {
             )}
             <CollapsedCard
               text={'Exterior items'}
+              displayInstructions={displayInstructions}
               index={3}
               isActive={selectedOption?.isExterior}
               isBothItemsAvailable={isAllExteriorImagesAvailable}
@@ -284,19 +313,41 @@ const NewInspectionScreen = props => {
             )}
           </ScrollView>
         </View>
-        {isVehicleAllPartsImagesAvailable && (
-          <View style={footerContainer}>
+        {/*<View style={[footerContainer, styles.footerContainer]}>
+          {isVehicleAllPartsImagesAvailable ? (
             <PrimaryGradientButton
               text={'Submit'}
               onPress={handleSubmitPress}
               disabled={isLoading}
             />
-          </View>
-        )}
+          ) : (
+            <View style={styles.submitPlaceholder} />
+          )}
+          <Comment />
+        </View>*/}
+        <NewInspectionFooter
+          onSubmitPress={handleSubmitPress}
+          isLoading={isLoading}
+          submitVisible={isVehicleAllPartsImagesAvailable}
+        />
       </View>
       <LoadingIndicator isLoading={loadingIndicator} />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  footerContainer: {
+    flexDirection: 'row',
+    columnGap: wp('4%'),
+  },
+  submitPlaceholder: {
+    width: wp('70%'),
+  },
+  horizontalButtonsContainer: {
+    flex: 0.3,
+    rowGap: hp('1%'),
+  },
+});
 
 export default NewInspectionScreen;

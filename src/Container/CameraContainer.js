@@ -206,6 +206,8 @@ const CameraContainer = ({route, navigation}) => {
   function uploadImageToStore(imageID) {
     const isLicensePlate =
       category === 'CarVerification' && type === 'licensePlate';
+    const isOdometer = category === 'CarVerification' && type === 'odometer';
+
     const validTypes = ['Interior', 'Exterior'];
     const hasValidType = validTypes.includes(category);
     const annotationDetails = {uri: isImageFile.uri};
@@ -227,6 +229,7 @@ const CameraContainer = ({route, navigation}) => {
     // Prepare navigation parameters
     const params = {
       isLicensePlate,
+      isOdometer,
       displayAnnotation,
       fileId: imageID,
       annotationDetails,
@@ -268,6 +271,8 @@ const CameraContainer = ({route, navigation}) => {
         selectedInspectionID,
         subCategory,
         variant || 0,
+        'app',
+        user?.companyId,
       );
     } catch (error) {
       onUploadFailed(error);
