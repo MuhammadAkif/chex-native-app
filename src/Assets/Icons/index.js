@@ -32,6 +32,7 @@ import Remove from './Remove';
 import Filter from './Filter';
 import Landscape from './Landscape';
 import Portrait from './Portrait';
+import CommentIcon from './CommentIcon';
 
 export {
   Check,
@@ -68,4 +69,5 @@ export {
   Filter,
   Landscape,
   Portrait,
+  CommentIcon,
 };

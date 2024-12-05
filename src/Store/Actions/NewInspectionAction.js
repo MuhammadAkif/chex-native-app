@@ -24,6 +24,8 @@ const {
   COMPANY_ID,
   SET_REQUIRED,
   BATCH_UPDATE_VEHICLE_IMAGES,
+  SET_MILEAGE,
+  SET_FEEDBACK,
 } = Types;
 
 const itemsImagePayload = (item = '', group = '', uri = '', id = 0) => {
@@ -138,4 +140,12 @@ export const setRequired = (required = null) => ({
 export const batchUpdateVehicleImages = updates => ({
   type: BATCH_UPDATE_VEHICLE_IMAGES,
   payload: updates,
+});
+export const setMileage = (mileage = '') => ({
+  type: SET_MILEAGE,
+  payload: mileage,
+});
+export const setFeedback = (feedback = '') => ({
+  type: SET_FEEDBACK,
+  payload: feedback,
 });

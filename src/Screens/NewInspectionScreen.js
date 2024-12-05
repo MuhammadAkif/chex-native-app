@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Text, ScrollView, TouchableOpacity, Platform} from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Platform,
+  StyleSheet,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -16,7 +23,7 @@ import {
   DiscardInspectionModal,
   AndroidMediaViewModal,
   ConfirmVehicleDetailModal,
-  CommentBox,
+  Comment,
 } from '../Components';
 import {BackArrow} from '../Assets/Icons';
 import LoadingIndicator from '../Components/LoadingIndicator';
@@ -29,7 +36,7 @@ const mediaViewModals = {
   android: AndroidMediaViewModal,
 };
 const ActiveMediaViewModal = mediaViewModals[OS];
-const {black, orange, white} = colors;
+const {black, orange, white, cobaltBlueTwo} = colors;
 const {
   container,
   headerContainer,
@@ -305,19 +312,32 @@ const NewInspectionScreen = props => {
             )}
           </ScrollView>
         </View>
-        {isVehicleAllPartsImagesAvailable && (
-          <View style={footerContainer}>
+        <View style={[footerContainer, styles.footerContainer]}>
+          {isVehicleAllPartsImagesAvailable ? (
             <PrimaryGradientButton
               text={'Submit'}
               onPress={handleSubmitPress}
               disabled={isLoading}
             />
-          </View>
-        )}
+          ) : (
+            <View style={styles.submitPlaceholder} />
+          )}
+          <Comment />
+        </View>
       </View>
       <LoadingIndicator isLoading={loadingIndicator} />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  footerContainer: {
+    flexDirection: 'row',
+    columnGap: wp('4%'),
+  },
+  submitPlaceholder: {
+    width: wp('70%'),
+  },
+});
 
 export default NewInspectionScreen;

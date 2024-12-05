@@ -100,6 +100,7 @@ const initialState = {
   fileDetails: null,
   fileRequired: null,
   mileage: '',
+  feedback: '',
 };
 const {
   UPDATE_VEHICLE_IMAGE,
@@ -120,6 +121,8 @@ const {
   CLEAR_NEW_INSPECTION,
   SET_REQUIRED,
   BATCH_UPDATE_VEHICLE_IMAGES,
+  SET_MILEAGE,
+  SET_FEEDBACK,
 } = Types;
 const newInspectionReducer = (state = initialState, action) => {
   const {type, payload} = action;
@@ -228,6 +231,11 @@ const newInspectionReducer = (state = initialState, action) => {
       });
 
       return updatedState;
+
+    case SET_FEEDBACK:
+      return {...state, feedback: payload};
+    case SET_MILEAGE:
+      return {...state, mileage: payload};
     default:
       return state;
   }

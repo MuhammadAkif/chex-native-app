@@ -71,6 +71,7 @@ import Custom_Image from './Custom_Image';
 import AlertPopup from './AlertPopup';
 import RequiredIndicator from './RequiredIndicator';
 import CommentBox from './CommentBox/CommentBox';
+import Comment from './CommentBox/Comment';
 import FooterButtons from './FooterButtons';
 
 export {
@@ -148,4 +149,5 @@ export {
   RequiredIndicator,
   CommentBox,
   FooterButtons,
+  Comment,
 };
