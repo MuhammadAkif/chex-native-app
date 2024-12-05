@@ -8,13 +8,13 @@ import {
 import {colors} from '../../Assets/Styles';
 import {CommentIcon} from '../../Assets/Icons';
 import {useBoolean} from '../../hooks';
-import {CommentBox} from '../index';
+import {CommentBox, SecondaryButton} from '../index';
 import {useDispatch, useSelector} from 'react-redux';
 import {setFeedback} from '../../Store/Actions';
 
 const {white, cobaltBlueTwo} = colors;
 
-const Comment = () => {
+const Comment = ({sideIcon = true}) => {
   const dispatch = useDispatch();
   const {feedback} = useSelector(state => state.newInspection);
   const {value: visible, toggle: toggleVisibility} = useBoolean(false);
@@ -39,9 +39,19 @@ const Comment = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.feedbackContainer} onPress={onPress}>
-        <CommentIcon height={hp('3%')} width={wp('7%')} color={white} />
-      </TouchableOpacity>
+      {sideIcon ? (
+        <TouchableOpacity style={styles.feedbackContainer} onPress={onPress}>
+          <CommentIcon height={hp('3%')} width={wp('7%')} color={white} />
+        </TouchableOpacity>
+      ) : (
+        <SecondaryButton
+          text={'Add Comment'}
+          disabled={isLoading}
+          buttonStyle={styles.feedbackButton}
+          textStyle={styles.feedbackButtonText}
+          onPress={onPress}
+        />
+      )}
       <CommentBox
         visible={visible}
         isLoading={isLoading}
@@ -59,6 +69,14 @@ const styles = StyleSheet.create({
     padding: wp('3.8%'),
     borderRadius: hp('100%'),
     backgroundColor: cobaltBlueTwo,
+  },
+  feedbackButton: {
+    width: wp('70%'),
+    borderRadius: wp('5%'),
+    borderColor: cobaltBlueTwo,
+  },
+  feedbackButtonText: {
+    color: cobaltBlueTwo,
   },
 });
 

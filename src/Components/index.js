@@ -73,6 +73,7 @@ import RequiredIndicator from './RequiredIndicator';
 import CommentBox from './CommentBox/CommentBox';
 import Comment from './CommentBox/Comment';
 import FooterButtons from './FooterButtons';
+import NewInspectionFooter from './NewInspectionFooter';
 
 export {
   BackgroundImageView,
@@ -150,4 +151,5 @@ export {
   CommentBox,
   FooterButtons,
   Comment,
+  NewInspectionFooter,
 };

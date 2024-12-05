@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     height: hp('6%'),
     width: wp('70%'),
-    borderRadius: 20,
+    borderRadius: wp('5%'),
     justifyContent: 'center',
     alignItems: 'center',
   },

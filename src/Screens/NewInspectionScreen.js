@@ -24,6 +24,7 @@ import {
   AndroidMediaViewModal,
   ConfirmVehicleDetailModal,
   Comment,
+  NewInspectionFooter,
 } from '../Components';
 import {BackArrow} from '../Assets/Icons';
 import LoadingIndicator from '../Components/LoadingIndicator';
@@ -36,7 +37,7 @@ const mediaViewModals = {
   android: AndroidMediaViewModal,
 };
 const ActiveMediaViewModal = mediaViewModals[OS];
-const {black, orange, white, cobaltBlueTwo} = colors;
+const {black, orange, white} = colors;
 const {
   container,
   headerContainer,
@@ -312,7 +313,7 @@ const NewInspectionScreen = props => {
             )}
           </ScrollView>
         </View>
-        <View style={[footerContainer, styles.footerContainer]}>
+        {/*<View style={[footerContainer, styles.footerContainer]}>
           {isVehicleAllPartsImagesAvailable ? (
             <PrimaryGradientButton
               text={'Submit'}
@@ -323,7 +324,12 @@ const NewInspectionScreen = props => {
             <View style={styles.submitPlaceholder} />
           )}
           <Comment />
-        </View>
+        </View>*/}
+        <NewInspectionFooter
+          onSubmitPress={handleSubmitPress}
+          isLoading={isLoading}
+          submitVisible={isVehicleAllPartsImagesAvailable}
+        />
       </View>
       <LoadingIndicator isLoading={loadingIndicator} />
     </View>
@@ -337,6 +343,10 @@ const styles = StyleSheet.create({
   },
   submitPlaceholder: {
     width: wp('70%'),
+  },
+  horizontalButtonsContainer: {
+    flex: 0.3,
+    rowGap: hp('1%'),
   },
 });
 
