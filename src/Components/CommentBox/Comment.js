@@ -1,20 +1,19 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
 import {colors} from '../../Assets/Styles';
-import {CommentIcon} from '../../Assets/Icons';
 import {useBoolean} from '../../hooks';
-import {CommentBox, SecondaryButton} from '../index';
+import {CommentBox, CommentButton} from '../index';
 import {useDispatch, useSelector} from 'react-redux';
 import {setFeedback} from '../../Store/Actions';
 
-const {white, cobaltBlueTwo} = colors;
+const {cobaltBlueTwo} = colors;
 
-const Comment = ({sideIcon = true}) => {
+const Comment = () => {
   const dispatch = useDispatch();
   const {feedback} = useSelector(state => state.newInspection);
   const {value: visible, toggle: toggleVisibility} = useBoolean(false);
@@ -39,19 +38,7 @@ const Comment = ({sideIcon = true}) => {
 
   return (
     <View style={styles.container}>
-      {sideIcon ? (
-        <TouchableOpacity style={styles.feedbackContainer} onPress={onPress}>
-          <CommentIcon height={hp('3%')} width={wp('7%')} color={white} />
-        </TouchableOpacity>
-      ) : (
-        <SecondaryButton
-          text={'Add Comment'}
-          disabled={isLoading}
-          buttonStyle={styles.feedbackButton}
-          textStyle={styles.feedbackButtonText}
-          onPress={onPress}
-        />
-      )}
+      <CommentButton onPress={onPress} />
       <CommentBox
         visible={visible}
         isLoading={isLoading}
@@ -69,14 +56,6 @@ const styles = StyleSheet.create({
     padding: wp('3.8%'),
     borderRadius: hp('100%'),
     backgroundColor: cobaltBlueTwo,
-  },
-  feedbackButton: {
-    width: wp('70%'),
-    borderRadius: wp('5%'),
-    borderColor: cobaltBlueTwo,
-  },
-  feedbackButtonText: {
-    color: cobaltBlueTwo,
   },
 });
 

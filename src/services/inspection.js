@@ -17,6 +17,7 @@ const {
   CREATE_INSPECTION_URL,
   FETCH_IN_PROGRESS_URL,
   UPLOAD_URL,
+  SUBMIT_INSPECTION,
 } = API_ENDPOINTS;
 
 export const createInspection = async companyId => {
@@ -204,11 +205,11 @@ export const location = async inspectionId => {
   }
 };
 
-export const inspectionSubmission = async (
+/*export const inspectionSubmission = async (
   inspectionId = '',
   companyId = '',
 ) => {
-  /*const endPoint = generateApiUrl(`inspection/${inspectionId}`);*/
+  /!*const endPoint = generateApiUrl(`inspection/${inspectionId}`);*!/
   const endPoint = generateApiUrl(`auto/reviewed/${inspectionId}`);
   const body = {companyId};
   try {
@@ -216,6 +217,19 @@ export const inspectionSubmission = async (
     return await api.post(endPoint, body);
     // return await api.put(endPoint, null);
     // return await api.patch(endPoint, null);
+  } catch (error) {
+    console.error('Inspection submission error:', error);
+    throw error;
+  }
+};*/
+export const inspectionSubmission = async (
+  inspectionId = '',
+  companyId = '',
+  driverComment = null,
+) => {
+  const body = {inspectionId, companyId, driverComment};
+  try {
+    return await api.post(SUBMIT_INSPECTION, body);
   } catch (error) {
     console.error('Inspection submission error:', error);
     throw error;

@@ -18,6 +18,7 @@ import {
   setVehicleType,
   file_Details,
   setRequired,
+  setMileageVisible,
 } from '../Store/Actions';
 import {Delete_Messages, HARDWARE_BACK_PRESS, INSPECTION} from '../Constants';
 import {
@@ -111,6 +112,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     variant,
     fileDetails,
     mileage = '',
+    feedback,
   } = useSelector(state => state.newInspection);
   const {
     user: {
@@ -193,9 +195,9 @@ const NewInspectionContainer = ({route, navigation}) => {
       if (routeName !== INSPECTION_SELECTION) {
         setTimeout(() => {
           setIsLicenseModalVisible(isLicensePlate || false);
-          isOdometer && toggleOdometer();
           setDisplayAnnotationPopUp(displayAnnotation || false);
         }, delay[OS]);
+        isOdometer && dispatch(setMileageVisible(true));
         setFileID(fileId || '');
         setAnnotationModalDetails(prevState => ({
           ...prevState,
@@ -470,7 +472,11 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   const handleSubmitPress = async () => {
     setIsLoading(true);
-    await inspectionSubmission(selectedInspectionID, companyId)
+    await inspectionSubmission(
+      selectedInspectionID,
+      companyId,
+      feedback || null,
+    )
       .then(handleGetLocation)
       .catch(onSubmitPressFail)
       .finally(() => setIsLoading(false));

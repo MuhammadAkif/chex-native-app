@@ -26,6 +26,9 @@ const {
   BATCH_UPDATE_VEHICLE_IMAGES,
   SET_MILEAGE,
   SET_FEEDBACK,
+  SET_MILEAGE_VISIBLE,
+  SET_PLATE_NUMBER_VISIBLE,
+  SET_TRIGGER_TIRE_STATUS_CHECK,
 } = Types;
 
 const itemsImagePayload = (item = '', group = '', uri = '', id = 0) => {
@@ -148,4 +151,16 @@ export const setMileage = (mileage = '') => ({
 export const setFeedback = (feedback = '') => ({
   type: SET_FEEDBACK,
   payload: feedback,
+});
+export const setMileageVisible = (mileage_visible = false) => ({
+  type: SET_MILEAGE_VISIBLE,
+  payload: mileage_visible,
+});
+export const setPlateNumberVisible = (plateNumber_visible = false) => ({
+  type: SET_PLATE_NUMBER_VISIBLE,
+  payload: plateNumber_visible,
+});
+export const setTriggerTireStatusCheck = (checkTireStatus = false) => ({
+  type: SET_TRIGGER_TIRE_STATUS_CHECK,
+  payload: checkTireStatus,
 });

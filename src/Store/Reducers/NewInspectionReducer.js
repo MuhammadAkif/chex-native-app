@@ -90,6 +90,7 @@ const initialState = {
   selectedInspectionID: null,
   company_ID: null,
   plateNumber: null,
+  plateNumberVisible: null,
   skipLeft: false,
   skipLeftCorners: false,
   skipRight: false,
@@ -101,6 +102,8 @@ const initialState = {
   fileRequired: null,
   mileage: '',
   feedback: '',
+  mileageVisible: false,
+  triggerTireStatusCheck: false,
 };
 const {
   UPDATE_VEHICLE_IMAGE,
@@ -123,6 +126,9 @@ const {
   BATCH_UPDATE_VEHICLE_IMAGES,
   SET_MILEAGE,
   SET_FEEDBACK,
+  SET_MILEAGE_VISIBLE,
+  SET_PLATE_NUMBER_VISIBLE,
+  SET_TRIGGER_TIRE_STATUS_CHECK,
 } = Types;
 const newInspectionReducer = (state = initialState, action) => {
   const {type, payload} = action;
@@ -236,6 +242,12 @@ const newInspectionReducer = (state = initialState, action) => {
       return {...state, feedback: payload};
     case SET_MILEAGE:
       return {...state, mileage: payload};
+    case SET_PLATE_NUMBER_VISIBLE:
+      return {...state, plateNumberVisible: payload};
+    case SET_MILEAGE_VISIBLE:
+      return {...state, mileageVisible: payload};
+    case SET_TRIGGER_TIRE_STATUS_CHECK:
+      return {...state, triggerTireStatusCheck: payload};
     default:
       return state;
   }

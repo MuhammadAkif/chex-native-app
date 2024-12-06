@@ -19,6 +19,9 @@ import {
   batchUpdateVehicleImages,
   setMileage,
   setFeedback,
+  setMileageVisible,
+  setPlateNumberVisible,
+  setTriggerTireStatusCheck,
 } from './NewInspectionAction';
 import {signIn, signOut, sessionExpired} from './AuthAction';
 import {
@@ -64,4 +67,7 @@ export {
   batchUpdateVehicleImages,
   setMileage,
   setFeedback,
+  setMileageVisible,
+  setPlateNumberVisible,
+  setTriggerTireStatusCheck,
 };

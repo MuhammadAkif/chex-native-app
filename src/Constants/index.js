@@ -34,6 +34,7 @@ export const API_ENDPOINTS = {
   REMOVE_ALL_TIRES_URL: generateApiUrl('delete/file'),
   ANNOTATION_URL: generateApiUrl('file/coordinate'),
   LOCATION_URL: generateApiUrl('inspection/location'),
+  SUBMIT_INSPECTION: generateApiUrl('dsp/app/producer'),
 };
 // Api Endpoints ends here
 export const Platforms = {

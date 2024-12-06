@@ -21,6 +21,7 @@ const {
 } = modalStyle;
 
 const ConfirmVehicleDetailModal = ({
+  visible = true,
   title = 'Vehicle Detail',
   description = 'System was unable to detect the license plate number. Please type the license plate number below:',
   onConfirmPress,
@@ -37,7 +38,7 @@ const ConfirmVehicleDetailModal = ({
     <Modal
       animationType="slide"
       transparent={true}
-      visible={true}
+      visible={visible}
       style={modalOuterContainer}>
       <View style={container}>
         <View style={modalContainer}>

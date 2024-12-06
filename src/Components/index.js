@@ -74,6 +74,10 @@ import CommentBox from './CommentBox/CommentBox';
 import Comment from './CommentBox/Comment';
 import FooterButtons from './FooterButtons';
 import NewInspectionFooter from './NewInspectionFooter';
+import CommentButton from './CommentButton';
+import InputModal from './InputModal/InputModal';
+import MileageInput from './InputModal/MileageInput';
+import LicensePlateInput from './InputModal/LicensePlateInput';
 
 export {
   BackgroundImageView,
@@ -152,4 +156,8 @@ export {
   FooterButtons,
   Comment,
   NewInspectionFooter,
+  CommentButton,
+  InputModal,
+  LicensePlateInput,
+  MileageInput,
 };
