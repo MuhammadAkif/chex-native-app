@@ -116,9 +116,6 @@ const NewInspectionScreen = props => {
     ActiveInteriorItemsExpandedCard,
     coordinates,
     displayInstructions,
-    odometerVisible,
-    handleConfirmMileage,
-    mileage,
   } = props;
   return (
     <View style={container}>

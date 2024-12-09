@@ -782,9 +782,6 @@ const NewInspectionContainer = ({route, navigation}) => {
       ActiveInteriorItemsExpandedCard={ActiveInteriorItemsExpandedCard}
       coordinates={mediaModalDetails?.coordinates?.coordinateArray || []}
       displayInstructions={vehicle_Type === 'new'}
-      odometerVisible={odometerVisible}
-      handleConfirmMileage={handleConfirmMileage}
-      mileage={mileage}
     />
   );
 };
