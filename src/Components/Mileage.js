@@ -4,18 +4,27 @@ import {useDispatch, useSelector} from 'react-redux';
 import {ConfirmVehicleDetailModal} from './index';
 import {useBoolean} from '../hooks';
 import {setMileageVisible} from '../Store/Actions';
+import {updateMileage} from '../services/inspection';
 
 const Mileage = () => {
   const dispatch = useDispatch();
-  let {mileage = '', mileageVisible = false} = useSelector(
-    state => state.newInspection,
-  );
+  let {
+    mileage = '',
+    mileageVisible = false,
+    selectedInspectionID,
+  } = useSelector(state => state.newInspection);
   const {value: isLoading, toggle: toggleIsLoading} = useBoolean(false);
   const onSubmitPress = useCallback(
-    text => {
-      toggleIsLoading();
-      dispatch(setMileageVisible());
-      toggleIsLoading();
+    async text => {
+      try {
+        toggleIsLoading();
+        await updateMileage(text, selectedInspectionID);
+        dispatch(setMileageVisible());
+      } catch (error) {
+        throw error;
+      } finally {
+        toggleIsLoading();
+      }
     },
     [setMileageVisible],
   );

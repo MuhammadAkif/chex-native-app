@@ -4,9 +4,11 @@ import {
   API_ENDPOINTS,
   EXTRACT_NUMBER_PLATE_WITH_AI,
   generateApiUrl,
+  MILEAGE_EXTRACTION,
   nightImageCheckAI,
 } from '../Constants';
 import {generateRandomString} from '../Utils';
+import {insertMileage} from '../Utils/helpers';
 
 const {
   EXTRACT_NUMBER_PLATE_URL,
@@ -243,6 +245,34 @@ export const isImageDarkWithAI = async image_url => {
     return await api.post(nightImageCheckAI, body, config);
   } catch (error) {
     console.error('Night image check error:', error.message);
+    throw error;
+  }
+};
+
+export const ai_Mileage_Extraction = async image_url => {
+  const body = {
+    image_url,
+  };
+  const config = {headers: {api_token: AI_API_TOKEN}};
+
+  try {
+    return await api.post(MILEAGE_EXTRACTION, body, config);
+  } catch (error) {
+    console.error('Mileage extraction error:', error.message);
+    throw error;
+  }
+};
+
+export const updateMileage = async (mileage, inspectionId) => {
+  const endPoint = generateApiUrl(`update/vehicle/milage/${inspectionId}`);
+  const milage = insertMileage(mileage);
+  const body = {
+    milage,
+  };
+  try {
+    return await api.put(endPoint, body);
+  } catch (error) {
+    console.error('Mileage update error:', error.message);
     throw error;
   }
 };

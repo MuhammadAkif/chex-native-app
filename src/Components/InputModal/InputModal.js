@@ -1,9 +1,9 @@
 import React, {memo, useCallback} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import {useBoolean} from '../../hooks';
 import {ConfirmVehicleDetailModal} from '../index';
-import {fallBack} from '../../Utils';
+import {fallBack, isNotEmpty} from '../../Utils';
 
 const InputModal = ({
   visibleKey,
@@ -13,20 +13,18 @@ const InputModal = ({
   actionCreator,
   callback = fallBack,
 }) => {
-  const dispatch = useDispatch();
   const {[valueKey]: value = '', [`${valueKey}Visible`]: visible = false} =
     useSelector(state => state.newInspection);
-  const {value: isLoading, toggle, setTrue, setFalse} = useBoolean(false);
+  const {value: isLoading, toggle} = useBoolean(false);
 
   const onSubmitPress = useCallback(
     text => {
-      console.log('mileage: ', {text});
-      setTrue();
-      callback(text);
-      dispatch(actionCreator());
-      setFalse();
+      if (!isNotEmpty(text.trim())) {
+        return null;
+      }
+      callback(text, actionCreator, toggle);
     },
-    [toggle, callback],
+    [callback, actionCreator, toggle],
   );
 
   return (
@@ -39,6 +37,7 @@ const InputModal = ({
       numberPlateText={value || ''}
       textLimit={20}
       textLength={value?.length || '0'}
+      placeHolder={'Enter Mileage'}
     />
   );
 };

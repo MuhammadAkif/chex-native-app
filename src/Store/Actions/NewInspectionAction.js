@@ -1,5 +1,6 @@
 import {Types} from '../Types';
 import {
+  ai_Mileage_Extraction,
   extractLicensePlateAI,
   getInspectionDetails,
 } from '../../services/inspection';
@@ -144,10 +145,23 @@ export const batchUpdateVehicleImages = updates => ({
   type: BATCH_UPDATE_VEHICLE_IMAGES,
   payload: updates,
 });
-export const setMileage = (mileage = '') => ({
-  type: SET_MILEAGE,
-  payload: mileage,
-});
+
+export const setMileage =
+  (image_url = '') =>
+  async dispatch => {
+    try {
+      const response = await ai_Mileage_Extraction(image_url);
+      const {mileage = null} = response?.data || {};
+      console.log({mileage});
+      dispatch({
+        type: SET_MILEAGE,
+        payload: mileage,
+      });
+    } catch (error) {
+      console.error('Setting extraction odometer error:', error);
+      throw error;
+    }
+  };
 export const setFeedback = (feedback = '') => ({
   type: SET_FEEDBACK,
   payload: feedback,

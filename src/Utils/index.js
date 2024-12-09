@@ -83,7 +83,6 @@ export const resetPasswordSchema = yup.object().shape({
     .oneOf([yup.ref('password'), null], 'Passwords must match')
     .required('Please re-enter your new password!'),
 });
-
 //New Inspection Objects starts here
 //____________________________Car Verification_________________________
 export const LicensePlateDetails = {
@@ -348,6 +347,7 @@ export const getSignedUrl = async (
   variant = 0,
   source = 'app',
   companyId,
+  category,
 ) => {
   try {
     const response = await s3SignedUrl(
@@ -366,6 +366,7 @@ export const getSignedUrl = async (
       handleResponse,
       handleError,
       dispatch,
+      category,
     );
   } catch (error) {
     onGetSignedUrlFail(error, handleError, dispatch);
@@ -380,6 +381,7 @@ async function onGetSignedUrlSuccess(
   handleResponse,
   handleError,
   dispatch,
+  category,
 ) {
   try {
     const {url, key} = res.data;
@@ -393,6 +395,7 @@ async function onGetSignedUrlSuccess(
       handleResponse,
       handleError,
       dispatch,
+      category,
     );
   } catch (error) {
     throw error;
@@ -407,6 +410,8 @@ export const uploadToS3 = async (
   setProgress,
   handleResponse,
   handleError,
+  _,
+  category,
 ) => {
   try {
     await RNFetchBlob.fetch(
@@ -418,22 +423,23 @@ export const uploadToS3 = async (
       const percentCompleted = Math.round((written * 100) / total);
       setProgress(percentCompleted);
     });
-    await onUploadToS3Success(handleResponse, key, handleError);
+    await onUploadToS3Success(handleResponse, key, handleError, category);
   } catch (error) {
     throw error;
   }
 };
-async function onUploadToS3Success(handleResponse, key, handleError) {
+async function onUploadToS3Success(handleResponse, key, handleError, category) {
   const image_url = S3_BUCKET_BASEURL + key;
-  // const {completedUrl: image_url} = checkAndCompleteUrl(key);
 
   try {
-    const {
-      data: {status = false},
-    } = await isImageDarkWithAI(image_url);
+    if (!SKIP_NIGHT_IMAGE_LIST.includes(category)) {
+      const {
+        data: {status = false},
+      } = await isImageDarkWithAI(image_url);
 
-    if (!status) {
-      throw new Error(darkImageError.message);
+      if (!status) {
+        throw new Error(darkImageError.message);
+      }
     }
 
     handleResponse(key);
@@ -967,3 +973,4 @@ export function extractValidUrls(file = {}) {
 
   return list;
 }
+export const SKIP_NIGHT_IMAGE_LIST = ['CarVerification', 'Tires'];

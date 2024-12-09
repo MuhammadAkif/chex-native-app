@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, Modal, StyleSheet, TextInput} from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -7,6 +7,7 @@ import {
 
 import {PrimaryGradientButton} from '../index';
 import {circleBorderRadius, colors, modalStyle} from '../../Assets/Styles';
+import {isNotEmpty} from '../../Utils';
 
 const {red, gray, orange, black} = colors;
 const {
@@ -34,6 +35,13 @@ const ConfirmVehicleDetailModal = ({
 }) => {
   const [numberPlate, setNumberPlate] = useState(numberPlateText);
   const text_Limit = numberPlate.length + '/' + textLimit;
+
+  useEffect(() => {
+    if (isNotEmpty(numberPlateText.trim())) {
+      setNumberPlate(numberPlateText);
+    }
+  }, [numberPlateText]);
+
   return (
     <Modal
       animationType="slide"

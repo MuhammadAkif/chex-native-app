@@ -195,9 +195,9 @@ const NewInspectionContainer = ({route, navigation}) => {
       if (routeName !== INSPECTION_SELECTION) {
         setTimeout(() => {
           setIsLicenseModalVisible(isLicensePlate || false);
+          // isOdometer && dispatch(setMileageVisible(true));
           setDisplayAnnotationPopUp(displayAnnotation || false);
         }, delay[OS]);
-        isOdometer && dispatch(setMileageVisible(true));
         setFileID(fileId || '');
         setAnnotationModalDetails(prevState => ({
           ...prevState,

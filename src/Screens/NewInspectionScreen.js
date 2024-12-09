@@ -146,7 +146,7 @@ const NewInspectionScreen = props => {
           dualButton={false}
         />
       )}
-      <MileageInput />
+      {/*<MileageInput />*/}
       {isLicenseModalVisible && (
         <ConfirmVehicleDetailModal
           isLoading={isLoading}

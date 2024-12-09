@@ -33,6 +33,7 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {
   clearInspectionImages,
   setLicensePlateNumber,
+  setMileage,
   updateVehicleImage,
 } from '../Store/Actions';
 import {
@@ -213,24 +214,34 @@ const CameraContainer = ({route, navigation}) => {
     if (haveType) {
       body = {...body, variant: variant};
     }
+    const image_url = `${S3_BUCKET_BASEURL}${key}`;
     if (category === 'CarVerification' && type === 'licensePlate') {
-      await handleExtractNumberPlate(`${S3_BUCKET_BASEURL}${key}`);
+      await handleExtractNumberPlate(image_url);
     }
-    /*Setting delay because the backend needs processing time to do some actions*/
-    setTimeout(async () => {
+    /*if (category === 'CarVerification' && type === 'odometer') {
       try {
-        await uploadFile(
-          uploadImageToStore,
-          body,
-          inspectionId,
-          token,
-          handleError,
-          dispatch,
-        );
+        dispatch(setMileage(image_url));
       } catch (error) {
-        onUploadFailed(error);
+        throw error;
       }
+    }*/
+    /*Setting delay because the backend needs processing time to do some actions*/
+    /*setTimeout(async () => {*/
+    try {
+      await uploadFile(
+        uploadImageToStore,
+        body,
+        inspectionId,
+        token,
+        handleError,
+        dispatch,
+      );
+    } catch (error) {
+      onUploadFailed(error);
+    }
+    /*
     }, 2000);
+*/
   };
 
   function onUploadFailed(error) {
@@ -309,6 +320,7 @@ const CameraContainer = ({route, navigation}) => {
         variant || 0,
         'app',
         data?.companyId,
+        category,
       );
     } catch (error) {
       onUploadFailed(error);

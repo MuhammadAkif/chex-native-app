@@ -175,3 +175,13 @@ export function checkAndCompleteUrl(url, paramsToCheck = []) {
 
   return result;
 }
+
+export function insertMileage(str) {
+  if (isNotEmpty(str.trim())) {
+    if (str.includes('mi')) {
+      return str;
+    } else {
+      return str + 'mi';
+    }
+  }
+}
