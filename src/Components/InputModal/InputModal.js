@@ -12,6 +12,7 @@ const InputModal = ({
   description,
   actionCreator,
   callback = fallBack,
+  placeHolder,
 }) => {
   const {[valueKey]: value = '', [`${valueKey}Visible`]: visible = false} =
     useSelector(state => state.newInspection);
@@ -37,7 +38,7 @@ const InputModal = ({
       numberPlateText={value || ''}
       textLimit={20}
       textLength={value?.length || '0'}
-      placeHolder={'Enter Mileage'}
+      placeHolder={placeHolder}
     />
   );
 };

@@ -218,15 +218,13 @@ const CameraContainer = ({route, navigation}) => {
     if (category === 'CarVerification' && type === 'licensePlate') {
       await handleExtractNumberPlate(image_url);
     }
-    /*if (category === 'CarVerification' && type === 'odometer') {
+    if (category === 'CarVerification' && type === 'odometer') {
       try {
         dispatch(setMileage(image_url));
       } catch (error) {
         throw error;
       }
-    }*/
-    /*Setting delay because the backend needs processing time to do some actions*/
-    /*setTimeout(async () => {*/
+    }
     try {
       await uploadFile(
         uploadImageToStore,
@@ -239,9 +237,6 @@ const CameraContainer = ({route, navigation}) => {
     } catch (error) {
       onUploadFailed(error);
     }
-    /*
-    }, 2000);
-*/
   };
 
   function onUploadFailed(error) {

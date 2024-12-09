@@ -1,9 +1,9 @@
 import React, {memo, useCallback} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 
 import InputModal from './InputModal';
 import {setMileageVisible} from '../../Store/Actions';
 import {updateMileage} from '../../services/inspection';
-import {useDispatch, useSelector} from 'react-redux';
 
 const MileageInput = () => {
   const dispatch = useDispatch();
@@ -32,6 +32,7 @@ const MileageInput = () => {
       description="System was unable to detect the mileage. Please type the mileage below:"
       actionCreator={setMileageVisible}
       callback={onSubmit}
+      placeHolder={'Enter Mileage'}
     />
   );
 };

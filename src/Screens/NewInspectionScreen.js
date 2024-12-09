@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Platform,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity, Platform} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -18,7 +11,6 @@ import {
   CarVerificationExpandedCard,
   CaptureImageModal,
   TiresItemsExpandedCard,
-  PrimaryGradientButton,
   DisplayMediaModal,
   DiscardInspectionModal,
   AndroidMediaViewModal,
@@ -46,7 +38,6 @@ const {
   bodyContainer,
   innerBody,
   scrollViewContainer,
-  footerContainer,
 } = NewInspectionStyles;
 
 const NewInspectionScreen = props => {
@@ -143,7 +134,7 @@ const NewInspectionScreen = props => {
           dualButton={false}
         />
       )}
-      {/*<MileageInput />*/}
+      <MileageInput />
       {isLicenseModalVisible && (
         <ConfirmVehicleDetailModal
           isLoading={isLoading}

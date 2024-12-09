@@ -152,7 +152,7 @@ export const setMileage =
     try {
       const response = await ai_Mileage_Extraction(image_url);
       const {mileage = null} = response?.data || {};
-      console.log({mileage});
+
       dispatch({
         type: SET_MILEAGE,
         payload: mileage,
