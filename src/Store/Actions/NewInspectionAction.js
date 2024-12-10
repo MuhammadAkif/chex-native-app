@@ -146,18 +146,20 @@ export const batchUpdateVehicleImages = updates => ({
   payload: updates,
 });
 
-export const setMileage =
+export const setMileage = (mileage = '') => ({
+  type: SET_MILEAGE,
+  payload: mileage,
+});
+export const getMileage =
   (image_url = '') =>
   async dispatch => {
     try {
       const response = await ai_Mileage_Extraction(image_url);
-      const {mileage = null} = response?.data || {};
+      const {mileage = ''} = response?.data || {};
 
-      dispatch({
-        type: SET_MILEAGE,
-        payload: mileage,
-      });
+      dispatch(setMileage(mileage));
     } catch (error) {
+      dispatch(setMileage());
       console.error('Setting extraction odometer error:', error);
       throw error;
     }

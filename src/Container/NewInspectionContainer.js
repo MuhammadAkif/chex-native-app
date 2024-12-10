@@ -48,7 +48,6 @@ import {
   location,
   vehicleTireStatus,
 } from '../services/inspection';
-import {useBoolean} from '../hooks';
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllCarVerification: false,
@@ -157,11 +156,6 @@ const NewInspectionContainer = ({route, navigation}) => {
   const [fileID, setFileID] = useState('');
   const [isExterior, setIsExterior] = useState(false);
   const [requiredFields, setRequiredFields] = useState({});
-  const {
-    value: odometerVisible,
-    reset: resetOdometerVisible,
-    toggle: toggleOdometer,
-  } = useBoolean(false);
 
   const ActiveExteriorItemsExpandedCard =
     exteriorItemsExpandedCards[vehicle_Type];
@@ -195,7 +189,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       if (routeName !== INSPECTION_SELECTION) {
         setTimeout(() => {
           setIsLicenseModalVisible(isLicensePlate || false);
-          // isOdometer && dispatch(setMileageVisible(true));
+          isOdometer && dispatch(setMileageVisible(true));
           setDisplayAnnotationPopUp(displayAnnotation || false);
         }, delay[OS]);
         setFileID(fileId || '');
@@ -272,7 +266,6 @@ const NewInspectionContainer = ({route, navigation}) => {
     setDisplayAnnotation(false);
     setIsExterior(false);
     setRequiredFields({});
-    resetOdometerVisible();
   }
   function handleExteriorLeft() {
     if (isNotEmpty(exteriorItems?.exteriorLeft)) {
@@ -575,16 +568,6 @@ const NewInspectionContainer = ({route, navigation}) => {
           handleConfirmModalVisible();
           setIsLoading(false);
         });
-    }
-  };
-  const handleConfirmMileage = mile_age => {
-    try {
-      if (isNotEmpty(mile_age.trim())) {
-        setIsLoading(true);
-        toggleOdometer();
-      }
-    } catch (error) {
-      throw error;
     }
   };
   function onNumberPlateExtractSuccess(res) {

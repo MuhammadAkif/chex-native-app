@@ -33,7 +33,7 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {
   clearInspectionImages,
   setLicensePlateNumber,
-  setMileage,
+  getMileage,
   updateVehicleImage,
 } from '../Store/Actions';
 import {
@@ -220,7 +220,7 @@ const CameraContainer = ({route, navigation}) => {
     }
     if (category === 'CarVerification' && type === 'odometer') {
       try {
-        dispatch(setMileage(image_url));
+        dispatch(getMileage(image_url));
       } catch (error) {
         throw error;
       }

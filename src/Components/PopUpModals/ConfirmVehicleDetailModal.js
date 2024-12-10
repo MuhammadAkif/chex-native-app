@@ -7,7 +7,6 @@ import {
 
 import {PrimaryGradientButton} from '../index';
 import {circleBorderRadius, colors, modalStyle} from '../../Assets/Styles';
-import {isNotEmpty} from '../../Utils';
 
 const {red, gray, orange, black} = colors;
 const {
@@ -37,9 +36,7 @@ const ConfirmVehicleDetailModal = ({
   const text_Limit = numberPlate.length + '/' + textLimit;
 
   useEffect(() => {
-    if (isNotEmpty(numberPlateText.trim())) {
-      setNumberPlate(numberPlateText);
-    }
+    setNumberPlate(numberPlateText);
   }, [numberPlateText]);
 
   return (

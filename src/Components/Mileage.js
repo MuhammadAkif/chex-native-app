@@ -1,3 +1,4 @@
+/*
 import React, {memo, useCallback} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -46,3 +47,4 @@ const Mileage = () => {
 };
 
 export default memo(Mileage);
+*/

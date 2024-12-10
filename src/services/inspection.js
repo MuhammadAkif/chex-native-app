@@ -263,7 +263,7 @@ export const ai_Mileage_Extraction = async image_url => {
   }
 };
 
-export const updateMileage = async (mileage, inspectionId) => {
+export const updateMileageInDB = async (mileage, inspectionId) => {
   const endPoint = generateApiUrl(`update/vehicle/milage/${inspectionId}`);
   const milage = insertMileage(mileage);
   const body = {

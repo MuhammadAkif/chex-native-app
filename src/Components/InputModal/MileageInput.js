@@ -3,7 +3,8 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import InputModal from './InputModal';
 import {setMileageVisible} from '../../Store/Actions';
-import {updateMileage} from '../../services/inspection';
+import {updateMileageInDB} from '../../services/inspection';
+import {setMileage} from '../../Store/Actions/NewInspectionAction';
 
 const MileageInput = () => {
   const dispatch = useDispatch();
@@ -13,7 +14,8 @@ const MileageInput = () => {
     async (text, actionCreator, toggleLoading) => {
       try {
         toggleLoading();
-        await updateMileage(text, selectedInspectionID);
+        await updateMileageInDB(text, selectedInspectionID);
+        dispatch(setMileage(''));
         dispatch(actionCreator());
       } catch (error) {
         throw error;
