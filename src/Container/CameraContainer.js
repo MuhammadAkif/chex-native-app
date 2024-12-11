@@ -225,8 +225,6 @@ const CameraContainer = ({route, navigation}) => {
         throw error;
       }
     }*/
-    /*Setting delay because the backend needs processing time to do some actions*/
-    /*setTimeout(async () => {*/
     try {
       await uploadFile(
         uploadImageToStore,
@@ -239,9 +237,6 @@ const CameraContainer = ({route, navigation}) => {
     } catch (error) {
       onUploadFailed(error);
     }
-    /*
-    }, 2000);
-*/
   };
 
   function onUploadFailed(error) {
