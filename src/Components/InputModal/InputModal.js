@@ -13,6 +13,9 @@ const InputModal = ({
   actionCreator,
   callback = fallBack,
   placeHolder,
+  keyboardType,
+  inputMode,
+  errorMessage,
 }) => {
   const {[valueKey]: value = '', [`${valueKey}Visible`]: visible = false} =
     useSelector(state => state.newInspection);
@@ -39,6 +42,9 @@ const InputModal = ({
       textLimit={20}
       textLength={value?.length || '0'}
       placeHolder={placeHolder}
+      keyboardType={keyboardType}
+      inputMode={inputMode}
+      errorMessage={errorMessage}
     />
   );
 };

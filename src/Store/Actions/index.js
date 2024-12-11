@@ -22,6 +22,8 @@ import {
   setMileageVisible,
   setPlateNumberVisible,
   setTriggerTireStatusCheck,
+  setMileage,
+  setMileageMessage,
 } from './NewInspectionAction';
 import {signIn, signOut, sessionExpired} from './AuthAction';
 import {
@@ -70,4 +72,6 @@ export {
   setMileageVisible,
   setPlateNumberVisible,
   setTriggerTireStatusCheck,
+  setMileage,
+  setMileageMessage,
 };

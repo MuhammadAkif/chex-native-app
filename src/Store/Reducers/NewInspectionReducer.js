@@ -101,6 +101,7 @@ const initialState = {
   fileDetails: null,
   fileRequired: null,
   mileage: '',
+  mileageMessage: '',
   feedback: '',
   mileageVisible: false,
   triggerTireStatusCheck: false,
@@ -129,6 +130,7 @@ const {
   SET_MILEAGE_VISIBLE,
   SET_PLATE_NUMBER_VISIBLE,
   SET_TRIGGER_TIRE_STATUS_CHECK,
+  SET_MILEAGE_MESSAGE
 } = Types;
 const newInspectionReducer = (state = initialState, action) => {
   const {type, payload} = action;
@@ -242,6 +244,8 @@ const newInspectionReducer = (state = initialState, action) => {
       return {...state, feedback: payload};
     case SET_MILEAGE:
       return {...state, mileage: payload};
+      case SET_MILEAGE_MESSAGE:
+      return {...state, mileageMessage: payload};
     case SET_PLATE_NUMBER_VISIBLE:
       return {...state, plateNumberVisible: payload};
     case SET_MILEAGE_VISIBLE:

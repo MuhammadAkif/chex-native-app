@@ -5,6 +5,7 @@ import {
   getInspectionDetails,
 } from '../../services/inspection';
 import {uploadInProgressMediaToStore} from '../../Utils';
+import {removeAlphabets} from '../../Utils/helpers';
 
 const {
   UPDATE_VEHICLE_IMAGE,
@@ -30,6 +31,7 @@ const {
   SET_MILEAGE_VISIBLE,
   SET_PLATE_NUMBER_VISIBLE,
   SET_TRIGGER_TIRE_STATUS_CHECK,
+  SET_MILEAGE_MESSAGE,
 } = Types;
 
 const itemsImagePayload = (item = '', group = '', uri = '', id = 0) => {
@@ -150,6 +152,10 @@ export const setMileage = (mileage = '') => ({
   type: SET_MILEAGE,
   payload: mileage,
 });
+export const setMileageMessage = (message = '') => ({
+  type: SET_MILEAGE_MESSAGE,
+  payload: message,
+});
 export const getMileage =
   (image_url = '') =>
   async dispatch => {
@@ -157,9 +163,11 @@ export const getMileage =
       const response = await ai_Mileage_Extraction(image_url);
       const {mileage = ''} = response?.data || {};
 
+      // const mileage_ = removeAlphabets(mileage);
+
       dispatch(setMileage(mileage));
     } catch (error) {
-      dispatch(setMileage());
+      dispatch(setMileage(''));
       console.error('Setting extraction odometer error:', error);
       throw error;
     }

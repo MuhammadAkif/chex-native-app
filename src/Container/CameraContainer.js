@@ -86,9 +86,9 @@ const CameraContainer = ({route, navigation}) => {
   const cameraRef = useRef();
   const appState = useRef(AppState.currentState);
   const [selectedCamera, setSelectedCamera] = useState('back');
-  const device = useCameraDevice(selectedCamera, {
+  /*const device = useCameraDevice(selectedCamera, {
     physicalDevices: PHYSICAL_DEVICES,
-  });
+  });*/
   const [isBackCamera, setIsBackCamera] = useState(
     IS_BACK_CAMERA[selectedCamera],
   );
@@ -102,10 +102,10 @@ const CameraContainer = ({route, navigation}) => {
     isUploadFailedInitialState,
   );
   const {type, modalDetails, inspectionId} = route.params;
-  const format = useCameraFormat(device, [
+  /*const format = useCameraFormat(device, [
     {videoResolution: {width: 1280, height: 720}},
     {fps: 30},
-  ]);
+  ]);*/
   const [isLoading, setIsLoading] = useState(false);
   const [orientation, setOrientation] = useState(defaultOrientation);
   const {
@@ -150,9 +150,9 @@ const CameraContainer = ({route, navigation}) => {
     );
     return () => backHandler.remove();
   }, [isImageURL]);
-  useEffect(() => {
+  /*  useEffect(() => {
     setSelectedCamera(SWITCH_CAMERA[isBackCamera]);
-  }, [isBackCamera, device]);
+  }, [isBackCamera, device]);*/
 
   function resetAllStates() {
     setIsImageURL('');
@@ -409,7 +409,7 @@ const CameraContainer = ({route, navigation}) => {
                     />
                   </View>
                 )}
-                <Camera
+                {/*<Camera
                   ref={cameraRef}
                   style={StyleSheet.absoluteFill}
                   device={device}
@@ -419,7 +419,7 @@ const CameraContainer = ({route, navigation}) => {
                   enableZoomGesture={true}
                   includeBase64={true}
                   format={format}
-                />
+                />*/}
               </>
             )
           )}
@@ -436,6 +436,7 @@ const CameraContainer = ({route, navigation}) => {
             onRightIconPress={handleOnRightIconPress}
             displayFrame={haveFrame}
             handleImagePicker={handleImagePicker}
+            isCameraIcon={false}
           />
         </View>
       )}

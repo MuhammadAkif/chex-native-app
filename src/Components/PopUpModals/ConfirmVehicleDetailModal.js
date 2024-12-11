@@ -1,5 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Modal, StyleSheet, TextInput} from 'react-native';
+import {
+  View,
+  Text,
+  Modal,
+  StyleSheet,
+  TextInput,
+  Keyboard,
+  TouchableOpacity,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -7,6 +15,8 @@ import {
 
 import {PrimaryGradientButton} from '../index';
 import {circleBorderRadius, colors, modalStyle} from '../../Assets/Styles';
+import {removeAlphabets} from '../../Utils/helpers';
+import {useSelector} from 'react-redux';
 
 const {red, gray, orange, black} = colors;
 const {
@@ -31,13 +41,33 @@ const ConfirmVehicleDetailModal = ({
   numberPlateText = '',
   isLoading = false,
   textLimit = 20,
+  keyboardType = 'default',
+  inputMode,
+  errorMessage = '',
 }) => {
   const [numberPlate, setNumberPlate] = useState(numberPlateText);
   const text_Limit = numberPlate.length + '/' + textLimit;
-
+  const description_ = numberPlateText.length > 0 ? description : null;
   useEffect(() => {
-    setNumberPlate(numberPlateText);
+    handleInputChange(numberPlateText);
   }, [numberPlateText]);
+
+  const onTouchDismissKeyboard = () => Keyboard.dismiss();
+
+  function handleInputChange(text) {
+    if (inputMode === 'decimal') {
+      let input = removeAlphabets(text);
+
+      let list = ['0', ''];
+
+      if (list.includes(input)) {
+        input = '';
+      }
+      setNumberPlate(input);
+    } else {
+      setNumberPlate(text);
+    }
+  }
 
   return (
     <Modal
@@ -45,11 +75,17 @@ const ConfirmVehicleDetailModal = ({
       transparent={true}
       visible={visible}
       style={modalOuterContainer}>
-      <View style={container}>
+      <TouchableOpacity
+        style={container}
+        activeOpacity={1}
+        onPress={onTouchDismissKeyboard}>
         <View style={modalContainer}>
           <Text style={header}>{title}</Text>
           {numberPlateText?.length === 0 && (
             <Text style={[body, {color: red}]}>{description}</Text>
+          )}
+          {errorMessage && (
+            <Text style={[body, {color: red}]}>{errorMessage}</Text>
           )}
           <TextInput
             value={numberPlate}
@@ -58,8 +94,10 @@ const ConfirmVehicleDetailModal = ({
             style={styles.numberPlateInput}
             enterKeyHint={'done'}
             editable={!isLoading}
-            onChangeText={setNumberPlate}
+            onChangeText={handleInputChange}
             maxLength={textLimit}
+            keyboardType={keyboardType}
+            inputMode={inputMode}
             onSubmitEditing={() => onConfirmPress(numberPlate)}
           />
           <Text style={styles.textLimit}>{text_Limit}</Text>
@@ -73,7 +111,7 @@ const ConfirmVehicleDetailModal = ({
             />
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </Modal>
   );
 };
@@ -89,15 +127,16 @@ const styles = StyleSheet.create({
   numberPlateInput: {
     borderWidth: 1,
     borderColor: gray,
-    height: hp('4%'),
+    fontSize: hp('1.8%'),
+    padding: wp('2.5%'),
     width: wp('80%'),
-    padding: hp('1%'),
     color: black,
   },
   textLimit: {
     width: '95%',
     color: black,
     textAlign: 'right',
+    fontSize: hp('1.6%'),
   },
 });
 
