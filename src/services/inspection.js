@@ -218,7 +218,7 @@ export const location = async inspectionId => {
  * @returns {Promise<axios.AxiosResponse<any>>} A promise that resolves to the Axios response object, containing the result of the PATCH request.
  * @throws {Error} If the request fails, it will throw an error.
  */
-export const inspectionSubmission = async (
+/*export const inspectionSubmission = async (
   inspectionId = '',
   companyId = '',
   driverComment = null,
@@ -232,7 +232,7 @@ export const inspectionSubmission = async (
     console.error('Inspection submission error:', error);
     throw error;
   }
-};
+};*/
 
 /**
  * Submits an inspection using auto-inspection with a company ID.
@@ -268,7 +268,7 @@ export const inspectionSubmission = async (
  * @returns {Promise<axios.AxiosResponse<any>>} A promise that resolves to the Axios response object, containing the result of the POST request.
  * @throws {Error} If the request fails, it will throw an error.
  */
-/*export const inspectionSubmission = async (
+export const inspectionSubmission = async (
   inspectionId = '',
   companyId = '',
   driverComment = null,
@@ -281,7 +281,7 @@ export const inspectionSubmission = async (
     console.error('Inspection submission error:', error);
     throw error;
   }
-};*/
+};
 
 export const isImageDarkWithAI = async image_url => {
   const body = {image_url};
