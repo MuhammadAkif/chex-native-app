@@ -41,10 +41,10 @@ const CameraFooter = ({
   return (
     <View style={styles.cameraOptionContainer}>
       <TouchableOpacity
-        onPress={onPress}
+        onPress={handleSwitchCamera}
         activeOpacity={1}
         style={styles.iconPadding}>
-        <Icon height={hp('5%')} width={wp('10%')} color={white} />
+        <FlipCamera height={hp('5%')} width={wp('10%')} color={white} />
       </TouchableOpacity>
       <Record
         height={hp('10%')}
