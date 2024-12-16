@@ -22,11 +22,11 @@ const InputModal = ({
   const {value: isLoading, toggle} = useBoolean(false);
 
   const onSubmitPress = useCallback(
-    text => {
+    (text, resetStates) => {
       if (!isNotEmpty(text.trim())) {
         return null;
       }
-      callback(text, actionCreator, toggle);
+      callback(text, actionCreator, toggle, resetStates);
     },
     [callback, actionCreator, toggle],
   );

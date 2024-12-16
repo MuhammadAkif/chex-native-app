@@ -5,7 +5,6 @@ import {
   getInspectionDetails,
 } from '../../services/inspection';
 import {uploadInProgressMediaToStore} from '../../Utils';
-import {removeAlphabets} from '../../Utils/helpers';
 
 const {
   UPDATE_VEHICLE_IMAGE,

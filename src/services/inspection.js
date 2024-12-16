@@ -1,4 +1,5 @@
 import api from './api';
+import axios from 'axios';
 import {
   AI_API_TOKEN,
   API_ENDPOINTS,
@@ -8,7 +9,6 @@ import {
   nightImageCheckAI,
 } from '../Constants';
 import {generateRandomString} from '../Utils';
-import {insertMileage} from '../Utils/helpers';
 
 const {
   EXTRACT_NUMBER_PLATE_URL,
@@ -207,36 +207,80 @@ export const location = async inspectionId => {
   }
 };
 
-/*export const inspectionSubmission = async (
-  inspectionId = '',
-  companyId = '',
-) => {
-  /!*const endPoint = generateApiUrl(`inspection/${inspectionId}`);*!/
-  const endPoint = generateApiUrl(`auto/reviewed/${inspectionId}`);
-  const body = {companyId};
-  try {
-    //For auto-inspection
-    return await api.post(endPoint, body);
-    // return await api.put(endPoint, null);
-    // return await api.patch(endPoint, null);
-  } catch (error) {
-    console.error('Inspection submission error:', error);
-    throw error;
-  }
-};*/
+/**
+ * Submits an inspection using its ID.
+ * This function makes a PATCH request to submit inspection data by its ID.
+ *
+ * @param {string} [inspectionId=''] The unique identifier of the inspection. Default to an empty string if not provided.
+ * @param {string} [companyId=''] The unique identifier of the company submitting the inspection. Default to an empty string if not provided.
+ * @param {string|null} [driverComment=null] Optional driver comments for the inspection. Default to `null` if not provided.
+ * @returns {Promise<axios.AxiosResponse<any>>} A promise that resolves to the Axios response object, containing the result of the PATCH request.
+ * @throws {Error} If the request fails, it will throw an error.
+ */
 export const inspectionSubmission = async (
   inspectionId = '',
   companyId = '',
   driverComment = null,
 ) => {
+  const endPoint = generateApiUrl(`inspection/${inspectionId}`);
+
+  const body = {driverComment};
+  try {
+    return await api.patch(endPoint, body);
+  } catch (error) {
+    console.error('Inspection submission error:', error);
+    throw error;
+  }
+};
+
+/**
+ * Submits an inspection using auto-inspection with a company ID.
+ * This function makes a POST request to submit the inspection data, along with the company ID.
+ *
+ * @param {string} [inspectionId=''] The unique identifier of the inspection. Default to an empty string if not provided.
+ * @param {string} [companyId=''] The unique identifier of the company submitting the inspection. Default to an empty string if not provided.
+ * @returns {Promise<axios.AxiosResponse<any>>} A promise that resolves to the Axios response object, containing the result of the POST request.
+ * @throws {Error} If the request fails, it will throw an error.
+ */
+/*export const inspectionSubmission = async (
+  inspectionId = '',
+  companyId = '',
+) => {
+  const endPoint = generateApiUrl(`auto/reviewed/${inspectionId}`);
+  const body = {companyId};
+
+  try {
+    return await api.post(endPoint, body);
+  } catch (error) {
+    console.error('Inspection submission error:', error);
+    throw error;
+  }
+}*/
+
+/**
+ * Submits an inspection using a queue-based auto-inspection with additional driver comments.
+ * This function makes a POST request to submit the inspection, company ID, and any driver comments.
+ *
+ * @param {string} [inspectionId=''] The unique identifier of the inspection. Default to an empty string if not provided.
+ * @param {string} [companyId=''] The unique identifier of the company submitting the inspection. Default to an empty string if not provided.
+ * @param {string|null} [driverComment=null] Optional driver comments for the inspection. Default to `null` if not provided.
+ * @returns {Promise<axios.AxiosResponse<any>>} A promise that resolves to the Axios response object, containing the result of the POST request.
+ * @throws {Error} If the request fails, it will throw an error.
+ */
+/*export const inspectionSubmission = async (
+  inspectionId = '',
+  companyId = '',
+  driverComment = null,
+) => {
   const body = {inspectionId, companyId, driverComment};
+
   try {
     return await api.post(SUBMIT_INSPECTION, body);
   } catch (error) {
     console.error('Inspection submission error:', error);
     throw error;
   }
-};
+};*/
 
 export const isImageDarkWithAI = async image_url => {
   const body = {image_url};
@@ -263,12 +307,10 @@ export const ai_Mileage_Extraction = async image_url => {
   }
 };
 
-export const updateMileageInDB = async (mileage, inspectionId) => {
+export const updateMileageInDB = async (milage, inspectionId) => {
   const endPoint = generateApiUrl(`update/vehicle/milage/${inspectionId}`);
 
-  const body = {
-    milage: mileage,
-  };
+  const body = {milage};
   try {
     return await api.put(endPoint, body);
   } catch (error) {

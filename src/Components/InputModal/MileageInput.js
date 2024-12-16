@@ -17,7 +17,7 @@ const MileageInput = () => {
   );
 
   const onSubmit = useCallback(
-    async (text, actionCreator, toggleLoading) => {
+    async (text, actionCreator, toggleLoading, resetStates) => {
       try {
         const mileage = removeAlphabets(text);
         if (mileage) {
@@ -27,6 +27,7 @@ const MileageInput = () => {
 
           dispatch(setMileage(''));
           dispatch(setMileageMessage(''));
+          resetStates();
           dispatch(actionCreator());
         }
       } catch (error) {

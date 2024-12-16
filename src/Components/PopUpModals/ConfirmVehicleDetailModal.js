@@ -47,13 +47,15 @@ const ConfirmVehicleDetailModal = ({
 }) => {
   const [numberPlate, setNumberPlate] = useState(numberPlateText);
   const text_Limit = numberPlate.length + '/' + textLimit;
-  const description_ = numberPlateText.length > 0 ? description : null;
+
   useEffect(() => {
     handleInputChange(numberPlateText);
   }, [numberPlateText]);
 
   const onTouchDismissKeyboard = () => Keyboard.dismiss();
-
+  function clearState() {
+    setNumberPlate('');
+  }
   function handleInputChange(text) {
     if (inputMode === 'decimal') {
       let input = removeAlphabets(text);
@@ -107,7 +109,7 @@ const ConfirmVehicleDetailModal = ({
               disabled={isLoading}
               buttonStyle={button}
               textStyle={yesText}
-              onPress={() => onConfirmPress(numberPlate)}
+              onPress={() => onConfirmPress(numberPlate, clearState)}
             />
           </View>
         </View>
