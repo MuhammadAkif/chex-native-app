@@ -4,11 +4,19 @@ import {BackHandler} from 'react-native';
 import {CompletedInspectionScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
+import {useBoolean} from '../hooks';
 
 const {INSPECTION_SELECTION} = ROUTES;
 
 const CompletedInspectionContainer = ({navigation}) => {
   const {canGoBack, navigate} = navigation;
+  const {
+    value: boxVisible,
+    setTrue,
+    setFalse,
+    reset,
+    toggle,
+  } = useBoolean(false);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -16,6 +24,9 @@ const CompletedInspectionContainer = ({navigation}) => {
       handle_Hardware_Back_Press,
     );
     return () => backHandler.remove();
+  }, []);
+  useEffect(() => {
+    return resetAllStates;
   }, []);
 
   function handle_Hardware_Back_Press() {
@@ -25,7 +36,15 @@ const CompletedInspectionContainer = ({navigation}) => {
     }
     return false;
   }
-  return <CompletedInspectionScreen navigation={navigation} />;
+  function resetAllStates() {
+    reset();
+  }
+  return (
+    <CompletedInspectionScreen
+      navigation={navigation}
+      boxVisible={boxVisible}
+    />
+  );
 };
 
 export default CompletedInspectionContainer;

@@ -16,7 +16,7 @@ const {white, red} = colors;
 const EmptyView = () => <View style={styles.emptyView} />;
 
 const CameraFooter = ({
-  isCamera = true,
+  isCamera,
   isRecording,
   handleSwitchCamera,
   handleCaptureNowPress,
@@ -24,12 +24,19 @@ const CameraFooter = ({
   onRightIconPress = fallBack,
   RightIcon = Landscape,
   handleImagePicker,
+  isCameraIcon = true,
 }) => {
   const switchRightIcon = {
     true: RightIcon,
     false: EmptyView,
   };
   const ActiveRightIcon = switchRightIcon[displayFrame];
+  const leftIcon = {
+    true: {onPress: handleSwitchCamera, icon: FlipCamera},
+    false: {onPress: handleImagePicker, icon: PhotoLibrary},
+  };
+  const shouldSwitchCamera = leftIcon[isCameraIcon];
+  const {onPress, icon: Icon} = shouldSwitchCamera;
 
   return (
     <View style={styles.cameraOptionContainer}>

@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Platform,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity, Platform} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -18,13 +11,12 @@ import {
   CarVerificationExpandedCard,
   CaptureImageModal,
   TiresItemsExpandedCard,
-  PrimaryGradientButton,
   DisplayMediaModal,
   DiscardInspectionModal,
   AndroidMediaViewModal,
   ConfirmVehicleDetailModal,
-  Comment,
   NewInspectionFooter,
+  MileageInput,
 } from '../Components';
 import {BackArrow} from '../Assets/Icons';
 import LoadingIndicator from '../Components/LoadingIndicator';
@@ -46,7 +38,6 @@ const {
   bodyContainer,
   innerBody,
   scrollViewContainer,
-  footerContainer,
 } = NewInspectionStyles;
 
 const NewInspectionScreen = props => {
@@ -116,9 +107,6 @@ const NewInspectionScreen = props => {
     ActiveInteriorItemsExpandedCard,
     coordinates,
     displayInstructions,
-    odometerVisible,
-    handleConfirmMileage,
-    mileage,
   } = props;
   return (
     <View style={container}>
@@ -146,6 +134,7 @@ const NewInspectionScreen = props => {
           dualButton={false}
         />
       )}
+      <MileageInput />
       {isLicenseModalVisible && (
         <ConfirmVehicleDetailModal
           isLoading={isLoading}
@@ -154,20 +143,6 @@ const NewInspectionScreen = props => {
           numberPlateText={plateNumber || ''}
           textLimit={20}
           textLength={plateNumber?.length || '0'}
-        />
-      )}
-      {odometerVisible && (
-        <ConfirmVehicleDetailModal
-          title={'Mileage'}
-          description={
-            'System was unable to detect the mileage. Please type the mileage below:'
-          }
-          isLoading={isLoading}
-          onCrossPress={handleConfirmModalVisible}
-          onConfirmPress={handleConfirmMileage}
-          numberPlateText={mileage || ''}
-          textLimit={20}
-          textLength={mileage?.length || '0'}
         />
       )}
       {vehicle_Type && (
@@ -313,18 +288,6 @@ const NewInspectionScreen = props => {
             )}
           </ScrollView>
         </View>
-        {/*<View style={[footerContainer, styles.footerContainer]}>
-          {isVehicleAllPartsImagesAvailable ? (
-            <PrimaryGradientButton
-              text={'Submit'}
-              onPress={handleSubmitPress}
-              disabled={isLoading}
-            />
-          ) : (
-            <View style={styles.submitPlaceholder} />
-          )}
-          <Comment />
-        </View>*/}
         <NewInspectionFooter
           onSubmitPress={handleSubmitPress}
           isLoading={isLoading}
@@ -335,19 +298,5 @@ const NewInspectionScreen = props => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  footerContainer: {
-    flexDirection: 'row',
-    columnGap: wp('4%'),
-  },
-  submitPlaceholder: {
-    width: wp('70%'),
-  },
-  horizontalButtonsContainer: {
-    flex: 0.3,
-    rowGap: hp('1%'),
-  },
-});
 
 export default NewInspectionScreen;

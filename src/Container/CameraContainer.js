@@ -1,5 +1,18 @@
-import React, {useEffect, useState} from 'react';
-import {BackHandler, StatusBar, StyleSheet, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  AppState,
+  BackHandler,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {
+  Camera,
+  useCameraDevice,
+  useCameraFormat,
+} from 'react-native-vision-camera';
+import {useIsFocused} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   heightPercentageToDP as hp,
@@ -17,6 +30,7 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {
   clearInspectionImages,
   setLicensePlateNumber,
+  getMileage,
   updateVehicleImage,
 } from '../Store/Actions';
 import {
@@ -150,17 +164,29 @@ const CameraContainer = ({route, navigation}) => {
     if (haveType) {
       body = {...body, variant: variant};
     }
+    const image_url = `${S3_BUCKET_BASEURL}${key}`;
     if (category === 'CarVerification' && type === 'licensePlate') {
-      await handleExtractNumberPlate(`${S3_BUCKET_BASEURL}${key}`);
+      await handleExtractNumberPlate(image_url);
     }
-    /*Setting delay because the backend needs processing time to do some actions*/
-    setTimeout(async () => {
+    if (category === 'CarVerification' && type === 'odometer') {
       try {
-        await uploadFile(uploadImageToStore, body, inspectionId);
+        dispatch(getMileage(image_url));
       } catch (error) {
-        onUploadFailed(error);
+        throw error;
       }
-    }, 2000);
+    }
+    try {
+      await uploadFile(
+        uploadImageToStore,
+        body,
+        inspectionId,
+        token,
+        handleError,
+        dispatch,
+      );
+    } catch (error) {
+      onUploadFailed(error);
+    }
   };
 
   /**
@@ -273,6 +299,7 @@ const CameraContainer = ({route, navigation}) => {
         variant || 0,
         'app',
         user?.companyId,
+        category,
       );
     } catch (error) {
       onUploadFailed(error);

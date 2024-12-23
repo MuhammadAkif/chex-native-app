@@ -9,6 +9,7 @@ import {
   customSortOrder,
   uploadFailed,
   darkImageError,
+  S3_BUCKET_BASEURL,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
@@ -358,6 +359,7 @@ export const getSignedUrl = async (
   variant = 0,
   source = 'app',
   companyId,
+  category,
 ) => {
   try {
     const response = await s3SignedUrl(
@@ -374,6 +376,7 @@ export const getSignedUrl = async (
       mimeType,
       onProgressUpdate,
       onSuccess,
+      category,
     );
   } catch (error) {
     throw error;
@@ -396,11 +399,12 @@ async function onGetSignedUrlSuccess(
   mimeType,
   onProgressUpdate,
   onSuccess,
+  category,
 ) {
   try {
     const {url, key} = response.data;
 
-    await uploadToS3(url, key, filePath, mimeType, onProgressUpdate, onSuccess);
+    await uploadToS3(url, key, filePath, mimeType, onProgressUpdate, onSuccess, category);
   } catch (error) {
     throw error;
   }
@@ -424,6 +428,7 @@ export const uploadToS3 = async (
   mimeType,
   onProgressUpdate,
   onSuccess,
+  category,
 ) => {
   try {
     await RNFetchBlob.fetch(
@@ -435,7 +440,7 @@ export const uploadToS3 = async (
       const percentCompleted = Math.round((written * 100) / total);
       onProgressUpdate(percentCompleted);
     });
-    await onUploadToS3Success(onSuccess, fileKey);
+    await onUploadToS3Success(onSuccess, fileKey, category);
   } catch (error) {
     throw error;
   }
@@ -448,19 +453,19 @@ export const uploadToS3 = async (
  * @param {string} fileKey - The unique identifier (key) for the uploaded file in S3.
  * @returns {Promise<void>} Resolves when post-upload checks are completed successfully.
  */
-async function onUploadToS3Success(onSuccess, fileKey) {
-  const {completedUrl: imageUrl} = checkAndCompleteUrl(fileKey);
+async function onUploadToS3Success(onSuccess, fileKey, category) {
+  const image_url = S3_BUCKET_BASEURL + key;
 
   try {
-    /* const {
-      data: {status = false},
-    } = await isImageDarkWithAI(imageUrl);
+    if (!SKIP_NIGHT_IMAGE_LIST.includes(category)) {
+      const {
+        data: {status = false},
+      } = await isImageDarkWithAI(image_url);
 
-    console.log('Night Image Check Status:', status);
-
-    if (!status) {
-      throw new Error(darkImageError.message);
-    }*/
+      if (!status) {
+        throw new Error(darkImageError.message);
+      }
+    }
 
     onSuccess(fileKey);
   } catch (error) {
@@ -1040,3 +1045,4 @@ export function extractValidUrls(file = {}) {
 
   return list;
 }
+export const SKIP_NIGHT_IMAGE_LIST = ['CarVerification', 'Tires'];

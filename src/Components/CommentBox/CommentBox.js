@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {Keyboard, StyleSheet, Text} from 'react-native';
 
 import ModalContainer from './ModalContainer';
 import InputField from './InputField';
@@ -42,8 +42,13 @@ const CommentBox = ({
     onCancel();
   }, [onCancel]);
 
+  const onPressModal = () => Keyboard.dismiss();
+
   return (
-    <ModalContainer visible={visible} style={modalOuterContainer}>
+    <ModalContainer
+      visible={visible}
+      style={modalOuterContainer}
+      onPress={onPressModal}>
       <Text style={header}>{title}</Text>
       <Text style={[body, styles.subHeading]}>{description}</Text>
       <InputField

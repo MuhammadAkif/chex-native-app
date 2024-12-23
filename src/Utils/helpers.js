@@ -176,6 +176,16 @@ export function checkAndCompleteUrl(url, paramsToCheck = []) {
   return result;
 }
 
+export function insertMileage(str) {
+  if (isNotEmpty(str.trim())) {
+    if (str.includes('mi')) {
+      return str;
+    } else {
+      return str + 'mi';
+    }
+  }
+}
+
 /**
  * Extracts the MIME type of image based on its file path.
  * If no extension is found, defaults to 'jpeg'.
@@ -192,3 +202,34 @@ export const getFileMimeType = path => {
   const extension = path.split('.').pop() || 'jpeg';
   return `image/${extension}`;
 };
+
+/**
+ * Removes all alphabetic characters and retains only numbers and decimals from a string.
+ *
+ * @param {string|null|undefined} input - The string from which to remove alphabetic characters. Can be null or undefined.
+ * @returns {string} - The cleaned string containing only numeric characters and a single decimal point (if applicable).
+ * @throws {TypeError} - Throws an error if the input is not a string, null, or undefined.
+ */
+export function removeAlphabets(input) {
+  // Check for invalid input types (null, undefined, or non-string)
+  if (input === null || input === undefined) {
+    return '';
+  }
+
+  if (typeof input !== 'string') {
+    throw new TypeError('Input must be a string');
+  }
+
+  // Remove all non-numeric and non-decimal characters
+  let cleanedInput = input.replace(/[^0-9.]/g, '');
+
+  // Ensure only one decimal point is present in the result
+  const decimalCount = (cleanedInput.match(/\./g) || []).length;
+  if (decimalCount > 1) {
+    // If more than one decimal, remove the extra decimals (keeping the first one)
+    cleanedInput = cleanedInput.replace(/\.(?=.*\.)/g, '');
+  }
+
+  // Return the cleaned input, ensuring it’s not empty
+  return cleanedInput || '0';
+}
