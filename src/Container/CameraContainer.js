@@ -436,6 +436,7 @@ const CameraContainer = ({route, navigation}) => {
             onRightIconPress={handleOnRightIconPress}
             displayFrame={haveFrame}
             handleImagePicker={handleImagePicker}
+            isCameraIcon={false}
           />
         </View>
       )}
