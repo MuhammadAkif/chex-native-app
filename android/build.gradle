@@ -36,3 +36,12 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
     }
 }
+
+allprojects {
+    repositories {
+        flatDir {
+            dirs "$rootProject.projectDir/libs"
+        }
+        // ... existing repositories ...
+    }
+}
