@@ -4,6 +4,7 @@ import {
 } from 'react-native-responsive-screen';
 import {isNotEmpty} from './index';
 import {Landscape, Portrait} from '../Assets/Icons';
+import {Alert, Linking, PermissionsAndroid, Platform} from 'react-native';
 
 export const headerFlex = {
   true: 1.5,
@@ -190,3 +191,64 @@ export const getFileMimeType = path => {
   const extension = path.split('.').pop() || 'jpeg';
   return `image/${extension}`;
 };
+
+export async function requestBluetoothPermissions() {
+  try {
+    const permissions = [
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH,
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADMIN,
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    ];
+
+    const missingPermissions = [];
+
+    for (const permission of permissions) {
+      const granted = await PermissionsAndroid.request(permission);
+      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+        missingPermissions.push(permission);
+        console.warn(`${permission} permission denied.`);
+      }
+    }
+
+    if (missingPermissions.length > 0) {
+      console.log('Some permissions were not granted:', missingPermissions);
+      return false; // Not all permissions were granted
+    }
+
+    console.log('All required permissions granted.');
+    return true; // All permissions granted
+  } catch (error) {
+    console.error('Error requesting permissions:', error);
+    return false;
+  }
+}
+
+/*export const requestBluetoothPermissions = async () => {
+  if (Platform.OS === 'android') {
+    const permissions = [
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH,
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADMIN,
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+    ]
+    const granted = await PermissionsAndroid.requestMultiple(permissions);
+    console.log({granted});
+    return (
+      granted['android.permission.BLUETOOTH'] ===
+        PermissionsAndroid.RESULTS.GRANTED &&
+      granted['android.permission.BLUETOOTH_ADMIN'] ===
+        PermissionsAndroid.RESULTS.GRANTED &&
+      granted['android.permission.ACCESS_FINE_LOCATION'] ===
+        PermissionsAndroid.RESULTS.GRANTED &&
+      granted['android.permission.ACCESS_BACKGROUND_LOCATION'] ===
+        PermissionsAndroid.RESULTS.GRANTED &&
+      granted['android.permission.BLUETOOTH_SCAN'] ===
+        PermissionsAndroid.RESULTS.GRANTED &&
+      granted['android.permission.BLUETOOTH_CONNECT'] ===
+        PermissionsAndroid.RESULTS.GRANTED
+    );
+  }
+  return true; // For iOS, permissions are handled differently
+};*/

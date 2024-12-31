@@ -9,3 +9,7 @@
 
 # Add any project specific keep options here:
 -keep class com.pixida.safetytagapi.data.dto.internal.FirmwareResponse { *; }
+   -keep class retrofit2.** { *; }
+   -keep class com.squareup.okhttp.** { *; }
+   -keepattributes Signature
+   -keepattributes *Annotation*

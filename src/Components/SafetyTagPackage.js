@@ -1,85 +1,125 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import { NativeModules } from 'react-native';
+/*
+import React, {useEffect, useState} from 'react';
+import {View, Text, Button, StyleSheet, DeviceEventEmitter} from 'react-native';
+import {NativeModules} from 'react-native';
+import {requestBluetoothPermissions} from '../Utils/helpers';
 
-const { SafetyTag } = NativeModules;
+const {SafetyTag} = NativeModules;
 
-const SafetyTagPackage = () => {
-  const [apiInfo, setApiInfo] = useState(null);
-  const [error, setError] = useState(null);
+const SafetyTagComponent = () => {
+  const [statusMessage, setStatusMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [logMessages, setLogMessages] = useState([]); // Store logs
 
   useEffect(() => {
-    checkApiInfo();
+    // Initialize safety tag and listen to logs from the native side
+    initializeSafetyTag().then();
+    requestBluetoothPermissions().then();
+
+    const logListener = DeviceEventEmitter.addListener(
+      'SafetyTagLog',
+      message => {
+        console.log('Native Log:', message);
+        setLogMessages(prevLogs => [...prevLogs, message]); // Update logs
+      },
+    );
+
+    // Cleanup the listener when the component is unmounted
+    return () => {
+      logListener.remove();
+    };
   }, []);
 
-  const checkApiInfo = async () => {
+  const initializeSafetyTag = async () => {
     try {
-      const info = await SafetyTag.getApiInfo();
-      console.log('SafetyTag API Info:', info);
-      setApiInfo(info);
-    } catch (err) {
-      console.error('Error getting API info:', err);
-      setError(err.message);
-      console.warn(err.message)
-      throw err;
+      const message = await SafetyTag.initialize();
+      setStatusMessage(message);
+      console.log('Initialization Success:', message);
+    } catch (error) {
+      setErrorMessage('Initialization error: ' + error.message);
+      console.error('Initialization error:', error);
+    }
+  };
+
+  const connectToFirstTag = async () => {
+    const hasPermissions = await requestBluetoothPermissions();
+    if (hasPermissions) {
+      try {
+        const message = await SafetyTag.connectToFirstDiscoveredTagSample();
+        setStatusMessage(message);
+        console.log('Connection Success:', message);
+      } catch (error) {
+        setErrorMessage('Connection error: ' + error.message);
+        console.error('Connection error:', error);
+      }
+    } else {
+      await requestBluetoothPermissions();
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>SafetyTag API Info</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Safety Tag Module</Text>
+      {statusMessage ? (
+        <Text style={styles.success}>{statusMessage}</Text>
+      ) : null}
+      {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+      <Button
+        title="Connect to First Discovered Tag"
+        onPress={connectToFirstTag}
+      />
 
-      {error && (
-        <Text style={styles.error}>Error: {error}</Text>
-      )}
-
-      {apiInfo && (
-        <View>
-          <Text style={styles.label}>Version: {apiInfo.version}</Text>
-          <Text style={styles.label}>Initialized: {apiInfo.isInitialized ? 'Yes' : 'No'}</Text>
-
-          <Text style={styles.subtitle}>Available Methods:</Text>
-          {Object.entries(apiInfo.availableMethods || {}).map(([name, details]) => (
-            <Text key={name} style={styles.method}>
-              {name}: {details}
-            </Text>
-          ))}
-        </View>
-      )}
-    </ScrollView>
+      {/!* Display the logs *!/}
+      <View style={styles.logContainer}>
+        <Text style={styles.logTitle}>Logs from Native Module:</Text>
+        {logMessages.map((log, index) => (
+          <Text key={index} style={styles.logText}>
+            {log}
+          </Text>
+        ))}
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
+    backgroundColor: '#fff',
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
   },
-  subtitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 15,
+  success: {
+    color: 'green',
     marginBottom: 10,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  method: {
-    fontSize: 14,
-    marginBottom: 5,
-    padding: 5,
-    backgroundColor: '#f0f0f0',
   },
   error: {
     color: 'red',
     marginBottom: 10,
   },
+  logContainer: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#f1f1f1',
+    borderRadius: 5,
+    width: '100%',
+  },
+  logTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  logText: {
+    fontSize: 14,
+    color: '#333',
+  },
 });
 
-export default SafetyTagPackage;
+export default SafetyTagComponent;
+*/

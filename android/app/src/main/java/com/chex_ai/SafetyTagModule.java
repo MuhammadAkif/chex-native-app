@@ -1,55 +1,47 @@
 package com.chex_ai;
 
 import android.util.Log;
-import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.Arguments;
-
 import com.pixida.safetytagapi.SafetyTagApi;
-
-import timber.log.Timber;
-
+import com.pixida.safetytagapi.data.dto.SafetyTagScanResult;
+import com.pixida.safetytagapi.interfaces.OnSafetyTagFoundListener;
+import com.pixida.safetytagapi.interfaces.SafetyTagFinder;
+import com.pixida.safetytagapi.data.dto.SafetyTagInfo;
 
 public class SafetyTagModule extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
-    private SafetyTagApi tagApi;
 
     public SafetyTagModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        Timber.plant(new Timber.DebugTree()); // Initialize Timber
         this.reactContext = reactContext;
     }
 
     @Override
     public String getName() {
-        return "SafetyTag";
+        return "SafetyTagModule";
     }
 
     @ReactMethod
-    public void getApiInfo(Promise promise) {
-        try {
-            tagApi = SafetyTagApi.getInstance(reactContext);
+    public void connectToFirstDiscoveredTag(final Promise promise) {
+        SafetyTagApi safetyTagApi = SafetyTagApi.getInstance(reactContext);
+        SafetyTagFinder tagFinder = safetyTagApi.getFinder();
 
-            WritableMap info = Arguments.createMap();
-            info.putString("version", tagApi.getClass().getName());
-            info.putBoolean("isInitialized", tagApi != null);
-
-            // Get available methods
-            WritableMap methods = Arguments.createMap();
-            for (java.lang.reflect.Method method : tagApi.getClass().getDeclaredMethods()) {
-                methods.putString(method.getName(), method.toString());
+        tagFinder.startDiscoveringTags(true, new OnSafetyTagFoundListener() {
+            @Override
+            public void onResult(SafetyTagScanResult scanResult) {
+                if (scanResult instanceof SafetyTagScanResult.Success) {
+                    SafetyTagInfo safetyTagInfo = ((SafetyTagScanResult.Success) scanResult).getSafetyTag();
+                    safetyTagApi.getConnection().connectToTag(safetyTagInfo, false, false);
+                    promise.resolve("Connected to tag: " + safetyTagInfo.getTag().getName());
+                } else if (scanResult instanceof SafetyTagScanResult.Error) {
+                    Log.e("SafetyTagModule", "Error discovering tags: " + ((SafetyTagScanResult.Error) scanResult).getError());
+                    promise.reject("Error", "Could not discover tags.");
+                }
             }
-            info.putMap("availableMethods", methods);
-
-            promise.resolve(info);
-        } catch (Exception e) {
-            Log.e("SafetyTagModule", "Error getting API info: " + e.getMessage());
-            promise.reject("API_INFO_ERROR", e.getMessage());
-        }
+        });
     }
 }

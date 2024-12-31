@@ -1,49 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { NativeModules, Text, Button, View, StyleSheet } from 'react-native';
+import React from 'react';
+import {View, Text, Button, Alert} from 'react-native';
+import {NativeModules} from 'react-native';
+import {requestBluetoothPermissions} from '../Utils/helpers';
+import usePermissions from '../hooks/usePermissions';
 
-const { SafetyTag } = NativeModules;
+const {SafetyTagModule} = NativeModules;
 
 const SafetyTagConnector = () => {
-  const [status, setStatus] = useState('Idle');
-  const [tagAddress, setTagAddress] = useState(null);
+  const {hasBluetoothPermission, hasLocationPermission} = usePermissions();
 
-  const connectToTag = () => {
-    setStatus('Discovering...');
-    SafetyTag.connectToFirstDiscoveredTag()
-      .then((address) => {
-        setStatus('Connected');
-        setTagAddress(address);
-      })
-      .catch((error) => {
-        setStatus(`Error: ${error.message}`);
-      });
+  const connectToTag = async () => {
+    const havePermissions = hasBluetoothPermission && hasLocationPermission;
+    console.log('Checking permissions: ', havePermissions);
+    if (!havePermissions) {
+      Alert.alert(
+        'Error',
+        'Bluetooth permissions are required to connect to devices.',
+      );
+      return;
+    }
+    try {
+      console.log('Triggering native module');
+      const message = await SafetyTagModule.connectToFirstDiscoveredTag();
+      Alert.alert('Success', message);
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.status}>Status: {status}</Text>
-      {tagAddress && <Text style={styles.address}>Tag Address: {tagAddress}</Text>}
+    <View style={{padding: 20}}>
+      <Text style={{fontSize: 18, marginBottom: 20}}>
+        Connect to the first discovered Safety Tag
+      </Text>
       <Button title="Connect to Tag" onPress={connectToTag} />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  status: {
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  address: {
-    fontSize: 16,
-    marginBottom: 20,
-    color: 'blue',
-  },
-});
 
 export default SafetyTagConnector;
