@@ -1,7 +1,6 @@
 import React from 'react';
 import {View, Text, Button, Alert} from 'react-native';
 import {NativeModules} from 'react-native';
-import {requestBluetoothPermissions} from '../Utils/helpers';
 import usePermissions from '../hooks/usePermissions';
 
 const {SafetyTagModule} = NativeModules;

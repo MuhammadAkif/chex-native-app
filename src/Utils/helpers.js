@@ -2,9 +2,14 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import {PERMISSIONS, request, RESULTS} from 'react-native-permissions';
+
 import {isNotEmpty} from './index';
 import {Landscape, Portrait} from '../Assets/Icons';
-import {Alert, Linking, PermissionsAndroid, Platform} from 'react-native';
+
+const {BLUETOOTH_CONNECT, BLUETOOTH_SCAN, ACCESS_FINE_LOCATION} =
+  PERMISSIONS.ANDROID;
+const {GRANTED} = RESULTS;
 
 export const headerFlex = {
   true: 1.5,
@@ -192,63 +197,20 @@ export const getFileMimeType = path => {
   return `image/${extension}`;
 };
 
-export async function requestBluetoothPermissions() {
-  try {
-    const permissions = [
-      PermissionsAndroid.PERMISSIONS.BLUETOOTH,
-      PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADMIN,
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    ];
+export async function requestPermissions() {
+  const bluetooth_connect = await request(BLUETOOTH_CONNECT);
+  const bluetooth_scan = await request(BLUETOOTH_SCAN);
+  const location = await request(ACCESS_FINE_LOCATION);
 
-    const missingPermissions = [];
+  const have_permissions =
+    bluetooth_connect === GRANTED &&
+    bluetooth_connect === GRANTED &&
+    bluetooth_scan === GRANTED &&
+    location === GRANTED;
 
-    for (const permission of permissions) {
-      const granted = await PermissionsAndroid.request(permission);
-      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        missingPermissions.push(permission);
-        console.warn(`${permission} permission denied.`);
-      }
-    }
-
-    if (missingPermissions.length > 0) {
-      console.log('Some permissions were not granted:', missingPermissions);
-      return false; // Not all permissions were granted
-    }
-
-    console.log('All required permissions granted.');
-    return true; // All permissions granted
-  } catch (error) {
-    console.error('Error requesting permissions:', error);
-    return false;
+  if (have_permissions) {
+    return true;
+  } else {
+    throw new Error('Permissions denied');
   }
 }
-
-/*export const requestBluetoothPermissions = async () => {
-  if (Platform.OS === 'android') {
-    const permissions = [
-      PermissionsAndroid.PERMISSIONS.BLUETOOTH,
-      PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADMIN,
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
-      PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
-      PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-    ]
-    const granted = await PermissionsAndroid.requestMultiple(permissions);
-    console.log({granted});
-    return (
-      granted['android.permission.BLUETOOTH'] ===
-        PermissionsAndroid.RESULTS.GRANTED &&
-      granted['android.permission.BLUETOOTH_ADMIN'] ===
-        PermissionsAndroid.RESULTS.GRANTED &&
-      granted['android.permission.ACCESS_FINE_LOCATION'] ===
-        PermissionsAndroid.RESULTS.GRANTED &&
-      granted['android.permission.ACCESS_BACKGROUND_LOCATION'] ===
-        PermissionsAndroid.RESULTS.GRANTED &&
-      granted['android.permission.BLUETOOTH_SCAN'] ===
-        PermissionsAndroid.RESULTS.GRANTED &&
-      granted['android.permission.BLUETOOTH_CONNECT'] ===
-        PermissionsAndroid.RESULTS.GRANTED
-    );
-  }
-  return true; // For iOS, permissions are handled differently
-};*/
