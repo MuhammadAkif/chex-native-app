@@ -1,10 +1,12 @@
 package com.chex_ai;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.util.Log;
+import android.app.Activity;
 
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableNativeArray;
@@ -25,7 +27,12 @@ import com.pixida.safetytagapi.interfaces.SafetyTagFinder;
 import com.pixida.safetytagapi.data.dto.SafetyTagInfo;
 import com.pixida.safetytagapi.interfaces.AuthenticationHandler;
 import com.pixida.safetytagapi.data.enums.SafetyTagConnectionReasons;
-// import com.pixida.safetytagapi.SafetyTagDisconnectReasons;
+import com.pixida.safetytagapi.interfaces.OnTripDataListener;
+import com.pixida.safetytagapi.data.dto.Trip;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class SafetyTagModule extends ReactContextBaseJavaModule {
     private final SafetyTagApi safetyTagApi;
@@ -158,4 +165,83 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
         // Perform disconnection
         safetyTagApi.getConnection().disconnectTag();
     }
+    @SuppressLint("SetTextI18n")
+    @ReactMethod
+        public void queryTripData(Promise promise) {
+            Activity activity = getCurrentActivity();
+
+            safetyTagApi.getTripDetection().queryTripData(new OnTripDataListener() {
+                @Override
+                public void onSuccess(@NonNull List<Trip> trips) {
+                    StringBuilder sb = new StringBuilder();
+                    for (Trip trip : trips) {
+                        sb.append(trip.toString());
+                        sb.append('\n');
+                    }
+                    promise.resolve(sb.toString());
+                }
+
+                @Override
+                public void onError(@NonNull SafetyTagStatus reason) {
+                    promise.reject("ERROR_QUERY_FAILED", "Query failed with " + reason);
+                    Log.e("SafetyTagModule", "Query failed with: " + reason);
+                }
+            }, 20000);
+        }
+
+        @ReactMethod
+        public void configTripStartRecognitionForce(int value, Promise promise) {
+
+            safetyTagApi.getDeviceConfiguration().setTripStartRecognitionForce(value, status -> {
+                if (status.isSuccess()) {
+                    promise.resolve("Successfully configured trip start recognition force");
+                    Log.i("SafetyTagModule", "Successfully configured trip start recognition force");
+                } else {
+                    promise.reject("CONFIG_FAILED", "Failed to configure trip start recognition force");
+                    Log.e("SafetyTagModule", "Failed to configure trip start recognition force");
+                }
+            });
+        }
+
+        @ReactMethod
+        public void configTripStartRecognitionDuration(int value, Promise promise) {
+
+            safetyTagApi.getDeviceConfiguration().setTripStartRecognitionDuration(value, status -> {
+                if (status.isSuccess()) {
+                    promise.resolve("Successfully configured trip start recognition duration");
+                    Log.i("SafetyTagModule", "Successfully configured trip start recognition duration");
+                } else {
+                    promise.reject("CONFIG_FAILED", "Failed to configure trip start recognition duration");
+                    Log.e("SafetyTagModule", "Failed to configure trip start recognition duration");
+                }
+            });
+        }
+
+        @ReactMethod
+        public void configTripEndTimeout(int value, Promise promise) {
+
+            safetyTagApi.getDeviceConfiguration().setTripEndTimeout(value, status -> {
+                if (status.isSuccess()) {
+                    promise.resolve("Successfully configured trip end timeout");
+                    Log.i("SafetyTagModule", "Successfully configured trip end timeout");
+                } else {
+                    promise.reject("CONFIG_FAILED", "Failed to configure trip end timeout");
+                    Log.e("SafetyTagModule", "Failed to configure trip end timeout");
+                }
+            });
+        }
+
+        @ReactMethod
+        public void configTripMinimalDuration(int value, Promise promise) {
+
+            safetyTagApi.getDeviceConfiguration().setTripMinimalDuration(value, status -> {
+                if (status.isSuccess()) {
+                    promise.resolve("Successfully configured minimal trip duration");
+                    Log.i("SafetyTagModule", "Successfully configured minimal trip duration");
+                } else {
+                    promise.reject("CONFIG_FAILED", "Failed to configure minimal trip duration");
+                    Log.e("SafetyTagModule", "Failed to configure minimal trip duration");
+                }
+            });
+        }
 }
