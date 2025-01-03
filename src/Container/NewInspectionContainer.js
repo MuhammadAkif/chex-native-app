@@ -112,6 +112,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     fileDetails,
     mileage = '',
     feedback,
+    imageDimensions,
   } = useSelector(state => state.newInspection);
   const {
     user: {
@@ -765,6 +766,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       ActiveInteriorItemsExpandedCard={ActiveInteriorItemsExpandedCard}
       coordinates={mediaModalDetails?.coordinates?.coordinateArray || []}
       displayInstructions={vehicle_Type === 'new'}
+      imageDimensions={imageDimensions}
     />
   );
 };

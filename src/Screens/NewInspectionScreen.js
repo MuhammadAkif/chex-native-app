@@ -107,6 +107,7 @@ const NewInspectionScreen = props => {
     ActiveInteriorItemsExpandedCard,
     coordinates,
     displayInstructions,
+    imageDimensions,
   } = props;
   return (
     <View style={container}>
@@ -162,6 +163,7 @@ const NewInspectionScreen = props => {
           source={annotationModalDetails.uri}
           title={annotationModalDetails.title}
           isLoading={isLoading}
+          imageDimensions={imageDimensions}
         />
       )}
       <View style={headerContainer}>

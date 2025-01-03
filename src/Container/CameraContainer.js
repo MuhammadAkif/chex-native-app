@@ -35,6 +35,7 @@ import {
   setLicensePlateNumber,
   getMileage,
   updateVehicleImage,
+  setImageDimensions,
 } from '../Store/Actions';
 import {
   checkRelevantType,
@@ -190,6 +191,7 @@ const CameraContainer = ({route, navigation}) => {
       let file = await cameraRef?.current?.takePhoto();
       const filePath = `file://${file.path}`;
       setIsImageFile(file);
+      dispatch(setImageDimensions(file));
       setIsImageURL(filePath);
     }
   };

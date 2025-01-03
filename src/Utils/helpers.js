@@ -216,3 +216,119 @@ export function removeAlphabets(input) {
   // Return the cleaned input, ensuring it’s not empty
   return cleanedInput || '0';
 }
+
+const calculateImageDimensions = (
+  imageWidth,
+  image_Height,
+  maxWidth = 800,
+  maxHeight = 480,
+) => {
+  console.log('calculateImageDimensions: ', {
+    imageWidth,
+    image_Height,
+    maxWidth,
+    maxHeight,
+  });
+  const containerAspectRatio = maxWidth / maxHeight;
+  const imageAspectRatio = imageWidth / image_Height;
+
+  let newWidth, newHeight;
+
+  if (imageAspectRatio > containerAspectRatio) {
+    // Image is wider than container ratio
+    newWidth = maxWidth;
+    newHeight = maxWidth / imageAspectRatio;
+  } else {
+    // Image is taller than container ratio
+    newHeight = maxHeight;
+    newWidth = maxHeight * imageAspectRatio;
+  }
+
+  return {width: newWidth, height: newHeight};
+};
+
+/**
+ * Calculates the new position of an inner box relative to a resizing outer box.
+ *
+ * @param {number} outerWidth The current width of the outer box.
+ * @param {number} outerHeight The current height of the outer box.
+ * @param {number} initialWidth The initial width of the outer box.
+ * @param {number} initialHeight The initial height of the outer box.
+ * @param {number} initialX The initial x-coordinate of the inner box.
+ * @param {number} initialY The initial y-coordinate of the inner box.
+ * @returns {{x: number, y: number}} An object containing the new x and y coordinates of the inner box.
+ */
+export function resizeInnerBox(
+  outerWidth,
+  outerHeight,
+  initialWidth,
+  initialHeight,
+  initialX,
+  initialY,
+) {
+  const {width, height} = calculateImageDimensions(outerWidth, outerHeight);
+  console.log('Checking resizeInnerBox params: ', {
+    outerWidth,
+    outerHeight,
+    initialWidth,
+    initialHeight,
+    initialX,
+    initialY,
+    width,
+    height,
+  });
+  console.log('----------------------');
+  const xPercent = (initialX / initialWidth) * 100;
+  const yPercent = (initialY / initialHeight) * 100;
+
+  const newX = (xPercent / 100) * width;
+  const newY = (yPercent / 100) * height;
+
+  return {x: newX, y: newY};
+}
+
+export function transformCoordinates(
+  canvasX,
+  canvasY,
+  canvasWidth,
+  canvasHeight,
+  originalWidth,
+  originalHeight,
+) {
+  // Calculate how the image was scaled to fit in the canvas
+  const imageAspect = originalWidth / originalHeight;
+  const canvasAspect = canvasWidth / canvasHeight;
+
+  let scaledWidth, scaledHeight;
+
+  if (imageAspect < canvasAspect) {
+    // Image is scaled by height
+    scaledHeight = canvasHeight;
+    scaledWidth = canvasHeight * imageAspect;
+  } else {
+    // Image is scaled by width
+    scaledWidth = canvasWidth;
+    scaledHeight = canvasWidth / imageAspect;
+  }
+
+  // Calculate the offset if image doesn't fill canvas completely
+  const offsetX = (canvasWidth - scaledWidth) / 2;
+  const offsetY = (canvasHeight - scaledHeight) / 2;
+
+  // Remove the offset to get coordinates relative to the scaled image
+  const imageX = canvasX - offsetX;
+  const imageY = canvasY - offsetY;
+
+  // Convert to percentage of scaled dimensions
+  const xPercent = imageX / scaledWidth;
+  const yPercent = imageY / scaledHeight;
+
+  // Apply percentage to original dimensions
+  const originalX = xPercent * originalWidth;
+  const originalY = yPercent * originalHeight;
+
+  return {
+    x: Math.round(originalX),
+    y: Math.round(originalY),
+  };
+}

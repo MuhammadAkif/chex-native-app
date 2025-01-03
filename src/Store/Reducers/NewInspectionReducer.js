@@ -105,6 +105,7 @@ const initialState = {
   feedback: '',
   mileageVisible: false,
   triggerTireStatusCheck: false,
+  imageDimensions: null,
 };
 const {
   UPDATE_VEHICLE_IMAGE,
@@ -131,6 +132,7 @@ const {
   SET_PLATE_NUMBER_VISIBLE,
   SET_TRIGGER_TIRE_STATUS_CHECK,
   SET_MILEAGE_MESSAGE,
+  SET_IMAGE_DIMENSIONS,
 } = Types;
 const newInspectionReducer = (state = initialState, action) => {
   const {type, payload} = action;
@@ -252,6 +254,9 @@ const newInspectionReducer = (state = initialState, action) => {
       return {...state, mileageVisible: payload};
     case SET_TRIGGER_TIRE_STATUS_CHECK:
       return {...state, triggerTireStatusCheck: payload};
+    case SET_IMAGE_DIMENSIONS:
+      return {...state, imageDimensions: payload};
+
     default:
       return state;
   }

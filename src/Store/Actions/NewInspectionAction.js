@@ -31,6 +31,7 @@ const {
   SET_PLATE_NUMBER_VISIBLE,
   SET_TRIGGER_TIRE_STATUS_CHECK,
   SET_MILEAGE_MESSAGE,
+  SET_IMAGE_DIMENSIONS,
 } = Types;
 
 const itemsImagePayload = (item = '', group = '', uri = '', id = 0) => {
@@ -186,4 +187,8 @@ export const setPlateNumberVisible = (plateNumber_visible = false) => ({
 export const setTriggerTireStatusCheck = (checkTireStatus = false) => ({
   type: SET_TRIGGER_TIRE_STATUS_CHECK,
   payload: checkTireStatus,
+});
+export const setImageDimensions = (dimensions = null) => ({
+  type: SET_IMAGE_DIMENSIONS,
+  payload: dimensions,
 });

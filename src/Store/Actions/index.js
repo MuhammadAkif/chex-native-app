@@ -24,6 +24,7 @@ import {
   setTriggerTireStatusCheck,
   setMileage,
   setMileageMessage,
+  setImageDimensions,
 } from './NewInspectionAction';
 import {signIn, signOut, sessionExpired} from './AuthAction';
 import {
@@ -74,4 +75,5 @@ export {
   setTriggerTireStatusCheck,
   setMileage,
   setMileageMessage,
+  setImageDimensions,
 };
