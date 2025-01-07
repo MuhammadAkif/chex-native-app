@@ -214,3 +214,8 @@ export async function requestPermissions() {
     throw new Error('Permissions denied');
   }
 }
+
+export const formatUnixTime = unixTime => {
+  const date = new Date(unixTime);
+  return date.toLocaleString();
+};

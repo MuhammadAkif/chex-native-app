@@ -7,6 +7,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.util.Log;
 import android.app.Activity;
+import androidx.annotation.RequiresApi;
+import android.os.Build;
+import android.content.IntentFilter;
+
+import com.google.gson.Gson;
 
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableNativeArray;
@@ -29,6 +34,8 @@ import com.pixida.safetytagapi.interfaces.AuthenticationHandler;
 import com.pixida.safetytagapi.data.enums.SafetyTagConnectionReasons;
 import com.pixida.safetytagapi.interfaces.OnTripDataListener;
 import com.pixida.safetytagapi.data.dto.Trip;
+import com.pixida.safetytagapi.interfaces.OnTripEventListener;
+import com.pixida.safetytagapi.data.dto.TripEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +84,17 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
         });
     }
 
+        @ReactMethod
+        public void stopDiscoveringTags(Promise promise) {
+            SafetyTagFinder tagFinder = safetyTagApi.getFinder();
+            try {
+                tagFinder.stopDiscoveringTags();
+                promise.resolve("Successfully stopped discovering tags.");
+            } catch (Exception e) {
+                promise.reject("CONNECTION_ERROR", "Failed to stop discovering tags.", e);
+            }
+        }
+
     @ReactMethod
     public void autoConnectToBondedTag(Promise promise) {
         // connect to first found tag
@@ -111,13 +129,11 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
         safetyTagApi.getConnection().notifyOnConnected(new OnConnectedListener() {
             @Override
             public void onConnecting(@NonNull BluetoothDevice tag) {
-                // Send connecting event
                 sendConnectionEvent("onConnecting", tag.getName(), tag.getAddress(), null);
             }
 
             @Override
             public void error(@Nullable BluetoothDevice tag, @NonNull SafetyTagConnectionReasons reason) {
-                // Send error event
                 String tagName = tag != null ? tag.getName() : "Unknown";
                 String tagAddress = tag != null ? tag.getAddress() : "Unknown";
                 sendConnectionEvent("onConnectionError", tagName, tagAddress, reason.toString());
@@ -125,16 +141,23 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
 
             @Override
             public void authenticationRequired(@Nullable String tagName, @NonNull String tagAddress, @NonNull AuthenticationHandler authenticateWithKey) {
-                // Send authentication required event (if fleet mode is enabled)
                 sendConnectionEvent("onAuthenticationRequired", tagName, tagAddress, null);
             }
 
             @Override
             public void success(@NonNull BluetoothDevice tag) {
-                // Send success event
                 sendConnectionEvent("onConnected", tag.getName(), tag.getAddress(), null);
             }
         });
+    }
+
+    private void emitEvent(String eventName, WritableMap event) {
+        // Ensure that the event is sent to JavaScript side only when the ReactContext is available
+        if (reactContext != null) {
+            reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, event);
+        }
     }
 
     // Utility method to send connection event to React Native
@@ -148,8 +171,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
         }
 
         // Emit the event to JavaScript side
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-            .emit(eventName, event);
+        emitEvent(eventName, event);
     }
 
     // Method to disconnect from the device
@@ -173,20 +195,46 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
             safetyTagApi.getTripDetection().queryTripData(new OnTripDataListener() {
                 @Override
                 public void onSuccess(@NonNull List<Trip> trips) {
-                    StringBuilder sb = new StringBuilder();
-                    for (Trip trip : trips) {
-                        sb.append(trip.toString());
-                        sb.append('\n');
+                   if (trips != null && !trips.isEmpty()) {
+                       // Create an array to store the trip data for React Native
+                       StringBuilder sb = new StringBuilder();
+                       for (Trip trip: trips) {
+                           sb.append(trip.toString());
+                           sb.append('\n');
+                       }
+                       promise.resolve(sb.toString());
+
+
+                       // Optionally, you could emit an event to notify React Native
+                       sendTripDataEvent("onTripDataSuccess", sb.toString());
+                   } else {
+                        promise.reject("NO_TRIP_DATA", "No trip data available");
+                        sendTripDataEvent("onTripDataError", "No trip data found");
                     }
-                    promise.resolve(sb.toString());
                 }
 
                 @Override
                 public void onError(@NonNull SafetyTagStatus reason) {
                     promise.reject("ERROR_QUERY_FAILED", "Query failed with " + reason);
+
+                    // Emit error event
+                    sendTripDataEvent("onTripDataError", reason.toString());
                     Log.e("SafetyTagModule", "Query failed with: " + reason);
                 }
             }, 20000);
+        }
+
+        private void sendTripDataEvent(String eventName, Object eventData) {
+            WritableMap event = Arguments.createMap();
+            if (eventData instanceof WritableArray) {
+                event.putArray("tripData", (WritableArray) eventData);
+            } else if (eventData instanceof String) {
+                event.putString("message", (String) eventData);
+            }
+
+            // Emit the event to React Native
+            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(eventName, event);
         }
 
         @ReactMethod
@@ -244,4 +292,60 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
                 }
             });
         }
+
+            @ReactMethod
+            public void subscribeToTripStartAndEndEvents(Context applicationContext) {
+                SafetyTagApi tagApi = SafetyTagApi.getInstance(applicationContext);
+
+                tagApi.getTripDetection().notifyOnTripEvent(
+                    new OnTripEventListener() {
+                        @Override
+                        public void onTripEvent(TripEvent tripEvent) {
+                            // Use Gson to convert the entire tripEvent object into a JSON string
+                            String tripEventJson = new Gson().toJson(tripEvent);
+
+                            // Create a WritableMap and put the JSON string into it
+                            WritableMap event = Arguments.createMap();
+                            event.putString("tripEventJson", tripEventJson);
+
+                            // Emit the event to React Native
+                            emitEvent("onTripStart", event);
+                        }
+
+                        @Override
+                        public void onError(SafetyTagStatus status) {
+                            // Handle error and send the error status to React Native
+                            WritableMap errorEvent = Arguments.createMap();
+                            errorEvent.putString("error", status.name());
+
+                            // Emit the error event to React Native
+                            emitEvent("onTripStartError", errorEvent);
+                        }
+                    },
+                    new OnTripEventListener() {
+                        @Override
+                        public void onTripEvent(TripEvent tripEvent) {
+                            // Use Gson to convert the entire tripEvent object into a JSON string
+                            String tripEventJson = new Gson().toJson(tripEvent);
+
+                            // Create a WritableMap and put the JSON string into it
+                            WritableMap event = Arguments.createMap();
+                            event.putString("tripEventJson", tripEventJson);
+
+                            // Emit the trip end event to React Native
+                            emitEvent("onTripEnd", event);
+                        }
+
+                        @Override
+                        public void onError(SafetyTagStatus status) {
+                            // Handle error for trip end and send the error status to React Native
+                            WritableMap errorEvent = Arguments.createMap();
+                            errorEvent.putString("error", status.name());
+
+                            // Emit the error event to React Native
+                            emitEvent("onTripEndError", errorEvent);
+                        }
+                    }
+                );
+            }
 }

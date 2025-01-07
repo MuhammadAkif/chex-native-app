@@ -1,26 +1,31 @@
 import React, {useEffect, useState} from 'react';
 import {View, Button, Text, Alert, StyleSheet, FlatList} from 'react-native';
-
-import {
-  startScanning,
-  startBondScanning,
-  disconnectDevice,
-  subscribeToConnectionEvents,
-  unsubscribeFromConnectionEvents,
-  configTripStartRecognitionForce,
-  configTripStartRecognitionDuration,
-  configTripEndTimeout,
-  configTripMinimalDuration,
-  queryTripData,
-} from '../../hooks/useSafetyTagPermissions';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
+import useSafetyTag from '../../hooks/useSafetyTag';
+import {formatUnixTime} from '../../Utils/helpers';
+
 const SafetyTagScanner = () => {
   const [deviceInfo, setDeviceInfo] = useState(null);
   const [tripData, setTripData] = useState([]);
+
+  const {
+    startScanning,
+    startBondScanning,
+    startBackgroundScanning,
+    stopBackgroundScanning,
+    disconnectDevice,
+    subscribeToConnectionEvents,
+    unsubscribeFromConnectionEvents,
+    configTripStartRecognitionForce,
+    configTripStartRecognitionDuration,
+    configTripEndTimeout,
+    configTripMinimalDuration,
+    queryTripData,
+  } = useSafetyTag();
 
   useEffect(() => {
     subscribeToConnectionEvents();
@@ -28,21 +33,21 @@ const SafetyTagScanner = () => {
     return unsubscribeFromConnectionEvents;
   }, []);
 
-  const handleScan = async () => {
+  async function handleScan() {
     try {
       await startScanning();
     } catch (error) {
       console.error(error);
     }
-  };
+  }
 
-  const handleBondScan = async () => {
+  async function handleBondScan() {
     try {
       await startBondScanning();
     } catch (error) {
       console.error(error);
     }
-  };
+  }
 
   const handleDisconnectDevice = async () => {
     try {
@@ -88,11 +93,6 @@ const SafetyTagScanner = () => {
     }
   };
 
-  const formatUnixTime = unixTime => {
-    const date = new Date(unixTime);
-    return date.toLocaleString();
-  };
-
   const handleQueryTripData = async () => {
     try {
       const rawData = await queryTripData();
@@ -133,7 +133,7 @@ const SafetyTagScanner = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, styles.gap]}>
       <Button title="Scan for Safety Tag" onPress={handleScan} />
       <Button title="Scan for Bond Safety Tag" onPress={handleBondScan} />
       <Button
@@ -146,8 +146,7 @@ const SafetyTagScanner = () => {
       />
       {deviceInfo && <Text style={styles.deviceInfo}>{deviceInfo}</Text>}
 
-      <View style={styles.tripContainer}>
-        <Text>Safety Tag Module Example</Text>
+      <View style={[styles.tripContainer, styles.gap]}>
         <Button title="Query Trip Data" onPress={handleQueryTripData} />
         <FlatList
           data={tripData}
@@ -205,6 +204,9 @@ const styles = StyleSheet.create({
   },
   tripContainer: {
     height: hp('60%'),
+  },
+  gap: {
+    rowGap: wp('2%'),
   },
 });
 
