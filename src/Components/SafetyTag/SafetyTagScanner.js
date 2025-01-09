@@ -21,6 +21,9 @@ const SafetyTagScanner = () => {
     unsubscribeFromConnectionEvents,
     queryTripData,
     queryTripWithFraudData,
+    debugSafetyTagApi,
+    getDeviceInformation,
+    readBatteryLevel,
   } = useSafetyTag();
 
   useEffect(() => {
@@ -56,6 +59,14 @@ const SafetyTagScanner = () => {
   const handleDisconnectDevice = async () => {
     try {
       await disconnectDevice();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDebugSafetyTagApi = async () => {
+    try {
+      const result = await debugSafetyTagApi();
     } catch (error) {
       console.error(error);
     }
@@ -97,6 +108,7 @@ const SafetyTagScanner = () => {
     <View style={[styles.container, styles.gap]}>
       <Button title="Scan for Safety Tag" onPress={handleScan} />
       <Button title="Scan for Bond Safety Tag" onPress={handleBondScan} />
+      <Button title="Get Safety Tag Info" onPress={getDeviceInformation} />
       <Button
         title="Get Safety Tag device configuration"
         onPress={handleGetDeviceConfiguration}
@@ -109,6 +121,7 @@ const SafetyTagScanner = () => {
         title="Disconnect connected Device"
         onPress={handleDisconnectDevice}
       />
+      <Button title="Read battery level" onPress={readBatteryLevel} />
       {deviceInfo && <Text style={styles.deviceInfo}>{deviceInfo}</Text>}
 
       <View style={[styles.tripContainer, styles.gap]}>

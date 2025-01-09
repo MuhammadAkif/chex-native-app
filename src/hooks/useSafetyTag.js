@@ -135,28 +135,18 @@ const useSafetyTag = () => {
       console.error('Error while fetching trip data:', event.message);
     });
 
-    DeviceEventEmitter.addListener('onTripStart', event => {
-      console.log('On trip start success: ', event);
-    });
-
     DeviceEventEmitter.addListener('onTripStartError', event => {
       console.log('On trip start error: ', event.message);
     });
 
     DeviceEventEmitter.addListener('onTripStart', event => {
-      console.log('Received trip start event:', event);
-
-      // Parse the JSON string back into an object
       const tripEvent = JSON.parse(event.tripEventJson);
-      console.log('Trip Event:', tripEvent);
+      console.log('Received trip start event:', tripEvent);
     });
 
     DeviceEventEmitter.addListener('onTripEnd', event => {
-      console.log('Received trip end event:', event);
-
-      // Parse the JSON string back into an object
       const tripEvent = JSON.parse(event.tripEventJson);
-      console.log('Trip Event:', tripEvent);
+      console.log('Received trip end event:', tripEvent);
     });
 
     DeviceEventEmitter.addListener('onTripDataWithFraudSuccess', tripData => {
@@ -167,6 +157,18 @@ const useSafetyTag = () => {
       console.log('Trip Data with Fraud Error:', error);
     });
 
+    DeviceEventEmitter.addListener('onCrashThresholdEvent', event => {
+      console.log('On Crash threshold event:', event);
+    });
+
+    DeviceEventEmitter.addListener('onCrashDataReceived', event => {
+      console.log('On Crash Data received:', event);
+    });
+
+    DeviceEventEmitter.addListener('onCrashDataError', error => {
+      console.log('On Crash data error', error);
+    });
+
     /*DeviceEventEmitter.addListener('onTripEndError', event => {
       console.log('On trip end error: ', event.message);
     });*/
@@ -175,6 +177,7 @@ const useSafetyTag = () => {
     console.log('Starting to listen for connection events...');
     SafetyTagModule.notifyOnDeviceReady();
     SafetyTagModule.subscribeToTripStartAndEndEvents();
+    SafetyTagModule.subscribeToCrashData();
   };
 
   const unsubscribeFromConnectionEvents = () => {
@@ -282,6 +285,37 @@ const useSafetyTag = () => {
     }
   };
 
+  const getDeviceInformation = async () => {
+    try {
+      const result = await SafetyTagModule.getDeviceInformation();
+      console.log('Device information: ', result);
+    } catch (error) {
+      console.error('Error while getting device information:', error);
+      throw error;
+    }
+  };
+
+  const readBatteryLevel = async () => {
+    try {
+      const result = await SafetyTagModule.readBatteryLevel();
+      const formattedResult = JSON.parse(result);
+      console.log('Battery level: ', formattedResult);
+    } catch (error) {
+      console.error('Error while getting battery level:', error);
+      throw error;
+    }
+  };
+
+  const debugSafetyTagApi = async () => {
+    try {
+      const result = await SafetyTagModule.debugSafetyTagApi();
+      console.log('debugSafetyTagApi: ', {result});
+    } catch (error) {
+      console.error('Error debugSafetyTagApi:', error);
+      throw error;
+    }
+  };
+
   const configureCrash = async ({
     averagingWindowSize = 5,
     thresholdXy = 500,
@@ -314,6 +348,9 @@ const useSafetyTag = () => {
     configureCrash,
     subscribeToConnectionEvents,
     unsubscribeFromConnectionEvents,
+    getDeviceInformation,
+    debugSafetyTagApi,
+    readBatteryLevel,
   };
 };
 

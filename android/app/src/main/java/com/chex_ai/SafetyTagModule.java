@@ -38,10 +38,18 @@ import com.pixida.safetytagapi.interfaces.OnTripEventListener;
 import com.pixida.safetytagapi.data.dto.TripEvent;
 import com.pixida.safetytagapi.interfaces.OnDeviceConfigurationDataListener;
 import com.pixida.safetytagapi.data.enums.DeviceConfiguration;
+import com.pixida.safetytagapi.interfaces.OnCrashDataListener;
+import com.pixida.safetytagapi.data.dto.CrashThresholdEvent;
+import com.pixida.safetytagapi.data.enums.CrashDataStatus;
+import com.pixida.safetytagapi.data.dto.CrashData;
+import com.pixida.safetytagapi.data.dto.VersionInfo;
+import com.pixida.safetytagapi.interfaces.DeviceInformation;
+import com.pixida.safetytagapi.interfaces.ReadBatteryLevelListener;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
 
 public class SafetyTagModule extends ReactContextBaseJavaModule {
     private final SafetyTagApi safetyTagApi;
@@ -448,4 +456,77 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
             promise.reject("ERROR", "Failed to update configuration: " + event);
         }
     }
+
+    @ReactMethod
+    public void subscribeToCrashData() {
+        safetyTagApi.getCrashDetection().notifyOnCrashDataReceived(new OnCrashDataListener() {
+            @Override
+            public void onCrashThresholdEventsReceived(CrashThresholdEvent crashThresholdEvent) {
+                // Convert CrashThresholdEvent to JSON and emit it to React Native
+                WritableMap event = Arguments.createMap();
+                String crashThresholdJson = new Gson().toJson(crashThresholdEvent);
+                event.putString("crashThresholdEvent", crashThresholdJson);
+                reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit("onCrashThresholdEvent", event);
+            }
+
+            @Override
+            public void onCrashDataReceived(List<CrashData> crashDataList, CrashDataStatus crashDataStatus) {
+                // Convert CrashData list to JSON and emit it to React Native
+                WritableMap event = Arguments.createMap();
+                String crashDataJson = new Gson().toJson(crashDataList);
+                event.putString("crashData", crashDataJson);
+                event.putString("crashDataStatus", crashDataStatus.name());
+                reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit("onCrashDataReceived", event);
+            }
+
+            @Override
+            public void onError(SafetyTagStatus reason) {
+                // Emit error to React Native
+                WritableMap event = Arguments.createMap();
+                event.putString("error", reason.name());
+                reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit("onCrashDataError", event);
+            }
+        });
+    }
+
+   @ReactMethod
+   public void getDeviceInformation(Promise promise) {
+       try {
+           // Access the DeviceInformation instance
+           DeviceInformation deviceInformation = safetyTagApi.getDeviceInformation();
+
+           // Create a response map to send details about DeviceInformation
+           WritableMap responseMap = Arguments.createMap();
+           responseMap.putString("className", deviceInformation.getClass().getName());
+           responseMap.putString("methods", Arrays.toString(deviceInformation.getClass().getMethods()));
+
+           promise.resolve(responseMap); // Send this data to React Native
+       } catch (Exception e) {
+           promise.reject("DEVICE_INFO_ERROR", "Failed to get Device Information", e);
+       }
+   }
+
+   @ReactMethod
+   public void readBatteryLevel(Promise promise) {
+       safetyTagApi.getDeviceInformation().readBatteryLevel(new ReadBatteryLevelListener() {
+           @Override
+           public void onSuccess(int batteryLevel) {
+               promise.resolve(batteryLevel); // Send the battery level to React Native
+           }
+
+           @Override
+           public void onError(SafetyTagStatus status) {
+               WritableMap event = Arguments.createMap();
+               event.putString("error", status.name());
+               promise.reject("BATTERY_LEVEL_ERROR", "Failed to read battery level", event);
+           }
+       });
+   }
+
 }
