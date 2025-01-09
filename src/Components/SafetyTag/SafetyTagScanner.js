@@ -6,7 +6,7 @@ import {
 } from 'react-native-responsive-screen';
 
 import useSafetyTag from '../../hooks/useSafetyTag';
-import {formatUnixTime} from '../../Utils/helpers';
+import {formatRawData} from '../../Utils/helpers';
 
 const SafetyTagScanner = () => {
   const [deviceInfo, setDeviceInfo] = useState(null);
@@ -15,16 +15,12 @@ const SafetyTagScanner = () => {
   const {
     startScanning,
     startBondScanning,
-    startBackgroundScanning,
-    stopBackgroundScanning,
+    getDeviceConfiguration,
     disconnectDevice,
     subscribeToConnectionEvents,
     unsubscribeFromConnectionEvents,
-    configTripStartRecognitionForce,
-    configTripStartRecognitionDuration,
-    configTripEndTimeout,
-    configTripMinimalDuration,
     queryTripData,
+    queryTripWithFraudData,
   } = useSafetyTag();
 
   useEffect(() => {
@@ -36,6 +32,14 @@ const SafetyTagScanner = () => {
   async function handleScan() {
     try {
       await startScanning();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function handleGetDeviceConfiguration() {
+    try {
+      await getDeviceConfiguration();
     } catch (error) {
       console.error(error);
     }
@@ -57,64 +61,21 @@ const SafetyTagScanner = () => {
     }
   };
 
-  const handleConfigForce = async () => {
-    try {
-      await configTripStartRecognitionForce(50);
-      Alert.alert('Success', 'Trip start recognition force configured');
-    } catch (error) {
-      Alert.alert('Error', error.message);
-    }
-  };
-
-  const handleConfigDuration = async () => {
-    try {
-      await configTripStartRecognitionDuration(100);
-      Alert.alert('Success', 'Trip start recognition duration configured');
-    } catch (error) {
-      Alert.alert('Error', error.message);
-    }
-  };
-
-  const handleConfigTimeout = async () => {
-    try {
-      await configTripEndTimeout(30);
-      Alert.alert('Success', 'Trip end timeout configured');
-    } catch (error) {
-      Alert.alert('Error', error.message);
-    }
-  };
-
-  const handleConfigMinimalDuration = async () => {
-    try {
-      await configTripMinimalDuration(10);
-      Alert.alert('Success', 'Minimal trip duration configured');
-    } catch (error) {
-      Alert.alert('Error', error.message);
-    }
-  };
-
   const handleQueryTripData = async () => {
     try {
       const rawData = await queryTripData();
       // Parse and format the trip data
-      const trips = rawData
-        .split('\n')
-        .filter(line => line.startsWith('Trip'))
-        .map(tripStr => {
-          const data = tripStr
-            .match(/(\w+)=([^,)\s]+)/g)
-            .reduce((obj, pair) => {
-              const [key, value] = pair.split('=');
-              obj[key] = isNaN(value) ? value : Number(value); // Convert numbers
-              return obj;
-            }, {});
-          const {startUnixTimeMs = 0, endUnixTimeMs = 0} = data || {};
-          return {
-            ...data,
-            startUnixTime: formatUnixTime(startUnixTimeMs),
-            endUnixTime: formatUnixTime(endUnixTimeMs),
-          };
-        });
+      const trips = formatRawData(rawData);
+      setTripData(trips);
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
+  };
+  const handleQueryTripDataWithFraud = async () => {
+    try {
+      const rawData = await queryTripWithFraudData();
+      // Parse and format the trip data
+      const trips = formatRawData(rawData);
       setTripData(trips);
     } catch (error) {
       Alert.alert('Error', error.message);
@@ -137,6 +98,10 @@ const SafetyTagScanner = () => {
       <Button title="Scan for Safety Tag" onPress={handleScan} />
       <Button title="Scan for Bond Safety Tag" onPress={handleBondScan} />
       <Button
+        title="Get Safety Tag device configuration"
+        onPress={handleGetDeviceConfiguration}
+      />
+      <Button
         title="Unsubscribe Device Info"
         onPress={unsubscribeFromConnectionEvents}
       />
@@ -148,19 +113,16 @@ const SafetyTagScanner = () => {
 
       <View style={[styles.tripContainer, styles.gap]}>
         <Button title="Query Trip Data" onPress={handleQueryTripData} />
+        <Button
+          title="Query Trip Data With Fraud"
+          onPress={handleQueryTripDataWithFraud}
+        />
         <FlatList
           data={tripData}
           renderItem={renderTripItem}
           style={styles.tripList}
           keyExtractor={item => item.receiveNumber.toString()}
           contentContainerStyle={styles.listContainer}
-        />
-        <Button title="Config Force" onPress={handleConfigForce} />
-        <Button title="Config Duration" onPress={handleConfigDuration} />
-        <Button title="Config Timeout" onPress={handleConfigTimeout} />
-        <Button
-          title="Config Minimal Duration"
-          onPress={handleConfigMinimalDuration}
         />
       </View>
     </View>

@@ -36,6 +36,8 @@ import com.pixida.safetytagapi.interfaces.OnTripDataListener;
 import com.pixida.safetytagapi.data.dto.Trip;
 import com.pixida.safetytagapi.interfaces.OnTripEventListener;
 import com.pixida.safetytagapi.data.dto.TripEvent;
+import com.pixida.safetytagapi.interfaces.OnDeviceConfigurationDataListener;
+import com.pixida.safetytagapi.data.enums.DeviceConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,16 +86,16 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
         });
     }
 
-        @ReactMethod
-        public void stopDiscoveringTags(Promise promise) {
-            SafetyTagFinder tagFinder = safetyTagApi.getFinder();
-            try {
-                tagFinder.stopDiscoveringTags();
-                promise.resolve("Successfully stopped discovering tags.");
-            } catch (Exception e) {
-                promise.reject("CONNECTION_ERROR", "Failed to stop discovering tags.", e);
-            }
+    @ReactMethod
+    public void stopDiscoveringTags(Promise promise) {
+        SafetyTagFinder tagFinder = safetyTagApi.getFinder();
+        try {
+            tagFinder.stopDiscoveringTags();
+            promise.resolve("Successfully stopped discovering tags.");
+        } catch (Exception e) {
+            promise.reject("CONNECTION_ERROR", "Failed to stop discovering tags.", e);
         }
+    }
 
     @ReactMethod
     public void autoConnectToBondedTag(Promise promise) {
@@ -123,6 +125,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
             }
         });
     }
+
     // Method to subscribe to connection events
     @ReactMethod
     public void notifyOnDeviceReady() {
@@ -170,8 +173,10 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
             event.putString("reason", reason);
         }
 
-        // Emit the event to JavaScript side
-        emitEvent(eventName, event);
+          reactContext
+          .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+          .emit(eventName, event);
+
     }
 
     // Method to disconnect from the device
@@ -187,165 +192,260 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
         // Perform disconnection
         safetyTagApi.getConnection().disconnectTag();
     }
+
     @SuppressLint("SetTextI18n")
     @ReactMethod
-        public void queryTripData(Promise promise) {
-            Activity activity = getCurrentActivity();
+    public void queryTripData(Promise promise) {
+        Activity activity = getCurrentActivity();
 
-            safetyTagApi.getTripDetection().queryTripData(new OnTripDataListener() {
-                @Override
-                public void onSuccess(@NonNull List<Trip> trips) {
-                   if (trips != null && !trips.isEmpty()) {
-                       // Create an array to store the trip data for React Native
-                       StringBuilder sb = new StringBuilder();
-                       for (Trip trip: trips) {
-                           sb.append(trip.toString());
-                           sb.append('\n');
-                       }
-                       promise.resolve(sb.toString());
-
-
-                       // Optionally, you could emit an event to notify React Native
-                       sendTripDataEvent("onTripDataSuccess", sb.toString());
-                   } else {
-                        promise.reject("NO_TRIP_DATA", "No trip data available");
-                        sendTripDataEvent("onTripDataError", "No trip data found");
+        safetyTagApi.getTripDetection().queryTripData(new OnTripDataListener() {
+            @Override
+            public void onSuccess(@NonNull List <Trip> trips) {
+                if (trips != null && !trips.isEmpty()) {
+                    // Create an array to store the trip data for React Native
+                    StringBuilder sb = new StringBuilder();
+                    for (Trip trip: trips) {
+                        sb.append(trip.toString());
+                        sb.append('\n');
                     }
+                    promise.resolve(sb.toString());
+
+                    // Optionally, you could emit an event to notify React Native
+                    sendTripDataEvent("onTripDataSuccess", sb.toString());
+                } else {
+                    promise.reject("NO_TRIP_DATA", "No trip data available");
+                    sendTripDataEvent("onTripDataError", "No trip data found");
                 }
-
-                @Override
-                public void onError(@NonNull SafetyTagStatus reason) {
-                    promise.reject("ERROR_QUERY_FAILED", "Query failed with " + reason);
-
-                    // Emit error event
-                    sendTripDataEvent("onTripDataError", reason.toString());
-                    Log.e("SafetyTagModule", "Query failed with: " + reason);
-                }
-            }, 20000);
-        }
-
-        private void sendTripDataEvent(String eventName, Object eventData) {
-            WritableMap event = Arguments.createMap();
-            if (eventData instanceof WritableArray) {
-                event.putArray("tripData", (WritableArray) eventData);
-            } else if (eventData instanceof String) {
-                event.putString("message", (String) eventData);
             }
 
-            // Emit the event to React Native
-            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                    .emit(eventName, event);
-        }
+            @Override
+            public void onError(@NonNull SafetyTagStatus reason) {
+                promise.reject("ERROR_QUERY_FAILED", "Query failed with " + reason);
 
-        @ReactMethod
-        public void configTripStartRecognitionForce(int value, Promise promise) {
-
-            safetyTagApi.getDeviceConfiguration().setTripStartRecognitionForce(value, status -> {
-                if (status.isSuccess()) {
-                    promise.resolve("Successfully configured trip start recognition force");
-                    Log.i("SafetyTagModule", "Successfully configured trip start recognition force");
-                } else {
-                    promise.reject("CONFIG_FAILED", "Failed to configure trip start recognition force");
-                    Log.e("SafetyTagModule", "Failed to configure trip start recognition force");
-                }
-            });
-        }
-
-        @ReactMethod
-        public void configTripStartRecognitionDuration(int value, Promise promise) {
-
-            safetyTagApi.getDeviceConfiguration().setTripStartRecognitionDuration(value, status -> {
-                if (status.isSuccess()) {
-                    promise.resolve("Successfully configured trip start recognition duration");
-                    Log.i("SafetyTagModule", "Successfully configured trip start recognition duration");
-                } else {
-                    promise.reject("CONFIG_FAILED", "Failed to configure trip start recognition duration");
-                    Log.e("SafetyTagModule", "Failed to configure trip start recognition duration");
-                }
-            });
-        }
-
-        @ReactMethod
-        public void configTripEndTimeout(int value, Promise promise) {
-
-            safetyTagApi.getDeviceConfiguration().setTripEndTimeout(value, status -> {
-                if (status.isSuccess()) {
-                    promise.resolve("Successfully configured trip end timeout");
-                    Log.i("SafetyTagModule", "Successfully configured trip end timeout");
-                } else {
-                    promise.reject("CONFIG_FAILED", "Failed to configure trip end timeout");
-                    Log.e("SafetyTagModule", "Failed to configure trip end timeout");
-                }
-            });
-        }
-
-        @ReactMethod
-        public void configTripMinimalDuration(int value, Promise promise) {
-
-            safetyTagApi.getDeviceConfiguration().setTripMinimalDuration(value, status -> {
-                if (status.isSuccess()) {
-                    promise.resolve("Successfully configured minimal trip duration");
-                    Log.i("SafetyTagModule", "Successfully configured minimal trip duration");
-                } else {
-                    promise.reject("CONFIG_FAILED", "Failed to configure minimal trip duration");
-                    Log.e("SafetyTagModule", "Failed to configure minimal trip duration");
-                }
-            });
-        }
-
-            @ReactMethod
-            public void subscribeToTripStartAndEndEvents(Context applicationContext) {
-                SafetyTagApi tagApi = SafetyTagApi.getInstance(applicationContext);
-
-                tagApi.getTripDetection().notifyOnTripEvent(
-                    new OnTripEventListener() {
-                        @Override
-                        public void onTripEvent(TripEvent tripEvent) {
-                            // Use Gson to convert the entire tripEvent object into a JSON string
-                            String tripEventJson = new Gson().toJson(tripEvent);
-
-                            // Create a WritableMap and put the JSON string into it
-                            WritableMap event = Arguments.createMap();
-                            event.putString("tripEventJson", tripEventJson);
-
-                            // Emit the event to React Native
-                            emitEvent("onTripStart", event);
-                        }
-
-                        @Override
-                        public void onError(SafetyTagStatus status) {
-                            // Handle error and send the error status to React Native
-                            WritableMap errorEvent = Arguments.createMap();
-                            errorEvent.putString("error", status.name());
-
-                            // Emit the error event to React Native
-                            emitEvent("onTripStartError", errorEvent);
-                        }
-                    },
-                    new OnTripEventListener() {
-                        @Override
-                        public void onTripEvent(TripEvent tripEvent) {
-                            // Use Gson to convert the entire tripEvent object into a JSON string
-                            String tripEventJson = new Gson().toJson(tripEvent);
-
-                            // Create a WritableMap and put the JSON string into it
-                            WritableMap event = Arguments.createMap();
-                            event.putString("tripEventJson", tripEventJson);
-
-                            // Emit the trip end event to React Native
-                            emitEvent("onTripEnd", event);
-                        }
-
-                        @Override
-                        public void onError(SafetyTagStatus status) {
-                            // Handle error for trip end and send the error status to React Native
-                            WritableMap errorEvent = Arguments.createMap();
-                            errorEvent.putString("error", status.name());
-
-                            // Emit the error event to React Native
-                            emitEvent("onTripEndError", errorEvent);
-                        }
-                    }
-                );
+                // Emit error event
+                sendTripDataEvent("onTripDataError", reason.toString());
+                Log.e("SafetyTagModule", "Query failed with: " + reason);
             }
+        }, 20000);
+    }
+
+    @SuppressLint("SetTextI18n")
+    @ReactMethod
+    public void queryFullTripDataWithFraudDetection(Promise promise) {
+        Activity activity = getCurrentActivity();
+
+        safetyTagApi.getTripDetection().queryTripDataWithFraudDetection(new OnTripDataListener() {
+            @Override
+            public void onSuccess(@NonNull List <Trip> trips) {
+                if (trips != null && !trips.isEmpty()) {
+                    // Create an array to store the trip data for React Native
+                    StringBuilder sb = new StringBuilder();
+                    for (Trip trip: trips) {
+                        sb.append(trip.toString());
+                        sb.append('\n');
+                    }
+                    promise.resolve(sb.toString());
+
+                    // Optionally, you could emit an event to notify React Native
+                    sendTripDataEvent("onTripDataWithFraudSuccess", sb.toString());
+                } else {
+                    promise.reject("NO_TRIP_DATA_FRAUD", "No trip data with fraud available");
+                    sendTripDataEvent("onTripDataWithFraudError", "No trip data with fraud found");
+                }
+            }
+
+            @Override
+            public void onError(@NonNull SafetyTagStatus reason) {
+                promise.reject("ERROR_QUERY_FAILED", "Query failed with " + reason);
+
+                // Emit error event
+                sendTripDataEvent("onTripDataWithFraudError", reason.toString());
+                Log.e("SafetyTagModule", "Query failed with: " + reason);
+            }
+        }, 20000);
+    }
+
+    private void sendTripDataEvent(String eventName, Object eventData) {
+        WritableMap event = Arguments.createMap();
+        if (eventData instanceof WritableArray) {
+            event.putArray("tripData", (WritableArray) eventData);
+        } else if (eventData instanceof String) {
+            event.putString("message", (String) eventData);
+        }
+
+        // Emit the event to React Native
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+            .emit(eventName, event);
+    }
+
+    @ReactMethod
+    public void configTripStartRecognitionForce(int value, Promise promise) {
+
+        safetyTagApi.getDeviceConfiguration().setTripStartRecognitionForce(value, status -> {
+            if (status.isSuccess()) {
+                promise.resolve("Successfully configured trip start recognition force");
+                Log.i("SafetyTagModule", "Successfully configured trip start recognition force");
+            } else {
+                promise.reject("CONFIG_FAILED", "Failed to configure trip start recognition force");
+                Log.e("SafetyTagModule", "Failed to configure trip start recognition force");
+            }
+        });
+    }
+
+    @ReactMethod
+    public void configTripStartRecognitionDuration(int value, Promise promise) {
+
+        safetyTagApi.getDeviceConfiguration().setTripStartRecognitionDuration(value, status -> {
+            if (status.isSuccess()) {
+                promise.resolve("Successfully configured trip start recognition duration");
+                Log.i("SafetyTagModule", "Successfully configured trip start recognition duration");
+            } else {
+                promise.reject("CONFIG_FAILED", "Failed to configure trip start recognition duration");
+                Log.e("SafetyTagModule", "Failed to configure trip start recognition duration");
+            }
+        });
+    }
+
+    @ReactMethod
+    public void configTripEndTimeout(int value, Promise promise) {
+
+        safetyTagApi.getDeviceConfiguration().setTripEndTimeout(value, status -> {
+            if (status.isSuccess()) {
+                promise.resolve("Successfully configured trip end timeout");
+                Log.i("SafetyTagModule", "Successfully configured trip end timeout");
+            } else {
+                promise.reject("CONFIG_FAILED", "Failed to configure trip end timeout");
+                Log.e("SafetyTagModule", "Failed to configure trip end timeout");
+            }
+        });
+    }
+
+    @ReactMethod
+    public void configTripMinimalDuration(int value, Promise promise) {
+
+        safetyTagApi.getDeviceConfiguration().setTripMinimalDuration(value, status -> {
+            if (status.isSuccess()) {
+                promise.resolve("Successfully configured minimal trip duration");
+                Log.i("SafetyTagModule", "Successfully configured minimal trip duration");
+            } else {
+                promise.reject("CONFIG_FAILED", "Failed to configure minimal trip duration");
+                Log.e("SafetyTagModule", "Failed to configure minimal trip duration");
+            }
+        });
+    }
+
+    @ReactMethod
+    public void subscribeToTripStartAndEndEvents() {
+
+        safetyTagApi.getTripDetection().notifyOnTripEvent(
+            new OnTripEventListener() {
+                @Override
+                public void onTripEvent(TripEvent tripEvent) {
+                    // Use Gson to convert the entire tripEvent object into a JSON string
+                    String tripEventJson = new Gson().toJson(tripEvent);
+
+                    // Create a WritableMap and put the JSON string into it
+                    WritableMap event = Arguments.createMap();
+                    event.putString("tripEventJson", tripEventJson);
+
+                     reactContext
+                     .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                     .emit("onTripStart", event);
+                }
+
+                @Override
+                public void onError(SafetyTagStatus status) {
+                    // Handle error and send the error status to React Native
+                    WritableMap event = Arguments.createMap();
+                    event.putString("error", status.name());
+
+                    reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit("onTripStartError", event);
+                }
+            },
+            new OnTripEventListener() {
+                @Override
+                public void onTripEvent(TripEvent tripEvent) {
+                    // Use Gson to convert the entire tripEvent object into a JSON string
+                    String tripEventJson = new Gson().toJson(tripEvent);
+
+                    // Create a WritableMap and put the JSON string into it
+                    WritableMap event = Arguments.createMap();
+                    event.putString("tripEventJson", tripEventJson);
+
+                    reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit("onTripEnd", event);
+                }
+
+                @Override
+                public void onError(SafetyTagStatus status) {
+                    // Handle error for trip end and send the error status to React Native
+                    WritableMap event = Arguments.createMap();
+                    event.putString("error", status.name());
+
+                    // Emit the error event to React Native
+                     reactContext
+                     .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                     .emit("onTripEndError", event);
+                }
+            }
+        );
+    }
+
+    @ReactMethod
+    public void readDeviceConfiguration(Promise promise) {
+        String TAG;
+        safetyTagApi.getDeviceConfiguration().readDeviceConfigurations(new OnDeviceConfigurationDataListener() {
+            @Override
+            public void onSuccess(@NonNull Map <DeviceConfiguration, Integer> configValues) {
+                try {
+                    // Convert the Map to a JSON-friendly format
+                    WritableMap resultMap = Arguments.createMap();
+                    for (Map.Entry <DeviceConfiguration, Integer> entry: configValues.entrySet()) {
+                        resultMap.putInt(entry.getKey().toString(), entry.getValue());
+                    }
+                    promise.resolve(resultMap);
+                } catch (Exception e) {
+                    promise.reject("PARSE_ERROR", "Error parsing configurations");
+                }
+            }
+
+            @Override
+            public void onError(@NonNull SafetyTagStatus reason) {
+                promise.reject("READ_ERROR", "Failed to read device configurations");
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setCrashAveragingWindowSize(int value, Promise promise) {
+        safetyTagApi.getDeviceConfiguration().setCrashAveragingWindowSize(value, status -> handleStatus(status, promise));
+    }
+
+    @ReactMethod
+    public void setCrashThresholdXyNormalized(int value, Promise promise) {
+        safetyTagApi.getDeviceConfiguration().setCrashThresholdXyNormalized(value, status -> handleStatus(status, promise));
+    }
+
+    @ReactMethod
+    public void setCrashThresholdXyzNormalized(int value, Promise promise) {
+        safetyTagApi.getDeviceConfiguration().setCrashThresholdXyzNormalized(value, status -> handleStatus(status, promise));
+    }
+
+    @ReactMethod
+    public void setCrashNumberOfSurpassingThresholds(int value, Promise promise) {
+        safetyTagApi.getDeviceConfiguration().setCrashNumberOfSurpassingThresholds(value, status -> handleStatus(status, promise));
+    }
+
+    private void handleStatus(@NonNull SafetyTagStatus status, Promise promise) {
+        WritableMap event = Arguments.createMap();
+        event.putString("error", status.name());
+        if (status.isSuccess()) {
+            promise.resolve("Success");
+        } else {
+            promise.reject("ERROR", "Failed to update configuration: " + event);
+        }
+    }
 }

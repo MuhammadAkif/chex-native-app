@@ -33,6 +33,20 @@ const useSafetyTag = () => {
     }
   };
 
+  const getDeviceConfiguration = async () => {
+    try {
+      console.log('Requesting permissions for bond scanning...');
+      await requestPermissions();
+      console.log(
+        'Permissions granted, attempting to auto-connect to bonded tag...',
+      );
+      const result = await SafetyTagModule.readDeviceConfiguration();
+      console.log('Successfully got device configuration.', {result});
+    } catch (error) {
+      console.error('Error while getting device configuration:', error);
+    }
+  };
+
   const disconnectDevice = async () => {
     try {
       console.log('Requesting permissions for disconnecting device...');
@@ -122,12 +136,8 @@ const useSafetyTag = () => {
     });
 
     DeviceEventEmitter.addListener('onTripStart', event => {
-      console.log('On trip start success: ', event.message);
+      console.log('On trip start success: ', event);
     });
-
-    /*DeviceEventEmitter.addListener('onTripEnd', event => {
-      console.log('On trip end success: ', event.message);
-    });*/
 
     DeviceEventEmitter.addListener('onTripStartError', event => {
       console.log('On trip start error: ', event.message);
@@ -149,6 +159,14 @@ const useSafetyTag = () => {
       console.log('Trip Event:', tripEvent);
     });
 
+    DeviceEventEmitter.addListener('onTripDataWithFraudSuccess', tripData => {
+      console.log('Trip Data with Fraud Success:', tripData);
+    });
+
+    DeviceEventEmitter.addListener('onTripDataWithFraudError', error => {
+      console.log('Trip Data with Fraud Error:', error);
+    });
+
     /*DeviceEventEmitter.addListener('onTripEndError', event => {
       console.log('On trip end error: ', event.message);
     });*/
@@ -156,6 +174,7 @@ const useSafetyTag = () => {
     // Call the native method to start listening for connection events
     console.log('Starting to listen for connection events...');
     SafetyTagModule.notifyOnDeviceReady();
+    SafetyTagModule.subscribeToTripStartAndEndEvents();
   };
 
   const unsubscribeFromConnectionEvents = () => {
@@ -188,7 +207,19 @@ const useSafetyTag = () => {
     }
   };
 
-  const configTripStartRecognitionForce = async value => {
+  const queryTripWithFraudData = async () => {
+    try {
+      const tripData =
+        await SafetyTagModule.queryFullTripDataWithFraudDetection();
+      console.log('Trip Data With Fraud:', tripData);
+      return tripData;
+    } catch (error) {
+      console.error('Error querying trip data with fraud:', error);
+      throw error;
+    }
+  };
+
+  const configTripStartRecognitionForce = async (value = 50) => {
     try {
       const response = await SafetyTagModule.configTripStartRecognitionForce(
         value,
@@ -201,7 +232,7 @@ const useSafetyTag = () => {
     }
   };
 
-  const configTripStartRecognitionDuration = async value => {
+  const configTripStartRecognitionDuration = async (value = 400) => {
     try {
       const response = await SafetyTagModule.configTripStartRecognitionDuration(
         value,
@@ -217,7 +248,7 @@ const useSafetyTag = () => {
     }
   };
 
-  const configTripEndTimeout = async value => {
+  const configTripEndTimeout = async (value = 60) => {
     try {
       const response = await SafetyTagModule.configTripEndTimeout(value);
       console.log('Response:', response);
@@ -228,7 +259,7 @@ const useSafetyTag = () => {
     }
   };
 
-  const configTripMinimalDuration = async value => {
+  const configTripMinimalDuration = async (value = 180) => {
     try {
       const response = await SafetyTagModule.configTripMinimalDuration(value);
       console.log('Response:', response);
@@ -239,17 +270,48 @@ const useSafetyTag = () => {
     }
   };
 
+  const configTrip = async () => {
+    try {
+      await configTripStartRecognitionForce();
+      await configTripStartRecognitionDuration();
+      await configTripEndTimeout();
+      await configTripMinimalDuration();
+    } catch (error) {
+      console.error('Error configuring minimal trip duration:', error);
+      throw error;
+    }
+  };
+
+  const configureCrash = async ({
+    averagingWindowSize = 5,
+    thresholdXy = 500,
+    thresholdXyz = 1300,
+    surpassingThresholds = 2,
+  }) => {
+    try {
+      await SafetyTagModule.setCrashAveragingWindowSize(averagingWindowSize);
+      await SafetyTagModule.setCrashThresholdXyNormalized(thresholdXy);
+      await SafetyTagModule.setCrashThresholdXyzNormalized(thresholdXyz);
+      await SafetyTagModule.setCrashNumberOfSurpassingThresholds(
+        surpassingThresholds,
+      );
+      console.log('Crash configuration updated successfully.');
+    } catch (error) {
+      console.error('Failed to configure crash settings:', error);
+    }
+  };
+
   return {
     startScanning,
     startBondScanning,
+    getDeviceConfiguration,
     disconnectDevice,
     startBackgroundScanning,
     stopBackgroundScanning,
     queryTripData,
-    configTripStartRecognitionDuration,
-    configTripStartRecognitionForce,
-    configTripEndTimeout,
-    configTripMinimalDuration,
+    queryTripWithFraudData,
+    configTrip,
+    configureCrash,
     subscribeToConnectionEvents,
     unsubscribeFromConnectionEvents,
   };

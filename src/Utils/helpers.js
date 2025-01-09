@@ -219,3 +219,22 @@ export const formatUnixTime = unixTime => {
   const date = new Date(unixTime);
   return date.toLocaleString();
 };
+
+export const formatRawData = (rawData = []) => {
+  return rawData
+    .split('\n')
+    .filter(line => line.startsWith('Trip'))
+    .map(tripStr => {
+      const data = tripStr.match(/(\w+)=([^,)\s]+)/g).reduce((obj, pair) => {
+        const [key, value] = pair.split('=');
+        obj[key] = isNaN(value) ? value : Number(value); // Convert numbers
+        return obj;
+      }, {});
+      const {startUnixTimeMs = 0, endUnixTimeMs = 0} = data || {};
+      return {
+        ...data,
+        startUnixTime: formatUnixTime(startUnixTimeMs),
+        endUnixTime: formatUnixTime(endUnixTimeMs),
+      };
+    });
+};
