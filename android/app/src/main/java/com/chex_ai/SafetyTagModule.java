@@ -45,6 +45,8 @@ import com.pixida.safetytagapi.data.dto.CrashData;
 import com.pixida.safetytagapi.data.dto.VersionInfo;
 import com.pixida.safetytagapi.interfaces.DeviceInformation;
 import com.pixida.safetytagapi.interfaces.ReadBatteryLevelListener;
+import com.pixida.safetytagapi.interfaces.AccelerometerDataListener;
+import com.pixida.safetytagapi.data.dto.AccelerometerValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -427,34 +429,78 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
         });
     }
 
+    /* @ReactMethod
+        public void setCrashAveragingWindowSize(int value, Promise promise) {
+            safetyTagApi.getDeviceConfiguration().setCrashAveragingWindowSize(value, status -> handleStatus(status, promise));
+        }
+
+        @ReactMethod
+        public void setCrashThresholdXyNormalized(int value, Promise promise) {
+            safetyTagApi.getDeviceConfiguration().setCrashThresholdXyNormalized(value, status -> handleStatus(status, promise));
+        }
+
+        @ReactMethod
+        public void setCrashThresholdXyzNormalized(int value, Promise promise) {
+            safetyTagApi.getDeviceConfiguration().setCrashThresholdXyzNormalized(value, status -> handleStatus(status, promise));
+        }
+
+        @ReactMethod
+        public void setCrashNumberOfSurpassingThresholds(int value, Promise promise) {
+            safetyTagApi.getDeviceConfiguration().setCrashNumberOfSurpassingThresholds(value, status -> handleStatus(status, promise));
+        }
+
+        private void handleStatus(@NonNull SafetyTagStatus status, Promise promise) {
+            WritableMap event = Arguments.createMap();
+            event.putString("error", status.name());
+            if (status.isSuccess()) {
+                promise.resolve("Success");
+            } else {
+                promise.reject("ERROR", "Failed to update configuration: " + event);
+            }
+        } */
+
     @ReactMethod
     public void setCrashAveragingWindowSize(int value, Promise promise) {
-        safetyTagApi.getDeviceConfiguration().setCrashAveragingWindowSize(value, status -> handleStatus(status, promise));
+        safetyTagApi.getDeviceConfiguration().setCrashAveragingWindowSize(value, status -> {
+            if (status.isSuccess()) {
+                promise.resolve("Successfully set crash averaging window size");
+            } else {
+                promise.reject("CONFIG_ERROR", "Failed to set crash averaging window size");
+            }
+        });
     }
 
     @ReactMethod
     public void setCrashThresholdXyNormalized(int value, Promise promise) {
-        safetyTagApi.getDeviceConfiguration().setCrashThresholdXyNormalized(value, status -> handleStatus(status, promise));
+        safetyTagApi.getDeviceConfiguration().setCrashThresholdXyNormalized(value, status -> {
+            if (status.isSuccess()) {
+                promise.resolve("Successfully set crash threshold XY");
+            } else {
+                promise.reject("CONFIG_ERROR", "Failed to set crash threshold XY");
+            }
+        });
     }
 
     @ReactMethod
     public void setCrashThresholdXyzNormalized(int value, Promise promise) {
-        safetyTagApi.getDeviceConfiguration().setCrashThresholdXyzNormalized(value, status -> handleStatus(status, promise));
+        safetyTagApi.getDeviceConfiguration().setCrashThresholdXyzNormalized(value, status -> {
+            if (status.isSuccess()) {
+                promise.resolve("Successfully set crash threshold XYZ");
+            } else {
+                promise.reject("CONFIG_ERROR", "Failed to set crash threshold XYZ");
+            }
+        });
     }
 
     @ReactMethod
     public void setCrashNumberOfSurpassingThresholds(int value, Promise promise) {
-        safetyTagApi.getDeviceConfiguration().setCrashNumberOfSurpassingThresholds(value, status -> handleStatus(status, promise));
-    }
-
-    private void handleStatus(@NonNull SafetyTagStatus status, Promise promise) {
-        WritableMap event = Arguments.createMap();
-        event.putString("error", status.name());
-        if (status.isSuccess()) {
-            promise.resolve("Success");
-        } else {
-            promise.reject("ERROR", "Failed to update configuration: " + event);
-        }
+        safetyTagApi.getDeviceConfiguration().setCrashNumberOfSurpassingThresholds(value, status -> {
+            if (status.isSuccess()) {
+                promise.resolve("Successfully set crash surpassing thresholds");
+            } else {
+                promise.reject("CONFIG_ERROR", "Failed to set crash surpassing thresholds");
+            }
+        });
     }
 
     @ReactMethod
@@ -525,6 +571,53 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
                WritableMap event = Arguments.createMap();
                event.putString("error", status.name());
                promise.reject("BATTERY_LEVEL_ERROR", "Failed to read battery level", event);
+           }
+       });
+   }
+
+   @ReactMethod
+   public void subscribeToAccelerometerData() {
+       safetyTagApi.getAccelerometer().subscribeAccelerometerDataStreamListener(new AccelerometerDataListener() {
+           @Override
+           public void onDataStreamReceived(@NonNull AccelerometerValue value) {
+               // Convert AccelerometerValue to JSON and emit to React Native
+               WritableMap event = Arguments.createMap();
+               String accelerometerJson = new Gson().toJson(value);
+               event.putString("accelerometerData", accelerometerJson);
+               reactContext
+                   .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                   .emit("onAccelerometerData", event);
+           }
+
+           @Override
+           public void onError(@NonNull SafetyTagStatus reason) {
+               WritableMap event = Arguments.createMap();
+               event.putString("error", reason.name());
+               reactContext
+                   .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                   .emit("onAccelerometerError", event);
+           }
+       });
+   }
+
+   @ReactMethod
+   public void enableAccelerometerDataStream(Promise promise) {
+       safetyTagApi.getAccelerometer().enableAccelerometerDataStream(null, status -> {
+           if (status.isSuccess()) {
+               promise.resolve("Successfully enabled accelerometer data stream");
+           } else {
+               promise.reject("ACCELEROMETER_ERROR", "Failed to enable accelerometer data stream");
+           }
+       });
+   }
+
+   @ReactMethod
+   public void disableAccelerometerDataStream(Promise promise) {
+       safetyTagApi.getAccelerometer().disableAccelerometerDataStream(false, status -> {
+           if (status.isSuccess()) {
+               promise.resolve("Successfully disabled accelerometer data stream");
+           } else {
+               promise.reject("ACCELEROMETER_ERROR", "Failed to disable accelerometer data stream");
            }
        });
    }

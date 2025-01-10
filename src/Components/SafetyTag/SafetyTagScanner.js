@@ -1,5 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {View, Button, Text, Alert, StyleSheet, FlatList} from 'react-native';
+import {
+  View,
+  Button,
+  Text,
+  Alert,
+  StyleSheet,
+  FlatList,
+  ScrollView,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -24,6 +32,8 @@ const SafetyTagScanner = () => {
     debugSafetyTagApi,
     getDeviceInformation,
     readBatteryLevel,
+    enableAccelerometerStream,
+    disableAccelerometerStream,
   } = useSafetyTag();
 
   useEffect(() => {
@@ -93,6 +103,24 @@ const SafetyTagScanner = () => {
     }
   };
 
+  const handleEnableAccelerometer = async () => {
+    try {
+      await enableAccelerometerStream();
+      Alert.alert('Success', 'Accelerometer stream enabled');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to enable accelerometer stream');
+    }
+  };
+
+  const handleDisableAccelerometer = async () => {
+    try {
+      await disableAccelerometerStream();
+      Alert.alert('Success', 'Accelerometer stream disabled');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to disable accelerometer stream');
+    }
+  };
+
   const renderTripItem = ({item}) => (
     <View style={styles.card}>
       <Text style={styles.title}>Trip #{item.receiveNumber}</Text>
@@ -105,39 +133,53 @@ const SafetyTagScanner = () => {
   );
 
   return (
-    <View style={[styles.container, styles.gap]}>
-      <Button title="Scan for Safety Tag" onPress={handleScan} />
-      <Button title="Scan for Bond Safety Tag" onPress={handleBondScan} />
-      <Button title="Get Safety Tag Info" onPress={getDeviceInformation} />
-      <Button
-        title="Get Safety Tag device configuration"
-        onPress={handleGetDeviceConfiguration}
-      />
-      <Button
-        title="Unsubscribe Device Info"
-        onPress={unsubscribeFromConnectionEvents}
-      />
-      <Button
-        title="Disconnect connected Device"
-        onPress={handleDisconnectDevice}
-      />
-      <Button title="Read battery level" onPress={readBatteryLevel} />
-      {deviceInfo && <Text style={styles.deviceInfo}>{deviceInfo}</Text>}
-
-      <View style={[styles.tripContainer, styles.gap]}>
-        <Button title="Query Trip Data" onPress={handleQueryTripData} />
+    <View style={styles.container}>
+      <ScrollView>
+        <Button title="Scan for Safety Tag" onPress={handleScan} />
+        <Button title="Scan for Bond Safety Tag" onPress={handleBondScan} />
+        <Button title="Get Safety Tag Info" onPress={getDeviceInformation} />
         <Button
-          title="Query Trip Data With Fraud"
-          onPress={handleQueryTripDataWithFraud}
+          title="Get Safety Tag device configuration"
+          onPress={handleGetDeviceConfiguration}
         />
-        <FlatList
-          data={tripData}
-          renderItem={renderTripItem}
-          style={styles.tripList}
-          keyExtractor={item => item.receiveNumber.toString()}
-          contentContainerStyle={styles.listContainer}
+        <Button
+          title="Unsubscribe Device Info"
+          onPress={unsubscribeFromConnectionEvents}
         />
-      </View>
+        <Button
+          title="Disconnect connected Device"
+          onPress={handleDisconnectDevice}
+        />
+        <Button title="Read battery level" onPress={readBatteryLevel} />
+        {deviceInfo && <Text style={styles.deviceInfo}>{deviceInfo}</Text>}
+
+        <View style={[styles.tripContainer, styles.gap]}>
+          <Button title="Query Trip Data" onPress={handleQueryTripData} />
+          <Button
+            title="Query Trip Data With Fraud"
+            onPress={handleQueryTripDataWithFraud}
+          />
+          <FlatList
+            data={tripData}
+            renderItem={renderTripItem}
+            style={styles.tripList}
+            keyExtractor={item => item.receiveNumber.toString()}
+            contentContainerStyle={styles.listContainer}
+          />
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Accelerometer Data</Text>
+          <Button
+            title="Enable Accelerometer"
+            onPress={handleEnableAccelerometer}
+          />
+          <Button
+            title="Disable Accelerometer"
+            onPress={handleDisableAccelerometer}
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -182,6 +224,24 @@ const styles = StyleSheet.create({
   },
   gap: {
     rowGap: wp('2%'),
+  },
+  section: {
+    marginVertical: 10,
+    padding: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  list: {
+    maxHeight: 200,
   },
 });
 

@@ -157,21 +157,28 @@ const useSafetyTag = () => {
       console.log('Trip Data with Fraud Error:', error);
     });
 
-    DeviceEventEmitter.addListener('onCrashThresholdEvent', event => {
-      console.log('On Crash threshold event:', event);
-    });
-
-    DeviceEventEmitter.addListener('onCrashDataReceived', event => {
-      console.log('On Crash Data received:', event);
-    });
-
     DeviceEventEmitter.addListener('onCrashDataError', error => {
       console.log('On Crash data error', error);
     });
 
-    /*DeviceEventEmitter.addListener('onTripEndError', event => {
-      console.log('On trip end error: ', event.message);
-    });*/
+    DeviceEventEmitter.addListener('onCrashDataReceived', event => {
+      const crashData = JSON.parse(event.crashData);
+      console.log('On Crash Data Received', crashData);
+    });
+
+    DeviceEventEmitter.addListener('onCrashThresholdEvent', event => {
+      const thresholdEvent = JSON.parse(event.crashThresholdEvent);
+      console.log('On Crash Threshold Event', thresholdEvent);
+    });
+
+    DeviceEventEmitter.addListener('onAccelerometerData', event => {
+      const accelerometerData = JSON.parse(event.accelerometerData);
+      console.log('Accelerometer Data:', accelerometerData);
+    });
+
+    DeviceEventEmitter.addListener('onAccelerometerError', event => {
+      console.error('Accelerometer Error:', event.error);
+    });
 
     // Call the native method to start listening for connection events
     console.log('Starting to listen for connection events...');
@@ -335,6 +342,25 @@ const useSafetyTag = () => {
     }
   };
 
+  const enableAccelerometerStream = async () => {
+    try {
+      await SafetyTagModule.enableAccelerometerDataStream();
+      SafetyTagModule.subscribeToAccelerometerData();
+    } catch (error) {
+      console.error('Error enabling accelerometer stream:', error);
+      throw error;
+    }
+  };
+
+  const disableAccelerometerStream = async () => {
+    try {
+      await SafetyTagModule.disableAccelerometerDataStream();
+    } catch (error) {
+      console.error('Error disabling accelerometer stream:', error);
+      throw error;
+    }
+  };
+
   return {
     startScanning,
     startBondScanning,
@@ -351,6 +377,8 @@ const useSafetyTag = () => {
     getDeviceInformation,
     debugSafetyTagApi,
     readBatteryLevel,
+    enableAccelerometerStream,
+    disableAccelerometerStream,
   };
 };
 
