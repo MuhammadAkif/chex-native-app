@@ -1,10 +1,37 @@
-import {DeviceEventEmitter, NativeModules} from 'react-native';
+import {
+  DeviceEventEmitter,
+  NativeModules,
+  PermissionsAndroid,
+  Platform,
+} from 'react-native';
 
 import {requestPermissions} from '../Utils/helpers';
+import {useEffect} from 'react';
 
 const {SafetyTagModule} = NativeModules;
 
 const useSafetyTag = () => {
+  useEffect(() => {
+    const crashDataSubscription = DeviceEventEmitter.addListener(
+      'onCrashDataReceived',
+      event => {
+        const crashData = JSON.parse(event.crashData);
+      },
+    );
+
+    const crashThresholdSubscription = DeviceEventEmitter.addListener(
+      'onCrashThresholdEvent',
+      event => {
+        const thresholdEvent = JSON.parse(event.crashThresholdEvent);
+      },
+    );
+
+    return () => {
+      crashDataSubscription.remove();
+      crashThresholdSubscription.remove();
+    };
+  }, []);
+
   const startScanning = async () => {
     try {
       console.log('Requesting permissions for scanning...');
@@ -171,15 +198,6 @@ const useSafetyTag = () => {
       console.log('On Crash Threshold Event', thresholdEvent);
     });
 
-    DeviceEventEmitter.addListener('onAccelerometerData', event => {
-      const accelerometerData = JSON.parse(event.accelerometerData);
-      console.log('Accelerometer Data:', accelerometerData);
-    });
-
-    DeviceEventEmitter.addListener('onAccelerometerError', event => {
-      console.error('Accelerometer Error:', event.error);
-    });
-
     // Call the native method to start listening for connection events
     console.log('Starting to listen for connection events...');
     SafetyTagModule.notifyOnDeviceReady();
@@ -342,22 +360,106 @@ const useSafetyTag = () => {
     }
   };
 
-  const enableAccelerometerStream = async () => {
+  const subscribeToAccelerometerData = () => {
+    try {
+      SafetyTagModule.subscribeToAccelerometerData();
+      console.log('Successfully subscribed to accelerometer data');
+    } catch (error) {
+      console.error('Error subscribing to accelerometer data:', error);
+    }
+  };
+
+  const enableAccelerometerDataStream = async () => {
     try {
       await SafetyTagModule.enableAccelerometerDataStream();
-      SafetyTagModule.subscribeToAccelerometerData();
+      console.log('Successfully enabled accelerometer data stream');
     } catch (error) {
-      console.error('Error enabling accelerometer stream:', error);
+      console.error('Error enabling accelerometer data stream:', error);
+    }
+  };
+
+  const disableAccelerometerDataStream = async () => {
+    try {
+      await SafetyTagModule.disableAccelerometerDataStream();
+      console.log('Successfully disabled accelerometer data stream');
+    } catch (error) {
+      console.error('Error disabling accelerometer data stream:', error);
+    }
+  };
+
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Location Permission',
+          message: 'Axis alignment needs access to your location',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  };
+
+  const requestBackgroundPermission = async () => {
+    if (Platform.Version >= 29) {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
+          {
+            title: 'Background Location Permission',
+            message: 'Axis alignment needs background location access',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        );
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.warn(err);
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const startAxisAlignment = async () => {
+    try {
+      const hasLocationPermission = await requestLocationPermission();
+      const hasBackgroundPermission = await requestBackgroundPermission();
+
+      if (!hasLocationPermission || !hasBackgroundPermission) {
+        throw new Error('Required permissions not granted');
+      }
+
+      await SafetyTagModule.startAxisAlignment();
+      console.log('Successfully started axis alignment');
+    } catch (error) {
+      console.error('Error starting axis alignment:', error);
       throw error;
     }
   };
 
-  const disableAccelerometerStream = async () => {
+  const stopAxisAlignment = async () => {
     try {
-      await SafetyTagModule.disableAccelerometerDataStream();
+      await SafetyTagModule.stopAxisAlignment();
+      console.log('Successfully stopped axis alignment');
     } catch (error) {
-      console.error('Error disabling accelerometer stream:', error);
-      throw error;
+      console.error('Error stopping axis alignment:', error);
+    }
+  };
+
+  const isAlignmentRunning = async () => {
+    try {
+      return await SafetyTagModule.isAlignmentServiceRunning();
+    } catch (error) {
+      console.error('Error checking alignment service:', error);
+      return false;
     }
   };
 
@@ -377,8 +479,12 @@ const useSafetyTag = () => {
     getDeviceInformation,
     debugSafetyTagApi,
     readBatteryLevel,
-    enableAccelerometerStream,
-    disableAccelerometerStream,
+    subscribeToAccelerometerData,
+    enableAccelerometerDataStream,
+    disableAccelerometerDataStream,
+    startAxisAlignment,
+    stopAxisAlignment,
+    isAlignmentRunning,
   };
 };
 

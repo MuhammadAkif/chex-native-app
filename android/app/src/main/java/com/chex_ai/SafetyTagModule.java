@@ -10,6 +10,12 @@ import android.app.Activity;
 import androidx.annotation.RequiresApi;
 import android.os.Build;
 import android.content.IntentFilter;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Intent;
+import androidx.core.app.NotificationCompat;
+import android.app.ActivityManager;
 
 import com.google.gson.Gson;
 
@@ -47,6 +53,14 @@ import com.pixida.safetytagapi.interfaces.DeviceInformation;
 import com.pixida.safetytagapi.interfaces.ReadBatteryLevelListener;
 import com.pixida.safetytagapi.interfaces.AccelerometerDataListener;
 import com.pixida.safetytagapi.data.dto.AccelerometerValue;
+import com.pixida.safetytagapi.data.dto.AccelerometerAxisAlignmentParameters;
+import com.pixida.safetytagapi.data.enums.AxisAlignmentStoppingReason;
+import com.pixida.safetytagapi.data.dto.AxisAlignmentProcessState;
+import com.pixida.safetytagapi.interfaces.OnAxisAlignmentListener;
+import com.pixida.safetytagapi.interfaces.AxisAlignmentLocationListener;
+import com.pixida.safetytagapi.data.dto.AxisAlignmentLocationData;
+import com.pixida.safetytagapi.interfaces.AxisAlignmentLocationProvider;
+import com.pixida.safetytagapi.data.dto.NotificationData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +70,8 @@ import java.util.Arrays;
 public class SafetyTagModule extends ReactContextBaseJavaModule {
     private final SafetyTagApi safetyTagApi;
     private final ReactApplicationContext reactContext;
+    private AxisAlignmentLocationProvider locationProvider;
+    private AxisAlignmentLocationListener currentListener;
 
     public SafetyTagModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -580,10 +596,12 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
        safetyTagApi.getAccelerometer().subscribeAccelerometerDataStreamListener(new AccelerometerDataListener() {
            @Override
            public void onDataStreamReceived(@NonNull AccelerometerValue value) {
-               // Convert AccelerometerValue to JSON and emit to React Native
                WritableMap event = Arguments.createMap();
-               String accelerometerJson = new Gson().toJson(value);
-               event.putString("accelerometerData", accelerometerJson);
+               event.putDouble("xAxis", value.getXAxisMg());
+               event.putDouble("yAxis", value.getYAxisMg());
+               event.putDouble("zAxis", value.getZAxisMg());
+               event.putDouble("timestamp", value.getTimestampUnixMs());
+               
                reactContext
                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                    .emit("onAccelerometerData", event);
@@ -620,6 +638,176 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
                promise.reject("ACCELEROMETER_ERROR", "Failed to disable accelerometer data stream");
            }
        });
+   }
+
+   @ReactMethod
+   public void startAxisAlignment(Promise promise) {
+       try {
+           AccelerometerAxisAlignmentParameters.Builder builder = new AccelerometerAxisAlignmentParameters.Builder();
+           
+           // Create notification for background operation
+           NotificationData notificationData = createNotificationData();
+           builder.foregroundServiceNotificationData(notificationData);
+
+           // Add location provider
+           locationProvider = new AxisAlignmentLocationProvider() {
+               @Override
+               public void subscribeLocationListener(@NonNull AxisAlignmentLocationListener alignmentListener) {
+                   currentListener = alignmentListener; // Store the listener
+                   reactContext
+                       .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                       .emit("startLocationUpdates", null);
+               }
+
+               @Override
+               public void unsubscribeLocationListener(@NonNull AxisAlignmentLocationListener alignmentListener) {
+                   if (currentListener == alignmentListener) {
+                       currentListener = null;
+                   }
+                   reactContext
+                       .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                       .emit("stopLocationUpdates", null);
+               }
+           };
+
+           builder.locationProvider(locationProvider);
+
+           // Start the foreground service
+           Intent serviceIntent = new Intent(reactContext, SafetyTagAlignmentService.class);
+           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+               reactContext.startForegroundService(serviceIntent);
+           } else {
+               reactContext.startService(serviceIntent);
+           }
+
+           SafetyTagStatus status = safetyTagApi.getAxisAlignment()
+               .startAccelerometerAxisAlignment(builder.build(new OnAxisAlignmentListener() {
+                   @Override
+                   public void onAxisAlignmentStarted() {
+                       sendAxisAlignmentEvent("onAxisAlignmentStarted", null);
+                   }
+
+                   @Override
+                   public void onAxisAlignmentSuccessful() {
+                       sendAxisAlignmentEvent("onAxisAlignmentSuccess", null);
+                   }
+
+                   @Override
+                   public void onAxisAlignmentStopped(AxisAlignmentStoppingReason reason) {
+                       WritableMap data = Arguments.createMap();
+                       data.putString("reason", reason.name());
+                       sendAxisAlignmentEvent("onAxisAlignmentStopped", data);
+                   }
+
+                   @Override
+                   public void onAxisAlignmentProcessStateChange(AxisAlignmentProcessState state) {
+                       WritableMap data = Arguments.createMap();
+                       data.putString("step", state.getAlignmentProcessStep().name());
+                       data.putString("movement", state.getMovement().name());
+                       data.putString("speed", state.getSpeed().name());
+                       data.putDouble("currentSpeed", state.getCurrentSpeed());
+                       data.putDouble("currentHeading", state.getCurrentHeading());
+                       sendAxisAlignmentEvent("onAxisAlignmentStateChange", data);
+                   }
+
+                   @Override
+                   public void onError(SafetyTagStatus error) {
+                       WritableMap data = Arguments.createMap();
+                       data.putString("error", error.name());
+                       sendAxisAlignmentEvent("onAxisAlignmentError", data);
+                   }
+               })
+           );
+
+           if (status == SafetyTagStatus.OK) {
+               promise.resolve("Successfully started axis alignment");
+           } else {
+               promise.reject("ALIGNMENT_ERROR", "Failed to start axis alignment: " + status.name());
+           }
+       } catch (Exception e) {
+           promise.reject("ALIGNMENT_ERROR", "Failed to start axis alignment: " + e.getMessage(), e);
+       }
+   }
+
+   private NotificationData createNotificationData() {
+       return new NotificationData(
+           1001, // Notification ID
+           createNotification()
+       );
+   }
+
+   private Notification createNotification() {
+       String channelId = "safety_tag_alignment";
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+           NotificationChannel channel = new NotificationChannel(
+               channelId,
+               "Safety Tag Alignment",
+               NotificationManager.IMPORTANCE_LOW
+           );
+           NotificationManager manager = (NotificationManager) reactContext
+               .getSystemService(Context.NOTIFICATION_SERVICE);
+           manager.createNotificationChannel(channel);
+       }
+
+       return new NotificationCompat.Builder(reactContext, channelId)
+           .setContentTitle("Safety Tag Alignment")
+           .setContentText("Alignment in progress...")
+           .setSmallIcon(R.mipmap.ic_launcher)
+           .setPriority(NotificationCompat.PRIORITY_LOW)
+           .setOngoing(true)
+           .build();
+   }
+
+   // Add method to stop service
+   @ReactMethod
+   public void stopAxisAlignment(Promise promise) {
+       try {
+           Intent serviceIntent = new Intent(reactContext, SafetyTagAlignmentService.class);
+           reactContext.stopService(serviceIntent);
+           promise.resolve("Alignment service stopped");
+       } catch (Exception e) {
+           promise.reject("STOP_ERROR", "Failed to stop alignment service", e);
+       }
+   }
+
+   // Add method to receive location updates from React Native
+   @ReactMethod
+   public void updateAxisAlignmentLocation(double heading, double speed, double timestamp, double elapsedRealtime) {
+       try {
+           if (currentListener != null) { // Use the stored listener
+               AxisAlignmentLocationData locationData = new AxisAlignmentLocationData(
+                   heading,
+                   speed,
+                   (long) timestamp,
+                   (long) elapsedRealtime
+               );
+               
+               currentListener.onNewLocation(locationData);
+           }
+       } catch (Exception e) {
+           Log.e("SafetyTagModule", "Error updating location: " + e.getMessage());
+       }
+   }
+
+   private void sendAxisAlignmentEvent(String eventName, @Nullable WritableMap data) {
+       if (data == null) {
+           data = Arguments.createMap();
+       }
+       reactContext
+           .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+           .emit(eventName, data);
+   }
+
+   @ReactMethod
+   public void isAlignmentServiceRunning(Promise promise) {
+       ActivityManager manager = (ActivityManager) reactContext.getSystemService(Context.ACTIVITY_SERVICE);
+       for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+           if (SafetyTagAlignmentService.class.getName().equals(service.service.getClassName())) {
+               promise.resolve(true);
+               return;
+           }
+       }
+       promise.resolve(false);
    }
 
 }

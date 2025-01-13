@@ -15,6 +15,7 @@ import {
 
 import useSafetyTag from '../../hooks/useSafetyTag';
 import {formatRawData} from '../../Utils/helpers';
+import AccelerometerDisplay from './AccelerometerDisplay';
 
 const SafetyTagScanner = () => {
   const [deviceInfo, setDeviceInfo] = useState(null);
@@ -32,8 +33,6 @@ const SafetyTagScanner = () => {
     debugSafetyTagApi,
     getDeviceInformation,
     readBatteryLevel,
-    enableAccelerometerStream,
-    disableAccelerometerStream,
   } = useSafetyTag();
 
   useEffect(() => {
@@ -103,24 +102,6 @@ const SafetyTagScanner = () => {
     }
   };
 
-  const handleEnableAccelerometer = async () => {
-    try {
-      await enableAccelerometerStream();
-      Alert.alert('Success', 'Accelerometer stream enabled');
-    } catch (error) {
-      Alert.alert('Error', 'Failed to enable accelerometer stream');
-    }
-  };
-
-  const handleDisableAccelerometer = async () => {
-    try {
-      await disableAccelerometerStream();
-      Alert.alert('Success', 'Accelerometer stream disabled');
-    } catch (error) {
-      Alert.alert('Error', 'Failed to disable accelerometer stream');
-    }
-  };
-
   const renderTripItem = ({item}) => (
     <View style={styles.card}>
       <Text style={styles.title}>Trip #{item.receiveNumber}</Text>
@@ -168,17 +149,7 @@ const SafetyTagScanner = () => {
           />
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Accelerometer Data</Text>
-          <Button
-            title="Enable Accelerometer"
-            onPress={handleEnableAccelerometer}
-          />
-          <Button
-            title="Disable Accelerometer"
-            onPress={handleDisableAccelerometer}
-          />
-        </View>
+        <AccelerometerDisplay />
       </ScrollView>
     </View>
   );
