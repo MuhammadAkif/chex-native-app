@@ -631,7 +631,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
 
    @ReactMethod
    public void disableAccelerometerDataStream(Promise promise) {
-       safetyTagApi.getAccelerometer().disableAccelerometerDataStream(false, status -> {
+       safetyTagApi.getAccelerometer().disableAccelerometerDataStream(true, status -> {
            if (status.isSuccess()) {
                promise.resolve("Successfully disabled accelerometer data stream");
            } else {
@@ -762,11 +762,29 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
    @ReactMethod
    public void stopAxisAlignment(Promise promise) {
        try {
-           Intent serviceIntent = new Intent(reactContext, SafetyTagAlignmentService.class);
-           reactContext.stopService(serviceIntent);
-           promise.resolve("Alignment service stopped");
+           // First stop the axis alignment in the SDK
+           safetyTagApi.getAxisAlignment().stopAccelerometerAxisAlignment(status -> {
+               if (status.isSuccess()) {
+                   // If SDK alignment is stopped successfully, stop the service
+                   try {
+                       Intent serviceIntent = new Intent(reactContext, SafetyTagAlignmentService.class);
+                       reactContext.stopService(serviceIntent);
+                       
+                       // Clear the location provider and listener
+                       if (currentListener != null) {
+                           currentListener = null;
+                       }
+                       
+                       promise.resolve("Alignment stopped successfully");
+                   } catch (Exception e) {
+                       promise.reject("STOP_ERROR", "Failed to stop alignment service: " + e.getMessage());
+                   }
+               } else {
+                   promise.reject("STOP_ERROR", "Failed to stop axis alignment: " + status.name());
+               }
+           });
        } catch (Exception e) {
-           promise.reject("STOP_ERROR", "Failed to stop alignment service", e);
+           promise.reject("STOP_ERROR", "Failed to stop alignment: " + e.getMessage(), e);
        }
    }
 

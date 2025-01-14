@@ -76,9 +76,9 @@ const AccelerometerDisplay = () => {
 
     const successSubscription = DeviceEventEmitter.addListener(
       'onAxisAlignmentSuccess',
-      () => {
+      async () => {
         Alert.alert('Success', 'Axis alignment completed successfully');
-        stopAxisAlignment();
+        await stopAxisAlignment();
       },
     );
 
