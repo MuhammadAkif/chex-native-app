@@ -95,7 +95,7 @@ export const switchOrientation = {
   landscape: 'portrait',
 };
 
-const vehichle_Categories = {
+const vehicle_Categories = {
   carVerificiationItems: {
     license_plate_number: 'license_plate_number',
     odometer: 'odometer',

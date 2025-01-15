@@ -524,7 +524,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
         safetyTagApi.getCrashDetection().notifyOnCrashDataReceived(new OnCrashDataListener() {
             @Override
             public void onCrashThresholdEventsReceived(CrashThresholdEvent crashThresholdEvent) {
-                // Convert CrashThresholdEvent to JSON and emit it to React Native
+                // Emits event when crash threshold is detected
                 WritableMap event = Arguments.createMap();
                 String crashThresholdJson = new Gson().toJson(crashThresholdEvent);
                 event.putString("crashThresholdEvent", crashThresholdJson);
@@ -535,7 +535,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onCrashDataReceived(List<CrashData> crashDataList, CrashDataStatus crashDataStatus) {
-                // Convert CrashData list to JSON and emit it to React Native
+                // Emits event when crash data is received
                 WritableMap event = Arguments.createMap();
                 String crashDataJson = new Gson().toJson(crashDataList);
                 event.putString("crashData", crashDataJson);

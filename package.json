@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "release-android": "react-native run-android --variant=release",
+    "release-android": "react-native run-android --mode=release",
     "android-clean": "./gradlew clean",
     "android-bundle": "./gradlew clean && ./gradlew bundleRelease",
     "android-release-apk": "./gradlew clean && ./gradlew bundleRelease",

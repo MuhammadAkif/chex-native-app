@@ -84,6 +84,7 @@ android {
         vectorDrawables.useSupportLibrary = true
         versionCode 66
         versionName "3.4"
+        multiDexEnabled true
     }
     signingConfigs {
       release {
@@ -166,6 +167,31 @@ android {
         implementation 'com.squareup.retrofit2:converter-gson:2.9.0' // Latest version of Gson converter
         implementation 'com.android.support:multidex:1.0.3' // Add Multidex dependency
 
+        // Add SLF4J dependencies
+        implementation 'org.slf4j:slf4j-api:1.7.36'
+        implementation 'org.slf4j:slf4j-simple:1.7.36'
+        
+        // Make sure you have these Koin dependencies
+        implementation "io.insert-koin:koin-android:3.4.0"
+        implementation "io.insert-koin:koin-core:3.4.0"
+
+        // Make sure SafetyTag SDK is properly included
+        implementation files("${rootProject.projectDir}/libs/SafetyTagApi-2.0.0-beta4.aar")
+
+        // Add MultiDex support if not already present
+        implementation 'androidx.multidex:multidex:2.0.1'
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude("META-INF/*.kotlin_module")
     }
 }
 

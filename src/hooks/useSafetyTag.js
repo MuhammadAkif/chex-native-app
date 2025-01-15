@@ -1,4 +1,5 @@
 import {
+  Alert,
   DeviceEventEmitter,
   NativeModules,
   PermissionsAndroid,
@@ -132,7 +133,7 @@ const useSafetyTag = () => {
     );
   };
 
-  const subscribeToConnectionEvents = () => {
+  const subscribeToConnectionEvents = async () => {
     console.log('Subscribing to connection events...');
     DeviceEventEmitter.addListener('onConnecting', event => {
       console.log('Device is connecting...');
@@ -200,9 +201,9 @@ const useSafetyTag = () => {
 
     // Call the native method to start listening for connection events
     console.log('Starting to listen for connection events...');
-    SafetyTagModule.notifyOnDeviceReady();
-    SafetyTagModule.subscribeToTripStartAndEndEvents();
-    SafetyTagModule.subscribeToCrashData();
+    await SafetyTagModule.notifyOnDeviceReady();
+    await SafetyTagModule.subscribeToTripStartAndEndEvents();
+    await SafetyTagModule.subscribeToCrashData();
   };
 
   const unsubscribeFromConnectionEvents = () => {
@@ -322,21 +323,11 @@ const useSafetyTag = () => {
 
   const readBatteryLevel = async () => {
     try {
-      const result = await SafetyTagModule.readBatteryLevel();
-      const formattedResult = JSON.parse(result);
-      console.log('Battery level: ', formattedResult);
+      const batteryLevel = await SafetyTagModule.readBatteryLevel();
+      console.log('Battery Level:', batteryLevel);
+      return batteryLevel;
     } catch (error) {
-      console.error('Error while getting battery level:', error);
-      throw error;
-    }
-  };
-
-  const debugSafetyTagApi = async () => {
-    try {
-      const result = await SafetyTagModule.debugSafetyTagApi();
-      console.log('debugSafetyTagApi: ', {result});
-    } catch (error) {
-      console.error('Error debugSafetyTagApi:', error);
+      console.error('Error reading battery level:', error);
       throw error;
     }
   };
@@ -382,6 +373,10 @@ const useSafetyTag = () => {
     try {
       await SafetyTagModule.disableAccelerometerDataStream();
       console.log('Successfully disabled accelerometer data stream');
+      Alert.alert(
+        'Accelerometer stream',
+        'Successfully disabled accelerometer data stream',
+      );
     } catch (error) {
       console.error('Error disabling accelerometer data stream:', error);
     }
@@ -438,6 +433,7 @@ const useSafetyTag = () => {
       }
 
       await SafetyTagModule.startAxisAlignment();
+      Alert.alert('Axis Alignment', 'Successfully started axis alignment');
       console.log('Successfully started axis alignment');
     } catch (error) {
       console.error('Error starting axis alignment:', error);
@@ -448,6 +444,7 @@ const useSafetyTag = () => {
   const stopAxisAlignment = async () => {
     try {
       await SafetyTagModule.stopAxisAlignment();
+      Alert.alert('Axis Alignment', 'Successfully stopped axis alignment');
       console.log('Successfully stopped axis alignment');
     } catch (error) {
       console.error('Error stopping axis alignment:', error);
@@ -477,7 +474,6 @@ const useSafetyTag = () => {
     subscribeToConnectionEvents,
     unsubscribeFromConnectionEvents,
     getDeviceInformation,
-    debugSafetyTagApi,
     readBatteryLevel,
     subscribeToAccelerometerData,
     enableAccelerometerDataStream,

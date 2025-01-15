@@ -16,9 +16,9 @@ import {
 import useSafetyTag from '../../hooks/useSafetyTag';
 import {formatRawData} from '../../Utils/helpers';
 import AccelerometerDisplay from './AccelerometerDisplay';
+import CrashTestingTool from './CrashTestingTool';
 
 const SafetyTagScanner = () => {
-  const [deviceInfo, setDeviceInfo] = useState(null);
   const [tripData, setTripData] = useState([]);
 
   const {
@@ -30,13 +30,11 @@ const SafetyTagScanner = () => {
     unsubscribeFromConnectionEvents,
     queryTripData,
     queryTripWithFraudData,
-    debugSafetyTagApi,
-    getDeviceInformation,
     readBatteryLevel,
   } = useSafetyTag();
 
   useEffect(() => {
-    subscribeToConnectionEvents();
+    subscribeToConnectionEvents().then();
 
     return unsubscribeFromConnectionEvents;
   }, []);
@@ -73,14 +71,6 @@ const SafetyTagScanner = () => {
     }
   };
 
-  const handleDebugSafetyTagApi = async () => {
-    try {
-      const result = await debugSafetyTagApi();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const handleQueryTripData = async () => {
     try {
       const rawData = await queryTripData();
@@ -102,37 +92,39 @@ const SafetyTagScanner = () => {
     }
   };
 
-  const renderTripItem = ({item}) => (
-    <View style={styles.card}>
-      <Text style={styles.title}>Trip #{item.receiveNumber}</Text>
-      <Text style={styles.title}>Start Time: {item.startUnixTime}</Text>
-      <Text style={styles.title}>End Time: {item.endUnixTime}</Text>
-      <Text style={styles.title}>
-        Connected During Trip: {item.connectedDuringTrip || 'N/A'}
-      </Text>
-    </View>
-  );
+  const renderTripItem = ({item}) => {
+    const {receiveNumber, startUnixTime, endUnixTime, connectedDuringTrip} =
+      item;
+    return (
+      <View style={styles.card}>
+        <Text style={styles.title}>Trip #{receiveNumber}</Text>
+        <Text style={styles.title}>Start Time: {startUnixTime}</Text>
+        <Text style={styles.title}>End Time: {endUnixTime}</Text>
+        <Text style={styles.title}>
+          Connected During Trip: {connectedDuringTrip || 'N/A'}
+        </Text>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
       <ScrollView>
         <Button title="Scan for Safety Tag" onPress={handleScan} />
         <Button title="Scan for Bond Safety Tag" onPress={handleBondScan} />
-        <Button title="Get Safety Tag Info" onPress={getDeviceInformation} />
-        <Button
+        {/*<Button
           title="Get Safety Tag device configuration"
           onPress={handleGetDeviceConfiguration}
         />
         <Button
           title="Unsubscribe Device Info"
           onPress={unsubscribeFromConnectionEvents}
-        />
+        />*/}
         <Button
           title="Disconnect connected Device"
           onPress={handleDisconnectDevice}
         />
-        <Button title="Read battery level" onPress={readBatteryLevel} />
-        {deviceInfo && <Text style={styles.deviceInfo}>{deviceInfo}</Text>}
+        {/*<Button title="Read battery level" onPress={readBatteryLevel} />*/}
 
         <View style={[styles.tripContainer, styles.gap]}>
           <Button title="Query Trip Data" onPress={handleQueryTripData} />
@@ -150,6 +142,7 @@ const SafetyTagScanner = () => {
         </View>
 
         <AccelerometerDisplay />
+        <CrashTestingTool />
       </ScrollView>
     </View>
   );
