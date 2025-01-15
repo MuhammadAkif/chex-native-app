@@ -1,19 +1,19 @@
 import React from 'react';
-import {View, Modal} from 'react-native';
+import {View, Modal, TouchableOpacity} from 'react-native';
 
 import {modalStyle} from '../../Assets/Styles';
 
 const {container, modalContainer} = modalStyle;
 
-const ModalContainer = ({visible, children, style}) => (
+const ModalContainer = ({visible, children, style, onPress}) => (
   <Modal
     animationType="slide"
     transparent={true}
     visible={visible}
     style={style}>
-    <View style={container}>
+    <TouchableOpacity style={container} activeOpacity={1} onPress={onPress}>
       <View style={modalContainer}>{children}</View>
-    </View>
+    </TouchableOpacity>
   </Modal>
 );
 

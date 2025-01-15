@@ -17,8 +17,14 @@ import {
   setCompanyId,
   setRequired,
   batchUpdateVehicleImages,
-  setMileage,
+  getMileage,
   setFeedback,
+  setMileageVisible,
+  setPlateNumberVisible,
+  setTriggerTireStatusCheck,
+  setMileage,
+  setMileageMessage,
+  setImageDimensions,
 } from './NewInspectionAction';
 import {signIn, signOut, sessionExpired} from './AuthAction';
 import {
@@ -62,6 +68,12 @@ export {
   sessionExpired,
   setRequired,
   batchUpdateVehicleImages,
-  setMileage,
+  getMileage,
   setFeedback,
+  setMileageVisible,
+  setPlateNumberVisible,
+  setTriggerTireStatusCheck,
+  setMileage,
+  setMileageMessage,
+  setImageDimensions,
 };

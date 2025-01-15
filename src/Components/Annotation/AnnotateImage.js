@@ -36,6 +36,7 @@ import {
 } from '../../Constants';
 import {generateRandomString, isNotEmpty, mergeData} from '../../Utils';
 import {showToast} from '../../Store/Actions';
+import {resizeInnerBox} from '../../Utils/helpers';
 
 const {OS} = Platform;
 const {IOS} = Platforms;
@@ -62,6 +63,7 @@ const AnnotateImage = ({
   handleCancel,
   handleSubmit,
   isLoading = false,
+  imageDimensions,
 }) => {
   const dispatch = useDispatch();
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -92,8 +94,8 @@ const AnnotateImage = ({
     const newMarker = {
       ...coordinates,
       id,
-      width: 50,
-      height: 50,
+      width: 10,
+      height: 10,
       accuracyMatrix: {
         tp: 1,
         fp: 0,
@@ -108,7 +110,25 @@ const AnnotateImage = ({
   };
   const onImagePress = event => {
     const {locationX, locationY} = event.nativeEvent;
-    const coordinates = {x: locationX - wp('5%'), y: locationY - wp('5%')};
+    const {height, width} = imageDimensions;
+    const {x, y} = resizeInnerBox(
+      height,
+      width,
+      wp('80%'),
+      hp('25%'),
+      locationX,
+      locationY,
+    );
+    const coordinates = {
+      x,
+      y,
+      android_x: locationX - wp('5%'),
+      android_y: locationY - wp('5%'),
+      mobileHeight: hp('25%'),
+      mobileWidth: wp('80%'),
+      originalHeight: height,
+      originalWidth: width,
+    };
     addDamageDetails(coordinates);
   };
 

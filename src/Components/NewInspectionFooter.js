@@ -1,9 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 import {Comment, PrimaryGradientButton} from './index';
 import {NewInspectionStyles} from '../Assets/Styles';
@@ -32,13 +29,9 @@ const NewInspectionFooter = ({submitVisible, onSubmitPress, isLoading}) => {
 };
 
 const styles = StyleSheet.create({
-  footerContainer: {
-    flexDirection: 'row',
-    columnGap: wp('4%'),
-    borderWidth: 1,
-  },
   container: {
     flex: 0.3,
+    flexDirection: 'column-reverse',
     rowGap: hp('1%'),
   },
 });

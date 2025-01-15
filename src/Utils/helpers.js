@@ -176,6 +176,16 @@ export function checkAndCompleteUrl(url, paramsToCheck = []) {
   return result;
 }
 
+export function insertMileage(str) {
+  if (isNotEmpty(str.trim())) {
+    if (str.includes('mi')) {
+      return str;
+    } else {
+      return str + 'mi';
+    }
+  }
+}
+
 /**
  * Extracts the MIME type of image based on its file path.
  * If no extension is found, defaults to 'jpeg'.
@@ -192,3 +202,103 @@ export const getFileMimeType = path => {
   const extension = path.split('.').pop() || 'jpeg';
   return `image/${extension}`;
 };
+/**
+ * Removes all alphabetic characters and retains only numbers and decimals from a string.
+ *
+ * @param {string|null|undefined} input - The string from which to remove alphabetic characters. Can be null or undefined.
+ * @returns {string} - The cleaned string containing only numeric characters and a single decimal point (if applicable).
+ * @throws {TypeError} - Throws an error if the input is not a string, null, or undefined.
+ */
+export function removeAlphabets(input) {
+  // Check for invalid input types (null, undefined, or non-string)
+  if (input === null || input === undefined) {
+    return '';
+  }
+
+  if (typeof input !== 'string') {
+    throw new TypeError('Input must be a string');
+  }
+
+  // Remove all non-numeric and non-decimal characters
+  let cleanedInput = input.replace(/[^0-9.]/g, '');
+
+  // Ensure only one decimal point is present in the result
+  const decimalCount = (cleanedInput.match(/\./g) || []).length;
+  if (decimalCount > 1) {
+    // If more than one decimal, remove the extra decimals (keeping the first one)
+    cleanedInput = cleanedInput.replace(/\.(?=.*\.)/g, '');
+  }
+
+  // Return the cleaned input, ensuring it’s not empty
+  return cleanedInput || '0';
+}
+
+/**
+ * Calculates the new dimensions for an image to fit within a specified container size,
+ * preserving the aspect ratio of the original image.
+ *
+ * @param {number} imageWidth - The original width of the image.
+ * @param {number} image_Height - The original height of the image.
+ * @param {number} [maxWidth=800] - The maximum allowable width of the image in the container.
+ * @param {number} [maxHeight=480] - The maximum allowable height of the image in the container.
+ *
+ * @returns {Object} The new dimensions for the image.
+ * @returns {number} return.width - The calculated width of the image, adjusted for aspect ratio.
+ * @returns {number} return.height - The calculated height of the image, adjusted for aspect ratio.
+ *
+ * @example
+ * const newDimensions = calculateImageDimensions(1200, 600, 800, 480);
+ * console.log(newDimensions); // { width: 800, height: 400 }
+ */
+const calculateImageDimensions = (
+  imageWidth,
+  image_Height,
+  maxWidth = 800,
+  maxHeight = 480,
+) => {
+  const containerAspectRatio = maxWidth / maxHeight;
+  const imageAspectRatio = imageWidth / image_Height;
+
+  let newWidth, newHeight;
+
+  if (imageAspectRatio > containerAspectRatio) {
+    // Image is wider than container ratio
+    newWidth = maxWidth;
+    newHeight = maxWidth / imageAspectRatio;
+  } else {
+    // Image is taller than container ratio
+    newHeight = maxHeight;
+    newWidth = maxHeight * imageAspectRatio;
+  }
+
+  return {width: newWidth, height: newHeight};
+};
+
+/**
+ * Calculates the new position of an inner box relative to a resizing outer box.
+ *
+ * @param {number} outerWidth The current width of the outer box.
+ * @param {number} outerHeight The current height of the outer box.
+ * @param {number} initialWidth The initial width of the outer box.
+ * @param {number} initialHeight The initial height of the outer box.
+ * @param {number} initialX The initial x-coordinate of the inner box.
+ * @param {number} initialY The initial y-coordinate of the inner box.
+ * @returns {{x: number, y: number}} An object containing the new x and y coordinates of the inner box.
+ */
+export function resizeInnerBox(
+  outerWidth,
+  outerHeight,
+  initialWidth,
+  initialHeight,
+  initialX,
+  initialY,
+) {
+  const {width, height} = calculateImageDimensions(outerWidth, outerHeight);
+  const xPercent = (initialX / initialWidth) * 100;
+  const yPercent = (initialY / initialHeight) * 100;
+
+  const newX = (xPercent / 100) * width;
+  const newY = (yPercent / 100) * height;
+
+  return {x: newX, y: newY};
+}
