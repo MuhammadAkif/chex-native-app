@@ -27,6 +27,7 @@ const SignInContainer = ({navigation, route}) => {
   const [isKeyboardActive, setKeyboardActive] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
+
   const initialValues = {
     name: '',
     password: '',
@@ -35,15 +36,17 @@ const SignInContainer = ({navigation, route}) => {
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
-      handle_Hardware_Back_Press,
+      handleHardwareBackPress,
     );
     return () => backHandler.remove();
   }, []);
+
   useEffect(() => {
-    if (route.params) {
-      dispatch(showToast(route?.params?.toastMessage, 'success'));
+    if (route.params?.toastMessage) {
+      dispatch(showToast(route.params.toastMessage, 'success'));
     }
   }, [route.params]);
+
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -54,7 +57,6 @@ const SignInContainer = ({navigation, route}) => {
       handleKeyboardDidHide,
     );
 
-    // Remove event listeners when the component unmounts
     return () => {
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
@@ -68,7 +70,7 @@ const SignInContainer = ({navigation, route}) => {
   function handleKeyboardDidHide() {
     setKeyboardActive(false);
   }
-  function handle_Hardware_Back_Press() {
+  function handleHardwareBackPress() {
     if (canGoBack()) {
       goBack();
       return true;
@@ -78,45 +80,45 @@ const SignInContainer = ({navigation, route}) => {
     return false;
   }
 
-  // Focus handling starts here
   const handlePasswordFocus = () => passwordRef?.current?.focus();
-  // Focus handling ends here
-  const hidePasswordHandler = () => setHidePassword(!hidePassword);
+  const hidePasswordHandler = () => setHidePassword(prev => !prev);
   const handleForgetPassword = () => navigate(FORGET_PASSWORD);
-  const checkUserData = async (body, resetForm) => {
-    const {username, password} = body;
-
-    dispatch(signIn(username, password))
-      .then(res => onCheckUserDataSuccess(resetForm))
-      .catch(onCheckUserDataFail)
-      .finally(() => setIsSubmitting(false));
-  };
-  function onCheckUserDataSuccess(resetForm) {
-    resetForm();
-    navigate(HOME);
-  }
-  function onCheckUserDataFail(err) {
-    const {errors = null} = err?.response?.data;
-    const isWrongPassword = errors[0] === 'password is  incorrect';
-    if (isWrongPassword) {
-      Alert.alert('Login Failed', 'Wrong password. Please try again.');
-    } else {
-      Alert.alert('Login Failed', errors[0]);
+  const handleSignIn = async (values, resetForm) => {
+    if (isSubmitting) {
+      return;
     }
-  }
-  function onSubmit(values, resetForm) {
+
     setIsSubmitting(true);
-    let body = {
+    const body = {
       username: values.name.trim(),
       password: values.password.trim(),
     };
-    checkUserData(body, resetForm).then();
-  }
+
+    try {
+      await dispatch(signIn(body.username, body.password));
+      resetForm();
+      // navigate(HOME);
+    } catch (error) {
+      const errorMessage = error?.response?.data?.errors?.[0];
+      const isWrongPassword = errorMessage === 'password is  incorrect';
+
+      Alert.alert(
+        'Login Failed',
+        isWrongPassword
+          ? 'Wrong password. Please try again.'
+          : errorMessage || 'An error occurred during login',
+      );
+    } finally {
+      console.log('i am done');
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={signInValidationSchema}
-      onSubmit={(values, {resetForm}) => onSubmit(values, resetForm)}>
+      onSubmit={(values, {resetForm}) => handleSignIn(values, resetForm)}>
       {({values, errors, touched, handleChange, handleBlur, handleSubmit}) => (
         <SignInScreen
           values={values}
@@ -143,6 +145,7 @@ const SignInContainer = ({navigation, route}) => {
     </Formik>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

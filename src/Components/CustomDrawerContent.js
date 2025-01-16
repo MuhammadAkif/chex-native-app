@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useCallback} from 'react';
 import {
   View,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
   StatusBar,
+  FlatList,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -12,12 +12,10 @@ import {
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import {useDispatch, useSelector} from 'react-redux';
-import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
-import {useRoute} from '@react-navigation/native';
+import {getFocusedRouteNameFromRoute, useRoute} from '@react-navigation/native';
 
-import {SignInLogo} from './index';
+import {SignInLogo, DrawerItemText} from './index';
 import {ROUTES} from '../Navigation/ROUTES';
-import {DrawerItemText} from './index';
 import {Home, Logout, Info} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {
@@ -30,58 +28,100 @@ import {DRAWER, PROJECT_NAME} from '../Constants';
 import {IMAGES} from '../Assets/Images';
 
 const {SIGN_IN, INSPECTION_SELECTION, INTRO, NEW_INSPECTION} = ROUTES;
-const {cobaltBlue, black, red} = colors;
+const {black, red} = colors;
+const {drawer} = IMAGES;
+const {HOME, THINGS_YOU_WILL_REQUIRE, LOGOUT} = DRAWER;
 
-const CustomDrawerContent = props => {
+const DRAWER_ITEMS = [
+  {
+    id: 'home',
+    text: HOME,
+    path: INSPECTION_SELECTION,
+    Icon: props => <Home height={hp('3%')} width={wp('5%')} {...props} />,
+    textColor: black,
+  },
+  {
+    id: 'intro',
+    text: THINGS_YOU_WILL_REQUIRE,
+    path: INTRO,
+    Icon: props => <Info height={hp('2.5%')} width={wp('5%')} {...props} />,
+    textColor: black,
+  },
+  {
+    id: 'logout',
+    text: LOGOUT,
+    path: SIGN_IN,
+    Icon: props => <Logout height={hp('3%')} width={wp('5%')} {...props} />,
+    textColor: red,
+  },
+];
+
+const CustomDrawerContent = ({navigation, ...props}) => {
   const {toast} = useSelector(state => state.ui);
   const dispatch = useDispatch();
   const route = useRoute();
-  const {toggleDrawer, reset, navigate} = props.navigation;
+  const {toggleDrawer, navigate} = navigation;
   const activeRouteName = getFocusedRouteNameFromRoute(route);
-  const [previousScreen, setPreviousScreen] = useState('');
-  const [activeScreen, setActiveScreen] = useState('');
-  let activeColor = cobaltBlue;
-  const activeColorOfTextAndIcon = screen => {
-    return black;
-    // return activeRouteName.toLowerCase() === screen.toLowerCase()
-    //   ? white
-    //   : black;
-  };
+
   useEffect(() => {
-    if (
-      activeRouteName !== NEW_INSPECTION &&
-      previousScreen === NEW_INSPECTION
-    ) {
+    const isLeavingNewInspection = activeRouteName !== NEW_INSPECTION;
+
+    if (isLeavingNewInspection) {
       dispatch(clearNewInspection());
       dispatch(setRequired());
     }
-    toast.visible && dispatch(hideToast());
-    setPreviousScreen(activeRouteName);
-  }, [activeRouteName]);
 
-  const handleNavigationPress = (path, active_Screen) => {
-    // setActiveScreen(activeScreen);
-    toggleDrawer();
-    if (active_Screen === DRAWER.LOGOUT) {
-      reset({
-        index: 0,
-        routes: [{name: SIGN_IN}],
-      });
-    } else {
-      navigate(path);
+    if (toast.visible) {
+      dispatch(hideToast());
     }
-  };
-  const handleLogout = () => {
-    dispatch(signOut());
-    handleNavigationPress(SIGN_IN, DRAWER.LOGOUT);
-  };
-  return (
-    <ScrollView style={styles.body} {...props}>
+  }, [activeRouteName, dispatch, toast.visible]);
+
+  const handleNavigate = useCallback(
+    (path, itemId) => {
+      toggleDrawer();
+
+      if (itemId === 'logout') {
+        dispatch(signOut());
+        return true;
+      }
+
+      navigate(path);
+    },
+    [dispatch, navigate, toggleDrawer],
+  );
+
+  const renderDrawerItem = useCallback(
+    ({item}) => {
+      const {id, text, textColor, Icon, path} = item;
+
+      const onDrawerItemPress = () => handleNavigate(path, id);
+
+      return (
+        <DrawerItemText
+          key={id}
+          text={text}
+          textColor={textColor}
+          Icon={
+            <TouchableOpacity onPress={onDrawerItemPress}>
+              <Icon color={item.textColor} />
+            </TouchableOpacity>
+          }
+          onPress={onDrawerItemPress}
+        />
+      );
+    },
+    [handleNavigate],
+  );
+
+  const keyExtractor = useCallback(item => item.id, []);
+
+  const ListHeaderComponent = useCallback(
+    () => (
       <View style={styles.header}>
         <FastImage
-          source={IMAGES.drawer}
-          priority={'normal'}
-          resizeMode={'cover'}
+          source={drawer}
+          priority="normal"
+          resizeMode="cover"
           style={StyleSheet.absoluteFillObject}
         />
         <View style={styles.logoContainer}>
@@ -93,53 +133,37 @@ const CustomDrawerContent = props => {
           />
         </View>
       </View>
-      <DrawerItemText
-        text={DRAWER.HOME}
-        textColor={activeColorOfTextAndIcon(DRAWER.HOME)}
-        activeColor={activeScreen === DRAWER.HOME ? activeColor : 'transparent'}
-        Icon={
-          <TouchableOpacity
-            onPress={() => handleNavigationPress(INSPECTION_SELECTION, 'Home')}>
-            <Home
-              height={hp('3%')}
-              width={wp('5%')}
-              color={activeColorOfTextAndIcon('Home')}
-            />
-          </TouchableOpacity>
-        }
-        onPress={() => handleNavigationPress(INSPECTION_SELECTION, 'Home')}
-      />
-      <DrawerItemText
-        text={DRAWER.THINGS_YOU_WILL_REQUIRE}
-        textColor={activeColorOfTextAndIcon('Intro')}
-        activeColor={activeScreen === 'Intro' ? activeColor : 'transparent'}
-        Icon={
-          <Info
-            height={hp('2.5%')}
-            width={wp('5%')}
-            color={activeColorOfTextAndIcon('Intro')}
-          />
-        }
-        onPress={() => handleNavigationPress(INTRO, 'Intro ')}
-      />
-      <DrawerItemText
-        text={DRAWER.LOGOUT}
-        textColor={red}
-        Icon={
-          <TouchableOpacity onPress={handleLogout}>
-            <Logout height={hp('3%')} width={wp('5%')} color={red} />
-          </TouchableOpacity>
-        }
-        onPress={handleLogout}
-      />
-      <StatusBar backgroundColor={'transparent'} barStyle={'light-content'} />
-    </ScrollView>
+    ),
+    [],
+  );
+
+  const ListFooterComponent = useCallback(
+    () => <StatusBar backgroundColor="transparent" barStyle="light-content" />,
+    [],
+  );
+
+  return (
+    <FlatList
+      {...props}
+      data={DRAWER_ITEMS}
+      renderItem={renderDrawerItem}
+      keyExtractor={keyExtractor}
+      ListHeaderComponent={ListHeaderComponent}
+      ListFooterComponent={ListFooterComponent}
+      showsVerticalScrollIndicator={false}
+      bounces={false}
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    />
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  contentContainer: {
+    flexGrow: 1,
   },
   logo: {
     fontSize: hp('3%'),
@@ -152,8 +176,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  body: {
-    flex: 1,
-  },
 });
+
 export default CustomDrawerContent;

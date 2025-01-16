@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
 import {ROUTES} from './ROUTES';
@@ -18,77 +18,73 @@ import {
   CustomDrawerContent,
 } from '../Components';
 
-const ScreenHeaderTitle = props => <HeaderTitle {...props} />;
-const headerBackground = () => <HeaderBackground />;
-const drawerContent = props => <CustomDrawerContent {...props} />;
-const NavigatorHeaderTitle = () => <HeaderTitle />;
-const headerBackButton = () => <HeaderBackButton />;
-const screenOptions = {
-  headerTitle: NavigatorHeaderTitle,
+const Drawer = createDrawerNavigator();
+
+const SCREEN_OPTIONS = {
+  headerTitle: () => <HeaderTitle />,
   drawerType: 'front',
   drawerStatusBarAnimation: 'slide',
-  headerLeft: headerBackButton,
+  headerLeft: () => <HeaderBackButton />,
   swipeEdgeWidth: 150,
+  headerTitleAlign: 'center',
+  headerBackground: () => <HeaderBackground />,
 };
-const NavigationDrawer = ({navigation}) => {
-  const {Screen, Navigator} = createDrawerNavigator();
-  const {
-    INSPECTION_SELECTION,
-    INTRO,
-    LICENSE_PLATE_SELECTION,
-    NEW_INSPECTION,
-    INSPECTION_REVIEWED,
-    INSPECTION_DETAIL,
-    INSPECTION_IN_PROGRESS,
-  } = ROUTES;
-  const options = {
-    headerTitleAlign: 'center',
-    headerTitle: ScreenHeaderTitle,
-    headerBackground: headerBackground,
-  };
+
+const DRAWER_SCREENS = [
+  {
+    name: ROUTES.INSPECTION_SELECTION,
+    component: InspectionSelectionContainer,
+    options: {
+      headerShown: false,
+    },
+  },
+  {
+    name: ROUTES.INTRO,
+    component: IntroContainer,
+  },
+  {
+    name: ROUTES.LICENSE_PLATE_SELECTION,
+    component: LicensePlateNumberSelectionContainer,
+  },
+  {
+    name: ROUTES.NEW_INSPECTION,
+    component: NewInspectionContainer,
+  },
+  {
+    name: ROUTES.INSPECTION_REVIEWED,
+    component: InspectionReviewedContainer,
+  },
+  {
+    name: ROUTES.INSPECTION_DETAIL,
+    component: InspectionDetailContainer,
+  },
+  {
+    name: ROUTES.INSPECTION_IN_PROGRESS,
+    component: InspectionInProgressContainer,
+  },
+];
+
+const NavigationDrawer = () => {
+  const drawerContent = useMemo(
+    () => props => <CustomDrawerContent {...props} />,
+    [],
+  );
 
   return (
-    <>
-      <Navigator
-        backBehavior={'history'}
-        drawerContent={drawerContent}
-        screenOptions={screenOptions}
-        initialRouteName={INSPECTION_SELECTION}>
-        <Screen
-          name={INSPECTION_SELECTION}
-          component={InspectionSelectionContainer}
-          options={{
-            headerShown: false,
-          }}
+    <Drawer.Navigator
+      backBehavior="history"
+      drawerContent={drawerContent}
+      screenOptions={SCREEN_OPTIONS}
+      initialRouteName={ROUTES.INSPECTION_SELECTION}>
+      {DRAWER_SCREENS.map(({name, component, options = {}}) => (
+        <Drawer.Screen
+          key={name}
+          name={name}
+          component={component}
+          options={{...SCREEN_OPTIONS, ...options}}
         />
-        <Screen name={INTRO} component={IntroContainer} options={options} />
-        <Screen
-          name={LICENSE_PLATE_SELECTION}
-          component={LicensePlateNumberSelectionContainer}
-          options={options}
-        />
-        <Screen
-          name={NEW_INSPECTION}
-          component={NewInspectionContainer}
-          options={options}
-        />
-        <Screen
-          name={INSPECTION_REVIEWED}
-          component={InspectionReviewedContainer}
-          options={options}
-        />
-        <Screen
-          name={INSPECTION_DETAIL}
-          component={InspectionDetailContainer}
-          options={options}
-        />
-        <Screen
-          name={INSPECTION_IN_PROGRESS}
-          component={InspectionInProgressContainer}
-          options={options}
-        />
-      </Navigator>
-    </>
+      ))}
+    </Drawer.Navigator>
   );
 };
 

@@ -11,35 +11,39 @@ const {
 } = Types;
 
 /**
- *
- * @param username
- * @param password
- * @returns {(function(*): Promise<void>)|*}
+ * Sign in action creator
+ * @param {string} username - User's username
+ * @param {string} password - User's password
+ * @returns {(function(*): Promise<void>)} Redux thunk action
+ * @throws {Error} If login fails
  */
 export const signIn = (username, password) => async dispatch => {
-  await login(username, password)
-    .then(res => dispatch({type: SIGN_IN, payload: res}))
-    .catch(error => {
-      throw error;
-    });
+  try {
+    const response = await login(username, password);
+    if (!response) {
+      throw new Error('Invalid login response');
+    }
+    console.log('Logging in');
+    dispatch({type: SIGN_IN, payload: response});
+  } catch (error) {
+    throw error;
+  }
 };
 
 /**
- *
- * @returns {(function(*): void)|*}
+ * Sign out action creator - Clears all related states
+ * @returns {(function(*): void)} Redux thunk action
  */
-export const signOut = () => {
-  return dispatch => {
-    dispatch({type: CLEAR_INSPECTION_REVIEWED});
-    dispatch({type: CLEAR_INSPECTION_IN_PROGRESS});
-    dispatch({type: CLEAR_NEW_INSPECTION});
-    dispatch({type: SIGN_OUT});
-  };
+export const signOut = () => dispatch => {
+  dispatch({type: CLEAR_INSPECTION_REVIEWED});
+  dispatch({type: CLEAR_INSPECTION_IN_PROGRESS});
+  dispatch({type: CLEAR_NEW_INSPECTION});
+  dispatch({type: SIGN_OUT});
 };
 
 /**
- *
- * @returns {{type: string}}
+ * Session expired action creator
+ * @returns {{type: string}} Redux action
  */
 export const sessionExpired = () => ({
   type: SESSION_EXPIRED,
