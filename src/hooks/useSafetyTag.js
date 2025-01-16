@@ -460,6 +460,32 @@ const useSafetyTag = () => {
     }
   };
 
+  const startDiscovery = async () => {
+    try {
+      await requestPermissions();
+      await SafetyTagModule.startDiscovery();
+    } catch (error) {
+      console.error('Error starting discovery:', error);
+    }
+  };
+
+  const stopDiscovery = async () => {
+    try {
+      await SafetyTagModule.stopDiscoveringTags();
+    } catch (error) {
+      console.error('Error stopping discovery:', error);
+    }
+  };
+
+  const connectToDevice = async address => {
+    try {
+      await SafetyTagModule.connectToDevice(address);
+    } catch (error) {
+      console.error('Error connecting to device:', error);
+      throw error;
+    }
+  };
+
   return {
     startScanning,
     startBondScanning,
@@ -481,6 +507,9 @@ const useSafetyTag = () => {
     startAxisAlignment,
     stopAxisAlignment,
     isAlignmentRunning,
+    startDiscovery,
+    stopDiscovery,
+    connectToDevice,
   };
 };
 

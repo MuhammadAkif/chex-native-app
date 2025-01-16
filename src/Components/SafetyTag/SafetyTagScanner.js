@@ -17,6 +17,7 @@ import useSafetyTag from '../../hooks/useSafetyTag';
 import {formatRawData} from '../../Utils/helpers';
 import AccelerometerDisplay from './AccelerometerDisplay';
 import CrashTestingTool from './CrashTestingTool';
+import DeviceList from './DeviceList';
 
 const SafetyTagScanner = () => {
   const [tripData, setTripData] = useState([]);
@@ -109,10 +110,11 @@ const SafetyTagScanner = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <Button title="Scan for Safety Tag" onPress={handleScan} />
-        <Button title="Scan for Bond Safety Tag" onPress={handleBondScan} />
-        {/*<Button
+      {/*<ScrollView>*/}
+      <DeviceList />
+      <Button title="Scan for Safety Tag" onPress={handleScan} />
+      <Button title="Scan for Bond Safety Tag" onPress={handleBondScan} />
+      {/*<Button
           title="Get Safety Tag device configuration"
           onPress={handleGetDeviceConfiguration}
         />
@@ -120,30 +122,30 @@ const SafetyTagScanner = () => {
           title="Unsubscribe Device Info"
           onPress={unsubscribeFromConnectionEvents}
         />*/}
+      <Button
+        title="Disconnect connected Device"
+        onPress={handleDisconnectDevice}
+      />
+      {/*<Button title="Read battery level" onPress={readBatteryLevel} />*/}
+
+      {/*<View style={[styles.tripContainer, styles.gap]}>
+        <Button title="Query Trip Data" onPress={handleQueryTripData} />
         <Button
-          title="Disconnect connected Device"
-          onPress={handleDisconnectDevice}
+          title="Query Trip Data With Fraud"
+          onPress={handleQueryTripDataWithFraud}
         />
-        {/*<Button title="Read battery level" onPress={readBatteryLevel} />*/}
+        <FlatList
+          data={tripData}
+          renderItem={renderTripItem}
+          style={styles.tripList}
+          keyExtractor={item => item.receiveNumber.toString()}
+          contentContainerStyle={styles.listContainer}
+        />
+      </View>
 
-        <View style={[styles.tripContainer, styles.gap]}>
-          <Button title="Query Trip Data" onPress={handleQueryTripData} />
-          <Button
-            title="Query Trip Data With Fraud"
-            onPress={handleQueryTripDataWithFraud}
-          />
-          <FlatList
-            data={tripData}
-            renderItem={renderTripItem}
-            style={styles.tripList}
-            keyExtractor={item => item.receiveNumber.toString()}
-            contentContainerStyle={styles.listContainer}
-          />
-        </View>
-
-        <AccelerometerDisplay />
-        <CrashTestingTool />
-      </ScrollView>
+      <AccelerometerDisplay />
+      <CrashTestingTool />*/}
+      {/*</ScrollView>*/}
     </View>
   );
 };

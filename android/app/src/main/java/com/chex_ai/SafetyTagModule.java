@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
+import java.lang.reflect.Method;
 
 public class SafetyTagModule extends ReactContextBaseJavaModule {
     private final SafetyTagApi safetyTagApi;
@@ -828,4 +829,80 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
        promise.resolve(false);
    }
 
+   @ReactMethod
+   public void startDiscovery(Promise promise) {
+       SafetyTagFinder tagFinder = safetyTagApi.getFinder();
+       try {
+           tagFinder.startDiscoveringTags(false, scanResult -> {
+               if (scanResult instanceof SafetyTagScanResult.Success) {
+                   SafetyTagInfo tag = ((SafetyTagScanResult.Success) scanResult).getSafetyTag();
+                   
+                   // Create device info map with complete object details
+                   WritableMap deviceInfo = Arguments.createMap();
+                   deviceInfo.putString("rawObject", tag.toString());
+                   deviceInfo.putString("className", tag.getClass().getName());
+                   deviceInfo.putMap("properties", convertObjectToWritableMap(tag));
+
+                   // Send complete info to React Native
+                   WritableMap event = Arguments.createMap();
+                   event.putMap("device", deviceInfo);
+                   
+                   reactContext
+                       .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                       .emit("onDeviceFound", event);
+               }
+           });
+           promise.resolve("Started discovering devices");
+       } catch (Exception e) {
+           promise.reject("DISCOVERY_ERROR", "Failed to start device discovery", e);
+       }
+   }
+
+   private WritableMap convertObjectToWritableMap(Object object) {
+       WritableMap map = Arguments.createMap();
+       Class<?> clazz = object.getClass();
+       
+       // Get all methods
+       for (Method method : clazz.getMethods()) {
+           String methodName = method.getName();
+           // Only process getter methods
+           if (methodName.startsWith("get") || methodName.startsWith("is")) {
+               try {
+                   Object result = method.invoke(object);
+                   if (result != null) {
+                       map.putString(methodName, result.toString());
+                   }
+               } catch (Exception e) {
+                   map.putString(methodName + "_error", e.getMessage());
+               }
+           }
+       }
+       
+       return map;
+   }
+
+   @ReactMethod
+   public void connectToDevice(String address, Promise promise) {
+       SafetyTagFinder tagFinder = safetyTagApi.getFinder();
+       try {
+           tagFinder.startDiscoveringTags(false, scanResult -> {
+               if (scanResult instanceof SafetyTagScanResult.Success) {
+                   SafetyTagInfo tag = ((SafetyTagScanResult.Success) scanResult).getSafetyTag();
+                   
+                   if (tag.getTag().equals(address)) {
+                       tagFinder.stopDiscoveringTags();
+                       
+                       try {
+                           safetyTagApi.getConnection().connectToTag(tag, false, false);
+                           promise.resolve("Connected to device: " + address);
+                       } catch (Exception e) {
+                           promise.reject("CONNECTION_ERROR", "Failed to connect: " + e.getMessage());
+                       }
+                   }
+               }
+           });
+       } catch (Exception e) {
+           promise.reject("DISCOVERY_ERROR", "Failed to start device discovery: " + e.getMessage());
+       }
+   }
 }
