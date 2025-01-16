@@ -22,214 +22,269 @@ const {
   SUBMIT_INSPECTION,
 } = API_ENDPOINTS;
 
+/**
+ * Error handler for inspection service
+ * @param {Error} error - The error object
+ * @param {string} operation - The operation that failed
+ * @throws {Error} Rethrows the error with additional context
+ */
+const handleError = (error, operation) => {
+  console.error(`${operation} error:`, error?.message || error);
+  throw error;
+};
+
+/**
+ * Creates a new inspection
+ * @param {string} companyId - Company identifier
+ * @returns {Promise<Object>} Created inspection data
+ */
 export const createInspection = async companyId => {
-  const body = {
-    licensePlateNumber: generateRandomString(),
-    companyId,
-  };
   try {
-    return await api.post(CREATE_INSPECTION_URL, body);
+    return await api.post(CREATE_INSPECTION_URL, {
+      licensePlateNumber: generateRandomString(),
+      companyId,
+    });
   } catch (error) {
-    console.error('Create inspection error:', error);
-    throw error;
+    handleError(error, 'Create inspection');
   }
 };
 
+/**
+ * Removes an inspection by ID
+ * @param {string} inspectionId - Inspection identifier
+ * @returns {Promise<Object>} Deletion response
+ */
 export const removeInspection = async inspectionId => {
   const endPoint = generateApiUrl(`delete/inspection/${inspectionId}?type=app`);
   try {
     return await api.delete(endPoint);
   } catch (error) {
-    console.error('Inspection remove error:', error);
-    throw error;
+    handleError(error, 'Inspection remove');
   }
 };
 
+/**
+ * Gets inspection details by ID
+ * @param {string} inspectionId - Inspection identifier
+ * @returns {Promise<Object>} Inspection details
+ */
 export const getInspectionDetails = async inspectionId => {
-  const endPoint = generateApiUrl(`files/details/${inspectionId}`);
-
   try {
-    return await api.get(endPoint);
+    return await api.get(generateApiUrl(`files/details/${inspectionId}`));
   } catch (error) {
-    console.error('Fetching inspection details error:', error);
-    throw error;
+    handleError(error, 'Fetching inspection details');
   }
 };
 
+/**
+ * Extracts number plate information
+ * @param {string} licensePlateNumber - License plate number
+ * @param {string} companyId - Company identifier
+ * @param {string} inspectionId - Inspection identifier
+ * @returns {Promise<Object>} Extraction results
+ */
 export const extractNumberPlate = async (
   licensePlateNumber,
   companyId,
   inspectionId,
 ) => {
-  const body = {
-    licensePlateNumber,
-    companyId,
-    inspectionId,
-  };
-
   try {
-    return await api.post(EXTRACT_NUMBER_PLATE_URL, body);
+    return await api.post(EXTRACT_NUMBER_PLATE_URL, {
+      licensePlateNumber,
+      companyId,
+      inspectionId,
+    });
   } catch (error) {
-    console.error('License plate extraction error:', error);
-    throw error;
+    handleError(error, 'License plate extraction');
   }
 };
 
+/**
+ * Gets vehicle tire status
+ * @param {string} inspectionId - Inspection identifier
+ * @returns {Promise<Object>} Tire status information
+ */
 export const vehicleTireStatus = async inspectionId => {
-  const body = {
-    inspectionId,
-  };
   try {
-    return await api.post(INSPECTION_TIRE_STATUS_URL, body);
+    return await api.post(INSPECTION_TIRE_STATUS_URL, {inspectionId});
   } catch (error) {
-    console.error('Vehicle tire status check error:', error);
-    throw error;
+    handleError(error, 'Vehicle tire status check');
   }
 };
 
+/**
+ * Clears tire information
+ * @param {string[]} fileIds - Array of file identifiers
+ * @returns {Promise<Object>} Clear operation response
+ */
 export const clearTires = async (fileIds = []) => {
-  const body = {fileId: fileIds};
-
   try {
-    return await api.post(REMOVE_ALL_TIRES_URL, body);
+    return await api.post(REMOVE_ALL_TIRES_URL, {fileId: fileIds});
   } catch (error) {
-    console.error('Tires removing error:', error);
-    throw error;
+    handleError(error, 'Tires removing');
   }
 };
 
+/**
+ * Submits image annotation data
+ * @param {Array} coordinateArray - Array of coordinates
+ * @param {string} inspectionId - Inspection identifier
+ * @param {string} fileId - File identifier
+ * @returns {Promise<Object>} Annotation submission response
+ */
 export const imageAnnotation = async (
   coordinateArray,
   inspectionId,
   fileId,
 ) => {
-  const body = {coordinateArray, inspectionId, fileId};
-
   try {
-    return await api.post(ANNOTATION_URL, body);
-  } catch (error) {
-    console.error('Image annotation submission error:', error);
-    throw error;
-  }
-};
-
-export const inspectionDetails = async inspectionId => {
-  const endPoint = generateApiUrl(`files/app/${inspectionId}`);
-
-  try {
-    return await api.get(endPoint);
-  } catch (error) {
-    console.error('Inspection details error:', error);
-    throw error;
-  }
-};
-
-export const fetchAllInspections = async status => {
-  const body = {
-    status,
-  };
-
-  try {
-    return await api.post(FETCH_IN_PROGRESS_URL, body);
-  } catch (error) {
-    console.error('Inspection details error:', error);
-    throw error;
-  }
-};
-
-export const extractLicensePlateAI = async image_url => {
-  const body = {image_url};
-  const headers = {
-    api_token: AI_API_TOKEN,
-  };
-  try {
-    return await api.post(EXTRACT_NUMBER_PLATE_WITH_AI, body, {
-      headers: headers,
+    return await api.post(ANNOTATION_URL, {
+      coordinateArray,
+      inspectionId,
+      fileId,
     });
   } catch (error) {
-    console.error('License Plate AI Extraction error:', error);
-    throw error;
+    handleError(error, 'Image annotation submission');
   }
 };
 
-export const s3SignedUrl = async (
+/**
+ * Gets detailed inspection information
+ * @param {string} inspectionId - Inspection identifier
+ * @returns {Promise<Object>} Detailed inspection data
+ */
+export const inspectionDetails = async inspectionId => {
+  try {
+    return await api.get(generateApiUrl(`files/app/${inspectionId}`));
+  } catch (error) {
+    handleError(error, 'Inspection details');
+  }
+};
+
+/**
+ * Fetches all inspections by status
+ * @param {string} status - Inspection status to filter by
+ * @returns {Promise<Object>} List of inspections
+ */
+export const fetchAllInspections = async status => {
+  try {
+    return await api.post(FETCH_IN_PROGRESS_URL, {status});
+  } catch (error) {
+    handleError(error, 'Fetch all inspections');
+  }
+};
+
+/**
+ * Extracts license plate using AI
+ * @param {string} image_url - URL of the image to process
+ * @returns {Promise<Object>} AI extraction results
+ */
+export const extractLicensePlateAI = async image_url => {
+  try {
+    return await api.post(
+      EXTRACT_NUMBER_PLATE_WITH_AI,
+      {image_url},
+      {headers: {api_token: AI_API_TOKEN}},
+    );
+  } catch (error) {
+    handleError(error, 'License Plate AI Extraction');
+  }
+};
+
+/**
+ * Gets S3 signed URL for file upload
+ * @param {Object} params - Upload parameters
+ * @param {string} [params.type=''] - File type
+ * @param {string} [params.source=''] - Source of the file
+ * @param {string} [params.inspectionId=''] - Inspection identifier
+ * @param {string} [params.categoryName=''] - Category name
+ * @param {string} [params.variant=''] - Variant information
+ * @param {string} [params.companyId=''] - Company identifier
+ * @returns {Promise<Object>} Signed URL data
+ */
+export const s3SignedUrl = async ({
   type = '',
   source = '',
   inspectionId = '',
   categoryName = '',
   variant = '',
   companyId = '',
-) => {
-  const data = {type, source, inspectionId, categoryName, variant, companyId};
-  // const data = {type};
-
+} = {}) => {
   try {
-    return await api.post(UPLOAD_URL, data);
+    return await api.post(UPLOAD_URL, {
+      type,
+      source,
+      inspectionId,
+      categoryName,
+      variant,
+      companyId,
+    });
   } catch (error) {
-    console.error('Getting s3 signed url error:', error);
-    throw error;
-  }
-};
-
-export const uploadFileToDatabase = async (inspectionId, body) => {
-  const endPoint = generateApiUrl(`vehicle/${inspectionId}/file`);
-
-  try {
-    return await api.post(endPoint, body);
-  } catch (error) {
-    console.error('Getting s3 signed url error:', error);
-    throw error;
-  }
-};
-
-export const deleteImageFromDatabase = async fileId => {
-  const endPoint = generateApiUrl(`files/${fileId}`);
-
-  try {
-    return await api.delete(endPoint);
-  } catch (error) {
-    console.error('Deleting image from database error:', error);
-    throw error;
-  }
-};
-
-export const location = async inspectionId => {
-  const body = {
-    isLocation: true,
-    inspectionId,
-  };
-
-  try {
-    return await api.put(LOCATION_URL, body);
-  } catch (error) {
-    console.error('location error:', error);
-    throw error;
+    handleError(error, 'Getting s3 signed url');
   }
 };
 
 /**
- * Submits an inspection using its ID.
- * This function makes a PATCH request to submit inspection data by its ID.
- *
- * @param {string} [inspectionId=''] The unique identifier of the inspection. Default to an empty string if not provided.
- * @param {string} [companyId=''] The unique identifier of the company submitting the inspection. Default to an empty string if not provided.
- * @param {string|null} [driverComment=null] Optional driver comments for the inspection. Default to `null` if not provided.
- * @returns {Promise<axios.AxiosResponse<any>>} A promise that resolves to the Axios response object, containing the result of the PATCH request.
- * @throws {Error} If the request fails, it will throw an error.
+ * Uploads file to database
+ * @param {string} inspectionId - Inspection identifier
+ * @param {Object} body - Upload body data
+ * @returns {Promise<Object>} Upload response
+ */
+export const uploadFileToDatabase = async (inspectionId, body) => {
+  try {
+    return await api.post(generateApiUrl(`vehicle/${inspectionId}/file`), body);
+  } catch (error) {
+    handleError(error, 'Upload file to database');
+  }
+};
+
+/**
+ * Deletes image from database
+ * @param {string} fileId - File identifier
+ * @returns {Promise<Object>} Deletion response
+ */
+export const deleteImageFromDatabase = async fileId => {
+  try {
+    return await api.delete(generateApiUrl(`files/${fileId}`));
+  } catch (error) {
+    handleError(error, 'Deleting image from database');
+  }
+};
+
+/**
+ * Updates location information
+ * @param {string} inspectionId - Inspection identifier
+ * @returns {Promise<Object>} Location update response
+ */
+export const location = async inspectionId => {
+  try {
+    return await api.put(LOCATION_URL, {
+      isLocation: true,
+      inspectionId,
+    });
+  } catch (error) {
+    handleError(error, 'Location update');
+  }
+};
+
+/**
+ * Submits an inspection
+ * @param {string} [inspectionId=''] - Inspection identifier
+ * @param {string} [companyId=''] - Company identifier
+ * @param {string|null} [driverComment=null] - Optional driver comments
+ * @returns {Promise<Object>} Submission response
  */
 export const inspectionSubmission = async (
   inspectionId = '',
   companyId = '',
   driverComment = null,
 ) => {
-  const endPoint = generateApiUrl(`inspection/${inspectionId}`);
-
-  const body = {driverComment};
   try {
-    return await api.patch(endPoint, body);
+    return await api.patch(generateApiUrl(`inspection/${inspectionId}`), {
+      driverComment,
+    });
   } catch (error) {
-    console.error('Inspection submission error:', error);
-    throw error;
+    handleError(error, 'Inspection submission');
   }
 };
 
@@ -294,27 +349,30 @@ export const isImageDarkWithAI = async image_url => {
 };
 
 export const ai_Mileage_Extraction = async image_url => {
-  const body = {
-    image_url,
-  };
-  const config = {headers: {api_token: AI_API_TOKEN}};
-
   try {
-    return await api.post(MILEAGE_EXTRACTION, body, config);
+    return await api.post(
+      MILEAGE_EXTRACTION,
+      {image_url},
+      {headers: {api_token: AI_API_TOKEN}},
+    );
   } catch (error) {
-    console.error('Mileage extraction error:', error.message);
-    throw error;
+    handleError(error, 'Mileage extraction');
   }
 };
 
+/**
+ * Updates mileage in database
+ * @param {string|number} milage - Mileage value to update
+ * @param {string} inspectionId - Inspection identifier
+ * @returns {Promise<Object>} Update response
+ */
 export const updateMileageInDB = async (milage, inspectionId) => {
-  const endPoint = generateApiUrl(`update/vehicle/milage/${inspectionId}`);
-
-  const body = {milage};
   try {
-    return await api.put(endPoint, body);
+    return await api.put(
+      generateApiUrl(`update/vehicle/milage/${inspectionId}`),
+      {milage},
+    );
   } catch (error) {
-    console.error('Mileage update error:', error.message);
-    throw error;
+    handleError(error, 'Mileage update');
   }
 };

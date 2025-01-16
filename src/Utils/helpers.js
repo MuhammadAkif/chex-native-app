@@ -25,6 +25,11 @@ export const instructionsContainerTop = {
   true: hp('25%'),
   false: null,
 };
+
+/**
+ * Constants for inspection status
+ * @constant {Object}
+ */
 export const INSPECTION_STATUS = {
   true: 'No Damage Detected',
   false: 'Damage Detected',
@@ -116,16 +121,17 @@ const vehichle_Categories = {
 };
 
 export function checkAndCompleteUrl(url, paramsToCheck = []) {
-  const domainsToCheck = [
-    'chex-dsp-files.s3.amazonaws.com/',
-    'chex-dsp.s3.amazonaws.com',
-    'chex-ai-uploads.s3.amazonaws.com',
-  ];
-  const defaultDomains = {
+  const DOMAINS = {
     dsp: 'https://chex-dsp.s3.amazonaws.com',
     uploads: 'https://chex-ai-uploads.s3.amazonaws.com',
     'dsp-files': 'https://chex-dsp-files.s3.amazonaws.com',
   };
+
+  const DOMAINS_TO_CHECK = [
+    'chex-dsp-files.s3.amazonaws.com/',
+    'chex-dsp.s3.amazonaws.com',
+    'chex-ai-uploads.s3.amazonaws.com',
+  ];
 
   const result = {
     completedUrl: url,
@@ -135,40 +141,30 @@ export function checkAndCompleteUrl(url, paramsToCheck = []) {
     errors: [],
   };
 
-  // Handle edge case: Empty or null URL
   if (!url || typeof url !== 'string') {
     result.isValidUrl = false;
     result.errors.push('Invalid URL: URL is empty or not a string.');
     return result;
   }
 
-  // Check if the URL is already complete
   if (!url.startsWith('http')) {
-    // Determine the correct default domain based on the path prefix
     const pathPrefix = url.split('/')[0];
-    let baseDomain = defaultDomains[pathPrefix] || defaultDomains.uploads;
-
-    // Construct the complete URL
-    url = `${baseDomain.replace(/\/+$/, '')}/${url.replace(/^\/+/, '')}`; // Removes extra slashes
+    const baseDomain = DOMAINS[pathPrefix] || DOMAINS.uploads;
+    url = `${baseDomain.replace(/\/+$/, '')}/${url.replace(/^\/+/, '')}`;
     result.completedUrl = url;
   }
 
   try {
     const urlObj = new URL(url);
-
-    // Check for specified parameters in the URL if paramsToCheck is not empty
     if (paramsToCheck.length > 0) {
       paramsToCheck.forEach(param => {
         result.parameters[param] = urlObj.searchParams.has(param);
       });
     }
-
-    // Check if the URL's domain matches any specified domains
-    result.domainMatch = domainsToCheck.some(domain =>
+    result.domainMatch = DOMAINS_TO_CHECK.some(domain =>
       urlObj.hostname.includes(domain),
     );
   } catch (error) {
-    // Handle invalid URL format
     result.isValidUrl = false;
     result.errors.push('Invalid URL format.');
   }
@@ -176,41 +172,39 @@ export function checkAndCompleteUrl(url, paramsToCheck = []) {
   return result;
 }
 
+/**
+ * Appends 'mi' to a string if it doesn't already have it
+ * @param {string} str - The string to process
+ * @returns {string} The processed string with 'mi' appended if necessary
+ */
 export function insertMileage(str) {
-  if (isNotEmpty(str.trim())) {
-    if (str.includes('mi')) {
-      return str;
-    } else {
-      return str + 'mi';
-    }
+  if (!isNotEmpty(str?.trim())) {
+    return str;
   }
+  return str.includes('mi') ? str : `${str}mi`;
 }
 
 /**
- * Extracts the MIME type of image based on its file path.
- * If no extension is found, defaults to 'jpeg'.
- *
- * @returns {string} The MIME type, defaulting to 'image/jpeg'.
- * @param path
+ * Gets the MIME type of a file based on its extension
+ * @param {string} path - The file path
+ * @returns {string} The MIME type
  */
 export const getFileMimeType = path => {
   if (!path) {
     console.warn('Invalid file path passed to getImageMimeType.');
     return 'image/jpeg';
   }
-
-  const extension = path.split('.').pop() || 'jpeg';
+  const extension = path.split('.').pop()?.toLowerCase() || 'jpeg';
   return `image/${extension}`;
 };
+
 /**
- * Removes all alphabetic characters and retains only numbers and decimals from a string.
- *
- * @param {string|null|undefined} input - The string from which to remove alphabetic characters. Can be null or undefined.
- * @returns {string} - The cleaned string containing only numeric characters and a single decimal point (if applicable).
- * @throws {TypeError} - Throws an error if the input is not a string, null, or undefined.
+ * Removes all non-numeric characters except decimal point from a string
+ * @param {string|null|undefined} input - The input string
+ * @returns {string} The cleaned string containing only numbers and at most one decimal point
+ * @throws {TypeError} If input is not a string, null, or undefined
  */
 export function removeAlphabets(input) {
-  // Check for invalid input types (null, undefined, or non-string)
   if (input === null || input === undefined) {
     return '';
   }
@@ -219,71 +213,49 @@ export function removeAlphabets(input) {
     throw new TypeError('Input must be a string');
   }
 
-  // Remove all non-numeric and non-decimal characters
-  let cleanedInput = input.replace(/[^0-9.]/g, '');
-
-  // Ensure only one decimal point is present in the result
-  const decimalCount = (cleanedInput.match(/\./g) || []).length;
-  if (decimalCount > 1) {
-    // If more than one decimal, remove the extra decimals (keeping the first one)
-    cleanedInput = cleanedInput.replace(/\.(?=.*\.)/g, '');
-  }
-
-  // Return the cleaned input, ensuring it’s not empty
-  return cleanedInput || '0';
+  const cleanedInput = input.replace(/[^0-9.]/g, '');
+  return cleanedInput.replace(/\.(?=.*\.)/g, '') || '0';
 }
 
 /**
- * Calculates the new dimensions for an image to fit within a specified container size,
- * preserving the aspect ratio of the original image.
- *
- * @param {number} imageWidth - The original width of the image.
- * @param {number} image_Height - The original height of the image.
- * @param {number} [maxWidth=800] - The maximum allowable width of the image in the container.
- * @param {number} [maxHeight=480] - The maximum allowable height of the image in the container.
- *
- * @returns {Object} The new dimensions for the image.
- * @returns {number} return.width - The calculated width of the image, adjusted for aspect ratio.
- * @returns {number} return.height - The calculated height of the image, adjusted for aspect ratio.
- *
- * @example
- * const newDimensions = calculateImageDimensions(1200, 600, 800, 480);
- * console.log(newDimensions); // { width: 800, height: 400 }
+ * Calculates dimensions to fit an image within specified bounds while maintaining aspect ratio
+ * @param {number} imageWidth - Original image width
+ * @param {number} imageHeight - Original image height
+ * @param {number} [maxWidth=800] - Maximum allowed width
+ * @param {number} [maxHeight=480] - Maximum allowed height
+ * @returns {{width: number, height: number}} New dimensions
  */
-const calculateImageDimensions = (
+export const calculateImageDimensions = (
   imageWidth,
-  image_Height,
+  imageHeight,
   maxWidth = 800,
   maxHeight = 480,
 ) => {
   const containerAspectRatio = maxWidth / maxHeight;
-  const imageAspectRatio = imageWidth / image_Height;
-
-  let newWidth, newHeight;
+  const imageAspectRatio = imageWidth / imageHeight;
 
   if (imageAspectRatio > containerAspectRatio) {
-    // Image is wider than container ratio
-    newWidth = maxWidth;
-    newHeight = maxWidth / imageAspectRatio;
-  } else {
-    // Image is taller than container ratio
-    newHeight = maxHeight;
-    newWidth = maxHeight * imageAspectRatio;
+    return {
+      width: maxWidth,
+      height: maxWidth / imageAspectRatio,
+    };
   }
 
-  return {width: newWidth, height: newHeight};
+  return {
+    width: maxHeight * imageAspectRatio,
+    height: maxHeight,
+  };
 };
 
 /**
- * Calculates the new position of an inner box relative to a resizing outer box.
- *
- * @param {number} outerWidth The current width of the outer box.
- * @param {number} outerHeight The current height of the outer box.
- * @param {number} initialWidth The initial width of the outer box.
- * @param {number} initialHeight The initial height of the outer box.
- * @param {number} initialX The initial x-coordinate of the inner box.
- * @param {number} initialY The initial y-coordinate of the inner box.
- * @returns {{x: number, y: number}} An object containing the new x and y coordinates of the inner box.
+ * Calculates new position of an inner box during outer box resize
+ * @param {number} outerWidth - Current outer box width
+ * @param {number} outerHeight - Current outer box height
+ * @param {number} initialWidth - Initial outer box width
+ * @param {number} initialHeight - Initial outer box height
+ * @param {number} initialX - Initial inner box X position
+ * @param {number} initialY - Initial inner box Y position
+ * @returns {{x: number, y: number}} New position coordinates
  */
 export function resizeInnerBox(
   outerWidth,
@@ -297,8 +269,8 @@ export function resizeInnerBox(
   const xPercent = (initialX / initialWidth) * 100;
   const yPercent = (initialY / initialHeight) * 100;
 
-  const newX = (xPercent / 100) * width;
-  const newY = (yPercent / 100) * height;
-
-  return {x: newX, y: newY};
+  return {
+    x: (xPercent / 100) * width,
+    y: (yPercent / 100) * height,
+  };
 }
