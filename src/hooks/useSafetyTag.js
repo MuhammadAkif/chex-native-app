@@ -199,6 +199,13 @@ const useSafetyTag = () => {
       console.log('On Crash Threshold Event', thresholdEvent);
     });
 
+    DeviceEventEmitter.addListener('onDeviceFound', event => {
+      /*console.log(
+            'Complete Device Info:',
+            JSON.stringify(event.device, null, 2),
+          );*/
+    });
+
     // Call the native method to start listening for connection events
     console.log('Starting to listen for connection events...');
     await SafetyTagModule.notifyOnDeviceReady();
@@ -479,9 +486,18 @@ const useSafetyTag = () => {
 
   const connectToDevice = async address => {
     try {
-      await SafetyTagModule.connectToDevice(address);
+      return await SafetyTagModule.connectToDevice(address);
     } catch (error) {
       console.error('Error connecting to device:', error);
+      throw error;
+    }
+  };
+
+  const connectToBondedDevice = async address => {
+    try {
+      return await SafetyTagModule.connectToBondedDevice(address);
+    } catch (error) {
+      console.error('Error connecting to bonded device:', error);
       throw error;
     }
   };
@@ -510,6 +526,7 @@ const useSafetyTag = () => {
     startDiscovery,
     stopDiscovery,
     connectToDevice,
+    connectToBondedDevice,
   };
 };
 

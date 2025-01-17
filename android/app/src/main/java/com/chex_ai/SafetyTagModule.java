@@ -885,16 +885,30 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
    public void connectToDevice(String address, Promise promise) {
        SafetyTagFinder tagFinder = safetyTagApi.getFinder();
        try {
+           final String normalizedRequestedAddress = address.trim().toUpperCase();
+           
            tagFinder.startDiscoveringTags(false, scanResult -> {
                if (scanResult instanceof SafetyTagScanResult.Success) {
                    SafetyTagInfo tag = ((SafetyTagScanResult.Success) scanResult).getSafetyTag();
-                   
-                   if (tag.getTag().equals(address)) {
+                   // Normalize the found tag address
+                   String normalizedFoundAddress = tag.getTag().toString().trim().toUpperCase();
+
+                   if (normalizedFoundAddress.equals(normalizedRequestedAddress)) {
                        tagFinder.stopDiscoveringTags();
                        
                        try {
+                           // Connect regardless of bond status
                            safetyTagApi.getConnection().connectToTag(tag, false, false);
-                           promise.resolve("Connected to device: " + address);
+                           
+                           // Send appropriate event based on bond status
+                           WritableMap event = Arguments.createMap();
+                           event.putString("address", address);
+                           event.putString("status", tag.isBonded() ? "BONDED" : "UNBONDED");
+                           reactContext
+                               .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                               .emit("onDeviceConnected", event);
+                           
+                           promise.resolve("Connected to device: " + address + " (Bond status: " + (tag.isBonded() ? "bonded" : "unbonded") + ")");
                        } catch (Exception e) {
                            promise.reject("CONNECTION_ERROR", "Failed to connect: " + e.getMessage());
                        }
@@ -903,6 +917,59 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
            });
        } catch (Exception e) {
            promise.reject("DISCOVERY_ERROR", "Failed to start device discovery: " + e.getMessage());
+       }
+   }
+
+   @ReactMethod
+   public void connectToBondedDevice(String address, Promise promise) {
+       SafetyTagFinder tagFinder = safetyTagApi.getFinder();
+       try {
+           final String normalizedRequestedAddress = address.trim().toUpperCase();
+           final long startTime = System.currentTimeMillis();
+           final long TIMEOUT = 30000; // 30 seconds timeout
+           
+           tagFinder.startDiscoveringTags(false, scanResult -> {
+               if (System.currentTimeMillis() - startTime > TIMEOUT) {
+                   tagFinder.stopDiscoveringTags();
+                   promise.reject("TIMEOUT_ERROR", "Device discovery timed out after 30 seconds");
+                   return;
+               }
+
+               if (scanResult instanceof SafetyTagScanResult.Success) {
+                   SafetyTagInfo tag = ((SafetyTagScanResult.Success) scanResult).getSafetyTag();
+                   String normalizedFoundAddress = tag.getTag().toString().trim().toUpperCase();
+
+                   if (normalizedFoundAddress.equals(normalizedRequestedAddress)) {
+                       if (tag.isBonded()) {
+                           tagFinder.stopDiscoveringTags();
+                           try {
+                               safetyTagApi.getConnection().connectToTag(tag, false, false);
+                               
+                               // Send success event
+                               WritableMap event = Arguments.createMap();
+                               event.putString("address", address);
+                               event.putString("status", "CONNECTED");
+                               reactContext
+                                   .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                                   .emit("onBondedDeviceConnected", event);
+                               
+                               promise.resolve("Connected to bonded device: " + address);
+                           } catch (Exception e) {
+                               promise.reject("CONNECTION_ERROR", "Failed to connect to bonded device: " + e.getMessage());
+                           }
+                       } else {
+                           tagFinder.stopDiscoveringTags();
+                           promise.reject("BOND_ERROR", "Device found but not bonded: " + address);
+                       }
+                   }
+               } else if (scanResult instanceof SafetyTagScanResult.Error) {
+                   String errorDetails = ((SafetyTagScanResult.Error) scanResult).getError().toString();
+                   tagFinder.stopDiscoveringTags();
+                   promise.reject("SCAN_ERROR", "Scan error: " + errorDetails);
+               }
+           });
+       } catch (Exception e) {
+           promise.reject("DISCOVERY_ERROR", "Failed to start bonded device discovery: " + e.getMessage());
        }
    }
 }

@@ -13,17 +13,20 @@ import {colors} from '../../Assets/Styles';
 
 const DeviceList = () => {
   const [devices, setDevices] = useState([]);
-  const {startDiscovery, stopDiscovery, connectToDevice} = useSafetyTag();
+  const {
+    startDiscovery,
+    stopDiscovery,
+    connectToDevice,
+    connectToBondedDevice,
+  } = useSafetyTag();
 
   useEffect(() => {
-    // Start discovering devices
     startDiscovery().then();
 
-    // Listen for device discovery events
     const deviceSubscription = DeviceEventEmitter.addListener(
       'onDeviceFound',
       event => {
-        /*        console.log(
+        /*console.log(
           'Complete Device Info:',
           JSON.stringify(event.device, null, 2),
         );*/
@@ -49,8 +52,13 @@ const DeviceList = () => {
 
   const handleDeviceSelect = async device => {
     try {
-      console.log('Device tag: ', device.properties.getTag);
-      await connectToDevice(device.properties.getTag);
+      let status = null;
+      if (device.properties.isBonded) {
+        status = await connectToBondedDevice(device.properties.getTag);
+      } else {
+        status = await connectToDevice(device.properties.getTag);
+      }
+      console.log({status});
     } catch (error) {
       console.error('Failed to connect:', error);
     }

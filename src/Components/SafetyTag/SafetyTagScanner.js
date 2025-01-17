@@ -15,8 +15,6 @@ import {
 
 import useSafetyTag from '../../hooks/useSafetyTag';
 import {formatRawData} from '../../Utils/helpers';
-import AccelerometerDisplay from './AccelerometerDisplay';
-import CrashTestingTool from './CrashTestingTool';
 import DeviceList from './DeviceList';
 
 const SafetyTagScanner = () => {
