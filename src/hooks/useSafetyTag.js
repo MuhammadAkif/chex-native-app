@@ -88,35 +88,6 @@ const useSafetyTag = () => {
     }
   };
 
-  const startBackgroundScanning = async () => {
-    try {
-      console.log('Starting background scanning...');
-      await SafetyTagModule.startScanInBackground();
-      console.log('Background scanning started successfully.');
-
-      // Listen for discovered tags
-      DeviceEventEmitter.addListener('onSafetyTagFound', tagInfo => {
-        console.log('Safety Tag found:', tagInfo);
-        // Handle the discovered tag (e.g., connect automatically)
-      });
-    } catch (error) {
-      console.error('Error starting background scanning:', error);
-    }
-  };
-
-  const stopBackgroundScanning = async () => {
-    try {
-      console.log('Stopping background scanning...');
-      await SafetyTagModule.stopScanInBackground();
-      console.log('Background scanning stopped successfully.');
-
-      // Remove listeners
-      DeviceEventEmitter.removeAllListeners('onSafetyTagFound');
-    } catch (error) {
-      console.error('Error stopping background scanning:', error);
-    }
-  };
-
   const handleTripStart = event => {
     console.log(
       `Trip started! Trip Number: ${event.tripNumber}, Start Time: ${new Date(
@@ -502,6 +473,166 @@ const useSafetyTag = () => {
     }
   };
 
+  const startBackgroundScanning = async intervalMinutes => {
+    try {
+      console.log('Starting background scanning...');
+      await requestPermissions();
+
+      const hasBackgroundPermission = await requestBackgroundPermission();
+      if (!hasBackgroundPermission) {
+        throw new Error('Background location permission not granted');
+      }
+
+      if (intervalMinutes) {
+        await SafetyTagModule.startBackgroundScanWithInterval(intervalMinutes);
+        console.log(
+          `Background scanning started with ${intervalMinutes} minute interval`,
+        );
+      } else {
+        await SafetyTagModule.startBackgroundScan();
+        console.log('Background scanning started with default interval');
+      }
+
+      // Enhanced event listeners with more detailed logging
+      DeviceEventEmitter.addListener('onBackgroundDeviceFound', event => {
+        console.log('🔍 Background Device Found:', {
+          name: event.deviceName,
+          address: event.deviceAddress,
+          timestamp: new Date().toISOString(),
+        });
+      });
+      DeviceEventEmitter.addListener('onBackgroundDeviceConnected', event => {
+        console.log('onBackgroundDeviceConnected: ', event);
+      });
+
+      DeviceEventEmitter.addListener('onFoundSafetyTagInfo', event => {
+        console.log('onFoundSafetyTagInfo: ', event);
+      });
+
+      DeviceEventEmitter.addListener('onBackgroundScanError', event => {
+        console.warn('⚠️ Background Scan Error:', {
+          status: event.status,
+          timestamp: new Date().toISOString(),
+        });
+      });
+
+      // Add status check listener
+      DeviceEventEmitter.addListener('onBackgroundScanStatusChange', event => {
+        console.log('📡 Background Scan Status:', {
+          status: event.status,
+          timestamp: new Date().toISOString(),
+        });
+      });
+    } catch (error) {
+      console.error('❌ Background Scan Error:', error);
+      throw error;
+    }
+  };
+
+  const stopBackgroundScanning = async () => {
+    try {
+      console.log('Stopping background scanning...');
+      await SafetyTagModule.stopBackgroundScan();
+      console.log('Background scanning stopped successfully.');
+
+      // Remove listeners
+      DeviceEventEmitter.removeAllListeners('onBackgroundDeviceFound');
+      DeviceEventEmitter.removeAllListeners('onBackgroundScanError');
+    } catch (error) {
+      console.error('Error stopping background scanning:', error);
+      throw error;
+    }
+  };
+
+  const isBackgroundScanningActive = async () => {
+    try {
+      const isActive = await SafetyTagModule.isBackgroundScanActive();
+      const status = await SafetyTagModule.getBackgroundScanStatus();
+      console.log('Background Scan Check:', {
+        isActive,
+        status,
+        timestamp: new Date().toISOString(),
+      });
+      return isActive;
+    } catch (error) {
+      console.error('Error checking background scan status:', error);
+      return false;
+    }
+  };
+
+  const getBackgroundScanStatus = async () => {
+    try {
+      return await SafetyTagModule.getBackgroundScanStatus();
+    } catch (error) {
+      console.error('Error getting background scan status:', error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    // Subscribe to background device events
+    const subscription = DeviceEventEmitter.addListener(
+      'onBackgroundDeviceFound',
+      device => {
+        console.log('Background device found:', device);
+      },
+    );
+
+    // Start background scan
+    SafetyTagModule.startBackgroundScan()
+      .then(() => console.log('Background scan started'))
+      .catch(error => console.error('Failed to start background scan:', error));
+
+    return () => {
+      // Clean up
+      subscription.remove();
+      SafetyTagModule.stopBackgroundScan().catch(error =>
+        console.error('Failed to stop background scan:', error),
+      );
+    };
+  }, []);
+
+  const checkAndEnableAutoConnect = async () => {
+    try {
+      const isEnabled = await SafetyTagModule.isAutoConnectEnabled();
+      console.log('Auto-connect status:', isEnabled);
+      return isEnabled;
+    } catch (error) {
+      console.error('Error checking auto-connect status:', error);
+      return false;
+    }
+  };
+
+  const addDeviceToAutoConnect = async deviceAddress => {
+    try {
+      await SafetyTagModule.addTagToAutoConnect(deviceAddress);
+      return true;
+    } catch (error) {
+      console.error('Error adding device to auto-connect:', error);
+      return false;
+    }
+  };
+
+  const removeDeviceFromAutoConnect = async deviceAddress => {
+    try {
+      await SafetyTagModule.removeTagFromAutoConnect(deviceAddress);
+      return true;
+    } catch (error) {
+      console.error('Error removing device from auto-connect:', error);
+      return false;
+    }
+  };
+
+  const clearAutoConnectList = async () => {
+    try {
+      await SafetyTagModule.clearAutoConnectList();
+      return true;
+    } catch (error) {
+      console.error('Error clearing auto-connect list:', error);
+      return false;
+    }
+  };
+
   return {
     startScanning,
     startBondScanning,
@@ -527,6 +658,12 @@ const useSafetyTag = () => {
     stopDiscovery,
     connectToDevice,
     connectToBondedDevice,
+    isBackgroundScanningActive,
+    getBackgroundScanStatus,
+    checkAndEnableAutoConnect,
+    addDeviceToAutoConnect,
+    removeDeviceFromAutoConnect,
+    clearAutoConnectList,
   };
 };
 

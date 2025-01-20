@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {
   View,
-  Button,
   Text,
   Alert,
   StyleSheet,
-  FlatList,
-  ScrollView,
+  DeviceEventEmitter,
+  Button,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -19,6 +18,9 @@ import DeviceList from './DeviceList';
 
 const SafetyTagScanner = () => {
   const [tripData, setTripData] = useState([]);
+  const [isScanning, setIsScanning] = useState(false);
+  const [foundDevices, setFoundDevices] = useState([]);
+  const [scanStatus, setScanStatus] = useState(null);
 
   const {
     startScanning,
@@ -30,13 +32,88 @@ const SafetyTagScanner = () => {
     queryTripData,
     queryTripWithFraudData,
     readBatteryLevel,
+    startBackgroundScanning,
+    stopBackgroundScanning,
+    isBackgroundScanningActive,
+    getBackgroundScanStatus,
+    checkAndEnableAutoConnect,
+    addDeviceToAutoConnect,
   } = useSafetyTag();
 
   useEffect(() => {
     subscribeToConnectionEvents().then();
+    checkScanningStatus();
+    checkAndEnableAutoConnect();
 
-    return unsubscribeFromConnectionEvents;
+    // Set up event listeners for background scanning
+    const deviceFoundSubscription = DeviceEventEmitter.addListener(
+      'onBackgroundDeviceFound',
+      device => {
+        console.log('Background device found:', device);
+        setFoundDevices(prev => {
+          // Check if device already exists in the array
+          const exists = prev.some(d => d.tag === device.tag);
+          if (!exists) {
+            return [...prev, device];
+          }
+          return prev;
+        });
+      },
+    );
+
+    return () => {
+      deviceFoundSubscription.remove();
+      unsubscribeFromConnectionEvents();
+      stopBackgroundScanning().catch(console.error);
+    };
   }, []);
+
+  const checkScanningStatus = async () => {
+    try {
+      const isActive = await isBackgroundScanningActive();
+      const status = await getBackgroundScanStatus();
+      setIsScanning(isActive);
+      setScanStatus(status);
+    } catch (error) {
+      console.error('Error checking scan status:', error);
+    }
+  };
+
+  const handleStartScanning = async () => {
+    try {
+      await startBackgroundScanning();
+      setIsScanning(true);
+      checkScanningStatus();
+    } catch (error) {
+      console.error('Error starting background scan:', error);
+    }
+  };
+
+  const handleStopScanning = async () => {
+    try {
+      await stopBackgroundScanning();
+      setIsScanning(false);
+      checkScanningStatus();
+    } catch (error) {
+      console.error('Error stopping background scan:', error);
+    }
+  };
+
+  async function handleBackgroundScan() {
+    try {
+      if (!isScanning) {
+        await startBackgroundScanning();
+        setIsScanning(true);
+      } else {
+        await stopBackgroundScanning();
+        setIsScanning(false);
+      }
+      await checkScanningStatus();
+    } catch (error) {
+      console.error('Error toggling background scan:', error);
+      Alert.alert('Error', 'Failed to toggle background scanning');
+    }
+  }
 
   async function handleScan() {
     try {
@@ -88,6 +165,20 @@ const SafetyTagScanner = () => {
       setTripData(trips);
     } catch (error) {
       Alert.alert('Error', error.message);
+    }
+  };
+
+  const handleAddToAutoConnect = async deviceAddress => {
+    try {
+      const success = await addDeviceToAutoConnect(deviceAddress);
+      if (success) {
+        Alert.alert('Success', 'Device added to auto-connect list');
+      } else {
+        Alert.alert('Error', 'Failed to add device to auto-connect list');
+      }
+    } catch (error) {
+      console.error('Error adding device to auto-connect:', error);
+      Alert.alert('Error', 'Failed to add device to auto-connect list');
     }
   };
 
@@ -206,6 +297,66 @@ const styles = StyleSheet.create({
   },
   list: {
     maxHeight: 200,
+  },
+  statusText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: 'green',
+    fontWeight: 'bold',
+  },
+  statusContainer: {
+    marginBottom: 20,
+    padding: 10,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+  },
+  button: {
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  startButton: {
+    backgroundColor: '#4CAF50',
+  },
+  stopButton: {
+    backgroundColor: '#f44336',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  devicesContainer: {
+    flex: 1,
+  },
+  deviceItem: {
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+  },
+  controlsContainer: {
+    flex: 1,
+    padding: 20,
+  },
+  disconnectButton: {
+    backgroundColor: '#f44336',
+  },
+  noDevicesText: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
+  },
+  deviceText: {
+    marginBottom: 5,
+  },
+  autoConnectButton: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
   },
 });
 

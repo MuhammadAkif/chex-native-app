@@ -8,6 +8,7 @@ import {
   DeviceEventEmitter,
 } from 'react-native';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+
 import useSafetyTag from '../../hooks/useSafetyTag';
 import {colors} from '../../Assets/Styles';
 
@@ -18,6 +19,7 @@ const DeviceList = () => {
     stopDiscovery,
     connectToDevice,
     connectToBondedDevice,
+    subscribeToConnectionEvents,
   } = useSafetyTag();
 
   useEffect(() => {
@@ -52,6 +54,7 @@ const DeviceList = () => {
 
   const handleDeviceSelect = async device => {
     try {
+      await subscribeToConnectionEvents();
       let status = null;
       if (device.properties.isBonded) {
         status = await connectToBondedDevice(device.properties.getTag);

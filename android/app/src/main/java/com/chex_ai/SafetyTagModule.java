@@ -10,11 +10,7 @@ import android.app.Activity;
 import androidx.annotation.RequiresApi;
 import android.os.Build;
 import android.content.IntentFilter;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Intent;
-import androidx.core.app.NotificationCompat;
 import android.app.ActivityManager;
 
 import com.google.gson.Gson;
@@ -67,12 +63,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 public class SafetyTagModule extends ReactContextBaseJavaModule {
-    private final SafetyTagApi safetyTagApi;
     private final ReactApplicationContext reactContext;
+    private SafetyTagApi safetyTagApi;
     private AxisAlignmentLocationProvider locationProvider;
     private AxisAlignmentLocationListener currentListener;
+    private MySafetyTagReceiver receiver;
 
     public SafetyTagModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -602,7 +600,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
                event.putDouble("yAxis", value.getYAxisMg());
                event.putDouble("zAxis", value.getZAxisMg());
                event.putDouble("timestamp", value.getTimestampUnixMs());
-               
+
                reactContext
                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                    .emit("onAccelerometerData", event);
@@ -645,10 +643,10 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
    public void startAxisAlignment(Promise promise) {
        try {
            AccelerometerAxisAlignmentParameters.Builder builder = new AccelerometerAxisAlignmentParameters.Builder();
-           
+
            // Create notification for background operation
-           NotificationData notificationData = createNotificationData();
-           builder.foregroundServiceNotificationData(notificationData);
+           /* NotificationData notificationData = createNotificationData();
+           builder.foregroundServiceNotificationData(notificationData); */
 
            // Add location provider
            locationProvider = new AxisAlignmentLocationProvider() {
@@ -730,7 +728,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
        }
    }
 
-   private NotificationData createNotificationData() {
+/*    private NotificationData createNotificationData() {
        return new NotificationData(
            1001, // Notification ID
            createNotification()
@@ -757,7 +755,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
            .setPriority(NotificationCompat.PRIORITY_LOW)
            .setOngoing(true)
            .build();
-   }
+   } */
 
    // Add method to stop service
    @ReactMethod
@@ -770,12 +768,12 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
                    try {
                        Intent serviceIntent = new Intent(reactContext, SafetyTagAlignmentService.class);
                        reactContext.stopService(serviceIntent);
-                       
+
                        // Clear the location provider and listener
                        if (currentListener != null) {
                            currentListener = null;
                        }
-                       
+
                        promise.resolve("Alignment stopped successfully");
                    } catch (Exception e) {
                        promise.reject("STOP_ERROR", "Failed to stop alignment service: " + e.getMessage());
@@ -800,7 +798,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
                    (long) timestamp,
                    (long) elapsedRealtime
                );
-               
+
                currentListener.onNewLocation(locationData);
            }
        } catch (Exception e) {
@@ -836,7 +834,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
            tagFinder.startDiscoveringTags(false, scanResult -> {
                if (scanResult instanceof SafetyTagScanResult.Success) {
                    SafetyTagInfo tag = ((SafetyTagScanResult.Success) scanResult).getSafetyTag();
-                   
+
                    // Create device info map with complete object details
                    WritableMap deviceInfo = Arguments.createMap();
                    deviceInfo.putString("rawObject", tag.toString());
@@ -846,7 +844,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
                    // Send complete info to React Native
                    WritableMap event = Arguments.createMap();
                    event.putMap("device", deviceInfo);
-                   
+
                    reactContext
                        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                        .emit("onDeviceFound", event);
@@ -861,7 +859,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
    private WritableMap convertObjectToWritableMap(Object object) {
        WritableMap map = Arguments.createMap();
        Class<?> clazz = object.getClass();
-       
+
        // Get all methods
        for (Method method : clazz.getMethods()) {
            String methodName = method.getName();
@@ -877,7 +875,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
                }
            }
        }
-       
+
        return map;
    }
 
@@ -886,7 +884,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
        SafetyTagFinder tagFinder = safetyTagApi.getFinder();
        try {
            final String normalizedRequestedAddress = address.trim().toUpperCase();
-           
+
            tagFinder.startDiscoveringTags(false, scanResult -> {
                if (scanResult instanceof SafetyTagScanResult.Success) {
                    SafetyTagInfo tag = ((SafetyTagScanResult.Success) scanResult).getSafetyTag();
@@ -895,11 +893,11 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
 
                    if (normalizedFoundAddress.equals(normalizedRequestedAddress)) {
                        tagFinder.stopDiscoveringTags();
-                       
+
                        try {
                            // Connect regardless of bond status
                            safetyTagApi.getConnection().connectToTag(tag, false, false);
-                           
+
                            // Send appropriate event based on bond status
                            WritableMap event = Arguments.createMap();
                            event.putString("address", address);
@@ -907,7 +905,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
                            reactContext
                                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                                .emit("onDeviceConnected", event);
-                           
+
                            promise.resolve("Connected to device: " + address + " (Bond status: " + (tag.isBonded() ? "bonded" : "unbonded") + ")");
                        } catch (Exception e) {
                            promise.reject("CONNECTION_ERROR", "Failed to connect: " + e.getMessage());
@@ -927,7 +925,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
            final String normalizedRequestedAddress = address.trim().toUpperCase();
            final long startTime = System.currentTimeMillis();
            final long TIMEOUT = 30000; // 30 seconds timeout
-           
+
            tagFinder.startDiscoveringTags(false, scanResult -> {
                if (System.currentTimeMillis() - startTime > TIMEOUT) {
                    tagFinder.stopDiscoveringTags();
@@ -944,7 +942,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
                            tagFinder.stopDiscoveringTags();
                            try {
                                safetyTagApi.getConnection().connectToTag(tag, false, false);
-                               
+
                                // Send success event
                                WritableMap event = Arguments.createMap();
                                event.putString("address", address);
@@ -952,7 +950,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
                                reactContext
                                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                                    .emit("onBondedDeviceConnected", event);
-                               
+
                                promise.resolve("Connected to bonded device: " + address);
                            } catch (Exception e) {
                                promise.reject("CONNECTION_ERROR", "Failed to connect to bonded device: " + e.getMessage());
@@ -970,6 +968,190 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
            });
        } catch (Exception e) {
            promise.reject("DISCOVERY_ERROR", "Failed to start bonded device discovery: " + e.getMessage());
+       }
+   }
+
+   @ReactMethod
+   public void startBackgroundScanWithInterval(double intervalMinutes, Promise promise) {
+       try {
+           // Validate interval
+           long interval = (long) intervalMinutes;
+           if (interval < SafetyTagFinder.MINIMUM_SCAN_INTERVAL_MINUTES) {
+               interval = SafetyTagFinder.MINIMUM_SCAN_INTERVAL_MINUTES;
+           }
+
+           SafetyTagStatus status = safetyTagApi.getFinder().startDiscoveringTagsInBackground(interval);
+
+           if (status == SafetyTagStatus.OK) {
+               //startBackgroundScanStatusMonitoring();
+               promise.resolve("Background scan started with " + interval + " minute interval");
+           } else {
+               promise.reject("BACKGROUND_SCAN_ERROR", "Failed to start background scan: " + status.name());
+           }
+       } catch (Exception e) {
+           promise.reject("BACKGROUND_SCAN_ERROR", "Failed to start background scan: " + e.getMessage());
+       }
+   }
+
+   @ReactMethod
+   public void isBackgroundScanActive(Promise promise) {
+       try {
+           boolean isActive = safetyTagApi.getFinder().isBackgroundScanActive();
+           promise.resolve(isActive);
+       } catch (Exception e) {
+           promise.reject("BACKGROUND_SCAN_ERROR", "Failed to check background scan status: " + e.getMessage());
+       }
+   }
+
+   @ReactMethod
+   public void getBackgroundScanStatus(Promise promise) {
+       try {
+           SafetyTagStatus status = safetyTagApi.getFinder().backgroundScanStatus();
+           promise.resolve(status.name());
+       } catch (Exception e) {
+           promise.reject("BACKGROUND_SCAN_ERROR", "Failed to get background scan status: " + e.getMessage());
+       }
+   }
+
+    public void sendEventToJS(String eventName, WritableMap params) {
+           // Implementation to send events to React Native
+           reactContext
+               .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+               .emit(eventName, params);
+       }
+
+       @ReactMethod
+       public void startBackgroundScan(Promise promise) {
+           try {
+               if (safetyTagApi == null) {
+                   promise.reject("API_ERROR", "SafetyTagApi not initialized");
+                   return;
+               }
+
+               // Store receiver as class field so we can unregister it later
+               if (receiver != null) {
+                       reactContext.unregisterReceiver(receiver);
+               }
+
+               receiver = new MySafetyTagReceiver(reactContext);
+               IntentFilter intentFilter = new IntentFilter();
+               intentFilter.addAction(SafetyTagFinder.SAFETY_TAG_API_TAG_FOUND);
+
+               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                   reactContext.registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
+               } else {
+                   reactContext.registerReceiver(receiver, intentFilter);
+               }
+
+               // Start background scan
+               SafetyTagStatus status = safetyTagApi.getFinder().startDiscoveringTagsInBackground(SafetyTagFinder.DEFAULT_SCAN_INTERVAL_MINUTES);
+
+               if (status == SafetyTagStatus.OK) {
+                   promise.resolve("Background scan started successfully");
+               } else {
+                   promise.reject("BACKGROUND_SCAN_ERROR", "Failed to start background scan: " + status.name());
+               }
+           } catch (Exception e) {
+               promise.reject("BACKGROUND_SCAN_ERROR", "Failed to start background scan: " + e.getMessage());
+           }
+       }
+
+       @ReactMethod
+       public void stopBackgroundScan(Promise promise) {
+           try {
+               if (safetyTagApi == null) {
+                   promise.reject("API_ERROR", "SafetyTagApi not initialized");
+                   return;
+               }
+
+               if (receiver != null) {
+                   try {
+                       reactContext.unregisterReceiver(receiver);
+                       receiver = null;
+                   } catch (Exception e) {
+                   }
+               }
+
+               SafetyTagStatus status = safetyTagApi.getFinder().stopDiscoveringTagsInBackground();
+               if (status == SafetyTagStatus.OK) {
+                   promise.resolve("Background scan stopped successfully");
+               } else {
+                   promise.reject("BACKGROUND_SCAN_ERROR", "Failed to stop background scan: " + status.name());
+               }
+           } catch (Exception e) {
+               promise.reject("BACKGROUND_SCAN_ERROR", "Failed to stop background scan: " + e.getMessage());
+           }
+       }
+
+   @ReactMethod
+   public void isAutoConnectEnabled(Promise promise) {
+       try {
+           if (safetyTagApi == null) {
+               promise.reject("API_ERROR", "SafetyTagApi not initialized");
+               return;
+           }
+
+           // Check if there are any devices in the auto-connect list
+           Set<String> autoConnectDevices = safetyTagApi.getAutoConnection().getAutoConnectAddresses();
+           boolean isEnabled = !autoConnectDevices.isEmpty();
+           promise.resolve(isEnabled);
+       } catch (Exception e) {
+           promise.reject("AUTO_CONNECT_ERROR", "Failed to check auto-connect status: " + e.getMessage());
+       }
+   }
+
+   @ReactMethod
+   public void addTagToAutoConnect(String deviceAddress, Promise promise) {
+       try {
+           if (safetyTagApi == null) {
+               promise.reject("API_ERROR", "SafetyTagApi not initialized");
+               return;
+           }
+
+           // Add device to auto-connect list using the AutoConnection interface
+           SafetyTagStatus status = safetyTagApi.getAutoConnection().addTagToAutoConnect(deviceAddress);
+           if (status == SafetyTagStatus.OK) {
+               promise.resolve("Device added to auto-connect list");
+           } else {
+               promise.reject("AUTO_CONNECT_ERROR", "Failed to add device to auto-connect list: " + status.name());
+           }
+       } catch (Exception e) {
+           promise.reject("AUTO_CONNECT_ERROR", "Failed to add device to auto-connect list: " + e.getMessage());
+       }
+   }
+
+   @ReactMethod
+   public void removeTagFromAutoConnect(String deviceAddress, Promise promise) {
+       try {
+           if (safetyTagApi == null) {
+               promise.reject("API_ERROR", "SafetyTagApi not initialized");
+               return;
+           }
+
+           // Remove device from auto-connect list using the AutoConnection interface
+           SafetyTagStatus status = safetyTagApi.getAutoConnection().removeTagFromAutoConnect(deviceAddress);
+           if (status == SafetyTagStatus.OK) {
+               promise.resolve("Device removed from auto-connect list");
+           } else {
+               promise.reject("AUTO_CONNECT_ERROR", "Failed to remove device from auto-connect list: " + status.name());
+           }
+       } catch (Exception e) {
+           promise.reject("AUTO_CONNECT_ERROR", "Failed to remove device from auto-connect list: " + e.getMessage());
+       }
+   }
+
+   @ReactMethod
+   public void clearAutoConnectList(Promise promise) {
+       try {
+           if (safetyTagApi == null) {
+               promise.reject("API_ERROR", "SafetyTagApi not initialized");
+               return;
+           }
+
+           safetyTagApi.getAutoConnection().clearAutoConnectList();
+           promise.resolve("Auto-connect list cleared");
+       } catch (Exception e) {
+           promise.reject("AUTO_CONNECT_ERROR", "Failed to clear auto-connect list: " + e.getMessage());
        }
    }
 }
