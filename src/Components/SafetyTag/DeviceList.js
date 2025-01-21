@@ -20,6 +20,8 @@ const DeviceList = () => {
     connectToDevice,
     connectToBondedDevice,
     subscribeToConnectionEvents,
+    getConnectedDevice,
+    isDeviceConnected,
   } = useSafetyTag();
 
   useEffect(() => {
@@ -27,39 +29,59 @@ const DeviceList = () => {
 
     const deviceSubscription = DeviceEventEmitter.addListener(
       'onDeviceFound',
-      event => {
-        /*console.log(
-          'Complete Device Info:',
-          JSON.stringify(event.device, null, 2),
-        );*/
-        const newDevice = event.device;
-        setDevices(prevDevices => {
-          const exists = prevDevices.some(
-            device => device.properties.getTag === newDevice.properties.getTag,
-          );
-          if (!exists) {
-            return [...prevDevices, newDevice];
-          }
-          return prevDevices;
-        });
-      },
+      handleOnDeviceFound,
     );
 
-    // Cleanup
     return () => {
       stopDiscovery().then();
       deviceSubscription.remove();
     };
   }, []);
 
+  function handleOnDeviceFound(devicesList) {
+    const newDevice = devicesList.device;
+    setDevices(prevDevices => {
+      const exists = prevDevices.some(
+        device => device.properties.getTag === newDevice.properties.getTag,
+      );
+      if (!exists) {
+        return [...prevDevices, newDevice];
+      }
+      return prevDevices;
+    });
+  }
+
+  async function checkDeviceConnection() {
+    try {
+      const isConnected = await isDeviceConnected();
+      if (isConnected) {
+        const {address} = await getConnectedDevice();
+        return address;
+      } else {
+        console.log('Device is not connected');
+      }
+      return null;
+    } catch (error) {
+      console.error('Error checking device connection:', error);
+      throw error;
+    }
+  }
+
   const handleDeviceSelect = async device => {
     try {
+      const {
+        properties: {getTag, isBonded},
+      } = device;
+      const address = await checkDeviceConnection();
+      if (address === getTag) {
+        return null;
+      }
       await subscribeToConnectionEvents();
       let status = null;
-      if (device.properties.isBonded) {
-        status = await connectToBondedDevice(device.properties.getTag);
+      if (isBonded) {
+        status = await connectToBondedDevice(getTag);
       } else {
-        status = await connectToDevice(device.properties.getTag);
+        status = await connectToDevice(getTag);
       }
       console.log({status});
     } catch (error) {

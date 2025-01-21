@@ -6,6 +6,8 @@ import {
   StyleSheet,
   DeviceEventEmitter,
   Button,
+  FlatList,
+  ScrollView,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -15,12 +17,14 @@ import {
 import useSafetyTag from '../../hooks/useSafetyTag';
 import {formatRawData} from '../../Utils/helpers';
 import DeviceList from './DeviceList';
+import AccelerometerDisplay from './AccelerometerDisplay';
+import CrashTestingTool from './CrashTestingTool';
 
 const SafetyTagScanner = () => {
   const [tripData, setTripData] = useState([]);
   const [isScanning, setIsScanning] = useState(false);
-  const [foundDevices, setFoundDevices] = useState([]);
   const [scanStatus, setScanStatus] = useState(null);
+  const [connectedDevice, setConnectedDevice] = useState(null);
 
   const {
     startScanning,
@@ -31,33 +35,24 @@ const SafetyTagScanner = () => {
     unsubscribeFromConnectionEvents,
     queryTripData,
     queryTripWithFraudData,
-    readBatteryLevel,
     startBackgroundScanning,
     stopBackgroundScanning,
     isBackgroundScanningActive,
     getBackgroundScanStatus,
-    checkAndEnableAutoConnect,
-    addDeviceToAutoConnect,
+    getDeviceInformation,
+    isDeviceConnected,
+    getConnectedDevice,
   } = useSafetyTag();
 
   useEffect(() => {
     subscribeToConnectionEvents().then();
-    checkScanningStatus();
-    checkAndEnableAutoConnect();
+    checkScanningStatus().then();
 
     // Set up event listeners for background scanning
     const deviceFoundSubscription = DeviceEventEmitter.addListener(
       'onBackgroundDeviceFound',
       device => {
         console.log('Background device found:', device);
-        setFoundDevices(prev => {
-          // Check if device already exists in the array
-          const exists = prev.some(d => d.tag === device.tag);
-          if (!exists) {
-            return [...prev, device];
-          }
-          return prev;
-        });
       },
     );
 
@@ -79,23 +74,20 @@ const SafetyTagScanner = () => {
     }
   };
 
-  const handleStartScanning = async () => {
+  const checkDeviceConnection = async () => {
     try {
-      await startBackgroundScanning();
-      setIsScanning(true);
-      checkScanningStatus();
+      const isConnected = await isDeviceConnected();
+      console.log({isConnected});
+      if (isConnected) {
+        const device = await getConnectedDevice();
+        setConnectedDevice(device);
+        console.log('Connected Device:', device);
+      } else {
+        setConnectedDevice(null);
+      }
     } catch (error) {
-      console.error('Error starting background scan:', error);
-    }
-  };
-
-  const handleStopScanning = async () => {
-    try {
-      await stopBackgroundScanning();
-      setIsScanning(false);
-      checkScanningStatus();
-    } catch (error) {
-      console.error('Error stopping background scan:', error);
+      console.error('Error checking device connection:', error);
+      Alert.alert('Error', 'Failed to check device connection');
     }
   };
 
@@ -168,20 +160,6 @@ const SafetyTagScanner = () => {
     }
   };
 
-  const handleAddToAutoConnect = async deviceAddress => {
-    try {
-      const success = await addDeviceToAutoConnect(deviceAddress);
-      if (success) {
-        Alert.alert('Success', 'Device added to auto-connect list');
-      } else {
-        Alert.alert('Error', 'Failed to add device to auto-connect list');
-      }
-    } catch (error) {
-      console.error('Error adding device to auto-connect:', error);
-      Alert.alert('Error', 'Failed to add device to auto-connect list');
-    }
-  };
-
   const renderTripItem = ({item}) => {
     const {receiveNumber, startUnixTime, endUnixTime, connectedDuringTrip} =
       item;
@@ -199,42 +177,58 @@ const SafetyTagScanner = () => {
 
   return (
     <View style={styles.container}>
-      {/*<ScrollView>*/}
-      <DeviceList />
-      <Button title="Scan for Safety Tag" onPress={handleScan} />
-      <Button title="Scan for Bond Safety Tag" onPress={handleBondScan} />
-      {/*<Button
-          title="Get Safety Tag device configuration"
-          onPress={handleGetDeviceConfiguration}
+      <ScrollView>
+        <DeviceList />
+        {connectedDevice && (
+          <View style={styles.deviceInfoContainer}>
+            <Text style={styles.deviceInfoTitle}>Connected Device</Text>
+            <Text style={styles.deviceInfoText}>
+              Address: {connectedDevice.address}
+            </Text>
+            <Text style={styles.deviceInfoText}>
+              Bond Status: {connectedDevice.isBonded ? 'Bonded' : 'Not Bonded'}
+            </Text>
+            <Text style={styles.deviceInfoText}>
+              RSSI: {connectedDevice.rssi} dBm
+            </Text>
+            <Text style={styles.deviceInfoText}>
+              Mode: {connectedDevice.advertisementMode}
+            </Text>
+          </View>
+        )}
+        <Button title="Scan for Safety Tag" onPress={handleScan} />
+        <Button title="Scan for Bond Safety Tag" onPress={handleBondScan} />
+        <Button title="Check Connection" onPress={checkDeviceConnection} />
+        <Button
+          title={
+            isScanning
+              ? 'Stop Background Scanning'
+              : 'Start Background Scanning'
+          }
+          onPress={handleBackgroundScan}
         />
         <Button
-          title="Unsubscribe Device Info"
-          onPress={unsubscribeFromConnectionEvents}
-        />*/}
-      <Button
-        title="Disconnect connected Device"
-        onPress={handleDisconnectDevice}
-      />
-      {/*<Button title="Read battery level" onPress={readBatteryLevel} />*/}
-
-      {/*<View style={[styles.tripContainer, styles.gap]}>
-        <Button title="Query Trip Data" onPress={handleQueryTripData} />
-        <Button
-          title="Query Trip Data With Fraud"
-          onPress={handleQueryTripDataWithFraud}
+          title="Disconnect connected Device"
+          onPress={handleDisconnectDevice}
         />
-        <FlatList
-          data={tripData}
-          renderItem={renderTripItem}
-          style={styles.tripList}
-          keyExtractor={item => item.receiveNumber.toString()}
-          contentContainerStyle={styles.listContainer}
-        />
-      </View>
+        <View style={[styles.tripContainer, styles.gap]}>
+          <Button title="Query Trip Data" onPress={handleQueryTripData} />
+          <Button
+            title="Query Trip Data With Fraud"
+            onPress={handleQueryTripDataWithFraud}
+          />
+          <FlatList
+            data={tripData}
+            renderItem={renderTripItem}
+            style={styles.tripList}
+            keyExtractor={item => item.receiveNumber.toString()}
+            contentContainerStyle={styles.listContainer}
+          />
+        </View>
 
-      <AccelerometerDisplay />
-      <CrashTestingTool />*/}
-      {/*</ScrollView>*/}
+        {/*<AccelerometerDisplay />*/}
+        {/*<CrashTestingTool />*/}
+      </ScrollView>
     </View>
   );
 };
@@ -357,6 +351,26 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 10,
+  },
+  deviceInfoContainer: {
+    padding: 15,
+    margin: 10,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    elevation: 2,
+  },
+  deviceInfoTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#333',
+  },
+  deviceInfoText: {
+    fontSize: 14,
+    marginBottom: 5,
+    color: '#666',
   },
 });
 

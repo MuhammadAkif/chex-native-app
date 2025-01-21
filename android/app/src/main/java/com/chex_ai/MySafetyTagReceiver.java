@@ -24,16 +24,16 @@ public class MySafetyTagReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "onReceive called with intent action: " + intent.getAction());
-        
+
         SafetyTagInfo foundSafetyTagInfo = intent.getParcelableExtra(EXTRA_FOUND_SAFETY_TAG_INFO);
 
         if (foundSafetyTagInfo != null) {
             BluetoothDevice tag = foundSafetyTagInfo.getTag();
             String address = tag != null ? tag.getAddress() : "unknown";
-            
-            Log.i(TAG, "Found Safety Tag in background - Address: " + address + 
-                      ", Bonded: " + foundSafetyTagInfo.isBonded() + 
-                      ", RSSI: " + foundSafetyTagInfo.getRssi() + 
+
+            Log.i(TAG, "Found Safety Tag in background - Address: " + address +
+                      ", Bonded: " + foundSafetyTagInfo.isBonded() +
+                      ", RSSI: " + foundSafetyTagInfo.getRssi() +
                       ", Mode: " + foundSafetyTagInfo.getAdvertisementMode());
 
             // Create event data

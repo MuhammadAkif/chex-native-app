@@ -633,6 +633,24 @@ const useSafetyTag = () => {
     }
   };
 
+  const isDeviceConnected = async () => {
+    try {
+      return await SafetyTagModule.isDeviceConnected();
+    } catch (error) {
+      console.error('Error checking device connection:', error);
+      return false;
+    }
+  };
+
+  const getConnectedDevice = async () => {
+    try {
+      return await SafetyTagModule.getConnectedDevice();
+    } catch (error) {
+      console.error('Error getting connected device:', error);
+      throw error;
+    }
+  };
+
   return {
     startScanning,
     startBondScanning,
@@ -664,6 +682,8 @@ const useSafetyTag = () => {
     addDeviceToAutoConnect,
     removeDeviceFromAutoConnect,
     clearAutoConnectList,
+    isDeviceConnected,
+    getConnectedDevice,
   };
 };
 

@@ -1083,7 +1083,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
            }
        }
 
-   @ReactMethod
+   /* @ReactMethod
    public void isAutoConnectEnabled(Promise promise) {
        try {
            if (safetyTagApi == null) {
@@ -1152,6 +1152,38 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
            promise.resolve("Auto-connect list cleared");
        } catch (Exception e) {
            promise.reject("AUTO_CONNECT_ERROR", "Failed to clear auto-connect list: " + e.getMessage());
+       }
+   } */
+
+   @ReactMethod
+   public void isDeviceConnected(Promise promise) {
+       try {
+           boolean isConnected = safetyTagApi.getConnection().isDeviceConnected();
+           promise.resolve(isConnected);
+       } catch (Exception e) {
+           promise.reject("ERROR", "Failed to check device connection: " + e.getMessage());
+       }
+   }
+
+   @ReactMethod
+   public void getConnectedDevice(Promise promise) {
+       try {
+           if (!safetyTagApi.getConnection().isDeviceConnected()) {
+               promise.reject("ERROR", "No device connected");
+               return;
+           }
+
+           SafetyTagInfo device = safetyTagApi.getConnection().getConnectedDevice();
+
+           WritableMap deviceInfo = Arguments.createMap();
+           deviceInfo.putString("address", device.getTag().toString());
+           deviceInfo.putBoolean("isBonded", device.isBonded());
+           deviceInfo.putInt("rssi", device.getRssi());
+           deviceInfo.putString("advertisementMode", device.getAdvertisementMode().toString());
+
+           promise.resolve(deviceInfo);
+       } catch (Exception e) {
+           promise.reject("ERROR", "Failed to get connected device: " + e.getMessage());
        }
    }
 }

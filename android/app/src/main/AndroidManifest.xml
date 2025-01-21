@@ -47,16 +47,5 @@
         android:name=".SafetyTagAlignmentService"
         android:foregroundServiceType="location"
         android:exported="false" />
-
-      <!-- SafetyTag Background Scanning Receiver -->
-      <receiver 
-        android:name=".SafetyTagBroadcastReceiver"
-        android:exported="true"
-        android:enabled="true">
-        <intent-filter>
-            <action android:name="com.pixida.safetytagapi.ACTION_SAFETY_TAG_FOUND" />
-            <action android:name="com.pixida.safetytagapi.ACTION_SAFETY_TAG_CONNECTED" />
-        </intent-filter>
-      </receiver>
     </application>
 </manifest>
