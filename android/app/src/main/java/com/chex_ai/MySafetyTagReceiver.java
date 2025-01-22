@@ -19,6 +19,7 @@ public class MySafetyTagReceiver extends BroadcastReceiver {
 
     public MySafetyTagReceiver(ReactApplicationContext context) {
         this.reactContext = context;
+        Log.d(TAG, "MySafetyTagReceiver is registered");
     }
 
     @Override
@@ -26,6 +27,8 @@ public class MySafetyTagReceiver extends BroadcastReceiver {
         Log.d(TAG, "onReceive called with intent action: " + intent.getAction());
 
         SafetyTagInfo foundSafetyTagInfo = intent.getParcelableExtra(EXTRA_FOUND_SAFETY_TAG_INFO);
+
+        Log.d(TAG, "onReceive called with foundSafetyTagInfo: " + foundSafetyTagInfo);
 
         if (foundSafetyTagInfo != null) {
             BluetoothDevice tag = foundSafetyTagInfo.getTag();

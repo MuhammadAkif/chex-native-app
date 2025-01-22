@@ -13,6 +13,7 @@ const {SafetyTagModule} = NativeModules;
 
 const useSafetyTag = () => {
   useEffect(() => {
+    requestPermissions().then();
     const crashDataSubscription = DeviceEventEmitter.addListener(
       'onCrashDataReceived',
       event => {
@@ -616,20 +617,25 @@ const useSafetyTag = () => {
   const removeDeviceFromAutoConnect = async deviceAddress => {
     try {
       await SafetyTagModule.removeTagFromAutoConnect(deviceAddress);
+      console.log(
+        'Successfully removed device from auto-connect list:',
+        deviceAddress,
+      );
       return true;
     } catch (error) {
       console.error('Error removing device from auto-connect:', error);
-      return false;
+      throw error;
     }
   };
 
   const clearAutoConnectList = async () => {
     try {
       await SafetyTagModule.clearAutoConnectList();
+      console.log('Successfully cleared auto-connect list');
       return true;
     } catch (error) {
       console.error('Error clearing auto-connect list:', error);
-      return false;
+      throw error;
     }
   };
 
@@ -647,6 +653,17 @@ const useSafetyTag = () => {
       return await SafetyTagModule.getConnectedDevice();
     } catch (error) {
       console.error('Error getting connected device:', error);
+      throw error;
+    }
+  };
+
+  const getAutoConnectAddresses = async () => {
+    try {
+      const addresses = await SafetyTagModule.getAutoConnectAddresses();
+      console.log('Auto-connect addresses:', addresses);
+      return addresses;
+    } catch (error) {
+      console.error('Error getting auto-connect addresses:', error);
       throw error;
     }
   };
@@ -684,6 +701,7 @@ const useSafetyTag = () => {
     clearAutoConnectList,
     isDeviceConnected,
     getConnectedDevice,
+    getAutoConnectAddresses,
   };
 };
 

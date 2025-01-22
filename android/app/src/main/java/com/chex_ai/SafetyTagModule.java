@@ -95,8 +95,8 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
                     // Connect to the first discovered tag
                     safetyTagApi.getConnection().connectToTag(
                         ((SafetyTagScanResult.Success) scanResult).getSafetyTag(),
-                        false,
-                        false
+                        true,
+                        true
                     );
                     promise.resolve("Successfully connected to the first discovered tag.");
                 } catch (Exception e) {
@@ -135,7 +135,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
 
                     if (tag.isBonded()) {
                         tagFinder.stopDiscoveringTags();
-                        safetyTagApi.getConnection().connectToTag(tag, false, false);
+                        safetyTagApi.getConnection().connectToTag(tag, true, true);
                     }
                     promise.resolve("Successfully connected to the bonded discovered tag.");
                 } catch (Exception e) {
@@ -896,7 +896,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
 
                        try {
                            // Connect regardless of bond status
-                           safetyTagApi.getConnection().connectToTag(tag, false, false);
+                           safetyTagApi.getConnection().connectToTag(tag, true, true);
 
                            // Send appropriate event based on bond status
                            WritableMap event = Arguments.createMap();
@@ -941,7 +941,7 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
                        if (tag.isBonded()) {
                            tagFinder.stopDiscoveringTags();
                            try {
-                               safetyTagApi.getConnection().connectToTag(tag, false, false);
+                               safetyTagApi.getConnection().connectToTag(tag, true, true);
 
                                // Send success event
                                WritableMap event = Arguments.createMap();
@@ -1083,57 +1083,28 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
            }
        }
 
-   /* @ReactMethod
-   public void isAutoConnectEnabled(Promise promise) {
-       try {
-           if (safetyTagApi == null) {
-               promise.reject("API_ERROR", "SafetyTagApi not initialized");
-               return;
-           }
-
-           // Check if there are any devices in the auto-connect list
-           Set<String> autoConnectDevices = safetyTagApi.getAutoConnection().getAutoConnectAddresses();
-           boolean isEnabled = !autoConnectDevices.isEmpty();
-           promise.resolve(isEnabled);
-       } catch (Exception e) {
-           promise.reject("AUTO_CONNECT_ERROR", "Failed to check auto-connect status: " + e.getMessage());
-       }
-   }
-
    @ReactMethod
-   public void addTagToAutoConnect(String deviceAddress, Promise promise) {
+   public void getAutoConnectAddresses(Promise promise) {
        try {
-           if (safetyTagApi == null) {
-               promise.reject("API_ERROR", "SafetyTagApi not initialized");
-               return;
+           Set<String> addresses = safetyTagApi.getAutoConnection().getAutoConnectAddresses();
+           WritableArray addressArray = Arguments.createArray();
+           for (String address : addresses) {
+               addressArray.pushString(address);
            }
-
-           // Add device to auto-connect list using the AutoConnection interface
-           SafetyTagStatus status = safetyTagApi.getAutoConnection().addTagToAutoConnect(deviceAddress);
-           if (status == SafetyTagStatus.OK) {
-               promise.resolve("Device added to auto-connect list");
-           } else {
-               promise.reject("AUTO_CONNECT_ERROR", "Failed to add device to auto-connect list: " + status.name());
-           }
+           promise.resolve(addressArray);
        } catch (Exception e) {
-           promise.reject("AUTO_CONNECT_ERROR", "Failed to add device to auto-connect list: " + e.getMessage());
+           promise.reject("AUTO_CONNECT_ERROR", "Failed to get auto-connect addresses: " + e.getMessage());
        }
    }
 
    @ReactMethod
    public void removeTagFromAutoConnect(String deviceAddress, Promise promise) {
        try {
-           if (safetyTagApi == null) {
-               promise.reject("API_ERROR", "SafetyTagApi not initialized");
-               return;
-           }
-
-           // Remove device from auto-connect list using the AutoConnection interface
            SafetyTagStatus status = safetyTagApi.getAutoConnection().removeTagFromAutoConnect(deviceAddress);
            if (status == SafetyTagStatus.OK) {
-               promise.resolve("Device removed from auto-connect list");
+               promise.resolve("Successfully removed device from auto-connect list");
            } else {
-               promise.reject("AUTO_CONNECT_ERROR", "Failed to remove device from auto-connect list: " + status.name());
+               promise.reject("AUTO_CONNECT_ERROR", "Failed to remove device: " + status.name());
            }
        } catch (Exception e) {
            promise.reject("AUTO_CONNECT_ERROR", "Failed to remove device from auto-connect list: " + e.getMessage());
@@ -1143,17 +1114,12 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
    @ReactMethod
    public void clearAutoConnectList(Promise promise) {
        try {
-           if (safetyTagApi == null) {
-               promise.reject("API_ERROR", "SafetyTagApi not initialized");
-               return;
-           }
-
            safetyTagApi.getAutoConnection().clearAutoConnectList();
-           promise.resolve("Auto-connect list cleared");
+           promise.resolve("Successfully cleared auto-connect list");
        } catch (Exception e) {
            promise.reject("AUTO_CONNECT_ERROR", "Failed to clear auto-connect list: " + e.getMessage());
        }
-   } */
+   }
 
    @ReactMethod
    public void isDeviceConnected(Promise promise) {

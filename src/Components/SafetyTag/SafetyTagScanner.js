@@ -177,58 +177,54 @@ const SafetyTagScanner = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <DeviceList />
-        {connectedDevice && (
-          <View style={styles.deviceInfoContainer}>
-            <Text style={styles.deviceInfoTitle}>Connected Device</Text>
-            <Text style={styles.deviceInfoText}>
-              Address: {connectedDevice.address}
-            </Text>
-            <Text style={styles.deviceInfoText}>
-              Bond Status: {connectedDevice.isBonded ? 'Bonded' : 'Not Bonded'}
-            </Text>
-            <Text style={styles.deviceInfoText}>
-              RSSI: {connectedDevice.rssi} dBm
-            </Text>
-            <Text style={styles.deviceInfoText}>
-              Mode: {connectedDevice.advertisementMode}
-            </Text>
-          </View>
-        )}
-        <Button title="Scan for Safety Tag" onPress={handleScan} />
-        <Button title="Scan for Bond Safety Tag" onPress={handleBondScan} />
-        <Button title="Check Connection" onPress={checkDeviceConnection} />
-        <Button
-          title={
-            isScanning
-              ? 'Stop Background Scanning'
-              : 'Start Background Scanning'
-          }
-          onPress={handleBackgroundScan}
-        />
-        <Button
-          title="Disconnect connected Device"
-          onPress={handleDisconnectDevice}
-        />
-        <View style={[styles.tripContainer, styles.gap]}>
-          <Button title="Query Trip Data" onPress={handleQueryTripData} />
-          <Button
-            title="Query Trip Data With Fraud"
-            onPress={handleQueryTripDataWithFraud}
-          />
-          <FlatList
-            data={tripData}
-            renderItem={renderTripItem}
-            style={styles.tripList}
-            keyExtractor={item => item.receiveNumber.toString()}
-            contentContainerStyle={styles.listContainer}
-          />
+      <DeviceList />
+      {connectedDevice && (
+        <View style={styles.deviceInfoContainer}>
+          <Text style={styles.deviceInfoTitle}>Connected Device</Text>
+          <Text style={styles.deviceInfoText}>
+            Address: {connectedDevice.address}
+          </Text>
+          <Text style={styles.deviceInfoText}>
+            Bond Status: {connectedDevice.isBonded ? 'Bonded' : 'Not Bonded'}
+          </Text>
+          <Text style={styles.deviceInfoText}>
+            RSSI: {connectedDevice.rssi} dBm
+          </Text>
+          <Text style={styles.deviceInfoText}>
+            Mode: {connectedDevice.advertisementMode}
+          </Text>
         </View>
+      )}
+      <Button title="Scan for Safety Tag" onPress={handleScan} />
+      <Button title="Scan for Bond Safety Tag" onPress={handleBondScan} />
+      <Button title="Check Connection" onPress={checkDeviceConnection} />
+      <Button
+        title={
+          isScanning ? 'Stop Background Scanning' : 'Start Background Scanning'
+        }
+        onPress={handleBackgroundScan}
+      />
+      <Button
+        title="Disconnect connected Device"
+        onPress={handleDisconnectDevice}
+      />
+      <View style={[styles.tripContainer, styles.gap]}>
+        <Button title="Query Trip Data" onPress={handleQueryTripData} />
+        <Button
+          title="Query Trip Data With Fraud"
+          onPress={handleQueryTripDataWithFraud}
+        />
+        <FlatList
+          data={tripData}
+          renderItem={renderTripItem}
+          style={styles.tripList}
+          keyExtractor={item => item.receiveNumber.toString()}
+          contentContainerStyle={styles.listContainer}
+        />
+      </View>
 
-        {/*<AccelerometerDisplay />*/}
-        {/*<CrashTestingTool />*/}
-      </ScrollView>
+      {/*<AccelerometerDisplay />*/}
+      {/*<CrashTestingTool />*/}
     </View>
   );
 };
