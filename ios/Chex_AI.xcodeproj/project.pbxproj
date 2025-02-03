@@ -8,12 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* Chex_AITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* Chex_AITests.m */; };
-		0C80B921A6F3F58F76C31292 /* libPods-Chex_AI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-Chex_AI.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		7699B88040F8A987B510C191 /* libPods-Chex_AI-Chex_AITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-Chex_AI-Chex_AITests.a */; };
+		188572AA2D50B8E800775F2A /* SafetyTagModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 188572A92D50B8E300775F2A /* SafetyTagModule.m */; };
+		188572AC2D50B90A00775F2A /* SafetyTagModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188572AB2D50B90700775F2A /* SafetyTagModule.swift */; };
+		18BDC6162D51064C008A9A61 /* SafetyTag in Frameworks */ = {isa = PBXBuildFile; productRef = 18BDC6152D51064C008A9A61 /* SafetyTag */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		D80AC58069AB70AA0FCD86EF /* Pods_Chex_AI_Chex_AITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71B42E444A1224B7C3218FF1 /* Pods_Chex_AI_Chex_AITests.framework */; };
+		E8DB9FE92E20A8BFB5D69A33 /* Pods_Chex_AI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A55F18A2E4637BC6EB745C6 /* Pods_Chex_AI.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,13 +39,16 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Chex_AI/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Chex_AI/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Chex_AI/main.m; sourceTree = "<group>"; };
-		19F6CBCC0A4E27FBF8BF4A61 /* libPods-Chex_AI-Chex_AITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Chex_AI-Chex_AITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		188572A92D50B8E300775F2A /* SafetyTagModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SafetyTagModule.m; sourceTree = "<group>"; };
+		188572AB2D50B90700775F2A /* SafetyTagModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyTagModule.swift; sourceTree = "<group>"; };
+		188572AD2D50B90F00775F2A /* Chex_AI-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Chex_AI-Bridging-Header.h"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-Chex_AI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chex_AI.debug.xcconfig"; path = "Target Support Files/Pods-Chex_AI/Pods-Chex_AI.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-Chex_AI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chex_AI.release.xcconfig"; path = "Target Support Files/Pods-Chex_AI/Pods-Chex_AI.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-Chex_AI-Chex_AITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chex_AI-Chex_AITests.debug.xcconfig"; path = "Target Support Files/Pods-Chex_AI-Chex_AITests/Pods-Chex_AI-Chex_AITests.debug.xcconfig"; sourceTree = "<group>"; };
-		5DCACB8F33CDC322A6C60F78 /* libPods-Chex_AI.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Chex_AI.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		71B42E444A1224B7C3218FF1 /* Pods_Chex_AI_Chex_AITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Chex_AI_Chex_AITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Chex_AI/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-Chex_AI-Chex_AITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chex_AI-Chex_AITests.release.xcconfig"; path = "Target Support Files/Pods-Chex_AI-Chex_AITests/Pods-Chex_AI-Chex_AITests.release.xcconfig"; sourceTree = "<group>"; };
+		9A55F18A2E4637BC6EB745C6 /* Pods_Chex_AI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Chex_AI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -51,7 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7699B88040F8A987B510C191 /* libPods-Chex_AI-Chex_AITests.a in Frameworks */,
+				D80AC58069AB70AA0FCD86EF /* Pods_Chex_AI_Chex_AITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,7 +65,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C80B921A6F3F58F76C31292 /* libPods-Chex_AI.a in Frameworks */,
+				E8DB9FE92E20A8BFB5D69A33 /* Pods_Chex_AI.framework in Frameworks */,
+				18BDC6162D51064C008A9A61 /* SafetyTag in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,12 +93,15 @@
 		13B07FAE1A68108700A75B9A /* Chex_AI */ = {
 			isa = PBXGroup;
 			children = (
+				188572AB2D50B90700775F2A /* SafetyTagModule.swift */,
+				188572A92D50B8E300775F2A /* SafetyTagModule.m */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				188572AD2D50B90F00775F2A /* Chex_AI-Bridging-Header.h */,
 			);
 			name = Chex_AI;
 			sourceTree = "<group>";
@@ -100,8 +110,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				5DCACB8F33CDC322A6C60F78 /* libPods-Chex_AI.a */,
-				19F6CBCC0A4E27FBF8BF4A61 /* libPods-Chex_AI-Chex_AITests.a */,
+				9A55F18A2E4637BC6EB745C6 /* Pods_Chex_AI.framework */,
+				71B42E444A1224B7C3218FF1 /* Pods_Chex_AI_Chex_AITests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -207,7 +217,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1620;
 					};
 				};
 			};
@@ -220,6 +230,9 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			packageReferences = (
+				18BDC6142D51064C008A9A61 /* XCRemoteSwiftPackageReference "sdk" */,
+			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -412,7 +425,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				188572AA2D50B8E800775F2A /* SafetyTagModule.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
+				188572AC2D50B90A00775F2A /* SafetyTagModule.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -494,7 +509,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Chex_AI/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Chex Inspection";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -508,6 +523,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.chexdsp.app;
 				PRODUCT_NAME = Chex_AI;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Chex_AI-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -526,7 +542,7 @@
 				DEVELOPMENT_TEAM = 9JR835FQLZ;
 				INFOPLIST_FILE = Chex_AI/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Chex Inspection";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -540,6 +556,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.chexdsp.app;
 				PRODUCT_NAME = Chex_AI;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Chex_AI-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -728,6 +745,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		18BDC6142D51064C008A9A61 /* XCRemoteSwiftPackageReference "sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://gitlab.pixida.partners/safety-tag-release/sdk";
+			requirement = {
+				branch = "2.0.0-beta.5";
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		18BDC6152D51064C008A9A61 /* SafetyTag */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18BDC6142D51064C008A9A61 /* XCRemoteSwiftPackageReference "sdk" */;
+			productName = SafetyTag;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }
