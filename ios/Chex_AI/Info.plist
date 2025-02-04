@@ -36,7 +36,9 @@
 		</dict>
 	</dict>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>App uses Bluetooth to connect to the Safety Tag device.</string>
+	<string>We need Bluetooth access to connect to SafetyTag devices</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>We need Bluetooth access to connect to SafetyTag devices</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera access required in order to capture vehicle images and videos for the inspection.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -63,9 +65,6 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-
-    <key>NSBluetoothPeripheralUsageDescription</key>
-    <string>Allows the app to connect and interact with nearby SafetyTag devices via Bluetooth.</string>
 
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Used to detect and connect with nearby SafetyTag devices when the app is open.</string>

@@ -9,6 +9,8 @@ class SafetyTagModule: RCTEventEmitter {
     private var hasListeners = false
     private var isConnecting = false
     private var connectedDeviceId: UUID?
+    private var lastTripStartTime: Double?
+    private var lastTripEventTime: Double?
 
     override init() {
         super.init()
@@ -18,6 +20,7 @@ class SafetyTagModule: RCTEventEmitter {
     override func startObserving() {
         hasListeners = true
         observeConnectionEvents()
+        observeTripEvents()
     }
 
     override func stopObserving() {
@@ -32,12 +35,16 @@ class SafetyTagModule: RCTEventEmitter {
             "onDeviceConnectionFailed",
             "onDeviceDisconnected",
             "onCheckConnection",
-            "onGetConnectedDevice"
+            "onGetConnectedDevice",
+            "onTripStarted",
+            "onTripEnded",
+            "onTripsReceived"
         ]
     }
-
-    @objc func startScan() {
+  
+  @objc func startScan() {
         print("[SafetyTagModule] Start scanning for SafetyTag devices...")
+        
         // Reset connection state when starting a new scan
         isConnecting = false
         connectedDeviceId = nil
@@ -181,6 +188,168 @@ class SafetyTagModule: RCTEventEmitter {
         print("[SafetyTagModule] Attempting to connect to device: \(device)")
         isConnecting = true
         STDeviceManager.shared.connection.connect(device)
+    }
+  
+
+    private func observeTripEvents() {
+        // Trip Start Event
+        SafetyTagApi.Event.TripsDetection.didReceiveTripStartEvent
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] device, tripEvent, error in
+                print("[SafetyTagModule] Trip Start Event Received")
+                if let error = error {
+                    print("[SafetyTagModule] Trip Start Event Error:", error.localizedDescription)
+                    if self?.hasListeners == true {
+                        self?.sendEvent(withName: "onTripStarted", body: [
+                            "error": error.localizedDescription
+                        ])
+                    }
+                    return
+                }
+                
+                // Log full details for debugging
+                print("[SafetyTagModule] Trip Start Event Details:")
+                print("Device ID:", device.id.uuidString)
+                print("Device Name:", device.name)
+                print("Event Time:", tripEvent.eventTime)
+                print("Seconds Since Restart:", tripEvent.secondsSinceLastRestart)
+                
+              let formatter = ISO8601DateFormatter()
+              let eventTimeString = formatter.string(from: tripEvent.eventTime)
+              
+                // Send only essential data to React Native
+                if self?.hasListeners == true {
+                    self?.sendEvent(withName: "onTripStarted", body: [
+                        "deviceId": device.id.uuidString,
+                        "deviceName": device.name,
+                        "tripEvent": eventTimeString,
+                        "secondsSinceLastRestart": tripEvent.secondsSinceLastRestart
+                    ])
+                }
+            }
+            .store(in: &cancellables)
+
+        // Trip End Event
+        SafetyTagApi.Event.TripsDetection.didReceiveTripEndEvent
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] device, tripEvent, error in
+                print("[SafetyTagModule] Trip End Event Received")
+                if let error = error {
+                    print("[SafetyTagModule] Trip End Event Error:", error.localizedDescription)
+                    if self?.hasListeners == true {
+                        self?.sendEvent(withName: "onTripEnded", body: [
+                            "error": error.localizedDescription
+                        ])
+                    }
+                    return
+                }
+                
+                // Log full details for debugging
+                print("[SafetyTagModule] Trip End Event Details:")
+                print("Device ID:", device.id.uuidString)
+                print("Device Name:", device.name)
+                print("Event Time:", tripEvent.eventTime)
+                print("Seconds Since Restart:", tripEvent.secondsSinceLastRestart)
+              let formatter = ISO8601DateFormatter()
+              let eventTimeString = formatter.string(from: tripEvent.eventTime)
+
+                // Send only essential data to React Native
+                if self?.hasListeners == true {
+                    self?.sendEvent(withName: "onTripEnded", body: [
+                        "deviceId": device.id.uuidString,
+                        "deviceName": device.name,
+                        "tripEvent": eventTimeString,
+                        "secondsSinceLastRestart": tripEvent.secondsSinceLastRestart
+                    ])
+                }
+                self?.lastTripStartTime = nil
+            }
+            .store(in: &cancellables)
+    }
+
+    @objc func getTrips() {
+        print("[SafetyTagModule] Getting trips...")
+        
+        do {
+            try STDeviceManager.shared.trips.getTrips()
+          SafetyTagApi.Event.TripsDetection.didReceiveTrips
+            .sink { device, trips, error in
+              print("[SafetyTagModule] Trips Data Received", trips)
+              print("[SafetyTagModule] Trips Data error", error)
+              if let error = error {
+                  print("[SafetyTagModule] Trips Data Error:", error.localizedDescription)
+                  if self.hasListeners == true {
+                    self.sendEvent(withName: "onTripsReceived", body: [
+                          "error": error.localizedDescription
+                      ])
+                  }
+                  return
+              }
+            }
+        } catch {
+            print("[SafetyTagModule] Failed to get trips: \(error.localizedDescription)")
+            if self.hasListeners {
+                self.sendEvent(withName: "onTripsReceived", body: [
+                    "error": error.localizedDescription
+                ])
+            }
+        }
+    }
+
+    @objc func getTripsWithFraudDetection() {
+        print("[SafetyTagModule] Getting trips with fraud detection...")
+        
+        do {
+            try STDeviceManager.shared.trips.getTripsDataWithFraudDetection()
+          SafetyTagApi.Event.TripsDetection.didReceiveTrips
+            .sink { device, trips, error in
+              print("[SafetyTagModule] Fraud Trips Data Received", trips)
+              print("[SafetyTagModule] Fraud Trips Data error", error)
+              if let error = error {
+                  print("[SafetyTagModule] Fraud Trips Data Error:", error.localizedDescription)
+                  if self.hasListeners == true {
+                    self.sendEvent(withName: "onTripsReceived", body: [
+                          "error": error.localizedDescription
+                      ])
+                  }
+                  return
+              }
+            }
+          observeTripsData()
+        } catch {
+            print("[SafetyTagModule] Failed to get trips with fraud detection: \(error.localizedDescription)")
+            if self.hasListeners {
+                self.sendEvent(withName: "onTripsReceived", body: [
+                    "error": error.localizedDescription
+                ])
+            }
+        }
+    }
+
+    private func observeTripsData() {
+        SafetyTagApi.Event.TripsDetection.didReceiveTrips
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] device, trips, error in
+                print("[SafetyTagModule] Trips Data Received")
+                if let error = error {
+                    print("[SafetyTagModule] Trips Data Error:", error.localizedDescription)
+                    if self?.hasListeners == true {
+                        self?.sendEvent(withName: "onTripsReceived", body: [
+                            "error": error.localizedDescription
+                        ])
+                    }
+                    return
+                }
+              
+              print("[SafetyTagModule] Trips Data Received", trips)
+                
+                if self?.hasListeners == true {
+                    self?.sendEvent(withName: "onTripsReceived", body: [
+                        "trips": trips
+                    ])
+                }
+            }
+            .store(in: &cancellables)
     }
 
     override static func requiresMainQueueSetup() -> Bool {

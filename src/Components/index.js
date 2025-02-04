@@ -72,6 +72,7 @@ import AlertPopup from './AlertPopup';
 import CustomCamera from './CustomCamera';
 import CameraView from './Camera/CameraView';
 import CameraHeader from './Camera/CameraHeader';
+import SafetyTagDeviceInfo from './SafetyTagDeviceInfo';
 
 export {
   BackgroundImageView,
@@ -148,4 +149,5 @@ export {
   CustomCamera,
   CameraView,
   CameraHeader,
+  SafetyTagDeviceInfo,
 };
