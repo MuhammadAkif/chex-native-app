@@ -11,4 +11,10 @@ RCT_EXTERN_METHOD(getTripsWithFraudDetection)
 RCT_EXTERN_METHOD(supportedEvents)
 RCT_EXTERN_METHOD(startObserving)
 RCT_EXTERN_METHOD(stopObserving)
+RCT_EXTERN_METHOD(enableAccelerometerDataStream)
+RCT_EXTERN_METHOD(disableAccelerometerDataStream)
+RCT_EXTERN_METHOD(isAccelerometerDataStreamEnabled: (RCTPromiseResolveBlock)resolve
+                  rejecter: (RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(startAxisAlignment: (BOOL)resumeIfAvailable)
+RCT_EXTERN_METHOD(stopAxisAlignment)
 @end

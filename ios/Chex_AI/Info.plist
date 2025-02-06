@@ -42,9 +42,11 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Camera access required in order to capture vehicle images and videos for the inspection.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Used to locate iBeacon Safety Tags</string>
+	<string>Axis alignment needs background location access to determine vehicle direction and speed. The app does not store or track your GPS position.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Used to locate iBeacon Safety Tags</string>
+	<string>Axis alignment needs background location access to determine vehicle direction and speed. The app does not store or track your GPS position.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Axis alignment needs location access to determine vehicle direction and speed. The app does not store or track your GPS position.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Microphone access required in order to record audio notes for the inspection.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -65,11 +67,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Used to detect and connect with nearby SafetyTag devices when the app is open.</string>
-
-
-
 </dict>
 </plist>

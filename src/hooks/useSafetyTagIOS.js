@@ -95,6 +95,32 @@ const useSafetyTagIOS = () => {
     await SafetyTagModule.getTripsWithFraudDetection();
   };
 
+  const enableAccelerometerDataStream = async () => {
+    try {
+      await SafetyTagModule.enableAccelerometerDataStream();
+      console.log('Successfully enabled accelerometer data stream');
+    } catch (error) {
+      console.error('Error enabling accelerometer data stream:', error);
+    }
+  };
+
+  const disableAccelerometerDataStream = async () => {
+    try {
+      await SafetyTagModule.disableAccelerometerDataStream();
+      console.log('Successfully disabled accelerometer data stream');
+    } catch (error) {
+      console.error('Error disabling accelerometer data stream:', error);
+    }
+  };
+
+  const isAccelerometerDataStreamEnabled = async () => {
+    try {
+      return await SafetyTagModule.isAccelerometerDataStreamEnabled();
+    } catch (error) {
+      console.error('Error checking accelerometer data stream enable:', error);
+    }
+  };
+
   return {
     startObserving,
     stopObserving,
@@ -104,6 +130,9 @@ const useSafetyTagIOS = () => {
     getDeviceInformation,
     getTrips,
     getTripsWithFraudDetection,
+    enableAccelerometerDataStream,
+    disableAccelerometerDataStream,
+    isAccelerometerDataStreamEnabled,
   };
 };
 

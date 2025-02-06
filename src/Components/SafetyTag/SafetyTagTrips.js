@@ -1,27 +1,59 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
-const TripItem = ({trip}) => (
-  <View style={styles.tripItem}>
-    <View style={styles.tripDetails}>
-      <View style={styles.detailRow}>
-        <Text style={styles.label}>Device:</Text>
-        <Text style={styles.value}>{trip.deviceName}</Text>
-      </View>
-      <View style={styles.detailRow}>
-        <Text style={styles.label}>Time:</Text>
-        <Text style={styles.value}>{trip.tripEvent}</Text>
-      </View>
-      {trip.isOngoing && (
-        <View style={styles.ongoingBadge}>
-          <Text style={styles.ongoingText}>Ongoing</Text>
-        </View>
-      )}
-    </View>
-  </View>
-);
+const formatDuration = (startDate, endDate) => {
+  const seconds = endDate - startDate;
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+  
+  const parts = [];
+  if (hours > 0) parts.push(`${hours}h`);
+  if (minutes > 0) parts.push(`${minutes}m`);
+  if (secs > 0 || parts.length === 0) parts.push(`${secs}s`);
+  
+  return parts.join(' ');
+};
 
-const SafetyTagTrips = ({trips = [], isLoading = false}) => {
+const TripItem = ({trip}) => {
+  const startDate = new Date(trip.startDate * 1000); // Convert Unix timestamp to milliseconds
+  const endDate = new Date(trip.endDate * 1000); // Convert Unix timestamp to milliseconds
+  const duration = formatDuration(trip.startDate, trip.endDate);
+
+  return (
+    <View style={styles.tripItem}>
+      <View style={styles.tripDetails}>
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Start:</Text>
+          <Text style={styles.value}>
+            {startDate.toLocaleString()}
+          </Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>End:</Text>
+          <Text style={styles.value}>
+            {endDate.toLocaleString()}
+          </Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Duration:</Text>
+          <Text style={styles.value}>{duration}</Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Connection:</Text>
+          <Text style={[
+            styles.value,
+            !trip.connectedDuringTrip && styles.warningText
+          ]}>
+            {trip.connectedDuringTrip ? 'Connected' : 'Disconnected'}
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const SafetyTagTrips = ({trips = [], isLoading = false, deviceName = ''}) => {
   if (isLoading) {
     return (
       <View style={styles.container}>
@@ -38,10 +70,17 @@ const SafetyTagTrips = ({trips = [], isLoading = false}) => {
     );
   }
 
+  // Sort trips by start date (most recent first)
+  const sortedTrips = [...trips].sort((a, b) => b.startDate - a.startDate);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Recorded Trips</Text>
-      {trips.map((trip, index) => (
+      {deviceName && (
+        <Text style={styles.subtitle}>Device: {deviceName}</Text>
+      )}
+      <Text style={styles.subtitle}>Total Trips: {trips.length}</Text>
+      {sortedTrips.map((trip, index) => (
         <TripItem key={index} trip={trip} />
       ))}
     </View>
@@ -67,6 +106,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
     marginBottom: 16,
   },
   tripItem: {
@@ -86,6 +130,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     fontWeight: '500',
+    width: 80,
   },
   value: {
     fontSize: 14,
@@ -106,16 +151,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontStyle: 'italic',
   },
-  ongoingBadge: {
-    backgroundColor: '#4CAF50',
-    padding: 4,
-    borderRadius: 4,
-    marginLeft: 8,
-  },
-  ongoingText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+  warningText: {
+    color: '#ff9800',
   },
 });
 

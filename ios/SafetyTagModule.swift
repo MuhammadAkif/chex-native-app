@@ -2,10 +2,13 @@ import Foundation
 import SafetyTag
 import Combine
 import React
+import CoreBluetooth
 
 @objc(SafetyTagModule)
 class SafetyTagModule: RCTEventEmitter {
     private var cancellables = Set<AnyCancellable>()
+    private var accelerometerPublisher = Set<AnyCancellable>()
+    private var accelerometerIsActivePublisher = Set<AnyCancellable>()
     private var hasListeners = false
     private var isConnecting = false
     private var connectedDeviceId: UUID?
@@ -38,11 +41,16 @@ class SafetyTagModule: RCTEventEmitter {
             "onGetConnectedDevice",
             "onTripStarted",
             "onTripEnded",
-            "onTripsReceived"
+            "onTripsReceived",
+            "onAccelerometerData",
+            "onAccelerometerError",
+            "onAccelerometerStreamStatus",
+            "onAxisAlignmentState",
+            "onAxisAlignmentData"
         ]
     }
-  
-  @objc func startScan() {
+
+    @objc func startScan() {
         print("[SafetyTagModule] Start scanning for SafetyTag devices...")
         
         // Reset connection state when starting a new scan
@@ -189,7 +197,7 @@ class SafetyTagModule: RCTEventEmitter {
         isConnecting = true
         STDeviceManager.shared.connection.connect(device)
     }
-  
+
 
     private func observeTripEvents() {
         // Trip Start Event
@@ -274,8 +282,6 @@ class SafetyTagModule: RCTEventEmitter {
             try STDeviceManager.shared.trips.getTrips()
           SafetyTagApi.Event.TripsDetection.didReceiveTrips
             .sink { device, trips, error in
-              print("[SafetyTagModule] Trips Data Received", trips)
-              print("[SafetyTagModule] Trips Data error", error)
               if let error = error {
                   print("[SafetyTagModule] Trips Data Error:", error.localizedDescription)
                   if self.hasListeners == true {
@@ -285,6 +291,8 @@ class SafetyTagModule: RCTEventEmitter {
                   }
                   return
               }
+              print("[SafetyTagModule] Trips Data Received", trips)
+              print("[SafetyTagModule] Trips Data error", error)
             }
         } catch {
             print("[SafetyTagModule] Failed to get trips: \(error.localizedDescription)")
@@ -303,8 +311,6 @@ class SafetyTagModule: RCTEventEmitter {
             try STDeviceManager.shared.trips.getTripsDataWithFraudDetection()
           SafetyTagApi.Event.TripsDetection.didReceiveTrips
             .sink { device, trips, error in
-              print("[SafetyTagModule] Fraud Trips Data Received", trips)
-              print("[SafetyTagModule] Fraud Trips Data error", error)
               if let error = error {
                   print("[SafetyTagModule] Fraud Trips Data Error:", error.localizedDescription)
                   if self.hasListeners == true {
@@ -314,6 +320,8 @@ class SafetyTagModule: RCTEventEmitter {
                   }
                   return
               }
+              print("[SafetyTagModule] Fraud Trips Data Received", trips)
+              print("[SafetyTagModule] Fraud Trips Data error", error)
             }
           observeTripsData()
         } catch {
@@ -330,7 +338,6 @@ class SafetyTagModule: RCTEventEmitter {
         SafetyTagApi.Event.TripsDetection.didReceiveTrips
             .receive(on: DispatchQueue.main)
             .sink { [weak self] device, trips, error in
-                print("[SafetyTagModule] Trips Data Received")
                 if let error = error {
                     print("[SafetyTagModule] Trips Data Error:", error.localizedDescription)
                     if self?.hasListeners == true {
@@ -340,19 +347,145 @@ class SafetyTagModule: RCTEventEmitter {
                     }
                     return
                 }
-              
-              print("[SafetyTagModule] Trips Data Received", trips)
+                print("[SafetyTagModule] observeTripsData Received", trips)
+                print("[SafetyTagModule] observeTripsData error", error)
                 
                 if self?.hasListeners == true {
+                    // Format trips data
+                    let formattedTrips = trips.map { trip -> [String: Any] in
+                        return [
+                          "startDate": trip.startDate.timeIntervalSince1970 * 1000,
+                          "endDate": trip.endDate.timeIntervalSince1970 * 1000,
+                            "startSecondsSinceLastRestart": trip.startSecondsSinceLastRestart,
+                            "endSecondsSinceLastRestart": trip.endSecondsSinceLastRestart,
+                            "connectedDuringTrip": trip.connectedDuringTrip ?? false
+                        ]
+                    }
+                    
                     self?.sendEvent(withName: "onTripsReceived", body: [
-                        "trips": trips
+                        "trips": formattedTrips,
+                        "deviceId": device?.id.uuidString ?? "",
+                        "deviceName": device?.name ?? "",
+                        "totalTrips": formattedTrips.count
                     ])
                 }
             }
             .store(in: &cancellables)
     }
+//  
+//  @objc func enableAccelerometerDataStream() {
+//      print("[SafetyTagModule] Getting trips...")
+//      
+//      do {
+//          try STDeviceManager.shared.accelerometer
+//          .accelerometerPublisher()
+//          .compactMap({ try? $0.get() })
+//          .sink { acceleration in
+//            print(acceleration)
+//            }
+//            .store(in: &accelerometerPublisher)
+//      } catch {
+//          print("[SafetyTagModule] Failed to get trips: \(error.localizedDescription)")
+//          if self.hasListeners {
+//              self.sendEvent(withName: "onTripsReceived", body: [
+//                  "error": error.localizedDescription
+//              ])
+//          }
+//      }
+//  }
 
+  
+  @objc func isAccelerometerDataStreamEnabled(_ resolve: @escaping RCTPromiseResolveBlock,
+                                    rejecter reject: @escaping RCTPromiseRejectBlock) {
+    print("[SafetyTagModule] Checking Is Accelerometer Data Stream Enabled...")
+    STDeviceManager.shared.accelerometer
+        .isAccelerometerStreamActivePublisher()
+        .sink { completion in
+            switch completion {
+            case .failure(let error):
+                reject("ERROR", "Failed to check accelerometer status: \(error.localizedDescription)", error)
+            case .finished:
+                break
+            }
+        } receiveValue: { isEnabled in
+            print("[SafetyTagModule] Accelerometer stream enabled:", isEnabled)
+            resolve(isEnabled)
+        }
+        .store(in: &accelerometerIsActivePublisher)
+  }
+  
+  @objc func enableAccelerometerDataStream() {
+      print("[SafetyTagModule] Enabling Accelerometer Data Stream...")
+      STDeviceManager.shared.accelerometer
+          .accelerometerPublisher()
+          .compactMap { try? $0.get() } // Convert Result to optional value
+          .sink(receiveCompletion: { completion in
+              switch completion {
+              case .failure(let error):
+                  print("[SafetyTagModule] Failed to get accelerometer data: \(error.localizedDescription)")
+                  if self.hasListeners {
+                      self.sendEvent(withName: "onAccelerometerError", body: ["error": error.localizedDescription])
+                  }
+              case .finished:
+                  print("[SafetyTagModule] Accelerometer stream finished.")
+              }
+          }, receiveValue: { acceleration in
+              print("[SafetyTagModule] Accelerometer data:", acceleration)
+              if self.hasListeners {
+                  self.sendEvent(withName: "onAccelerometerData", body: [
+                      "x": acceleration.x,
+                      "y": acceleration.y,
+                      "z": acceleration.z,
+                      "timestamp": Date().timeIntervalSince1970 * 1000 // Convert to milliseconds for JS
+                  ])
+              }
+          })
+          .store(in: &accelerometerPublisher)
+  }
+  
+  
+  @objc func disableAccelerometerDataStream() {
+      print("[SafetyTagModule] Disabling Accelerometer Data Stream...")
+
+      // Cancel all stored subscriptions
+    accelerometerPublisher.removeAll()
+  }
     override static func requiresMainQueueSetup() -> Bool {
         return true
+    }
+
+    @objc func startAxisAlignment(_ resumeIfAvailable: Bool) {
+        print("[SafetyTagModule] Starting axis alignment...")
+        do {
+            try STDeviceManager.shared.axisAlignment.startAccelerometerAxisAlignment()
+            
+            // Subscribe to alignment state updates
+            try SafetyTagApi.Event.AxisAlignment.alignmentState
+                .sink { [weak self] device, state in
+                      print("[SafetyTagModule] alignmentState of state:", state)
+                }
+                .store(in: &cancellables)
+            
+            // Subscribe to alignment data updates
+            try SafetyTagApi.Event.AxisAlignment.didReceiveAlignmentData
+                .sink { [weak self] device, result in
+                    print("[SafetyTagModule] Alignment data received:", result)
+                }
+                .store(in: &cancellables)
+            
+        } catch {
+            print("[SafetyTagModule] Failed to start axis alignment:", error)
+        }
+    }
+    
+    @objc func stopAxisAlignment() {
+        print("[SafetyTagModule] Stopping axis alignment...")
+        do {
+            try STDeviceManager.shared.axisAlignment.stopAccelerometerAxisAlignment()
+            // Clear any stored subscriptions
+            cancellables.removeAll()
+        } catch {
+            print("[SafetyTagModule] Failed to stop axis alignment:", error)
+        }
     }
 }
