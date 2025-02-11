@@ -15,6 +15,10 @@ RCT_EXTERN_METHOD(enableAccelerometerDataStream)
 RCT_EXTERN_METHOD(disableAccelerometerDataStream)
 RCT_EXTERN_METHOD(isAccelerometerDataStreamEnabled: (RCTPromiseResolveBlock)resolve
                   rejecter: (RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(checkAxisAlignmentStatus: (RCTPromiseResolveBlock)resolve
+                  rejecter: (RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(startAxisAlignment: (BOOL)resumeIfAvailable)
 RCT_EXTERN_METHOD(stopAxisAlignment)
+RCT_EXTERN_METHOD(removeStoredAxisAlignment)
+RCT_EXTERN_METHOD(getAlignmentConfiguration)
 @end

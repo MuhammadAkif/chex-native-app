@@ -11,21 +11,18 @@ import {
 
 import {useSafetyTagIOS} from '../../hooks';
 import {SafetyTagDeviceInfo} from '../index';
-import SafetyTagTrips from './SafetyTagTrips';
 import SafetyTagAxisAlignment from './SafetyTagAxisAlignment';
 import {formatUnixTime} from '../../Utils/helpers';
+import {colors} from '../../Assets/Styles';
 
 const SafetyTagIOS = () => {
   const {
     startScan,
     checkConnection,
     disconnectDevice,
-    getDeviceInformation,
-    getTrips,
-    getTripsWithFraudDetection,
+    isAccelerometerDataStreamEnabled,
     enableAccelerometerDataStream,
     disableAccelerometerDataStream,
-    isAccelerometerDataStreamEnabled,
   } = useSafetyTagIOS();
   const [connectedDevice, setConnectedDevice] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -61,7 +58,7 @@ const SafetyTagIOS = () => {
         setIsConnected(event.isConnected);
       }),
       DeviceEventEmitter.addListener('onTripStarted', event => {
-        console.log('Trip Started:', event);
+        // console.log('Trip Started:', event);
         if (!event.error) {
           const {deviceId, deviceName, tripEvent, secondsSinceLastRestart} =
             event;
@@ -75,7 +72,7 @@ const SafetyTagIOS = () => {
         }
       }),
       DeviceEventEmitter.addListener('onTripEnded', event => {
-        console.log('Trip Ended:', event);
+        // console.log('Trip Ended:', event);
         if (!event.error) {
           const {deviceId, deviceName, tripEvent, secondsSinceLastRestart} =
             event;
@@ -92,7 +89,7 @@ const SafetyTagIOS = () => {
       }),
       DeviceEventEmitter.addListener('onTripsReceived', event => {
         setIsLoadingTrips(false);
-        console.log('Trips Received:', event);
+        // console.log('Trips Received:', event);
         if (!event.error) {
           setTrips(event.trips || []);
         } else {
@@ -100,12 +97,13 @@ const SafetyTagIOS = () => {
         }
       }),
       DeviceEventEmitter.addListener('onAccelerometerData', event => {
-        console.log('Accelerometer Data:', {
-          x: event.x,
-          y: event.y,
-          z: event.z,
-          timestamp: new Date(event.timestamp).toISOString()
-        });
+        const {x, y, z, secondsSinceLastRestart} = event;
+        /*console.log('Accelerometer Data:', {
+          x,
+          y,
+          z,
+          secondsSinceLastRestart,
+        });*/
       }),
       DeviceEventEmitter.addListener('onAccelerometerError', event => {
         console.error('Accelerometer Error:', event.error);
@@ -151,40 +149,6 @@ const SafetyTagIOS = () => {
     }
   };
 
-  const handleGetDeviceInformation = async () => {
-    try {
-      console.log('Fetching SafetyTag Device Information...');
-      await getDeviceInformation();
-    } catch (error) {
-      console.error('Error Fetching SafetyTag Device Information:', error);
-    }
-  };
-
-  const handleGetTrips = async () => {
-    try {
-      console.log('Fetching SafetyTag Trips...');
-      setIsLoadingTrips(true);
-      await getTrips();
-    } catch (error) {
-      console.error('Error Fetching SafetyTag Trips:', error);
-      setIsLoadingTrips(false);
-    }
-  };
-
-  const handleGetTripsWithFraudDetection = async () => {
-    try {
-      console.log('Fetching SafetyTag Trips with Fraud Detection...');
-      setIsLoadingTrips(true);
-      await getTripsWithFraudDetection();
-    } catch (error) {
-      console.error(
-        'Error Fetching SafetyTag Trips with Fraud Detection:',
-        error,
-      );
-      setIsLoadingTrips(false);
-    }
-  };
-
   const handleIsAccelerometerEnabled = async () => {
     try {
       const isEnabled = await isAccelerometerDataStreamEnabled();
@@ -209,7 +173,7 @@ const SafetyTagIOS = () => {
           connectedDevice={connectedDevice}
         />
 
-        {currentTrip && (
+        {/* {currentTrip && (
           <View style={styles.currentTripContainer}>
             <Text style={styles.currentTripTitle}>Ongoing Trip</Text>
             <Text style={styles.currentTripInfo}>
@@ -221,7 +185,7 @@ const SafetyTagIOS = () => {
           </View>
         )}
 
-        <SafetyTagTrips trips={trips} isLoading={isLoadingTrips} />
+        <SafetyTagTrips trips={trips} isLoading={isLoadingTrips} />*/}
 
         {isConnected && <SafetyTagAxisAlignment />}
 
@@ -229,14 +193,12 @@ const SafetyTagIOS = () => {
           <TouchableOpacity style={styles.button} onPress={handleStartScan}>
             <Text style={styles.buttonText}>Start Scan</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={[styles.button, styles.buttonMargin]}
             onPress={handleCheckConnection}>
             <Text style={styles.buttonText}>Check Connection</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[styles.button, styles.buttonMargin]}
             onPress={handleGetDeviceInformation}>
             <Text style={styles.buttonText}>Refresh Device Info</Text>
@@ -254,32 +216,22 @@ const SafetyTagIOS = () => {
             <Text style={styles.buttonText}>
               Get Trips (with Fraud Detection)
             </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, styles.buttonMargin]}
-            onPress={handleIsAccelerometerEnabled}>
-            <Text style={styles.buttonText}>
-              Check Accelerometer Status
-            </Text>
-          </TouchableOpacity>
-
+          </TouchableOpacity>*/}
           <TouchableOpacity
             style={[styles.button, styles.buttonMargin]}
             onPress={enableAccelerometerDataStream}>
-            <Text style={styles.buttonText}>
-              Enable Accelerometer Data Stream
-            </Text>
+            <Text style={styles.buttonText}>Enable Accelerometer</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={[styles.button, styles.buttonMargin]}
             onPress={disableAccelerometerDataStream}>
-            <Text style={styles.buttonText}>
-              Disable Accelerometer Data Stream
-            </Text>
+            <Text style={styles.buttonText}>Disable Accelerometer</Text>
           </TouchableOpacity>
-
+          <TouchableOpacity
+            style={[styles.button, styles.buttonMargin]}
+            onPress={handleIsAccelerometerEnabled}>
+            <Text style={styles.buttonText}>Check Accelerometer Status</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.button,
@@ -353,6 +305,47 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
     marginBottom: 4,
+  },
+  statusContainer: {
+    backgroundColor: colors.white,
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  statusTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: colors.primary,
+  },
+  statusText: {
+    fontSize: 16,
+    marginBottom: 4,
+    color: colors.text,
+  },
+  detailsContainer: {
+    backgroundColor: colors.white,
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  detailText: {
+    fontSize: 14,
+    marginBottom: 4,
+    color: colors.text,
+  },
+  errorContainer: {
+    marginTop: 16,
+    padding: 16,
+    backgroundColor: colors.error,
+    borderRadius: 8,
+  },
+  errorText: {
+    color: colors.white,
+    fontSize: 14,
+  },
+  buttonDisabled: {
+    backgroundColor: colors.disabled,
   },
 });
 

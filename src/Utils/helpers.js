@@ -2,7 +2,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {PERMISSIONS, request, RESULTS} from 'react-native-permissions';
+import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 
 import {isNotEmpty} from './index';
 import {Landscape, Portrait} from '../Assets/Icons';
@@ -237,4 +237,25 @@ export const formatRawData = (rawData = []) => {
         endUnixTime: formatUnixTime(endUnixTimeMs),
       };
     });
+};
+
+export const checkPermissions = async () => {
+  // Location Always
+  const locationAlwaysPermission = await check(PERMISSIONS.IOS.LOCATION_ALWAYS);
+  console.log('Location Always Permission:', locationAlwaysPermission);
+
+  // Location When in Use
+  const locationWhenInUsePermission = await check(
+    PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+  );
+  console.log('Location When in Use Permission:', locationWhenInUsePermission);
+};
+
+export const requestLocationPermission = async () => {
+  const result = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+  if (result === RESULTS.GRANTED) {
+    console.log('Location permission granted');
+  } else {
+    console.log('Location permission denied');
+  }
 };

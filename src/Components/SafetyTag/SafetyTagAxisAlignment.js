@@ -1,133 +1,63 @@
-import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import useAxisAlignment from '../../hooks/useAxisAlignment';
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, Button} from 'react-native';
+import {useAxisAlignment} from '../../hooks/useAxisAlignment';
+import {useSafetyTagIOS} from '../../hooks';
+import {colors} from '../../Assets/Styles';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
+import {
+  requestLocationPermission,
+  requestPermissions,
+} from '../../Utils/helpers';
 
 const SafetyTagAxisAlignment = () => {
   const {
     alignmentState,
-    alignmentData,
-    isAligning,
+    alignmentDetails,
+    vehicleState,
     error,
-    startAxisAlignment,
-    stopAxisAlignment,
+    isComplete,
+    permissionStatus,
+    startAlignment,
+    stopAlignment,
+    checkAlignmentStatus,
+    getAlignmentConfiguration,
+    removeStoredAlignment,
   } = useAxisAlignment();
+  const isAlignmentRunning = alignmentState?.phase === 'started';
+  const buttonText = isAlignmentRunning ? 'Stop Alignment' : 'Start Alignment';
 
-  const handleStartAlignment = () => {
-    startAxisAlignment(false);
+  const handleIsAlignmentActive = async () => {
+    const isAlignmentActive = await checkAlignmentStatus();
+    console.log({isAlignmentActive});
+    return isAlignmentActive;
   };
 
-  const handleStopAlignment = () => {
-    stopAxisAlignment();
-  };
-
-  const renderAlignmentState = () => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Alignment Status</Text>
-      <Text style={styles.text}>
-        Phase: {alignmentState?.phase || 'Not started'}
-      </Text>
-      {alignmentState?.details?.message && (
-        <Text style={styles.message}>{alignmentState.details.message}</Text>
-      )}
-      {error && <Text style={styles.errorText}>Error: {error}</Text>}
-
-      {/* Vehicle State */}
-      {alignmentState?.details?.vehicleState !== undefined && (
-        <View style={styles.subsection}>
-          <Text
-            style={[
-              styles.text,
-              !alignmentState.details.vehicleState && styles.warningText,
-            ]}>
-            Vehicle State:{' '}
-            {alignmentState.details.vehicleState ? 'Valid' : 'Invalid'}
-          </Text>
-        </View>
-      )}
-    </View>
-  );
-
-  const renderAxisDetails = () => {
-    if (!alignmentState?.details) {
-      return null;
+  async function handleAlignmentToggle() {
+    await requestLocationPermission();
+    const isAlignmentActive = await handleIsAlignmentActive();
+    if (isAlignmentActive) {
+      await stopAlignment();
+    } else {
+      await startAlignment(false);
     }
-    const {zAxis, xAxis, angles} = alignmentState.details;
-
-    return (
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Axis Details</Text>
-
-        {/* Z-Axis Information */}
-        {zAxis && (
-          <View style={styles.axisSection}>
-            <Text style={styles.axisTitle}>Z-Axis</Text>
-            <Text style={[styles.text, !zAxis.online && styles.warningText]}>
-              Status: {zAxis.online ? 'Online' : 'Offline'}
-            </Text>
-            <Text style={styles.message}>{zAxis.message}</Text>
-          </View>
-        )}
-
-        {/* X-Axis Information */}
-        {xAxis && (
-          <View style={styles.axisSection}>
-            <Text style={styles.axisTitle}>X-Axis</Text>
-            <Text style={styles.text}>Phase: {xAxis.phase}</Text>
-            <Text style={styles.text}>Confidence: {xAxis.confidence}</Text>
-            <Text style={styles.text}>Progress: {xAxis.bootstrapProgress}</Text>
-            <Text style={styles.message}>{xAxis.message}</Text>
-          </View>
-        )}
-
-        {/* Angle Information */}
-        {angles && (
-          <View style={styles.axisSection}>
-            <Text style={styles.axisTitle}>Angles</Text>
-            <Text style={styles.text}>Current: {angles.current}°</Text>
-            <Text style={styles.text}>Previous: {angles.previous}°</Text>
-          </View>
-        )}
-
-        {/* Final Alignment Values */}
-        {alignmentData &&
-          alignmentData.theta != null &&
-          alignmentData.phi != null && (
-            <View style={styles.alignmentValues}>
-              <Text style={styles.axisTitle}>Final Values</Text>
-              <Text style={styles.text}>
-                Theta: {Number(alignmentData.theta).toFixed(2)}°
-              </Text>
-              <Text style={styles.text}>
-                Phi: {Number(alignmentData.phi).toFixed(2)}°
-              </Text>
-            </View>
-          )}
-      </View>
-    );
-  };
-
-  const renderControls = () => (
-    <View style={styles.section}>
-      <TouchableOpacity
-        style={[
-          styles.button,
-          isAligning ? styles.stopButton : styles.startButton,
-        ]}
-        onPress={isAligning ? handleStopAlignment : handleStartAlignment}
-        disabled={alignmentState?.details?.vehicleState === false}>
-        <Text style={styles.buttonText}>
-          {isAligning ? 'Stop Alignment' : 'Start Alignment'}
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
+    await removeStoredAlignment();
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Axis Alignment</Text>
-      {renderAlignmentState()}
-      {renderAxisDetails()}
-      {renderControls()}
+      <Text style={styles.text}>{alignmentState?.phase || 'Not Started'}</Text>
+      <Button title={buttonText} onPress={handleAlignmentToggle} />
+      <Button
+        title={'Check Alignment Status'}
+        onPress={handleIsAlignmentActive}
+      />
+      <Button
+        title={'Check Alignment Configuration'}
+        onPress={getAlignmentConfiguration}
+      />
     </View>
   );
 };
@@ -181,18 +111,20 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   text: {
-    fontSize: 14,
-    marginBottom: 4,
-    color: '#333',
+    fontSize: hp('2.5%'),
+    padding: wp('2%'),
+    color: colors.black,
+    textTransform: 'uppercase',
+    textAlign: 'center',
   },
   message: {
-    fontSize: 14,
+    fontSize: hp('2.5%'),
     marginBottom: 4,
     color: '#666',
     fontStyle: 'italic',
   },
   errorText: {
-    fontSize: 14,
+    fontSize: hp('2.5%'),
     marginBottom: 4,
     color: '#f44336',
     fontWeight: '500',
