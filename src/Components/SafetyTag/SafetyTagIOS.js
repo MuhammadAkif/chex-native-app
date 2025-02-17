@@ -13,12 +13,16 @@ import {useSafetyTagIOS} from '../../hooks';
 import {SafetyTagDeviceInfo} from '../index';
 import SafetyTagAxisAlignment from './SafetyTagAxisAlignment';
 import {formatUnixTime} from '../../Utils/helpers';
+import DeviceScan from './DeviceScan';
 import {colors} from '../../Assets/Styles';
 
 const SafetyTagIOS = () => {
   const {
+    devices,
+    isScanning,
     startScan,
     checkConnection,
+    connectToDevice,
     disconnectDevice,
     isAccelerometerDataStreamEnabled,
     enableAccelerometerDataStream,
@@ -32,85 +36,35 @@ const SafetyTagIOS = () => {
 
   useEffect(() => {
     const subscriptions = [
-      DeviceEventEmitter.addListener('onDeviceConnected', event => {
-        setConnectedDevice(event);
-        setIsConnected(true);
-      }),
-      DeviceEventEmitter.addListener('onDeviceConnectionFailed', event => {
-        setConnectedDevice(null);
-        setIsConnected(false);
-      }),
-      DeviceEventEmitter.addListener('onDeviceDisconnected', event => {
-        setConnectedDevice(null);
-        setIsConnected(false);
-        setCurrentTrip(null);
-      }),
-      DeviceEventEmitter.addListener('onGetConnectedDevice', event => {
-        if (!event.error) {
-          setConnectedDevice(event);
-          setIsConnected(true);
-        } else {
-          setConnectedDevice(null);
-          setIsConnected(false);
-        }
-      }),
-      DeviceEventEmitter.addListener('onCheckConnection', event => {
-        setIsConnected(event.isConnected);
-      }),
-      DeviceEventEmitter.addListener('onTripStarted', event => {
-        // console.log('Trip Started:', event);
-        if (!event.error) {
-          const {deviceId, deviceName, tripEvent, secondsSinceLastRestart} =
-            event;
-          setCurrentTrip({
-            deviceId,
-            deviceName,
-            tripEvent: formatUnixTime(tripEvent),
-            secondsSinceLastRestart,
-            isOngoing: true,
-          });
-        }
-      }),
-      DeviceEventEmitter.addListener('onTripEnded', event => {
-        // console.log('Trip Ended:', event);
-        if (!event.error) {
-          const {deviceId, deviceName, tripEvent, secondsSinceLastRestart} =
-            event;
-          const endedTrip = {
-            deviceId,
-            deviceName,
-            tripEvent: formatUnixTime(tripEvent),
-            secondsSinceLastRestart,
-            isOngoing: false,
-          };
-          setCurrentTrip(null);
-          setTrips(prevTrips => [endedTrip, ...prevTrips]);
-        }
-      }),
-      DeviceEventEmitter.addListener('onTripsReceived', event => {
-        setIsLoadingTrips(false);
-        // console.log('Trips Received:', event);
-        if (!event.error) {
-          setTrips(event.trips || []);
-        } else {
-          console.error('Failed to get trips:', event.error);
-        }
-      }),
-      DeviceEventEmitter.addListener('onAccelerometerData', event => {
-        const {x, y, z, secondsSinceLastRestart} = event;
-        /*console.log('Accelerometer Data:', {
-          x,
-          y,
-          z,
-          secondsSinceLastRestart,
-        });*/
-      }),
-      DeviceEventEmitter.addListener('onAccelerometerError', event => {
-        console.error('Accelerometer Error:', event.error);
-      }),
-      DeviceEventEmitter.addListener('onAccelerometerStreamStatus', event => {
-        console.log('Accelerometer Stream Status:', event.isEnabled);
-      }),
+      DeviceEventEmitter.addListener('onDeviceConnected', onDeviceConnected),
+      DeviceEventEmitter.addListener(
+        'onDeviceConnectionFailed',
+        onDeviceConnectionFailed,
+      ),
+      DeviceEventEmitter.addListener(
+        'onDeviceDisconnected',
+        onDeviceDisconnected,
+      ),
+      DeviceEventEmitter.addListener(
+        'onGetConnectedDevice',
+        onGetConnectedDevice,
+      ),
+      DeviceEventEmitter.addListener('onCheckConnection', onCheckConnection),
+      DeviceEventEmitter.addListener('onTripStarted', onTripStarted),
+      DeviceEventEmitter.addListener('onTripEnded', onTripEnded),
+      DeviceEventEmitter.addListener('onTripsReceived', onTripsReceived),
+      DeviceEventEmitter.addListener(
+        'onAccelerometerData',
+        onAccelerometerData,
+      ),
+      DeviceEventEmitter.addListener(
+        'onAccelerometerError',
+        onAccelerometerError,
+      ),
+      DeviceEventEmitter.addListener(
+        'onAccelerometerStreamStatus',
+        onAccelerometerStreamStatus,
+      ),
     ];
 
     // Cleanup subscriptions
@@ -118,6 +72,94 @@ const SafetyTagIOS = () => {
       subscriptions.forEach(subscription => subscription.remove());
     };
   }, []);
+
+  function onDeviceConnected(event) {
+    setConnectedDevice(event);
+    setIsConnected(true);
+  }
+
+  function onDeviceConnectionFailed(event) {
+    setConnectedDevice(null);
+    setIsConnected(false);
+  }
+
+  function onDeviceDisconnected(event) {
+    setConnectedDevice(null);
+    setIsConnected(false);
+    setCurrentTrip(null);
+  }
+
+  function onGetConnectedDevice(event) {
+    if (!event.error) {
+      setConnectedDevice(event);
+      setIsConnected(true);
+    } else {
+      setConnectedDevice(null);
+      setIsConnected(false);
+    }
+  }
+
+  function onCheckConnection(event) {
+    setIsConnected(event.isConnected);
+  }
+
+  function onTripStarted(event) {
+    // console.log('Trip Started:', event);
+    if (!event.error) {
+      const {deviceId, deviceName, tripEvent, secondsSinceLastRestart} = event;
+      setCurrentTrip({
+        deviceId,
+        deviceName,
+        tripEvent: formatUnixTime(tripEvent),
+        secondsSinceLastRestart,
+        isOngoing: true,
+      });
+    }
+  }
+
+  function onTripEnded(event) {
+    // console.log('Trip Ended:', event);
+    if (!event.error) {
+      const {deviceId, deviceName, tripEvent, secondsSinceLastRestart} = event;
+      const endedTrip = {
+        deviceId,
+        deviceName,
+        tripEvent: formatUnixTime(tripEvent),
+        secondsSinceLastRestart,
+        isOngoing: false,
+      };
+      setCurrentTrip(null);
+      setTrips(prevTrips => [endedTrip, ...prevTrips]);
+    }
+  }
+
+  function onTripsReceived(event) {
+    setIsLoadingTrips(false);
+    // console.log('Trips Received:', event);
+    if (!event.error) {
+      setTrips(event.trips || []);
+    } else {
+      console.error('Failed to get trips:', event.error);
+    }
+  }
+
+  function onAccelerometerData(event) {
+    const {x, y, z, secondsSinceLastRestart} = event;
+    /*console.log('Accelerometer Data:', {
+      x,
+      y,
+      z,
+      secondsSinceLastRestart,
+    });*/
+  }
+
+  function onAccelerometerError(event) {
+    console.error('Accelerometer Error:', event.error);
+  }
+
+  function onAccelerometerStreamStatus(event) {
+    console.log('Accelerometer Stream Status:', event.isEnabled);
+  }
 
   const handleStartScan = async () => {
     try {
@@ -193,6 +235,13 @@ const SafetyTagIOS = () => {
           <TouchableOpacity style={styles.button} onPress={handleStartScan}>
             <Text style={styles.buttonText}>Start Scan</Text>
           </TouchableOpacity>
+          {isScanning && (
+            <DeviceScan
+              devices={devices}
+              isScanning={isScanning}
+              onDeviceSelect={connectToDevice}
+            />
+          )}
           <TouchableOpacity
             style={[styles.button, styles.buttonMargin]}
             onPress={handleCheckConnection}>
@@ -248,104 +297,104 @@ const SafetyTagIOS = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5FCFF',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 30,
-    textAlign: 'center',
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#007AFF',
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    width: '100%',
   },
   buttonContainer: {
     width: '100%',
   },
-  button: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 10,
-    width: '100%',
-    alignItems: 'center',
+  buttonDisabled: {
+    backgroundColor: colors.disabled,
   },
   buttonMargin: {
     marginTop: 12,
-  },
-  disconnectButton: {
-    backgroundColor: '#FF3B30',
   },
   buttonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
   },
+  container: {
+    backgroundColor: '#F5FCFF',
+    flex: 1,
+  },
   currentTripContainer: {
     backgroundColor: '#E3F2FD',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-    borderWidth: 1,
     borderColor: '#90CAF9',
-  },
-  currentTripTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1976D2',
-    marginBottom: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 16,
+    padding: 16,
   },
   currentTripInfo: {
-    fontSize: 14,
     color: '#333',
+    fontSize: 14,
     marginBottom: 4,
   },
-  statusContainer: {
-    backgroundColor: colors.white,
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  statusTitle: {
+  currentTripTitle: {
+    color: '#1976D2',
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: colors.primary,
   },
-  statusText: {
-    fontSize: 16,
-    marginBottom: 4,
+  detailText: {
     color: colors.text,
+    fontSize: 14,
+    marginBottom: 4,
   },
   detailsContainer: {
     backgroundColor: colors.white,
-    padding: 16,
     borderRadius: 8,
     marginBottom: 16,
+    padding: 16,
   },
-  detailText: {
-    fontSize: 14,
-    marginBottom: 4,
-    color: colors.text,
+  disconnectButton: {
+    backgroundColor: '#FF3B30',
   },
   errorContainer: {
-    marginTop: 16,
-    padding: 16,
     backgroundColor: colors.error,
     borderRadius: 8,
+    marginTop: 16,
+    padding: 16,
   },
   errorText: {
     color: colors.white,
     fontSize: 14,
   },
-  buttonDisabled: {
-    backgroundColor: colors.disabled,
+  scrollContent: {
+    padding: 20,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  statusContainer: {
+    backgroundColor: colors.white,
+    borderRadius: 8,
+    marginBottom: 16,
+    padding: 16,
+  },
+  statusText: {
+    color: colors.text,
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  statusTitle: {
+    color: colors.primary,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  title: {
+    color: '#333',
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    textAlign: 'center',
   },
 });
 

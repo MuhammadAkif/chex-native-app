@@ -1,48 +1,62 @@
 import {useEffect, useState} from 'react';
-import {NativeModules, DeviceEventEmitter} from 'react-native';
+import {Alert, NativeEventEmitter, NativeModules} from 'react-native';
 
 const {SafetyTagModule} = NativeModules;
+const eventEmitter = new NativeEventEmitter(SafetyTagModule);
 
-const useAxisAlignment = () => {
+export const useAxisAlignment = () => {
   const [alignmentState, setAlignmentState] = useState(null);
+  const [vehicleState, setVehicleState] = useState(null);
   const [alignmentData, setAlignmentData] = useState(null);
-  const [isAligning, setIsAligning] = useState(false);
   const [error, setError] = useState(null);
+  const [isComplete, setIsComplete] = useState(false);
+  const [alignmentDetails, setAlignmentDetails] = useState({
+    angles: {
+      current: null,
+      previous: null,
+    },
+    bootstrap: {
+      completed: 0,
+      total: 0,
+      sampleSize: 0,
+    },
+    validation: {
+      confidenceLevel: 0,
+      flipAngleCounter: 0,
+      validatedDataCounter: 0,
+      isFlipped: false,
+    },
+    theta: {
+      previous: null,
+      new: null,
+      rotationAxis: null,
+    },
+    phase: null,
+    zAxisState: null,
+    xAxisState: null,
+    validVehicleState: false,
+    isRetrying: false,
+  });
 
   useEffect(() => {
     const subscriptions = [
-      DeviceEventEmitter.addListener('onAxisAlignmentState', event => {
-        console.log('Axis Alignment State:', event);
-        if (event.error) {
-          setError(event.error);
-          setIsAligning(false);
-        } else {
-          setError(null);
-          setAlignmentState({
-            status: event.status,
-            phase: event.phase,
-            details: event.details,
-          });
-          
-          // Update isAligning based on the phase
-          const nonAligningPhases = ['inactive', 'complete', 'failed', 'cancelled'];
-          setIsAligning(!nonAligningPhases.includes(event.phase));
-        }
-      }),
-      DeviceEventEmitter.addListener('onAxisAlignmentData', event => {
-        console.log('Axis Alignment Data:', event);
-        if (event.error) {
-          setError(event.error);
-        } else {
-          setError(null);
-          setAlignmentData({
-            theta: event.theta,
-            phi: event.phi,
-            timestamp: event.timestamp,
-            details: event.details,
-          });
-        }
-      }),
+      eventEmitter.addListener('onAxisAlignmentState', onAxisAlignmentState),
+
+      eventEmitter.addListener('onVehicleState', onVehicleState),
+
+      eventEmitter.addListener('onAxisAlignmentData', onAxisAlignmentData),
+
+      eventEmitter.addListener('onAxisAlignmentError', onAxisAlignmentError),
+
+      eventEmitter.addListener(
+        'onAxisAlignmentFinished',
+        onAxisAlignmentFinished,
+      ),
+
+      eventEmitter.addListener(
+        'onAxisAlignmentMissing',
+        onAxisAlignmentMissing,
+      ),
     ];
 
     return () => {
@@ -50,37 +64,184 @@ const useAxisAlignment = () => {
     };
   }, []);
 
-  const startAxisAlignment = (resumeIfAvailable = false) => {
+  function onAxisAlignmentState(state) {
+    /*    console.log('Received alignment state:', state);
+    const {
+      angles: {current, previous},
+      overallIterationCount,
+      bootstrapOverallIterations,
+      currentBootstrapBufferSize,
+      directionValidation: {
+        confidenceLevel,
+        flipAngleCounter,
+        validatedDataCounter,
+        isFlipped,
+      },
+      theta,
+      phase,
+      zAxisState,
+      xAxisState,
+      validVehicleState,
+      isRetrying,
+    } = state;
+    setAlignmentState(state);
+
+    // Update detailed state information
+    setAlignmentDetails({
+      angles: {
+        current: current,
+        previous: previous,
+      },
+      bootstrap: {
+        completed: overallIterationCount,
+        total: bootstrapOverallIterations,
+        sampleSize: currentBootstrapBufferSize,
+      },
+      validation: {
+        confidenceLevel: confidenceLevel,
+        flipAngleCounter: flipAngleCounter,
+        validatedDataCounter: validatedDataCounter,
+        isFlipped: isFlipped,
+      },
+      theta: {
+        previous: theta.previous,
+        new: theta.new,
+        rotationAxis: theta.rotationAxis,
+      },
+      phase: phase,
+      zAxisState: zAxisState,
+      xAxisState: xAxisState,
+      validVehicleState: validVehicleState,
+      isRetrying: isRetrying,
+    });*/
+  }
+
+  function onVehicleState(state) {
+    console.log('Received vehicle state:', state);
+    setVehicleState(state);
+  }
+
+  function onAxisAlignmentData(data) {
+    console.log('Received alignment data:', data);
+    /*setAlignmentData({
+      ...data,
+      matrices: {
+        theta: data.matrices.theta,
+        phi: data.matrices.phi,
+      },
+    });*/
+  }
+
+  function onAxisAlignmentError(error) {
+    console.log('onAxisAlignmentError: ', error);
+    setError(error.error);
+    Alert.alert('Alignment Error', error.error);
+  }
+
+  function onAxisAlignmentFinished(result) {
+    console.log('Axis Alignment Finished:', result);
+    if (result.success) {
+      Alert.alert('Success', 'Axis alignment completed successfully');
+    } else {
+      Alert.alert('Error', result.error || 'Alignment failed');
+    }
+  }
+
+  function onAxisAlignmentMissing() {
+    Alert.alert(
+      'Alignment Missing',
+      'The axis alignment is missing. Would you like to start a new alignment?',
+      [
+        {
+          text: 'Yes',
+          onPress: startAlignment,
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+    );
+  }
+
+  const startAlignment = async (resumeIfAvailable = false) => {
     try {
       setError(null);
-      setAlignmentState(null);
-      setAlignmentData(null);
-      SafetyTagModule.startAxisAlignment(resumeIfAvailable);
-    } catch (error) {
-      console.error('Error starting axis alignment:', error);
-      setError(error.message);
-      setIsAligning(false);
+      setIsComplete(false);
+      //await enableAccelerometerDataStream();
+      await SafetyTagModule.startAxisAlignment(resumeIfAvailable);
+    } catch (err) {
+      setError(err.message);
     }
   };
 
-  const stopAxisAlignment = () => {
+  const stopAlignment = async () => {
     try {
-      setError(null);
-      SafetyTagModule.stopAxisAlignment();
-    } catch (error) {
-      console.error('Error stopping axis alignment:', error);
-      setError(error.message);
+      //await disableAccelerometerDataStream();
+      await SafetyTagModule.stopAxisAlignment();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const checkAlignmentStatus = async () => {
+    try {
+      return await SafetyTagModule.checkAxisAlignmentStatus();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const getAlignmentConfiguration = async () => {
+    try {
+      await SafetyTagModule.getAlignmentConfiguration();
+    } catch (err) {
+      setError(err.message);
+      return false;
+    }
+  };
+
+  const checkStoredAlignment = async () => {
+    try {
+      return await SafetyTagModule.hasStoredAxisAlignment();
+    } catch (err) {
+      setError(err.message);
+      return false;
+    }
+  };
+
+  const removeStoredAlignment = async () => {
+    try {
+      const hasStoredAxisAlignment = await checkStoredAlignment();
+      if (hasStoredAxisAlignment) {
+        await SafetyTagModule.removeStoredAxisAlignment();
+        console.log(
+          'Removed stored alignment - status: ',
+          hasStoredAxisAlignment,
+        );
+      } else {
+        console.log(
+          "Doesn't have stored alignment - status: ",
+          hasStoredAxisAlignment,
+        );
+      }
+    } catch (err) {
+      setError(err.message);
     }
   };
 
   return {
     alignmentState,
+    alignmentDetails,
+    vehicleState,
     alignmentData,
-    isAligning,
     error,
-    startAxisAlignment,
-    stopAxisAlignment,
+    isComplete,
+    startAlignment,
+    stopAlignment,
+    checkAlignmentStatus,
+    checkStoredAlignment,
+    removeStoredAlignment,
+    getAlignmentConfiguration,
   };
 };
-
-export default useAxisAlignment;

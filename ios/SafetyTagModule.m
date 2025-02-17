@@ -2,7 +2,9 @@
 #import <React/RCTEventEmitter.h>
 
 @interface RCT_EXTERN_MODULE(SafetyTagModule, RCTEventEmitter)
-RCT_EXTERN_METHOD(startScan)
+RCT_EXTERN_METHOD(startScan: (BOOL)autoConnect)
+RCT_EXTERN_METHOD(stopScan)
+RCT_EXTERN_METHOD(connectDevice:(NSString *)deviceId)
 RCT_EXTERN_METHOD(checkConnection)
 RCT_EXTERN_METHOD(disconnectDevice)
 RCT_EXTERN_METHOD(getConnectedDevice)
@@ -21,4 +23,6 @@ RCT_EXTERN_METHOD(startAxisAlignment: (BOOL)resumeIfAvailable)
 RCT_EXTERN_METHOD(stopAxisAlignment)
 RCT_EXTERN_METHOD(removeStoredAxisAlignment)
 RCT_EXTERN_METHOD(getAlignmentConfiguration)
+RCT_EXTERN_METHOD(hasStoredAxisAlignment: (RCTPromiseResolveBlock)resolve
+                  rejecter: (RCTPromiseRejectBlock)reject)
 @end

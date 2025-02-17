@@ -1,25 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet, Button} from 'react-native';
 import {useAxisAlignment} from '../../hooks/useAxisAlignment';
-import {useSafetyTagIOS} from '../../hooks';
 import {colors} from '../../Assets/Styles';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {
-  requestLocationPermission,
-  requestPermissions,
-} from '../../Utils/helpers';
+import {requestLocationPermission} from '../../Utils/helpers';
 
 const SafetyTagAxisAlignment = () => {
   const {
     alignmentState,
-    alignmentDetails,
-    vehicleState,
-    error,
-    isComplete,
-    permissionStatus,
     startAlignment,
     stopAlignment,
     checkAlignmentStatus,

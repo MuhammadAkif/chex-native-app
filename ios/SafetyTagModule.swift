@@ -4,7 +4,7 @@ import SafetyTag
 import Combine
 import React
 import CoreBluetooth
-import CoreLocation
+import os.log
 
 @objc(SafetyTagModule)
 class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
@@ -16,53 +16,68 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
     private var connectedDeviceId: UUID?
     private var lastTripStartTime: Double?
     private var lastTripEventTime: Double?
+  private var shouldAutoConnect = true
+  //private let locationManager = CLLocationManager()
 
-    override init() {
-        super.init()
-        print("[SafetyTagModule] Initialized")
-    }
+  override init() {
+    super.init()
+    STLogger.shared.isEnabled = true
+    //STLogger.shared.delegate = MyLogManager()
+    print("[SafetyTagModule] Initialized")
+  }
 
-    override func startObserving() {
-        hasListeners = true
-        observeConnectionEvents()
-        observeTripEvents()
-    }
+  override func startObserving() {
+    hasListeners = true
+    observeConnectionEvents()
+    observeTripEvents()
+    crashEvents()
+  }
 
-    override func stopObserving() {
-        hasListeners = false
-        cancellables.removeAll()
-    }
+  override func stopObserving() {
+    hasListeners = false
+    cancellables.removeAll()
+  }
 
-    override func supportedEvents() -> [String]! {
-        return [
-            "onDeviceDiscovered",
-            "onDeviceConnected",
-            "onDeviceConnectionFailed",
-            "onDeviceDisconnected",
-            "onCheckConnection",
-            "onGetConnectedDevice",
-            "onTripStarted",
-            "onTripEnded",
-            "onTripsReceived",
-            "onAccelerometerData",
-            "onAccelerometerError",
-            "onAccelerometerStreamStatus",
-            "onAxisAlignmentState",
-            "onAxisAlignmentData",
-            "onVehicleState",
-            "onAxisAlignmentError",
-            "onAxisAlignmentFinished",
-            "onAxisAlignmentMissing",
-            "vehicleState",
-            "alignmentState",
-            "alignmentError",
-            "alignmentComplete",
-            "startLocationUpdates",
-            "stopLocationUpdates"
-        ]
-    }
+  override func supportedEvents() -> [String]! {
+    return [
+      "onDeviceDiscovered",
+      "onDeviceConnected",
+      "onDeviceConnectionFailed",
+      "onDeviceDisconnected",
+      "onCheckConnection",
+      "onGetConnectedDevice",
+      "onTripStarted",
+      "onTripEnded",
+      "onTripsReceived",
+      "onAccelerometerData",
+      "onAccelerometerError",
+      "onAccelerometerStreamStatus",
+      "onAxisAlignmentState",
+      "onAxisAlignmentData",
+      "onVehicleState",
+      "onAxisAlignmentError",
+      "onAxisAlignmentFinished",
+      "onAxisAlignmentMissing",
+      "vehicleState",
+      "alignmentState",
+      "alignmentError",
+      "alignmentComplete",
+    ]
+  }
 
-  @objc func startScan() {
+//  @objc func requestUserPermissions() {
+//    locationManager.delegate = self
+//    locationManager.requestWhenInUseAuthorization()
+//    locationManager.requestAlwaysAuthorization()
+//    let heading = locationManager.headingFilter
+//    let authorizationStatus = locationManager.authorizationStatus
+//    let location = locationManager.location
+//    print("[SafetyTagModule] Heading -> \(heading)")
+//    print("[SafetyTagModule] Authorization status -> \(authorizationStatus)")
+//    print("[SafetyTagModule] location status -> \(location)")
+//  }
+
+  @objc func startScan(_ autoConnect: Bool) {
     print("[SafetyTagModule] Start scanning for SafetyTag devices...")
 
     // Reset connection state when starting a new scan
@@ -70,8 +85,9 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
     connectedDeviceId = nil
 
     do {
-      try STDeviceManager.shared.connection.startScan(autoConnect: false)
-      print("[SafetyTagModule] Scan started successfully")
+      try STDeviceManager.shared.connection.startScan(autoConnect: true)
+      self.shouldAutoConnect = autoConnect
+      //print("[SafetyTagModule] Scan started successfully")
     } catch {
       print("[SafetyTagModule] Failed to start scan: \(error.localizedDescription)")
     }
@@ -132,6 +148,24 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
     }
   }
 
+  @objc func stopScan(){
+    var isScanning = STDeviceManager.shared.connection.isScanning()
+    if isScanning {
+      STDeviceManager.shared.connection.stopScan()
+    }
+  }
+
+  @objc func connectDevice(_ deviceId: String) {
+    print("[SafetyTagModule] Connecting to device: \(deviceId)")
+    guard let uuid = UUID(uuidString: deviceId) else {
+      print("[SafetyTagModule] Invalid device ID format")
+      return
+    }
+
+    // Use the new connect method with UUID and name
+    STDeviceManager.shared.connection.connect(with: uuid, name: "SafetyTag")
+  }
+
   private func observeConnectionEvents() {
     // Log when a new device is discovered
     SafetyTagApi.Event.Connection.didDiscover
@@ -145,7 +179,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
           ])
         }
         // Only attempt to connect if we're not already connecting or connected
-        if self?.isConnecting == false && self?.connectedDeviceId == nil {
+        if self?.isConnecting == false && self?.connectedDeviceId == nil && self?.shouldAutoConnect == true {
           self?.connectToTag(device: device)
         }
       }
@@ -399,35 +433,37 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
   }
 
   @objc func enableAccelerometerDataStream() {
-    print("[SafetyTagModule] Enabling Accelerometer Data Stream...")
-    STDeviceManager.shared.accelerometer
-      .accelerometerPublisher()
-      .sink(receiveCompletion: { completion in
-        switch completion {
-        case .failure(let error):
-          print("[SafetyTagModule] Failed to get accelerometer data: \(error.localizedDescription)")
-          if self.hasListeners {
-            self.sendEvent(withName: "onAccelerometerError", body: ["error": error.localizedDescription])
-          }
-        case .finished:
-          print("[SafetyTagModule] Accelerometer stream finished.")
-        }
-      }, receiveValue: { result in
-        if self.hasListeners {
-          if let acceleration = try? result.get() {
-            //print("[SafetyTagModule] Accelerometer data:", acceleration)
-            let formattedData: [String: Any] = [
-              "x": acceleration.x.value,
-              "y": acceleration.y.value,
-              "z": acceleration.z.value,
-              "secondsSinceLastRestart": acceleration.secondsSinceLastRestart
-            ]
+      print("[SafetyTagModule] Enabling Accelerometer Data Stream...")
 
-            self.sendEvent(withName: "onAccelerometerData", body: formattedData)
-          }
-        }
-      })
-      .store(in: &accelerometerPublisher)
+      // Clear any existing subscriptions before creating a new one
+      accelerometerPublisher.removeAll()
+
+      STDeviceManager.shared.accelerometer
+          .accelerometerPublisher()
+          .sink(receiveCompletion: { completion in
+              switch completion {
+              case .failure(let error):
+                  print("[SafetyTagModule] Failed to get accelerometer data: \(error.localizedDescription)")
+                  if self.hasListeners {
+                      self.sendEvent(withName: "onAccelerometerError", body: ["error": error.localizedDescription])
+                  }
+              case .finished:
+                  print("[SafetyTagModule] Accelerometer stream finished.")
+              }
+          }, receiveValue: { result in
+              if self.hasListeners {
+                  if let acceleration = try? result.get() {
+                      let formattedData: [String: Any] = [
+                          "x": acceleration.x.value,
+                          "y": acceleration.y.value,
+                          "z": acceleration.z.value,
+                          "secondsSinceLastRestart": acceleration.secondsSinceLastRestart
+                      ]
+                      self.sendEvent(withName: "onAccelerometerData", body: formattedData)
+                  }
+              }
+          })
+          .store(in: &accelerometerPublisher)
   }
 
 
@@ -444,192 +480,126 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
 
   @objc func startAxisAlignment(_ resumeIfAvailable: Bool) {
     print("[SafetyTagModule] Starting axis alignment...")
+
+    // 1. First ensure accelerometer stream is active
+    if accelerometerPublisher.isEmpty {
+        print("[SafetyTagModule] Initializing accelerometer stream...")
+        enableAccelerometerDataStream()
+    }
+
+    // 2. Clear any existing subscriptions to avoid duplicates
+    cancellables.removeAll()
+
     do {
-      try STDeviceManager.shared.axisAlignment.startAccelerometerAxisAlignment(resumeIfAvailable: resumeIfAvailable)
+        // 3. Start the axis alignment process
+        print("[SafetyTagModule] Initiating accelerometer axis alignment...")
+        try STDeviceManager.shared.axisAlignment.startAccelerometerAxisAlignment(resumeIfAvailable: resumeIfAvailable)
 
-      // Subscribe to alignment state updates
-      SafetyTagApi.Event.AxisAlignment.alignmentState
-        .sink { [weak self] device, state in
-          guard let self = self, self.hasListeners else { return }
-          print("[SafetyTagModule] Alignment - Starting axis alignment: ", state)
+        // 4. Monitor alignment state
+        SafetyTagApi.Event.AxisAlignment.alignmentState
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] device, state in
+                guard let self = self else { return }
+                print("[SafetyTagModule] Alignment State Update:")
+                print("  - Phase: \(String(describing: state.state.phase))")
+                print("  - Z-Axis State: \(String(describing: state.state.zAligmentState))")
+                print("  - X-Axis State: \(String(describing: state.state.xAligmentState))")
+                print("  - Valid Vehicle State: \(state.state.validVehicleState)")
 
-          // Format the state data
-          let stateData: [String: Any] = [
-            "deviceId": device?.id.uuidString ?? "",
-            "deviceName": device?.name ?? "",
-            // Basic state info
-            "phase": String(describing: state.state.phase),
-            "zAxisState": String(describing: state.state.zAligmentState),
-            "xAxisState": String(describing: state.state.xAligmentState),
-            "validVehicleState": state.state.validVehicleState,
-
-            // Bootstrap progress
-            "currentBootstrapBufferSize": state.state.currentBootstrapBufferSize,
-            "overallIterationCount": state.state.overallIterationCount,
-            "bootstrapOverallIterations": state.state.BOOTSTRAP_OVERALL_ITERATIONS,
-
-            // Angle information
-            "angles": [
-              "current": state.state.absolutePhiDegrees,
-              "previous": state.state.previousPhiDegrees
-            ],
-
-            // Direction validation
-            "directionValidation": [
-              "confidenceLevel": state.state.directionValidation.confidenceLevel,
-              "flipAngleCounter": state.state.directionValidation.flipAngleCounter,
-              "validatedDataCounter": state.state.directionValidation.validatedDataCounter,
-              "isFlipped": state.state.directionValidation.flipped
-            ],
-
-            // Theta information
-            "theta": [
-              "previous": state.state.previousTheta,
-              "new": state.state.newTheta as Any,
-              "rotationAxis": state.state.rotTMAxis.map { axis in
-                ["x": axis.x, "y": axis.y, "z": axis.z]
-              } as Any
-            ],
-
-            "isRetrying": state.state.retrying
-          ]
-
-          // Send the event
-          self.sendEvent(withName: "onAxisAlignmentState", body: stateData)
-
-          // Add state transition logging
-          print("[SafetyTagModule] Alignment State Transition:")
-          print("[SafetyTagModule] New Phase: \(String(describing: state.state.phase))")
-          print("[SafetyTagModule] Z-Axis State: \(String(describing: state.state.zAligmentState))")
-          print("[SafetyTagModule] X-Axis State: \(String(describing: state.state.xAligmentState))")
-        }
-        .store(in: &cancellables)
-
-      // Vehicle state updates (already well implemented)
-      SafetyTagApi.Event.AxisAlignment.vehicleState
-        .sink { [weak self] device, vehicleState in
-          guard let self = self, self.hasListeners else { return }
-          print("[SafetyTagModule] Alignment - Vehicle state: ", vehicleState)
-          print("[SafetyTagModule] Vehicle state valid: ", vehicleState.validVehicleState)
-
-          let stateData: [String: Any] = [
-            "deviceId": device?.id.uuidString ?? "",
-            "deviceName": device?.name ?? "",
-            "validVehicleState": vehicleState.validVehicleState,
-            // Remove the validVehicleStateIntervals since its properties are internal
-            "hasValidIntervals": !vehicleState.validVehicleStateIntervals.isEmpty
-          ]
-
-          self.sendEvent(withName: "onVehicleState", body: stateData)
-        }
-        .store(in: &cancellables)
-
-      // Alignment data updates
-      SafetyTagApi.Event.AxisAlignment.didReceiveAlignmentData
-        .sink { [weak self] device, result in
-          guard let self = self, self.hasListeners else { return }
-          print("[SafetyTagModule] Alignment - Did Receive Alignment result: ", result)
-
-          switch result {
-          case .success(let alignment):
-            let alignmentData: [String: Any] = [
-              "deviceId": device?.id.uuidString ?? "",
-              "deviceName": device?.name ?? "",
-              "theta": alignment.theta.value,
-              "phi": alignment.phi.value,
-              // Remove hasZAxisAlignmentSupport since it's internal
-              "status": String(describing: alignment.status),
-              "matrices": [
-                "theta": [
-                  "columns": [
-                    [
-                      alignment.thetaRotationMatrix.columns.0.x,
-                      alignment.thetaRotationMatrix.columns.0.y,
-                      alignment.thetaRotationMatrix.columns.0.z
-                    ],
-                    [
-                      alignment.thetaRotationMatrix.columns.1.x,
-                      alignment.thetaRotationMatrix.columns.1.y,
-                      alignment.thetaRotationMatrix.columns.1.z
-                    ],
-                    [
-                      alignment.thetaRotationMatrix.columns.2.x,
-                      alignment.thetaRotationMatrix.columns.2.y,
-                      alignment.thetaRotationMatrix.columns.2.z
+                if self.hasListeners {
+                    let stateData: [String: Any] = [
+                        "phase": String(describing: state.state.phase),
+                        "zAxisState": String(describing: state.state.zAligmentState),
+                        "xAxisState": String(describing: state.state.xAligmentState),
+                        "validVehicleState": state.state.validVehicleState,
+                        "currentBootstrapBufferSize": state.state.currentBootstrapBufferSize,
+                        "overallIterationCount": state.state.overallIterationCount
                     ]
-                  ]
-                ],
-                "phi": [
-                  "columns": [
-                    [
-                      alignment.phiRotationMatrix.columns.0.x,
-                      alignment.phiRotationMatrix.columns.0.y,
-                      alignment.phiRotationMatrix.columns.0.z
-                    ],
-                    [
-                      alignment.phiRotationMatrix.columns.1.x,
-                      alignment.phiRotationMatrix.columns.1.y,
-                      alignment.phiRotationMatrix.columns.1.z
-                    ],
-                    [
-                      alignment.phiRotationMatrix.columns.2.x,
-                      alignment.phiRotationMatrix.columns.2.y,
-                      alignment.phiRotationMatrix.columns.2.z
+                    self.sendEvent(withName: "onAxisAlignmentState", body: stateData)
+                }
+            }
+            .store(in: &cancellables)
+
+        // 5. Monitor vehicle state
+        SafetyTagApi.Event.AxisAlignment.vehicleState
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] device, vehicleState in
+                guard let self = self else { return }
+                print("[SafetyTagModule] Vehicle State Update:")
+                print("  - Valid State: \(vehicleState.validVehicleState)")
+                print("  - Has Valid Intervals: \(!vehicleState.validVehicleStateIntervals.isEmpty)")
+
+                if self.hasListeners {
+                    let stateData: [String: Any] = [
+                        "validVehicleState": vehicleState.validVehicleState,
+                        "hasValidIntervals": !vehicleState.validVehicleStateIntervals.isEmpty
                     ]
-                  ]
-                ]
-              ]
-            ]
-            self.sendEvent(withName: "onAxisAlignmentData", body: alignmentData)
+                    self.sendEvent(withName: "onVehicleState", body: stateData)
+                }
+            }
+            .store(in: &cancellables)
 
-          case .failure(let error):
-            self.sendEvent(withName: "onAxisAlignmentError", body: [
-              "deviceId": device?.id.uuidString ?? "",
-              "deviceName": device?.name ?? "",
-              "error": error.localizedDescription
-            ])
-          }
-        }
-        .store(in: &cancellables)
+        // 6. Monitor alignment data
+        SafetyTagApi.Event.AxisAlignment.didReceiveAlignmentData
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] device, result in
+                guard let self = self else { return }
+                print("[SafetyTagModule] Alignment Data Update:")
 
-      // Alignment completion (already well implemented)
-      SafetyTagApi.Event.AxisAlignment.onAxisAlignmentFinished
-        .sink { [weak self] device, error in
-          guard let self = self, self.hasListeners else { return }
+                switch result {
+                case .success(let alignment):
+                    print("  - Status: \(alignment.status)")
+                    print("  - Theta: \(alignment.theta.value)")
+                    print("  - Phi: \(alignment.phi.value)")
 
-          var resultData: [String: Any] = [
-            "deviceId": device?.id.uuidString ?? "",
-            "deviceName": device?.name ?? "",
-            "success": error == nil
-          ]
+                    if self.hasListeners {
+                        let alignmentData: [String: Any] = [
+                            "status": String(describing: alignment.status),
+                            "theta": alignment.theta.value,
+                            "phi": alignment.phi.value
+                        ]
+                        self.sendEvent(withName: "onAxisAlignmentData", body: alignmentData)
+                    }
 
-          if let error = error {
-            resultData["error"] = error.localizedDescription
-          }
+                case .failure(let error):
+                    print("  - Error: \(error.localizedDescription)")
+                    if self.hasListeners {
+                        self.sendEvent(withName: "onAxisAlignmentError", body: [
+                            "error": error.localizedDescription
+                        ])
+                    }
+                }
+            }
+            .store(in: &cancellables)
 
-          self.sendEvent(withName: "onAxisAlignmentFinished", body: resultData)
-        }
-        .store(in: &cancellables)
+        // 7. Monitor completion
+        SafetyTagApi.Event.AxisAlignment.onAxisAlignmentFinished
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] device, error in
+                guard let self = self else { return }
+                print("[SafetyTagModule] Alignment Process Finished:")
+                print("  - Success: \(error == nil)")
+                if let error = error {
+                    print("  - Error: \(error.localizedDescription)")
+                }
 
-      // Axis alignment missing events (already well implemented)
-      SafetyTagApi.Event.AxisAlignment.axisAlignmentMissing
-        .sink { [weak self] device in
-          guard let self = self, self.hasListeners else { return }
-          print("[SafetyTagModule] Some of the axis alignment are missing")
-          self.sendEvent(withName: "onAxisAlignmentMissing", body: [
-            "deviceId": device.id.uuidString,
-            "deviceName": device.name
-          ])
-        }
-        .store(in: &cancellables)
+                if self.hasListeners {
+                    self.sendEvent(withName: "onAxisAlignmentFinished", body: [
+                        "success": error == nil,
+                        "error": error?.localizedDescription as Any
+                    ])
+                }
+            }
+            .store(in: &cancellables)
 
     } catch {
-      print("[SafetyTagModule] Failed to start axis alignment:", error)
-      if hasListeners {
-        sendEvent(withName: "onAxisAlignmentError", body: [
-          "error": error.localizedDescription
-        ])
-      }
+        print("[SafetyTagModule] Failed to start axis alignment:")
+        print("  - Error: \(error.localizedDescription)")
+        if hasListeners {
+            sendEvent(withName: "onAxisAlignmentError", body: [
+                "error": error.localizedDescription
+            ])
+        }
     }
   }
 
@@ -656,8 +626,8 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       }
     }
 
-    @objc func hasStoredAxisAlignment(_ resolve: @escaping RCTPromiseResolveBlock,
-                                      rejecter reject: @escaping RCTPromiseRejectBlock) {
+    @objc func hasStoredAxisAlignment(_ resolve: RCTPromiseResolveBlock,
+                                      rejecter reject: RCTPromiseRejectBlock) {
       print("[SafetyTagModule] Checking for stored axis alignment...")
 
       let hasStored = STDeviceManager.shared.axisAlignment.hasStoredAxisAlignment
@@ -677,5 +647,37 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
         print("[SafetyTagModule] Got Allignment Configuration... \(result)")
       }
   }
+  @objc func crashEvents() {
+    SafetyTagApi.Event.Crash.onReceiveCrashThresholdEvent
+    .receive(on: DispatchQueue.main)
+    .sink { [weak self] _, thresholdEvent in
+    // handle the crash threshold event here.
+      print("[SafetyTagModule] Recevied crash threshold event \(thresholdEvent)")
+    }
+    SafetyTagApi.Event.Crash.onReceiveCrashEvent
+    .receive(on: DispatchQueue.main)
+    .sink { [weak self] _, crashData, status in
+      print("[SafetyTagModule] Recevied crash event ")
+      print("[SafetyTagModule] Recevied crash data: \(crashData)")
+      print("[SafetyTagModule] Recevied crash staus: \(status)")
 
+      STDeviceManager.shared.configCentralManager()
+    // Some time after receiving a crash threshold event you will automatically receive the crash data here
+    // The crashdataStatus will indicate if the transmission of the data was complete or incomplete
+    // The data will be automatically deleted on the Safety Tag when the transmission was complete
+    // The data will be requested by the SDK automatically on the next connection or after the next crash threshold event if it was incomplete
+    // If an error occured during transmission of crash data, the transmission will be retried on the next connection
+    }
+  }
 }
+
+class MyLogManager: STLoggerDelegate {
+    func didUpdateLogs(_ logger: STLogger, with log: STLogger.STLog, level: String) {
+        let logValue = log.value
+        let logMessage = "[SafetyTagModule] \(level) - \(logValue)"
+
+        // Handle the log (for example, print it)
+        print(logMessage)
+    }
+}
+

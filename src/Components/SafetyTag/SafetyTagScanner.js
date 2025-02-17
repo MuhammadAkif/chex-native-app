@@ -7,7 +7,6 @@ import {
   DeviceEventEmitter,
   Button,
   FlatList,
-  ScrollView,
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
@@ -17,8 +16,6 @@ import {
 import useSafetyTag from '../../hooks/useSafetyTag';
 import {formatRawData} from '../../Utils/helpers';
 import DeviceList from './DeviceList';
-import AccelerometerDisplay from './AccelerometerDisplay';
-import CrashTestingTool from './CrashTestingTool';
 
 const SafetyTagScanner = () => {
   const [tripData, setTripData] = useState([]);
@@ -39,7 +36,6 @@ const SafetyTagScanner = () => {
     stopBackgroundScanning,
     isBackgroundScanningActive,
     getBackgroundScanStatus,
-    getDeviceInformation,
     isDeviceConnected,
     getConnectedDevice,
   } = useSafetyTag();

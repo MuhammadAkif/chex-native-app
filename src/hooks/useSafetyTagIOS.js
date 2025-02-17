@@ -1,10 +1,13 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {NativeModules, NativeEventEmitter} from 'react-native';
 
 const {SafetyTagModule} = NativeModules;
 const eventEmitter = new NativeEventEmitter(SafetyTagModule);
 
 const useSafetyTagIOS = () => {
+  const [devices, setDevices] = useState([]);
+  const [isScanning, setIsScanning] = useState(false);
+
   useEffect(() => {
     startObserving().then();
     onDeviceReady();
@@ -13,24 +16,55 @@ const useSafetyTagIOS = () => {
   }, []);
 
   function onDeviceReady() {
-    eventEmitter.addListener('onDeviceDiscovered', event => {
-      console.log('Device discovered:', event);
+    eventEmitter.addListener('onDeviceDiscovered', onDeviceDiscovered);
+    eventEmitter.addListener('onDeviceConnected', onDeviceConnected);
+    eventEmitter.addListener(
+      'onDeviceConnectionFailed',
+      onDeviceConnectionFailed,
+    );
+    eventEmitter.addListener('onDeviceDisconnected', onDeviceDisconnected);
+    eventEmitter.addListener('onGetConnectedDevice', onGetConnectedDevice);
+    eventEmitter.addListener('onCheckConnection', onCheckConnection);
+  }
+
+  function onDeviceDiscovered(device) {
+    if (!device) {
+      console.log('Device discovered not found:', device);
+      return;
+    }
+    console.log('Device discovered:', device);
+
+    // Check if device already exists in the list
+    setDevices(prevDevices => {
+      const exists = prevDevices.some(d => d.id === device.id);
+      if (!exists) {
+        console.log('Adding new device:', device.name);
+        return [...prevDevices, device];
+      }
+      return prevDevices;
     });
-    eventEmitter.addListener('onDeviceConnected', event => {
-      console.log('Device connected:', event);
-    });
-    eventEmitter.addListener('onDeviceConnectionFailed', event => {
-      console.error('Connection failed:', event);
-    });
-    eventEmitter.addListener('onDeviceDisconnected', event => {
-      console.log('Device disconnected:', event);
-    });
-    eventEmitter.addListener('onGetConnectedDevice', event => {
-      console.log('Got connected device info:', event);
-    });
-    eventEmitter.addListener('onCheckConnection', event => {
-      console.log('Connection status:', event);
-    });
+  }
+
+  function onDeviceConnected(event) {
+    console.log('Device connected:', event);
+    setIsScanning(false);
+  }
+
+  function onDeviceConnectionFailed(event) {
+    console.error('Connection failed:', event);
+    setIsScanning(false);
+  }
+
+  function onDeviceDisconnected(event) {
+    console.log('Device disconnected:', event);
+  }
+
+  function onGetConnectedDevice(event) {
+    console.log('Got connected device info:', event);
+  }
+
+  function onCheckConnection(event) {
+    console.log('Connection status:', event);
   }
 
   async function startObserving() {
@@ -45,18 +79,34 @@ const useSafetyTagIOS = () => {
   async function stopObserving() {
     try {
       console.log('Stopping observation...');
-      await SafetyTagModule.startObserving();
+      await SafetyTagModule.stopObserving();
     } catch (error) {
       console.error('Error stopping observation:', error);
     }
   }
 
-  const startScan = async () => {
+  const startScan = async (autoConnect = false) => {
     try {
-      console.log('Starting scan for SafetyTag devices...');
-      await SafetyTagModule.startScan();
+      console.log(
+        'Starting scan for SafetyTag devices... autoConnect:',
+        autoConnect,
+      );
+      setDevices([]); // Clear previous devices
+      setIsScanning(true);
+      await SafetyTagModule.startScan(autoConnect);
     } catch (error) {
       console.error('Error starting scan:', error);
+      setIsScanning(false);
+    }
+  };
+
+  const stopScan = async () => {
+    try {
+      console.log('Stopping scan...');
+      setIsScanning(false);
+      await SafetyTagModule.stopScan();
+    } catch (error) {
+      console.error('Error stopping scan:', error);
     }
   };
 
@@ -66,6 +116,14 @@ const useSafetyTagIOS = () => {
       await SafetyTagModule.checkConnection();
     } catch (error) {
       console.error('Error checking connection:', error);
+    }
+  };
+
+  const connectToDevice = async device => {
+    try {
+      await SafetyTagModule.connectDevice(device.id);
+    } catch (error) {
+      console.error('Error connecting to device:', error);
     }
   };
 
@@ -122,10 +180,14 @@ const useSafetyTagIOS = () => {
   };
 
   return {
+    devices,
+    isScanning,
+    startScan,
+    stopScan,
     startObserving,
     stopObserving,
-    startScan,
     checkConnection,
+    connectToDevice,
     disconnectDevice,
     getDeviceInformation,
     getTrips,
