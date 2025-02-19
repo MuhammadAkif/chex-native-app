@@ -15,6 +15,7 @@ import SafetyTagAxisAlignment from './SafetyTagAxisAlignment';
 import {formatUnixTime} from '../../Utils/helpers';
 import DeviceScan from './DeviceScan';
 import {colors} from '../../Assets/Styles';
+import {SafetyTagBeaconTestScreen} from './SafetyTagBeaconTestScreen';
 
 const SafetyTagIOS = () => {
   const {
@@ -242,6 +243,7 @@ const SafetyTagIOS = () => {
               onDeviceSelect={connectToDevice}
             />
           )}
+          <SafetyTagBeaconTestScreen />
           <TouchableOpacity
             style={[styles.button, styles.buttonMargin]}
             onPress={handleCheckConnection}>

@@ -1,5 +1,6 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
+@import SafetyTag;
 
 @interface RCT_EXTERN_MODULE(SafetyTagModule, RCTEventEmitter)
 RCT_EXTERN_METHOD(startScan: (BOOL)autoConnect)
@@ -25,4 +26,31 @@ RCT_EXTERN_METHOD(removeStoredAxisAlignment)
 RCT_EXTERN_METHOD(getAlignmentConfiguration)
 RCT_EXTERN_METHOD(hasStoredAxisAlignment: (RCTPromiseResolveBlock)resolve
                   rejecter: (RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(startMonitoringDevice:(NSString *)deviceId
+                  deviceName:(NSString *)deviceName
+                  iBeaconUUID:(NSString *)iBeaconUUID)
+RCT_EXTERN_METHOD(stopMonitoringDevice:(NSString *)deviceId
+                  deviceName:(NSString *)deviceName
+                  iBeaconUUID:(NSString *)iBeaconUUID)
+RCT_EXTERN_METHOD(isDeviceBeingMonitored:(NSString *)deviceId
+                  deviceName:(NSString *)deviceName
+                  iBeaconUUID:(NSString *)iBeaconUUID
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(startMonitoringSignificantLocationChanges)
+RCT_EXTERN_METHOD(stopMonitoringSignificantLocationChanges)
+RCT_EXTERN_METHOD(enableAutoConnect:(NSString *)deviceId
+                  deviceName:(NSString *)deviceName
+                  iBeaconUUID:(NSString *)iBeaconUUID)
+RCT_EXTERN_METHOD(disableAutoConnect:(NSString *)deviceId
+                  deviceName:(NSString *)deviceName
+                  iBeaconUUID:(NSString *)iBeaconUUID)
+RCT_EXTERN_METHOD(isAutoConnectEnabled:(NSString *)deviceId
+                  deviceName:(NSString *)deviceName
+                  iBeaconUUID:(NSString *)iBeaconUUID
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(verifyBackgroundOperation)
+RCT_EXTERN_METHOD(handleBackgroundWakeUp:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
 @end
