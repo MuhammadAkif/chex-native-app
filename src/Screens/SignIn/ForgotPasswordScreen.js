@@ -44,7 +44,7 @@ const ForgetPasswordScreen = ({
             flex: flex,
           }}>
           <SignInLogo
-            titleText={'Forget Password'}
+            titleText={'Forgot Password'}
             textStyle={{fontSize: hp('3%')}}
             containerStyle={styles.logoContainer}
           />

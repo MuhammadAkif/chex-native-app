@@ -104,8 +104,13 @@ const CameraContainer = ({route, navigation}) => {
   );
   const {type, modalDetails, inspectionId} = route.params;
   const format = useCameraFormat(device, [
-    {videoResolution: {width: 1280, height: 720}},
-    {fps: 30},
+    {
+      videoResolution: {
+        width: device.formats[0].photoWidth,
+        height: device.formats[0].photoHeight,
+      },
+    },
+    {fps: device.formats[0].maxFps},
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [orientation, setOrientation] = useState(defaultOrientation);
