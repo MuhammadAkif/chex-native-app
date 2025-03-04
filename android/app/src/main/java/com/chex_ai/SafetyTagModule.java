@@ -12,7 +12,10 @@ import android.os.Build;
 import android.content.IntentFilter;
 import android.content.Intent;
 import android.app.ActivityManager;
-
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import androidx.core.app.NotificationCompat;
+import android.app.Notification;
 import com.google.gson.Gson;
 
 import com.facebook.react.bridge.WritableArray;
@@ -57,6 +60,9 @@ import com.pixida.safetytagapi.interfaces.AxisAlignmentLocationListener;
 import com.pixida.safetytagapi.data.dto.AxisAlignmentLocationData;
 import com.pixida.safetytagapi.interfaces.AxisAlignmentLocationProvider;
 import com.pixida.safetytagapi.data.dto.NotificationData;
+import com.pixida.safetytagapi.interfaces.OnAxisAlignmentDataListener;
+import com.pixida.safetytagapi.data.dto.AxisAlignmentData;
+import com.pixida.safetytagapi.data.enums.AxisAlignmentLogOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,8 +74,6 @@ import java.util.Set;
 public class SafetyTagModule extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
     private SafetyTagApi safetyTagApi;
-    private AxisAlignmentLocationProvider locationProvider;
-    private AxisAlignmentLocationListener currentListener;
     private MySafetyTagReceiver receiver;
 
     public SafetyTagModule(ReactApplicationContext reactContext) {
@@ -639,123 +643,99 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
        });
    }
 
-   @ReactMethod
-   public void startAxisAlignment(Promise promise) {
-       try {
-           AccelerometerAxisAlignmentParameters.Builder builder = new AccelerometerAxisAlignmentParameters.Builder();
 
-           // Create notification for background operation
-           /* NotificationData notificationData = createNotificationData();
-           builder.foregroundServiceNotificationData(notificationData); */
+    @ReactMethod
+    private void requestNotificationPermission(Promise promise) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Activity activity = getCurrentActivity();
+            if (activity != null) {
+                if (activity.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                    != android.content.pm.PackageManager.PERMISSION_GRANTED) {
 
-           // Add location provider
-           locationProvider = new AxisAlignmentLocationProvider() {
-               @Override
-               public void subscribeLocationListener(@NonNull AxisAlignmentLocationListener alignmentListener) {
-                   currentListener = alignmentListener; // Store the listener
-                   reactContext
-                       .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                       .emit("startLocationUpdates", null);
-               }
+                    activity.requestPermissions(
+                        new String[]{android.Manifest.permission.POST_NOTIFICATIONS},
+                        1001
+                    );
+                    promise.resolve(true);
+                } else {
+                    promise.resolve(true);
+                }
+            } else {
+                promise.reject("ACTIVITY_ERROR", "Activity is not available");
+            }
+        } else {
+            // Permission not required for Android < 13
+            promise.resolve(true);
+        }
+    }
 
-               @Override
-               public void unsubscribeLocationListener(@NonNull AxisAlignmentLocationListener alignmentListener) {
-                   if (currentListener == alignmentListener) {
-                       currentListener = null;
-                   }
-                   reactContext
-                       .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                       .emit("stopLocationUpdates", null);
-               }
-           };
+    @ReactMethod
+    public void startAccelerometerAxisAlignmentWithForegroundService(Promise promise) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Activity activity = getCurrentActivity();
+            if (activity != null) {
+                if (activity.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                    != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    promise.reject("PERMISSION_ERROR", "Notification permission not granted");
+                    return;
+                }
+            }
+        }
 
-           builder.locationProvider(locationProvider);
+        AccelerometerAxisAlignmentParameters.Builder builder = new AccelerometerAxisAlignmentParameters.Builder();
 
-           // Start the foreground service
-           Intent serviceIntent = new Intent(reactContext, SafetyTagAlignmentService.class);
-           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-               reactContext.startForegroundService(serviceIntent);
-           } else {
-               reactContext.startService(serviceIntent);
-           }
+        // Set detailed logging options in the builder using the correct method name
+        builder.setLogOption(AxisAlignmentLogOptions.DETAILED);
+        builder.startFromScratch(false);
 
-           SafetyTagStatus status = safetyTagApi.getAxisAlignment()
-               .startAccelerometerAxisAlignment(builder.build(new OnAxisAlignmentListener() {
-                   @Override
-                   public void onAxisAlignmentStarted() {
-                       sendAxisAlignmentEvent("onAxisAlignmentStarted", null);
-                   }
+        // Create notification data using the existing helper method
+        NotificationData notificationData = createNotificationData();
+        builder.foregroundServiceNotificationData(notificationData);
 
-                   @Override
-                   public void onAxisAlignmentSuccessful() {
-                       sendAxisAlignmentEvent("onAxisAlignmentSuccess", null);
-                   }
+        SafetyTagStatus status = safetyTagApi.getAxisAlignment().startAccelerometerAxisAlignment(builder.build(new OnAxisAlignmentListener() {
+            @Override
+            public void onAxisAlignmentProcessStateChange(@NonNull AxisAlignmentProcessState state) {
+                 Log.i("SafetyTagModule", "AxisAlignmentProcessState: " + state.toString());
+                 WritableMap data = Arguments.createMap();
+                 data.putString("step", state.getAlignmentProcessStep().name());
+                 data.putString("movement", state.getMovement().name());
+                 data.putString("speed", state.getSpeed().name());
+                 data.putDouble("currentSpeed", state.getCurrentSpeed());
+                 data.putDouble("currentHeading", state.getCurrentHeading());
+                 sendAxisAlignmentEvent("onAxisAlignmentStateChange", data);
+            }
 
-                   @Override
-                   public void onAxisAlignmentStopped(AxisAlignmentStoppingReason reason) {
-                       WritableMap data = Arguments.createMap();
-                       data.putString("reason", reason.name());
-                       sendAxisAlignmentEvent("onAxisAlignmentStopped", data);
-                   }
+            @Override
+            public void onAxisAlignmentStarted() {
+                sendAxisAlignmentEvent("onAxisAlignmentStarted", null);
+            }
 
-                   @Override
-                   public void onAxisAlignmentProcessStateChange(AxisAlignmentProcessState state) {
-                       WritableMap data = Arguments.createMap();
-                       data.putString("step", state.getAlignmentProcessStep().name());
-                       data.putString("movement", state.getMovement().name());
-                       data.putString("speed", state.getSpeed().name());
-                       data.putDouble("currentSpeed", state.getCurrentSpeed());
-                       data.putDouble("currentHeading", state.getCurrentHeading());
-                       sendAxisAlignmentEvent("onAxisAlignmentStateChange", data);
-                   }
+            @Override
+            public void onAxisAlignmentSuccessful() {
+                sendAxisAlignmentEvent("onAxisAlignmentSuccess", null);
+            }
 
-                   @Override
-                   public void onError(SafetyTagStatus error) {
-                       WritableMap data = Arguments.createMap();
-                       data.putString("error", error.name());
-                       sendAxisAlignmentEvent("onAxisAlignmentError", data);
-                   }
-               })
-           );
+            @Override
+            public void onAxisAlignmentStopped(@NonNull AxisAlignmentStoppingReason reason) {
+                WritableMap data = Arguments.createMap();
+                data.putString("reason", reason.name());
+                sendAxisAlignmentEvent("onAxisAlignmentStopped", data);
+            }
 
-           if (status == SafetyTagStatus.OK) {
-               promise.resolve("Successfully started axis alignment");
-           } else {
-               promise.reject("ALIGNMENT_ERROR", "Failed to start axis alignment: " + status.name());
-           }
-       } catch (Exception e) {
-           promise.reject("ALIGNMENT_ERROR", "Failed to start axis alignment: " + e.getMessage(), e);
-       }
-   }
+            @Override
+            public void onError(@NonNull SafetyTagStatus status) {
+                WritableMap data = Arguments.createMap();
+                data.putString("error", status.name());
+                sendAxisAlignmentEvent("onAxisAlignmentError", data);
+            }
+        }));
 
-/*    private NotificationData createNotificationData() {
-       return new NotificationData(
-           1001, // Notification ID
-           createNotification()
-       );
-   }
-
-   private Notification createNotification() {
-       String channelId = "safety_tag_alignment";
-       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-           NotificationChannel channel = new NotificationChannel(
-               channelId,
-               "Safety Tag Alignment",
-               NotificationManager.IMPORTANCE_LOW
-           );
-           NotificationManager manager = (NotificationManager) reactContext
-               .getSystemService(Context.NOTIFICATION_SERVICE);
-           manager.createNotificationChannel(channel);
-       }
-
-       return new NotificationCompat.Builder(reactContext, channelId)
-           .setContentTitle("Safety Tag Alignment")
-           .setContentText("Alignment in progress...")
-           .setSmallIcon(R.mipmap.ic_launcher)
-           .setPriority(NotificationCompat.PRIORITY_LOW)
-           .setOngoing(true)
-           .build();
-   } */
+        if (status == SafetyTagStatus.OK) {
+            promise.resolve("Successfully started axis alignment with detailed logging");
+        } else {
+            promise.reject("ALIGNMENT_ERROR", "Failed to start axis alignment: " + status.name());
+        }
+    }
 
    // Add method to stop service
    @ReactMethod
@@ -768,12 +748,6 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
                    try {
                        Intent serviceIntent = new Intent(reactContext, SafetyTagAlignmentService.class);
                        reactContext.stopService(serviceIntent);
-
-                       // Clear the location provider and listener
-                       if (currentListener != null) {
-                           currentListener = null;
-                       }
-
                        promise.resolve("Alignment stopped successfully");
                    } catch (Exception e) {
                        promise.reject("STOP_ERROR", "Failed to stop alignment service: " + e.getMessage());
@@ -784,25 +758,6 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
            });
        } catch (Exception e) {
            promise.reject("STOP_ERROR", "Failed to stop alignment: " + e.getMessage(), e);
-       }
-   }
-
-   // Add method to receive location updates from React Native
-   @ReactMethod
-   public void updateAxisAlignmentLocation(double heading, double speed, double timestamp, double elapsedRealtime) {
-       try {
-           if (currentListener != null) { // Use the stored listener
-               AxisAlignmentLocationData locationData = new AxisAlignmentLocationData(
-                   heading,
-                   speed,
-                   (long) timestamp,
-                   (long) elapsedRealtime
-               );
-
-               currentListener.onNewLocation(locationData);
-           }
-       } catch (Exception e) {
-           Log.e("SafetyTagModule", "Error updating location: " + e.getMessage());
        }
    }
 
@@ -1151,5 +1106,66 @@ public class SafetyTagModule extends ReactContextBaseJavaModule {
        } catch (Exception e) {
            promise.reject("ERROR", "Failed to get connected device: " + e.getMessage());
        }
+   }
+
+   @ReactMethod
+   public void setLogLevel(String level) {
+       try {
+           int logLevel;
+           switch (level.toUpperCase()) {
+               case "VERBOSE":
+                   logLevel = Log.VERBOSE;
+                   break;
+               case "DEBUG":
+                   logLevel = Log.DEBUG;
+                   break;
+               case "INFO":
+                   logLevel = Log.INFO;
+                   break;
+               case "WARN":
+                   logLevel = Log.WARN;
+                   break;
+               case "ERROR":
+                   logLevel = Log.ERROR;
+                   break;
+               default:
+                   logLevel = Log.VERBOSE;
+           }
+
+           if (safetyTagApi != null) {
+               Log.i("SafetyTagModule", "Setting log level to: " + level);
+               safetyTagApi.setLogLevel(logLevel);
+               Log.i("SafetyTagModule", "Log level set successfully to: " + level);
+           } else {
+               Log.e("SafetyTagModule", "SafetyTagApi not initialized");
+           }
+       } catch (Exception e) {
+           Log.e("SafetyTagModule", "Failed to set log level: " + e.getMessage());
+       }
+   }
+
+   private NotificationData createNotificationData() {
+       String channelId = "safety_tag_alignment";
+       String channelName = "Safety Tag Alignment";
+       int notificationId = 1001;
+
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+           NotificationChannel channel = new NotificationChannel(
+               channelId,
+               channelName,
+               NotificationManager.IMPORTANCE_LOW
+           );
+           NotificationManager manager = (NotificationManager) reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
+           manager.createNotificationChannel(channel);
+       }
+
+       NotificationCompat.Builder builder = new NotificationCompat.Builder(reactContext, channelId)
+           .setContentTitle("Safety Tag Alignment")
+           .setContentText("Alignment in progress...")
+           .setSmallIcon(android.R.drawable.ic_dialog_info)
+           .setPriority(NotificationCompat.PRIORITY_LOW)
+           .setOngoing(true);
+
+       return new NotificationData(notificationId, builder.build());
    }
 }

@@ -1,25 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  Button,
-  StyleSheet,
-  Alert,
-  NativeModules,
-} from 'react-native';
+import {View, Text, StyleSheet, Alert} from 'react-native';
 import {DeviceEventEmitter} from 'react-native';
-import Geolocation from 'react-native-geolocation-service';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
 import useSafetyTag from '../../hooks/useSafetyTag';
 import {colors} from '../../Assets/Styles';
+import {PrimaryGradientButton} from '../index';
 
-const {SafetyTagModule} = NativeModules;
+const {black, gray} = colors;
 
 const AccelerometerDisplay = () => {
   const [accelerometerData, setAccelerometerData] = useState(null);
   const [alignmentStatus, setAlignmentStatus] = useState('Not Started');
-  const [isTracking, setIsTracking] = useState(false);
-  let watchId = null;
   const {
     subscribeToAccelerometerData,
     enableAccelerometerDataStream,
@@ -52,24 +47,8 @@ const AccelerometerDisplay = () => {
     const alignmentSubscription = DeviceEventEmitter.addListener(
       'onAxisAlignmentStateChange',
       event => {
-        setAlignmentStatus(event.step);
-        setAlignmentDetails({
-          movement: event.movement,
-          speed: event.speed,
-          currentSpeed: event.currentSpeed,
-          currentHeading: event.currentHeading,
-        });
+        console.log('alignment state', event);
       },
-    );
-
-    const locationStartSubscription = DeviceEventEmitter.addListener(
-      'startLocationUpdates',
-      startLocationTracking,
-    );
-
-    const locationStopSubscription = DeviceEventEmitter.addListener(
-      'stopLocationUpdates',
-      stopLocationTracking,
     );
 
     const statusInterval = setInterval(checkServiceStatus, 1000);
@@ -92,9 +71,6 @@ const AccelerometerDisplay = () => {
     return () => {
       accelerometerSubscription.remove();
       alignmentSubscription.remove();
-      locationStartSubscription.remove();
-      locationStopSubscription.remove();
-      stopLocationTracking();
       clearInterval(statusInterval);
       successSubscription.remove();
       stoppedSubscription.remove();
@@ -108,11 +84,13 @@ const AccelerometerDisplay = () => {
 
   const handleStopStream = async () => {
     await disableAccelerometerDataStream();
+    setAccelerometerData(null);
   };
 
   const handleStartAlignment = async () => {
     try {
-      await startAxisAlignment();
+      await handleStartStream();
+      await startAxisAlignment(false);
       await checkServiceStatus();
     } catch (error) {
       console.error('Error starting alignment:', error);
@@ -122,6 +100,7 @@ const AccelerometerDisplay = () => {
 
   const handleStopAlignment = async () => {
     try {
+      await handleStopStream();
       await stopAxisAlignment();
       await checkServiceStatus();
     } catch (error) {
@@ -130,53 +109,11 @@ const AccelerometerDisplay = () => {
     }
   };
 
-  const startLocationTracking = async () => {
-    try {
-      setIsTracking(true);
-      watchId = Geolocation.watchPosition(
-        position => {
-          const {coords, timestamp} = position;
-          const speed = coords.speed || 0; // meters per second
-          const heading = coords.heading || 0;
-          const elapsedRealtime = Date.now(); // This is an approximation
-
-          SafetyTagModule.updateAxisAlignmentLocation(
-            heading,
-            speed,
-            timestamp,
-            elapsedRealtime,
-          );
-        },
-        error => {
-          console.error('Location error:', error);
-          Alert.alert('Error', 'Failed to get location updates');
-        },
-        {
-          enableHighAccuracy: true,
-          distanceFilter: 0,
-          interval: 1000,
-          fastestInterval: 500,
-        },
-      );
-    } catch (error) {
-      console.error('Error starting location tracking:', error);
-      Alert.alert('Error', 'Failed to start location tracking');
-    }
-  };
-
-  const stopLocationTracking = () => {
-    if (watchId !== null) {
-      Geolocation.clearWatch(watchId);
-      watchId = null;
-    }
-    setIsTracking(false);
-  };
-
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Accelerometer Data</Text>
       {accelerometerData && (
         <View style={styles.dataContainer}>
+          <Text style={styles.title}>Accelerometer Data</Text>
           <Text style={styles.textAxis}>
             X: {accelerometerData.xAxis.toFixed(2)} mg
           </Text>
@@ -189,16 +126,11 @@ const AccelerometerDisplay = () => {
         </View>
       )}
 
-      <View style={styles.buttonContainer}>
-        <Button title="Start Stream" onPress={handleStartStream} />
-        <Button title="Stop Stream" onPress={handleStopStream} />
-      </View>
-
       <View style={styles.alignmentContainer}>
         <Text style={styles.title}>Axis Alignment</Text>
         <Text style={styles.title}>Status: {alignmentStatus}</Text>
         <Text style={styles.title}>
-          Location Tracking: {isTracking ? 'Active' : 'Inactive'}
+          Service: {isServiceRunning ? 'Running' : 'Stopped'}
         </Text>
         <Text style={styles.title}>
           Background Service: {isServiceRunning ? 'Running' : 'Stopped'}
@@ -222,7 +154,7 @@ const AccelerometerDisplay = () => {
 
         {alignmentStatus === 'FINDING_X_AXIS_ANGLE' && (
           <View style={styles.instructions}>
-            <Text style={[styles.instructionTitle, styles.textAxis]}>
+            <Text style={[styles.instructionTitle, styles.textColor]}>
               Instructions:
             </Text>
             <Text style={styles.textAxis}>1. Drive in a straight line</Text>
@@ -234,11 +166,13 @@ const AccelerometerDisplay = () => {
         )}
 
         <View style={styles.buttonContainer}>
-          <Button
-            title={isServiceRunning ? 'Stop Alignment' : 'Start Alignment'}
-            onPress={
-              isServiceRunning ? handleStopAlignment : handleStartAlignment
-            }
+          <PrimaryGradientButton
+            text={'Start Alignment'}
+            onPress={handleStartAlignment}
+          />
+          <PrimaryGradientButton
+            text={'Stop Alignment'}
+            onPress={handleStopAlignment}
           />
         </View>
       </View>
@@ -248,46 +182,63 @@ const AccelerometerDisplay = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    flex: 1,
+    marginHorizontal: wp('2%'),
+    rowGap: wp('2%'),
   },
   title: {
-    fontSize: 18,
+    fontSize: hp('2%'),
     fontWeight: 'bold',
-    marginBottom: 10,
+    color: black,
   },
   dataContainer: {
-    backgroundColor: colors.white,
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 20,
+    gap: wp('0.6%'),
+    padding: wp('3%'),
+    backgroundColor: gray,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
+    marginTop: hp('1%'),
+    gap: wp('2%'),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   alignmentContainer: {
-    marginTop: 20,
-    backgroundColor: colors.black,
+    gap: wp('0.6%'),
+    padding: wp('3%'),
+    backgroundColor: gray,
   },
   textAxis: {
-    color: colors.black,
+    fontSize: hp('1.8%'),
+    color: black,
   },
   alignmentDetails: {
+    gap: wp('0.6%'),
+    padding: wp('3%'),
     backgroundColor: '#f0f0f0',
-    padding: 10,
-    borderRadius: 5,
-    marginVertical: 10,
   },
   instructions: {
-    backgroundColor: '#e6f3ff',
-    padding: 10,
-    borderRadius: 5,
-    marginVertical: 10,
+    gap: wp('0.6%'),
+    padding: wp('3%'),
   },
   instructionTitle: {
     fontWeight: 'bold',
-    marginBottom: 5,
+  },
+  textColor: {
+    color: black,
+  },
+  warningContainer: {
+    backgroundColor: '#FFF3CD',
+    padding: wp('3%'),
+    borderRadius: 5,
+    marginVertical: wp('2%'),
+  },
+  warningText: {
+    color: '#856404',
+    fontSize: hp('1.8%'),
+  },
+  alignmentValues: {
+    marginTop: wp('2%'),
+    gap: wp('0.6%'),
   },
 });
 

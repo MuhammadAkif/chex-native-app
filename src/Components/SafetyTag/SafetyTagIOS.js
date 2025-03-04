@@ -26,8 +26,6 @@ const SafetyTagIOS = () => {
     connectToDevice,
     disconnectDevice,
     isAccelerometerDataStreamEnabled,
-    enableAccelerometerDataStream,
-    disableAccelerometerDataStream,
   } = useSafetyTagIOS();
   const [connectedDevice, setConnectedDevice] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -215,21 +213,6 @@ const SafetyTagIOS = () => {
           isConnected={isConnected}
           connectedDevice={connectedDevice}
         />
-
-        {/* {currentTrip && (
-          <View style={styles.currentTripContainer}>
-            <Text style={styles.currentTripTitle}>Ongoing Trip</Text>
-            <Text style={styles.currentTripInfo}>
-              Device: {currentTrip.deviceName}
-            </Text>
-            <Text style={styles.currentTripInfo}>
-              Started: {currentTrip.tripEvent}
-            </Text>
-          </View>
-        )}
-
-        <SafetyTagTrips trips={trips} isLoading={isLoadingTrips} />*/}
-
         {isConnected && <SafetyTagAxisAlignment />}
 
         <View style={styles.buttonContainer}>
@@ -248,35 +231,6 @@ const SafetyTagIOS = () => {
             style={[styles.button, styles.buttonMargin]}
             onPress={handleCheckConnection}>
             <Text style={styles.buttonText}>Check Connection</Text>
-          </TouchableOpacity>
-          {/* <TouchableOpacity
-            style={[styles.button, styles.buttonMargin]}
-            onPress={handleGetDeviceInformation}>
-            <Text style={styles.buttonText}>Refresh Device Info</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, styles.buttonMargin]}
-            onPress={handleGetTrips}>
-            <Text style={styles.buttonText}>Get Trips</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, styles.buttonMargin]}
-            onPress={handleGetTripsWithFraudDetection}>
-            <Text style={styles.buttonText}>
-              Get Trips (with Fraud Detection)
-            </Text>
-          </TouchableOpacity>*/}
-          <TouchableOpacity
-            style={[styles.button, styles.buttonMargin]}
-            onPress={enableAccelerometerDataStream}>
-            <Text style={styles.buttonText}>Enable Accelerometer</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, styles.buttonMargin]}
-            onPress={disableAccelerometerDataStream}>
-            <Text style={styles.buttonText}>Disable Accelerometer</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.button, styles.buttonMargin]}

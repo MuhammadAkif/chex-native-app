@@ -3,17 +3,17 @@ import {
   DeviceEventEmitter,
   NativeModules,
   PermissionsAndroid,
-  Platform,
 } from 'react-native';
+import {useEffect} from 'react';
 
 import {requestPermissions} from '../Utils/helpers';
-import {useEffect} from 'react';
 
 const {SafetyTagModule} = NativeModules;
 
 const useSafetyTag = () => {
   useEffect(() => {
     requestPermissions().then();
+    SafetyTagModule.requestNotificationPermission();
     const crashDataSubscription = DeviceEventEmitter.addListener(
       'onCrashDataReceived',
       event => {
@@ -27,12 +27,55 @@ const useSafetyTag = () => {
         const thresholdEvent = JSON.parse(event.crashThresholdEvent);
       },
     );
+    SafetyTagModule.setLogLevel('DEBUG');
 
     return () => {
       crashDataSubscription.remove();
       crashThresholdSubscription.remove();
     };
   }, []);
+
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Location Permission',
+          message: 'Axis alignment needs access to your location',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  };
+
+  const startAxisAlignment = async (startFromScratch = false) => {
+    try {
+      const hasLocationPermission = await requestLocationPermission();
+
+      if (!hasLocationPermission) {
+        throw new Error('Location permission not granted');
+      }
+
+      //await SafetyTagModule.startAxisAlignment();
+      const result =
+        await SafetyTagModule.startAccelerometerAxisAlignmentWithForegroundService();
+      console.log(
+        'startAccelerometerAxisAlignmentWithForegroundService status: ',
+        result,
+      );
+      Alert.alert('Axis Alignment', 'Successfully started axis alignment');
+      console.log('Successfully started axis alignment');
+    } catch (error) {
+      console.error('Error starting axis alignment:', error);
+      throw error;
+    }
+  };
 
   const startScanning = async () => {
     try {
@@ -112,6 +155,12 @@ const useSafetyTag = () => {
       // Handle the connecting event here (e.g., show loading spinner)
     });
 
+    DeviceEventEmitter.addListener('onDeviceDisconnected', event => {
+      console.log('Device is disconnected...');
+      startDiscovery();
+      // Handle the connecting event here (e.g., show loading spinner)
+    });
+
     DeviceEventEmitter.addListener('onConnectionError', event => {
       console.error('Connection error occurred:', event);
       // Handle the error event here (e.g., show error message)
@@ -124,6 +173,7 @@ const useSafetyTag = () => {
 
     DeviceEventEmitter.addListener('onConnected', event => {
       console.log('Successfully connected to the device:', event);
+      stopDiscovery();
       // Handle successful connection here (e.g., update UI, enable functions)
     });
 
@@ -190,6 +240,8 @@ const useSafetyTag = () => {
     DeviceEventEmitter.removeAllListeners('onConnecting');
 
     DeviceEventEmitter.removeAllListeners('onConnectionError');
+
+    DeviceEventEmitter.removeAllListeners('onDeviceDisconnected');
 
     DeviceEventEmitter.removeAllListeners('onAuthenticationRequired');
 
@@ -361,61 +413,20 @@ const useSafetyTag = () => {
     }
   };
 
-  const requestLocationPermission = async () => {
+  const hasOngoingAxisAlignment = async () => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'Location Permission',
-          message: 'Axis alignment needs access to your location',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      return granted === PermissionsAndroid.RESULTS.GRANTED;
-    } catch (err) {
-      console.warn(err);
+      return await SafetyTagModule.hasOngoingAxisAlignment();
+    } catch (error) {
+      console.error('Error checking ongoing alignment:', error);
       return false;
     }
   };
 
-  const requestBackgroundPermission = async () => {
-    if (Platform.Version >= 29) {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
-          {
-            title: 'Background Location Permission',
-            message: 'Axis alignment needs background location access',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          },
-        );
-        return granted === PermissionsAndroid.RESULTS.GRANTED;
-      } catch (err) {
-        console.warn(err);
-        return false;
-      }
-    }
-    return true;
-  };
-
-  const startAxisAlignment = async () => {
+  const readAccAxisAlignmentValues = async () => {
     try {
-      const hasLocationPermission = await requestLocationPermission();
-      const hasBackgroundPermission = await requestBackgroundPermission();
-
-      if (!hasLocationPermission || !hasBackgroundPermission) {
-        throw new Error('Required permissions not granted');
-      }
-
-      await SafetyTagModule.startAxisAlignment();
-      Alert.alert('Axis Alignment', 'Successfully started axis alignment');
-      console.log('Successfully started axis alignment');
+      //return await SafetyTagModule.readAccAxisAlignmentValues();
     } catch (error) {
-      console.error('Error starting axis alignment:', error);
+      console.error('Error reading alignment values:', error);
       throw error;
     }
   };
@@ -580,16 +591,16 @@ const useSafetyTag = () => {
     );
 
     // Start background scan
-    SafetyTagModule.startBackgroundScan()
+    /* SafetyTagModule.startBackgroundScan()
       .then(() => console.log('Background scan started'))
-      .catch(error => console.error('Failed to start background scan:', error));
+      .catch(error => console.error('Failed to start background scan:', error));*/
 
     return () => {
       // Clean up
       subscription.remove();
-      SafetyTagModule.stopBackgroundScan().catch(error =>
+      /*SafetyTagModule.stopBackgroundScan().catch(error =>
         console.error('Failed to stop background scan:', error),
-      );
+      );*/
     };
   }, []);
 
@@ -702,6 +713,8 @@ const useSafetyTag = () => {
     isDeviceConnected,
     getConnectedDevice,
     getAutoConnectAddresses,
+    hasOngoingAxisAlignment,
+    readAccAxisAlignmentValues,
   };
 };
 

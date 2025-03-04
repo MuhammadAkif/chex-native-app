@@ -1,16 +1,19 @@
-import React, {useEffect, useRef} from 'react';
-import {View, Text, StyleSheet, AppState} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {View, Text, StyleSheet, AppState, Alert, Linking} from 'react-native';
 import {Camera} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
 import {useCameraPermissions} from '../../hooks/useCameraPermissions';
 import {useCameraCapture} from '../../hooks/useCameraCapture';
-import {CameraFooter, CameraHeader} from '../index';
+import {CameraFooter, CameraHeader, PrimaryGradientButton} from '../index';
 import {fallBack} from '../../Utils';
 import {colors} from '../../Assets/Styles';
 
-const {cobaltBlueMedium} = colors;
+const {white, cobaltBlueMedium} = colors;
 
 /**
  * CameraView component renders the camera with controls and handles
@@ -39,6 +42,8 @@ const CameraView = ({
   const cameraRef = useRef(null);
   const hasPermission = useCameraPermissions();
   const appState = useRef(AppState.currentState);
+  const [cameraError, setCameraError] = useState('');
+
   const {
     capturePhoto,
     switchCamera,
@@ -52,6 +57,10 @@ const CameraView = ({
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       appState.current = nextAppState;
+      if (nextAppState === 'active') {
+        // Reset camera error when app becomes active
+        setCameraError('');
+      }
     });
 
     return () => {
@@ -64,8 +73,18 @@ const CameraView = ({
    * Invokes the capturePhoto function from useCameraCapture hook and calls onCapture with the photo data.
    */
   const onTakePhoto = async () => {
-    const photo = await capturePhoto();
-    onCapture(photo);
+    try {
+      if (!cameraRef.current) {
+        throw new Error('Camera not initialized');
+      }
+      const photo = await capturePhoto();
+      if (!photo) {
+        throw new Error('Failed to capture photo');
+      }
+      onCapture(photo);
+    } catch (error) {
+      handleCameraError(error, 'Error capturing photo');
+    }
   };
 
   /**
@@ -73,10 +92,14 @@ const CameraView = ({
    * Starts or stops recording based on the current recording state and calls respective callback functions.
    */
   const toggleRecording = async () => {
-    if (isRecording) {
-      await stopRecording();
-    } else {
-      await startRecording(onRecordingSuccess, onRecordingError);
+    try {
+      if (isRecording) {
+        await stopRecording();
+      } else {
+        await startRecording(onRecordingSuccess, onRecordingError);
+      }
+    } catch (error) {
+      handleCameraError(error, 'Error during recording');
     }
   };
 
@@ -93,14 +116,74 @@ const CameraView = ({
    * @param {Error} error - The error object.
    */
   const onRecordingError = error => {
+    handleCameraError(error, 'Recording error');
+  };
+
+  /**
+   * Handles camera-related errors by showing an alert and calling the error callback.
+   * @param {Error} error - The error object
+   * @param {string} context - Context where the error occurred
+   */
+  const handleCameraError = (error, context) => {
+    const errorMessage = `${context}: ${error.message}`;
+    setCameraError(errorMessage);
+    Alert.alert(
+      'Camera Error',
+      errorMessage,
+      [
+        {
+          text: 'Retry',
+          onPress: () => setCameraError(''),
+        },
+        {
+          text: 'Close',
+          onPress: onBackPress,
+          style: 'cancel',
+        },
+      ],
+      {cancelable: false},
+    );
     onError(error);
   };
 
+  const on_Error = useCallback(error => {
+    handleCameraError(error, 'Camera capture error');
+  }, []);
+
+  const handleSettings = useCallback(async () => {
+    await Linking.openSettings();
+  }, []);
+
+  // Handle device initialization errors
   if (!device) {
-    return <Text style={styles.centerText}>Loading Camera...</Text>;
+    return (
+      <Text style={styles.centerText}>
+        {cameraError || 'Camera initialization failed. Please try again.'}
+      </Text>
+    );
   }
+
+  // Handle permission errors
   if (!hasPermission) {
-    return <Text style={styles.centerText}>Camera permission required.</Text>;
+    return (
+      <View
+        style={[
+          styles.container,
+          {
+            justifyContent: 'center',
+            alignItems: 'center',
+          },
+        ]}>
+        <Text style={styles.centerText}>
+          Camera permission is required. Please enable it in your device
+          settings.
+        </Text>
+        <PrimaryGradientButton
+          text={'Open Settings'}
+          onPress={handleSettings}
+        />
+      </View>
+    );
   }
 
   return (
@@ -114,6 +197,7 @@ const CameraView = ({
         format={format}
         photo
         video
+        onError={on_Error}
       />
       {children}
       <CameraFooter
@@ -133,15 +217,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     backgroundColor: cobaltBlueMedium,
+    rowGap: hp('1%'),
   },
   centerText: {
-    flex: 1,
-    alignItems: 'center',
     textAlign: 'center',
     textAlignVertical: 'center',
     backgroundColor: cobaltBlueMedium,
     fontSize: hp('2%'),
     fontWeight: 'bold',
+    color: white,
+    paddingHorizontal: wp('3%'),
   },
 });
 

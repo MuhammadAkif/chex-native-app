@@ -65,6 +65,7 @@ export const useAxisAlignment = () => {
   }, []);
 
   function onAxisAlignmentState(state) {
+    setAlignmentState(state);
     /*    console.log('Received alignment state:', state);
     const {
       angles: {current, previous},
@@ -168,7 +169,6 @@ export const useAxisAlignment = () => {
     try {
       setError(null);
       setIsComplete(false);
-      //await enableAccelerometerDataStream();
       await SafetyTagModule.startAxisAlignment(resumeIfAvailable);
     } catch (err) {
       setError(err.message);
@@ -177,7 +177,6 @@ export const useAxisAlignment = () => {
 
   const stopAlignment = async () => {
     try {
-      //await disableAccelerometerDataStream();
       await SafetyTagModule.stopAxisAlignment();
     } catch (err) {
       setError(err.message);

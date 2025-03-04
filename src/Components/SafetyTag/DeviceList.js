@@ -7,10 +7,15 @@ import {
   StyleSheet,
   DeviceEventEmitter,
 } from 'react-native';
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
 import useSafetyTag from '../../hooks/useSafetyTag';
 import {colors} from '../../Assets/Styles';
+
+const {gray, white, black} = colors;
 
 const DeviceList = () => {
   const [devices, setDevices] = useState([]);
@@ -97,11 +102,13 @@ const DeviceList = () => {
       <TouchableOpacity
         style={styles.deviceItem}
         onPress={() => handleDeviceSelect(item)}>
-        <Text style={styles.deviceName}>SafetyTag {getTag || 'Unknown'}</Text>
-        <Text style={styles.deviceAddress}>
+        <Text style={[styles.deviceName, styles.textColor]}>
+          SafetyTag {getTag || 'Unknown'}
+        </Text>
+        <Text style={[styles.deviceAddress, styles.textColor]}>
           Advertisement Mode: {getAdvertisementMode}
         </Text>
-        <Text style={styles.deviceStatus}>
+        <Text style={[styles.deviceStatus, styles.textColor]}>
           {isBonded === 'true' ? '🔒 Bonded' : '📡 Available'} • Signal:{' '}
           {getRssi} dBm
         </Text>
@@ -118,7 +125,7 @@ const DeviceList = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Available Devices</Text>
+      <Text style={[styles.title, styles.textColor]}>Available Devices</Text>
       <FlatList
         data={devices}
         renderItem={renderDevice}
@@ -136,26 +143,35 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    alignItems: 'center',
+    width: wp('100%'),
   },
   title: {
     fontSize: hp('2.5%'),
     fontWeight: 'bold',
-    marginBottom: 16,
   },
   list: {
-    flex: 1,
+    height: hp('30%'),
+    width: wp('90%'),
+    padding: wp('2%'),
+    backgroundColor: gray,
+    borderRadius: hp('2%'),
   },
   deviceItem: {
-    backgroundColor: 'white',
-    padding: 16,
-    marginVertical: 8,
-    borderRadius: 8,
+    alignSelf: 'center',
+    width: wp('80%'),
+    backgroundColor: white,
     elevation: 2,
+    padding: wp('3%'),
+    borderRadius: hp('2%'),
   },
   deviceName: {
     fontSize: hp('2%'),
     fontWeight: 'bold',
-    color: colors.black,
+    color: black,
+  },
+  textColor: {
+    color: black,
   },
   deviceAddress: {
     fontSize: hp('1.8%'),
