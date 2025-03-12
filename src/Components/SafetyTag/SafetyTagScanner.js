@@ -5,7 +5,11 @@ import {
   StyleSheet,
   DeviceEventEmitter,
   ScrollView,
+  StatusBar,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -18,10 +22,23 @@ import {colors} from '../../Assets/Styles';
 import ConnectedDevice from './ConnectedDevice';
 import {isNotEmpty} from '../../Utils';
 import ConnectionControls from './ConnectionControls';
+import InstructionsModal from './InstructionsModal';
+import {
+  setFirstTimeOpen,
+  setShowInstructions,
+} from '../../Store/Actions/AppStateActions';
+import CrashEventDisplay from './CrashEventDisplay';
+
+const {white, black} = colors;
 
 const SafetyTagScanner = () => {
-  const [scanStatus, setScanStatus] = useState(null);
+  const [scanStatus, setScanStatus] = useState(false);
   const [connectedDevice, setConnectedDevice] = useState(null);
+
+  const dispatch = useDispatch();
+  const {isFirstTimeOpen, showInstructions} = useSelector(
+    state => state.appState,
+  );
 
   const {
     startScanning,
@@ -36,7 +53,12 @@ const SafetyTagScanner = () => {
   } = useSafetyTag();
 
   useEffect(() => {
+    if (isFirstTimeOpen) {
+      dispatch(setShowInstructions(true));
+      dispatch(setFirstTimeOpen(false));
+    }
     subscribeToConnectionEvents().then();
+    checkDeviceConnection().then();
     checkScanningStatus().then();
 
     DeviceEventEmitter.addListener('onConnected', event => {
@@ -45,10 +67,13 @@ const SafetyTagScanner = () => {
     });
     DeviceEventEmitter.addListener('onDeviceDisconnected', event => {
       console.log('Device is disconnected...');
+      Alert.alert('Connection', `Device is disconnected: ${event}`);
       setConnectedDevice(null);
-      // Handle the connecting event here (e.g., show loading spinner)
     });
-    // Set up event listeners for background scanning
+    DeviceEventEmitter.addListener('onAxisAlignmentStopped', async event => {
+      await checkDeviceConnection();
+      Alert.alert('Stopped', `Alignment stopped: ${event.reason}`);
+    });
     const deviceFoundSubscription = DeviceEventEmitter.addListener(
       'onBackgroundDeviceFound',
       device => {
@@ -61,7 +86,7 @@ const SafetyTagScanner = () => {
       unsubscribeFromConnectionEvents();
       stopBackgroundScanning().then();
     };
-  }, []);
+  }, [dispatch, isFirstTimeOpen]);
 
   const checkScanningStatus = async () => {
     try {
@@ -75,12 +100,14 @@ const SafetyTagScanner = () => {
   async function checkDeviceConnection() {
     try {
       const isConnected = await isDeviceConnected();
-      console.log({isConnected});
+      console.log('isConnected:', isConnected);
       if (isConnected) {
         const device = await getConnectedDevice();
         setConnectedDevice(device);
         console.log('Connected Device:', device);
+        setScanStatus(false);
       } else {
+        setScanStatus(true);
         setConnectedDevice(null);
       }
     } catch (error) {
@@ -91,7 +118,11 @@ const SafetyTagScanner = () => {
 
   async function handleScan() {
     try {
-      await startScanning();
+      const isConnected = await isDeviceConnected();
+      if (!isConnected) {
+        setScanStatus(true);
+        await startScanning();
+      }
     } catch (error) {
       console.error(error);
     }
@@ -99,7 +130,10 @@ const SafetyTagScanner = () => {
 
   async function handleBondScan() {
     try {
-      await startBondScanning();
+      const isConnected = await isDeviceConnected();
+      if (!isConnected) {
+        await startBondScanning();
+      }
     } catch (error) {
       console.error(error);
     }
@@ -113,10 +147,18 @@ const SafetyTagScanner = () => {
     }
   };
 
+  const handleShowInstructions = () => {
+    dispatch(setShowInstructions(true));
+  };
+
+  const handleCloseInstructions = () => {
+    dispatch(setShowInstructions(false));
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll}>
-        <DeviceList />
+        {scanStatus && <DeviceList />}
         <ConnectedDevice connectedDevice={connectedDevice} />
         <ConnectionControls
           handleScan={handleScan}
@@ -126,7 +168,25 @@ const SafetyTagScanner = () => {
           isConnected={isNotEmpty(connectedDevice)}
         />
         {isNotEmpty(connectedDevice) && <AccelerometerDisplay />}
+        {isNotEmpty(connectedDevice) && <CrashEventDisplay />}
       </ScrollView>
+
+      <TouchableOpacity
+        style={styles.helpButton}
+        onPress={handleShowInstructions}>
+        <Text style={styles.helpButtonText}>?</Text>
+      </TouchableOpacity>
+
+      <InstructionsModal
+        visible={showInstructions}
+        onClose={handleCloseInstructions}
+      />
+
+      <StatusBar
+        backgroundColor={white}
+        barStyle="light-content"
+        translucent={true}
+      />
     </View>
   );
 };
@@ -136,10 +196,35 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: white,
+    paddingTop: StatusBar.currentHeight,
   },
   scroll: {
     gap: wp('2%'),
+  },
+  helpButton: {
+    position: 'absolute',
+    bottom: hp('2%'),
+    right: wp('4%'),
+    width: wp('12%'),
+    height: wp('12%'),
+    borderRadius: wp('6%'),
+    backgroundColor: black,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  helpButtonText: {
+    color: white,
+    fontSize: hp('3%'),
+    fontWeight: 'bold',
   },
 });
 

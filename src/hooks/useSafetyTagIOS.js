@@ -1,8 +1,12 @@
 import {useEffect, useState} from 'react';
-import {NativeModules, NativeEventEmitter} from 'react-native';
+import {
+  NativeModules,
+  NativeEventEmitter,
+  DeviceEventEmitter,
+} from 'react-native';
 
 const {SafetyTagModule} = NativeModules;
-const eventEmitter = new NativeEventEmitter(SafetyTagModule);
+// const eventEmitter = new NativeEventEmitter(SafetyTagModule);
 
 const useSafetyTagIOS = () => {
   const [devices, setDevices] = useState([]);
@@ -10,21 +14,32 @@ const useSafetyTagIOS = () => {
 
   useEffect(() => {
     startObserving().then();
-    onDeviceReady();
+    const subscriptions = onDeviceReady();
 
-    return () => stopObserving();
+    return () => {
+      stopObserving().then();
+      subscriptions.forEach(subscription => subscription.remove());
+    };
   }, []);
 
   function onDeviceReady() {
-    eventEmitter.addListener('onDeviceDiscovered', onDeviceDiscovered);
-    eventEmitter.addListener('onDeviceConnected', onDeviceConnected);
-    eventEmitter.addListener(
-      'onDeviceConnectionFailed',
-      onDeviceConnectionFailed,
-    );
-    eventEmitter.addListener('onDeviceDisconnected', onDeviceDisconnected);
-    eventEmitter.addListener('onGetConnectedDevice', onGetConnectedDevice);
-    eventEmitter.addListener('onCheckConnection', onCheckConnection);
+    return [
+      DeviceEventEmitter.addListener('onDeviceDiscovered', onDeviceDiscovered),
+      DeviceEventEmitter.addListener('onDeviceConnected', onDeviceConnected),
+      DeviceEventEmitter.addListener(
+        'onDeviceConnectionFailed',
+        onDeviceConnectionFailed,
+      ),
+      DeviceEventEmitter.addListener(
+        'onDeviceDisconnected',
+        onDeviceDisconnected,
+      ),
+      DeviceEventEmitter.addListener(
+        'onGetConnectedDevice',
+        onGetConnectedDevice,
+      ),
+      DeviceEventEmitter.addListener('onCheckConnection', onCheckConnection),
+    ];
   }
 
   function onDeviceDiscovered(device) {

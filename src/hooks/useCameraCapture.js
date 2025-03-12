@@ -1,9 +1,5 @@
 import {useState} from 'react';
 import {useCameraDevice, useCameraFormat} from 'react-native-vision-camera';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
 
 import {PHYSICAL_DEVICES, SWITCH_CAMERA} from '../Constants';
 
@@ -20,9 +16,12 @@ export const useCameraCapture = cameraRef => {
   const device = useCameraDevice(cameraPosition, {
     physicalDevices: PHYSICAL_DEVICES,
   });
+
   const format = useCameraFormat(device, [
-    {videoResolution: {width: wp('100%'), height: hp('80%')}},
-    {fps: 60},
+    {videoResolution: 'max'},
+    {photoResolution: 'max'},
+    {fps: device?.formats[0].maxFps},
+    {photoHDR: true},
   ]);
 
   /**
@@ -31,7 +30,10 @@ export const useCameraCapture = cameraRef => {
    */
   const capturePhoto = async () => {
     if (cameraRef.current) {
-      return await cameraRef.current.takePhoto();
+      return await cameraRef.current.takePhoto({
+        qualityPrioritization: 'quality',
+        enableShutterSound: false,
+      });
     }
   };
   /**

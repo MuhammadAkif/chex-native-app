@@ -1,8 +1,13 @@
 import {useEffect, useState} from 'react';
-import {Alert, NativeEventEmitter, NativeModules} from 'react-native';
+import {
+  Alert,
+  DeviceEventEmitter,
+  NativeEventEmitter,
+  NativeModules,
+} from 'react-native';
 
 const {SafetyTagModule} = NativeModules;
-const eventEmitter = new NativeEventEmitter(SafetyTagModule);
+// const eventEmitter = new NativeEventEmitter(SafetyTagModule);
 
 export const useAxisAlignment = () => {
   const [alignmentState, setAlignmentState] = useState(null);
@@ -40,20 +45,29 @@ export const useAxisAlignment = () => {
 
   useEffect(() => {
     const subscriptions = [
-      eventEmitter.addListener('onAxisAlignmentState', onAxisAlignmentState),
+      DeviceEventEmitter.addListener(
+        'onAxisAlignmentState',
+        onAxisAlignmentState,
+      ),
 
-      eventEmitter.addListener('onVehicleState', onVehicleState),
+      DeviceEventEmitter.addListener('onVehicleState', onVehicleState),
 
-      eventEmitter.addListener('onAxisAlignmentData', onAxisAlignmentData),
+      DeviceEventEmitter.addListener(
+        'onAxisAlignmentData',
+        onAxisAlignmentData,
+      ),
 
-      eventEmitter.addListener('onAxisAlignmentError', onAxisAlignmentError),
+      DeviceEventEmitter.addListener(
+        'onAxisAlignmentError',
+        onAxisAlignmentError,
+      ),
 
-      eventEmitter.addListener(
+      DeviceEventEmitter.addListener(
         'onAxisAlignmentFinished',
         onAxisAlignmentFinished,
       ),
 
-      eventEmitter.addListener(
+      DeviceEventEmitter.addListener(
         'onAxisAlignmentMissing',
         onAxisAlignmentMissing,
       ),

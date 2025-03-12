@@ -9,6 +9,7 @@ import {
 import useSafetyTag from '../../hooks/useSafetyTag';
 import {colors} from '../../Assets/Styles';
 import {PrimaryGradientButton} from '../index';
+import {PhaseList, InstructionsPanel} from './AlignmentComponents';
 
 const {black, gray} = colors;
 
@@ -22,18 +23,20 @@ const AccelerometerDisplay = () => {
     startAxisAlignment,
     stopAxisAlignment,
     isAlignmentRunning,
+    isDeviceConnected,
   } = useSafetyTag();
   const [alignmentDetails, setAlignmentDetails] = useState({
     movement: 'UNKNOWN',
     speed: 'UNKNOWN',
     currentSpeed: 0,
     currentHeading: 0,
+    step: null,
   });
-  const [isServiceRunning, setIsServiceRunning] = useState(false);
 
   const checkServiceStatus = async () => {
-    const running = await isAlignmentRunning();
-    setIsServiceRunning(running);
+    const isActive = await isAlignmentRunning();
+    console.log('isActiveAlignment', isActive);
+    return isActive;
   };
 
   useEffect(() => {
@@ -47,15 +50,20 @@ const AccelerometerDisplay = () => {
     const alignmentSubscription = DeviceEventEmitter.addListener(
       'onAxisAlignmentStateChange',
       event => {
-        console.log('alignment state', event);
+        //Need to work on this
+        console.log('current step', event.step);
+        console.log('prev step', alignmentDetails.step);
+        if (event.step !== alignmentDetails.step) {
+          setAlignmentDetails(event);
+          console.log('alignment state changed to:', event.step);
+        }
       },
     );
-
-    const statusInterval = setInterval(checkServiceStatus, 1000);
 
     const successSubscription = DeviceEventEmitter.addListener(
       'onAxisAlignmentSuccess',
       async () => {
+        setAlignmentDetails(prev => ({...prev, step: 'PROCESS_COMPLETED'}));
         Alert.alert('Success', 'Axis alignment completed successfully');
         await stopAxisAlignment();
       },
@@ -64,6 +72,7 @@ const AccelerometerDisplay = () => {
     const stoppedSubscription = DeviceEventEmitter.addListener(
       'onAxisAlignmentStopped',
       event => {
+        setAlignmentStatus('Started');
         Alert.alert('Stopped', `Alignment stopped: ${event.reason}`);
       },
     );
@@ -71,7 +80,6 @@ const AccelerometerDisplay = () => {
     return () => {
       accelerometerSubscription.remove();
       alignmentSubscription.remove();
-      clearInterval(statusInterval);
       successSubscription.remove();
       stoppedSubscription.remove();
     };
@@ -90,8 +98,9 @@ const AccelerometerDisplay = () => {
   const handleStartAlignment = async () => {
     try {
       await handleStartStream();
+      setAlignmentDetails(prev => ({...prev, step: 'STARTING'}));
       await startAxisAlignment(false);
-      await checkServiceStatus();
+      setAlignmentStatus('Started');
     } catch (error) {
       console.error('Error starting alignment:', error);
       Alert.alert('Error', 'Failed to start alignment');
@@ -111,7 +120,7 @@ const AccelerometerDisplay = () => {
 
   return (
     <View style={styles.container}>
-      {accelerometerData && (
+      {/*{accelerometerData && (
         <View style={styles.dataContainer}>
           <Text style={styles.title}>Accelerometer Data</Text>
           <Text style={styles.textAxis}>
@@ -124,17 +133,17 @@ const AccelerometerDisplay = () => {
             Z: {accelerometerData.zAxis.toFixed(2)} mg
           </Text>
         </View>
-      )}
+      )}*/}
 
       <View style={styles.alignmentContainer}>
         <Text style={styles.title}>Axis Alignment</Text>
-        <Text style={styles.title}>Status: {alignmentStatus}</Text>
         <Text style={styles.title}>
-          Service: {isServiceRunning ? 'Running' : 'Stopped'}
+          Status: {alignmentDetails?.step || 'Not Started'}
         </Text>
-        <Text style={styles.title}>
-          Background Service: {isServiceRunning ? 'Running' : 'Stopped'}
-        </Text>
+        <Text style={styles.title}>Service: {alignmentStatus}</Text>
+
+        <PhaseList currentPhase={alignmentDetails?.step} />
+        <InstructionsPanel phase={alignmentDetails?.step} />
 
         <View style={styles.alignmentDetails}>
           <Text style={styles.textAxis}>
@@ -151,19 +160,6 @@ const AccelerometerDisplay = () => {
             Heading: {alignmentDetails.currentHeading.toFixed(1)}°
           </Text>
         </View>
-
-        {alignmentStatus === 'FINDING_X_AXIS_ANGLE' && (
-          <View style={styles.instructions}>
-            <Text style={[styles.instructionTitle, styles.textColor]}>
-              Instructions:
-            </Text>
-            <Text style={styles.textAxis}>1. Drive in a straight line</Text>
-            <Text style={styles.textAxis}>
-              2. Maintain speed between 4-60 km/h
-            </Text>
-            <Text style={styles.textAxis}>3. Gently accelerate or brake</Text>
-          </View>
-        )}
 
         <View style={styles.buttonContainer}>
           <PrimaryGradientButton
@@ -183,8 +179,10 @@ const AccelerometerDisplay = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: wp('2%'),
+    width: wp('100%'),
     rowGap: wp('2%'),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: hp('2%'),
@@ -205,7 +203,9 @@ const styles = StyleSheet.create({
   alignmentContainer: {
     gap: wp('0.6%'),
     padding: wp('3%'),
+    width: wp('90%'),
     backgroundColor: gray,
+    borderRadius: wp('2%'),
   },
   textAxis: {
     fontSize: hp('1.8%'),
@@ -214,6 +214,7 @@ const styles = StyleSheet.create({
   alignmentDetails: {
     gap: wp('0.6%'),
     padding: wp('3%'),
+    borderRadius: wp('2%'),
     backgroundColor: '#f0f0f0',
   },
   instructions: {
@@ -239,6 +240,91 @@ const styles = StyleSheet.create({
   alignmentValues: {
     marginTop: wp('2%'),
     gap: wp('0.6%'),
+  },
+  phaseListContainer: {
+    marginVertical: wp('2%'),
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: wp('2%'),
+  },
+  phaseListTitle: {
+    fontSize: hp('2%'),
+    fontWeight: 'bold',
+    color: black,
+    marginBottom: wp('2%'),
+  },
+  phaseItem: {
+    marginBottom: wp('2%'),
+  },
+  phaseHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: wp('1%'),
+  },
+  phaseStatus: {
+    width: wp('6%'),
+    height: wp('6%'),
+    borderRadius: wp('3%'),
+    backgroundColor: '#e0e0e0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: wp('2%'),
+  },
+  completed: {
+    backgroundColor: '#4CAF50',
+  },
+  current: {
+    backgroundColor: '#2196F3',
+  },
+  pending: {
+    backgroundColor: '#e0e0e0',
+  },
+  statusIcon: {
+    color: '#fff',
+    fontSize: hp('1.8%'),
+    fontWeight: 'bold',
+  },
+  phaseTitle: {
+    fontSize: hp('1.8%'),
+    color: black,
+  },
+  currentPhaseTitle: {
+    fontWeight: 'bold',
+  },
+  phaseDescription: {
+    fontSize: hp('1.6%'),
+    color: '#666',
+    marginLeft: wp('8%'),
+  },
+  instructionsPanel: {
+    backgroundColor: '#E3F2FD',
+    padding: wp('3%'),
+    borderRadius: 8,
+    marginVertical: wp('2%'),
+  },
+  instructionDescription: {
+    fontSize: hp('1.8%'),
+    color: '#37474F',
+    marginBottom: wp('2%'),
+  },
+  instructionsList: {
+    gap: wp('1%'),
+  },
+  instructionItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingRight: wp('2%'),
+  },
+  bulletPoint: {
+    fontSize: hp('1.8%'),
+    color: '#1976D2',
+    marginRight: wp('2%'),
+    marginTop: -wp('0.5%'),
+  },
+  instructionText: {
+    fontSize: hp('1.8%'),
+    color: '#37474F',
+    flex: 1,
   },
 });
 

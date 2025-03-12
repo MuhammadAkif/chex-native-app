@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Linking} from 'react-native';
+import {Linking, Platform} from 'react-native';
 import {useDispatch} from 'react-redux';
 import 'react-native-devsettings';
 import SplashScreen from 'react-native-splash-screen';
@@ -13,11 +13,14 @@ import {
   Splash,
   Toast,
 } from './src/Components';
-import {SESSION_EXPIRED, UPDATE_APP} from './src/Constants';
+import {Platforms, SESSION_EXPIRED, UPDATE_APP} from './src/Constants';
 import {clearNewInspection, hideToast, signOut} from './src/Store/Actions';
 import {resetNavigation} from './src/services/navigationService';
 import {ROUTES} from './src/Navigation/ROUTES';
 import {useAuth} from './src/hooks';
+import SafetyTagIOS from './src/Components/SafetyTag/SafetyTagIOS';
+import SafetyTagScanner from './src/Components/SafetyTag/SafetyTagScanner';
+import {requestPermissions} from './src/Utils/helpers';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
@@ -42,6 +45,7 @@ function App() {
   }, [displayGif]);
 
   async function initializeApp() {
+    await requestPermissions();
     await versionCheck();
     SplashScreen.hide();
     if (displayGif) {
@@ -50,7 +54,7 @@ function App() {
     } else {
       dispatch(clearNewInspection());
       dispatch(hideToast());
-      await hasCameraAndMicrophoneAllowed();
+      // await hasCameraAndMicrophoneAllowed();
     }
   }
 
@@ -73,33 +77,7 @@ function App() {
     resetNavigation(SIGN_IN);
   };
 
-  return displayGif ? (
-    <Splash />
-  ) : (
-    <>
-      <Navigation />
-      <Toast />
-      {updateAvailable && (
-        <DiscardInspectionModal
-          onYesPress={handleUpdatePress}
-          title={TITLE}
-          description={MESSAGE}
-          yesButtonText={BUTTON}
-          dualButton={false}
-          onNoPress={undefined}
-          noButtonText={undefined}
-          noButtonStyle={undefined}
-        />
-      )}
-      <AlertPopup
-        visible={isSessionExpired}
-        onYesPress={onSessionExpirePress}
-        title={title}
-        message={message}
-        yesButtonText={button}
-      />
-    </>
-  );
+  return displayGif ? <Splash /> : <SafetyTagScanner />;
 }
 
 export default App;

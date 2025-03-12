@@ -259,3 +259,115 @@ export const requestLocationPermission = async () => {
     console.log('Location permission denied');
   }
 };
+
+/**
+ * Get user-friendly error message based on error code
+ * @param {string} code - Error code from CameraError
+ * @returns {string} User-friendly error message
+ */
+export const getErrorMessage = code => {
+  const errorMessages = {
+    // Permission Errors
+    'permission/camera-permission-denied':
+      'Camera permission is required to use this feature.',
+    'permission/microphone-permission-denied':
+      'Microphone permission is required for video recording.',
+
+    // Device Errors
+    'device/configuration-error': 'There was an error configuring the camera.',
+    'device/no-device': 'No camera device was found on your device.',
+    'device/invalid-device': 'The selected camera device is invalid.',
+    'device/microphone-unavailable': 'The microphone is currently unavailable.',
+    'device/camera-not-available-on-simulator':
+      'Camera is not available in the simulator.',
+
+    // Session Errors
+    'session/camera-not-ready': 'The camera is not ready. Please try again.',
+    'session/camera-cannot-be-opened':
+      'Unable to access the camera at this time.',
+    'session/camera-has-been-disconnected': 'The camera has been disconnected.',
+    'session/audio-in-use-by-other-app':
+      'Another app is currently using the audio. Please close other apps and try again.',
+
+    // Capture Errors
+    'capture/recording-in-progress': 'A recording is already in progress.',
+    'capture/no-recording-in-progress':
+      'No recording is currently in progress.',
+    'capture/file-io-error': 'Error saving the captured media.',
+    'capture/video-not-enabled': 'Video capture is not enabled.',
+    'capture/photo-not-enabled': 'Photo capture is not enabled.',
+    'capture/aborted': 'The capture was cancelled.',
+
+    // System Errors
+    'system/camera-module-not-found': 'Camera module not found on your device.',
+    'system/view-not-found': 'Camera view could not be initialized.',
+  };
+
+  return (
+    errorMessages[code] || 'An unexpected error occurred. Please try again.'
+  );
+};
+
+export const ALIGNMENT_PHASES = [
+  {
+    id: 'STARTING',
+    title: 'Starting',
+    description: 'Resetting internal states and preparing to start',
+    instructions: [
+      'Ensure the Safety Tag is firmly mounted in the vehicle',
+      'Make sure the device cannot move around',
+      'Keep GPS and Bluetooth enabled on your phone',
+    ],
+  },
+  {
+    id: 'Z_AXIS_ALIGNMENT',
+    title: 'Z-Axis Alignment (Vertical)',
+    description: 'Aligning vertical axis (Z-axis) of Safety Tag to vehicle',
+    instructions: [
+      'Keep the vehicle stationary or under 2 km/h',
+      'This process will continue running throughout the alignment',
+      'Wait for initial calculations to complete',
+    ],
+  },
+  {
+    id: 'FINDING_X_AXIS_ANGLE',
+    title: 'X-Axis Alignment (Horizontal)',
+    description: 'Finding X and Y axes alignment while driving',
+    instructions: [
+      'Drive the vehicle normally',
+      'Maintain speed between 10-80 km/h',
+      'Drive in a straight line when possible',
+      'Accelerate or brake gently when safe',
+    ],
+  },
+  {
+    id: 'ANGLE_DIRECTION_VALIDATION',
+    title: 'Direction Validation',
+    description: 'Validating the calculated angles',
+    instructions: [
+      'Continue driving normally',
+      'The system is verifying the alignment accuracy',
+      'Z-axis alignment continues in parallel',
+    ],
+  },
+  {
+    id: 'SENDING_ALIGNMENT_DATA_TO_ST',
+    title: 'Saving Alignment',
+    description: 'Storing alignment data in Safety Tag',
+    instructions: [
+      'Keep the vehicle running',
+      'Maintain Bluetooth connection',
+      'Wait for confirmation (may retry up to 3 times)',
+    ],
+  },
+  {
+    id: 'PROCESS_COMPLETED',
+    title: 'Completed',
+    description: 'Alignment process completed successfully',
+    instructions: [
+      'Alignment data stored successfully',
+      'Crash detection is now enabled',
+      'You can continue driving normally',
+    ],
+  },
+];

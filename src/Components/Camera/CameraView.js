@@ -12,6 +12,8 @@ import {useCameraCapture} from '../../hooks/useCameraCapture';
 import {CameraFooter, CameraHeader, PrimaryGradientButton} from '../index';
 import {fallBack} from '../../Utils';
 import {colors} from '../../Assets/Styles';
+import {getErrorMessage} from '../../Utils/helpers';
+import {RESULTS} from 'react-native-permissions';
 
 const {white, cobaltBlueMedium} = colors;
 
@@ -125,7 +127,8 @@ const CameraView = ({
    * @param {string} context - Context where the error occurred
    */
   const handleCameraError = (error, context) => {
-    const errorMessage = `${context}: ${error.message}`;
+    debugger;
+    const errorMessage = getErrorMessage(error?.code);
     setCameraError(errorMessage);
     Alert.alert(
       'Camera Error',
@@ -164,7 +167,7 @@ const CameraView = ({
   }
 
   // Handle permission errors
-  if (!hasPermission) {
+  if (hasPermission === RESULTS.BLOCKED) {
     return (
       <View
         style={[
@@ -198,6 +201,7 @@ const CameraView = ({
         photo
         video
         onError={on_Error}
+        enableHighQualityPhotos={true}
       />
       {children}
       <CameraFooter

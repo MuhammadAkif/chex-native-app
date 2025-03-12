@@ -27,6 +27,12 @@ import {
   clearInspectionInProgress,
 } from './InspectionInProgressAction';
 import {setLoading, showToast, hideToast} from './UIActions';
+import {
+  addCrashEvent,
+  addThresholdEvent,
+  updateCrashConfig,
+  clearCrashEvents,
+} from './CrashDetectionActions';
 
 export {
   updateVehicleImage,
@@ -56,4 +62,9 @@ export {
   clearInspectionImages,
   setCompanyId,
   sessionExpired,
+  // Crash Detection Actions
+  addCrashEvent,
+  addThresholdEvent,
+  updateCrashConfig,
+  clearCrashEvents,
 };

@@ -6,13 +6,14 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  DeviceDeviceEventEmitter,
   DeviceEventEmitter,
 } from 'react-native';
 import {SafetyTagBeaconTest} from './SafetyTagBeaconTest';
-import {NativeEventEmitter, NativeModules} from 'react-native';
+import {NativeDeviceEventEmitter, NativeModules} from 'react-native';
 
 const {SafetyTagModule} = NativeModules;
-const eventEmitter = new NativeEventEmitter(SafetyTagModule);
+const eventEmitter = new NativeDeviceEventEmitter(SafetyTagModule);
 
 export const SafetyTagBeaconTestScreen = () => {
   const [isScanning, setIsScanning] = useState(false);
@@ -22,17 +23,26 @@ export const SafetyTagBeaconTestScreen = () => {
 
   useEffect(() => {
     const subscriptions = [
-      eventEmitter.addListener('onDeviceDiscovered', handleDeviceDiscovered),
-      eventEmitter.addListener('onDeviceConnected', handleDeviceConnected),
-      eventEmitter.addListener(
+      DeviceEventEmitter.addListener(
+        'onDeviceDiscovered',
+        handleDeviceDiscovered,
+      ),
+      DeviceEventEmitter.addListener(
+        'onDeviceConnected',
+        handleDeviceConnected,
+      ),
+      DeviceEventEmitter.addListener(
         'onDeviceDisconnected',
         handleDeviceDisconnected,
       ),
-      eventEmitter.addListener(
+      DeviceEventEmitter.addListener(
         'onDeviceConnectionFailed',
         handleConnectionFailed,
       ),
-      eventEmitter.addListener('onGetConnectedDevice', onGetConnectedDevice),
+      DeviceEventEmitter.addListener(
+        'onGetConnectedDevice',
+        onGetConnectedDevice,
+      ),
     ];
 
     // Check if we already have a connected device

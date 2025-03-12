@@ -1,9 +1,14 @@
 import {useEffect, useCallback} from 'react';
-import {NativeEventEmitter, NativeModules, AppState} from 'react-native';
+import {
+  NativeEventEmitter,
+  NativeModules,
+  AppState,
+  DeviceEventEmitter,
+} from 'react-native';
 import {backGroundTask} from '../services/safetyTag';
 
 const {SafetyTagModule} = NativeModules;
-const eventEmitter = new NativeEventEmitter(SafetyTagModule);
+// const eventEmitter = new NativeEventEmitter(SafetyTagModule);
 
 export const useSafetyTagBeacon = (onEvents = {}) => {
   const onRegionEntered = useCallback(
@@ -85,9 +90,12 @@ export const useSafetyTagBeacon = (onEvents = {}) => {
   useEffect(() => {
     console.log('📱 Setting up SafetyTag beacon listeners...');
     const subscriptions = [
-      eventEmitter.addListener('onRegionEntered', onRegionEntered),
-      eventEmitter.addListener('onRegionExited', onRegionExited),
-      eventEmitter.addListener('onRegionStateChanged', onRegionStateChanged),
+      DeviceEventEmitter.addListener('onRegionEntered', onRegionEntered),
+      DeviceEventEmitter.addListener('onRegionExited', onRegionExited),
+      DeviceEventEmitter.addListener(
+        'onRegionStateChanged',
+        onRegionStateChanged,
+      ),
     ];
 
     return () => {

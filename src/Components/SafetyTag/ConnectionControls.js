@@ -24,13 +24,11 @@ const ConnectionControls = ({
       text={'Check Connection'}
       onPress={checkDeviceConnection}
     />*/}
-    {isConnected && (
-      <PrimaryGradientButton
-        text={'Disconnect connected Device'}
-        colors={[red, red]}
-        onPress={handleDisconnectDevice}
-      />
-    )}
+    <PrimaryGradientButton
+      text={'Disconnect connected Device'}
+      colors={[red, red]}
+      onPress={handleDisconnectDevice}
+    />
   </View>
 );
 

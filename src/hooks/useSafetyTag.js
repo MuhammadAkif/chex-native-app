@@ -7,32 +7,16 @@ import {
 import {useEffect} from 'react';
 
 import {requestPermissions} from '../Utils/helpers';
+import useCrashDetection from './useCrashDetection';
 
 const {SafetyTagModule} = NativeModules;
 
 const useSafetyTag = () => {
+  const crashDetection = useCrashDetection();
   useEffect(() => {
     requestPermissions().then();
     SafetyTagModule.requestNotificationPermission();
-    const crashDataSubscription = DeviceEventEmitter.addListener(
-      'onCrashDataReceived',
-      event => {
-        const crashData = JSON.parse(event.crashData);
-      },
-    );
-
-    const crashThresholdSubscription = DeviceEventEmitter.addListener(
-      'onCrashThresholdEvent',
-      event => {
-        const thresholdEvent = JSON.parse(event.crashThresholdEvent);
-      },
-    );
     SafetyTagModule.setLogLevel('DEBUG');
-
-    return () => {
-      crashDataSubscription.remove();
-      crashThresholdSubscription.remove();
-    };
   }, []);
 
   const requestLocationPermission = async () => {

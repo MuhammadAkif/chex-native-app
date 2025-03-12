@@ -3,6 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 
 import {colors} from '../../Assets/Styles';
 import {isNotEmpty} from '../../Utils';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 const {black} = colors;
 
@@ -34,10 +35,11 @@ const ConnectedDevice = ({connectedDevice}) => (
 
 const styles = StyleSheet.create({
   deviceInfoContainer: {
-    padding: 15,
-    margin: 10,
+    width: wp('90%'),
+    alignSelf: 'center',
+    padding: wp('4%'),
     backgroundColor: '#f5f5f5',
-    borderRadius: 8,
+    borderRadius: wp('2%'),
     borderWidth: 1,
     borderColor: '#ddd',
     elevation: 2,
