@@ -28,10 +28,12 @@ import {
   setShowInstructions,
 } from '../../Store/Actions/AppStateActions';
 import CrashEventDisplay from './CrashEventDisplay';
+import {LoadingIndicator} from '../index';
 
 const {white, black} = colors;
 
 const SafetyTagScanner = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [scanStatus, setScanStatus] = useState(false);
   const [connectedDevice, setConnectedDevice] = useState(null);
 
@@ -60,19 +62,21 @@ const SafetyTagScanner = () => {
     subscribeToConnectionEvents().then();
     checkDeviceConnection().then();
     checkScanningStatus().then();
-
+    DeviceEventEmitter.addListener('onConnecting', event => {
+      !isLoading && setIsLoading(true);
+    });
     DeviceEventEmitter.addListener('onConnected', event => {
       checkDeviceConnection().then();
+      setIsLoading(false);
       console.log('Successfully connected to the device:', event);
     });
     DeviceEventEmitter.addListener('onDeviceDisconnected', event => {
-      console.log('Device is disconnected...');
-      Alert.alert('Connection', `Device is disconnected: ${event}`);
+      console.log('Device is disconnected...', event);
+      Alert.alert('Connection', `Device is disconnected: ${event.reason}`);
       setConnectedDevice(null);
     });
     DeviceEventEmitter.addListener('onAxisAlignmentStopped', async event => {
       await checkDeviceConnection();
-      Alert.alert('Stopped', `Alignment stopped: ${event.reason}`);
     });
     const deviceFoundSubscription = DeviceEventEmitter.addListener(
       'onBackgroundDeviceFound',
@@ -181,12 +185,12 @@ const SafetyTagScanner = () => {
         visible={showInstructions}
         onClose={handleCloseInstructions}
       />
-
       <StatusBar
         backgroundColor={white}
         barStyle="light-content"
         translucent={true}
       />
+      <LoadingIndicator isLoading={isLoading} />
     </View>
   );
 };

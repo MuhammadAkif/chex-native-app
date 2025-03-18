@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 
 const {SafetyTagModule} = NativeModules;
-// const eventEmitter = new NativeEventEmitter(SafetyTagModule);
+const eventEmitter = new NativeEventEmitter(SafetyTagModule);
 
 const useSafetyTagIOS = () => {
   const [devices, setDevices] = useState([]);
@@ -24,21 +24,21 @@ const useSafetyTagIOS = () => {
 
   function onDeviceReady() {
     return [
-      DeviceEventEmitter.addListener('onDeviceDiscovered', onDeviceDiscovered),
-      DeviceEventEmitter.addListener('onDeviceConnected', onDeviceConnected),
-      DeviceEventEmitter.addListener(
+      eventEmitter.addListener('onDeviceDiscovered', onDeviceDiscovered),
+      eventEmitter.addListener('onDeviceConnected', onDeviceConnected),
+      eventEmitter.addListener(
         'onDeviceConnectionFailed',
         onDeviceConnectionFailed,
       ),
-      DeviceEventEmitter.addListener(
+      eventEmitter.addListener(
         'onDeviceDisconnected',
         onDeviceDisconnected,
       ),
-      DeviceEventEmitter.addListener(
+      eventEmitter.addListener(
         'onGetConnectedDevice',
         onGetConnectedDevice,
       ),
-      DeviceEventEmitter.addListener('onCheckConnection', onCheckConnection),
+      eventEmitter.addListener('onCheckConnection', onCheckConnection),
     ];
   }
 

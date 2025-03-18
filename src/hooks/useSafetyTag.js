@@ -1,5 +1,4 @@
 import {
-  Alert,
   DeviceEventEmitter,
   NativeModules,
   PermissionsAndroid,
@@ -53,7 +52,7 @@ const useSafetyTag = () => {
         'startAccelerometerAxisAlignmentWithForegroundService status: ',
         result,
       );
-      Alert.alert('Axis Alignment', 'Successfully started axis alignment');
+      //Alert.alert('Axis Alignment', 'Successfully started axis alignment');
       console.log('Successfully started axis alignment');
     } catch (error) {
       console.error('Error starting axis alignment:', error);
@@ -388,10 +387,10 @@ const useSafetyTag = () => {
     try {
       await SafetyTagModule.disableAccelerometerDataStream();
       console.log('Successfully disabled accelerometer data stream');
-      Alert.alert(
-        'Accelerometer stream',
-        'Successfully disabled accelerometer data stream',
-      );
+      // Alert.alert(
+      //   'Accelerometer stream',
+      //   'Successfully disabled accelerometer data stream',
+      // );
     } catch (error) {
       console.error('Error disabling accelerometer data stream:', error);
     }
@@ -418,7 +417,7 @@ const useSafetyTag = () => {
   const stopAxisAlignment = async () => {
     try {
       await SafetyTagModule.stopAxisAlignment();
-      Alert.alert('Axis Alignment', 'Successfully stopped axis alignment');
+      //Alert.alert('Axis Alignment', 'Successfully stopped axis alignment');
       console.log('Successfully stopped axis alignment');
     } catch (error) {
       console.error('Error stopping axis alignment:', error);

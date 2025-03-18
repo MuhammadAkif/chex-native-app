@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View, Text, StyleSheet, Alert} from 'react-native';
 import {DeviceEventEmitter} from 'react-native';
 import {
@@ -10,10 +10,17 @@ import useSafetyTag from '../../hooks/useSafetyTag';
 import {colors} from '../../Assets/Styles';
 import {PrimaryGradientButton} from '../index';
 import {PhaseList, InstructionsPanel} from './AlignmentComponents';
+import InfoModal from '../PopUpModals/InfoModal';
 
 const {black, gray} = colors;
+const infoActiveInitialState = {
+  isVisible: false,
+  title: '',
+  description: '',
+};
 
 const AccelerometerDisplay = () => {
+  const [infoActive, setInfoActive] = useState(infoActiveInitialState);
   const [accelerometerData, setAccelerometerData] = useState(null);
   const [alignmentStatus, setAlignmentStatus] = useState('Not Started');
   const {
@@ -50,22 +57,24 @@ const AccelerometerDisplay = () => {
     const alignmentSubscription = DeviceEventEmitter.addListener(
       'onAxisAlignmentStateChange',
       event => {
-        //Need to work on this
-        console.log('current step', event.step);
-        console.log('prev step', alignmentDetails.step);
-        if (event.step !== alignmentDetails.step) {
-          setAlignmentDetails(event);
-          console.log('alignment state changed to:', event.step);
-        }
+        setAlignmentDetails(prevState =>
+          prevState.step !== event.step ? event : prevState,
+        );
+        console.log('AxisAlignmentProcessState', event);
+        console.log('alignment state changed to:', event.step);
       },
     );
 
     const successSubscription = DeviceEventEmitter.addListener(
       'onAxisAlignmentSuccess',
       async () => {
-        setAlignmentDetails(prev => ({...prev, step: 'PROCESS_COMPLETED'}));
-        Alert.alert('Success', 'Axis alignment completed successfully');
-        await stopAxisAlignment();
+        try {
+          await stopAxisAlignment();
+          setAlignmentDetails(prev => ({...prev, step: 'PROCESS_COMPLETED'}));
+          Alert.alert('Success', 'Axis alignment completed successfully');
+        } catch (err) {
+          console.log(err);
+        }
       },
     );
 
@@ -73,7 +82,15 @@ const AccelerometerDisplay = () => {
       'onAxisAlignmentStopped',
       event => {
         setAlignmentStatus('Started');
-        Alert.alert('Stopped', `Alignment stopped: ${event.reason}`);
+        const body = {
+          isVisible: true,
+          title: 'Stopped',
+          description:
+            event.reason === 'BY_REQUEST'
+              ? 'Alignment process was stopped as per request'
+              : `Alignment stopped: ${event.reason}`,
+        };
+        !infoActive.isVisible && setInfoActive(body);
       },
     );
 
@@ -100,6 +117,12 @@ const AccelerometerDisplay = () => {
       await handleStartStream();
       setAlignmentDetails(prev => ({...prev, step: 'STARTING'}));
       await startAxisAlignment(false);
+      const body = {
+        isVisible: true,
+        title: 'Axis Alignment',
+        description: 'Successfully started axis alignment',
+      };
+      setInfoActive(body);
       setAlignmentStatus('Started');
     } catch (error) {
       console.error('Error starting alignment:', error);
@@ -116,6 +139,10 @@ const AccelerometerDisplay = () => {
       console.error('Error stopping alignment:', error);
       Alert.alert('Error', 'Failed to stop alignment');
     }
+  };
+
+  const onInfoModalOkPress = () => {
+    setInfoActive(infoActiveInitialState);
   };
 
   return (
@@ -172,6 +199,12 @@ const AccelerometerDisplay = () => {
           />
         </View>
       </View>
+      <InfoModal
+        isVisible={infoActive.isVisible}
+        onOkPress={onInfoModalOkPress}
+        title={infoActive.title}
+        description={infoActive.description}
+      />
     </View>
   );
 };

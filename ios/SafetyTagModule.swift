@@ -30,6 +30,12 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
   private let manager = STDeviceManager.shared
   private let locationManager = CLLocationManager()
   
+  // MARK: - Required Methods
+  @objc
+  static override func requiresMainQueueSetup() -> Bool {
+    return true
+  }
+  
   // MARK: - Initialization
   override init() {
     super.init()
