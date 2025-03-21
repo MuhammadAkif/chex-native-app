@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Alert} from 'react-native';
 import {DeviceEventEmitter} from 'react-native';
 import {
@@ -250,114 +250,11 @@ const styles = StyleSheet.create({
     borderRadius: wp('2%'),
     backgroundColor: '#f0f0f0',
   },
-  instructions: {
-    gap: wp('0.6%'),
-    padding: wp('3%'),
-  },
-  instructionTitle: {
-    fontWeight: 'bold',
-  },
-  textColor: {
-    color: black,
-  },
-  warningContainer: {
-    backgroundColor: '#FFF3CD',
-    padding: wp('3%'),
-    borderRadius: 5,
-    marginVertical: wp('2%'),
-  },
-  warningText: {
-    color: '#856404',
-    fontSize: hp('1.8%'),
-  },
-  alignmentValues: {
-    marginTop: wp('2%'),
-    gap: wp('0.6%'),
-  },
   phaseListContainer: {
     marginVertical: wp('2%'),
     backgroundColor: '#fff',
     borderRadius: 8,
     padding: wp('2%'),
-  },
-  phaseListTitle: {
-    fontSize: hp('2%'),
-    fontWeight: 'bold',
-    color: black,
-    marginBottom: wp('2%'),
-  },
-  phaseItem: {
-    marginBottom: wp('2%'),
-  },
-  phaseHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: wp('1%'),
-  },
-  phaseStatus: {
-    width: wp('6%'),
-    height: wp('6%'),
-    borderRadius: wp('3%'),
-    backgroundColor: '#e0e0e0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: wp('2%'),
-  },
-  completed: {
-    backgroundColor: '#4CAF50',
-  },
-  current: {
-    backgroundColor: '#2196F3',
-  },
-  pending: {
-    backgroundColor: '#e0e0e0',
-  },
-  statusIcon: {
-    color: '#fff',
-    fontSize: hp('1.8%'),
-    fontWeight: 'bold',
-  },
-  phaseTitle: {
-    fontSize: hp('1.8%'),
-    color: black,
-  },
-  currentPhaseTitle: {
-    fontWeight: 'bold',
-  },
-  phaseDescription: {
-    fontSize: hp('1.6%'),
-    color: '#666',
-    marginLeft: wp('8%'),
-  },
-  instructionsPanel: {
-    backgroundColor: '#E3F2FD',
-    padding: wp('3%'),
-    borderRadius: 8,
-    marginVertical: wp('2%'),
-  },
-  instructionDescription: {
-    fontSize: hp('1.8%'),
-    color: '#37474F',
-    marginBottom: wp('2%'),
-  },
-  instructionsList: {
-    gap: wp('1%'),
-  },
-  instructionItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    paddingRight: wp('2%'),
-  },
-  bulletPoint: {
-    fontSize: hp('1.8%'),
-    color: '#1976D2',
-    marginRight: wp('2%'),
-    marginTop: -wp('0.5%'),
-  },
-  instructionText: {
-    fontSize: hp('1.8%'),
-    color: '#37474F',
-    flex: 1,
   },
 });
 

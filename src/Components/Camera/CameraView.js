@@ -6,6 +6,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {useCameraPermissions} from '../../hooks/useCameraPermissions';
 import {useCameraCapture} from '../../hooks/useCameraCapture';
@@ -14,6 +15,7 @@ import {fallBack} from '../../Utils';
 import {colors} from '../../Assets/Styles';
 import {getErrorMessage} from '../../Utils/helpers';
 import {RESULTS} from 'react-native-permissions';
+import {setFlashMode} from '../../Store/Actions';
 
 const {white, cobaltBlueMedium} = colors;
 
@@ -40,6 +42,8 @@ const CameraView = ({
   onError = fallBack,
   children,
 }) => {
+  const dispatch = useDispatch();
+  const {flashMode} = useSelector(state => state.newInspection);
   const isFocused = useIsFocused();
   const cameraRef = useRef(null);
   const hasPermission = useCameraPermissions();
@@ -79,7 +83,7 @@ const CameraView = ({
       if (!cameraRef.current) {
         throw new Error('Camera not initialized');
       }
-      const photo = await capturePhoto();
+      const photo = await capturePhoto({flash: flashMode});
       if (!photo) {
         throw new Error('Failed to capture photo');
       }
@@ -127,7 +131,6 @@ const CameraView = ({
    * @param {string} context - Context where the error occurred
    */
   const handleCameraError = (error, context) => {
-    debugger;
     const errorMessage = getErrorMessage(error?.code);
     setCameraError(errorMessage);
     Alert.alert(
@@ -156,6 +159,12 @@ const CameraView = ({
   const handleSettings = useCallback(async () => {
     await Linking.openSettings();
   }, []);
+
+  const onFlashModeChange = mode => {
+    if (flashMode !== mode) {
+      dispatch(setFlashMode(mode));
+    }
+  };
 
   // Handle device initialization errors
   if (!device) {
@@ -191,7 +200,11 @@ const CameraView = ({
 
   return (
     <View style={styles.container}>
-      <CameraHeader onClose={onBackPress} />
+      <CameraHeader
+        onClose={onBackPress}
+        onFlashModeChange={onFlashModeChange}
+        flashMode={flashMode}
+      />
       <Camera
         ref={cameraRef}
         style={StyleSheet.absoluteFill}

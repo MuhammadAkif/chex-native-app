@@ -110,6 +110,7 @@ const initialState = {
   vehicle_Type: 'existing',
   variant: 0,
   fileDetails: null,
+  flashMode: 'off',
 };
 const {
   UPDATE_VEHICLE_IMAGE,
@@ -128,6 +129,7 @@ const {
   CATEGORY_VARIANT,
   FILE_DETAILS,
   CLEAR_NEW_INSPECTION,
+  FLASH_MODE,
 } = Types;
 const newInspectionReducer = (state = initialState, action) => {
   const {type, payload} = action;
@@ -218,6 +220,11 @@ const newInspectionReducer = (state = initialState, action) => {
       return {
         ...state,
         fileDetails: payload,
+      };
+    case FLASH_MODE:
+      return {
+        ...state,
+        flashMode: payload,
       };
     case CLEAR_NEW_INSPECTION:
       return initialState;

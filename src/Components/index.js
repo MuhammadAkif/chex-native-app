@@ -73,6 +73,8 @@ import CustomCamera from './CustomCamera';
 import CameraView from './Camera/CameraView';
 import CameraHeader from './Camera/CameraHeader';
 import SafetyTagDeviceInfo from './SafetyTagDeviceInfo';
+import FlashModeToggle from './Camera/FlashMode/FlashModeToggle';
+import TouchableButton from './TouchableView';
 
 export {
   BackgroundImageView,
@@ -150,4 +152,6 @@ export {
   CameraView,
   CameraHeader,
   SafetyTagDeviceInfo,
+  FlashModeToggle,
+  TouchableButton,
 };

@@ -6,14 +6,12 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
-  DeviceDeviceEventEmitter,
   DeviceEventEmitter,
+  NativeModules,
 } from 'react-native';
 import {SafetyTagBeaconTest} from './SafetyTagBeaconTest';
-import {NativeDeviceEventEmitter, NativeModules} from 'react-native';
 
 const {SafetyTagModule} = NativeModules;
-const eventEmitter = new NativeDeviceEventEmitter(SafetyTagModule);
 
 export const SafetyTagBeaconTestScreen = () => {
   const [isScanning, setIsScanning] = useState(false);
@@ -46,12 +44,12 @@ export const SafetyTagBeaconTestScreen = () => {
     ];
 
     // Check if we already have a connected device
-    checkConnectedDevice();
+    checkConnectedDevice().then();
 
     return () => {
       subscriptions.forEach(subscription => subscription.remove());
       // Stop scanning when component unmounts
-      stopScan();
+      stopScan().then();
     };
   }, []);
 

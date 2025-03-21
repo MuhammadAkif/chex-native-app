@@ -28,11 +28,16 @@ export const useCameraCapture = cameraRef => {
    * Captures a photo using the camera.
    * @returns {Promise<Object>} The captured photo data.
    */
-  const capturePhoto = async () => {
+  const capturePhoto = async ({
+    qualityPrioritization = 'quality',
+    enableShutterSound = false,
+    flash = 'on',
+  }) => {
     if (cameraRef.current) {
       return await cameraRef.current.takePhoto({
-        qualityPrioritization: 'quality',
-        enableShutterSound: false,
+        qualityPrioritization,
+        enableShutterSound,
+        flash,
       });
     }
   };

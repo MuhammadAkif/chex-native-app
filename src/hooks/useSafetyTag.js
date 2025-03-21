@@ -1,21 +1,42 @@
+import {useEffect} from 'react';
 import {
   DeviceEventEmitter,
   NativeModules,
   PermissionsAndroid,
 } from 'react-native';
-import {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
 
 import {requestPermissions} from '../Utils/helpers';
-import useCrashDetection from './useCrashDetection';
+import {
+  addCrashData,
+  updateCrashStatus,
+  addThresholdEvent,
+  updateCrashConfig,
+  setCrashError,
+} from '../Store/Actions';
 
 const {SafetyTagModule} = NativeModules;
 
 const useSafetyTag = () => {
-  const crashDetection = useCrashDetection();
+  const dispatch = useDispatch();
   useEffect(() => {
     requestPermissions().then();
     SafetyTagModule.requestNotificationPermission();
+    const crashDataSubscription = DeviceEventEmitter.addListener(
+      'onCrashDataReceived',
+      onCrashDataReceived,
+    );
+
+    const crashThresholdSubscription = DeviceEventEmitter.addListener(
+      'onCrashThresholdEvent',
+      onCrashThresholdEvent,
+    );
     SafetyTagModule.setLogLevel('DEBUG');
+
+    return () => {
+      crashDataSubscription.remove();
+      crashThresholdSubscription.remove();
+    };
   }, []);
 
   const requestLocationPermission = async () => {
@@ -36,6 +57,33 @@ const useSafetyTag = () => {
       return false;
     }
   };
+
+  function onCrashDataReceived(event) {
+    console.log('crash-data', event);
+    try {
+      const crashData = JSON.parse(event.crashData);
+      dispatch(addCrashData(crashData));
+      dispatch(
+        updateCrashStatus(
+          crashData.hasCompleteData ? 'COMPLETE_DATA' : 'PARTIAL_DATA',
+        ),
+      );
+    } catch (error) {
+      console.error('Error parsing crash data:', error);
+      dispatch(setCrashError('Error parsing crash data'));
+    }
+  }
+
+  function onCrashThresholdEvent(event) {
+    console.log('crash-event', event);
+    try {
+      const thresholdEvent = JSON.parse(event.crashThresholdEvent);
+      dispatch(addThresholdEvent(thresholdEvent));
+    } catch (error) {
+      console.error('Error parsing threshold event:', error);
+      dispatch(setCrashError('Error parsing threshold event'));
+    }
+  }
 
   const startAxisAlignment = async (startFromScratch = false) => {
     try {
@@ -362,6 +410,7 @@ const useSafetyTag = () => {
       console.log('Crash configuration updated successfully.');
     } catch (error) {
       console.error('Failed to configure crash settings:', error);
+      dispatch(setCrashError('Failed to configure crash settings'));
     }
   };
 

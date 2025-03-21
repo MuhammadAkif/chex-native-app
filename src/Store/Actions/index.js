@@ -15,6 +15,7 @@ import {
   setLicensePlateNumber,
   clearInspectionImages,
   setCompanyId,
+  setFlashMode,
 } from './NewInspectionAction';
 import {signIn, signOut, sessionExpired} from './AuthAction';
 import {
@@ -28,9 +29,11 @@ import {
 } from './InspectionInProgressAction';
 import {setLoading, showToast, hideToast} from './UIActions';
 import {
-  addCrashEvent,
+  addCrashData,
+  updateCrashStatus,
   addThresholdEvent,
   updateCrashConfig,
+  setCrashError,
   clearCrashEvents,
 } from './CrashDetectionActions';
 
@@ -63,8 +66,11 @@ export {
   setCompanyId,
   sessionExpired,
   // Crash Detection Actions
-  addCrashEvent,
+  addCrashData,
+  updateCrashStatus,
   addThresholdEvent,
   updateCrashConfig,
+  setCrashError,
   clearCrashEvents,
+  setFlashMode,
 };

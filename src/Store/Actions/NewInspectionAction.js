@@ -22,6 +22,7 @@ const {
   LICENSE_PLATE_NUMBER,
   CLEAR_INSPECTION_IMAGES,
   COMPANY_ID,
+  FLASH_MODE,
 } = Types;
 
 const itemsImagePayload = (item = '', group = '', uri = '', id = 0) => {
@@ -139,4 +140,8 @@ export const clearInspectionImages = () => ({
 export const setCompanyId = companyId => ({
   type: COMPANY_ID,
   payload: companyId,
+});
+export const setFlashMode = (mode = 'off') => ({
+  type: FLASH_MODE,
+  payload: mode,
 });

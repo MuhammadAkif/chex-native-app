@@ -5,13 +5,14 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+
 import {colors} from '../../Assets/Styles';
 
-const {black, white, gray, brightGreen} = colors;
+const {black, white, gray, brightGreen, red} = colors;
 
-const StatBox = ({label, value, unit}) => (
+const StatBox = ({label, value, unit, color}) => (
   <View style={styles.statBox}>
-    <Text style={styles.statValue}>
+    <Text style={[styles.statValue, color && {color}]}>
       {value}
       <Text style={styles.statUnit}>{unit}</Text>
     </Text>
@@ -20,39 +21,46 @@ const StatBox = ({label, value, unit}) => (
 );
 
 const CrashEventDisplay = () => {
-  const {crashEvents} = useSelector(state => state.crashDetection);
-  
+  const {crashEvents, thresholdEvents, error} = useSelector(
+    state => state.crashDetection,
+  );
+
   // Calculate statistics
-  const totalCrashes = crashEvents?.length || 0;
-  const averageForce = crashEvents?.length
-    ? (
-        crashEvents.reduce((sum, event) => sum + event.impactForce, 0) /
-        crashEvents.length
+  const totalCrashes = crashEvents?.data?.length || 0;
+  const totalThresholds = thresholdEvents?.length || 0;
+
+  // Get the most recent crash event
+  const latestCrash = crashEvents?.data?.[0];
+  const maxAcceleration = latestCrash
+    ? Math.max(
+        ...latestCrash.accelerometerValues.map(v =>
+          Math.sqrt(
+            v.xAxisMg * v.xAxisMg +
+              v.yAxisMg * v.yAxisMg +
+              v.zAxisMg * v.zAxisMg,
+          ),
+        ),
       ).toFixed(1)
-    : 0;
-  const maxForce = crashEvents?.length
-    ? Math.max(...crashEvents.map(event => event.impactForce)).toFixed(1)
     : 0;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Crash Statistics</Text>
+      <Text style={styles.title}>Crash Detection</Text>
+      {error && <Text style={styles.error}>{error}</Text>}
       <View style={styles.statsContainer}>
         <StatBox
-          label="Total Events"
+          label="Crash Events"
           value={totalCrashes}
           unit=""
+          color={totalCrashes > 0 ? red : undefined}
         />
         <StatBox
-          label="Avg Force"
-          value={averageForce}
-          unit="g"
+          label="Threshold Events"
+          value={totalThresholds}
+          unit=""
+          color={totalThresholds > 0 ? brightGreen : undefined}
         />
-        <StatBox
-          label="Max Force"
-          value={maxForce}
-          unit="g"
-        />
+        <StatBox label="Max G-Force" value={maxAcceleration} unit="g" />
       </View>
     </View>
   );
@@ -94,7 +102,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: hp('3%'),
     fontWeight: 'bold',
-    color: brightGreen,
+    color: black,
     marginBottom: wp('1%'),
   },
   statUnit: {
@@ -106,6 +114,28 @@ const styles = StyleSheet.create({
     color: gray,
     textAlign: 'center',
   },
+  error: {
+    color: red,
+    fontSize: hp('1.8%'),
+    marginBottom: wp('2%'),
+    textAlign: 'center',
+  },
+  configContainer: {
+    marginTop: wp('3%'),
+    paddingTop: wp('3%'),
+    borderTopWidth: 1,
+    borderTopColor: gray,
+  },
+  configTitle: {
+    fontSize: hp('1.8%'),
+    fontWeight: 'bold',
+    color: black,
+    marginBottom: wp('1%'),
+  },
+  configText: {
+    fontSize: hp('1.6%'),
+    color: gray,
+  },
 });
 
-export default CrashEventDisplay; 
+export default CrashEventDisplay;

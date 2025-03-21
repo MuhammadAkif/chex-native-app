@@ -1,33 +1,50 @@
+import {CrashDataStatus, DEFAULT_CONFIG} from '../../Constants/CrashDetection';
 import {Types} from '../Types';
 
+const {COMPLETE_DATA} = CrashDataStatus;
+
 const {
-  ADD_CRASH_EVENT,
+  ADD_CRASH_DATA,
+  UPDATE_CRASH_STATUS,
   ADD_THRESHOLD_EVENT,
   UPDATE_CRASH_CONFIG,
+  SET_CRASH_ERROR,
   CLEAR_CRASH_EVENTS,
 } = Types;
 
 const initialState = {
-  crashEvents: [], // List of crash data events
-  thresholdEvents: [], // List of threshold events
-  config: {
-    averagingWindowSize: 5,
-    thresholdXy: 500,
-    thresholdXyz: 1300,
-    surpassingThresholds: 2,
+  crashEvents: {
+    data: [],
+    status: COMPLETE_DATA,
   },
+  thresholdEvents: [],
+  config: DEFAULT_CONFIG,
+  error: null,
 };
 
 const crashDetectionReducer = (state = initialState, action) => {
   const {type, payload} = action;
 
   switch (type) {
-    case ADD_CRASH_EVENT:
+    case ADD_CRASH_DATA:
       return {
         ...state,
-        crashEvents: [...state.crashEvents, payload].sort(
-          (a, b) => b.timestamp - a.timestamp,
-        ),
+        crashEvents: {
+          ...state.crashEvents,
+          data: [...state.crashEvents.data, payload].sort(
+            (a, b) => b.timestamp - a.timestamp,
+          ),
+        },
+        error: null,
+      };
+
+    case UPDATE_CRASH_STATUS:
+      return {
+        ...state,
+        crashEvents: {
+          ...state.crashEvents,
+          status: payload,
+        },
       };
 
     case ADD_THRESHOLD_EVENT:
@@ -36,6 +53,7 @@ const crashDetectionReducer = (state = initialState, action) => {
         thresholdEvents: [...state.thresholdEvents, payload].sort(
           (a, b) => b.timestampUnixMs - a.timestampUnixMs,
         ),
+        error: null,
       };
 
     case UPDATE_CRASH_CONFIG:
@@ -45,13 +63,24 @@ const crashDetectionReducer = (state = initialState, action) => {
           ...state.config,
           ...payload,
         },
+        error: null,
+      };
+
+    case SET_CRASH_ERROR:
+      return {
+        ...state,
+        error: payload,
       };
 
     case CLEAR_CRASH_EVENTS:
       return {
         ...state,
-        crashEvents: [],
+        crashEvents: {
+          data: [],
+          status: COMPLETE_DATA,
+        },
         thresholdEvents: [],
+        error: null,
       };
 
     default:
@@ -59,4 +88,4 @@ const crashDetectionReducer = (state = initialState, action) => {
   }
 };
 
-export default crashDetectionReducer; 
+export default crashDetectionReducer;

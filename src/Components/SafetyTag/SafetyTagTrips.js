@@ -6,12 +6,18 @@ const formatDuration = (startDate, endDate) => {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const secs = Math.floor(seconds % 60);
-  
+
   const parts = [];
-  if (hours > 0) parts.push(`${hours}h`);
-  if (minutes > 0) parts.push(`${minutes}m`);
-  if (secs > 0 || parts.length === 0) parts.push(`${secs}s`);
-  
+  if (hours > 0) {
+    parts.push(`${hours}h`);
+  }
+  if (minutes > 0) {
+    parts.push(`${minutes}m`);
+  }
+  if (secs > 0 || parts.length === 0) {
+    parts.push(`${secs}s`);
+  }
+
   return parts.join(' ');
 };
 
@@ -25,15 +31,11 @@ const TripItem = ({trip}) => {
       <View style={styles.tripDetails}>
         <View style={styles.detailRow}>
           <Text style={styles.label}>Start:</Text>
-          <Text style={styles.value}>
-            {startDate.toLocaleString()}
-          </Text>
+          <Text style={styles.value}>{startDate.toLocaleString()}</Text>
         </View>
         <View style={styles.detailRow}>
           <Text style={styles.label}>End:</Text>
-          <Text style={styles.value}>
-            {endDate.toLocaleString()}
-          </Text>
+          <Text style={styles.value}>{endDate.toLocaleString()}</Text>
         </View>
         <View style={styles.detailRow}>
           <Text style={styles.label}>Duration:</Text>
@@ -41,10 +43,11 @@ const TripItem = ({trip}) => {
         </View>
         <View style={styles.detailRow}>
           <Text style={styles.label}>Connection:</Text>
-          <Text style={[
-            styles.value,
-            !trip.connectedDuringTrip && styles.warningText
-          ]}>
+          <Text
+            style={[
+              styles.value,
+              !trip.connectedDuringTrip && styles.warningText,
+            ]}>
             {trip.connectedDuringTrip ? 'Connected' : 'Disconnected'}
           </Text>
         </View>
@@ -76,9 +79,7 @@ const SafetyTagTrips = ({trips = [], isLoading = false, deviceName = ''}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Recorded Trips</Text>
-      {deviceName && (
-        <Text style={styles.subtitle}>Device: {deviceName}</Text>
-      )}
+      {deviceName && <Text style={styles.subtitle}>Device: {deviceName}</Text>}
       <Text style={styles.subtitle}>Total Trips: {trips.length}</Text>
       {sortedTrips.map((trip, index) => (
         <TripItem key={index} trip={trip} />

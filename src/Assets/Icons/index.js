@@ -32,6 +32,9 @@ import Remove from './Remove';
 import Filter from './Filter';
 import Landscape from './Landscape';
 import Portrait from './Portrait';
+import FlashOn from './Flash/FlashOn';
+import FlashOff from './Flash/FlashOff';
+import FlashAuto from './Flash/FlashAuto';
 
 export {
   Check,
@@ -68,4 +71,7 @@ export {
   Filter,
   Landscape,
   Portrait,
+  FlashOn,
+  FlashOff,
+  FlashAuto,
 };
