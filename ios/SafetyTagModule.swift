@@ -29,13 +29,13 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
   private var shouldAutoConnect = true
   private let manager = STDeviceManager.shared
   private let locationManager = CLLocationManager()
-  
+
   // MARK: - Required Methods
   @objc
   static override func requiresMainQueueSetup() -> Bool {
     return true
   }
-  
+
   // MARK: - Initialization
   override init() {
     super.init()
@@ -45,16 +45,16 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
     print("[SafetyTagModule] Initialized")
     setupLocationManager()
   }
-  
+
   private func setupLocationManager() {
     locationManager.delegate = self
     locationManager.allowsBackgroundLocationUpdates = true
     locationManager.pausesLocationUpdatesAutomatically = false
-    
+
     // Request authorization
     locationManager.requestAlwaysAuthorization()
   }
-  
+
   // MARK: - RCTEventEmitter Required Methods
   override func startObserving() {
     hasListeners = true
@@ -63,12 +63,12 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
     crashEvents()
     observeiBeaconEvents()
   }
-  
+
   override func stopObserving() {
     hasListeners = false
     cancellables.removeAll()
   }
-  
+
   override func supportedEvents() -> [String]! {
     return [
       "onDeviceDiscovered",
@@ -99,18 +99,24 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       "onRegionEnter",
       "onRegionExit",
       "onDeviceConnectionStateChange",
-      "onBackgroundOperationStatus"
+      "onBackgroundOperationStatus",
+      "onAxisAlignmentStatusCheck",
+      "onStoredAxisAlignmentCheck",
+      "onDeviceMonitoringStatus",
+      "onAutoConnectStatus",
+      "onCrashThreshold",
+      "onCrashEvent"
     ]
   }
-  
+
   // MARK: - Device Connection Methods
   @objc func startScan(_ autoConnect: Bool) {
     print("[SafetyTagModule] Start scanning for SafetyTag devices...")
-    
+
     // Reset connection state when starting a new scan
     isConnecting = false
     connectedDeviceId = nil
-    
+
     do {
       try STDeviceManager.shared.connection.startScan(autoConnect: true)
       self.shouldAutoConnect = autoConnect
@@ -119,28 +125,28 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       print("[SafetyTagModule] Failed to start scan: \(error.localizedDescription)")
     }
   }
-  
+
   @objc func stopScan() {
     var isScanning = STDeviceManager.shared.connection.isScanning()
     if isScanning {
       STDeviceManager.shared.connection.stopScan()
     }
   }
-  
+
   @objc func connectDevice(_ deviceId: String) {
     print("[SafetyTagModule] Connecting to device: \(deviceId)")
     guard let uuid = UUID(uuidString: deviceId) else {
       print("[SafetyTagModule] Invalid device ID format")
       return
     }
-    
+
     // Use the new connect method with UUID and name
     STDeviceManager.shared.connection.connect(with: uuid, name: "SafetyTag")
   }
-  
+
   @objc func disconnectDevice() {
     print("[SafetyTagModule] Disconnecting SafetyTag device...")
-    
+
     do {
       try STDeviceManager.shared.connection.disconnect()
       print("[SafetyTagModule] Disconnected device successfully")
@@ -148,31 +154,31 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       print("[SafetyTagModule] Failed to disconnect device: \(error.localizedDescription)")
     }
   }
-  
+
   @objc func checkConnection() {
     print("[SafetyTagModule] Checking device connection...")
-    
+
     do {
       let isConnected = STDeviceManager.shared.connection.isConnected()
       print("[SafetyTagModule] Device connection status: \(isConnected ? "Connected" : "Not Connected")")
-      
+
       if self.hasListeners == true {
         self.sendEvent(withName: "onCheckConnection", body: [
           "isConnected": isConnected
         ])
       }
-      
+
     } catch {
       print("[SafetyTagModule] Failed to check device connection: \(error.localizedDescription)")
     }
   }
-  
+
   @objc func getConnectedDevice() {
     print("[SafetyTagModule] Getting connected SafetyTag device...")
-    
+
     if let device = STDeviceManager.shared.connection.getConnectedDevice() {
       print("[SafetyTagModule] Got successfully Connected device information:", device)
-      
+
       if self.hasListeners {
         self.sendEvent(withName: "onGetConnectedDevice", body: [
           "id": device.id.uuidString,
@@ -192,17 +198,27 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       }
     }
   }
-  
+
   private func connectToTag(device: STDevice) {
     print("[SafetyTagModule] Attempting to connect to device: \(device)")
     isConnecting = true
+
+    // Send connecting state event
+    if self.hasListeners {
+        self.sendEvent(withName: "onDeviceConnectionStateChange", body: [
+            "state": "connecting",
+            "deviceId": device.id.uuidString,
+            "deviceName": device.name
+        ])
+    }
+
     STDeviceManager.shared.connection.connect(device)
   }
-  
+
   // MARK: - Trip Management Methods
   @objc func getTrips() {
     //        print("[SafetyTagModule] Getting trips...")
-    
+
     do {
       try STDeviceManager.shared.trips.getTrips()
       SafetyTagApi.Event.TripsDetection.didReceiveTrips
@@ -228,10 +244,10 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       }
     }
   }
-  
+
   @objc func getTripsWithFraudDetection() {
     //        print("[SafetyTagModule] Getting trips with fraud detection...")
-    
+
     do {
       try STDeviceManager.shared.trips.getTripsDataWithFraudDetection()
       SafetyTagApi.Event.TripsDetection.didReceiveTrips
@@ -258,7 +274,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       }
     }
   }
-  
+
   private func observeTripsData() {
     SafetyTagApi.Event.TripsDetection.didReceiveTrips
       .receive(on: DispatchQueue.main)
@@ -286,7 +302,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
               "connectedDuringTrip": trip.connectedDuringTrip ?? false
             ]
           }
-          
+
           self?.sendEvent(withName: "onTripsReceived", body: [
             "trips": formattedTrips,
             "deviceId": device?.id.uuidString ?? "",
@@ -297,14 +313,14 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       }
       .store(in: &cancellables)
   }
-  
+
   // MARK: - Accelerometer Methods
   @objc func enableAccelerometerDataStream() {
     print("[SafetyTagModule] Enabling Accelerometer Data Stream...")
-    
+
     // Clear any existing subscriptions before creating a new one
     accelerometerPublisher.removeAll()
-    
+
     STDeviceManager.shared.accelerometer
       .accelerometerPublisher()
       .sink(receiveCompletion: { completion in
@@ -332,51 +348,58 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       })
       .store(in: &accelerometerPublisher)
   }
-  
+
   @objc func disableAccelerometerDataStream() {
     print("[SafetyTagModule] Disabling Accelerometer Data Stream...")
-    
+
     // Cancel all stored subscriptions
     accelerometerPublisher.removeAll()
   }
-  
-  @objc func isAccelerometerDataStreamEnabled(_ resolve: @escaping RCTPromiseResolveBlock,
-                                              rejecter reject: @escaping RCTPromiseRejectBlock) {
+
+  @objc func isAccelerometerDataStreamEnabled() {
     print("[SafetyTagModule] Checking Is Accelerometer Data Stream Enabled...")
     STDeviceManager.shared.accelerometer
       .isAccelerometerStreamActivePublisher()
       .sink { completion in
         switch completion {
         case .failure(let error):
-          reject("ERROR", "Failed to check accelerometer status: \(error.localizedDescription)", error)
+          if self.hasListeners {
+              self.sendEvent(withName: "onAccelerometerError", body: [
+                  "error": error.localizedDescription
+              ])
+          }
         case .finished:
           break
         }
       } receiveValue: { isEnabled in
         print("[SafetyTagModule] Accelerometer stream enabled:", isEnabled)
-        resolve(isEnabled)
+        if self.hasListeners {
+            self.sendEvent(withName: "onAccelerometerStreamStatus", body: [
+                "isEnabled": isEnabled
+            ])
+        }
       }
       .store(in: &accelerometerIsActivePublisher)
   }
-  
+
   // MARK: - Axis Alignment Methods
   @objc func startAxisAlignment(_ resumeIfAvailable: Bool) {
     print("[SafetyTagModule] Starting axis alignment...")
-    
+
     // 1. First ensure accelerometer stream is active
     if accelerometerPublisher.isEmpty {
       print("[SafetyTagModule] Initializing accelerometer stream...")
       enableAccelerometerDataStream()
     }
-    
+
     // 2. Clear any existing subscriptions to avoid duplicates
     cancellables.removeAll()
-    
+
     do {
       // 3. Start the axis alignment process
       print("[SafetyTagModule] Initiating accelerometer axis alignment...")
       try STDeviceManager.shared.axisAlignment.startAccelerometerAxisAlignment(resumeIfAvailable: true)
-      
+
       // 4. Monitor alignment state
       SafetyTagApi.Event.AxisAlignment.alignmentState
         .receive(on: DispatchQueue.main)
@@ -388,7 +411,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
           print("[SafetyTagModule] Alignment State Update  - Z-Axis State: \(String(describing: state.state.zAligmentState))")
           print("[SafetyTagModule] Alignment State Update  - X-Axis State: \(String(describing: state.state.xAligmentState))")
           print("[SafetyTagModule] Alignment State Update  - Valid Vehicle State: \(state.state.validVehicleState)")
-          
+
           if self.hasListeners {
             let stateData: [String: Any] = [
               "phase": String(describing: state.state.phase),
@@ -402,7 +425,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
           }
         }
         .store(in: &cancellables)
-      
+
       // 5. Monitor vehicle state
       SafetyTagApi.Event.AxisAlignment.vehicleState
         .receive(on: DispatchQueue.main)
@@ -412,7 +435,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
           print("[SafetyTagModule] Vehicle State Update:")
           print("  - Valid State: \(vehicleState.validVehicleState)")
           print("  - Has Valid Intervals: \(!vehicleState.validVehicleStateIntervals.isEmpty)")
-          
+
           if self.hasListeners {
             let stateData: [String: Any] = [
               "validVehicleState": vehicleState.validVehicleState,
@@ -422,21 +445,21 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
           }
         }
         .store(in: &cancellables)
-      
+
       // 6. Monitor alignment data
       SafetyTagApi.Event.AxisAlignment.didReceiveAlignmentData
         .receive(on: DispatchQueue.main)
         .sink { [weak self] device, result in
           guard let self = self else { return }
           print("[SafetyTagModule] Alignment Data Update:", result)
-          
+
           switch result {
           case .success(let alignment):
             print("[SafetyTagModule] Alignment Data Update - Status: \(alignment)")
             print("[SafetyTagModule] Alignment Data Update - Status: \(alignment.status)")
             print("[SafetyTagModule] Alignment Data Update  - Theta: \(alignment.theta.value)")
             print("[SafetyTagModule] Alignment Data Update  - Phi: \(alignment.phi.value)")
-            
+
             if self.hasListeners {
               let alignmentData: [String: Any] = [
                 "status": String(describing: alignment.status),
@@ -445,7 +468,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
               ]
               self.sendEvent(withName: "onAxisAlignmentData", body: alignmentData)
             }
-            
+
           case .failure(let error):
             print("  - Error: \(error.localizedDescription)")
             if self.hasListeners {
@@ -456,7 +479,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
           }
         }
         .store(in: &cancellables)
-      
+
       // 7. Monitor completion
       SafetyTagApi.Event.AxisAlignment.onAxisAlignmentFinished
         .receive(on: DispatchQueue.main)
@@ -467,7 +490,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
           if let error = error {
             print("  - Error: \(error.localizedDescription)")
           }
-          
+
           if self.hasListeners {
             self.sendEvent(withName: "onAxisAlignmentFinished", body: [
               "success": error == nil,
@@ -476,7 +499,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
           }
         }
         .store(in: &cancellables)
-      
+
     } catch {
       print("[SafetyTagModule] Failed to start axis alignment:")
       print("  - Error: \(error.localizedDescription)")
@@ -487,7 +510,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       }
     }
   }
-  
+
   @objc func stopAxisAlignment() {
     print("[SafetyTagModule] Stopping axis alignment...")
     do {
@@ -499,65 +522,86 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       print("[SafetyTagModule] Failed to stop axis alignment:", error)
     }
   }
-  
-  @objc func checkAxisAlignmentStatus(_ resolve: @escaping RCTPromiseResolveBlock,
-                                      rejecter reject: @escaping RCTPromiseRejectBlock) {
+
+  @objc func checkAxisAlignmentStatus() {
     print("[SafetyTagModule] Checking axis alignment status...")
-    
+
     do {
-      let hasStored = try STDeviceManager.shared.axisAlignment.axisAlignmentStarted
-      resolve(hasStored)
+      let hasStarted = try STDeviceManager.shared.axisAlignment.axisAlignmentStarted
+      if self.hasListeners {
+        self.sendEvent(withName: "onAxisAlignmentStatusCheck", body: [
+          "hasStarted": hasStarted
+        ])
+      }
     } catch {
-      reject("ERROR", "Failed to check axis alignment status: \(error.localizedDescription)", error)
+      if self.hasListeners {
+        self.sendEvent(withName: "onAxisAlignmentStatusCheck", body: [
+          "error": error.localizedDescription
+        ])
+      }
     }
   }
-  
-  @objc func hasStoredAxisAlignment(_ resolve: RCTPromiseResolveBlock,
-                                    rejecter reject: RCTPromiseRejectBlock) {
+
+  @objc func hasStoredAxisAlignment() {
     print("[SafetyTagModule] Checking for stored axis alignment...")
-    
+
     let hasStored = STDeviceManager.shared.axisAlignment.hasStoredAxisAlignment
-    resolve(hasStored)
+    if self.hasListeners {
+      self.sendEvent(withName: "onStoredAxisAlignmentCheck", body: [
+        "hasStored": hasStored
+      ])
+    }
   }
-  
+
   @objc func removeStoredAxisAlignment() {
     print("[SafetyTagModule] Removing stored axis alignment...")
     STDeviceManager.shared.axisAlignment.removeStoredAxisAlignment()
   }
-  
+
   @objc func getAlignmentConfiguration() {
     STDeviceManager.shared.axisAlignment.getAlignmentConfiguration()
-    
+
     SafetyTagApi.Event.AxisAlignment.didReceiveAlignmentData
       .sink { device, result in
         print("[SafetyTagModule] Got Allignment Configuration... \(result)")
       }
   }
-  
+
   // MARK: - Crash Event Methods
   @objc func crashEvents() {
     SafetyTagApi.Event.Crash.onReceiveCrashThresholdEvent
       .receive(on: DispatchQueue.main)
       .sink { [weak self] _, thresholdEvent in
-        // handle the crash threshold event here.
-        print("[SafetyTagModule] Recevied crash threshold event \(String(describing: thresholdEvent))")
+        guard let self = self else { return }
+        print("[SafetyTagModule] Received crash threshold event \(String(describing: thresholdEvent))")
+        if self.hasListeners {
+          self.sendEvent(withName: "onCrashThreshold", body: [
+            "thresholdEvent": String(describing: thresholdEvent)
+          ])
+        }
       }
+      .store(in: &cancellables)
+
     SafetyTagApi.Event.Crash.onReceiveCrashEvent
       .receive(on: DispatchQueue.main)
       .sink { [weak self] _, crashData, status in
-        print("[SafetyTagModule] Recevied crash event ")
-        print("[SafetyTagModule] Recevied crash data: \(crashData)")
-        print("[SafetyTagModule] Recevied crash staus: \(status)")
-        
+        guard let self = self else { return }
+        print("[SafetyTagModule] Received crash event")
+        print("[SafetyTagModule] Received crash data: \(crashData)")
+        print("[SafetyTagModule] Received crash status: \(status)")
+
+        if self.hasListeners {
+          self.sendEvent(withName: "onCrashEvent", body: [
+            "crashData": String(describing: crashData),
+            "status": String(describing: status)
+          ])
+        }
+
         STDeviceManager.shared.configCentralManager()
-        // Some time after receiving a crash threshold event you will automatically receive the crash data here
-        // The crashdataStatus will indicate if the transmission of the data was complete or incomplete
-        // The data will be automatically deleted on the Safety Tag when the transmission was complete
-        // The data will be requested by the SDK automatically on the next connection or after the next crash threshold event if it was incomplete
-        // If an error occured during transmission of crash data, the transmission will be retried on the next connection
       }
+      .store(in: &cancellables)
   }
-  
+
   // MARK: - iBeacon Monitoring Methods
   @objc func startMonitoringDevice(_ deviceId: String, deviceName: String, iBeaconUUID: String) {
     guard let myDevice = manager.connection.getConnectedDevice(),
@@ -565,9 +609,9 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       print("[SafetyTagModule] No connected device found or missing iBeacon UUID")
       return
     }
-    
+
     print("[SafetyTagModule] Starting monitoring for device: \(myDevice)")
-    
+
     // Enable auto-reconnect for iOS 17+
     if #available(iOS 17.0, *) {
       manager.connection.autoReconnect(enabled: true,
@@ -575,7 +619,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
                                        iBeaconUUID: deviceIBeaconUUID,
                                        name: myDevice.name)
     }
-    
+
     do {
       try STiBeaconManager.shared.startMonitoring(
         iBeaconUUID: deviceIBeaconUUID,
@@ -587,7 +631,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       print("[SafetyTagModule] Failed to start monitoring: \(error.localizedDescription)")
     }
   }
-  
+
   @objc func stopMonitoringDevice(_ deviceId: String, deviceName: String, iBeaconUUID: String) {
     print("[SafetyTagModule] Stopping monitoring for device: \(deviceId)")
     STiBeaconManager.shared.stopMonitoring(
@@ -596,29 +640,34 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       id: deviceId
     )
   }
-  
+
   @objc func isDeviceBeingMonitored(_ deviceId: String,
                                     deviceName: String,
-                                    iBeaconUUID: String,
-                                    resolver: RCTPromiseResolveBlock,
-                                    rejecter: RCTPromiseRejectBlock) {
+                                    iBeaconUUID: String) {
     let isMonitored = STiBeaconManager.shared.isBeingMonitored(
       iBeaconUUID: iBeaconUUID,
       name: deviceName
     )
-    resolver(isMonitored)
+    if self.hasListeners {
+      self.sendEvent(withName: "onDeviceMonitoringStatus", body: [
+        "deviceId": deviceId,
+        "deviceName": deviceName,
+        "iBeaconUUID": iBeaconUUID,
+        "isMonitored": isMonitored
+      ])
+    }
   }
-  
+
   @objc func startMonitoringSignificantLocationChanges() {
     print("[SafetyTagModule] Starting significant location changes monitoring")
     STiBeaconManager.shared.startMonitoringSignificantLocationChanges()
   }
-  
+
   @objc func stopMonitoringSignificantLocationChanges() {
     print("[SafetyTagModule] Stopping significant location changes monitoring")
     STiBeaconManager.shared.stopMonitoringSignificantLocationChanges()
   }
-  
+
   // MARK: - Auto Connect Methods
   @objc func enableAutoConnect(_ deviceId: String, deviceName: String, iBeaconUUID: String) {
     print("[SafetyTagModule] Enabling auto-connect for device: \(deviceId)")
@@ -628,7 +677,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       name: deviceName
     )
   }
-  
+
   @objc func disableAutoConnect(_ deviceId: String, deviceName: String, iBeaconUUID: String) {
     print("[SafetyTagModule] Disabling auto-connect for device: \(deviceId)")
     STDeviceManager.shared.connection.disableAutoConnect(
@@ -637,27 +686,32 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       name: deviceName
     )
   }
-  
+
   @objc func isAutoConnectEnabled(_ deviceId: String,
                                   deviceName: String,
-                                  iBeaconUUID: String,
-                                  resolver: RCTPromiseResolveBlock,
-                                  rejecter: RCTPromiseRejectBlock) {
+                                  iBeaconUUID: String) {
     let isEnabled = STDeviceManager.shared.connection.isAutoConnectEnabled(
       iBeaconUUID: iBeaconUUID,
       name: deviceName
     )
-    resolver(isEnabled)
+    if self.hasListeners {
+      self.sendEvent(withName: "onAutoConnectStatus", body: [
+        "deviceId": deviceId,
+        "deviceName": deviceName,
+        "iBeaconUUID": iBeaconUUID,
+        "isEnabled": isEnabled
+      ])
+    }
   }
-  
+
   // MARK: - Background Operation Methods
   private func logBackgroundState() {
     let state = UIApplication.shared.applicationState
     let timestamp = Date().timeIntervalSince1970
     let stateString = state == .active ? "active" : (state == .background ? "background" : "inactive")
-    
+
     print("[SafetyTagModule] App State: \(stateString) at \(timestamp)")
-    
+
     if self.hasListeners {
       self.sendEvent(withName: "onBackgroundOperationStatus", body: [
         "state": stateString,
@@ -666,40 +720,40 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       ])
     }
   }
-  
+
   @objc func verifyBackgroundOperation() {
     print("[SafetyTagModule] Starting background operation verification...")
-    
+
     // Log initial state
     logBackgroundState()
-    
+
     // Start monitoring significant location changes to help keep app alive
     startMonitoringSignificantLocationChanges()
-    
+
     // Set up a timer to periodically log state (every 30 seconds)
     Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] _ in
       self?.logBackgroundState()
     }
   }
-  
+
   @objc func handleBackgroundWakeUp(_ resolve: @escaping RCTPromiseResolveBlock,
                                     rejecter reject: @escaping RCTPromiseRejectBlock) {
     let state = UIApplication.shared.applicationState
     let timestamp = Date().timeIntervalSince1970
     let stateString = state == .active ? "active" : (state == .background ? "background" : "inactive")
-    
+
     print("[SafetyTagModule] handleBackgroundWakeUp called in state: \(stateString)")
-    
+
     // Create response data
     let responseData: [String: Any] = [
       "state": stateString,
       "timestamp": timestamp,
       "isConnected": STDeviceManager.shared.connection.isConnected()
     ]
-    
+
     resolve(responseData)
   }
-  
+
   // MARK: - Event Observation Methods
   private func observeConnectionEvents() {
     // Log when a new device is discovered
@@ -719,7 +773,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
         }
       }
       .store(in: &cancellables)
-    
+
     // Log successful connection
     SafetyTagApi.Event.Connection.didConnect
       .receive(on: DispatchQueue.main)
@@ -728,6 +782,12 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
         self?.isConnecting = false
         self?.connectedDeviceId = device.id
         if self?.hasListeners == true {
+          // Send connected state event
+          self?.sendEvent(withName: "onDeviceConnectionStateChange", body: [
+            "state": "connected",
+            "deviceId": device.id.uuidString,
+            "deviceName": device.name
+          ])
           self?.sendEvent(withName: "onDeviceConnected", body: [
             "id": device.id.uuidString,
             "name": device.name
@@ -737,7 +797,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
         STDeviceManager.shared.connection.stopScan()
       }
       .store(in: &cancellables)
-    
+
     // Log connection failure
     SafetyTagApi.Event.Connection.didFailToConnect
       .receive(on: DispatchQueue.main)
@@ -746,6 +806,13 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
         self?.isConnecting = false
         self?.connectedDeviceId = nil
         if self?.hasListeners == true {
+          // Send connection failed state event
+          self?.sendEvent(withName: "onDeviceConnectionStateChange", body: [
+            "state": "failed",
+            "deviceId": device.id.uuidString,
+            "deviceName": device.name,
+            "error": error.localizedDescription
+          ])
           self?.sendEvent(withName: "onDeviceConnectionFailed", body: [
             "id": device.id.uuidString,
             "name": device.name,
@@ -754,7 +821,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
         }
       }
       .store(in: &cancellables)
-    
+
     // Log disconnection
     SafetyTagApi.Event.Connection.didDisconnect
       .receive(on: DispatchQueue.main)
@@ -771,7 +838,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
         }
       }
       .store(in: &cancellables)
-    
+
     // Log state update
     SafetyTagApi.Event.Connection.didUpdateState
       .receive(on: DispatchQueue.main)
@@ -780,7 +847,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       }
       .store(in: &cancellables)
   }
-  
+
   private func observeTripEvents() {
     // Trip Start Event
     SafetyTagApi.Event.TripsDetection.didReceiveTripStartEvent
@@ -796,10 +863,10 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
           }
           return
         }
-        
+
         let formatter = ISO8601DateFormatter()
         let eventTimeString = formatter.string(from: tripEvent.eventTime)
-        
+
         // Send only essential data to React Native
         if self?.hasListeners == true {
           self?.sendEvent(withName: "onTripStarted", body: [
@@ -811,7 +878,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
         }
       }
       .store(in: &cancellables)
-    
+
     // Trip End Event
     SafetyTagApi.Event.TripsDetection.didReceiveTripEndEvent
       .receive(on: DispatchQueue.main)
@@ -826,10 +893,10 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
           }
           return
         }
-        
+
         let formatter = ISO8601DateFormatter()
         let eventTimeString = formatter.string(from: tripEvent.eventTime)
-        
+
         // Send only essential data to React Native
         if self?.hasListeners == true {
           self?.sendEvent(withName: "onTripEnded", body: [
@@ -843,7 +910,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       }
       .store(in: &cancellables)
   }
-  
+
   private func observeiBeaconEvents() {
     // Monitor region entry
     SafetyTagApi.Event.IBeacon.didEnterRegion
@@ -858,7 +925,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
         }
       }
       .store(in: &cancellables)
-    
+
     // Monitor region exit
     SafetyTagApi.Event.IBeacon.didExitRegion
       .receive(on: DispatchQueue.main)
@@ -872,7 +939,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
         }
       }
       .store(in: &cancellables)
-    
+
     // Monitor state determination
     SafetyTagApi.Event.IBeacon.didDetermined
       .receive(on: DispatchQueue.main)
@@ -894,10 +961,10 @@ extension SafetyTagModule {
   func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
     if let beaconRegion = region as? CLBeaconRegion {
       print("[SafetyTagModule] Entered region: \(beaconRegion.identifier)")
-      
+
       // Get the connected device if available
       let connectedDevice = STDeviceManager.shared.connection.getConnectedDevice()
-      
+
       // Create event data
       let eventData: [String: Any] = [
         "deviceId": beaconRegion.identifier,
@@ -906,10 +973,10 @@ extension SafetyTagModule {
         "connectedDeviceName": connectedDevice?.name ?? "N/A",
         "connectedDeviceId": connectedDevice?.id.uuidString ?? "N/A"
       ]
-      
+
       // Send event to React Native
       sendEvent(withName: "onRegionEnter", body: eventData)
-      
+
       // If in background, try to trigger React Native method
       if UIApplication.shared.applicationState == .background {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
@@ -922,14 +989,14 @@ extension SafetyTagModule {
       }
     }
   }
-  
+
   func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
     if let beaconRegion = region as? CLBeaconRegion {
       print("[SafetyTagModule] Exited region: \(beaconRegion.identifier)")
-      
+
       // Get the connected device if available
       let connectedDevice = STDeviceManager.shared.connection.getConnectedDevice()
-      
+
       // Create event data
       let eventData: [String: Any] = [
         "deviceId": beaconRegion.identifier,
@@ -938,10 +1005,10 @@ extension SafetyTagModule {
         "connectedDeviceName": connectedDevice?.name ?? "N/A",
         "connectedDeviceId": connectedDevice?.id.uuidString ?? "N/A"
       ]
-      
+
       // Send event to React Native
       sendEvent(withName: "onRegionExit", body: eventData)
-      
+
       // If in background, try to trigger React Native method
       if UIApplication.shared.applicationState == .background {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
@@ -954,7 +1021,7 @@ extension SafetyTagModule {
       }
     }
   }
-  
+
   func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
     if let beaconRegion = region as? CLBeaconRegion {
       print("[SafetyTagModule] Region state changed: \(state.rawValue) for device: \(beaconRegion.identifier)")

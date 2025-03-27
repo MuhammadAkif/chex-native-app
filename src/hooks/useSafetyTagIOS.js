@@ -1,14 +1,10 @@
 import {useEffect, useState} from 'react';
-import {
-  NativeModules,
-  NativeEventEmitter,
-  DeviceEventEmitter,
-} from 'react-native';
+import {NativeModules, NativeEventEmitter} from 'react-native';
 
 const {SafetyTagModule} = NativeModules;
 const eventEmitter = new NativeEventEmitter(SafetyTagModule);
 
-const useSafetyTagIOS = () => {
+const useSafetyTagIOS = onEvents => {
   const [devices, setDevices] = useState([]);
   const [isScanning, setIsScanning] = useState(false);
 
@@ -30,15 +26,14 @@ const useSafetyTagIOS = () => {
         'onDeviceConnectionFailed',
         onDeviceConnectionFailed,
       ),
-      eventEmitter.addListener(
-        'onDeviceDisconnected',
-        onDeviceDisconnected,
-      ),
-      eventEmitter.addListener(
-        'onGetConnectedDevice',
-        onGetConnectedDevice,
-      ),
+      eventEmitter.addListener('onDeviceDisconnected', onDeviceDisconnected),
+      eventEmitter.addListener('onGetConnectedDevice', onGetConnectedDevice),
       eventEmitter.addListener('onCheckConnection', onCheckConnection),
+      eventEmitter.addListener('onTripStarted', onTripStarted),
+      eventEmitter.addListener('onTripEnded', onTripEnded),
+      eventEmitter.addListener('onTripsReceived', onTripsReceived),
+      eventEmitter.addListener('onCrashThreshold', onCrashThreshold),
+      eventEmitter.addListener('onCrashEvent', onCrashEvent),
     ];
   }
 
@@ -63,23 +58,53 @@ const useSafetyTagIOS = () => {
   function onDeviceConnected(event) {
     console.log('Device connected:', event);
     setIsScanning(false);
+    onEvents.onDeviceConnected(event);
   }
 
   function onDeviceConnectionFailed(event) {
     console.error('Connection failed:', event);
     setIsScanning(false);
+    onEvents.onDeviceConnectionFailed(event);
   }
 
   function onDeviceDisconnected(event) {
     console.log('Device disconnected:', event);
+    onEvents.onDeviceDisconnected(event);
   }
 
   function onGetConnectedDevice(event) {
     console.log('Got connected device info:', event);
+    onEvents.onGetConnectedDevice(event);
   }
 
   function onCheckConnection(event) {
     console.log('Connection status:', event);
+    onEvents.onCheckConnection(event);
+  }
+
+  function onTripStarted(event) {
+    // console.log('Trip Started:', event);
+    onEvents.onTripStarted(event);
+  }
+
+  function onTripEnded(event) {
+    // console.log('Trip Started:', event);
+    onEvents.onTripEnded(event);
+  }
+
+  function onTripsReceived(event) {
+    // console.log('Trip Started:', event);
+    onEvents.onTripsReceived(event);
+  }
+
+  function onCrashThreshold(event) {
+    console.log('Crash threshold event:', event);
+    onEvents.onCrashThreshold(event);
+  }
+
+  function onCrashEvent(event) {
+    console.log('Crash event:', event);
+    onEvents.onCrashEvent(event);
   }
 
   async function startObserving() {
@@ -100,7 +125,7 @@ const useSafetyTagIOS = () => {
     }
   }
 
-  const startScan = async (autoConnect = false) => {
+  const startScan = async (autoConnect = true) => {
     try {
       console.log(
         'Starting scan for SafetyTag devices... autoConnect:',
@@ -186,9 +211,10 @@ const useSafetyTagIOS = () => {
     }
   };
 
-  const isAccelerometerDataStreamEnabled = async () => {
+  const isAccelerometerDataStreamEnabled = () => {
     try {
-      return await SafetyTagModule.isAccelerometerDataStreamEnabled();
+      console.log('Checking accelerometer data stream status...');
+      SafetyTagModule.isAccelerometerDataStreamEnabled();
     } catch (error) {
       console.error('Error checking accelerometer data stream enable:', error);
     }

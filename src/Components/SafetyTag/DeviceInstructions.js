@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Linking,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -9,14 +16,18 @@ import useDeviceInstructions from '../../hooks/useDeviceInstructions';
 
 const {black, white, brightGreen, orange, gray} = colors;
 
-const PrerequisiteItem = ({title, description, isRequired}) => (
-  <View style={styles.prerequisiteItem}>
+const PrerequisiteItem = ({title, description, isRequired, onPress}) => (
+  <TouchableOpacity
+    style={styles.prerequisiteItem}
+    onPress={onPress}
+    activeOpacity={0.7}>
     <View style={styles.prerequisiteHeader}>
       <Text style={styles.prerequisiteTitle}>{title}</Text>
       {isRequired && <Text style={styles.requiredBadge}>Required</Text>}
     </View>
     <Text style={styles.prerequisiteDescription}>{description}</Text>
-  </View>
+    <Text style={styles.clickableIndicator}>Tap to open settings ›</Text>
+  </TouchableOpacity>
 );
 
 const StepItem = ({title, description, status}) => (
@@ -53,12 +64,14 @@ const DeviceInstructions = () => {
   const {prerequisites, connectionSteps, alignmentSteps, troubleshootingTips} =
     useDeviceInstructions();
 
+  const onPrerequisites = () => Linking.openSettings();
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Prerequisites</Text>
         {Object.values(prerequisites).map((prereq, index) => (
-          <PrerequisiteItem key={index} {...prereq} />
+          <PrerequisiteItem key={index} {...prereq} onPress={onPrerequisites} />
         ))}
       </View>
 
@@ -107,6 +120,16 @@ const styles = StyleSheet.create({
     padding: wp('3%'),
     borderRadius: wp('2%'),
     marginBottom: wp('2%'),
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   prerequisiteHeader: {
     flexDirection: 'row',
@@ -194,6 +217,12 @@ const styles = StyleSheet.create({
     fontSize: hp('1.8%'),
     color: black,
     flex: 1,
+  },
+  clickableIndicator: {
+    color: brightGreen,
+    fontSize: hp('1.6%'),
+    marginTop: wp('1%'),
+    textAlign: 'right',
   },
 });
 

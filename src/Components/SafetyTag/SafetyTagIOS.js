@@ -7,51 +7,84 @@ import {
   View,
   ScrollView,
   DeviceEventEmitter,
+  Alert,
 } from 'react-native';
+import {useDispatch} from 'react-redux';
 
 import {useSafetyTagIOS} from '../../hooks';
-import {SafetyTagDeviceInfo} from '../index';
-import SafetyTagAxisAlignment from './SafetyTagAxisAlignment';
+import {LoadingIndicator, SafetyTagDeviceInfo} from '../index';
 import {formatUnixTime} from '../../Utils/helpers';
 import DeviceScan from './DeviceScan';
-import {colors} from '../../Assets/Styles';
 import {SafetyTagBeaconTestScreen} from './SafetyTagBeaconTestScreen';
+import {
+  addCrashData,
+  addThresholdEvent,
+  setCrashError,
+  updateCrashStatus,
+} from '../../Store/Actions';
+import CrashEventDisplay from './CrashEventDisplay';
+import AccelerometerDisplayIOS from './AccelerometerDisplayIOS';
+import {PhaseList, InstructionsPanel} from './AlignmentComponents';
+import {useAxisAlignment} from '../../hooks/useAxisAlignment';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
+import {colors} from '../../Assets/Styles';
+import FloatingButton from './FloatingButton/FloatingButton';
+import useBoolean from '../../hooks/useBoolean';
+import ConnectedDevice from './ConnectedDevice';
+
+const {white, black} = colors;
 
 const SafetyTagIOS = () => {
+  const dispatch = useDispatch();
   const {
     devices,
     isScanning,
     startScan,
-    checkConnection,
     connectToDevice,
     disconnectDevice,
-    isAccelerometerDataStreamEnabled,
-  } = useSafetyTagIOS();
+    getDeviceInformation,
+    enableAccelerometerDataStream,
+    disableAccelerometerDataStream,
+  } = useSafetyTagIOS({
+    onDeviceConnected: onDeviceConnected,
+    onDeviceConnectionFailed: onDeviceConnectionFailed,
+    onDeviceDisconnected: onDeviceDisconnected,
+    onGetConnectedDevice: onGetConnectedDevice,
+    onCheckConnection: onCheckConnection,
+    onTripStarted: onTripStarted,
+    onTripEnded: onTripEnded,
+    onTripsReceived: onTripsReceived,
+    onCrashThreshold: onCrashThreshold,
+    onCrashEvent: onCrashEvent,
+  });
+  const {startAlignment, stopAlignment} = useAxisAlignment();
   const [connectedDevice, setConnectedDevice] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [trips, setTrips] = useState([]);
   const [isLoadingTrips, setIsLoadingTrips] = useState(false);
   const [currentTrip, setCurrentTrip] = useState(null);
+  const [accelerometerData, setAccelerometerData] = useState(null);
+  const [alignmentDetails, setAlignmentDetails] = useState({
+    movement: 'UNKNOWN',
+    speed: 'UNKNOWN',
+    currentSpeed: 0,
+    currentHeading: 0,
+    step: null,
+  });
+  const [alignmentStatus, setAlignmentStatus] = useState('Not Started');
+  const {
+    value: isLoading,
+    toggle: toggleIsLoading,
+    setFalse: setIsLoadingFalse,
+  } = useBoolean(false);
+  const [connectionState, setConnectionState] = useState('disconnected');
 
   useEffect(() => {
+    getDeviceInformation().then();
     const subscriptions = [
-      DeviceEventEmitter.addListener('onDeviceConnected', onDeviceConnected),
-      DeviceEventEmitter.addListener(
-        'onDeviceConnectionFailed',
-        onDeviceConnectionFailed,
-      ),
-      DeviceEventEmitter.addListener(
-        'onDeviceDisconnected',
-        onDeviceDisconnected,
-      ),
-      DeviceEventEmitter.addListener(
-        'onGetConnectedDevice',
-        onGetConnectedDevice,
-      ),
-      DeviceEventEmitter.addListener('onCheckConnection', onCheckConnection),
-      DeviceEventEmitter.addListener('onTripStarted', onTripStarted),
-      DeviceEventEmitter.addListener('onTripEnded', onTripEnded),
-      DeviceEventEmitter.addListener('onTripsReceived', onTripsReceived),
       DeviceEventEmitter.addListener(
         'onAccelerometerData',
         onAccelerometerData,
@@ -64,6 +97,27 @@ const SafetyTagIOS = () => {
         'onAccelerometerStreamStatus',
         onAccelerometerStreamStatus,
       ),
+      DeviceEventEmitter.addListener(
+        'onAxisAlignmentState',
+        onAxisAlignmentState,
+      ),
+      DeviceEventEmitter.addListener('onVehicleState', onVehicleState),
+      DeviceEventEmitter.addListener(
+        'onAxisAlignmentData',
+        onAxisAlignmentData,
+      ),
+      DeviceEventEmitter.addListener(
+        'onAxisAlignmentError',
+        onAxisAlignmentError,
+      ),
+      DeviceEventEmitter.addListener(
+        'onAxisAlignmentFinished',
+        onAxisAlignmentFinished,
+      ),
+      DeviceEventEmitter.addListener(
+        'onDeviceConnectionStateChange',
+        onDeviceConnectionStateChange,
+      ),
     ];
 
     // Cleanup subscriptions
@@ -72,24 +126,66 @@ const SafetyTagIOS = () => {
     };
   }, []);
 
+  function onCrashThreshold(event) {
+    console.log('Crash Threshold:', event);
+    try {
+      const thresholdEvent = JSON.parse(event?.crashThresholdEvent);
+      dispatch(addThresholdEvent(thresholdEvent));
+    } catch (error) {
+      console.error('Error parsing threshold event:', error);
+      dispatch(setCrashError('Error parsing threshold event'));
+    }
+  }
+
+  function onCrashEvent(event) {
+    console.log('Crash data:', event);
+    try {
+      const crashData = JSON.parse(event?.crashData);
+      dispatch(addCrashData(crashData));
+      dispatch(
+        updateCrashStatus(crashData?.status ? 'COMPLETE_DATA' : 'PARTIAL_DATA'),
+      );
+    } catch (error) {
+      console.error('Error parsing crash data:', error);
+      dispatch(setCrashError('Error parsing crash data'));
+    }
+  }
+
+  function onDeviceConnectionStateChange(event) {
+    setConnectionState(event.state);
+    if (event.state === 'connecting') {
+      toggleIsLoading(true);
+    } else {
+      setIsLoadingFalse();
+    }
+  }
+
   function onDeviceConnected(event) {
     setConnectedDevice(event);
     setIsConnected(true);
+    setConnectionState('connected');
+    setIsLoadingFalse();
+    getDeviceInformation().then();
   }
 
   function onDeviceConnectionFailed(event) {
     setConnectedDevice(null);
     setIsConnected(false);
+    setConnectionState('failed');
+    setIsLoadingFalse();
+    Alert.alert('Connection Failed', 'Failed to connect to device');
   }
 
   function onDeviceDisconnected(event) {
     setConnectedDevice(null);
     setIsConnected(false);
+    setConnectionState('disconnected');
     setCurrentTrip(null);
+    isLoading && setIsLoadingFalse();
   }
 
   function onGetConnectedDevice(event) {
-    if (!event.error) {
+    if (!event?.error) {
       setConnectedDevice(event);
       setIsConnected(true);
     } else {
@@ -143,13 +239,8 @@ const SafetyTagIOS = () => {
   }
 
   function onAccelerometerData(event) {
-    const {x, y, z, secondsSinceLastRestart} = event;
-    /*console.log('Accelerometer Data:', {
-      x,
-      y,
-      z,
-      secondsSinceLastRestart,
-    });*/
+    const {x: xAxis, y: yAxis, z: zAxis, secondsSinceLastRestart} = event;
+    //setAccelerometerData({xAxis, yAxis, zAxis, secondsSinceLastRestart});
   }
 
   function onAccelerometerError(event) {
@@ -160,21 +251,61 @@ const SafetyTagIOS = () => {
     console.log('Accelerometer Stream Status:', event.isEnabled);
   }
 
+  function onAxisAlignmentState(event) {
+    console.log('Alignment State Update:', event);
+    setAlignmentDetails(prev => ({
+      ...prev,
+      step: event.phase,
+      zAxisState: event.zAxisState,
+      xAxisState: event.xAxisState,
+      validVehicleState: event.validVehicleState,
+      currentBootstrapBufferSize: event.currentBootstrapBufferSize,
+      overallIterationCount: event.overallIterationCount,
+    }));
+  }
+
+  function onVehicleState(event) {
+    console.log('Vehicle State Update:', event);
+    setAlignmentDetails(prev => ({
+      ...prev,
+      validVehicleState: event.validVehicleState,
+      hasValidIntervals: event.hasValidIntervals,
+    }));
+  }
+
+  function onAxisAlignmentData(event) {
+    console.log('Alignment Data Update:', event);
+    setAlignmentDetails(prev => ({
+      ...prev,
+      status: event.status,
+      theta: event.theta,
+      phi: event.phi,
+    }));
+  }
+
+  function onAxisAlignmentError(event) {
+    console.error('Alignment Error:', event.error);
+    Alert.alert('Alignment Error', event.error);
+    setAlignmentStatus('Error');
+  }
+
+  function onAxisAlignmentFinished(event) {
+    console.log('Alignment Finished:', event);
+    if (event.success) {
+      setAlignmentStatus('Completed');
+      Alert.alert('Success', 'Axis alignment completed successfully');
+    } else {
+      setAlignmentStatus('Failed');
+      Alert.alert('Alignment Failed', event.error || 'Unknown error occurred');
+    }
+  }
+
   const handleStartScan = async () => {
     try {
       console.log('Starting scan for SafetyTag devices...');
       await startScan();
     } catch (error) {
       console.error('Error starting scan:', error);
-    }
-  };
-
-  const handleCheckConnection = async () => {
-    try {
-      console.log('Checking SafetyTag connection...');
-      await checkConnection();
-    } catch (error) {
-      console.error('Error checking connection:', error);
     }
   };
 
@@ -190,14 +321,27 @@ const SafetyTagIOS = () => {
     }
   };
 
-  const handleIsAccelerometerEnabled = async () => {
+  const handleStartAlignment = async () => {
     try {
-      const isEnabled = await isAccelerometerDataStreamEnabled();
-      console.log('Accelerometer stream status:', isEnabled);
-      return isEnabled;
+      await enableAccelerometerDataStream();
+      setAlignmentDetails(prev => ({...prev, step: 'STARTING'}));
+      await startAlignment(false);
+      setAlignmentStatus('Started');
     } catch (error) {
-      console.error('Error checking accelerometer status:', error);
-      return false;
+      console.error('Error starting alignment:', error);
+      Alert.alert('Error', 'Failed to start alignment');
+    }
+  };
+
+  const handleStopAlignment = async () => {
+    try {
+      await disableAccelerometerDataStream();
+      await stopAlignment();
+      setAccelerometerData(null);
+      setAlignmentStatus('Stopped');
+    } catch (error) {
+      console.error('Error stopping alignment:', error);
+      Alert.alert('Error', 'Failed to stop alignment');
     }
   };
 
@@ -213,12 +357,14 @@ const SafetyTagIOS = () => {
           isConnected={isConnected}
           connectedDevice={connectedDevice}
         />
-        {isConnected && <SafetyTagAxisAlignment />}
+        <ConnectedDevice connectedDevice={connectedDevice} />
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleStartScan}>
-            <Text style={styles.buttonText}>Start Scan</Text>
-          </TouchableOpacity>
+          {!isConnected && (
+            <TouchableOpacity style={styles.button} onPress={handleStartScan}>
+              <Text style={styles.buttonText}>Start Scan</Text>
+            </TouchableOpacity>
+          )}
           {isScanning && (
             <DeviceScan
               devices={devices}
@@ -228,16 +374,6 @@ const SafetyTagIOS = () => {
           )}
           <SafetyTagBeaconTestScreen />
           <TouchableOpacity
-            style={[styles.button, styles.buttonMargin]}
-            onPress={handleCheckConnection}>
-            <Text style={styles.buttonText}>Check Connection</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, styles.buttonMargin]}
-            onPress={handleIsAccelerometerEnabled}>
-            <Text style={styles.buttonText}>Check Accelerometer Status</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
             style={[
               styles.button,
               styles.buttonMargin,
@@ -246,8 +382,40 @@ const SafetyTagIOS = () => {
             onPress={handleDisconnectDevice}>
             <Text style={styles.buttonText}>Disconnect Device</Text>
           </TouchableOpacity>
+          <View style={styles.alignmentContainer}>
+            {isConnected && (
+              <AccelerometerDisplayIOS
+                accelerometerData={accelerometerData}
+                alignmentDetails={{
+                  ...alignmentDetails,
+                  movement: alignmentDetails.validVehicleState
+                    ? 'VALID'
+                    : 'INVALID',
+                  speed: alignmentDetails.hasValidIntervals
+                    ? 'VALID'
+                    : 'INVALID',
+                  currentSpeed: 0, // You might want to get this from another source
+                  currentHeading: alignmentDetails.theta || 0,
+                  step: alignmentDetails.step,
+                  zAxisState: alignmentDetails.zAxisState,
+                  xAxisState: alignmentDetails.xAxisState,
+                  phi: alignmentDetails.phi,
+                }}
+                alignmentStatus={alignmentStatus}
+                onStartAlignment={handleStartAlignment}
+                onStopAlignment={handleStopAlignment}
+                PhaseListComponent={PhaseList}
+                InstructionsPanelComponent={InstructionsPanel}
+                showRawData={false}
+                showAlignmentDetails={true}
+              />
+            )}
+            {isConnected && <CrashEventDisplay />}
+          </View>
         </View>
       </ScrollView>
+      <FloatingButton />
+      <LoadingIndicator isLoading={isLoading} />
     </SafeAreaView>
   );
 };
@@ -256,16 +424,14 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     backgroundColor: '#007AFF',
-    borderRadius: 10,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    borderRadius: wp('2%'),
+    paddingHorizontal: wp('1%'),
+    paddingVertical: wp('4%'),
     width: '100%',
   },
   buttonContainer: {
     width: '100%',
-  },
-  buttonDisabled: {
-    backgroundColor: colors.disabled,
+    rowGap: hp('1%'),
   },
   buttonMargin: {
     marginTop: 12,
@@ -279,71 +445,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
     flex: 1,
   },
-  currentTripContainer: {
-    backgroundColor: '#E3F2FD',
-    borderColor: '#90CAF9',
-    borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: 16,
-    padding: 16,
-  },
-  currentTripInfo: {
-    color: '#333',
-    fontSize: 14,
-    marginBottom: 4,
-  },
-  currentTripTitle: {
-    color: '#1976D2',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  detailText: {
-    color: colors.text,
-    fontSize: 14,
-    marginBottom: 4,
-  },
-  detailsContainer: {
-    backgroundColor: colors.white,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 16,
-  },
   disconnectButton: {
     backgroundColor: '#FF3B30',
   },
-  errorContainer: {
-    backgroundColor: colors.error,
-    borderRadius: 8,
-    marginTop: 16,
-    padding: 16,
-  },
-  errorText: {
-    color: colors.white,
-    fontSize: 14,
-  },
   scrollContent: {
-    padding: 20,
+    padding: wp('5%'),
+    rowGap: wp('2%'),
   },
   scrollView: {
     flex: 1,
-  },
-  statusContainer: {
-    backgroundColor: colors.white,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 16,
-  },
-  statusText: {
-    color: colors.text,
-    fontSize: 16,
-    marginBottom: 4,
-  },
-  statusTitle: {
-    color: colors.primary,
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
   },
   title: {
     color: '#333',
@@ -351,6 +461,33 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 30,
     textAlign: 'center',
+  },
+  alignmentContainer: {
+    width: wp('90%'),
+  },
+  helpButton: {
+    position: 'absolute',
+    bottom: hp('2%'),
+    right: wp('4%'),
+    width: wp('12%'),
+    height: wp('12%'),
+    borderRadius: wp('6%'),
+    backgroundColor: black,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  helpButtonText: {
+    color: white,
+    fontSize: hp('3%'),
+    fontWeight: 'bold',
   },
 });
 

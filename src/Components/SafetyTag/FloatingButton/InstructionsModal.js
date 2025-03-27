@@ -4,32 +4,35 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {colors} from '../../Assets/Styles';
-import DeviceInstructions from './DeviceInstructions';
+
+import {colors} from '../../../Assets/Styles';
+import DeviceInstructions from '../DeviceInstructions';
 
 const {black, white, gray} = colors;
 
-const InstructionsModal = ({visible, onClose}) => {
-  return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}>
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Device Setup Guide</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>✕</Text>
-            </TouchableOpacity>
-          </View>
-          <DeviceInstructions />
+const InstructionsModal = ({
+  visible,
+  onClose,
+  title = 'Device Setup Guide',
+}) => (
+  <Modal
+    animationType="slide"
+    transparent={true}
+    visible={visible}
+    onRequestClose={onClose}>
+    <View style={styles.centeredView}>
+      <View style={styles.modalView}>
+        <View style={styles.header}>
+          <Text style={styles.title}>{title}</Text>
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <Text style={styles.closeButtonText}>✕</Text>
+          </TouchableOpacity>
         </View>
+        <DeviceInstructions />
       </View>
-    </Modal>
-  );
-};
+    </View>
+  </Modal>
+);
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -76,4 +79,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default InstructionsModal; 
+export default InstructionsModal;

@@ -10,8 +10,8 @@ import {colors} from '../../Assets/Styles';
 
 const {black, white, gray, brightGreen, red} = colors;
 
-const StatBox = ({label, value, unit, color}) => (
-  <View style={styles.statBox}>
+const StatBox = ({label, value, unit, color, containerStyle}) => (
+  <View style={[styles.statBox, containerStyle]}>
     <Text style={[styles.statValue, color && {color}]}>
       {value}
       <Text style={styles.statUnit}>{unit}</Text>
@@ -29,20 +29,6 @@ const CrashEventDisplay = () => {
   const totalCrashes = crashEvents?.data?.length || 0;
   const totalThresholds = thresholdEvents?.length || 0;
 
-  // Get the most recent crash event
-  const latestCrash = crashEvents?.data?.[0];
-  const maxAcceleration = latestCrash
-    ? Math.max(
-        ...latestCrash.accelerometerValues.map(v =>
-          Math.sqrt(
-            v.xAxisMg * v.xAxisMg +
-              v.yAxisMg * v.yAxisMg +
-              v.zAxisMg * v.zAxisMg,
-          ),
-        ),
-      ).toFixed(1)
-    : 0;
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Crash Detection</Text>
@@ -59,8 +45,8 @@ const CrashEventDisplay = () => {
           value={totalThresholds}
           unit=""
           color={totalThresholds > 0 ? brightGreen : undefined}
+          containerStyle={styles.noBorderLine}
         />
-        <StatBox label="Max G-Force" value={maxAcceleration} unit="g" />
       </View>
     </View>
   );
@@ -135,6 +121,9 @@ const styles = StyleSheet.create({
   configText: {
     fontSize: hp('1.6%'),
     color: gray,
+  },
+  noBorderLine: {
+    borderRightWidth: 0,
   },
 });
 

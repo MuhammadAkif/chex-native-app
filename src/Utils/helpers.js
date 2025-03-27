@@ -371,3 +371,38 @@ export const ALIGNMENT_PHASES = [
     ],
   },
 ];
+
+export const crashReport = {
+  crashData: {
+    eventId: 12345,
+    bufferId: 67890,
+    startTimestampUnixMs: 1617187200000,
+    startElapsedRealtimeMs: 1000000,
+    endTimestampUnixMs: 1617187500000,
+    endElapsedRealtimeMs: 2000000,
+    accelerometerValues: [
+      {x: 0.1, y: 0.2, z: 0.3},
+      {x: 0.4, y: 0.5, z: 0.6},
+    ],
+    matrixRotationU: [
+      [1.0, 0.0, 0.0],
+      [0.0, 1.0, 0.0],
+      [0.0, 0.0, 1.0],
+    ],
+    matrixRotationR: [
+      [0.5, 0.5, 0.0],
+      [0.5, 0.5, 0.0],
+      [0.0, 0.0, 1.0],
+    ],
+    phi: 45.0,
+    theta: 90.0,
+    validCrashEvent: true,
+    hasCompleteData: false,
+  },
+  status: 'COMPLETE_DATA',
+};
+
+export const crashThresholdEvent = {
+  timestampUnixMs: 1617187200000,
+  timestampElapsedRealtimeMs: 1500000,
+};

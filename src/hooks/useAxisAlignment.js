@@ -1,15 +1,11 @@
-import {useEffect, useState} from 'react';
-import {
-  Alert,
-  DeviceEventEmitter,
-  NativeEventEmitter,
-  NativeModules,
-} from 'react-native';
+import {useEffect, useRef, useState} from 'react';
+import {Alert, DeviceEventEmitter, NativeModules} from 'react-native';
 
 const {SafetyTagModule} = NativeModules;
 // const eventEmitter = new NativeEventEmitter(SafetyTagModule);
 
 export const useAxisAlignment = () => {
+  const alignmentStatusRef = useRef(null);
   const [alignmentState, setAlignmentState] = useState(null);
   const [vehicleState, setVehicleState] = useState(null);
   const [alignmentData, setAlignmentData] = useState(null);
@@ -70,6 +66,16 @@ export const useAxisAlignment = () => {
       DeviceEventEmitter.addListener(
         'onAxisAlignmentMissing',
         onAxisAlignmentMissing,
+      ),
+
+      DeviceEventEmitter.addListener(
+        'onAxisAlignmentStatusCheck',
+        onAxisAlignmentStatusCheck,
+      ),
+
+      DeviceEventEmitter.addListener(
+        'onStoredAxisAlignmentCheck',
+        onStoredAxisAlignmentCheck,
       ),
     ];
 
@@ -179,6 +185,15 @@ export const useAxisAlignment = () => {
     );
   }
 
+  function onStoredAxisAlignmentCheck(event) {}
+
+  function onAxisAlignmentStatusCheck(event) {
+    alignmentStatusRef.current = {
+      hasStarted: event?.hasStarted || false,
+      error: event?.error || null,
+    };
+  }
+
   const startAlignment = async (resumeIfAvailable = false) => {
     try {
       setError(null);
@@ -216,7 +231,7 @@ export const useAxisAlignment = () => {
 
   const checkStoredAlignment = async () => {
     try {
-      return await SafetyTagModule.hasStoredAxisAlignment();
+      SafetyTagModule.hasStoredAxisAlignment();
     } catch (err) {
       setError(err.message);
       return false;
@@ -244,6 +259,7 @@ export const useAxisAlignment = () => {
   };
 
   return {
+    alignmentStatusRef,
     alignmentState,
     alignmentDetails,
     vehicleState,

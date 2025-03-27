@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Button, StyleSheet} from 'react-native';
+import {View, Text, Button, StyleSheet, DeviceEventEmitter} from 'react-native';
 import {useSafetyTagBeacon} from '../../hooks/useSafetyTagBeacon';
 
 export const SafetyTagBeaconTest = ({device}) => {
@@ -26,20 +26,29 @@ export const SafetyTagBeaconTest = ({device}) => {
     onRegionStateChanged: event => {
       setLastEvent({type: 'stateChanged', ...event});
     },
+    onDeviceMonitoringStatus: onDeviceMonitoringStatus,
+    onAutoConnectStatus: onAutoConnectStatus,
   });
 
   useEffect(() => {
     if (device) {
       // Check initial states
-      checkStates();
+      checkStates().then();
     }
   }, [device]);
 
+  function onDeviceMonitoringStatus(event) {
+    setIsMonitoring(event);
+  }
+
+  function onAutoConnectStatus(event) {
+    setIsMonitoring(event);
+  }
+
   const checkStates = async () => {
     if (device) {
-      const monitored = await isBeingMonitored(device);
+      isBeingMonitored(device).then();
       const autoConnect = await checkAutoConnect(device);
-      setIsMonitoring(monitored);
       setIsAutoConnectEnabled(autoConnect);
     }
   };

@@ -24,12 +24,6 @@ const ConnectedDevice = ({connectedDevice}) => (
         </Text>
       </>
     )}
-    {/*<Text style={[styles.deviceInfoText, styles.textColor]}>
-      RSSI: {connectedDevice.rssi} dBm
-    </Text>
-    <Text style={[styles.deviceInfoText, styles.textColor]}>
-      Mode: {connectedDevice.advertisementMode}
-    </Text>*/}
   </View>
 );
 

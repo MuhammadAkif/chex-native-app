@@ -96,6 +96,14 @@ export const useSafetyTagBeacon = (onEvents = {}) => {
         'onRegionStateChanged',
         onRegionStateChanged,
       ),
+      DeviceEventEmitter.addListener(
+        'onDeviceMonitoringStatus',
+        onDeviceMonitoringStatus,
+      ),
+      DeviceEventEmitter.addListener(
+        'onAutoConnectStatus',
+        onAutoConnectStatus,
+      ),
     ];
 
     return () => {
@@ -103,6 +111,16 @@ export const useSafetyTagBeacon = (onEvents = {}) => {
       subscriptions.forEach(subscription => subscription.remove());
     };
   }, [onRegionEntered, onRegionExited, onRegionStateChanged]);
+
+  function onDeviceMonitoringStatus(event) {
+    console.log('onDeviceMonitoringStatus: ', event);
+    onEvents.onDeviceMonitoringStatus(event);
+  }
+
+  function onAutoConnectStatus(event) {
+    console.log('onAutoConnectStatus: ', event);
+    onEvents.onAutoConnectStatus(event);
+  }
 
   const startMonitoring = async device => {
     try {
@@ -142,17 +160,11 @@ export const useSafetyTagBeacon = (onEvents = {}) => {
 
   const isBeingMonitored = async device => {
     try {
-      const isMonitored = await SafetyTagModule.isDeviceBeingMonitored(
+      await SafetyTagModule.isDeviceBeingMonitored(
         device.id,
         device.name,
         device.iBeaconUUID,
       );
-      console.log('🔍 Device monitoring status:', {
-        id: device.id,
-        name: device.name,
-        isMonitored,
-      });
-      return isMonitored;
     } catch (error) {
       console.error('❌ Failed to check monitoring status:', error);
       return false;

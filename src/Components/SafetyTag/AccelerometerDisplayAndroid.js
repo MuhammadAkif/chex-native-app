@@ -19,7 +19,7 @@ const infoActiveInitialState = {
   description: '',
 };
 
-const AccelerometerDisplay = () => {
+const AccelerometerDisplayAndroid = () => {
   const [infoActive, setInfoActive] = useState(infoActiveInitialState);
   const [accelerometerData, setAccelerometerData] = useState(null);
   const [alignmentStatus, setAlignmentStatus] = useState('Not Started');
@@ -258,4 +258,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AccelerometerDisplay;
+export default AccelerometerDisplayAndroid;

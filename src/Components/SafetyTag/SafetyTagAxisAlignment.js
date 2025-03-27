@@ -1,5 +1,5 @@
-import React from 'react';
-import {View, Text, StyleSheet, Button} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Text, StyleSheet, Button, DeviceEventEmitter} from 'react-native';
 import {useAxisAlignment} from '../../hooks/useAxisAlignment';
 import {colors} from '../../Assets/Styles';
 import {
@@ -20,20 +20,33 @@ const SafetyTagAxisAlignment = () => {
   const isAlignmentRunning = alignmentState?.phase === 'started';
   const buttonText = isAlignmentRunning ? 'Stop Alignment' : 'Start Alignment';
 
+  useEffect(() => {
+    const subscriptions = [
+      DeviceEventEmitter.addListener(
+        'onAxisAlignmentStatusCheck',
+        onAxisAlignmentStatusCheck,
+      ),
+    ];
+    return () => {
+      subscriptions.forEach(subscription => subscription.remove());
+    };
+  }, []);
+
+  async function onAxisAlignmentStatusCheck(event) {
+    if (event.hasStarted) {
+      await stopAlignment();
+    } else {
+      await startAlignment();
+    }
+  }
+
   const handleIsAlignmentActive = async () => {
-    const isAlignmentActive = await checkAlignmentStatus();
-    console.log({isAlignmentActive});
-    return isAlignmentActive;
+    checkAlignmentStatus().then();
   };
 
   async function handleAlignmentToggle() {
     await requestLocationPermission();
-    const isAlignmentActive = await handleIsAlignmentActive();
-    if (isAlignmentActive) {
-      await stopAlignment();
-    } else {
-      await startAlignment(false);
-    }
+    await handleIsAlignmentActive();
     await removeStoredAlignment();
   }
 
@@ -41,14 +54,6 @@ const SafetyTagAxisAlignment = () => {
     <View style={styles.container}>
       <Text style={styles.text}>{alignmentState?.phase || 'Not Started'}</Text>
       <Button title={buttonText} onPress={handleAlignmentToggle} />
-      <Button
-        title={'Check Alignment Status'}
-        onPress={handleIsAlignmentActive}
-      />
-      <Button
-        title={'Check Alignment Configuration'}
-        onPress={getAlignmentConfiguration}
-      />
     </View>
   );
 };

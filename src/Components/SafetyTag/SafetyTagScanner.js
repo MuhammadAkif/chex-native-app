@@ -17,18 +17,18 @@ import {
 
 import useSafetyTag from '../../hooks/useSafetyTag';
 import DeviceList from './DeviceList';
-import AccelerometerDisplay from './AccelerometerDisplay';
 import {colors} from '../../Assets/Styles';
 import ConnectedDevice from './ConnectedDevice';
 import {isNotEmpty} from '../../Utils';
 import ConnectionControls from './ConnectionControls';
-import InstructionsModal from './InstructionsModal';
+import InstructionsModal from './FloatingButton/InstructionsModal';
 import {
   setFirstTimeOpen,
   setShowInstructions,
 } from '../../Store/Actions/AppStateActions';
 import CrashEventDisplay from './CrashEventDisplay';
 import {LoadingIndicator} from '../index';
+import AccelerometerDisplayAndroid from './AccelerometerDisplayAndroid';
 
 const {white, black} = colors;
 
@@ -171,7 +171,7 @@ const SafetyTagScanner = () => {
           handleDisconnectDevice={handleDisconnectDevice}
           isConnected={isNotEmpty(connectedDevice)}
         />
-        {isNotEmpty(connectedDevice) && <AccelerometerDisplay />}
+        {isNotEmpty(connectedDevice) && <AccelerometerDisplayAndroid />}
         {isNotEmpty(connectedDevice) && <CrashEventDisplay />}
       </ScrollView>
 

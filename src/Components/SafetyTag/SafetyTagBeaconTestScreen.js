@@ -1,15 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {
   View,
-  Text,
-  Button,
   StyleSheet,
-  ScrollView,
-  ActivityIndicator,
   DeviceEventEmitter,
   NativeModules,
 } from 'react-native';
-import {SafetyTagBeaconTest} from './SafetyTagBeaconTest';
 
 const {SafetyTagModule} = NativeModules;
 
@@ -141,8 +136,8 @@ export const SafetyTagBeaconTestScreen = () => {
       setError('Failed to disconnect: ' + error);
     }
   };
-
-  return (
+  return <View />;
+  /*return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>SafetyTag Beacon Testing</Text>
 
@@ -153,7 +148,7 @@ export const SafetyTagBeaconTestScreen = () => {
         </View>
       )}
 
-      {/* Connection Status */}
+      {/!* Connection Status *!/}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Connection Status</Text>
         {connectedDevice ? (
@@ -168,7 +163,7 @@ export const SafetyTagBeaconTestScreen = () => {
         )}
       </View>
 
-      {/* Scanning Controls */}
+      {/!* Scanning Controls *!/}
       {!connectedDevice && (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Device Scanner</Text>
@@ -180,7 +175,7 @@ export const SafetyTagBeaconTestScreen = () => {
         </View>
       )}
 
-      {/* Discovered Devices */}
+      {/!* Discovered Devices *!/}
       {!connectedDevice && discoveredDevices.length > 0 && (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Discovered Devices</Text>
@@ -194,14 +189,14 @@ export const SafetyTagBeaconTestScreen = () => {
         </View>
       )}
 
-      {/* Beacon Test Component */}
+      {/!* Beacon Test Component *!/}
       {connectedDevice && (
         <View style={styles.section}>
           <SafetyTagBeaconTest device={connectedDevice} />
         </View>
       )}
     </ScrollView>
-  );
+  );*/
 };
 
 const styles = StyleSheet.create({
