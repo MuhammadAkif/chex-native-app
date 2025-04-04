@@ -44,6 +44,7 @@ RCT_EXTERN_METHOD(isAutoConnectEnabled:(NSString *)deviceId
                   deviceName:(NSString *)deviceName
                   iBeaconUUID:(NSString *)iBeaconUUID)
 RCT_EXTERN_METHOD(verifyBackgroundOperation)
+RCT_EXTERN_METHOD(requestLocationAlwaysPermission)
 RCT_EXTERN_METHOD(handleBackgroundWakeUp:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 @end

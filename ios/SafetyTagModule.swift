@@ -52,6 +52,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
     locationManager.pausesLocationUpdatesAutomatically = false
 
     // Request authorization
+    locationManager.requestWhenInUseAuthorization()
     locationManager.requestAlwaysAuthorization()
   }
 
@@ -315,6 +316,10 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
   }
 
   // MARK: - Accelerometer Methods
+  @objc func requestLocationAlwaysPermission() {
+    locationManager.requestAlwaysAuthorization()
+  }
+
   @objc func enableAccelerometerDataStream() {
     print("[SafetyTagModule] Enabling Accelerometer Data Stream...")
 

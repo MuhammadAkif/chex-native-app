@@ -10,6 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import {useDispatch} from 'react-redux';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 
 import {useSafetyTagIOS} from '../../hooks';
 import {LoadingIndicator, SafetyTagDeviceInfo} from '../index';
@@ -48,6 +49,7 @@ const SafetyTagIOS = () => {
     getDeviceInformation,
     enableAccelerometerDataStream,
     disableAccelerometerDataStream,
+    requestAlwaysPermission,
   } = useSafetyTagIOS({
     onDeviceConnected: onDeviceConnected,
     onDeviceConnectionFailed: onDeviceConnectionFailed,
@@ -302,7 +304,9 @@ const SafetyTagIOS = () => {
 
   const handleStartScan = async () => {
     try {
+      await getDeviceInformation();
       console.log('Starting scan for SafetyTag devices...');
+      await startScan();
       await startScan();
     } catch (error) {
       console.error('Error starting scan:', error);
@@ -321,8 +325,44 @@ const SafetyTagIOS = () => {
     }
   };
 
+  const checkLocationPermission = async () => {
+    try {
+      const result = await check(PERMISSIONS.IOS.LOCATION_ALWAYS);
+
+      switch (result) {
+        case RESULTS.UNAVAILABLE:
+          Alert.alert(
+            'Error',
+            'Location service is not available on this device',
+          );
+          return false;
+
+        case RESULTS.DENIED:
+          // Permission has not been requested yet
+          const requestResult = await requestAlwaysPermission();
+          return requestResult === RESULTS.GRANTED;
+
+        case RESULTS.LIMITED:
+        case RESULTS.GRANTED:
+          return true;
+
+        case RESULTS.BLOCKED:
+          await requestAlwaysPermission();
+      }
+    } catch (error) {
+      console.error('Error checking location permission:', error);
+      return false;
+    }
+  };
+
   const handleStartAlignment = async () => {
     try {
+      const hasPermission = await checkLocationPermission();
+
+      if (!hasPermission) {
+        return; // Exit if permission not granted
+      }
+
       await enableAccelerometerDataStream();
       setAlignmentDetails(prev => ({...prev, step: 'STARTING'}));
       await startAlignment(false);
@@ -357,7 +397,10 @@ const SafetyTagIOS = () => {
           isConnected={isConnected}
           connectedDevice={connectedDevice}
         />
-        <ConnectedDevice connectedDevice={connectedDevice} />
+        <ConnectedDevice
+          isConnected={isConnected}
+          connectedDevice={connectedDevice}
+        />
 
         <View style={styles.buttonContainer}>
           {!isConnected && (

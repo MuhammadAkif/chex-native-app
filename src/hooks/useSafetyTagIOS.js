@@ -220,6 +220,15 @@ const useSafetyTagIOS = onEvents => {
     }
   };
 
+  const requestAlwaysPermission = async () => {
+    try {
+      console.log('Request AlwaysPermission...');
+      await SafetyTagModule.requestLocationAlwaysPermission();
+    } catch (error) {
+      console.error('Request always permission error: ', error);
+    }
+  };
+
   return {
     devices,
     isScanning,
@@ -236,6 +245,7 @@ const useSafetyTagIOS = onEvents => {
     enableAccelerometerDataStream,
     disableAccelerometerDataStream,
     isAccelerometerDataStreamEnabled,
+    requestAlwaysPermission,
   };
 };
 

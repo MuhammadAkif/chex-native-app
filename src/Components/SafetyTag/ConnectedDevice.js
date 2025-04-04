@@ -2,28 +2,25 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 import {colors} from '../../Assets/Styles';
-import {isNotEmpty} from '../../Utils';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 const {black} = colors;
 
-const ConnectedDevice = ({connectedDevice}) => (
+const ConnectedDevice = ({connectedDevice, isConnected}) => (
   <View style={styles.deviceInfoContainer}>
     <Text style={[styles.deviceInfoTitle, styles.textColor]}>
-      {isNotEmpty(connectedDevice?.address)
-        ? 'Device Connected 🟢'
-        : 'Device Not Connected 🔴'}
+      {isConnected ? 'Device Connected 🟢' : 'Device Not Connected 🔴'}
     </Text>
-    {isNotEmpty(connectedDevice) && (
-      <>
-        <Text style={[styles.deviceInfoText, styles.textColor]}>
-          Address: {connectedDevice?.address}
-        </Text>
-        <Text style={[styles.deviceInfoText, styles.textColor]}>
-          Bond Status: {connectedDevice?.isBonded ? 'Bonded' : 'Not Bonded'}
-        </Text>
-      </>
-    )}
+    {/*{isNotEmpty(connectedDevice) && (
+        <>
+          <Text style={[styles.deviceInfoText, styles.textColor]}>
+            Address: {connectedDevice?.address}
+          </Text>
+          <Text style={[styles.deviceInfoText, styles.textColor]}>
+            Bond Status: {connectedDevice?.isBonded ? 'Bonded' : 'Not Bonded'}
+          </Text>
+        </>
+      )}*/}
   </View>
 );
 

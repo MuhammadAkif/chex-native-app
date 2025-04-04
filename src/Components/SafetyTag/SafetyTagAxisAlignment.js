@@ -14,7 +14,6 @@ const SafetyTagAxisAlignment = () => {
     startAlignment,
     stopAlignment,
     checkAlignmentStatus,
-    getAlignmentConfiguration,
     removeStoredAlignment,
   } = useAxisAlignment();
   const isAlignmentRunning = alignmentState?.phase === 'started';
@@ -45,7 +44,7 @@ const SafetyTagAxisAlignment = () => {
   };
 
   async function handleAlignmentToggle() {
-    await requestLocationPermission();
+    //await requestLocationPermission();
     await handleIsAlignmentActive();
     await removeStoredAlignment();
   }
