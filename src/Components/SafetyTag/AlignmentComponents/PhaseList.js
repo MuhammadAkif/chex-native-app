@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: wp('2%'),
+    paddingTop: wp('0.5%'),
   },
   completed: {
     backgroundColor: colors.brightGreen,

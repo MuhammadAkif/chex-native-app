@@ -50,10 +50,15 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
     locationManager.delegate = self
     locationManager.allowsBackgroundLocationUpdates = true
     locationManager.pausesLocationUpdatesAutomatically = false
+    locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
 
     // Request authorization
     locationManager.requestWhenInUseAuthorization()
     locationManager.requestAlwaysAuthorization()
+
+    // Start updating location immediately
+   // locationManager.startUpdatingLocation()
+   // locationManager.startMonitoringSignificantLocationChanges()
   }
 
   // MARK: - RCTEventEmitter Required Methods
@@ -106,7 +111,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       "onDeviceMonitoringStatus",
       "onAutoConnectStatus",
       "onCrashThreshold",
-      "onCrashEvent"
+      "onCrashEvent",
     ]
   }
 
@@ -320,7 +325,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
     locationManager.requestAlwaysAuthorization()
   }
 
-  @objc func enableAccelerometerDataStream() {
+  @objc func enableIOSAccelerometerDataStream() {
     print("[SafetyTagModule] Enabling Accelerometer Data Stream...")
 
     // Clear any existing subscriptions before creating a new one
@@ -388,13 +393,13 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
   }
 
   // MARK: - Axis Alignment Methods
-  @objc func startAxisAlignment(_ resumeIfAvailable: Bool) {
-    print("[SafetyTagModule] Starting axis alignment...")
+  @objc func startIOSAxisAlignment(_ resumeIfAvailable: Bool) {
+    print("[SafetyTagModule] Starting axis alignment of iOS...")
 
     // 1. First ensure accelerometer stream is active
     if accelerometerPublisher.isEmpty {
-      print("[SafetyTagModule] Initializing accelerometer stream...")
-      enableAccelerometerDataStream()
+        print("[SafetyTagModule] Initializing accelerometer stream...")
+        enableIOSAccelerometerDataStream()
     }
 
     // 2. Clear any existing subscriptions to avoid duplicates
@@ -853,6 +858,25 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       .store(in: &cancellables)
   }
 
+  @objc func readRSSI() {
+    // Attempt to read the RSSI from the device manager
+    try? STDeviceManager.shared.connection.readRSSI()
+
+    // Subscribe to the RSSI event publisher
+    SafetyTagApi.Event.Connection.didReceiveRSSI
+      .receive(on: DispatchQueue.main)
+      .sink { [weak self] device, RSSI, error in
+        // Handle the RSSI data here
+        if let error = error {
+          print("[SafetyTagModule] Error receiving RSSI: \(error.localizedDescription)")
+        } else {
+          print("[SafetyTagModule] RSSI received from device \(RSSI)")
+        }
+      }
+      .store(in: &cancellables) // Store the subscription in cancellables
+
+  }
+
   private func observeTripEvents() {
     // Trip Start Event
     SafetyTagApi.Event.TripsDetection.didReceiveTripStartEvent
@@ -1030,6 +1054,60 @@ extension SafetyTagModule {
   func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
     if let beaconRegion = region as? CLBeaconRegion {
       print("[SafetyTagModule] Region state changed: \(state.rawValue) for device: \(beaconRegion.identifier)")
+    }
+  }
+
+  func locationManager(_ manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    print("[SafetyTagModule] Location permission change to \(status)")
+
+    switch status {
+    case .notDetermined:
+      // If the status is not determined, we can request permission.
+      // Requesting WhenInUse permission by default
+      locationManager.requestWhenInUseAuthorization()
+
+    case .restricted, .denied:
+      // If location access is restricted or denied, you can't request permissions again.
+      // You might want to show a message to the user about how to change it in settings.
+      print("[SafetyTagModule] Location access is restricted or denied.")
+
+    case .authorizedWhenInUse:
+      // If authorized for WhenInUse, you might want to request Always permission if needed
+      locationManager.requestAlwaysAuthorization()
+
+    case .authorizedAlways:
+      // If already authorized for Always, no further action is required.
+      print("[SafetyTagModule] Location access is already granted for always.")
+
+    @unknown default:
+      // Handle any future cases or unrecognized status
+      print("[SafetyTagModule] Unrecognized authorization status: \(status)")
+    }
+  }
+
+  // Delegate method called when location is updated
+  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    // Take the latest location update
+    if let latestLocation = locations.last {
+      let latitude = latestLocation.coordinate.latitude
+      let longitude = latestLocation.coordinate.longitude
+      let accuracy = latestLocation.horizontalAccuracy
+      let speed = latestLocation.speed
+      let heading = latestLocation.course
+      let timestamp = Date().timeIntervalSince1970
+
+      print("[SafetyTagModule] Live Location Update - Latitude: \(latestLocation) \(latitude) \(longitude)")
+    }
+  }
+
+  // Delegate method called if there's an error receiving location updates
+  func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    print("[SafetyTagModule] Error obtaining location: \(error.localizedDescription)")
+
+    if self.hasListeners {
+      self.sendEvent(withName: "onLocationError", body: [
+        "error": error.localizedDescription
+      ])
     }
   }
 }

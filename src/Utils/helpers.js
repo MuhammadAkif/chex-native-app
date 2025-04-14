@@ -6,6 +6,7 @@ import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 
 import {isNotEmpty} from './index';
 import {Landscape, Portrait} from '../Assets/Icons';
+import {DeviceEventEmitter} from 'react-native';
 
 const {BLUETOOTH_CONNECT, BLUETOOTH_SCAN, ACCESS_FINE_LOCATION} =
   PERMISSIONS.ANDROID;
@@ -330,6 +331,17 @@ export const ALIGNMENT_PHASES = [
     ],
   },
   {
+    id: 'X_AXIS_NOT_STARTED',
+    title: 'X-Axis Alignment Not Started',
+    description: 'Waiting for X-axis alignment to begin',
+    instructions: [
+      'Drive the vehicle normally',
+      'Maintain speed between 10-80 km/h',
+      'Drive in a straight line when possible',
+      'Accelerate or brake gently when safe',
+    ],
+  },
+  {
     id: 'FINDING_X_AXIS_ANGLE',
     title: 'X-Axis Alignment (Horizontal)',
     description: 'Finding X and Y axes alignment while driving',
@@ -405,4 +417,20 @@ export const crashReport = {
 export const crashThresholdEvent = {
   timestampUnixMs: 1617187200000,
   timestampElapsedRealtimeMs: 1500000,
+};
+
+export const addDeviceEventListener = (eventName, callback) => {
+  // Adding the event listener
+  // Return listener so it can be removed later
+  return DeviceEventEmitter.addListener(eventName, event => {
+    try {
+      callback(event);
+    } catch (error) {
+      console.error(`Error in event handler for ${eventName}:`, error);
+    }
+  });
+};
+
+export const removeDeviceEventListener = listener => {
+  listener.remove();
 };

@@ -11,6 +11,10 @@ import {
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
 import {useSafetyTagIOS} from '../../hooks';
 import {LoadingIndicator, SafetyTagDeviceInfo} from '../index';
@@ -27,10 +31,6 @@ import CrashEventDisplay from './CrashEventDisplay';
 import AccelerometerDisplayIOS from './AccelerometerDisplayIOS';
 import {PhaseList, InstructionsPanel} from './AlignmentComponents';
 import {useAxisAlignment} from '../../hooks/useAxisAlignment';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
 import {colors} from '../../Assets/Styles';
 import FloatingButton from './FloatingButton/FloatingButton';
 import useBoolean from '../../hooks/useBoolean';
@@ -267,7 +267,7 @@ const SafetyTagIOS = () => {
   }
 
   function onVehicleState(event) {
-    console.log('Vehicle State Update:', event);
+    // console.log('Vehicle State Update:', event);
     setAlignmentDetails(prev => ({
       ...prev,
       validVehicleState: event.validVehicleState,
@@ -415,7 +415,7 @@ const SafetyTagIOS = () => {
               onDeviceSelect={connectToDevice}
             />
           )}
-          <SafetyTagBeaconTestScreen />
+          {/*<SafetyTagBeaconTestScreen />*/}
           <TouchableOpacity
             style={[
               styles.button,

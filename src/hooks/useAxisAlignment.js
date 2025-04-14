@@ -85,7 +85,8 @@ export const useAxisAlignment = () => {
   }, []);
 
   function onAxisAlignmentState(state) {
-    setAlignmentState(state);
+    // setAlignmentState(state);
+    console.log('Received alignment state:', state);
     /*    console.log('Received alignment state:', state);
     const {
       angles: {current, previous},
@@ -138,7 +139,7 @@ export const useAxisAlignment = () => {
   }
 
   function onVehicleState(state) {
-    console.log('Received vehicle state:', state);
+    //console.log('Received vehicle state:', state);
     setVehicleState(state);
   }
 
@@ -198,7 +199,7 @@ export const useAxisAlignment = () => {
     try {
       setError(null);
       setIsComplete(false);
-      await SafetyTagModule.startAxisAlignment(resumeIfAvailable);
+      await SafetyTagModule.startIOSAxisAlignment(resumeIfAvailable);
     } catch (err) {
       setError(err.message);
     }

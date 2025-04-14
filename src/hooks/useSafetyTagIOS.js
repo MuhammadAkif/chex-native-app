@@ -195,7 +195,7 @@ const useSafetyTagIOS = onEvents => {
 
   const enableAccelerometerDataStream = async () => {
     try {
-      await SafetyTagModule.enableAccelerometerDataStream();
+      await SafetyTagModule.enableIOSAccelerometerDataStream();
       console.log('Successfully enabled accelerometer data stream');
     } catch (error) {
       console.error('Error enabling accelerometer data stream:', error);
@@ -228,6 +228,18 @@ const useSafetyTagIOS = onEvents => {
       console.error('Request always permission error: ', error);
     }
   };
+
+  function readRSSIOfDevice() {
+    try {
+      const timerId = setTimeout(() => {
+        console.log('Reading RSSI');
+        SafetyTagModule.readRSSI();
+      }, 5000);
+      clearTimeout(timerId);
+    } catch (error) {
+      console.error('Request always permission error: ', error);
+    }
+  }
 
   return {
     devices,

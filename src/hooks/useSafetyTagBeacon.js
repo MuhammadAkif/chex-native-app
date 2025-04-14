@@ -88,7 +88,7 @@ export const useSafetyTagBeacon = (onEvents = {}) => {
   };
 
   useEffect(() => {
-    console.log('📱 Setting up SafetyTag beacon listeners...');
+    //console.log('📱 Setting up SafetyTag beacon listeners...');
     const subscriptions = [
       DeviceEventEmitter.addListener('onRegionEntered', onRegionEntered),
       DeviceEventEmitter.addListener('onRegionExited', onRegionExited),
@@ -107,18 +107,16 @@ export const useSafetyTagBeacon = (onEvents = {}) => {
     ];
 
     return () => {
-      console.log('🧹 Cleaning up SafetyTag beacon listeners...');
+      // console.log('🧹 Cleaning up SafetyTag beacon listeners...');
       subscriptions.forEach(subscription => subscription.remove());
     };
   }, [onRegionEntered, onRegionExited, onRegionStateChanged]);
 
   function onDeviceMonitoringStatus(event) {
-    console.log('onDeviceMonitoringStatus: ', event);
     onEvents.onDeviceMonitoringStatus(event);
   }
 
   function onAutoConnectStatus(event) {
-    console.log('onAutoConnectStatus: ', event);
     onEvents.onAutoConnectStatus(event);
   }
 
@@ -214,11 +212,11 @@ export const useSafetyTagBeacon = (onEvents = {}) => {
         device.name,
         device.iBeaconUUID,
       );
-      console.log('🔍 Device auto-connect status:', {
+      /*  console.log('🔍 Device auto-connect status:', {
         id: device.id,
         name: device.name,
         isEnabled,
-      });
+      });*/
       return isEnabled;
     } catch (error) {
       console.error('❌ Failed to check auto-connect status:', error);
