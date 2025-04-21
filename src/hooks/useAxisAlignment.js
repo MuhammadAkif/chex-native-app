@@ -1,146 +1,90 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Alert, DeviceEventEmitter, NativeModules} from 'react-native';
 
 const {SafetyTagModule} = NativeModules;
-// const eventEmitter = new NativeEventEmitter(SafetyTagModule);
 
-export const useAxisAlignment = () => {
-  const alignmentStatusRef = useRef(null);
-  const [alignmentState, setAlignmentState] = useState(null);
-  const [vehicleState, setVehicleState] = useState(null);
-  const [alignmentData, setAlignmentData] = useState(null);
+/**
+ * Hook for managing SafetyTag axis alignment functionality
+ * @param {Object} onEvents - Callback functions for various events
+ * @returns {Object} - Alignment state and utility functions
+ */
+export const useAxisAlignment = onEvents => {
+  // ==========================================
+  // State Management
+  // ==========================================
   const [error, setError] = useState(null);
-  const [isComplete, setIsComplete] = useState(false);
-  const [alignmentDetails, setAlignmentDetails] = useState({
-    angles: {
-      current: null,
-      previous: null,
-    },
-    bootstrap: {
-      completed: 0,
-      total: 0,
-      sampleSize: 0,
-    },
-    validation: {
-      confidenceLevel: 0,
-      flipAngleCounter: 0,
-      validatedDataCounter: 0,
-      isFlipped: false,
-    },
-    theta: {
-      previous: null,
-      new: null,
-      rotationAxis: null,
-    },
-    phase: null,
-    zAxisState: null,
-    xAxisState: null,
-    validVehicleState: false,
-    isRetrying: false,
-  });
 
+  // ==========================================
+  // Event Listeners Setup
+  // ==========================================
   useEffect(() => {
+    // Register all event listeners
     const subscriptions = [
+      // Alignment-specific events
       DeviceEventEmitter.addListener(
         'onAxisAlignmentState',
         onAxisAlignmentState,
       ),
-
       DeviceEventEmitter.addListener('onVehicleState', onVehicleState),
-
       DeviceEventEmitter.addListener(
         'onAxisAlignmentData',
         onAxisAlignmentData,
       ),
-
       DeviceEventEmitter.addListener(
         'onAxisAlignmentError',
         onAxisAlignmentError,
       ),
-
       DeviceEventEmitter.addListener(
         'onAxisAlignmentFinished',
         onAxisAlignmentFinished,
       ),
-
       DeviceEventEmitter.addListener(
         'onAxisAlignmentMissing',
         onAxisAlignmentMissing,
       ),
-
       DeviceEventEmitter.addListener(
         'onAxisAlignmentStatusCheck',
         onAxisAlignmentStatusCheck,
       ),
-
       DeviceEventEmitter.addListener(
         'onStoredAxisAlignmentCheck',
         onStoredAxisAlignmentCheck,
       ),
+
+      // Accelerometer events
+      DeviceEventEmitter.addListener(
+        'onAccelerometerData',
+        onAccelerometerData,
+      ),
+      DeviceEventEmitter.addListener(
+        'onAccelerometerError',
+        onAccelerometerError,
+      ),
+      DeviceEventEmitter.addListener(
+        'onAccelerometerStreamStatus',
+        onAccelerometerStreamStatus,
+      ),
     ];
 
+    // Cleanup function to remove all listeners
     return () => {
       subscriptions.forEach(subscription => subscription.remove());
     };
   }, []);
 
+  // ==========================================
+  // Event Handlers - Alignment Events
+  // ==========================================
   function onAxisAlignmentState(state) {
-    // setAlignmentState(state);
-    console.log('Received alignment state:', state);
-    /*    console.log('Received alignment state:', state);
-    const {
-      angles: {current, previous},
-      overallIterationCount,
-      bootstrapOverallIterations,
-      currentBootstrapBufferSize,
-      directionValidation: {
-        confidenceLevel,
-        flipAngleCounter,
-        validatedDataCounter,
-        isFlipped,
-      },
-      theta,
-      phase,
-      zAxisState,
-      xAxisState,
-      validVehicleState,
-      isRetrying,
-    } = state;
-    setAlignmentState(state);
-
-    // Update detailed state information
-    setAlignmentDetails({
-      angles: {
-        current: current,
-        previous: previous,
-      },
-      bootstrap: {
-        completed: overallIterationCount,
-        total: bootstrapOverallIterations,
-        sampleSize: currentBootstrapBufferSize,
-      },
-      validation: {
-        confidenceLevel: confidenceLevel,
-        flipAngleCounter: flipAngleCounter,
-        validatedDataCounter: validatedDataCounter,
-        isFlipped: isFlipped,
-      },
-      theta: {
-        previous: theta.previous,
-        new: theta.new,
-        rotationAxis: theta.rotationAxis,
-      },
-      phase: phase,
-      zAxisState: zAxisState,
-      xAxisState: xAxisState,
-      validVehicleState: validVehicleState,
-      isRetrying: isRetrying,
-    });*/
+    if (onEvents && onEvents.onAxisAlignmentState) {
+      onEvents.onAxisAlignmentState(state);
+    }
   }
 
   function onVehicleState(state) {
-    //console.log('Received vehicle state:', state);
-    setVehicleState(state);
+    if (onEvents && onEvents.onVehicleState) {
+      onEvents.onVehicleState(state);
+    }
   }
 
   function onAxisAlignmentData(data) {
@@ -152,12 +96,20 @@ export const useAxisAlignment = () => {
         phi: data.matrices.phi,
       },
     });*/
+
+    if (onEvents && onEvents.onAxisAlignmentData) {
+      onEvents.onAxisAlignmentData(data);
+    }
   }
 
   function onAxisAlignmentError(error) {
     console.log('onAxisAlignmentError: ', error);
     setError(error.error);
     Alert.alert('Alignment Error', error.error);
+
+    if (onEvents && onEvents.onAxisAlignmentError) {
+      onEvents.onAxisAlignmentError(error);
+    }
   }
 
   function onAxisAlignmentFinished(result) {
@@ -166,6 +118,10 @@ export const useAxisAlignment = () => {
       Alert.alert('Success', 'Axis alignment completed successfully');
     } else {
       Alert.alert('Error', result.error || 'Alignment failed');
+    }
+
+    if (onEvents && onEvents.onAxisAlignmentFinished) {
+      onEvents.onAxisAlignmentFinished(result);
     }
   }
 
@@ -184,21 +140,57 @@ export const useAxisAlignment = () => {
         },
       ],
     );
+
+    if (onEvents && onEvents.onAxisAlignmentMissing) {
+      onEvents.onAxisAlignmentMissing();
+    }
   }
 
-  function onStoredAxisAlignmentCheck(event) {}
+  function onStoredAxisAlignmentCheck(event) {
+    if (onEvents && onEvents.onStoredAxisAlignmentCheck) {
+      onEvents.onStoredAxisAlignmentCheck(event);
+    }
+  }
 
   function onAxisAlignmentStatusCheck(event) {
-    alignmentStatusRef.current = {
-      hasStarted: event?.hasStarted || false,
-      error: event?.error || null,
-    };
+    if (onEvents && onEvents.onAxisAlignmentStatusCheck) {
+      onEvents.onAxisAlignmentStatusCheck(event);
+    }
   }
 
+  // ==========================================
+  // Event Handlers - Accelerometer Events
+  // ==========================================
+  function onAccelerometerData(event) {
+    console.log('Accelerometer Data:', event);
+
+    if (onEvents && onEvents.onAccelerometerData) {
+      onEvents.onAccelerometerData(event);
+    }
+  }
+
+  function onAccelerometerError(event) {
+    console.error('Accelerometer Error:', event.error);
+
+    if (onEvents && onEvents.onAccelerometerError) {
+      onEvents.onAccelerometerError(event);
+    }
+  }
+
+  function onAccelerometerStreamStatus(event) {
+    console.log('Accelerometer Stream Status:', event.isEnabled);
+
+    if (onEvents && onEvents.onAccelerometerStreamStatus) {
+      onEvents.onAccelerometerStreamStatus(event);
+    }
+  }
+
+  // ==========================================
+  // Utility Functions
+  // ==========================================
   const startAlignment = async (resumeIfAvailable = false) => {
     try {
       setError(null);
-      setIsComplete(false);
       await SafetyTagModule.startIOSAxisAlignment(resumeIfAvailable);
     } catch (err) {
       setError(err.message);
@@ -259,14 +251,14 @@ export const useAxisAlignment = () => {
     }
   };
 
+  // ==========================================
+  // Return Values
+  // ==========================================
   return {
-    alignmentStatusRef,
-    alignmentState,
-    alignmentDetails,
-    vehicleState,
-    alignmentData,
+    // State
     error,
-    isComplete,
+
+    // Utility Functions
     startAlignment,
     stopAlignment,
     checkAlignmentStatus,

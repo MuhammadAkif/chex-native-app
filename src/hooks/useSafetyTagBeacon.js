@@ -156,9 +156,9 @@ export const useSafetyTagBeacon = (onEvents = {}) => {
     }
   };
 
-  const isBeingMonitored = async device => {
+  const isBeingMonitored = device => {
     try {
-      await SafetyTagModule.isDeviceBeingMonitored(
+      SafetyTagModule.isDeviceBeingMonitored(
         device.id,
         device.name,
         device.iBeaconUUID,
@@ -205,19 +205,13 @@ export const useSafetyTagBeacon = (onEvents = {}) => {
     }
   };
 
-  const isAutoConnectEnabled = async device => {
+  const isAutoConnectEnabled = device => {
     try {
-      const isEnabled = await SafetyTagModule.isAutoConnectEnabled(
+      SafetyTagModule.isAutoConnectEnabled(
         device.id,
         device.name,
         device.iBeaconUUID,
       );
-      /*  console.log('🔍 Device auto-connect status:', {
-        id: device.id,
-        name: device.name,
-        isEnabled,
-      });*/
-      return isEnabled;
     } catch (error) {
       console.error('❌ Failed to check auto-connect status:', error);
       return false;

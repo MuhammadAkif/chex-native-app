@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, Button, StyleSheet} from 'react-native';
-import {useSafetyTagBeacon} from '../../hooks/useSafetyTagBeacon';
+
+import {useSafetyTagIOS} from '../../hooks';
 
 export const SafetyTagBeaconTest = ({device}) => {
   const [isMonitoring, setIsMonitoring] = useState(false);
@@ -16,7 +17,7 @@ export const SafetyTagBeaconTest = ({device}) => {
     isAutoConnectEnabled: checkAutoConnect,
     startSignificantLocationChanges,
     stopSignificantLocationChanges,
-  } = useSafetyTagBeacon({
+  } = useSafetyTagIOS({
     onRegionEntered: event => {
       setLastEvent({type: 'entered', ...event});
     },
@@ -48,8 +49,7 @@ export const SafetyTagBeaconTest = ({device}) => {
   const checkStates = async () => {
     if (device) {
       isBeingMonitored(device).then();
-      const autoConnect = await checkAutoConnect(device);
-      setIsAutoConnectEnabled(autoConnect);
+      checkAutoConnect(device);
     }
   };
 
@@ -192,3 +192,5 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
 });
+
+export default SafetyTagBeaconTest;

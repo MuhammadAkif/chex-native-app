@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import {colors} from '../../Assets/Styles';
 
+const ItemSeparatorComponent = () => <View style={styles.separator} />;
+
 const DeviceScan = ({devices, isScanning, onDeviceSelect}) => {
   const handleOnDeviceSelect = device => {
     onDeviceSelect(device);
@@ -35,7 +37,7 @@ const DeviceScan = ({devices, isScanning, onDeviceSelect}) => {
           renderItem={renderDeviceItem}
           keyExtractor={item => item.id}
           style={styles.deviceList}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          ItemSeparatorComponent={ItemSeparatorComponent}
         />
       ) : (
         <View style={styles.emptyContainer}>

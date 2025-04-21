@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, FlatList} from 'react-native';
 
 const formatDuration = (startDate, endDate) => {
   const seconds = endDate - startDate;
@@ -22,58 +22,57 @@ const formatDuration = (startDate, endDate) => {
 };
 
 const TripItem = ({trip}) => {
-  const startDate = new Date(trip.startDate * 1000); // Convert Unix timestamp to milliseconds
-  const endDate = new Date(trip.endDate * 1000); // Convert Unix timestamp to milliseconds
+  const startDate = new Date(trip.startDate * 1000);
+  const endDate = new Date(trip.endDate * 1000);
   const duration = formatDuration(trip.startDate, trip.endDate);
+
+  const tripDetails = [
+    {label: 'Start', value: startDate.toLocaleString()},
+    {label: 'End', value: endDate.toLocaleString()},
+    {label: 'Duration', value: duration},
+    {
+      label: 'Connection',
+      value: trip.connectedDuringTrip ? 'Connected' : 'Disconnected',
+      warning: !trip.connectedDuringTrip,
+    },
+  ];
 
   return (
     <View style={styles.tripItem}>
       <View style={styles.tripDetails}>
-        <View style={styles.detailRow}>
-          <Text style={styles.label}>Start:</Text>
-          <Text style={styles.value}>{startDate.toLocaleString()}</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.label}>End:</Text>
-          <Text style={styles.value}>{endDate.toLocaleString()}</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.label}>Duration:</Text>
-          <Text style={styles.value}>{duration}</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.label}>Connection:</Text>
-          <Text
-            style={[
-              styles.value,
-              !trip.connectedDuringTrip && styles.warningText,
-            ]}>
-            {trip.connectedDuringTrip ? 'Connected' : 'Disconnected'}
-          </Text>
-        </View>
+        {tripDetails.map((detail, index) => (
+          <View key={index} style={styles.detailRow}>
+            <Text style={styles.label}>{detail.label}:</Text>
+            <Text style={[styles.value, detail.warning && styles.warningText]}>
+              {detail.value}
+            </Text>
+          </View>
+        ))}
       </View>
     </View>
   );
 };
 
+const LoadingState = () => (
+  <View style={styles.container}>
+    <Text style={styles.loadingText}>Loading trips...</Text>
+  </View>
+);
+
+const EmptyState = () => (
+  <View style={styles.container}>
+    <Text style={styles.noTripsText}>No trips recorded</Text>
+  </View>
+);
+
 const SafetyTagTrips = ({trips = [], isLoading = false, deviceName = ''}) => {
   if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.loadingText}>Loading trips...</Text>
-      </View>
-    );
+    return <LoadingState />;
   }
-
   if (!trips.length) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.noTripsText}>No trips recorded</Text>
-      </View>
-    );
+    return <EmptyState />;
   }
 
-  // Sort trips by start date (most recent first)
   const sortedTrips = [...trips].sort((a, b) => b.startDate - a.startDate);
 
   return (
@@ -81,14 +80,20 @@ const SafetyTagTrips = ({trips = [], isLoading = false, deviceName = ''}) => {
       <Text style={styles.title}>Recorded Trips</Text>
       {deviceName && <Text style={styles.subtitle}>Device: {deviceName}</Text>}
       <Text style={styles.subtitle}>Total Trips: {trips.length}</Text>
-      {sortedTrips.map((trip, index) => (
+      <FlatList
+        data={sortedTrips}
+        renderItem={({item: trip}) => <TripItem trip={trip} />}
+        keyExtractor={(_, index) => index.toString()}
+      />
+      {/*{sortedTrips.map((trip, index) => (
         <TripItem key={index} trip={trip} />
-      ))}
+      ))}*/}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  // Layout Styles
   container: {
     padding: 16,
     backgroundColor: '#FFFFFF',
@@ -103,17 +108,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 16,
-  },
   tripItem: {
     borderBottomWidth: 1,
     borderBottomColor: '#E5E5E5',
@@ -126,6 +120,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 4,
+  },
+
+  // Typography Styles
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 16,
   },
   label: {
     fontSize: 14,
@@ -152,6 +159,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontStyle: 'italic',
   },
+
+  // State Styles
   warningText: {
     color: '#ff9800',
   },

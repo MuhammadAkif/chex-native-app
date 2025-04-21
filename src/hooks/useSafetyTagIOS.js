@@ -1,13 +1,54 @@
 import {useEffect, useState} from 'react';
 import {NativeModules, NativeEventEmitter} from 'react-native';
 
+import {useAxisAlignment} from './useAxisAlignment';
+import {useSafetyTagBeacon} from './useSafetyTagBeacon';
+
 const {SafetyTagModule} = NativeModules;
 const eventEmitter = new NativeEventEmitter(SafetyTagModule);
 
+/**
+ * Hook for managing SafetyTag iOS device functionality
+ * @param {Object} onEvents - Callback functions for various events
+ * @returns {Object} - Device state and utility functions
+ */
 const useSafetyTagIOS = onEvents => {
+  // ==========================================
+  // Alignment Integration
+  // ==========================================
+  const {
+    error,
+    startAlignment,
+    stopAlignment,
+    checkAlignmentStatus,
+    checkStoredAlignment,
+    removeStoredAlignment,
+    getAlignmentConfiguration,
+  } = useAxisAlignment(onEvents);
+
+  // ==========================================
+  // iBeacon Integration
+  // ==========================================
+  const {
+    startMonitoring,
+    stopMonitoring,
+    isBeingMonitored,
+    enableAutoConnect,
+    disableAutoConnect,
+    isAutoConnectEnabled,
+    startSignificantLocationChanges,
+    stopSignificantLocationChanges,
+  } = useSafetyTagBeacon(onEvents);
+
+  // ==========================================
+  // State Management
+  // ==========================================
   const [devices, setDevices] = useState([]);
   const [isScanning, setIsScanning] = useState(false);
 
+  // ==========================================
+  // Setup & Cleanup
+  // ==========================================
   useEffect(() => {
     startObserving().then();
     const subscriptions = onDeviceReady();
@@ -18,8 +59,12 @@ const useSafetyTagIOS = onEvents => {
     };
   }, []);
 
+  // ==========================================
+  // Event Listeners Setup
+  // ==========================================
   function onDeviceReady() {
     return [
+      // Device Discovery & Connection Events
       eventEmitter.addListener('onDeviceDiscovered', onDeviceDiscovered),
       eventEmitter.addListener('onDeviceConnected', onDeviceConnected),
       eventEmitter.addListener(
@@ -29,14 +74,25 @@ const useSafetyTagIOS = onEvents => {
       eventEmitter.addListener('onDeviceDisconnected', onDeviceDisconnected),
       eventEmitter.addListener('onGetConnectedDevice', onGetConnectedDevice),
       eventEmitter.addListener('onCheckConnection', onCheckConnection),
+      eventEmitter.addListener(
+        'onDeviceConnectionStateChange',
+        onDeviceConnectionStateChange,
+      ),
+
+      // Trip Events
       eventEmitter.addListener('onTripStarted', onTripStarted),
       eventEmitter.addListener('onTripEnded', onTripEnded),
       eventEmitter.addListener('onTripsReceived', onTripsReceived),
+
+      // Crash Events
       eventEmitter.addListener('onCrashThreshold', onCrashThreshold),
       eventEmitter.addListener('onCrashEvent', onCrashEvent),
     ];
   }
 
+  // ==========================================
+  // Event Handlers - Device Discovery & Connection
+  // ==========================================
   function onDeviceDiscovered(device) {
     if (!device) {
       console.log('Device discovered not found:', device);
@@ -82,6 +138,16 @@ const useSafetyTagIOS = onEvents => {
     onEvents.onCheckConnection(event);
   }
 
+  function onDeviceConnectionStateChange(event) {
+    console.log('Connection state change:', event);
+    if (onEvents && onEvents.onDeviceConnectionStateChange) {
+      onEvents.onDeviceConnectionStateChange(event);
+    }
+  }
+
+  // ==========================================
+  // Event Handlers - Trip Events
+  // ==========================================
   function onTripStarted(event) {
     // console.log('Trip Started:', event);
     onEvents.onTripStarted(event);
@@ -97,6 +163,9 @@ const useSafetyTagIOS = onEvents => {
     onEvents.onTripsReceived(event);
   }
 
+  // ==========================================
+  // Event Handlers - Crash Events
+  // ==========================================
   function onCrashThreshold(event) {
     console.log('Crash threshold event:', event);
     onEvents.onCrashThreshold(event);
@@ -107,12 +176,15 @@ const useSafetyTagIOS = onEvents => {
     onEvents.onCrashEvent(event);
   }
 
+  // ==========================================
+  // Device Management Functions
+  // ==========================================
   async function startObserving() {
     try {
       console.log('Starting observation...');
       await SafetyTagModule.startObserving();
-    } catch (error) {
-      console.error('Error starting observation:', error);
+    } catch (err) {
+      console.error('Error starting observation:', err);
     }
   }
 
@@ -120,8 +192,8 @@ const useSafetyTagIOS = onEvents => {
     try {
       console.log('Stopping observation...');
       await SafetyTagModule.stopObserving();
-    } catch (error) {
-      console.error('Error stopping observation:', error);
+    } catch (err) {
+      console.error('Error stopping observation:', err);
     }
   }
 
@@ -134,8 +206,8 @@ const useSafetyTagIOS = onEvents => {
       setDevices([]); // Clear previous devices
       setIsScanning(true);
       await SafetyTagModule.startScan(autoConnect);
-    } catch (error) {
-      console.error('Error starting scan:', error);
+    } catch (err) {
+      console.error('Error starting scan:', err);
       setIsScanning(false);
     }
   };
@@ -145,25 +217,28 @@ const useSafetyTagIOS = onEvents => {
       console.log('Stopping scan...');
       setIsScanning(false);
       await SafetyTagModule.stopScan();
-    } catch (error) {
-      console.error('Error stopping scan:', error);
+    } catch (err) {
+      console.error('Error stopping scan:', err);
     }
   };
 
+  // ==========================================
+  // Connection Management Functions
+  // ==========================================
   const checkConnection = async () => {
     try {
       console.log('Checking SafetyTag connection...');
       await SafetyTagModule.checkConnection();
-    } catch (error) {
-      console.error('Error checking connection:', error);
+    } catch (err) {
+      console.error('Error checking connection:', err);
     }
   };
 
   const connectToDevice = async device => {
     try {
       await SafetyTagModule.connectDevice(device.id);
-    } catch (error) {
-      console.error('Error connecting to device:', error);
+    } catch (err) {
+      console.error('Error connecting to device:', err);
     }
   };
 
@@ -171,17 +246,20 @@ const useSafetyTagIOS = onEvents => {
     try {
       console.log('Disconnecting SafetyTag Device...');
       await SafetyTagModule.disconnectDevice();
-    } catch (error) {
+    } catch (err) {
       console.error('Error Disconnecting SafetyTag Device:', error);
     }
   };
 
+  // ==========================================
+  // Device Information & Trips Functions
+  // ==========================================
   const getDeviceInformation = async () => {
     try {
       console.log('Fetching SafetyTag Device Information...');
       await SafetyTagModule.getConnectedDevice();
-    } catch (error) {
-      console.error('Error Fetching SafetyTag Device Information:', error);
+    } catch (err) {
+      console.error('Error Fetching SafetyTag Device Information:', err);
     }
   };
 
@@ -193,12 +271,15 @@ const useSafetyTagIOS = onEvents => {
     await SafetyTagModule.getTripsWithFraudDetection();
   };
 
+  // ==========================================
+  // Accelerometer Functions
+  // ==========================================
   const enableAccelerometerDataStream = async () => {
     try {
       await SafetyTagModule.enableIOSAccelerometerDataStream();
       console.log('Successfully enabled accelerometer data stream');
-    } catch (error) {
-      console.error('Error enabling accelerometer data stream:', error);
+    } catch (err) {
+      console.error('Error enabling accelerometer data stream:', err);
     }
   };
 
@@ -206,8 +287,8 @@ const useSafetyTagIOS = onEvents => {
     try {
       await SafetyTagModule.disableAccelerometerDataStream();
       console.log('Successfully disabled accelerometer data stream');
-    } catch (error) {
-      console.error('Error disabling accelerometer data stream:', error);
+    } catch (err) {
+      console.error('Error disabling accelerometer data stream:', err);
     }
   };
 
@@ -215,49 +296,83 @@ const useSafetyTagIOS = onEvents => {
     try {
       console.log('Checking accelerometer data stream status...');
       SafetyTagModule.isAccelerometerDataStreamEnabled();
-    } catch (error) {
-      console.error('Error checking accelerometer data stream enable:', error);
+    } catch (err) {
+      console.error('Error checking accelerometer data stream enable:', err);
     }
   };
 
+  // ==========================================
+  // Permission & Utility Functions
+  // ==========================================
   const requestAlwaysPermission = async () => {
     try {
       console.log('Request AlwaysPermission...');
       await SafetyTagModule.requestLocationAlwaysPermission();
-    } catch (error) {
-      console.error('Request always permission error: ', error);
+    } catch (err) {
+      console.error('Request always permission error: ', err);
     }
   };
 
   function readRSSIOfDevice() {
     try {
-      const timerId = setTimeout(() => {
-        console.log('Reading RSSI');
-        SafetyTagModule.readRSSI();
-      }, 5000);
-      clearTimeout(timerId);
-    } catch (error) {
-      console.error('Request always permission error: ', error);
+      console.log('Reading RSSI');
+      SafetyTagModule.readRSSI();
+    } catch (err) {
+      console.error('Request always permission error: ', err);
     }
   }
 
+  // ==========================================
+  // Return Values
+  // ==========================================
   return {
+    // State
     devices,
     isScanning,
+
+    // Device Management
     startScan,
     stopScan,
     startObserving,
     stopObserving,
+
+    // Connection Management
     checkConnection,
     connectToDevice,
     disconnectDevice,
+
+    // Device Information & Trips
     getDeviceInformation,
     getTrips,
     getTripsWithFraudDetection,
+
+    // Accelerometer Functions
     enableAccelerometerDataStream,
     disableAccelerometerDataStream,
     isAccelerometerDataStreamEnabled,
+
+    // Permission & Utility Functions
     requestAlwaysPermission,
+    readRSSIOfDevice,
+
+    // Alignment Functions (from useAxisAlignment)
+    error,
+    startAlignment,
+    stopAlignment,
+    checkAlignmentStatus,
+    checkStoredAlignment,
+    removeStoredAlignment,
+    getAlignmentConfiguration,
+
+    // iBeacon Functions (from useSafetyTagBeacon)
+    startMonitoring,
+    stopMonitoring,
+    isBeingMonitored,
+    enableAutoConnect,
+    disableAutoConnect,
+    isAutoConnectEnabled,
+    startSignificantLocationChanges,
+    stopSignificantLocationChanges,
   };
 };
 

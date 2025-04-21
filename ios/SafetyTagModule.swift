@@ -57,8 +57,8 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
     locationManager.requestAlwaysAuthorization()
 
     // Start updating location immediately
-   // locationManager.startUpdatingLocation()
-   // locationManager.startMonitoringSignificantLocationChanges()
+    // locationManager.startUpdatingLocation()
+    // locationManager.startMonitoringSignificantLocationChanges()
   }
 
   // MARK: - RCTEventEmitter Required Methods
@@ -211,11 +211,11 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
 
     // Send connecting state event
     if self.hasListeners {
-        self.sendEvent(withName: "onDeviceConnectionStateChange", body: [
-            "state": "connecting",
-            "deviceId": device.id.uuidString,
-            "deviceName": device.name
-        ])
+      self.sendEvent(withName: "onDeviceConnectionStateChange", body: [
+        "state": "connecting",
+        "deviceId": device.id.uuidString,
+        "deviceName": device.name
+      ])
     }
 
     STDeviceManager.shared.connection.connect(device)
@@ -374,9 +374,9 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
         switch completion {
         case .failure(let error):
           if self.hasListeners {
-              self.sendEvent(withName: "onAccelerometerError", body: [
-                  "error": error.localizedDescription
-              ])
+            self.sendEvent(withName: "onAccelerometerError", body: [
+              "error": error.localizedDescription
+            ])
           }
         case .finished:
           break
@@ -384,9 +384,9 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
       } receiveValue: { isEnabled in
         print("[SafetyTagModule] Accelerometer stream enabled:", isEnabled)
         if self.hasListeners {
-            self.sendEvent(withName: "onAccelerometerStreamStatus", body: [
-                "isEnabled": isEnabled
-            ])
+          self.sendEvent(withName: "onAccelerometerStreamStatus", body: [
+            "isEnabled": isEnabled
+          ])
         }
       }
       .store(in: &accelerometerIsActivePublisher)
@@ -398,8 +398,8 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
 
     // 1. First ensure accelerometer stream is active
     if accelerometerPublisher.isEmpty {
-        print("[SafetyTagModule] Initializing accelerometer stream...")
-        enableIOSAccelerometerDataStream()
+      print("[SafetyTagModule] Initializing accelerometer stream...")
+      enableIOSAccelerometerDataStream()
     }
 
     // 2. Clear any existing subscriptions to avoid duplicates
@@ -874,7 +874,6 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
         }
       }
       .store(in: &cancellables) // Store the subscription in cancellables
-
   }
 
   private func observeTripEvents() {
@@ -882,9 +881,7 @@ class SafetyTagModule: RCTEventEmitter, CLLocationManagerDelegate {
     SafetyTagApi.Event.TripsDetection.didReceiveTripStartEvent
       .receive(on: DispatchQueue.main)
       .sink { [weak self] device, tripEvent, error in
-        //print("[SafetyTagModule] Trip Start Event Received")
         if let error = error {
-          //                    print("[SafetyTagModule] Trip Start Event Error:", error.localizedDescription)
           if self?.hasListeners == true {
             self?.sendEvent(withName: "onTripStarted", body: [
               "error": error.localizedDescription
@@ -1111,4 +1108,3 @@ extension SafetyTagModule {
     }
   }
 }
-

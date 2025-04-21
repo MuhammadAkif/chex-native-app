@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  ScrollView,
-  DeviceEventEmitter,
-  Alert,
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
@@ -16,30 +15,36 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-import {useSafetyTagIOS} from '../../hooks';
+// Components
 import {LoadingIndicator, SafetyTagDeviceInfo} from '../index';
-import {formatUnixTime} from '../../Utils/helpers';
 import DeviceScan from './DeviceScan';
-import {SafetyTagBeaconTestScreen} from './SafetyTagBeaconTestScreen';
+import CrashEventDisplay from './CrashEventDisplay';
+import AccelerometerDisplayIOS from './AccelerometerDisplayIOS';
+import {InstructionsPanel, PhaseList} from './AlignmentComponents';
+import FloatingButton from './FloatingButton/FloatingButton';
+import ConnectedDevice from './ConnectedDevice';
+
+// Hooks
+import {useSafetyTagIOS} from '../../hooks';
+import useBoolean from '../../hooks/useBoolean';
+
+// Utils & Styles
+import {formatUnixTime} from '../../Utils/helpers';
+import {colors} from '../../Assets/Styles';
 import {
   addCrashData,
   addThresholdEvent,
   setCrashError,
   updateCrashStatus,
 } from '../../Store/Actions';
-import CrashEventDisplay from './CrashEventDisplay';
-import AccelerometerDisplayIOS from './AccelerometerDisplayIOS';
-import {PhaseList, InstructionsPanel} from './AlignmentComponents';
-import {useAxisAlignment} from '../../hooks/useAxisAlignment';
-import {colors} from '../../Assets/Styles';
-import FloatingButton from './FloatingButton/FloatingButton';
-import useBoolean from '../../hooks/useBoolean';
-import ConnectedDevice from './ConnectedDevice';
 
 const {white, black} = colors;
 
 const SafetyTagIOS = () => {
+  // Redux
   const dispatch = useDispatch();
+
+  // Custom Hooks
   const {
     devices,
     isScanning,
@@ -50,19 +55,37 @@ const SafetyTagIOS = () => {
     enableAccelerometerDataStream,
     disableAccelerometerDataStream,
     requestAlwaysPermission,
+    startAlignment,
+    stopAlignment,
   } = useSafetyTagIOS({
-    onDeviceConnected: onDeviceConnected,
-    onDeviceConnectionFailed: onDeviceConnectionFailed,
-    onDeviceDisconnected: onDeviceDisconnected,
-    onGetConnectedDevice: onGetConnectedDevice,
-    onCheckConnection: onCheckConnection,
-    onTripStarted: onTripStarted,
-    onTripEnded: onTripEnded,
-    onTripsReceived: onTripsReceived,
-    onCrashThreshold: onCrashThreshold,
-    onCrashEvent: onCrashEvent,
+    onDeviceConnected,
+    onDeviceConnectionFailed,
+    onDeviceDisconnected,
+    onGetConnectedDevice,
+    onCheckConnection,
+    onTripStarted,
+    onTripEnded,
+    onTripsReceived,
+    onCrashThreshold,
+    onCrashEvent,
+    onAccelerometerData,
+    onAccelerometerError,
+    onAccelerometerStreamStatus,
+    onAxisAlignmentState,
+    onVehicleState,
+    onAxisAlignmentData,
+    onAxisAlignmentError,
+    onAxisAlignmentFinished,
+    onDeviceConnectionStateChange,
   });
-  const {startAlignment, stopAlignment} = useAxisAlignment();
+
+  const {
+    value: isLoading,
+    toggle: toggleIsLoading,
+    setFalse: setIsLoadingFalse,
+  } = useBoolean(false);
+
+  // State
   const [connectedDevice, setConnectedDevice] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [trips, setTrips] = useState([]);
@@ -77,57 +100,14 @@ const SafetyTagIOS = () => {
     step: null,
   });
   const [alignmentStatus, setAlignmentStatus] = useState('Not Started');
-  const {
-    value: isLoading,
-    toggle: toggleIsLoading,
-    setFalse: setIsLoadingFalse,
-  } = useBoolean(false);
   const [connectionState, setConnectionState] = useState('disconnected');
 
+  // Effects
   useEffect(() => {
     getDeviceInformation().then();
-    const subscriptions = [
-      DeviceEventEmitter.addListener(
-        'onAccelerometerData',
-        onAccelerometerData,
-      ),
-      DeviceEventEmitter.addListener(
-        'onAccelerometerError',
-        onAccelerometerError,
-      ),
-      DeviceEventEmitter.addListener(
-        'onAccelerometerStreamStatus',
-        onAccelerometerStreamStatus,
-      ),
-      DeviceEventEmitter.addListener(
-        'onAxisAlignmentState',
-        onAxisAlignmentState,
-      ),
-      DeviceEventEmitter.addListener('onVehicleState', onVehicleState),
-      DeviceEventEmitter.addListener(
-        'onAxisAlignmentData',
-        onAxisAlignmentData,
-      ),
-      DeviceEventEmitter.addListener(
-        'onAxisAlignmentError',
-        onAxisAlignmentError,
-      ),
-      DeviceEventEmitter.addListener(
-        'onAxisAlignmentFinished',
-        onAxisAlignmentFinished,
-      ),
-      DeviceEventEmitter.addListener(
-        'onDeviceConnectionStateChange',
-        onDeviceConnectionStateChange,
-      ),
-    ];
-
-    // Cleanup subscriptions
-    return () => {
-      subscriptions.forEach(subscription => subscription.remove());
-    };
   }, []);
 
+  // Event Handlers
   function onCrashThreshold(event) {
     console.log('Crash Threshold:', event);
     try {
@@ -150,15 +130,6 @@ const SafetyTagIOS = () => {
     } catch (error) {
       console.error('Error parsing crash data:', error);
       dispatch(setCrashError('Error parsing crash data'));
-    }
-  }
-
-  function onDeviceConnectionStateChange(event) {
-    setConnectionState(event.state);
-    if (event.state === 'connecting') {
-      toggleIsLoading(true);
-    } else {
-      setIsLoadingFalse();
     }
   }
 
@@ -241,7 +212,7 @@ const SafetyTagIOS = () => {
   }
 
   function onAccelerometerData(event) {
-    const {x: xAxis, y: yAxis, z: zAxis, secondsSinceLastRestart} = event;
+    //const {x: xAxis, y: yAxis, z: zAxis, secondsSinceLastRestart} = event;
     //setAccelerometerData({xAxis, yAxis, zAxis, secondsSinceLastRestart});
   }
 
@@ -302,28 +273,14 @@ const SafetyTagIOS = () => {
     }
   }
 
-  const handleStartScan = async () => {
-    try {
-      await getDeviceInformation();
-      console.log('Starting scan for SafetyTag devices...');
-      await startScan();
-      await startScan();
-    } catch (error) {
-      console.error('Error starting scan:', error);
+  function onDeviceConnectionStateChange(event) {
+    setConnectionState(event.state);
+    if (event.state === 'connecting') {
+      toggleIsLoading(true);
+    } else {
+      setIsLoadingFalse();
     }
-  };
-
-  const handleDisconnectDevice = async () => {
-    try {
-      console.log('Disconnecting SafetyTag Device...');
-      await disconnectDevice();
-      setConnectedDevice(null);
-      setIsConnected(false);
-      setCurrentTrip(null);
-    } catch (error) {
-      console.error('Error Disconnecting SafetyTag Device:', error);
-    }
-  };
+  }
 
   const checkLocationPermission = async () => {
     try {
@@ -355,12 +312,35 @@ const SafetyTagIOS = () => {
     }
   };
 
+  // Action Handlers
+  const handleStartScan = async () => {
+    try {
+      await getDeviceInformation();
+      console.log('Starting scan for SafetyTag devices...');
+      await startScan();
+      await startScan();
+    } catch (error) {
+      console.error('Error starting scan:', error);
+    }
+  };
+
+  const handleDisconnectDevice = async () => {
+    try {
+      console.log('Disconnecting SafetyTag Device...');
+      await disconnectDevice();
+      setConnectedDevice(null);
+      setIsConnected(false);
+      setCurrentTrip(null);
+    } catch (error) {
+      console.error('Error Disconnecting SafetyTag Device:', error);
+    }
+  };
+
   const handleStartAlignment = async () => {
     try {
       const hasPermission = await checkLocationPermission();
-
       if (!hasPermission) {
-        return; // Exit if permission not granted
+        return;
       }
 
       await enableAccelerometerDataStream();
@@ -385,6 +365,7 @@ const SafetyTagIOS = () => {
     }
   };
 
+  // Render
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -415,7 +396,6 @@ const SafetyTagIOS = () => {
               onDeviceSelect={connectToDevice}
             />
           )}
-          {/*<SafetyTagBeaconTestScreen />*/}
           <TouchableOpacity
             style={[
               styles.button,
@@ -437,7 +417,7 @@ const SafetyTagIOS = () => {
                   speed: alignmentDetails.hasValidIntervals
                     ? 'VALID'
                     : 'INVALID',
-                  currentSpeed: 0, // You might want to get this from another source
+                  currentSpeed: 0,
                   currentHeading: alignmentDetails.theta || 0,
                   step: alignmentDetails.step,
                   zAxisState: alignmentDetails.zAxisState,
@@ -463,6 +443,7 @@ const SafetyTagIOS = () => {
   );
 };
 
+// Styles remain the same
 const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
