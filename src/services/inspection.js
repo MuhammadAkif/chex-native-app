@@ -204,14 +204,26 @@ export const location = async inspectionId => {
   }
 };
 
-export const inspectionSubmission = async (inspectionId, companyId) => {
-  const endPoint = generateApiUrl(`auto/reviewed/${inspectionId}`);
+/**
+ * Submits an inspection using its ID.
+ * This function makes a PATCH request to submit inspection data by its ID.
+ *
+ * @param {string} [inspectionId=''] The unique identifier of the inspection. Defaults to an empty string if not provided.
+ * @param {string} [companyId=''] The unique identifier of the company submitting the inspection. Defaults to an empty string if not provided.
+ * @param {string|null} [driverComment=null] Optional driver comments for the inspection. Defaults to `null` if not provided.
+ * @returns {Promise<axios.AxiosResponse<any>>} A promise that resolves to the Axios response object, containing the result of the PATCH request.
+ * @throws {Error} If the request fails, it will throw an error.
+ */
+export const inspectionSubmission = async (
+  inspectionId = '',
+  companyId = '',
+  driverComment = null,
+) => {
+  const endPoint = generateApiUrl(`inspection/${inspectionId}`);
 
-  const body = {companyId};
-
+  const body = {driverComment};
   try {
-    return await api.post(endPoint, body);
-    // return await api.put(endPoint, null);
+    return await api.patch(endPoint, body);
   } catch (error) {
     console.error('Inspection submission error:', error);
     throw error;

@@ -18,7 +18,7 @@ import {
 import {ROUTES} from './ROUTES';
 import NavigationDrawer from './NavigationDrawer';
 import {setNavigationRef} from '../services/navigationService';
-import {useAuth} from '../hooks';
+import {useAuthState} from '../hooks/auth';
 
 const {
   HOME,
@@ -34,7 +34,7 @@ const {
 
 const Navigation = () => {
   const {Screen, Navigator} = createNativeStackNavigator();
-  const {token} = useAuth();
+  const {token} = useAuthState();
   const initialRouteName = token ? HOME : WELCOME;
   const screenOptions = {headerShown: false, gestureEnabled: false};
   const navigationRef = useNavigationContainerRef();

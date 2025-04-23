@@ -4,13 +4,13 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {useSelector} from 'react-redux';
 
 import {ButtonFooter, Custom_RBSheet, RenderStatuses} from './index';
 import {Cross} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {extractStatusesCount} from '../Utils/helpers';
 import EmptyComponent from './EmptyComponent';
+import {useInspectionReviewedState} from '../hooks/inspectionReviewed';
 
 const {gray} = colors;
 const statusesInitialState = [
@@ -32,7 +32,7 @@ const Filter_RBSheet = ({
   setInspections,
   navigation,
 }) => {
-  const {inspectionReviewed} = useSelector(state => state?.inspectionReviewed);
+  const {inspectionReviewed} = useInspectionReviewedState();
   const rbSheetRef = useRef(null);
   const [statuses, setStatuses] = useState(statusesInitialState);
   const [backupStatuses, setBackupStatuses] = useState(statusesInitialState); // Backup copy of statuses

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {BackHandler, StatusBar, StyleSheet, View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -14,11 +14,6 @@ import {
   DiscardInspectionModal,
 } from '../Components';
 import {ROUTES} from '../Navigation/ROUTES';
-import {
-  clearInspectionImages,
-  setLicensePlateNumber,
-  updateVehicleImage,
-} from '../Store/Actions';
 import {
   checkRelevantType,
   exteriorVariant,
@@ -46,7 +41,12 @@ import {
   switchFrameIcon,
   switchOrientation,
 } from '../Utils/helpers';
-import {useAuth, useMediaPicker} from '../hooks';
+import {useMediaPicker} from '../hooks';
+import {useAuthState} from '../hooks/auth';
+import {
+  useNewInspectionState,
+  useNewInspectionActions,
+} from '../hooks/newInspection';
 
 const defaultOrientation = 'portrait';
 const {container} = PreviewStyles;
@@ -55,13 +55,14 @@ const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
 const isUploadFailedInitialState = {visible: false, title: '', message: ''};
 
 const CameraContainer = ({route, navigation}) => {
-  const {error, selectMedia} = useMediaPicker();
-  const {selectedInspectionID} = useSelector(state => state.newInspection);
+  const {updateImage, extractAndSetPlateNumber, clearImages} =
+    useNewInspectionActions();
+  const {selectMedia} = useMediaPicker();
+  const {selectedInspectionID, vehicle_Type, variant} = useNewInspectionState();
   const dispatch = useDispatch();
   const {navigate, goBack, canGoBack} = navigation;
-  const {user} = useAuth();
+  const {user} = useAuthState();
   const {companyId} = user;
-  const {vehicle_Type, variant} = useSelector(state => state.newInspection);
   const [isImageFile, setIsImageFile] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isExpiryInspectionVisible, setIsExpiryInspectionVisible] =
@@ -221,9 +222,7 @@ const CameraContainer = ({route, navigation}) => {
     const displayAnnotation = hasValidType && vehicle_Type === 'new';
 
     // Dispatch an action to update the vehicle image in the store
-    dispatch(
-      updateVehicleImage(groupType, selectedType, isImageFile.uri, imageID),
-    );
+    updateImage(groupType, selectedType, isImageFile.uri, imageID);
 
     // Prepare navigation parameters
     const params = {
@@ -239,7 +238,7 @@ const CameraContainer = ({route, navigation}) => {
   }
 
   const handleExtractNumberPlate = async imageUrl => {
-    dispatch(setLicensePlateNumber(imageUrl));
+    extractAndSetPlateNumber(imageUrl);
   };
 
   const handleError = (inspectionDeleted = false) => {
@@ -258,7 +257,7 @@ const CameraContainer = ({route, navigation}) => {
    */
   const handleNextPress = async () => {
     const mimeType = getFileMimeType(isImageFile.path);
-
+    debugger;
     setIsModalVisible(true);
     try {
       await getSignedUrl(
@@ -290,7 +289,7 @@ const CameraContainer = ({route, navigation}) => {
         navigation,
       );
       resetAllStates();
-      dispatch(clearInspectionImages());
+      clearImages();
     } catch (error) {
       console.log(error);
       throw error;
@@ -314,7 +313,7 @@ const CameraContainer = ({route, navigation}) => {
     try {
       const response = selectMedia();
       setIsImageFile(response);
-    } catch (err) {
+    } catch (error) {
       throw error;
     }
   };

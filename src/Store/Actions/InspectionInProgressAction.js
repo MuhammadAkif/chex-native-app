@@ -10,8 +10,12 @@ const {
 } = Types;
 
 /**
+ * Fetches all inspections that are currently in progress and updates the Redux store.
  *
- * @returns {(function(*): Promise<void>)|*}
+ * This action makes an API call to fetch inspections marked as "IN_PROGRESS" and dispatches
+ * the result to the store.
+ *
+ * @returns {function(*): Promise<void>} - A thunk action that dispatches the result to Redux store
  */
 export const fetchInspectionInProgress = () => async dispatch => {
   try {
@@ -28,9 +32,13 @@ export const fetchInspectionInProgress = () => async dispatch => {
 };
 
 /**
+ * Deletes an inspection and updates the Redux store accordingly.
  *
- * @param inspectionId
- * @returns {(function(*): Promise<void>)|*}
+ * This action removes an inspection from the list of "in-progress" inspections and updates
+ * the state after making a successful API call to delete the inspection.
+ *
+ * @param {string} inspectionId - The ID of the inspection to delete
+ * @returns {function(*): Promise<void>} - A thunk action that dispatches the updated inspections list
  */
 export const deleteInspection = inspectionId => async dispatch => {
   const {inspectionInProgress} = store.getState().inspectionInProgress;
@@ -41,10 +49,13 @@ export const deleteInspection = inspectionId => async dispatch => {
 
   try {
     await removeInspection(inspectionId);
+
     dispatch({
       type: REMOVE_INSPECTION,
       payload: updatedInspections || [],
     });
+
+    // Show success toast message
     dispatch(showToast('Inspection has been deleted!', 'success'));
   } catch (error) {
     console.error('Inspection remove error: ', error);
@@ -53,8 +64,12 @@ export const deleteInspection = inspectionId => async dispatch => {
 };
 
 /**
+ * Clears all inspections from the Redux store.
  *
- * @returns {{type: string}}
+ * This action resets the state of "inspections in progress" by dispatching
+ * the `CLEAR_INSPECTION_IN_PROGRESS` action.
+ *
+ * @returns {{type: string}} - The action object to reset the state
  */
 export const clearInspectionInProgress = () => ({
   type: CLEAR_INSPECTION_IN_PROGRESS,

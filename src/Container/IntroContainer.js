@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {BackHandler, Linking} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 import {IntroScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS} from '../Constants';
 import {handleNewInspectionPress} from '../Utils';
+import {useAuthState} from '../hooks/auth';
 
 const IntroContainer = ({navigation}) => {
   const {canGoBack, goBack} = navigation;
-  const {
-    user: {data},
-  } = useSelector(state => state?.auth);
+  const {user: data} = useAuthState();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 

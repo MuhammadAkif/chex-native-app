@@ -12,7 +12,8 @@ import {signInValidationSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
 import {HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
-import {showToast, signIn} from '../../Store/Actions';
+import {showToast} from '../../Store/Actions';
+import {useAuthActions} from '../../hooks/auth';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
@@ -20,6 +21,7 @@ const {WELCOME, FORGET_PASSWORD, HOME} = ROUTES;
 const {white, cobaltBlueLight} = colors;
 
 const SignInContainer = ({navigation, route}) => {
+  const {login} = useAuthActions();
   const {canGoBack, goBack, navigate} = navigation;
   const dispatch = useDispatch();
   const emailRef = useRef();
@@ -83,18 +85,25 @@ const SignInContainer = ({navigation, route}) => {
   // Focus handling ends here
   const hidePasswordHandler = () => setHidePassword(!hidePassword);
   const handleForgetPassword = () => navigate(FORGET_PASSWORD);
+
   const checkUserData = async (body, resetForm) => {
     const {username, password} = body;
 
-    dispatch(signIn(username, password))
-      .then(res => onCheckUserDataSuccess(resetForm))
-      .catch(onCheckUserDataFail)
-      .finally(() => setIsSubmitting(false));
+    try {
+      await login(username, password);
+      onCheckUserDataSuccess(resetForm);
+    } catch (error) {
+      onCheckUserDataFail(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
   function onCheckUserDataSuccess(resetForm) {
     resetForm();
     navigate(HOME);
   }
+
   function onCheckUserDataFail(err) {
     const {errors = null} = err?.response?.data;
     const isWrongPassword = errors[0] === 'password is  incorrect';
@@ -104,14 +113,16 @@ const SignInContainer = ({navigation, route}) => {
       Alert.alert('Login Failed', errors[0]);
     }
   }
+
   function onSubmit(values, resetForm) {
     setIsSubmitting(true);
     let body = {
       username: values.name.trim(),
       password: values.password.trim(),
     };
-    checkUserData(body, resetForm).then();
+    checkUserData(body, resetForm);
   }
+
   return (
     <Formik
       initialValues={initialValues}

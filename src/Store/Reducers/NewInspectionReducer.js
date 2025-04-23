@@ -1,12 +1,15 @@
 import {Types} from '../Types';
 
 const initialState = {
+  // Section: Vehicle Verification
   carVerificiationItems: {
     licensePlate: '',
     licensePlateID: '',
     odometer: '',
     odometerID: '',
   },
+
+  // Section: Interior Inspection Images
   interiorItems: {
     driverSide: '',
     driverSideID: '',
@@ -21,6 +24,8 @@ const initialState = {
     passengerSide_2: '',
     passengerSide_2ID: '',
   },
+
+  // Section: Exterior Inspection Images
   exteriorItems: {
     exteriorLeft: '',
     exteriorLeftID: '',
@@ -76,19 +81,12 @@ const initialState = {
     exteriorInsideCargoRoof_1ID: '',
     exteriorInsideCargoRoof_2: '',
     exteriorInsideCargoRoof_2ID: '',
-    /* exteriorInteriorDriverSide: '',
-    exteriorInteriorDriverSideID: '',
-    exteriorInteriorDriverSide_1: '',
-    exteriorInteriorDriverSide_1ID: '',
-    exteriorInteriorDriverSide_2: '',
-    exteriorInteriorDriverSide_2ID: '',
-    exteriorInteriorPassengerSide: '',
-    exteriorInteriorPassengerSideID: '',
-    exteriorInteriorPassengerSide_1: '',
-    exteriorInteriorPassengerSide_1ID: '',
-    exteriorInteriorPassengerSide_2: '',
-    exteriorInteriorPassengerSide_2ID: '',*/
+    // Reserved for future feature (Interior panels from exterior POV)
+    // exteriorInteriorDriverSide: '',
+    // ...
   },
+
+  // Section: Tire Photos
   tires: {
     leftFrontTire: '',
     leftFrontTireID: '',
@@ -99,6 +97,8 @@ const initialState = {
     rightRearTire: '',
     rightRearTireID: '',
   },
+
+  // Additional Metadata and Controls
   selectedInspectionID: null,
   company_ID: null,
   plateNumber: null,
@@ -107,11 +107,12 @@ const initialState = {
   skipRight: false,
   skipRightCorners: false,
   isLicensePlateUploaded: false,
-  vehicle_Type: 'existing',
-  variant: 0,
+  vehicle_Type: 'existing', // 'existing' | 'new'
+  variant: 0, // Category variant (0, 1, 2)
   fileDetails: null,
-  flashMode: 'off',
+  flashMode: 'off', // Camera flash mode
 };
+
 const {
   UPDATE_VEHICLE_IMAGE,
   REMOVE_IMAGE,
@@ -131,6 +132,13 @@ const {
   CLEAR_NEW_INSPECTION,
   FLASH_MODE,
 } = Types;
+
+/**
+ * Reducer to manage the state of a new vehicle inspection session.
+ *
+ * Handles image updates, metadata, flow controls (e.g., skip sections),
+ * and reset scenarios.
+ */
 const newInspectionReducer = (state = initialState, action) => {
   const {type, payload} = action;
 
@@ -144,6 +152,7 @@ const newInspectionReducer = (state = initialState, action) => {
           [payload.itemId]: payload.id,
         },
       };
+
     case REMOVE_IMAGE:
       return {
         ...state,
@@ -153,11 +162,13 @@ const newInspectionReducer = (state = initialState, action) => {
           [payload.itemId]: payload.id,
         },
       };
+
     case CLEAR_TIRES:
       return {
         ...state,
         tires: initialState.tires,
       };
+
     case CLEAR_INSPECTION_IMAGES:
       return {
         ...state,
@@ -166,68 +177,46 @@ const newInspectionReducer = (state = initialState, action) => {
         exteriorItems: initialState.exteriorItems,
         tires: initialState.tires,
       };
+
     case SELECTED_INSPECTION_ID:
-      return {
-        ...state,
-        selectedInspectionID: payload,
-      };
+      return {...state, selectedInspectionID: payload};
+
     case COMPANY_ID:
-      return {
-        ...state,
-        company_ID: payload,
-      };
+      return {...state, company_ID: payload};
+
     case LICENSE_PLATE_NUMBER:
-      return {
-        ...state,
-        plateNumber: payload,
-      };
+      return {...state, plateNumber: payload};
+
     case SKIP_LEFT:
-      return {
-        ...state,
-        skipLeft: payload,
-      };
+      return {...state, skipLeft: payload};
+
     case SKIP_LEFT_CORNERS:
-      return {
-        ...state,
-        skipLeftCorners: payload,
-      };
+      return {...state, skipLeftCorners: payload};
+
     case SKIP_RIGHT:
-      return {
-        ...state,
-        skipRight: payload,
-      };
+      return {...state, skipRight: payload};
+
     case SKIP_RIGHT_CORNERS:
-      return {
-        ...state,
-        skipRightCorners: payload,
-      };
+      return {...state, skipRightCorners: payload};
+
     case IS_LICENSE_PLATE_UPLOADED:
-      return {
-        ...state,
-        isLicensePlateUploaded: payload,
-      };
+      return {...state, isLicensePlateUploaded: payload};
+
     case VEHICLE_TYPE:
-      return {
-        ...state,
-        vehicle_Type: payload,
-      };
+      return {...state, vehicle_Type: payload};
+
     case CATEGORY_VARIANT:
-      return {
-        ...state,
-        variant: payload,
-      };
+      return {...state, variant: payload};
+
     case FILE_DETAILS:
-      return {
-        ...state,
-        fileDetails: payload,
-      };
+      return {...state, fileDetails: payload};
+
     case FLASH_MODE:
-      return {
-        ...state,
-        flashMode: payload,
-      };
+      return {...state, flashMode: payload};
+
     case CLEAR_NEW_INSPECTION:
       return initialState;
+
     default:
       return state;
   }

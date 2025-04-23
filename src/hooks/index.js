@@ -1,6 +1,6 @@
 import useTimer from './useTimer';
-import useAuth from './useAuth';
+import useAuthState from './auth/useAuthState';
 import useMediaPicker from './useMediaPicker';
 import useSafetyTagIOS from './useSafetyTagIOS';
 
-export {useTimer, useAuth, useMediaPicker, useSafetyTagIOS};
+export {useTimer, useAuthState, useMediaPicker, useSafetyTagIOS};

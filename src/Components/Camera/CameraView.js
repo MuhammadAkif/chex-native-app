@@ -6,7 +6,6 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {useDispatch, useSelector} from 'react-redux';
 
 import {useCameraPermissions} from '../../hooks/useCameraPermissions';
 import {useCameraCapture} from '../../hooks/useCameraCapture';
@@ -15,7 +14,10 @@ import {fallBack} from '../../Utils';
 import {colors} from '../../Assets/Styles';
 import {getErrorMessage} from '../../Utils/helpers';
 import {RESULTS} from 'react-native-permissions';
-import {setFlashMode} from '../../Store/Actions';
+import {
+  useNewInspectionState,
+  useNewInspectionActions,
+} from '../../hooks/newInspection';
 
 const {white, cobaltBlueMedium} = colors;
 
@@ -42,8 +44,8 @@ const CameraView = ({
   onError = fallBack,
   children,
 }) => {
-  const dispatch = useDispatch();
-  const {flashMode} = useSelector(state => state.newInspection);
+  const {flashMode} = useNewInspectionState();
+  const {setFlash} = useNewInspectionActions();
   const isFocused = useIsFocused();
   const cameraRef = useRef(null);
   const hasPermission = useCameraPermissions();
@@ -162,7 +164,7 @@ const CameraView = ({
 
   const onFlashModeChange = mode => {
     if (flashMode !== mode) {
-      dispatch(setFlashMode(mode));
+      setFlash(mode);
     }
   };
 

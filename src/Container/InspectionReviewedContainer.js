@@ -1,10 +1,9 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {BackHandler} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 
 import {InspectionReviewedScreen} from '../Screens';
-import {clearInspectionImages, fetchInspectionReviewed} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
 import {HARDWARE_BACK_PRESS} from '../Constants';
 import {
@@ -15,16 +14,22 @@ import {
   updateFiles,
 } from '../Utils';
 import {inspectionDetails} from '../services/inspection';
+import {
+  useInspectionReviewedState,
+  useInspectionReviewedActions,
+} from '../hooks/inspectionReviewed';
+import {useAuthState} from '../hooks/auth';
+import {useNewInspectionActions} from '../hooks/newInspection';
 
 const {INSPECTION_DETAIL} = ROUTES;
 
 const InspectionReviewedContainer = ({navigation}) => {
+  const {clearImages} = useNewInspectionActions();
+  const {loadReviewedInspections} = useInspectionReviewedActions();
+  const {inspectionReviewed} = useInspectionReviewedState();
   const dispatch = useDispatch();
   const {canGoBack, goBack, navigate} = navigation;
-  const {
-    user: {data},
-  } = useSelector(state => state.auth);
-  const {inspectionReviewed} = useSelector(state => state?.inspectionReviewed);
+  const {user: data} = useAuthState();
   const [isExpanded, setIsExpanded] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isNewInspectionLoading, setIsNewInspectionLoading] = useState(false);
@@ -70,7 +75,7 @@ const InspectionReviewedContainer = ({navigation}) => {
     setFilter(false);
   }
   async function fetchInspection() {
-    dispatch(fetchInspectionReviewed()).finally(() => setIsLoading(false));
+    await loadReviewedInspections().finally(() => setIsLoading(false));
   }
   const handleIsExpanded = id => {
     let latestData = [];
@@ -120,7 +125,7 @@ const InspectionReviewedContainer = ({navigation}) => {
         navigation,
       );
       resetAllStates();
-      dispatch(clearInspectionImages());
+      clearImages();
     } catch (error) {
       console.log(error);
       throw error;

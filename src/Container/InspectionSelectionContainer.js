@@ -6,7 +6,7 @@ import {useDispatch} from 'react-redux';
 import {InspectionSelectionScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS, Platforms} from '../Constants';
 import {handleNewInspectionPress} from '../Utils';
-import {useAuth} from '../hooks';
+import {useAuthState} from '../hooks/auth';
 
 const {ANDROID} = Platforms;
 const {OS} = Platform;
@@ -14,10 +14,7 @@ const {OS} = Platform;
 const InspectionSelectionContainer = ({navigation}) => {
   const {navigate} = navigation;
   const dispatch = useDispatch();
-  const {user} = useAuth();
-  /*const {
-    user: {data},
-  } = useSelector(state => state?.auth);*/
+  const {user} = useAuthState();
   const [isLoading, setIsLoading] = useState(false);
   const [showExitPopup, setShowExitPopup] = useState(false);
 
