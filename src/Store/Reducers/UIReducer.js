@@ -1,6 +1,4 @@
-// initial state
 import {Types} from '../Types';
-
 const {SET_LOADING, SHOW_TOAST, HIDE_TOAST} = Types;
 
 const initialState = {
@@ -8,16 +6,17 @@ const initialState = {
   toast: {
     visible: false,
     message: '',
-    type: '', // e.g., 'success', 'error', 'info'
+    type: '', // Category of toast (e.g., 'success', 'error', 'info')
   },
 };
 
 /**
+ * UIReducer
+ * @param {Object} state - Current UI state
+ * @param {Object} action - Redux action with `type` and optional `payload`
+ * @returns {Object} Updated UI state based on action
  *
- * @param state
- * @param action
- * @returns {{toast: {visible: boolean, message: string, type: string}, loading: boolean}|{toast: {visible: boolean, message: string, type: string}, loading: boolean}|{toast: {visible: boolean, message: string, type: string}, loading}|{toast: {visible: boolean, message, type}, loading: boolean}}
- * @constructor
+ * Handles toggling the loading indicator and showing/hiding toast notifications.
  */
 const UIReducer = (state = initialState, action) => {
   const {type, payload} = action;
@@ -28,6 +27,7 @@ const UIReducer = (state = initialState, action) => {
         ...state,
         loading: payload,
       };
+
     case SHOW_TOAST:
       return {
         ...state,
@@ -37,11 +37,13 @@ const UIReducer = (state = initialState, action) => {
           type: payload.type,
         },
       };
+
     case HIDE_TOAST:
       return {
         ...state,
         toast: initialState.toast,
       };
+
     default:
       return state;
   }

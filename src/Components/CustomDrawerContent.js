@@ -11,7 +11,6 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
-import {useDispatch, useSelector} from 'react-redux';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {useRoute} from '@react-navigation/native';
 
@@ -20,20 +19,20 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {DrawerItemText} from './index';
 import {Home, Logout, Info} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
-import {hideToast, setRequired, signOut} from '../Store/Actions';
 import {DRAWER, PROJECT_NAME} from '../Constants';
 import {IMAGES} from '../Assets/Images';
 import {useAuthActions} from '../hooks/auth';
 import {useNewInspectionActions} from '../hooks/newInspection';
+import {useUIActions, useUIState} from '../hooks/UI';
 
 const {SIGN_IN, INSPECTION_SELECTION, INTRO, NEW_INSPECTION} = ROUTES;
 const {cobaltBlue, black, red} = colors;
 
 const CustomDrawerContent = props => {
+  const {clearToast, setRequired} = useUIActions();
   const {resetInspection} = useNewInspectionActions();
   const {logout} = useAuthActions();
-  const {toast} = useSelector(state => state.ui);
-  const dispatch = useDispatch();
+  const {toast} = useUIState();
   const route = useRoute();
   const {toggleDrawer, reset, navigate} = props.navigation;
   const activeRouteName = getFocusedRouteNameFromRoute(route);
@@ -52,9 +51,9 @@ const CustomDrawerContent = props => {
       previousScreen === NEW_INSPECTION
     ) {
       resetInspection();
-      dispatch(setRequired());
+      setRequired();
     }
-    toast.visible && dispatch(hideToast());
+    toast.visible && clearToast();
     setPreviousScreen(activeRouteName);
   }, [activeRouteName]);
 

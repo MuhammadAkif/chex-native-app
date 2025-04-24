@@ -1,19 +1,17 @@
 import React, {memo, useCallback} from 'react';
-import {useDispatch} from 'react-redux';
 
 import InputModal from './InputModal';
-import {
-  setMileageVisible,
-  setMileage,
-  setMileageMessage,
-} from '../../Store/Actions';
 import {updateMileageInDB} from '../../services/inspection';
 import {removeAlphabets} from '../../Utils/helpers';
-import {useNewInspectionState} from '../../hooks/newInspection';
+import {
+  useNewInspectionState,
+  useNewInspectionActions,
+} from '../../hooks/newInspection';
 
 const MileageInput = () => {
-  const dispatch = useDispatch();
   let {selectedInspectionID, mileageMessage} = useNewInspectionState();
+  const {setMileage, setMileageMessage, setMileageVisible} =
+    useNewInspectionActions();
 
   const onSubmit = useCallback(
     async (text, actionCreator, toggleLoading, resetStates) => {
@@ -24,10 +22,10 @@ const MileageInput = () => {
 
           await updateMileageInDB(mileage, selectedInspectionID);
 
-          dispatch(setMileage(''));
-          dispatch(setMileageMessage(''));
+          setMileage('');
+          setMileageMessage('');
           resetStates();
-          dispatch(actionCreator());
+          actionCreator();
         }
       } catch (error) {
         onSubmitFailed(error);
@@ -36,7 +34,7 @@ const MileageInput = () => {
         toggleLoading();
       }
     },
-    [selectedInspectionID, dispatch],
+    [selectedInspectionID],
   );
 
   function onSubmitFailed(error = {}) {
@@ -47,7 +45,7 @@ const MileageInput = () => {
       if (status !== 400) {
         message = 'Something Went Wrong, Please try again.';
       }
-      dispatch(setMileageMessage(message));
+      setMileageMessage(message);
     } catch (error) {
       throw error;
     }

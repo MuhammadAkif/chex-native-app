@@ -1,7 +1,37 @@
 import {Types} from '../Types';
 
+const {
+  UPDATE_VEHICLE_IMAGE,
+  REMOVE_IMAGE,
+  CLEAR_TIRES,
+  CLEAR_INSPECTION_IMAGES,
+  SELECTED_INSPECTION_ID,
+  COMPANY_ID,
+  LICENSE_PLATE_NUMBER,
+  SKIP_LEFT,
+  SKIP_LEFT_CORNERS,
+  SKIP_RIGHT,
+  SKIP_RIGHT_CORNERS,
+  IS_LICENSE_PLATE_UPLOADED,
+  VEHICLE_TYPE,
+  CATEGORY_VARIANT,
+  FILE_DETAILS,
+  CLEAR_NEW_INSPECTION,
+  SET_REQUIRED,
+  BATCH_UPDATE_VEHICLE_IMAGES,
+  SET_MILEAGE,
+  SET_FEEDBACK,
+  SET_MILEAGE_VISIBLE,
+  SET_PLATE_NUMBER_VISIBLE,
+  SET_TRIGGER_TIRE_STATUS_CHECK,
+  SET_MILEAGE_MESSAGE,
+  SET_IMAGE_DIMENSIONS,
+  FLASH_MODE,
+} = Types;
+
+// Initial state shape for a vehicle inspection session
 const initialState = {
-  // Section: Vehicle Verification
+  /** Section: Vehicle Verification Inputs */
   carVerificiationItems: {
     licensePlate: '',
     licensePlateID: '',
@@ -9,7 +39,7 @@ const initialState = {
     odometerID: '',
   },
 
-  // Section: Interior Inspection Images
+  /** Section: Interior Inspection Images */
   interiorItems: {
     driverSide: '',
     driverSideID: '',
@@ -25,7 +55,7 @@ const initialState = {
     passengerSide_2ID: '',
   },
 
-  // Section: Exterior Inspection Images
+  /** Section: Exterior Inspection Images */
   exteriorItems: {
     exteriorLeft: '',
     exteriorLeftID: '',
@@ -83,7 +113,7 @@ const initialState = {
     exteriorInsideCargoRoof_2ID: '',
   },
 
-  // Section: Tire Photos
+  /** Section: Tire Photos */
   tires: {
     leftFrontTire: '',
     leftFrontTireID: '',
@@ -95,63 +125,37 @@ const initialState = {
     rightRearTireID: '',
   },
 
-  // Additional Metadata and Controls
-  selectedInspectionID: null,
-  company_ID: null,
-  plateNumber: null,
-  plateNumberVisible: null,
-  skipLeft: false,
+  /** Metadata & UI Control Flags */
+  selectedInspectionID: null, // Current inspection session ID
+  company_ID: null, // Associated company identifier
+  plateNumber: null, // OCR-extracted plate number
+  plateNumberVisible: null, // Control display of plate number input
+  skipLeft: false, // Skip left-side exterior
   skipLeftCorners: false,
   skipRight: false,
   skipRightCorners: false,
-  isLicensePlateUploaded: false,
-  vehicle_Type: 'existing', // 'existing' | 'new'
+  isLicensePlateUploaded: false, // Tracks if plate image uploaded
+  vehicle_Type: 'existing', // 'existing' or 'new'
   variant: 0, // Category variant (0, 1, 2)
-  fileDetails: null,
-  fileRequired: null,
-  mileage: '',
-  mileageMessage: '',
-  feedback: '',
-  mileageVisible: false,
-  triggerTireStatusCheck: false,
-  imageDimensions: null,
-  flashMode: 'off', // Camera flash mode
+  fileDetails: null, // Detailed file metadata
+  fileRequired: null, // Validation rules for files
+  mileage: '', // OCR-extracted mileage string
+  mileageMessage: '', // Validation or error message
+  feedback: '', // User-entered feedback
+  mileageVisible: false, // Toggle mileage input visibility
+  triggerTireStatusCheck: false, // Flag to initiate tire health check
+  imageDimensions: null, // Captured image dimension data
+  flashMode: 'off', // Camera flash ('on' | 'off' | 'auto')
 };
 
-const {
-  UPDATE_VEHICLE_IMAGE,
-  REMOVE_IMAGE,
-  CLEAR_TIRES,
-  CLEAR_INSPECTION_IMAGES,
-  SELECTED_INSPECTION_ID,
-  COMPANY_ID,
-  LICENSE_PLATE_NUMBER,
-  SKIP_LEFT,
-  SKIP_LEFT_CORNERS,
-  SKIP_RIGHT,
-  SKIP_RIGHT_CORNERS,
-  IS_LICENSE_PLATE_UPLOADED,
-  VEHICLE_TYPE,
-  CATEGORY_VARIANT,
-  FILE_DETAILS,
-  CLEAR_NEW_INSPECTION,
-  SET_REQUIRED,
-  BATCH_UPDATE_VEHICLE_IMAGES,
-  SET_MILEAGE,
-  SET_FEEDBACK,
-  SET_MILEAGE_VISIBLE,
-  SET_PLATE_NUMBER_VISIBLE,
-  SET_TRIGGER_TIRE_STATUS_CHECK,
-  SET_MILEAGE_MESSAGE,
-  SET_IMAGE_DIMENSIONS,
-  FLASH_MODE,
-} = Types;
-
 /**
- * Reducer to manage the state of a new vehicle inspection session.
+ * Reducer: newInspectionReducer
+ * @param {Object} state - Current inspection state
+ * @param {Object} action - Redux action
+ * @returns {Object} New state after applying the action
  *
- * Handles image updates, metadata, flow controls (e.g., skip sections),
- * and reset scenarios.
+ * Manages state for adding/removing images, metadata updates,
+ * flow control flags, and reset logic.
  */
 const newInspectionReducer = (state = initialState, action) => {
   const {type, payload} = action;
@@ -178,10 +182,7 @@ const newInspectionReducer = (state = initialState, action) => {
       };
 
     case CLEAR_TIRES:
-      return {
-        ...state,
-        tires: initialState.tires,
-      };
+      return {...state, tires: initialState.tires};
 
     case CLEAR_INSPECTION_IMAGES:
       return {
@@ -223,14 +224,11 @@ const newInspectionReducer = (state = initialState, action) => {
       return {...state, variant: payload};
 
     case FILE_DETAILS:
-      return {
-        ...state,
-        fileDetails: payload,
-      };
+      return {...state, fileDetails: payload};
+
     case SET_REQUIRED:
-      return {...state, fileRequired: action.payload};
-    case CLEAR_NEW_INSPECTION:
-      return initialState;
+      return {...state, fileRequired: payload};
+
     case BATCH_UPDATE_VEHICLE_IMAGES:
       const updatedState = {...state};
 
@@ -268,6 +266,11 @@ const newInspectionReducer = (state = initialState, action) => {
 
     case FLASH_MODE:
       return {...state, flashMode: payload};
+
+    case CLEAR_NEW_INSPECTION:
+      // Reset entire inspection state
+      return initialState;
+
     default:
       return state;
   }

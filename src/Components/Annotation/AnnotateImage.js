@@ -17,7 +17,6 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
-import {useDispatch} from 'react-redux';
 
 import {colors} from '../../Assets/Styles';
 import {
@@ -35,8 +34,8 @@ import {
   Platforms,
 } from '../../Constants';
 import {generateRandomString, isNotEmpty, mergeData} from '../../Utils';
-import {showToast} from '../../Store/Actions';
 import {resizeInnerBox} from '../../Utils/helpers';
+import {useUIActions} from '../../hooks/UI';
 
 const {OS} = Platform;
 const {IOS} = Platforms;
@@ -65,7 +64,7 @@ const AnnotateImage = ({
   isLoading = false,
   imageDimensions,
 }) => {
-  const dispatch = useDispatch();
+  const {showToast} = useUIActions();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [damageDetails, setDamageDetails] = useState([]); // Only coordinates now
   const [damageType, setDamageType] = useState(''); // Shared damage type
@@ -138,7 +137,7 @@ const AnnotateImage = ({
   };
   const handleSubmission = () => {
     if (!canSubmit) {
-      dispatch(showToast(AnnotationAlertMessage, 'warning'));
+      showToast(AnnotationAlertMessage, 'warning');
       return;
     }
     const label = damageType;

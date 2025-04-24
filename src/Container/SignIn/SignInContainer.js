@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, BackHandler, Keyboard, Platform, StyleSheet} from 'react-native';
 import {Formik} from 'formik';
-import {useDispatch} from 'react-redux';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -12,8 +11,8 @@ import {signInValidationSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
 import {HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
-import {showToast} from '../../Store/Actions';
 import {useAuthActions} from '../../hooks/auth';
+import {useUIActions} from '../../hooks/UI';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
@@ -21,9 +20,9 @@ const {WELCOME, FORGET_PASSWORD, HOME} = ROUTES;
 const {white, cobaltBlueLight} = colors;
 
 const SignInContainer = ({navigation, route}) => {
+  const {showToast} = useUIActions();
   const {login} = useAuthActions();
   const {canGoBack, goBack, navigate} = navigation;
-  const dispatch = useDispatch();
   const emailRef = useRef();
   const passwordRef = useRef();
   const [isKeyboardActive, setKeyboardActive] = useState(false);
@@ -43,7 +42,7 @@ const SignInContainer = ({navigation, route}) => {
   }, []);
   useEffect(() => {
     if (route.params) {
-      dispatch(showToast(route?.params?.toastMessage, 'success'));
+      showToast(route?.params?.toastMessage, 'success');
     }
   }, [route.params]);
   useEffect(() => {

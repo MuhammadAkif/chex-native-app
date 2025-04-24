@@ -1,9 +1,10 @@
 import React, {memo, useCallback} from 'react';
 
 import InputModal from './InputModal';
-import {setPlateNumberVisible} from '../../Store/Actions';
+import {useNewInspectionActions} from '../../hooks/newInspection';
 
 const LicensePlateInput = () => {
+  const {setPlateNumberVisible} = useNewInspectionActions();
   const onSubmit = useCallback(async licensePlate => {}, []);
 
   return (

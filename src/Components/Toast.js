@@ -11,12 +11,11 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {useDispatch, useSelector} from 'react-redux';
 
 import {XMark, Check, Cross, Exclamation} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
-import {hideToast} from '../Store/Actions';
 import {Platforms} from '../Constants';
+import {useUIActions, useUIState} from '../hooks/UI';
 
 const {OS} = Platform;
 const {ANDROID, IOS} = Platforms;
@@ -33,11 +32,11 @@ const Background_Color = {
 };
 
 const Toast = props => {
+  const {clearToast} = useUIActions();
   const {isModal = false} = props;
   const {
     toast: {visible, message, type},
-  } = useSelector(state => state.ui);
-  const dispatch = useDispatch();
+  } = useUIState();
 
   useEffect(() => {
     let timeoutID = setTimeout(() => visible && onCrossPress(), 5000);
@@ -51,7 +50,7 @@ const Toast = props => {
     return null;
   }
   function onCrossPress() {
-    dispatch(hideToast());
+    clearToast();
   }
   const ICON_COMPONENT = Toast_Icons[type];
   const BACKGROUND_COLOR = Background_Color[type];

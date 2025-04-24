@@ -4,22 +4,6 @@ import {useDispatch} from 'react-redux';
 
 import {NewInspectionScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
-import {
-  updateIsLicensePlateUploaded,
-  categoryVariant,
-  showToast,
-  removeVehicleImage,
-  clearNewInspection,
-  clear_Tires,
-  skipLeft,
-  skipLeftCorners,
-  skipRight,
-  skipRightCorners,
-  setVehicleType,
-  file_Details,
-  setRequired,
-  setMileageVisible,
-} from '../Store/Actions';
 import {Delete_Messages, HARDWARE_BACK_PRESS, INSPECTION} from '../Constants';
 import {
   exteriorVariant,
@@ -40,7 +24,7 @@ import {
   InteriorItemsExpandedCard,
 } from '../Components';
 import {
-  clearTires,
+  clearTires as clearTiresAPI,
   deleteImageFromDatabase,
   extractNumberPlate,
   imageAnnotation,
@@ -50,6 +34,8 @@ import {
 } from '../services/inspection';
 import {useNewInspectionState} from '../hooks/newInspection';
 import {useAuthState} from '../hooks';
+import {useUIActions} from '../hooks/UI';
+import {useNewInspectionActions} from '../hooks/newInspection';
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllCarVerification: false,
@@ -95,6 +81,22 @@ const delay = {
 };
 
 const NewInspectionContainer = ({route, navigation}) => {
+  const {showToast} = useUIActions();
+  const {
+    setRequired,
+    setLicensePlateUploaded,
+    setMileageVisible,
+    setCategoryVariant,
+    removeImage,
+    resetInspection,
+    clearTires,
+    skipLeft,
+    skipLeftCorners,
+    skipRight,
+    skipRightCorners,
+    loadFileDetails,
+    setVehicleType,
+  } = useNewInspectionActions();
   const dispatch = useDispatch();
   const {canGoBack, goBack, navigate} = navigation;
   let {
@@ -190,7 +192,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       if (routeName !== INSPECTION_SELECTION) {
         setTimeout(() => {
           setIsLicenseModalVisible(isLicensePlate || false);
-          isOdometer && dispatch(setMileageVisible(true));
+          isOdometer && setMileageVisible(true);
           setDisplayAnnotationPopUp(displayAnnotation || false);
         }, delay[OS]);
         setFileID(fileId || '');
@@ -233,7 +235,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   }, [selectedInspectionID]);
   useEffect(() => {
     const licenseBoolean = isNotEmpty(carVerificiationItems.licensePlate);
-    dispatch(updateIsLicensePlateUploaded(licenseBoolean));
+    setLicensePlateUploaded(licenseBoolean);
   }, [carVerificiationItems.licensePlate]);
   useEffect(() => {
     !isLicensePlateUploaded && setSelectedOption(selectedOptionInitialState);
@@ -253,7 +255,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setModalDetails(modalDetailsInitialState);
     setModalVisible(false);
     setIsLoading(false);
-    dispatch(clearNewInspection());
+    resetInspection();
     setIsDiscardInspectionModalVisible(false);
     setDeleteItem({category: null, key: null});
     setIsDiscardInspectionModalVisible(false);
@@ -270,28 +272,28 @@ const NewInspectionContainer = ({route, navigation}) => {
   }
   function handleExteriorLeft() {
     if (isNotEmpty(exteriorItems?.exteriorLeft)) {
-      dispatch(skipLeftCorners(true));
+      skipLeftCorners(true);
     } else if (
       isNotEmpty(exteriorItems?.exteriorFrontLeftCorner) ||
       isNotEmpty(exteriorItems?.exteriorRearLeftCorner)
     ) {
-      dispatch(skipLeft(true));
+      skipLeft(true);
     } else {
-      dispatch(skipLeft(false));
-      dispatch(skipLeftCorners(false));
+      skipLeft(false);
+      skipLeftCorners(false);
     }
   }
   function handleExteriorRight() {
     if (isNotEmpty(exteriorItems?.exteriorRight)) {
-      dispatch(skipRightCorners(true));
+      skipRightCorners(true);
     } else if (
       isNotEmpty(exteriorItems?.exteriorFrontRightCorner) ||
       isNotEmpty(exteriorItems?.exteriorRearRightCorner)
     ) {
-      dispatch(skipRight(true));
+      skipRight(true);
     } else {
-      dispatch(skipRight(false));
-      dispatch(skipRightCorners(false));
+      skipRight(false);
+      skipRightCorners(false);
     }
   }
   function handleIsAllVehicleParts() {
@@ -384,7 +386,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   }
 
   function toggleFieldRequired(required = null) {
-    dispatch(setRequired(required));
+    setRequired(required);
   }
   const handleBackPress = () => {
     resetAllStates();
@@ -405,7 +407,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   const handleItemPickerPress = (details, variant = 0) => {
     const haveType = checkCategory(details.category || null);
     displayAnnotationPopUp && setDisplayAnnotationPopUp(false);
-    dispatch(categoryVariant(variant));
+    setCategoryVariant(variant);
     if (haveType) {
       const {key} = details;
       const isRequired = isNotEmpty(requiredFields[key]);
@@ -481,7 +483,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       .catch(onGetLocationFail);
   }
   function onGetLocationSuccess() {
-    dispatch(clearNewInspection());
+    resetInspection();
     resetAllStates();
     navigate(COMPLETED_INSPECTION);
   }
@@ -500,7 +502,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     }
   }
   const handleOnCrossPress = (category, key, variant = 0) => {
-    dispatch(categoryVariant(variant));
+    setCategoryVariant(variant);
     setIsDiscardInspectionModalVisible(true);
     setDeleteItem({category: category, key: key});
   };
@@ -521,8 +523,8 @@ const NewInspectionContainer = ({route, navigation}) => {
       .catch(e => onImageDeleteFail(e, category, key_));
   };
   function onImageDeleteSuccess(category, key_) {
-    dispatch(showToast(Delete_Messages.success, 'success'));
-    dispatch(removeVehicleImage(category, key_));
+    showToast(Delete_Messages.success, 'success');
+    removeImage(category, key_);
   }
   function onImageDeleteFail(e, category, key_) {
     const {success, failed} = Delete_Messages;
@@ -548,9 +550,9 @@ const NewInspectionContainer = ({route, navigation}) => {
     }
 
     if (alreadyRemoved) {
-      dispatch(removeVehicleImage(category, key_));
+      removeImage(category, key_);
     }
-    dispatch(showToast(activeMessage, activeType));
+    showToast(activeMessage, activeType);
   }
   const handleNoPress = () => {
     setIsDiscardInspectionModalVisible(false);
@@ -573,7 +575,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   function onNumberPlateExtractSuccess(res) {
     const vehicleType = res?.data?.hasAdded || 'existing';
-    dispatch(setVehicleType(vehicleType));
+    setVehicleType(vehicleType);
     vehicleTireStatusToRender(selectedInspectionID).then(() =>
       setLoadingIndicator(false),
     );
@@ -589,7 +591,7 @@ const NewInspectionContainer = ({route, navigation}) => {
 
     if (statusCode === 409) {
       const vehicleType = hasAdded || 'existing';
-      dispatch(setVehicleType(vehicleType));
+      setVehicleType(vehicleType);
       setInspectionID(inspectionId);
       setIsInspectionInProgressModalVisible(true);
       setErrorTitle(errorMessage);
@@ -601,7 +603,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsInspectionInProgressModalVisible(false);
     setLoadingIndicator(true);
     setErrorTitle('');
-    dispatch(file_Details(inspectionID))
+    loadFileDetails(inspectionID)
       .then(onInProgressInspectionSuccess)
       .catch(onInProgressInspectionFail);
   };
@@ -641,9 +643,9 @@ const NewInspectionContainer = ({route, navigation}) => {
   async function handleRemovedAllTires() {
     let removeTiresList = extractIDs(tires) || [];
 
-    await clearTires(removeTiresList)
+    await clearTiresAPI(removeTiresList)
       .then(res => {
-        dispatch(clear_Tires());
+        clearTires();
       })
       .catch()
       .finally(() => {

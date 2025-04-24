@@ -4,7 +4,6 @@ import {useDispatch} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 
 import {InspectionInProgressScreen} from '../Screens';
-import {showToast} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
 import {HARDWARE_BACK_PRESS} from '../Constants';
 import {handle_Session_Expired, handleNewInspectionPress} from '../Utils';
@@ -14,10 +13,12 @@ import {
 } from '../hooks/inspectionInProgress';
 import {useNewInspectionActions} from '../hooks/newInspection';
 import {useAuthState} from '../hooks/auth';
+import {useUIActions} from '../hooks/UI';
 
 const {NEW_INSPECTION, INSPECTION_IN_PROGRESS} = ROUTES;
 
 const InspectionInProgressContainer = ({navigation}) => {
+  const {showToast} = useUIActions();
   const {resetInspection, setVehicleType, loadFileDetails} =
     useNewInspectionActions();
   const {fetchInProgress, removeInspection} = useInspectionInProgressActions();
@@ -114,7 +115,7 @@ const InspectionInProgressContainer = ({navigation}) => {
       if (statusCode === 401) {
         handle_Session_Expired(statusCode, dispatch);
       }
-      dispatch(showToast(errorMessage, 'error'));
+      showToast(errorMessage, 'error');
     } finally {
       setIsLoading(false);
     }

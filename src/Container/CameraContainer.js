@@ -14,7 +14,6 @@ import {
   DiscardInspectionModal,
 } from '../Components';
 import {ROUTES} from '../Navigation/ROUTES';
-import {getMileage, setImageDimensions} from '../Store/Actions';
 import {
   checkRelevantType,
   exteriorVariant,
@@ -56,8 +55,13 @@ const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
 const isUploadFailedInitialState = {visible: false, title: '', message: ''};
 
 const CameraContainer = ({route, navigation}) => {
-  const {updateImage, extractAndSetPlateNumber, clearImages} =
-    useNewInspectionActions();
+  const {
+    updateImage,
+    extractAndSetPlateNumber,
+    clearImages,
+    setImageDimensions,
+    extractMileage,
+  } = useNewInspectionActions();
   const {selectMedia} = useMediaPicker();
   const {selectedInspectionID, vehicle_Type, variant} = useNewInspectionState();
   const dispatch = useDispatch();
@@ -136,7 +140,7 @@ const CameraContainer = ({route, navigation}) => {
   const handleCaptureNowPress = async file => {
     setHideFrame(true);
     setIsImageFile(file);
-    dispatch(setImageDimensions(file));
+    setImageDimensions(file);
   };
 
   const handleRetryPress = () => {
@@ -165,7 +169,7 @@ const CameraContainer = ({route, navigation}) => {
     }
     if (category === 'CarVerification' && type === 'odometer') {
       try {
-        dispatch(getMileage(image_url));
+        await extractMileage(image_url);
       } catch (error) {
         throw error;
       }

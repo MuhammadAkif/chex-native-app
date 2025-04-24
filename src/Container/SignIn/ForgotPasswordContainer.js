@@ -5,15 +5,14 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {useDispatch} from 'react-redux';
 
 import {ForgotPasswordScreen} from '../../Screens';
 import {forgetPasswordSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
 import {HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
-import {showToast} from '../../Store/Actions';
 import {forgotPassword} from '../../services/authServices';
+import {useUIActions} from '../../hooks/UI';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
@@ -21,7 +20,7 @@ const {cobaltBlueLight, gray, white} = colors;
 const {WELCOME, RESET_PASSWORD, SIGN_IN} = ROUTES;
 
 const ForgotPasswordContainer = ({navigation}) => {
-  const dispatch = useDispatch();
+  const {showToast} = useUIActions();
   const {canGoBack, goBack, navigate} = navigation;
   const emailRef = useRef();
   const [isKeyboardActive, setKeyboardActive] = useState(false);
@@ -79,13 +78,13 @@ const ForgotPasswordContainer = ({navigation}) => {
   function onVerificationCodeSendSuccess(response, resetForm, email) {
     const toastMessage = 'Verification code has been sent to your account';
     resetForm();
-    dispatch(showToast(toastMessage, 'success'));
+    showToast(toastMessage, 'success');
     navigate(RESET_PASSWORD, {
       email: email,
     });
   }
   function onVerificationCodeSendFail(response) {
-    dispatch(showToast('Email not found', 'error'));
+    showToast('Email not found', 'error');
   }
   const handleKnowYourPassword = () => navigate(SIGN_IN);
   const handleOnPress = () => Keyboard.dismiss();

@@ -5,15 +5,14 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {useDispatch} from 'react-redux';
 
 import {resetPasswordSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
 import {HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
 import {ResetPasswordScreen} from '../../Screens';
-import {showToast} from '../../Store/Actions';
 import {resetPassword} from '../../services/authServices';
+import {useUIActions} from '../../hooks/UI';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
@@ -21,7 +20,7 @@ const {WELCOME, FORGET_PASSWORD, SIGN_IN} = ROUTES;
 const {gray, white, cobaltBlueLight} = colors;
 
 const ResetPasswordContainer = ({navigation, route}) => {
-  const dispatch = useDispatch();
+  const {showToast} = useUIActions();
   const {canGoBack, goBack, navigate} = navigation;
   const email = route?.params?.email;
   const emailRef = useRef();
@@ -105,7 +104,7 @@ const ResetPasswordContainer = ({navigation, route}) => {
   function onResetPasswordFail(err) {
     const {errors = 'Failed to reset password'} = err?.response?.data;
     const message = errors || 'Something went wrong, Please try again.';
-    dispatch(showToast(message, 'error'));
+    showToast(message, 'error');
   }
   const handleKnowYourPassword = () => navigate(SIGN_IN);
   const handleNavigationBackPress = () => goBack();
