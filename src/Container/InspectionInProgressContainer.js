@@ -1,32 +1,30 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {BackHandler} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 
 import {InspectionInProgressScreen} from '../Screens';
-import {
-  clearNewInspection,
-  fetchInspectionInProgress,
-  deleteInspection,
-  setVehicleType,
-  showToast,
-  file_Details,
-} from '../Store/Actions';
+import {showToast} from '../Store/Actions';
 import {ROUTES} from '../Navigation/ROUTES';
 import {HARDWARE_BACK_PRESS} from '../Constants';
 import {handle_Session_Expired, handleNewInspectionPress} from '../Utils';
+import {
+  useInspectionInProgressState,
+  useInspectionInProgressActions,
+} from '../hooks/inspectionInProgress';
+import {useNewInspectionActions} from '../hooks/newInspection';
+import {useAuthState} from '../hooks/auth';
 
 const {NEW_INSPECTION, INSPECTION_IN_PROGRESS} = ROUTES;
 
 const InspectionInProgressContainer = ({navigation}) => {
+  const {resetInspection, setVehicleType, loadFileDetails} =
+    useNewInspectionActions();
+  const {fetchInProgress, removeInspection} = useInspectionInProgressActions();
   const dispatch = useDispatch();
   const {canGoBack, goBack, navigate} = navigation;
-  const {
-    user: {data},
-  } = useSelector(state => state?.auth);
-  const {inspectionInProgress} = useSelector(
-    state => state?.inspectionInProgress,
-  );
+  const {user: data} = useAuthState();
+  const {inspectionInProgress} = useInspectionInProgressState();
   const [isLoading, setIsLoading] = useState(false);
   const [isNewInspectionLoading, setIsNewInspectionLoading] = useState(false);
   const [inspectionID, setInspectionID] = useState(null);
@@ -63,14 +61,15 @@ const InspectionInProgressContainer = ({navigation}) => {
     setDeleteInspectionID(null);
   }
   async function fetchInProgressInspections() {
-    dispatch(fetchInspectionInProgress()).finally(() => setIsLoading(false));
+    await fetchInProgress();
+    setIsLoading(false);
 
     return null;
   }
   const handleContinuePress = async inspectionId => {
     setIsLoading(true);
     setInspectionID(inspectionId);
-    dispatch(file_Details(inspectionId))
+    loadFileDetails(inspectionId)
       .then(res => onContinuePressSuccess(res, inspectionId))
       .catch(onContinuePressFail)
       .finally(() => {
@@ -81,7 +80,7 @@ const InspectionInProgressContainer = ({navigation}) => {
   function onContinuePressSuccess(res, inspectionId) {
     const {hasAdded = 'existing'} = res?.data || {};
     const vehicleType = hasAdded || 'existing';
-    dispatch(setVehicleType(vehicleType));
+    setVehicleType(vehicleType);
     resetAllStates();
     navigate(NEW_INSPECTION, {
       routeName: INSPECTION_IN_PROGRESS,
@@ -89,7 +88,7 @@ const InspectionInProgressContainer = ({navigation}) => {
   }
   function onContinuePressFail(error) {
     const {statusCode = null} = error?.response?.data || {};
-    dispatch(clearNewInspection());
+    resetInspection();
     if (statusCode === 401) {
       handle_Session_Expired(statusCode, dispatch);
     }
@@ -105,28 +104,35 @@ const InspectionInProgressContainer = ({navigation}) => {
     remove_Inspection().then();
   };
   async function remove_Inspection() {
-    dispatch(deleteInspection(deleteInspectionID))
-      .catch(error => {
-        let errorMessage =
-          error?.response?.data?.message[0] ||
-          'Something went wrong, Please try again.';
-        const statusCode = error?.response?.data?.statusCode;
-        if (statusCode === 401) {
-          handle_Session_Expired(statusCode, dispatch);
-        }
-        dispatch(showToast(errorMessage, 'error'));
-      })
-      .finally(() => setIsLoading(false));
+    try {
+      await removeInspection(deleteInspectionID);
+    } catch (error) {
+      let errorMessage =
+        error?.response?.data?.message[0] ||
+        'Something went wrong, Please try again.';
+      const statusCode = error?.response?.data?.statusCode;
+      if (statusCode === 401) {
+        handle_Session_Expired(statusCode, dispatch);
+      }
+      dispatch(showToast(errorMessage, 'error'));
+    } finally {
+      setIsLoading(false);
+    }
   }
   const handleNoPress = () => setIsDiscardInspectionModalVisible(false);
   const onNewInspectionPress = async () => {
-    await handleNewInspectionPress(
-      dispatch,
-      setIsNewInspectionLoading,
-      data?.companyId,
-      navigation,
-      resetAllStates,
-    );
+    try {
+      await handleNewInspectionPress(
+        dispatch,
+        setIsNewInspectionLoading,
+        data?.companyId,
+        navigation,
+      );
+      resetAllStates();
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
 
   return (
@@ -141,7 +147,7 @@ const InspectionInProgressContainer = ({navigation}) => {
       onYesPress={handleYesPress}
       onNoPress={handleNoPress}
       isDiscardInspectionModalVisible={isDiscardInspectionModalVisible}
-      fetchInspectionInProgress={fetchInProgressInspections}
+      fetchInspectionInProgress={fetchInProgress}
       onNewInspectionPress={onNewInspectionPress}
     />
   );

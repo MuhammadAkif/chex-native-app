@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {ActivityIndicator, BackHandler} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 
@@ -8,19 +8,19 @@ import {LicensePlateNumberSelectionScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS, API_ENDPOINTS, generateApiUrl} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {colors} from '../Assets/Styles';
-import {numberPlateSelected, setCompanyId} from '../Store/Actions';
 import {handle_Session_Expired, uploadInProgressMediaToStore} from '../Utils';
+import {useAuthState} from '../hooks/auth';
+import {useNewInspectionActions} from '../hooks/newInspection';
 
 const {CREATE_INSPECTION_URL, FETCH_NUMBER_PLATE_URL} = API_ENDPOINTS;
 const {NEW_INSPECTION, LICENSE_PLATE_SELECTION} = ROUTES;
 const {white} = colors;
 
 const LicensePlateNumberSelectionContainer = ({navigation}) => {
+  const {selectInspectionID, setCompany} = useNewInspectionActions();
   const dispatch = useDispatch();
   const {canGoBack, goBack, navigate} = navigation;
-  const {
-    user: {token, data},
-  } = useSelector(state => state?.auth);
+  const {token, user} = useAuthState();
   const [selectedNP, setSelectedNP] = useState(null);
   const [search, setSearch] = useState('');
   const [numberPlate, setNumberPlate] = useState([]);
@@ -71,7 +71,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
   function fetchNP() {
     axios
       .post(FETCH_NUMBER_PLATE_URL, {
-        companyId: data?.companyId,
+        companyId: user?.companyId,
       })
       .then(response => {
         setNumberPlate(response.data);
@@ -86,9 +86,9 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
     setIsLoading(true);
     const body = {
       licensePlateNumber: selectedNP,
-      companyId: data?.companyId,
+      companyId: user?.companyId,
     };
-    dispatch(setCompanyId(data?.companyId));
+    setCompany(user?.companyId);
     const headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
@@ -98,7 +98,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       .then(response => {
         setIsLoading(false);
         setInspectionID(response.data.id);
-        dispatch(numberPlateSelected(response.data.id));
+        selectInspectionID(response.data.id);
         resetAllStates();
         navigate(NEW_INSPECTION, {
           routeName: LICENSE_PLATE_SELECTION,
@@ -126,7 +126,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
       .then(res => {
         uploadInProgressMediaToStore(res?.data?.files, dispatch);
         setIsLoading(false);
-        dispatch(numberPlateSelected(inspectionID));
+        selectInspectionID(inspectionID);
         navigate(NEW_INSPECTION, {
           routeName: LICENSE_PLATE_SELECTION,
         });

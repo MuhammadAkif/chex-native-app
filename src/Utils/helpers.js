@@ -176,6 +176,22 @@ export function checkAndCompleteUrl(url, paramsToCheck = []) {
   return result;
 }
 
+/**
+ * Extracts the MIME type of image based on its file path.
+ * If no extension is found, defaults to 'jpeg'.
+ *
+ * @returns {string} The MIME type, defaulting to 'image/jpeg'.
+ * @param path
+ */
+export const getFileMimeType = path => {
+  if (!path) {
+    console.warn('Invalid file path passed to getImageMimeType.');
+    return 'image/jpeg';
+  }
+
+  const extension = path.split('.').pop() || 'jpeg';
+  return `image/${extension}`;
+};
 export function insertMileage(str) {
   if (isNotEmpty(str.trim())) {
     if (str.includes('mi')) {
@@ -256,6 +272,49 @@ const calculateImageDimensions = (
   }
 
   return {width: newWidth, height: newHeight};
+};
+
+export const getErrorMessage = code => {
+  const errorMessages = {
+    // Permission Errors
+    'permission/camera-permission-denied':
+      'Camera permission is required to use this feature.',
+    'permission/microphone-permission-denied':
+      'Microphone permission is required for video recording.',
+
+    // Device Errors
+    'device/configuration-error': 'There was an error configuring the camera.',
+    'device/no-device': 'No camera device was found on your device.',
+    'device/invalid-device': 'The selected camera device is invalid.',
+    'device/microphone-unavailable': 'The microphone is currently unavailable.',
+    'device/camera-not-available-on-simulator':
+      'Camera is not available in the simulator.',
+
+    // Session Errors
+    'session/camera-not-ready': 'The camera is not ready. Please try again.',
+    'session/camera-cannot-be-opened':
+      'Unable to access the camera at this time.',
+    'session/camera-has-been-disconnected': 'The camera has been disconnected.',
+    'session/audio-in-use-by-other-app':
+      'Another app is currently using the audio. Please close other apps and try again.',
+
+    // Capture Errors
+    'capture/recording-in-progress': 'A recording is already in progress.',
+    'capture/no-recording-in-progress':
+      'No recording is currently in progress.',
+    'capture/file-io-error': 'Error saving the captured media.',
+    'capture/video-not-enabled': 'Video capture is not enabled.',
+    'capture/photo-not-enabled': 'Photo capture is not enabled.',
+    'capture/aborted': 'The capture was cancelled.',
+
+    // System Errors
+    'system/camera-module-not-found': 'Camera module not found on your device.',
+    'system/view-not-found': 'Camera view could not be initialized.',
+  };
+
+  return (
+    errorMessages[code] || 'An unexpected error occurred. Please try again.'
+  );
 };
 
 /**

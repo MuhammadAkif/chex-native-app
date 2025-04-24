@@ -25,6 +25,7 @@ import {
   setMileage,
   setMileageMessage,
   setImageDimensions,
+  setFlashMode,
 } from './NewInspectionAction';
 import {signIn, signOut, sessionExpired} from './AuthAction';
 import {
@@ -76,4 +77,5 @@ export {
   setMileage,
   setMileageMessage,
   setImageDimensions,
+  setFlashMode,
 };

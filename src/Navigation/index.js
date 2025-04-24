@@ -4,7 +4,6 @@ import {
   useNavigationContainerRef,
 } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {useSelector} from 'react-redux';
 
 import {
   RegisterContainer,
@@ -19,6 +18,7 @@ import {
 import {ROUTES} from './ROUTES';
 import NavigationDrawer from './NavigationDrawer';
 import {setNavigationRef} from '../services/navigationService';
+import {useAuthState} from '../hooks/auth';
 
 const {
   HOME,
@@ -34,7 +34,7 @@ const {
 
 const Navigation = () => {
   const {Screen, Navigator} = createNativeStackNavigator();
-  const token = useSelector(state => state?.auth?.user?.token);
+  const {token} = useAuthState();
   const initialRouteName = token ? HOME : WELCOME;
   const screenOptions = {headerShown: false, gestureEnabled: false};
   const navigationRef = useNavigationContainerRef();

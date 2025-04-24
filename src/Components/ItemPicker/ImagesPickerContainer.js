@@ -4,11 +4,11 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {useSelector} from 'react-redux';
 
 import {ImagePicker_New, ItemPickerLabel} from '../index';
 import {colors, ExpandedCardStyles} from '../../Assets/Styles';
 import {getAnnotationStatus, isNotEmpty} from '../../Utils';
+import {useNewInspectionState} from '../../hooks/newInspection';
 
 const {white} = colors;
 const {container} = ExpandedCardStyles;
@@ -39,9 +39,7 @@ const ImagesPickerContainer = ({
     imageURLOne: false,
     imageURLTwo: false,
   });
-  const {fileDetails, exteriorItems} = useSelector(
-    state => state.newInspection,
-  );
+  const {fileDetails, exteriorItems} = useNewInspectionState();
   let {title, groupType, key} = ExteriorDetails;
   const displayLabel = imageURL || imageURLOne || imageURLTwo;
   const labelVisible = hideAddLAbel ? !hideAddLAbel : isNotEmpty(displayLabel);

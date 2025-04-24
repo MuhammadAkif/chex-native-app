@@ -16,7 +16,6 @@ import {
 import {PrimaryGradientButton} from '../index';
 import {circleBorderRadius, colors, modalStyle} from '../../Assets/Styles';
 import {removeAlphabets} from '../../Utils/helpers';
-import {useSelector} from 'react-redux';
 
 const {red, gray, orange, black} = colors;
 const {
@@ -100,7 +99,7 @@ const ConfirmVehicleDetailModal = ({
             maxLength={textLimit}
             keyboardType={keyboardType}
             inputMode={inputMode}
-            onSubmitEditing={() => onConfirmPress(numberPlate)}
+            onSubmitEditing={() => onConfirmPress(numberPlate, clearState)}
           />
           <Text style={styles.textLimit}>{text_Limit}</Text>
           <View style={footer}>

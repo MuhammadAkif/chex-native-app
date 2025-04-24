@@ -8,7 +8,7 @@ const ENV_TYPE_URL = {
 };
 const version = '1';
 export const API_VERSION_PATH = '/api/v' + version + '/';
-export const API_BASE_URL = ENV_TYPE_URL.production;
+export const API_BASE_URL = ENV_TYPE_URL.staging;
 export const generateApiUrl = path => API_BASE_URL + API_VERSION_PATH + path;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
 export const EXTRACT_NUMBER_PLATE_WITH_AI =
@@ -24,9 +24,9 @@ export const API_ENDPOINTS = {
   EXTRACT_NUMBER_PLATE_URL: generateApiUrl('extract/inspection/create'),
   EXTRACT_NUMBER_PLATE_WITH_AI_URL: process.env.EXTRACT_NUMBER_PLATE_URL,
   LOGIN_URL: generateApiUrl('auth/login'),
-  /*New file upload api*/
-  /*UPLOAD_URL: generateApiUrl('automation/file/upload'),*/
-  /*Old file upload api*/
+  /* New file upload API - IN PROGRESS (DO NOT USE IN PROD OR STAGING) */
+  // UPLOAD_URL: generateApiUrl('automation/file/upload'),
+  /* Old file upload API - STABLE (USE THIS) */
   UPLOAD_URL: generateApiUrl('file/upload'),
   CREATE_INSPECTION_URL: generateApiUrl('create/inspection'),
   FETCH_IN_PROGRESS_URL: generateApiUrl('status/vehicle'),

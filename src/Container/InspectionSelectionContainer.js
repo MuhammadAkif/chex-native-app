@@ -1,11 +1,12 @@
 import React, {useCallback, useState} from 'react';
 import {BackHandler, Platform} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 import {InspectionSelectionScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS, Platforms} from '../Constants';
 import {handleNewInspectionPress} from '../Utils';
+import {useAuthState} from '../hooks/auth';
 
 const {ANDROID} = Platforms;
 const {OS} = Platform;
@@ -13,9 +14,7 @@ const {OS} = Platform;
 const InspectionSelectionContainer = ({navigation}) => {
   const {navigate} = navigation;
   const dispatch = useDispatch();
-  const {
-    user: {data},
-  } = useSelector(state => state?.auth);
+  const {user} = useAuthState();
   const [isLoading, setIsLoading] = useState(false);
   const [showExitPopup, setShowExitPopup] = useState(false);
 
@@ -41,13 +40,18 @@ const InspectionSelectionContainer = ({navigation}) => {
   }
 
   const onNewInspectionPress = async () => {
-    await handleNewInspectionPress(
-      dispatch,
-      setIsLoading,
-      data?.companyId,
-      navigation,
-      resetAllStates,
-    );
+    try {
+      await handleNewInspectionPress(
+        dispatch,
+        setIsLoading,
+        user?.companyId,
+        navigation,
+      );
+      resetAllStates();
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
   const handleNavigation = path => navigate(path);
   function onExitPress() {

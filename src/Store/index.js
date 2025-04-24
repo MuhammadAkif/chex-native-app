@@ -5,6 +5,10 @@ import {persistStore, persistReducer} from 'redux-persist';
 
 import rootReducer from './Reducers';
 
+/**
+ *
+ * @type {{storage: AsyncStorageStatic, key: string}}
+ */
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,

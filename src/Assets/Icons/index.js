@@ -33,6 +33,9 @@ import Filter from './Filter';
 import Landscape from './Landscape';
 import Portrait from './Portrait';
 import CommentIcon from './CommentIcon';
+import FlashOn from './Flash/FlashOn';
+import FlashOff from './Flash/FlashOff';
+import FlashAuto from './Flash/FlashAuto';
 
 export {
   Check,
@@ -70,4 +73,7 @@ export {
   Landscape,
   Portrait,
   CommentIcon,
+  FlashOn,
+  FlashOff,
+  FlashAuto,
 };

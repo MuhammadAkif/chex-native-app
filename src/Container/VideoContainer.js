@@ -15,7 +15,7 @@ import {
   useCameraFormat,
 } from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -25,9 +25,10 @@ import {colors, PreviewStyles} from '../Assets/Styles';
 import {BackArrow} from '../Assets/Icons';
 import {CameraFooter, CaptureImageModal, RecordingPreview} from '../Components';
 import {ROUTES} from '../Navigation/ROUTES';
-import {updateVehicleImage} from '../Store/Actions';
 import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
 import {HARDWARE_BACK_PRESS, Platforms} from '../Constants';
+import {useNewInspectionActions} from '../hooks/newInspection';
+import {useAuthState} from '../hooks/auth';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
@@ -38,10 +39,9 @@ const {container, headerContainer, counterContainer, counterText} =
 
 const VideoContainer = ({route, navigation}) => {
   const {canGoBack, navigate, goBack} = navigation;
+  const {updateImage} = useNewInspectionActions();
   const dispatch = useDispatch();
-  const {
-    user: {token},
-  } = useSelector(state => state?.auth);
+  const {token} = useAuthState();
   const isFocused = useIsFocused();
   const videoRef = useRef();
   const appState = useRef(AppState.currentState);
@@ -180,7 +180,7 @@ const VideoContainer = ({route, navigation}) => {
     );
   };
   function uploadVideoToStore(imageID) {
-    dispatch(updateVehicleImage(groupType, type, isVideoURI, imageID));
+    updateImage(groupType, type, isVideoURI, imageID);
     navigate(NEW_INSPECTION);
   }
   const handleError = () => {
@@ -240,7 +240,12 @@ const VideoContainer = ({route, navigation}) => {
           )}
           <View style={headerContainer}>
             <TouchableOpacity onPress={handleNavigationBackPress}>
-              <BackArrow height={hp('8%')} width={wp('8%')} color={white} />
+              <BackArrow
+                height={hp('8%')}
+                width={wp('8%')}
+                color={white}
+                onPress={handleNavigationBackPress}
+              />
             </TouchableOpacity>
             <View style={counterContainer}>
               <Text style={counterText}>{counter}</Text>

@@ -16,7 +16,7 @@ const {white, red} = colors;
 const EmptyView = () => <View style={styles.emptyView} />;
 
 const CameraFooter = ({
-  isCamera,
+  isCamera = true,
   isRecording,
   handleSwitchCamera,
   handleCaptureNowPress,

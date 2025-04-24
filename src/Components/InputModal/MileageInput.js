@@ -1,5 +1,5 @@
 import React, {memo, useCallback} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 import InputModal from './InputModal';
 import {
@@ -9,12 +9,11 @@ import {
 } from '../../Store/Actions';
 import {updateMileageInDB} from '../../services/inspection';
 import {removeAlphabets} from '../../Utils/helpers';
+import {useNewInspectionState} from '../../hooks/newInspection';
 
 const MileageInput = () => {
   const dispatch = useDispatch();
-  let {selectedInspectionID, mileageMessage} = useSelector(
-    state => state.newInspection,
-  );
+  let {selectedInspectionID, mileageMessage} = useNewInspectionState();
 
   const onSubmit = useCallback(
     async (text, actionCreator, toggleLoading, resetStates) => {

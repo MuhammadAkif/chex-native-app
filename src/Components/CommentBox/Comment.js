@@ -8,14 +8,15 @@ import {
 import {colors} from '../../Assets/Styles';
 import {useBoolean} from '../../hooks';
 import {CommentBox, CommentButton} from '../index';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {setFeedback} from '../../Store/Actions';
+import {useNewInspectionState} from '../../hooks/newInspection';
 
 const {cobaltBlueTwo} = colors;
 
 const Comment = () => {
   const dispatch = useDispatch();
-  const {feedback} = useSelector(state => state.newInspection);
+  const {feedback} = useNewInspectionState();
   const {value: visible, toggle: toggleVisibility} = useBoolean(false);
   const {value: isLoading, toggle: toggleIsLoading} = useBoolean(false);
 

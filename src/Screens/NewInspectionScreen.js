@@ -172,7 +172,12 @@ const NewInspectionScreen = props => {
         </Text>
       </View>
       <TouchableOpacity style={backIconContainer} onPress={handleBackPress}>
-        <BackArrow height={hp('3%')} width={wp('7%')} color={white} />
+        <BackArrow
+          height={hp('3%')}
+          width={wp('7%')}
+          color={white}
+          onPress={handleBackPress}
+        />
       </TouchableOpacity>
       <View style={bodyContainer}>
         <View style={innerBody}>

@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {BackHandler, Linking} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 import {IntroScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS} from '../Constants';
 import {handleNewInspectionPress} from '../Utils';
+import {useAuthState} from '../hooks/auth';
 
 const IntroContainer = ({navigation}) => {
   const {canGoBack, goBack} = navigation;
-  const {
-    user: {token, data},
-  } = useSelector(state => state?.auth);
+  const {user: data} = useAuthState();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -36,13 +35,18 @@ const IntroContainer = ({navigation}) => {
     await Linking.openSettings().then();
   };
   const onNewInspectionPress = async () => {
-    await handleNewInspectionPress(
-      dispatch,
-      setIsLoading,
-      data?.companyId,
-      navigation,
-      resetAllStates,
-    );
+    try {
+      await handleNewInspectionPress(
+        dispatch,
+        setIsLoading,
+        data?.companyId,
+        navigation,
+      );
+      resetAllStates();
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
   return (
     <IntroScreen

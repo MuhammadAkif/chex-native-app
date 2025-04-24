@@ -32,12 +32,26 @@ const {
   SET_TRIGGER_TIRE_STATUS_CHECK,
   SET_MILEAGE_MESSAGE,
   SET_IMAGE_DIMENSIONS,
+  FLASH_MODE,
 } = Types;
 
+/**
+ * Utility to structure image payload for reducer updates.
+ *
+ * @param {string} item - The image key (e.g., 'licensePlate').
+ * @param {string} group - Group it belongs to (e.g., 'carVerificiationItems').
+ * @param {string} uri - Image URI or empty string if removing.
+ * @param {number} id - Image ID (or 0 if clearing).
+ * @returns {object} structured payload
+ */
 const itemsImagePayload = (item = '', group = '', uri = '', id = 0) => {
   const itemId = `${item}ID`;
   return {group, item, itemId, uri, id};
 };
+
+/**
+ * Dispatches image addition or update in Redux state.
+ */
 export function updateVehicleImage(group, item, uri, id) {
   return dispatch => {
     const payload = itemsImagePayload(item, group, uri, id);
@@ -48,6 +62,10 @@ export function updateVehicleImage(group, item, uri, id) {
     });
   };
 }
+
+/**
+ * Dispatches image removal (clears URI and ID).
+ */
 export function removeVehicleImage(group, item) {
   return dispatch => {
     const payload = itemsImagePayload(item, group, '', 0);
@@ -55,18 +73,36 @@ export function removeVehicleImage(group, item) {
     dispatch({type: REMOVE_IMAGE, payload: payload});
   };
 }
+
+/**
+ * Stores the selected inspection session ID.
+ */
 export const numberPlateSelected = (selectedInspectionID = null) => ({
   type: SELECTED_INSPECTION_ID,
   payload: selectedInspectionID,
 });
+
+/**
+ * Flag used to determine if a license plate image was uploaded.
+ */
 export const updateIsLicensePlateUploaded = payload => ({
   type: IS_LICENSE_PLATE_UPLOADED,
   payload: payload,
 });
+
+/**
+ * Sets the category variant for this inspection (e.g., light vs heavy vehicle).
+ */
 export const categoryVariant = payload => ({
   type: CATEGORY_VARIANT,
   payload: payload,
 });
+
+/**
+ * Fetches detailed inspection data, stores files in state, and uploads in-progress media.
+ *
+ * This is typically used when resuming or viewing a saved inspection session.
+ */
 export const file_Details = inspectionId => async dispatch => {
   try {
     const response = await getInspectionDetails(inspectionId);
@@ -82,12 +118,22 @@ export const file_Details = inspectionId => async dispatch => {
   }
 };
 
+/**
+ * Stores detailed file metadata (used by review or resumption flows).
+ */
 export const setFileDetails = files => ({
   type: FILE_DETAILS,
   payload: files,
 });
 
+/**
+ * Clears the entire new inspection state (used on reset or logout).
+ */
 export const clearNewInspection = () => ({type: CLEAR_NEW_INSPECTION});
+
+/**
+ * Clears only tire-related image data.
+ */
 export const clear_Tires = () => ({type: CLEAR_TIRES});
 /*export const clear_Tires = fileIds => async dispatch => {
   try {
@@ -114,10 +160,19 @@ export const skipRightCorners = shouldSkip => ({
   type: SKIP_RIGHT_CORNERS,
   payload: shouldSkip,
 });
+
+/**
+ * Sets the vehicle type (used to branch logic/UI flow).
+ * e.g., 'existing' for registered vehicles, 'new' for unregistered ones.
+ */
 export const setVehicleType = vehicleType => ({
   type: VEHICLE_TYPE,
   payload: vehicleType,
 });
+
+/**
+ * Uses AI service to extract license plate number from an uploaded image.
+ */
 export const setLicensePlateNumber = image_url => async dispatch => {
   try {
     const response = await extractLicensePlateAI(image_url);
@@ -132,9 +187,17 @@ export const setLicensePlateNumber = image_url => async dispatch => {
     throw error;
   }
 };
+
+/**
+ * Clears all captured image fields (interior, exterior, tires, etc).
+ */
 export const clearInspectionImages = () => ({
   type: CLEAR_INSPECTION_IMAGES,
 });
+
+/**
+ * Sets the company ID associated with the inspection.
+ */
 export const setCompanyId = companyId => ({
   type: COMPANY_ID,
   payload: companyId,
@@ -191,4 +254,12 @@ export const setTriggerTireStatusCheck = (checkTireStatus = false) => ({
 export const setImageDimensions = (dimensions = null) => ({
   type: SET_IMAGE_DIMENSIONS,
   payload: dimensions,
+});
+
+/**
+ * Controls the flash mode for the in-app camera (e.g., 'on', 'off', 'auto').
+ */
+export const setFlashMode = (mode = 'off') => ({
+  type: FLASH_MODE,
+  payload: mode,
 });

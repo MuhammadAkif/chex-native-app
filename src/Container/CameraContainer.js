@@ -1,42 +1,20 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {
-  AppState,
-  BackHandler,
-  StatusBar,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {
-  Camera,
-  useCameraDevice,
-  useCameraFormat,
-} from 'react-native-vision-camera';
-import {useIsFocused} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {BackHandler, StatusBar, StyleSheet, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
-import ImagePicker from 'react-native-image-crop-picker';
 
-import {colors, PreviewStyles} from '../Assets/Styles';
-import {BackArrow} from '../Assets/Icons';
+import {PreviewStyles} from '../Assets/Styles';
 import {
-  CameraFooter,
-  CameraPreview,
   CaptureImageModal,
+  CustomCamera,
   DiscardInspectionModal,
 } from '../Components';
 import {ROUTES} from '../Navigation/ROUTES';
-import {
-  clearInspectionImages,
-  setLicensePlateNumber,
-  getMileage,
-  updateVehicleImage,
-  setImageDimensions,
-} from '../Store/Actions';
+import {getMileage, setImageDimensions} from '../Store/Actions';
 import {
   checkRelevantType,
   exteriorVariant,
@@ -44,7 +22,6 @@ import {
   getSignedUrl,
   handle_Session_Expired,
   handleNewInspectionPress,
-  hasCameraAndMicrophoneAllowed,
   isNotEmpty,
   newInspectionUploadError,
   uploadFile,
@@ -54,46 +31,39 @@ import {
   EXPIRY_INSPECTION,
   HARDWARE_BACK_PRESS,
   INSPECTION,
-  IS_BACK_CAMERA,
-  PHYSICAL_DEVICES,
   S3_BUCKET_BASEURL,
-  SWITCH_CAMERA,
   uploadFailed,
 } from '../Constants';
 import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
 import {IMAGES} from '../Assets/Images';
 import {
+  getFileMimeType,
   styleMapping,
   switchFrameIcon,
   switchOrientation,
 } from '../Utils/helpers';
+import {useMediaPicker} from '../hooks';
+import {useAuthState} from '../hooks/auth';
+import {
+  useNewInspectionState,
+  useNewInspectionActions,
+} from '../hooks/newInspection';
 
-const {white} = colors;
 const defaultOrientation = 'portrait';
-const {container, headerContainer} = PreviewStyles;
+const {container} = PreviewStyles;
 
 const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
 const isUploadFailedInitialState = {visible: false, title: '', message: ''};
 
 const CameraContainer = ({route, navigation}) => {
-  const {selectedInspectionID} = useSelector(state => state.newInspection);
+  const {updateImage, extractAndSetPlateNumber, clearImages} =
+    useNewInspectionActions();
+  const {selectMedia} = useMediaPicker();
+  const {selectedInspectionID, vehicle_Type, variant} = useNewInspectionState();
   const dispatch = useDispatch();
   const {navigate, goBack, canGoBack} = navigation;
-  const {
-    user: {token, data},
-  } = useSelector(state => state?.auth);
-  const {vehicle_Type, variant} = useSelector(state => state.newInspection);
-  const isFocused = useIsFocused();
-  const cameraRef = useRef();
-  const appState = useRef(AppState.currentState);
-  const [selectedCamera, setSelectedCamera] = useState('back');
-  const device = useCameraDevice(selectedCamera, {
-    physicalDevices: PHYSICAL_DEVICES,
-  });
-  const [isBackCamera, setIsBackCamera] = useState(
-    IS_BACK_CAMERA[selectedCamera],
-  );
-  const [isImageURL, setIsImageURL] = useState('');
+  const {user} = useAuthState();
+  const {companyId} = user;
   const [isImageFile, setIsImageFile] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isExpiryInspectionVisible, setIsExpiryInspectionVisible] =
@@ -103,10 +73,7 @@ const CameraContainer = ({route, navigation}) => {
     isUploadFailedInitialState,
   );
   const {type, modalDetails, inspectionId} = route.params;
-  const format = useCameraFormat(device, [
-    {videoResolution: {width: 1280, height: 720}},
-    {fps: 30},
-  ]);
+  const [hideFrame, setHideFrame] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [orientation, setOrientation] = useState(defaultOrientation);
   const {
@@ -134,42 +101,25 @@ const CameraContainer = ({route, navigation}) => {
   const haveFrame = isNotEmpty(frameUri);
 
   useEffect(() => {
-    const subscription = AppState.addEventListener('change', nextAppState => {
-      appState.current = nextAppState;
-    });
-
-    return () => {
-      subscription.remove();
-      resetAllStates();
-    };
-  }, []);
-
-  useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       HARDWARE_BACK_PRESS,
       handle_Hardware_Back_Press,
     );
     return () => backHandler.remove();
-  }, [isImageURL]);
-  useEffect(() => {
-    setSelectedCamera(SWITCH_CAMERA[isBackCamera]);
-  }, [isBackCamera, device]);
+  }, [isImageFile]);
 
   function resetAllStates() {
-    setIsImageURL('');
     setIsImageFile({});
     setIsModalVisible(false);
     setProgress(0);
     setIsExpiryInspectionVisible(false);
     setOrientation(defaultOrientation);
     setIsUploadFailed(isUploadFailedInitialState);
+    setHideFrame(false);
   }
 
   function handle_Hardware_Back_Press() {
-    if (isImageURL) {
-      handleRetryPress();
-      return true;
-    } else if (canGoBack()) {
+    if (canGoBack()) {
       navigate(NEW_INSPECTION);
       return true;
     }
@@ -183,28 +133,21 @@ const CameraContainer = ({route, navigation}) => {
     setIsModalVisible(false);
   };
 
-  const handleSwitchCamera = () => setIsBackCamera(!isBackCamera);
-
-  const handleCaptureNowPress = async () => {
-    hasCameraAndMicrophoneAllowed().then();
-    if (cameraRef.current) {
-      let file = await cameraRef?.current?.takePhoto();
-      const filePath = `file://${file.path}`;
-      setIsImageFile(file);
-      dispatch(setImageDimensions(file));
-      setIsImageURL(filePath);
-    }
+  const handleCaptureNowPress = async file => {
+    setHideFrame(true);
+    setIsImageFile(file);
+    dispatch(setImageDimensions(file));
   };
 
   const handleRetryPress = () => {
-    setIsImageURL('');
     setIsImageFile({});
+    setHideFrame(false);
   };
 
   const handleResponse = async key => {
     const haveType = checkRelevantType(groupType);
-    let extension = isImageFile.path.split('.').pop() || 'jpeg';
-    const mime = 'image/' + extension;
+    const mime = getFileMimeType(isImageFile.path);
+
     let body = {
       category: subCategory,
       url: key,
@@ -228,66 +171,82 @@ const CameraContainer = ({route, navigation}) => {
       }
     }
     try {
-      await uploadFile(
-        uploadImageToStore,
-        body,
-        inspectionId,
-        token,
-        handleError,
-        dispatch,
-      );
+      await uploadFile(uploadImageToStore, body, inspectionId);
     } catch (error) {
       onUploadFailed(error);
     }
   };
 
+  /**
+   * Handles the failure of an image upload by displaying relevant error messages and managing session states.
+   *
+   * @param {Object} error - The error object from the upload process, which may contain status code and message.
+   */
   function onUploadFailed(error) {
     const {statusCode = null} = error?.response?.data || {};
     const {message} = error;
-    const {title = uploadFailed.title, message: msg = uploadFailed.message} =
-      newInspectionUploadError(statusCode || '');
-    let body = {visible: true, title, message: msg};
+
+    const {
+      title = uploadFailed.title,
+      message: defaultErrorMessage = uploadFailed.message,
+    } = newInspectionUploadError(statusCode || '');
+
     const isDarkImage = message === darkImageError.message;
-    const message_ = isDarkImage ? message : uploadFailed.message;
+    const displayMessage = isDarkImage ? message : defaultErrorMessage;
+
     setIsModalVisible(false);
 
+    const errorBody = {
+      visible: true,
+      title,
+      message: displayMessage,
+    };
     if (isDarkImage) {
-      body = {...body, message: message_};
-      setIsUploadFailed(body);
+      setIsUploadFailed(errorBody);
     } else if (statusCode === 401) {
       handle_Session_Expired(statusCode, dispatch);
     } else if (statusCode === 403) {
       handleError(true);
     } else {
-      setIsUploadFailed(body);
+      setIsUploadFailed(errorBody);
     }
   }
+
+  /**
+   * Uploads an image to the store and navigates to the inspection screen with relevant parameters.
+   *
+   * @param {string} imageID - The unique identifier of the image to be uploaded.
+   */
   function uploadImageToStore(imageID) {
     const isLicensePlate =
       category === 'CarVerification' && type === 'licensePlate';
     const isOdometer = category === 'CarVerification' && type === 'odometer';
-    const types = ['Interior', 'Exterior'];
-    const haveType = types.includes(category);
-    const annotationDetails = {uri: isImageURL};
-    let type_ = type;
-    if (haveType) {
-      type_ = exteriorVariant(type_, variant);
+    const validTypes = ['Interior', 'Exterior'];
+    const hasValidType = validTypes.includes(category);
+    const annotationDetails = {uri: isImageFile.uri};
+
+    // Determine the type for exterior variant if applicable
+    let selectedType = type;
+    if (hasValidType) {
+      selectedType = exteriorVariant(selectedType, variant);
     }
-    const displayAnnotation = haveType && vehicle_Type === 'new';
-    dispatch(updateVehicleImage(groupType, type_, isImageURL, imageID));
+    const displayAnnotation = hasValidType && vehicle_Type === 'new';
+
+    updateImage(groupType, selectedType, isImageFile.uri, imageID);
+
     const params = {
       isLicensePlate: isLicensePlate,
       isOdometer: isOdometer,
       displayAnnotation: displayAnnotation,
       fileId: imageID,
       annotationDetails: annotationDetails,
-      is_Exterior: haveType,
+      is_Exterior: hasValidType,
     };
     navigate(NEW_INSPECTION, params);
   }
 
   const handleExtractNumberPlate = async imageUrl => {
-    dispatch(setLicensePlateNumber(imageUrl));
+    extractAndSetPlateNumber(imageUrl);
   };
 
   const handleError = (inspectionDeleted = false) => {
@@ -299,24 +258,26 @@ const CameraContainer = ({route, navigation}) => {
     }
   };
 
+  /**
+   * Handles the next button press, initiating the process to get a signed URL and upload an image.
+   *
+   * @returns {Promise<void>} Resolves once the signed URL is obtained and upload is initiated.
+   */
   const handleNextPress = async () => {
-    let extension = isImageFile.path.split('.').pop() || 'jpeg';
-    const mime = 'image/' + extension;
+    const mimeType = getFileMimeType(isImageFile.path);
+
     setIsModalVisible(true);
     try {
       await getSignedUrl(
-        token,
-        mime,
+        mimeType,
         isImageFile.path,
         setProgress,
         handleResponse,
-        handleError,
-        dispatch,
         selectedInspectionID,
         subCategory,
         variant || 0,
         'app',
-        data?.companyId,
+        companyId,
         category,
       );
     } catch (error) {
@@ -329,18 +290,19 @@ const CameraContainer = ({route, navigation}) => {
   }
 
   const onNewInspectionPress = async () => {
-    await handleNewInspectionPress(
-      dispatch,
-      setIsLoading,
-      data?.companyId,
-      navigation,
-      resetAllStates,
-    )
-      .then(() => {
-        dispatch(clearInspectionImages());
-      })
-      .catch(error => console.log(error))
-      .finally(() => setIsLoading(false));
+    try {
+      await handleNewInspectionPress(
+        dispatch,
+        setIsLoading,
+        companyId,
+        navigation,
+      );
+      resetAllStates();
+      clearImages();
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
 
   const handleExitPress = () => {
@@ -350,97 +312,58 @@ const CameraContainer = ({route, navigation}) => {
 
   const handleOnRightIconPress = () =>
     setOrientation(prevState => switchOrientation[prevState]);
-
+  const onCaptureError = error => {
+    console.error(error);
+  };
+  /**
+   * Opens the image picker, allowing the user to select an image and sets the selected image data.
+   */
   const handleImagePicker = () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: true,
-      // includeBase64: true,
-    })
-      .then(image => {
-        const {sourceURL, path} = image;
-        setIsImageFile(image);
-        setIsImageURL(sourceURL || path);
-      })
-      .catch(error => console.log(error.code));
+    try {
+      const response = selectMedia();
+      setIsImageFile(response);
+    } catch (error) {
+      throw error;
+    }
   };
 
   return (
     <>
-      {isModalVisible && (
-        <CaptureImageModal
-          isLoading={true}
-          isVideo={isVideo}
-          instructionalText={instructionalText}
-          source={source}
-          title={title}
-          progress={progress}
-          handleNavigationBackPress={handleNavigationBackPress}
-          isExterior={checkRelevantType(groupType)}
-          isCarVerification={groupType === INSPECTION.carVerificiationItems}
-          // handleVisible={handleVisible}
-        />
-      )}
-      {isImageURL ? (
-        <CameraPreview
-          handleNavigationBackPress={handleNavigationBackPress}
-          handleRetryPress={handleRetryPress}
-          handleNextPress={handleNextPress}
-          isImageURL={isImageURL}
-        />
-      ) : (
-        <View style={container}>
-          {isImageURL ? (
-            <FastImage
-              priority={'normal'}
-              resizeMode={'stretch'}
-              style={[StyleSheet.absoluteFill, {borderRadius: 25}]}
-              source={{uri: isImageURL}}
-            />
-          ) : (
-            selectedCamera && (
-              <>
-                {haveFrame && (
-                  <View style={styles.frameContainer}>
-                    <FastImage
-                      resizeMode={'stretch'}
-                      priority={'high'}
-                      style={activeFrameStyle}
-                      source={frameUri}
-                    />
-                  </View>
-                )}
-                <Camera
-                  ref={cameraRef}
-                  style={StyleSheet.absoluteFill}
-                  device={device}
-                  photo={true}
-                  audio={false}
-                  isActive={isFocused && appState.current === 'active'}
-                  enableZoomGesture={true}
-                  includeBase64={true}
-                  format={format}
-                />
-              </>
-            )
-          )}
-          <View style={{...headerContainer, zIndex: 19}}>
-            <TouchableOpacity onPress={handleNavigationBackPress}>
-              <BackArrow height={hp('8%')} width={wp('8%')} color={white} />
-            </TouchableOpacity>
-          </View>
-          <CameraFooter
-            isCamera={true}
-            handleSwitchCamera={handleSwitchCamera}
-            handleCaptureNowPress={handleCaptureNowPress}
-            RightIcon={RightIcon}
-            onRightIconPress={handleOnRightIconPress}
-            displayFrame={haveFrame}
-            handleImagePicker={handleImagePicker}
+      <View style={{...container, paddingTop: null}}>
+        {isModalVisible && (
+          <CaptureImageModal
+            isLoading={true}
+            isVideo={isVideo}
+            instructionalText={instructionalText}
+            source={source}
+            title={title}
+            progress={progress}
+            handleNavigationBackPress={handleNavigationBackPress}
+            isExterior={checkRelevantType(groupType)}
+            isCarVerification={groupType === INSPECTION.carVerificiationItems}
+            // handleVisible={handleVisible}
           />
-        </View>
-      )}
+        )}
+        <CustomCamera
+          onCapture={handleCaptureNowPress}
+          onBackPress={handleNavigationBackPress}
+          onRetryPress={handleRetryPress}
+          onNextPress={handleNextPress}
+          displayFrame={haveFrame}
+          onFramePress={handleOnRightIconPress}
+          RightIcon={RightIcon}>
+          {!hideFrame && haveFrame && (
+            <View style={styles.frameContainer}>
+              <FastImage
+                resizeMode={'stretch'}
+                priority={'high'}
+                style={activeFrameStyle}
+                source={frameUri}
+              />
+            </View>
+          )}
+        </CustomCamera>
+      </View>
       {isExpiryInspectionVisible && (
         <ExpiredInspectionModal
           onConfirmPress={onNewInspectionPress}
@@ -462,7 +385,6 @@ const CameraContainer = ({route, navigation}) => {
           noButtonStyle={undefined}
         />
       )}
-
       <StatusBar
         backgroundColor="transparent"
         barStyle="light-content"

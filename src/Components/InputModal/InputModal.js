@@ -1,9 +1,9 @@
 import React, {memo, useCallback} from 'react';
-import {useSelector} from 'react-redux';
 
 import {useBoolean} from '../../hooks';
 import {ConfirmVehicleDetailModal} from '../index';
 import {fallBack, isNotEmpty} from '../../Utils';
+import {useNewInspectionState} from '../../hooks/newInspection';
 
 const InputModal = ({
   visibleKey,
@@ -18,7 +18,7 @@ const InputModal = ({
   errorMessage,
 }) => {
   const {[valueKey]: value = '', [`${valueKey}Visible`]: visible = false} =
-    useSelector(state => state.newInspection);
+    useNewInspectionState();
   const {value: isLoading, toggle} = useBoolean(false);
 
   const onSubmitPress = useCallback(

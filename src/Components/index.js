@@ -78,6 +78,11 @@ import CommentButton from './CommentButton';
 import InputModal from './InputModal/InputModal';
 import MileageInput from './InputModal/MileageInput';
 import LicensePlateInput from './InputModal/LicensePlateInput';
+import TouchableButton from './TouchableView';
+import CustomCamera from './CustomCamera';
+import CameraView from './Camera/CameraView';
+import CameraHeader from './Camera/CameraHeader';
+import FlashModeToggle from './Camera/FlashMode/FlashModeToggle';
 
 export {
   BackgroundImageView,
@@ -160,4 +165,9 @@ export {
   InputModal,
   LicensePlateInput,
   MileageInput,
+  TouchableButton,
+  CustomCamera,
+  CameraView,
+  CameraHeader,
+  FlashModeToggle,
 };

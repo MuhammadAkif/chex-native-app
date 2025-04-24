@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {BackHandler, Platform} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 import {NewInspectionScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
@@ -48,6 +48,8 @@ import {
   location,
   vehicleTireStatus,
 } from '../services/inspection';
+import {useNewInspectionState} from '../hooks/newInspection';
+import {useAuthState} from '../hooks';
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllCarVerification: false,
@@ -113,12 +115,10 @@ const NewInspectionContainer = ({route, navigation}) => {
     mileage = '',
     feedback,
     imageDimensions,
-  } = useSelector(state => state.newInspection);
+  } = useNewInspectionState();
   const {
-    user: {
-      data: {companyId},
-    },
-  } = useSelector(state => state?.auth);
+    user: {companyId},
+  } = useAuthState();
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
   const [mediaModalDetails, setMediaModalDetails] = useState({});

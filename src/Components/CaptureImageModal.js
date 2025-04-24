@@ -16,7 +16,6 @@ import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import VideoPlayer from 'react-native-video-player';
-import {useSelector} from 'react-redux';
 
 import {Cross, Expand, Info} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
@@ -30,6 +29,7 @@ import {
   imageHeight,
   instructionsContainerTop,
 } from '../Utils/helpers';
+import {useNewInspectionState} from '../hooks/newInspection';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
@@ -58,7 +58,7 @@ const CaptureImageModal = ({
   isExterior = true,
   labelRequired = null,
 }) => {
-  const {fileRequired = null} = useSelector(state => state.newInspection);
+  const {fileRequired = null} = useNewInspectionState();
   const [isFullScreen, setIsFullScreen] = useState(false);
 
   const height = hp('5%');

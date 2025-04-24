@@ -1,5 +1,5 @@
 import React from 'react';
-import {StatusBar, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -10,42 +10,34 @@ import {colors, PreviewStyles} from '../../Assets/Styles';
 import {PreviewFooter} from '../index';
 import {BackArrow} from '../../Assets/Icons';
 
-const {white, cobaltBlueLight} = colors;
+const {white} = colors;
 const {recordingPreviewContainer, headerContainer, videoContainer} =
   PreviewStyles;
 
-const CameraPreview = ({
-  isImageURL,
-  handleNavigationBackPress,
-  handleRetryPress,
-  handleNextPress,
-}) => (
+const CameraPreview = ({image_url, onBackPress, onRetryPress, onNextPress}) => (
   <View style={recordingPreviewContainer}>
     <View style={headerContainer}>
       <BackArrow
         height={hp('8%')}
         width={wp('8%')}
         color={white}
-        onPress={handleNavigationBackPress}
+        onPress={onBackPress}
       />
     </View>
     <View style={videoContainer}>
       <FastImage
-        source={{uri: isImageURL}}
+        source={{uri: image_url}}
         priority={'normal'}
         resizeMode={'stretch'}
         style={[StyleSheet.absoluteFillObject, {borderRadius: 10}]}
       />
     </View>
-    <PreviewFooter
-      onRetryPress={handleRetryPress}
-      onNextPress={handleNextPress}
-    />
-    <StatusBar
+    <PreviewFooter onRetryPress={onRetryPress} onNextPress={onNextPress} />
+    {/*<StatusBar
       backgroundColor={cobaltBlueLight}
       barStyle="light-content"
       translucent={true}
-    />
+    />*/}
   </View>
 );
 

@@ -10,13 +10,7 @@ const {INSPECTION_SELECTION} = ROUTES;
 
 const CompletedInspectionContainer = ({navigation}) => {
   const {canGoBack, navigate} = navigation;
-  const {
-    value: boxVisible,
-    setTrue,
-    setFalse,
-    reset,
-    toggle,
-  } = useBoolean(false);
+  const {value: boxVisible, reset} = useBoolean(false);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(

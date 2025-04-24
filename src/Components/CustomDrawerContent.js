@@ -20,19 +20,18 @@ import {ROUTES} from '../Navigation/ROUTES';
 import {DrawerItemText} from './index';
 import {Home, Logout, Info} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
-import {
-  clearNewInspection,
-  hideToast,
-  setRequired,
-  signOut,
-} from '../Store/Actions';
+import {hideToast, setRequired, signOut} from '../Store/Actions';
 import {DRAWER, PROJECT_NAME} from '../Constants';
 import {IMAGES} from '../Assets/Images';
+import {useAuthActions} from '../hooks/auth';
+import {useNewInspectionActions} from '../hooks/newInspection';
 
 const {SIGN_IN, INSPECTION_SELECTION, INTRO, NEW_INSPECTION} = ROUTES;
 const {cobaltBlue, black, red} = colors;
 
 const CustomDrawerContent = props => {
+  const {resetInspection} = useNewInspectionActions();
+  const {logout} = useAuthActions();
   const {toast} = useSelector(state => state.ui);
   const dispatch = useDispatch();
   const route = useRoute();
@@ -52,7 +51,7 @@ const CustomDrawerContent = props => {
       activeRouteName !== NEW_INSPECTION &&
       previousScreen === NEW_INSPECTION
     ) {
-      dispatch(clearNewInspection());
+      resetInspection();
       dispatch(setRequired());
     }
     toast.visible && dispatch(hideToast());
@@ -72,7 +71,7 @@ const CustomDrawerContent = props => {
     }
   };
   const handleLogout = () => {
-    dispatch(signOut());
+    logout();
     handleNavigationPress(SIGN_IN, DRAWER.LOGOUT);
   };
   return (
