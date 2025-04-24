@@ -20,7 +20,7 @@ const {WELCOME, FORGET_PASSWORD, HOME} = ROUTES;
 const {white, cobaltBlueLight} = colors;
 
 const SignInContainer = ({navigation, route}) => {
-  const {showToast} = useUIActions();
+  const {toastSuccess} = useUIActions();
   const {login} = useAuthActions();
   const {canGoBack, goBack, navigate} = navigation;
   const emailRef = useRef();
@@ -42,7 +42,7 @@ const SignInContainer = ({navigation, route}) => {
   }, []);
   useEffect(() => {
     if (route.params) {
-      showToast(route?.params?.toastMessage, 'success');
+      toastSuccess(route?.params?.toastMessage);
     }
   }, [route.params]);
   useEffect(() => {

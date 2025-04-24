@@ -64,7 +64,7 @@ const AnnotateImage = ({
   isLoading = false,
   imageDimensions,
 }) => {
-  const {showToast} = useUIActions();
+  const {toastError} = useUIActions();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [damageDetails, setDamageDetails] = useState([]); // Only coordinates now
   const [damageType, setDamageType] = useState(''); // Shared damage type
@@ -137,7 +137,7 @@ const AnnotateImage = ({
   };
   const handleSubmission = () => {
     if (!canSubmit) {
-      showToast(AnnotationAlertMessage, 'warning');
+      toastError(AnnotationAlertMessage);
       return;
     }
     const label = damageType;

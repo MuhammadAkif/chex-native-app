@@ -81,7 +81,7 @@ const delay = {
 };
 
 const NewInspectionContainer = ({route, navigation}) => {
-  const {showToast} = useUIActions();
+  const {toastSuccess, toastError} = useUIActions();
   const {
     setRequired,
     setLicensePlateUploaded,
@@ -523,7 +523,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       .catch(e => onImageDeleteFail(e, category, key_));
   };
   function onImageDeleteSuccess(category, key_) {
-    showToast(Delete_Messages.success, 'success');
+    toastSuccess(Delete_Messages.success);
     removeImage(category, key_);
   }
   function onImageDeleteFail(e, category, key_) {
@@ -552,7 +552,12 @@ const NewInspectionContainer = ({route, navigation}) => {
     if (alreadyRemoved) {
       removeImage(category, key_);
     }
-    showToast(activeMessage, activeType);
+    if (activeType === 'error' || activeType === 'warning') {
+      toastError(activeMessage);
+    }
+    if (activeType === 'success') {
+      toastSuccess(activeMessage);
+    }
   }
   const handleNoPress = () => {
     setIsDiscardInspectionModalVisible(false);

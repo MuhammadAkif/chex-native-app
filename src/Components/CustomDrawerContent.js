@@ -29,8 +29,8 @@ const {SIGN_IN, INSPECTION_SELECTION, INTRO, NEW_INSPECTION} = ROUTES;
 const {cobaltBlue, black, red} = colors;
 
 const CustomDrawerContent = props => {
-  const {clearToast, setRequired} = useUIActions();
-  const {resetInspection} = useNewInspectionActions();
+  const {clearToast} = useUIActions();
+  const {resetInspection, setRequired} = useNewInspectionActions();
   const {logout} = useAuthActions();
   const {toast} = useUIState();
   const route = useRoute();

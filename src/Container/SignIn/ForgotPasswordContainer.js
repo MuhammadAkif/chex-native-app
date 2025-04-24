@@ -20,7 +20,7 @@ const {cobaltBlueLight, gray, white} = colors;
 const {WELCOME, RESET_PASSWORD, SIGN_IN} = ROUTES;
 
 const ForgotPasswordContainer = ({navigation}) => {
-  const {showToast} = useUIActions();
+  const {toastSuccess, toastError} = useUIActions();
   const {canGoBack, goBack, navigate} = navigation;
   const emailRef = useRef();
   const [isKeyboardActive, setKeyboardActive] = useState(false);
@@ -78,13 +78,13 @@ const ForgotPasswordContainer = ({navigation}) => {
   function onVerificationCodeSendSuccess(response, resetForm, email) {
     const toastMessage = 'Verification code has been sent to your account';
     resetForm();
-    showToast(toastMessage, 'success');
+    toastSuccess(toastMessage);
     navigate(RESET_PASSWORD, {
       email: email,
     });
   }
   function onVerificationCodeSendFail(response) {
-    showToast('Email not found', 'error');
+    toastError('Email not found');
   }
   const handleKnowYourPassword = () => navigate(SIGN_IN);
   const handleOnPress = () => Keyboard.dismiss();

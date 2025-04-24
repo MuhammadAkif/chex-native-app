@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {Linking} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
 import 'react-native-devsettings';
 import SplashScreen from 'react-native-splash-screen';
 import {checkVersion} from 'react-native-check-version';
@@ -9,19 +8,23 @@ import Navigation from './src/Navigation/index';
 import {hasCameraAndMicrophoneAllowed} from './src/Utils';
 import {DiscardInspectionModal, Splash, Toast} from './src/Components';
 import {SESSION_EXPIRED, UPDATE_APP} from './src/Constants';
-import {clearNewInspection, hideToast, signOut} from './src/Store/Actions';
 import {resetNavigation} from './src/services/navigationService';
 import {ROUTES} from './src/Navigation/ROUTES';
 import AlertPopup from './src/Components/AlertPopup';
+import {useUIActions} from './src/hooks/UI';
+import {useNewInspectionActions} from './src/hooks/newInspection';
+import {useAuthActions} from './src/hooks/auth';
+import {useAuthState} from './src/hooks';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
 const {SIGN_IN} = ROUTES;
 
 function App() {
-  const dispatch = useDispatch();
-  // @ts-ignore
-  const {sessionExpired} = useSelector(state => state?.auth);
+  const {logout} = useAuthActions();
+  const {clearToast} = useUIActions();
+  const {resetInspection} = useNewInspectionActions();
+  const {isSessionExpired} = useAuthState();
   const [displayGif, setDisplayGif] = useState(true);
   const [updateAvailable, setUpdateAvailable] = useState('');
 
@@ -31,10 +34,14 @@ function App() {
     })();
 
     return () => {
-      dispatch(clearNewInspection());
-      dispatch(hideToast());
+      resetAllStates();
     };
   }, [displayGif]);
+
+  function resetAllStates() {
+    resetInspection();
+    clearToast();
+  }
 
   async function initializeApp() {
     await versionCheck();
@@ -43,8 +50,7 @@ function App() {
       const timeoutId = setTimeout(() => setDisplayGif(false), 3500);
       return () => clearTimeout(timeoutId);
     } else {
-      dispatch(clearNewInspection());
-      dispatch(hideToast());
+      resetAllStates();
       await hasCameraAndMicrophoneAllowed();
     }
   }
@@ -62,8 +68,7 @@ function App() {
     }
   };
   const onSessionExpirePress = () => {
-    // @ts-ignore
-    dispatch(signOut());
+    logout();
     resetNavigation(SIGN_IN);
   };
 
@@ -86,7 +91,7 @@ function App() {
         />
       )}
       <AlertPopup
-        visible={sessionExpired}
+        visible={isSessionExpired}
         onYesPress={onSessionExpirePress}
         title={title}
         message={message}

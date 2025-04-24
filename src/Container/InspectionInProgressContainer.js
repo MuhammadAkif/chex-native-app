@@ -18,7 +18,7 @@ import {useUIActions} from '../hooks/UI';
 const {NEW_INSPECTION, INSPECTION_IN_PROGRESS} = ROUTES;
 
 const InspectionInProgressContainer = ({navigation}) => {
-  const {showToast} = useUIActions();
+  const {toastError} = useUIActions();
   const {resetInspection, setVehicleType, loadFileDetails} =
     useNewInspectionActions();
   const {fetchInProgress, removeInspection} = useInspectionInProgressActions();
@@ -115,7 +115,7 @@ const InspectionInProgressContainer = ({navigation}) => {
       if (statusCode === 401) {
         handle_Session_Expired(statusCode, dispatch);
       }
-      showToast(errorMessage, 'error');
+      toastError(errorMessage);
     } finally {
       setIsLoading(false);
     }

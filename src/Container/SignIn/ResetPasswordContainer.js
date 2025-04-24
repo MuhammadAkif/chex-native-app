@@ -20,7 +20,7 @@ const {WELCOME, FORGET_PASSWORD, SIGN_IN} = ROUTES;
 const {gray, white, cobaltBlueLight} = colors;
 
 const ResetPasswordContainer = ({navigation, route}) => {
-  const {showToast} = useUIActions();
+  const {toastError} = useUIActions();
   const {canGoBack, goBack, navigate} = navigation;
   const email = route?.params?.email;
   const emailRef = useRef();
@@ -104,7 +104,7 @@ const ResetPasswordContainer = ({navigation, route}) => {
   function onResetPasswordFail(err) {
     const {errors = 'Failed to reset password'} = err?.response?.data;
     const message = errors || 'Something went wrong, Please try again.';
-    showToast(message, 'error');
+    toastError(message);
   }
   const handleKnowYourPassword = () => navigate(SIGN_IN);
   const handleNavigationBackPress = () => goBack();
