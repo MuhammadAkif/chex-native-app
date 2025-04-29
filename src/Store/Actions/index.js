@@ -38,6 +38,7 @@ import {
   clearInspectionInProgress,
 } from './InspectionInProgressAction';
 import {setLoading, showToast, hideToast} from './UIActions';
+import {set_Device, clear_Device} from './DeviceAction';
 
 export {
   updateVehicleImage,
@@ -78,4 +79,6 @@ export {
   setMileageMessage,
   setImageDimensions,
   setFlashMode,
+  set_Device,
+  clear_Device,
 };

@@ -13,6 +13,7 @@ import VideoContainer from './VideoContainer';
 import CompletedInspectionContainer from './CompletedInspectionContainer';
 import LicensePlateNumberSelectionContainer from './LicensePlateNumberSelectionContainer';
 import InspectionInProgressContainer from './InspectionInProgressContainer';
+import DeviceContainer from './DeviceContainer';
 
 export {
   WelcomeContainer,
@@ -30,4 +31,5 @@ export {
   LicensePlateNumberSelectionContainer,
   CompletedInspectionContainer,
   InspectionInProgressContainer,
+  DeviceContainer,
 };

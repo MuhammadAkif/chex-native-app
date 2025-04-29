@@ -36,6 +36,8 @@ import CommentIcon from './CommentIcon';
 import FlashOn from './Flash/FlashOn';
 import FlashOff from './Flash/FlashOff';
 import FlashAuto from './Flash/FlashAuto';
+import Device from './Device';
+import Bluetooth from './Bluetooth';
 
 export {
   Check,
@@ -76,4 +78,6 @@ export {
   FlashOn,
   FlashOff,
   FlashAuto,
+  Device,
+  Bluetooth,
 };

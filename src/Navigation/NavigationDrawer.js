@@ -10,6 +10,7 @@ import {
   LicensePlateNumberSelectionContainer,
   InspectionInProgressContainer,
   InspectionSelectionContainer,
+  DeviceContainer,
 } from '../Container';
 import {
   HeaderBackButton,
@@ -40,6 +41,7 @@ const NavigationDrawer = ({navigation}) => {
     INSPECTION_REVIEWED,
     INSPECTION_DETAIL,
     INSPECTION_IN_PROGRESS,
+    DEVICE,
   } = ROUTES;
   const options = {
     headerTitleAlign: 'center',
@@ -87,6 +89,7 @@ const NavigationDrawer = ({navigation}) => {
           component={InspectionInProgressContainer}
           options={options}
         />
+        <Screen name={DEVICE} component={DeviceContainer} options={options} />
       </Navigator>
     </>
   );

@@ -17,16 +17,18 @@ import {useRoute} from '@react-navigation/native';
 import {SignInLogo} from './index';
 import {ROUTES} from '../Navigation/ROUTES';
 import {DrawerItemText} from './index';
-import {Home, Logout, Info} from '../Assets/Icons';
+import {Home, Logout, Info, Device} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {DRAWER, PROJECT_NAME} from '../Constants';
 import {IMAGES} from '../Assets/Images';
 import {useAuthActions} from '../hooks/auth';
 import {useNewInspectionActions} from '../hooks/newInspection';
 import {useUIActions, useUIState} from '../hooks/UI';
+import UserProfile from './UserProfile';
 
-const {SIGN_IN, INSPECTION_SELECTION, INTRO, NEW_INSPECTION} = ROUTES;
-const {cobaltBlue, black, red} = colors;
+const {SIGN_IN, INSPECTION_SELECTION, INTRO, NEW_INSPECTION, DEVICE} = ROUTES;
+const {cobaltBlue, black, red, royalBlue} = colors;
+const textColor = black;
 
 const CustomDrawerContent = props => {
   const {clearToast} = useUIActions();
@@ -40,7 +42,7 @@ const CustomDrawerContent = props => {
   const [activeScreen, setActiveScreen] = useState('');
   let activeColor = cobaltBlue;
   const activeColorOfTextAndIcon = screen => {
-    return black;
+    return royalBlue;
     // return activeRouteName.toLowerCase() === screen.toLowerCase()
     //   ? white
     //   : black;
@@ -77,7 +79,7 @@ const CustomDrawerContent = props => {
     <ScrollView style={styles.body} {...props}>
       <View style={styles.header}>
         <FastImage
-          source={IMAGES.drawer}
+          source={IMAGES.red_drawer}
           priority={'normal'}
           resizeMode={'cover'}
           style={StyleSheet.absoluteFillObject}
@@ -91,9 +93,10 @@ const CustomDrawerContent = props => {
           />
         </View>
       </View>
+      <UserProfile />
       <DrawerItemText
         text={DRAWER.HOME}
-        textColor={activeColorOfTextAndIcon(DRAWER.HOME)}
+        textColor={textColor}
         activeColor={activeScreen === DRAWER.HOME ? activeColor : 'transparent'}
         Icon={
           <TouchableOpacity
@@ -109,7 +112,7 @@ const CustomDrawerContent = props => {
       />
       <DrawerItemText
         text={DRAWER.THINGS_YOU_WILL_REQUIRE}
-        textColor={activeColorOfTextAndIcon('Intro')}
+        textColor={textColor}
         activeColor={activeScreen === 'Intro' ? activeColor : 'transparent'}
         Icon={
           <Info
@@ -119,6 +122,19 @@ const CustomDrawerContent = props => {
           />
         }
         onPress={() => handleNavigationPress(INTRO, 'Intro ')}
+      />
+      <DrawerItemText
+        text={DRAWER.DEVICE}
+        textColor={textColor}
+        activeColor={activeScreen === 'Device' ? activeColor : 'transparent'}
+        Icon={
+          <Device
+            height={hp('2.5%')}
+            width={wp('5%')}
+            color={activeColorOfTextAndIcon('Device')}
+          />
+        }
+        onPress={() => handleNavigationPress(DEVICE, 'Device ')}
       />
       <DrawerItemText
         text={DRAWER.LOGOUT}
@@ -143,11 +159,11 @@ const styles = StyleSheet.create({
     fontSize: hp('3%'),
   },
   logoContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(150,0,0,0.2)',
+    top: hp('7%'),
+    // backgroundColor: 'rgba(150,0,0,0.2)',
   },
   header: {
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   body: {

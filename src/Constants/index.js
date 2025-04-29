@@ -177,6 +177,7 @@ export const PROJECT_NAME = {
 export const DRAWER = {
   HOME: 'HOME',
   THINGS_YOU_WILL_REQUIRE: 'Things you will require',
+  DEVICE: 'Device',
   LOGOUT: 'Logout',
 };
 

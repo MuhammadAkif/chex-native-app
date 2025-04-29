@@ -83,6 +83,10 @@ import CustomCamera from './CustomCamera';
 import CameraView from './Camera/CameraView';
 import CameraHeader from './Camera/CameraHeader';
 import FlashModeToggle from './Camera/FlashMode/FlashModeToggle';
+import Details from './Device/Details/Details';
+import TripDetails from './Device/TripsDetails/TripDetails';
+import TripTimeline from './Device/TripTimeline/TripTimeline';
+import DeviceConnectionModal from './Device/DeviceConnectionModal';
 
 export {
   BackgroundImageView,
@@ -170,4 +174,8 @@ export {
   CameraView,
   CameraHeader,
   FlashModeToggle,
+  Details,
+  TripDetails,
+  TripTimeline,
+  DeviceConnectionModal,
 };

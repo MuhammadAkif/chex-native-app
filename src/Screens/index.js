@@ -12,7 +12,7 @@ import InspectionDetailScreen from './InspectionDetailScreen';
 import CameraScreen from './CameraScreen';
 import LicensePlateNumberSelectionScreen from './LicensePlateNumberSelectionScreen';
 import InspectionInProgressScreen from './InspectionInProgressScreen';
-
+import DeviceScreen from './DeviceScreen';
 export {
   WelcomeScreen,
   RegisterScreen,
@@ -28,4 +28,5 @@ export {
   CameraScreen,
   LicensePlateNumberSelectionScreen,
   InspectionInProgressScreen,
+  DeviceScreen,
 };
