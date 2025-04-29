@@ -19,6 +19,7 @@ export const IMAGES = {
   intro_Background: require('./IntroVehicle.png'),
   expiry_Inspection: require('./ExpiryInspection.png'),
   drawer: require('./DrawerImage.png'),
+  red_drawer: require('./Red_Vehicle.png'),
   portrait: {
     exterior_left: require('./Portrait/Left_side.png'),
     exterior_right: require('./Portrait/Right_side.png'),
