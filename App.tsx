@@ -14,7 +14,7 @@ import AlertPopup from './src/Components/AlertPopup';
 import {useUIActions} from './src/hooks/UI';
 import {useNewInspectionActions} from './src/hooks/newInspection';
 import {useAuthActions} from './src/hooks/auth';
-import {useAuthState} from './src/hooks';
+import {useAuthState, useSafetyTagInitializer} from './src/hooks';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
@@ -25,6 +25,7 @@ function App() {
   const {clearToast} = useUIActions();
   const {resetInspection} = useNewInspectionActions();
   const {isSessionExpired} = useAuthState();
+  const safetyTag = useSafetyTagInitializer();
   const [displayGif, setDisplayGif] = useState(true);
   const [updateAvailable, setUpdateAvailable] = useState('');
 

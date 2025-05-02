@@ -40,6 +40,15 @@ import {
 import {setLoading, showToast, hideToast} from './UIActions';
 import {set_Device, clear_Device} from './DeviceAction';
 
+import {
+  addCrashData,
+  updateCrashStatus,
+  addThresholdEvent,
+  updateCrashConfig,
+  setCrashError,
+  clearCrashEvents,
+} from './CrashDetectionActions';
+
 export {
   updateVehicleImage,
   removeVehicleImage,
@@ -81,4 +90,11 @@ export {
   setFlashMode,
   set_Device,
   clear_Device,
+  // Crash Detection Actions
+  addCrashData,
+  updateCrashStatus,
+  addThresholdEvent,
+  updateCrashConfig,
+  setCrashError,
+  clearCrashEvents,
 };

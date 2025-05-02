@@ -5,7 +5,8 @@ import newInspectionReducer from './NewInspectionReducer';
 import inspectionReviewedReducer from './InspecetionReviewedReducer';
 import inspectionInProgressReducer from './InspectionInProgressReducer';
 import UIReducer from './UIReducer';
-import deviceReducer from './DeviceReducer';
+import crashDetectionReducer from './CrashDetectionReducer';
+import appStateReducer from './appStateReducer';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
   inspectionReviewed: inspectionReviewedReducer,
   inspectionInProgress: inspectionInProgressReducer,
   ui: UIReducer,
-  device: deviceReducer,
+  crashDetection: crashDetectionReducer,
+  appState: appStateReducer,
 });
 
 export default rootReducer;

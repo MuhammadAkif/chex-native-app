@@ -23,13 +23,13 @@ setup_permissions([
   'Camera',
   # 'Contacts',
   # 'FaceID',
-  # 'LocationAccuracy',
-  # 'LocationAlways',
-  # 'LocationWhenInUse',
+   'LocationAccuracy',
+   'LocationAlways',
+   'LocationWhenInUse',
   # 'MediaLibrary',
   'Microphone',
   # 'Motion',
-  # 'Notifications',
+   'Notifications',
   # 'PhotoLibrary',
   # 'PhotoLibraryAddOnly',
   # 'Reminders',
@@ -48,7 +48,6 @@ setup_permissions([
 #   dependencies: {
 #     ...(process.env.NO_FLIPPER ? { 'react-native-flipper': { platforms: { ios: null } } } : {}),
 # ```
-flipper_config = ENV['NO_FLIPPER'] == "1"
 
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
@@ -61,6 +60,8 @@ target 'Chex_AI' do
 
   # Flags change depending on the env values.
   flags = get_default_flags()
+
+  use_frameworks! :linkage => :static  # Ensure static linking for Swift packages
 
   use_react_native!(
     :path => config[:reactNativePath],
@@ -89,24 +90,44 @@ target 'Chex_AI' do
       :mac_catalyst_enabled => false
     )
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
+    # ```
+    # Find the path to the bitcode_strip tool using xcrun, which is used to remove bitcode from the framework files.
+    # `.chop!` removes the trailing newline from the command output.
     bitcode_strip_path = `xcrun --find bitcode_strip`.chop!
-       def strip_bitcode_from_framework(bitcode_strip_path, framework_relative_path)
-         framework_path = File.join(Dir.pwd, framework_relative_path)
-         command = "#{bitcode_strip_path} #{framework_path} -r -o #{framework_path}"
-         puts "Stripping bitcode: #{command}"
-         system(command)
-       end
 
-       framework_paths = [
-         "Pods/LogRocket/LogRocket.xcframework/ios-arm64/LogRocket.framework/LogRocket",
-         "Pods/hermes-engine/destroot/Library/Frameworks/macosx/hermes.framework/hermes",
-         "Pods/hermes-engine/destroot/Library/Frameworks/macosx/hermes.framework/Versions/Current/hermes",
-         "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64/hermes.framework/hermes",
-         "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64_x86_64-maccatalyst/hermes.framework/hermes"
-       ]
+    # Define a method to strip bitcode from a specified framework.
+    # - `bitcode_strip_path`: Path to the bitcode_strip tool.
+    # - `framework_relative_path`: Path to the framework relative to the current working directory.
+    def strip_bitcode_from_framework(bitcode_strip_path, framework_relative_path)
+      # Combine the current working directory with the framework's relative path to get the absolute framework path.
+      framework_path = File.join(Dir.pwd, framework_relative_path)
 
-       framework_paths.each do |framework_relative_path|
-         strip_bitcode_from_framework(bitcode_strip_path, framework_relative_path)
-       end
+      # Build the command to run the bitcode_strip tool with the appropriate flags:
+      # - `-r`: Removes bitcode from the framework.
+      # - `-o`: Outputs the stripped framework to the same location, overwriting the original framework.
+      command = "#{bitcode_strip_path} #{framework_path} -r -o #{framework_path}"
+
+      # Print the command being run for visibility and debugging purposes.
+      puts "Stripping bitcode: #{command}"
+
+      # Run the command in the shell using `system`.
+      system(command)
+    end
+
+    # List of relative paths to frameworks that need bitcode stripping.
+    framework_paths = [
+      "Pods/LogRocket/LogRocket.xcframework/ios-arm64/LogRocket.framework/LogRocket",
+      "Pods/hermes-engine/destroot/Library/Frameworks/macosx/hermes.framework/hermes",
+      "Pods/hermes-engine/destroot/Library/Frameworks/macosx/hermes.framework/Versions/Current/hermes",
+      "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64/hermes.framework/hermes",
+      "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64_x86_64-maccatalyst/hermes.framework/hermes"
+    ]
+
+    # Iterate over each framework path and call the `strip_bitcode_from_framework` method to strip bitcode from it.
+    framework_paths.each do |framework_relative_path|
+      strip_bitcode_from_framework(bitcode_strip_path, framework_relative_path)
+    end
+    # ```
+
   end
 end

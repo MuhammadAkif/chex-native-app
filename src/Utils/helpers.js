@@ -2,8 +2,15 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
+
 import {isNotEmpty} from './index';
 import {Landscape, Portrait} from '../Assets/Icons';
+import {DeviceEventEmitter} from 'react-native';
+
+const {BLUETOOTH_CONNECT, BLUETOOTH_SCAN, ACCESS_FINE_LOCATION} =
+  PERMISSIONS.ANDROID;
+const {GRANTED} = RESULTS;
 
 export const headerFlex = {
   true: 1.5,
@@ -274,6 +281,11 @@ const calculateImageDimensions = (
   return {width: newWidth, height: newHeight};
 };
 
+/**
+ * Get user-friendly error message based on error code
+ * @param {string} code - Error code from CameraError
+ * @returns {string} User-friendly error message
+ */
 export const getErrorMessage = code => {
   const errorMessages = {
     // Permission Errors
@@ -344,4 +356,198 @@ export function resizeInnerBox(
   const newY = (yPercent / 100) * height;
 
   return {x: newX, y: newY};
+}
+export const ALIGNMENT_PHASES = [
+  {
+    id: 'STARTING',
+    title: 'Starting',
+    description: 'Resetting internal states and preparing to start',
+    instructions: [
+      'Ensure the Safety Tag is firmly mounted in the vehicle',
+      'Make sure the device cannot move around',
+      'Keep GPS and Bluetooth enabled on your phone',
+    ],
+  },
+  {
+    id: 'Z_AXIS_ALIGNMENT',
+    title: 'Z-Axis Alignment (Vertical)',
+    description: 'Aligning vertical axis (Z-axis) of Safety Tag to vehicle',
+    instructions: [
+      'Keep the vehicle stationary or under 2 km/h',
+      'This process will continue running throughout the alignment',
+      'Wait for initial calculations to complete',
+    ],
+  },
+  {
+    id: 'X_AXIS_NOT_STARTED',
+    title: 'X-Axis Alignment Not Started',
+    description: 'Waiting for X-axis alignment to begin',
+    instructions: [
+      'Drive the vehicle normally',
+      'Maintain speed between 10-80 km/h',
+      'Drive in a straight line when possible',
+      'Accelerate or brake gently when safe',
+    ],
+  },
+  {
+    id: 'FINDING_X_AXIS_ANGLE',
+    title: 'X-Axis Alignment (Horizontal)',
+    description: 'Finding X and Y axes alignment while driving',
+    instructions: [
+      'Drive the vehicle normally',
+      'Maintain speed between 10-80 km/h',
+      'Drive in a straight line when possible',
+      'Accelerate or brake gently when safe',
+    ],
+  },
+  {
+    id: 'ANGLE_DIRECTION_VALIDATION',
+    title: 'Direction Validation',
+    description: 'Validating the calculated angles',
+    instructions: [
+      'Continue driving normally',
+      'The system is verifying the alignment accuracy',
+      'Z-axis alignment continues in parallel',
+    ],
+  },
+  {
+    id: 'SENDING_ALIGNMENT_DATA_TO_ST',
+    title: 'Saving Alignment',
+    description: 'Storing alignment data in Safety Tag',
+    instructions: [
+      'Keep the vehicle running',
+      'Maintain Bluetooth connection',
+      'Wait for confirmation (may retry up to 3 times)',
+    ],
+  },
+  {
+    id: 'PROCESS_COMPLETED',
+    title: 'Completed',
+    description: 'Alignment process completed successfully',
+    instructions: [
+      'Alignment data stored successfully',
+      'Crash detection is now enabled',
+      'You can continue driving normally',
+    ],
+  },
+];
+
+export const crashReport = {
+  crashData: {
+    eventId: 12345,
+    bufferId: 67890,
+    startTimestampUnixMs: 1617187200000,
+    startElapsedRealtimeMs: 1000000,
+    endTimestampUnixMs: 1617187500000,
+    endElapsedRealtimeMs: 2000000,
+    accelerometerValues: [
+      {x: 0.1, y: 0.2, z: 0.3},
+      {x: 0.4, y: 0.5, z: 0.6},
+    ],
+    matrixRotationU: [
+      [1.0, 0.0, 0.0],
+      [0.0, 1.0, 0.0],
+      [0.0, 0.0, 1.0],
+    ],
+    matrixRotationR: [
+      [0.5, 0.5, 0.0],
+      [0.5, 0.5, 0.0],
+      [0.0, 0.0, 1.0],
+    ],
+    phi: 45.0,
+    theta: 90.0,
+    validCrashEvent: true,
+    hasCompleteData: false,
+  },
+  status: 'COMPLETE_DATA',
+};
+
+export const crashThresholdEvent = {
+  timestampUnixMs: 1617187200000,
+  timestampElapsedRealtimeMs: 1500000,
+};
+
+export const addDeviceEventListener = (eventName, callback) => {
+  // Adding the event listener
+  // Return listener so it can be removed later
+  return DeviceEventEmitter.addListener(eventName, event => {
+    try {
+      callback(event);
+    } catch (error) {
+      console.error(`Error in event handler for ${eventName}:`, error);
+    }
+  });
+};
+
+export async function requestPermissions() {
+  const bluetooth_connect = await request(BLUETOOTH_CONNECT);
+  const bluetooth_scan = await request(BLUETOOTH_SCAN);
+  const location = await request(ACCESS_FINE_LOCATION);
+
+  const have_permissions =
+    bluetooth_connect === GRANTED &&
+    bluetooth_connect === GRANTED &&
+    bluetooth_scan === GRANTED &&
+    location === GRANTED;
+
+  if (have_permissions) {
+    return true;
+  } else {
+    throw new Error('Permissions denied');
+  }
+}
+
+export const formatUnixTime = unixTime => {
+  const date = new Date(unixTime);
+  return date.toLocaleString();
+};
+
+export const formatRawData = (rawData = []) => {
+  return rawData
+    .split('\n')
+    .filter(line => line.startsWith('Trip'))
+    .map(tripStr => {
+      const data = tripStr.match(/(\w+)=([^,)\s]+)/g).reduce((obj, pair) => {
+        const [key, value] = pair.split('=');
+        obj[key] = isNaN(value) ? value : Number(value); // Convert numbers
+        return obj;
+      }, {});
+      const {startUnixTimeMs = 0, endUnixTimeMs = 0} = data || {};
+      return {
+        ...data,
+        startUnixTime: formatUnixTime(startUnixTimeMs),
+        endUnixTime: formatUnixTime(endUnixTimeMs),
+      };
+    });
+};
+
+export const checkPermissions = async () => {
+  // Location Always
+  const locationAlwaysPermission = await check(PERMISSIONS.IOS.LOCATION_ALWAYS);
+  console.log('Location Always Permission:', locationAlwaysPermission);
+
+  // Location When in Use
+  const locationWhenInUsePermission = await check(
+    PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+  );
+  console.log('Location When in Use Permission:', locationWhenInUsePermission);
+};
+
+export const requestLocationPermission = async () => {
+  const result = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+  if (result === RESULTS.GRANTED) {
+    console.log('Location permission granted');
+  } else {
+    console.log('Location permission denied');
+  }
+};
+
+export function devicesListOptimized(existingDevices = [], newDevice = {}) {
+  const exists = existingDevices.some(
+    device => device.properties.getTag === newDevice.properties.getTag,
+  );
+  if (!exists) {
+    return [...existingDevices, newDevice];
+  }
+  return existingDevices;
 }
