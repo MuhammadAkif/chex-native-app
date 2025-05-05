@@ -7,9 +7,9 @@ import styles from './styles';
 
 const Details = ({
   isConnected = false,
-  deviceTag = '12345',
-  battery = '87%',
-  lastSignal = '3min ago',
+  deviceTag = 'N/A',
+  batteryHealth = 'N/A',
+  lastSignal = 'N/A',
 }) => {
   return (
     <View style={styles.container}>
@@ -17,7 +17,7 @@ const Details = ({
         <LabelValuePair label={'Device Tag'} value={deviceTag} />
         <ConnectionStatus isConnected={isConnected} />
       </View>
-      <LabelValuePair label={'Battery'} value={battery} />
+      <LabelValuePair label={'Battery'} value={batteryHealth} />
       <LabelValuePair label={'Last Signal'} value={lastSignal} />
     </View>
   );

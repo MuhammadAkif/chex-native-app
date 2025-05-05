@@ -51,6 +51,10 @@ const useSafetyTag = (onEvents = {}) => {
     SafetyTagModule.requestNotificationPermission();
     SafetyTagModule.setLogLevel('DEBUG');
     const events = stratObservingEvents(DeviceEventEmitter);
+    console.log('Starting to listen for connection events...');
+    SafetyTagModule.notifyOnDeviceReady();
+    SafetyTagModule.subscribeToTripStartAndEndEvents();
+    SafetyTagModule.subscribeToCrashData();
 
     return () => {
       events.forEach(subscription => subscription.remove());
@@ -442,10 +446,10 @@ const useSafetyTag = (onEvents = {}) => {
     try {
       console.log('Starting background scanning...');
       await requestPermissions();
-      const hasBackgroundPermission = await requestBackgroundPermission();
+      /*const hasBackgroundPermission = await requestBackgroundPermission();
       if (!hasBackgroundPermission) {
         throw new Error('Background location permission not granted');
-      }
+      }*/
       if (intervalMinutes) {
         await SafetyTagModule.startBackgroundScanWithInterval(intervalMinutes);
         console.log(
@@ -625,7 +629,8 @@ const useSafetyTag = (onEvents = {}) => {
 
   async function getConnectedDevice() {
     try {
-      return await SafetyTagModule.getConnectedDevice();
+      const device = await SafetyTagModule.getConnectedDevice();
+      return device;
     } catch (error) {
       console.error('Error getting connected device:', error);
       throw error;
@@ -756,7 +761,7 @@ const useSafetyTag = (onEvents = {}) => {
     startScanning,
     startBondScanning,
     getDeviceConfiguration,
-    disconnectDevice,
+    clearDevice: disconnectDevice,
     startBackgroundScanning,
     stopBackgroundScanning,
     queryTripData,

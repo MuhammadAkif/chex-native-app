@@ -551,3 +551,49 @@ export function devicesListOptimized(existingDevices = [], newDevice = {}) {
   }
   return existingDevices;
 }
+
+function formatDuration(ms) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  const days = Math.floor(hours / 24);
+  const hrs = hours % 24;
+
+  if (totalSeconds < 60) {
+    return `${totalSeconds} ${totalSeconds === 1 ? 's' : 's'}`;
+  }
+
+  if (minutes < 60) {
+    return `${minutes} ${minutes === 1 ? 'min' : 'mins'}`;
+  }
+
+  if (hours < 24) {
+    const hourLabel = `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+    const minLabel =
+      mins > 0 ? ` and ${mins} ${mins === 1 ? 'min' : 'mins'}` : '';
+    return hourLabel + minLabel;
+  }
+
+  // 1 day or more
+  const dayLabel = `${days} ${days === 1 ? 'day' : 'days'}`;
+  const hourLabel =
+    hrs > 0 ? ` and ${hrs} ${hrs === 1 ? 'hour' : 'hours'}` : '';
+  return dayLabel + hourLabel;
+}
+
+export function getElapsedTime(eventUnixTimeMs) {
+  const currentUnixTime = Date.now(); // Get current Unix time (wall-clock time)
+  const diffMs = currentUnixTime - eventUnixTimeMs; // Difference in ms
+  return formatDuration(diffMs); // Convert that diff into a human-readable format
+}
+
+export function format12HourTime(timestampUnixMs) {
+  const date = new Date(timestampUnixMs);
+  return date.toLocaleTimeString([], {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+}

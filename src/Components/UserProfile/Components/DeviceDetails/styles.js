@@ -6,7 +6,7 @@ import {
 
 import {colors} from '../../../../Assets/Styles';
 
-const {brightGreen, red} = colors;
+const {brightGreen, red, black} = colors;
 
 export const styles = StyleSheet.create({
   container: {
@@ -18,6 +18,7 @@ export const styles = StyleSheet.create({
     fontSize: hp('1.5%'),
     width: wp('40%'),
     flexWrap: 'wrap',
+    color: black,
   },
   connectionStatusContainer: {
     columnGap: wp('0.8%'),

@@ -7,11 +7,11 @@ import DeviceDetails from './Components/DeviceDetails/DeviceDetails';
 import useUserProfile from './hooks/useUserProfile';
 
 const UserProfile = () => {
-  const {username, email} = useUserProfile();
+  const {username, email, isConnected, deviceAddress} = useUserProfile();
   return (
     <View style={styles.container}>
       <UserDetails name={username} email={email} />
-      <DeviceDetails />
+      <DeviceDetails isConnected={isConnected} name={deviceAddress} />
     </View>
   );
 };

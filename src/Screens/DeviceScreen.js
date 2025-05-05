@@ -23,16 +23,27 @@ const BaseView = props => (
   </View>
 );
 
-const DeviceScreen = ({handleDisconnect}) => (
+const DeviceScreen = ({
+  handleDisconnect,
+  isConnected,
+  deviceTag,
+  batteryHealth,
+  duration,
+  startTime,
+}) => (
   <View style={[container, styles.container]}>
     <View style={[bodyContainer, styles.body]}>
       <Text style={styles.bodyHeaderTitleText}>Device</Text>
     </View>
     <BaseView style={styles.deviceDetailsContainer}>
-      <Details />
+      <Details
+        isConnected={isConnected}
+        deviceTag={deviceTag}
+        batteryHealth={`${batteryHealth}%`}
+      />
     </BaseView>
     <BaseView style={[styles.tripDetailsContainer]}>
-      <TripDetails />
+      <TripDetails duration={duration} startTime={startTime} />
     </BaseView>
     <BaseView style={[styles.tripTimelineContainer]}>
       <TripTimeline />

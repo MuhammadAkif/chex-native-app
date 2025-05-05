@@ -6,12 +6,12 @@ import ConnectionStatus from './ConnectionStatus';
 
 const {container, text} = styles;
 
-const DeviceDetails = ({name = '#12345'}) => (
+const DeviceDetails = ({name = 'N/A', isConnected = false}) => (
   <View style={container}>
     <Text style={text} numberOfLines={1} ellipsizeMode={'tail'}>
-      Device Tag {name}
+      Device Tag #{name}
     </Text>
-    <ConnectionStatus />
+    <ConnectionStatus isConnected={isConnected} />
   </View>
 );
 
