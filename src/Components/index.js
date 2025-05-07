@@ -87,6 +87,7 @@ import Details from './Device/Details/Details';
 import TripDetails from './Device/TripsDetails/TripDetails';
 import TripTimeline from './Device/TripTimeline/TripTimeline';
 import DeviceConnectionModal from './Device/DeviceConnectionModal';
+import IconLabel from './IconLabel/IconLabel';
 
 export {
   BackgroundImageView,
@@ -178,4 +179,5 @@ export {
   TripDetails,
   TripTimeline,
   DeviceConnectionModal,
+  IconLabel,
 };

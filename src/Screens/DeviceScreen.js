@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, SafeAreaView} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -13,6 +13,7 @@ import {
   TripTimeline,
   DeviceConnectionModal,
 } from '../Components';
+import CommentSection from '../Components/Device/CommentSection';
 
 const {black, white, red} = colors;
 const {container, bodyContainer} = NewInspectionStyles;
@@ -33,6 +34,8 @@ const DeviceScreen = ({
   startTime,
   avgSpeed,
   tripStatus,
+  handleViewHistoryPress,
+  handleAddCommentsPress,
 }) => (
   <View style={[container, styles.container]}>
     <View style={[bodyContainer, styles.body]}>
@@ -51,26 +54,25 @@ const DeviceScreen = ({
         startTime={startTime}
         avgSpeed={avgSpeed}
         tripStatus={tripStatus}
+        isConnected={isConnected}
+        onViewHistoryPress={handleViewHistoryPress}
       />
     </BaseView>
     <BaseView style={[styles.tripTimelineContainer]}>
-      <TripTimeline />
+      <TripTimeline onAddCommentsPress={handleAddCommentsPress} />
+    </BaseView>
+    <BaseView style={[styles.commentBoxContainer]}>
+      <CommentSection />
     </BaseView>
     <DeviceConnectionModal isVisible={false} willDisconnect={false} />
-    {isConnected ? (
+    <BaseView>
       <PrimaryGradientButton
         text={'Disconnect'}
         buttonStyle={styles.button}
         colors={[red, red]}
         onPress={handleDisconnect}
       />
-    ) : (
-      <PrimaryGradientButton
-        text={'Connect'}
-        buttonStyle={styles.button}
-        onPress={handleStartScan}
-      />
-    )}
+    </BaseView>
   </View>
 );
 
@@ -80,11 +82,9 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 0.3,
-    height: hp('10%'),
     width: wp('100%'),
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: '3%',
+    alignItems: 'center',
     paddingHorizontal: wp('5%'),
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -96,17 +96,22 @@ const styles = StyleSheet.create({
   },
   backgroundColor: {backgroundColor: white},
   paddingView: {
-    paddingVertical: hp('1%'),
+    paddingVertical: hp('0.5%'),
     paddingHorizontal: wp('5%'),
   },
   deviceDetailsContainer: {
-    flex: 1,
+    flex: 0.5,
   },
-  tripDetailsContainer: {flex: 3},
-  tripTimelineContainer: {flex: 2.5},
+  tripDetailsContainer: {
+    flex: 1.7,
+  },
+  tripTimelineContainer: {
+    flex: 0.7,
+  },
+  commentBoxContainer: {
+    flex: 0.8,
+  },
   button: {
-    position: 'absolute',
-    bottom: hp('2%'),
     alignSelf: 'center',
   },
 });

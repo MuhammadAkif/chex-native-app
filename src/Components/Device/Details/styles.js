@@ -15,15 +15,29 @@ const styles = StyleSheet.create({
     width: wp('80%'),
     justifyContent: 'center',
   },
-  label: {
-    width: wp('65%'),
-    fontSize: hp('2%'),
-    color: black,
-  },
-  value: {color: royalBlue, fontWeight: 'bold'},
-  deviceConnection: {
+  labelValuePairContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  label: {
+    width: '35%',
+    fontSize: hp('1.8%'),
+    color: black,
+  },
+  value: {
+    color: royalBlue,
+    fontWeight: 'bold',
+    width: '55%',
+    fontSize: hp('1.6%'),
+    textAlign: 'right',
+  },
+  deviceConnection: {
+    width: wp('75%'),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  fieldMaxWidth: {
+    width: '78%',
   },
 });
 

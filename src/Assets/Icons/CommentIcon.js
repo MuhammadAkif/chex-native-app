@@ -15,7 +15,6 @@ const CommentIcon = ({height = hp('5%'), width = wp('5%'), color = white}) => (
     width={width}
     height={height}
     fill="none"
-    // style={{borderWidth: 1}}
     viewBox="0 0 26 26">
     <Path
       fill={color}

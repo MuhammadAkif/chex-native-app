@@ -17,8 +17,16 @@ const Details = ({
         <LabelValuePair label={'Device Tag'} value={deviceTag} />
         <ConnectionStatus isConnected={isConnected} />
       </View>
-      <LabelValuePair label={'Battery'} value={batteryHealth} />
-      <LabelValuePair label={'Last Signal'} value={lastSignal} />
+      <LabelValuePair
+        label={'Battery'}
+        value={batteryHealth}
+        textValueStyle={styles.fieldMaxWidth}
+      />
+      <LabelValuePair
+        label={'Last Signal'}
+        value={lastSignal}
+        textValueStyle={styles.fieldMaxWidth}
+      />
     </View>
   );
 };

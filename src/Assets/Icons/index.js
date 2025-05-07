@@ -38,6 +38,8 @@ import FlashOff from './Flash/FlashOff';
 import FlashAuto from './Flash/FlashAuto';
 import Device from './Device';
 import Bluetooth from './Bluetooth';
+import History from './History';
+import BluetoothOff from './BluetoothOff';
 
 export {
   Check,
@@ -80,4 +82,6 @@ export {
   FlashAuto,
   Device,
   Bluetooth,
+  History,
+  BluetoothOff,
 };

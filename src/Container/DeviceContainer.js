@@ -65,9 +65,12 @@ const DeviceContainer = () => {
     };
   }
 
+  const handleViewHistoryPress = () => {};
+  const handleAddCommentsPress = () => {};
+
   return (
     <DeviceScreen
-      isConnected={isConnected}
+      isConnected={true}
       deviceTag={withDefault(deviceAddress, '-')}
       batteryHealth={deviceBatteryHealth}
       handleDisconnect={disconnectDevice}
@@ -76,6 +79,8 @@ const DeviceContainer = () => {
       startTime={deviceState?.trip?.startTime}
       avgSpeed={deviceState?.trip?.avgSpeed}
       tripStatus={trip?.tripStatus}
+      handleViewHistoryPress={handleViewHistoryPress}
+      handleAddCommentsPress={handleAddCommentsPress}
     />
   );
 };

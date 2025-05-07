@@ -139,7 +139,7 @@ const useSafetyTagIOS = onEvents => {
 
   function onCheckConnection(event) {
     console.log('Connection status:', event);
-    onEvents.onCheckConnection(event);
+    onEvents?.onCheckConnection?.(event);
   }
 
   function onDeviceConnectionStateChange(event) {
