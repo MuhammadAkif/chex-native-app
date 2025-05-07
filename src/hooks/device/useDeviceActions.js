@@ -1,5 +1,6 @@
 import {useDispatch} from 'react-redux';
 import {useCallback} from 'react';
+
 import {setDevice, clearDevice, setDeviceTrip} from '../../Store/Actions';
 
 /**

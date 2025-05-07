@@ -25,11 +25,14 @@ const BaseView = props => (
 
 const DeviceScreen = ({
   handleDisconnect,
+  handleStartScan,
   isConnected,
   deviceTag,
   batteryHealth,
   duration,
   startTime,
+  avgSpeed,
+  tripStatus,
 }) => (
   <View style={[container, styles.container]}>
     <View style={[bodyContainer, styles.body]}>
@@ -39,22 +42,35 @@ const DeviceScreen = ({
       <Details
         isConnected={isConnected}
         deviceTag={deviceTag}
-        batteryHealth={`${batteryHealth}%`}
+        batteryHealth={batteryHealth}
       />
     </BaseView>
     <BaseView style={[styles.tripDetailsContainer]}>
-      <TripDetails duration={duration} startTime={startTime} />
+      <TripDetails
+        duration={duration}
+        startTime={startTime}
+        avgSpeed={avgSpeed}
+        tripStatus={tripStatus}
+      />
     </BaseView>
     <BaseView style={[styles.tripTimelineContainer]}>
       <TripTimeline />
     </BaseView>
-    <DeviceConnectionModal isVisible={true} willDisconnect={false} />
-    <PrimaryGradientButton
-      text={'Disconnect'}
-      buttonStyle={styles.button}
-      colors={[red, red]}
-      onPress={handleDisconnect}
-    />
+    <DeviceConnectionModal isVisible={false} willDisconnect={false} />
+    {isConnected ? (
+      <PrimaryGradientButton
+        text={'Disconnect'}
+        buttonStyle={styles.button}
+        colors={[red, red]}
+        onPress={handleDisconnect}
+      />
+    ) : (
+      <PrimaryGradientButton
+        text={'Connect'}
+        buttonStyle={styles.button}
+        onPress={handleStartScan}
+      />
+    )}
   </View>
 );
 

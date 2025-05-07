@@ -6,11 +6,11 @@ import LabeledCard from './LabeledCard';
 import TripStatus from './TripStatus';
 
 const TripDetails = ({
-  duration = '45 mins',
-  distance = '28.5 km',
-  avgSpeed = '38 km/h',
-  startTime = '10:30 am',
-  tripStatus = 'In Progress',
+  duration = '-',
+  distance = '-',
+  avgSpeed = '-',
+  startTime = '-',
+  tripStatus = 'Not Started',
 }) => (
   <View style={styles.container}>
     <Text style={styles.title}>Trip Details</Text>

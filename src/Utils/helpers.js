@@ -1,3 +1,4 @@
+import {DeviceEventEmitter} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -6,7 +7,6 @@ import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 
 import {isNotEmpty} from './index';
 import {Landscape, Portrait} from '../Assets/Icons';
-import {DeviceEventEmitter} from 'react-native';
 
 const {BLUETOOTH_CONNECT, BLUETOOTH_SCAN, ACCESS_FINE_LOCATION} =
   PERMISSIONS.ANDROID;
@@ -597,3 +597,35 @@ export function format12HourTime(timestampUnixMs) {
     hour12: true,
   });
 }
+
+/**
+ * Converts speed from meters per second (m/s) to kilometers per hour (km/h).
+ *
+ * @param {number|null|undefined} speedInMetersPerSecond - Speed value in m/s.
+ * @returns {number|null} - Speed in km/h, rounded to two decimal places, or null if input is invalid.
+ */
+export const convertSpeedToKmh = speedInMetersPerSecond => {
+  if (
+    typeof speedInMetersPerSecond !== 'number' ||
+    isNaN(speedInMetersPerSecond) ||
+    speedInMetersPerSecond < 0
+  ) {
+    // Invalid or missing speed value
+    return null;
+  }
+
+  const speedKmh = speedInMetersPerSecond * 3.6;
+  return parseFloat(speedKmh.toFixed(2));
+};
+
+/**
+ * Returns the value if it's not null or undefined; otherwise returns the fallback.
+ *
+ * @template T
+ * @param {T|null|undefined} value - The value to check.
+ * @param {T} fallback - The fallback value to return if the input is null or undefined.
+ * @returns {T}
+ */
+export const withDefault = (value, fallback) => {
+  return value != null ? value : fallback;
+};

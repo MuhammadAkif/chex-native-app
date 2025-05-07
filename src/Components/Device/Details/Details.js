@@ -7,9 +7,9 @@ import styles from './styles';
 
 const Details = ({
   isConnected = false,
-  deviceTag = 'N/A',
-  batteryHealth = 'N/A',
-  lastSignal = 'N/A',
+  deviceTag = '-',
+  batteryHealth = '-',
+  lastSignal = '-',
 }) => {
   return (
     <View style={styles.container}>

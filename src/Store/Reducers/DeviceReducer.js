@@ -14,7 +14,24 @@ const initialState = {
       timestampUnixMs: null,
       duration: null,
       startTime: null,
-      coords: {latitude: null, longitude: null},
+      position: {
+        coords: {
+          speed: null,
+          heading: null,
+          altitude: null,
+          accuracy: null,
+          longitude: null,
+          latitude: null,
+        },
+        extras: {
+          meanCn0: null,
+          maxCn0: null,
+          satellites: null,
+        },
+
+        mocked: false,
+        timestamp: null,
+      },
     },
     tripStatus: 'Not Started',
     distance: null,
@@ -24,7 +41,24 @@ const initialState = {
       timestampUnixMs: null,
       duration: null,
       endTime: null,
-      coords: {latitude: null, longitude: null},
+      position: {
+        coords: {
+          speed: null,
+          heading: null,
+          altitude: null,
+          accuracy: null,
+          longitude: null,
+          latitude: null,
+        },
+        extras: {
+          meanCn0: null,
+          maxCn0: null,
+          satellites: null,
+        },
+
+        mocked: false,
+        timestamp: null,
+      },
     },
   },
 };

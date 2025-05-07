@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import {Platform} from 'react-native';
+import useGeolocation from '../location/useGeoLocation';
 
 import useSafetyTag from '../useSafetyTag';
 import useSafetyTagIOS from '../useSafetyTagIOS';
@@ -34,6 +35,7 @@ const useDeviceConnection = (onEvents = {}) => {
     onGetConnectedDevice: onGetConnectedDevice,
     onCheckConnection: onCheckConnection,
   });
+  const {getCurrentLocation} = useGeolocation();
 
   const [deviceDetails, setDeviceDetails] = useState({
     discoveredDevices: [],
@@ -143,7 +145,7 @@ const useDeviceConnection = (onEvents = {}) => {
     }));
   }
 
-  function onTripStart(event) {
+  async function onTripStart(event) {
     const tripStart = JSON.parse(event?.tripEventJson);
     if (
       deviceDetails?.trip?.tripStart?.timestampUnixMs ===
@@ -151,20 +153,22 @@ const useDeviceConnection = (onEvents = {}) => {
     ) {
       return;
     }
-    setDeviceDetails(prevState => ({
-      ...prevState,
-      trip: {
-        ...prevState.tripEnd,
-        tripStart: {
-          ...tripStart,
-          coords: {latitude: null, longitude: null},
+    await getCurrentLocation(position => {
+      setDeviceDetails(prevState => ({
+        ...prevState,
+        trip: {
+          ...prevState.tripEnd,
+          tripStart: {
+            ...tripStart,
+            position,
+          },
+          tripStatus: 'In Progress',
         },
-        tripStatus: 'In Progress',
-      },
-    }));
+      }));
+    });
   }
 
-  function onTripEnd(event) {
+  async function onTripEnd(event) {
     const tripEnd = JSON.parse(event?.tripEventJson);
     if (
       deviceDetails?.trip?.tripStart?.timestampUnixMs ===
@@ -172,17 +176,19 @@ const useDeviceConnection = (onEvents = {}) => {
     ) {
       return;
     }
-    setDeviceDetails(prevState => ({
-      ...prevState,
-      trip: {
-        ...prevState.tripStart,
-        tripStatus: 'Completed',
-        tripEnd: {
-          ...tripEnd,
-          coords: {latitude: null, longitude: null},
+    await getCurrentLocation(position => {
+      setDeviceDetails(prevState => ({
+        ...prevState,
+        trip: {
+          ...prevState.tripStart,
+          tripStatus: 'Completed',
+          tripEnd: {
+            ...tripEnd,
+            position,
+          },
         },
-      },
-    }));
+      }));
+    });
   }
 
   function onGetConnectedDevice(event) {
