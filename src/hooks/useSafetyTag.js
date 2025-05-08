@@ -741,7 +741,6 @@ const useSafetyTag = (onEvents = {}) => {
   }
 
   function onDeviceFound(event) {
-    console.log('Device found:', event);
     onEvents?.onDeviceFound?.(event);
   }
 

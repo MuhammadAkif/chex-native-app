@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 
 import styles from './styles';
 import {PrimaryGradientButton} from '../../index';
 import {fallBack} from '../../../Utils';
 import {BluetoothOff} from '../../../Assets/Icons';
+import {useSafetyTagInitializer} from '../../../hooks';
+import AvailableDevices from '../AvailableDevices';
 
 const NoDeviceConnected = ({
   title = 'No Device Connected',
@@ -12,6 +14,18 @@ const NoDeviceConnected = ({
   buttonText = 'Connect',
   onPress = fallBack,
 }) => {
+  const {deviceDetails, startDeviceScanning, connectToSelectedDevice} =
+    useSafetyTagInitializer();
+  const [modalVisible, setModalVisible] = useState(false);
+  const handleConnectPress = async () => {
+    await startDeviceScanning();
+    setModalVisible(true);
+  };
+
+  const handleCancelPress = () => {
+    setModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
@@ -22,7 +36,14 @@ const NoDeviceConnected = ({
       <PrimaryGradientButton
         text={buttonText}
         buttonStyle={styles.button}
-        onPress={onPress}
+        onPress={handleConnectPress}
+      />
+      <AvailableDevices
+        devices={deviceDetails?.discoveredDevices}
+        isVisible={modalVisible}
+        onConnectPress={connectToSelectedDevice}
+        onCancelPress={handleCancelPress}
+        onRescanPress={startDeviceScanning}
       />
     </View>
   );

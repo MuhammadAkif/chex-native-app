@@ -15,7 +15,6 @@ const TripDetails = ({
   startTime = '-',
   tripStatus = 'Not Started',
   onViewHistoryPress = fallBack,
-  isConnected = false,
 }) => (
   <View style={styles.container}>
     <View style={styles.header}>
@@ -23,17 +22,11 @@ const TripDetails = ({
       <IconLabel label={'View Trip History'} onPress={onViewHistoryPress} />
     </View>
     <View style={styles.labeledCardContainer}>
-      {isConnected ? (
-        <>
-          <LabeledCard label={'Duration'} value={duration} />
-          <LabeledCard label={'Distance'} value={distance} />
-          <LabeledCard label={'Avg. Speed'} value={avgSpeed} />
-          <LabeledCard label={'Start Time'} value={startTime} />
-          <TripStatus value={tripStatus} />
-        </>
-      ) : (
-        <NoDeviceConnected />
-      )}
+      <LabeledCard label={'Duration'} value={duration} />
+      <LabeledCard label={'Distance'} value={distance} />
+      <LabeledCard label={'Avg. Speed'} value={avgSpeed} />
+      <LabeledCard label={'Start Time'} value={startTime} />
+      <TripStatus value={tripStatus} />
     </View>
   </View>
 );

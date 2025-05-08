@@ -7,6 +7,7 @@ const useSafetyTagInitializer = () => {
     startDeviceScanning,
     deviceDetails,
     disconnectDevice,
+    connectToSelectedDevice,
   } = useDeviceConnection();
   const {getDeviceTrips, getDeviceTripsWithFraudData} = useTrips();
 
@@ -17,6 +18,7 @@ const useSafetyTagInitializer = () => {
     getDeviceTrips,
     getDeviceTripsWithFraudData,
     disconnectDevice,
+    connectToSelectedDevice,
   };
 };
 

@@ -177,8 +177,9 @@ export const PROJECT_NAME = {
 export const DRAWER = {
   HOME: 'HOME',
   THINGS_YOU_WILL_REQUIRE: 'Things you will require',
-  DEVICE: 'Device',
+  DEVICE: 'Device & Trip Details',
   LOGOUT: 'Logout',
+  TRIP_HISTORY: 'Trip History',
 };
 
 export const INSPECTION_STATUSES = [

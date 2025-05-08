@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView, SafeAreaView} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -14,6 +14,7 @@ import {
   DeviceConnectionModal,
 } from '../Components';
 import CommentSection from '../Components/Device/CommentSection';
+import NoDeviceConnected from '../Components/Device/NoDeviceConnected';
 
 const {black, white, red} = colors;
 const {container, bodyContainer} = NewInspectionStyles;
@@ -33,9 +34,11 @@ const DeviceScreen = ({
   duration,
   startTime,
   avgSpeed,
+  distance,
   tripStatus,
   handleViewHistoryPress,
   handleAddCommentsPress,
+  commentInfo,
 }) => (
   <View style={[container, styles.container]}>
     <View style={[bodyContainer, styles.body]}>
@@ -48,31 +51,43 @@ const DeviceScreen = ({
         batteryHealth={batteryHealth}
       />
     </BaseView>
-    <BaseView style={[styles.tripDetailsContainer]}>
-      <TripDetails
-        duration={duration}
-        startTime={startTime}
-        avgSpeed={avgSpeed}
-        tripStatus={tripStatus}
-        isConnected={isConnected}
-        onViewHistoryPress={handleViewHistoryPress}
-      />
-    </BaseView>
-    <BaseView style={[styles.tripTimelineContainer]}>
-      <TripTimeline onAddCommentsPress={handleAddCommentsPress} />
-    </BaseView>
-    <BaseView style={[styles.commentBoxContainer]}>
-      <CommentSection />
-    </BaseView>
-    <DeviceConnectionModal isVisible={false} willDisconnect={false} />
-    <BaseView>
-      <PrimaryGradientButton
-        text={'Disconnect'}
-        buttonStyle={styles.button}
-        colors={[red, red]}
-        onPress={handleDisconnect}
-      />
-    </BaseView>
+    {isConnected ? (
+      <>
+        <BaseView style={[styles.tripDetailsContainer]}>
+          <TripDetails
+            duration={duration}
+            startTime={startTime}
+            avgSpeed={avgSpeed}
+            tripStatus={tripStatus}
+            isConnected={isConnected}
+            distance={distance}
+            onViewHistoryPress={handleViewHistoryPress}
+          />
+        </BaseView>
+        <BaseView style={[styles.tripTimelineContainer]}>
+          <TripTimeline onAddCommentsPress={handleAddCommentsPress} />
+        </BaseView>
+        <BaseView style={[styles.commentBoxContainer]}>
+          <CommentSection
+            comment={commentInfo?.comment}
+            time={commentInfo?.time}
+          />
+        </BaseView>
+        <DeviceConnectionModal isVisible={false} willDisconnect={false} />
+        <BaseView>
+          <PrimaryGradientButton
+            text={'Disconnect'}
+            buttonStyle={styles.button}
+            colors={[red, red]}
+            onPress={handleDisconnect}
+          />
+        </BaseView>
+      </>
+    ) : (
+      <BaseView style={styles.noDevice}>
+        <NoDeviceConnected />
+      </BaseView>
+    )}
   </View>
 );
 
@@ -109,10 +124,15 @@ const styles = StyleSheet.create({
     flex: 0.7,
   },
   commentBoxContainer: {
-    flex: 0.8,
+    flex: 0.7,
   },
   button: {
     alignSelf: 'center',
+  },
+  noDevice: {
+    flex: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

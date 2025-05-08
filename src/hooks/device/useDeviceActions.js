@@ -1,7 +1,12 @@
 import {useDispatch} from 'react-redux';
 import {useCallback} from 'react';
 
-import {setDevice, clearDevice, setDeviceTrip} from '../../Store/Actions';
+import {
+  setDevice,
+  clearDevice,
+  setDeviceTrip,
+  setComment,
+} from '../../Store/Actions';
 
 /**
  * Custom hook that provides dispatchable actions for managing the connected device state.
@@ -32,6 +37,18 @@ const useDeviceActions = () => {
     setDeviceTrip: useCallback(
       trip => {
         dispatch(setDeviceTrip(trip));
+      },
+      [dispatch],
+    ),
+
+    /**
+     * Sets the current trip comment.
+     *
+     * @param {object} comment - The comment of the current trip.
+     */
+    setComment: useCallback(
+      comment => {
+        dispatch(setComment(comment));
       },
       [dispatch],
     ),

@@ -14,6 +14,7 @@ import CompletedInspectionContainer from './CompletedInspectionContainer';
 import LicensePlateNumberSelectionContainer from './LicensePlateNumberSelectionContainer';
 import InspectionInProgressContainer from './InspectionInProgressContainer';
 import DeviceContainer from './DeviceContainer';
+import TripHistoryContainer from './SignIn/TripHistoryContainer';
 
 export {
   WelcomeContainer,
@@ -32,4 +33,5 @@ export {
   CompletedInspectionContainer,
   InspectionInProgressContainer,
   DeviceContainer,
+  TripHistoryContainer,
 };

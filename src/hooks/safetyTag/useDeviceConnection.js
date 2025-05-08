@@ -18,6 +18,7 @@ const useDeviceConnection = (onEvents = {}) => {
     readBatteryLevel,
     isDeviceConnected,
     clearDevice,
+    connectToDevice,
   } = useSafetyTag({
     onDeviceFound: onDeviceDiscovered,
     onConnecting: onDeviceConnecting, //for android only
@@ -81,7 +82,6 @@ const useDeviceConnection = (onEvents = {}) => {
   }, [deviceDetails?.isConnected]);
 
   function onDeviceDiscovered(devicesList) {
-    console.log('Devices Discovered:', devicesList);
     const newDevice = devicesList.device;
     setDeviceDetails(prevState => ({
       ...prevState,
@@ -207,7 +207,7 @@ const useDeviceConnection = (onEvents = {}) => {
     setDeviceDetails(prevState => ({...prevState, isScanning: true}));
     if (OS === ANDROID) {
       await startDiscovery();
-      await startScanning();
+      // await startScanning();
     }
     if (OS === IOS) {
       await startScan();
@@ -253,11 +253,16 @@ const useDeviceConnection = (onEvents = {}) => {
     }
   }
 
+  const connectToSelectedDevice = async device => {
+    await connectToDevice(device);
+  };
+
   return {
     getConnectedDeviceInfo,
     startDeviceScanning,
     deviceDetails,
     disconnectDevice,
+    connectToSelectedDevice,
   };
 };
 

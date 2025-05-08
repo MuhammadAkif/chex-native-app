@@ -38,7 +38,12 @@ import {
   clearInspectionInProgress,
 } from './InspectionInProgressAction';
 import {setLoading, showToast, hideToast} from './UIActions';
-import {setDevice, clearDevice, setDeviceTrip} from './DeviceAction';
+import {
+  setDevice,
+  clearDevice,
+  setDeviceTrip,
+  setComment,
+} from './DeviceAction';
 
 import {
   addCrashData,
@@ -91,6 +96,7 @@ export {
   setDevice,
   clearDevice,
   setDeviceTrip,
+  setComment,
   // Crash Detection Actions
   addCrashData,
   updateCrashStatus,

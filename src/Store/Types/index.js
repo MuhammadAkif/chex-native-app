@@ -46,6 +46,7 @@ export const Types = {
   DEVICE_DISCONNECTED: 'DEVICE_DISCONNECTED',
 
   TRIP: 'TRIP',
+  COMMENT: 'COMMENT',
 
   // Crash Detection Types
   ADD_CRASH_EVENT: 'ADD_CRASH_EVENT',

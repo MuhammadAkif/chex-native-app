@@ -11,6 +11,7 @@ import {
   InspectionInProgressContainer,
   InspectionSelectionContainer,
   DeviceContainer,
+  TripHistoryContainer,
 } from '../Container';
 import {
   HeaderBackButton,
@@ -42,6 +43,7 @@ const NavigationDrawer = ({navigation}) => {
     INSPECTION_DETAIL,
     INSPECTION_IN_PROGRESS,
     DEVICE,
+    TRIP_HISTORY,
   } = ROUTES;
   const options = {
     headerTitleAlign: 'center',
@@ -90,6 +92,11 @@ const NavigationDrawer = ({navigation}) => {
           options={options}
         />
         <Screen name={DEVICE} component={DeviceContainer} options={options} />
+        <Screen
+          name={TRIP_HISTORY}
+          component={TripHistoryContainer}
+          options={options}
+        />
       </Navigator>
     </>
   );

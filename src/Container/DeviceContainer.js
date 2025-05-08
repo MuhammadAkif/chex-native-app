@@ -7,17 +7,21 @@ import {useSafetyTagInitializer} from '../hooks';
 import {
   convertSpeedToKmh,
   format12HourTime,
+  getDistanceFromLatLonInKm,
   getElapsedTime,
   withDefault,
 } from '../Utils/helpers';
+import useGeoLocation from '../hooks/location/useGeoLocation';
+import {ROUTES} from '../Navigation/ROUTES';
 
-const DeviceContainer = () => {
+const DeviceContainer = ({navigation}) => {
   const {
     deviceAddress = '-',
     isConnected,
     batteryHealth = '-',
     trip,
   } = useDeviceState();
+  const {getCurrentLocation} = useGeoLocation();
   const {disconnectDevice, startDeviceScanning} = useSafetyTagInitializer();
   const [deviceState, setDeviceState] = useState({});
   const deviceBatteryHealth = batteryHealth ? `${batteryHealth}%` : '-';
@@ -34,6 +38,7 @@ const DeviceContainer = () => {
         return;
       }
       const tripParams = setTripParams();
+      handleLocationDistance();
       setDeviceState(prevState => ({
         ...prevState,
         trip: {
@@ -49,10 +54,15 @@ const DeviceContainer = () => {
       tripStart: {
         timestampUnixMs = '-',
         position: {
-          coords: {speed = '-'},
+          coords: {
+            speed = '-',
+            latitude: oldLat = null,
+            longitude: oldLong = null,
+          } = {},
         },
       },
     } = trip || {};
+    let distance = null;
 
     let avgSpeed = withDefault(convertSpeedToKmh(speed), '-');
     const duration = withDefault(getElapsedTime(timestampUnixMs), '-');
@@ -65,22 +75,45 @@ const DeviceContainer = () => {
     };
   }
 
-  const handleViewHistoryPress = () => {};
+  function handleLocationDistance() {
+    const {
+      tripStart: {
+        position: {
+          coords: {latitude: oldLat = null, longitude: oldLong = null} = {},
+        },
+      },
+    } = trip || {};
+    getCurrentLocation(position => {
+      const {
+        coords: {latitude: newLat, longitude: newLon},
+      } = position || {};
+      let distance = getDistanceFromLatLonInKm(oldLat, oldLong, newLat, newLon);
+      distance = distance.toFixed(2);
+
+      setDeviceState(prevState => ({...prevState, distance: `${distance} km`}));
+    });
+  }
+
+  const handleViewHistoryPress = () => {
+    navigation.navigate(ROUTES.TRIP_HISTORY);
+  };
   const handleAddCommentsPress = () => {};
 
   return (
     <DeviceScreen
-      isConnected={true}
+      isConnected={isConnected}
       deviceTag={withDefault(deviceAddress, '-')}
       batteryHealth={deviceBatteryHealth}
       handleDisconnect={disconnectDevice}
       handleStartScan={startDeviceScanning}
       duration={deviceState?.trip?.duration}
+      distance={deviceState?.distance}
       startTime={deviceState?.trip?.startTime}
       avgSpeed={deviceState?.trip?.avgSpeed}
       tripStatus={trip?.tripStatus}
       handleViewHistoryPress={handleViewHistoryPress}
       handleAddCommentsPress={handleAddCommentsPress}
+      commentInfo={trip?.commentInfo}
     />
   );
 };

@@ -1,16 +1,13 @@
-import {Platform, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
 import {colors} from '../../../Assets/Styles';
-import {Platforms} from '../../../Constants';
 
-const {OS} = Platform;
-const {IOS} = Platforms;
-
-const {black, royalBlue, white, gray, steelGray, lightGray} = colors;
+const {black, royalBlue, white, gray, steelGray, lightGray, orangePeel} =
+  colors;
 
 const styles = StyleSheet.create({
   container: {
@@ -55,6 +52,14 @@ const styles = StyleSheet.create({
     borderRadius: wp('100%'),
     backgroundColor: 'rgba(0, 27, 81, 0.07)',
   },
+  listIconContainer: {
+    height: wp('8%'),
+    width: wp('8%'),
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: wp('100%'),
+    backgroundColor: 'rgba(0, 27, 81, 0.07)',
+  },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
@@ -75,6 +80,8 @@ const styles = StyleSheet.create({
   },
   modalBody: {
     width: wp('80%'),
+    maxHeight: hp('60%'),
+    minHeight: hp('20%'),
   },
   modalFooter: {
     flexDirection: 'row',
@@ -99,7 +106,7 @@ const styles = StyleSheet.create({
     backgroundColor: gray,
     borderRadius: wp('2.5%'),
     paddingHorizontal: wp('5%'),
-    color: '#F1F1F1',
+    color: black,
   },
   addButton: {
     width: wp('35%'),
@@ -113,6 +120,13 @@ const styles = StyleSheet.create({
     borderColor: royalBlue,
     borderWidth: 2,
   },
+  connectButton: {
+    height: hp('4%'),
+    width: wp('25%'),
+    borderRadius: hp('10%'),
+    borderColor: orangePeel,
+    borderWidth: 2,
+  },
   cancelTextStyle: {
     color: royalBlue,
     fontWeight: '600',
@@ -120,21 +134,32 @@ const styles = StyleSheet.create({
   addTextStyle: {
     fontWeight: '600',
   },
-  text: {
-    fontSize: hp('1.8%'),
+  deviceList: {
+    alignItems: 'center',
+    paddingVertical: wp('4%'),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: wp('2%'),
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: '#F1F1F1',
+    gap: wp('2%'),
+  },
+  deviceListText: {
+    fontSize: hp('2%'),
+    width: wp('40%'),
     color: black,
-    width: '100%',
   },
-  iOSStyle: {
-    height: hp('10%'),
+  connectText: {
+    color: orangePeel,
   },
-  statusDescriptionContainer: {
-    height: hp('12%'),
-    width: '100%',
-    paddingVertical: OS === IOS ? hp('1%') : hp('0.3%'),
-    paddingHorizontal: wp('2%'),
-    borderRadius: 10,
-    backgroundColor: '#F1F1F1',
+  headerColor: {
+    backgroundColor: 'white',
+    marginVertical: 0,
+    borderColor: '#DADADA',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  rescanButton: {
+    borderColor: royalBlue,
   },
 });
 export default styles;

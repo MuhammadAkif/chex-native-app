@@ -36,6 +36,10 @@ const initialState = {
     tripStatus: 'Not Started',
     distance: null,
     averageSpeed: null,
+    commentInfo: {
+      comment: '',
+      time: null,
+    },
     tripEnd: {
       timestampElapsedRealtimeMs: null,
       timestampUnixMs: null,
@@ -63,7 +67,7 @@ const initialState = {
   },
 };
 
-const {DEVICE_CONNECTED, DEVICE_DISCONNECTED, TRIP} = Types;
+const {DEVICE_CONNECTED, DEVICE_DISCONNECTED, TRIP, COMMENT} = Types;
 
 const deviceReducer = (state = initialState, action) => {
   const {type, payload} = action;
@@ -76,6 +80,15 @@ const deviceReducer = (state = initialState, action) => {
       return {
         ...state,
         trip: payload,
+      };
+
+    case COMMENT:
+      return {
+        ...state,
+        trip: {
+          ...state.trip,
+          commentInfo: payload,
+        },
       };
 
     case DEVICE_DISCONNECTED:

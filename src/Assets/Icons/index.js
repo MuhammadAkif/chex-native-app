@@ -40,6 +40,8 @@ import Device from './Device';
 import Bluetooth from './Bluetooth';
 import History from './History';
 import BluetoothOff from './BluetoothOff';
+import Clock from './Clock';
+import Location from './Location';
 
 export {
   Check,
@@ -84,4 +86,6 @@ export {
   Bluetooth,
   History,
   BluetoothOff,
+  Clock,
+  Location,
 };

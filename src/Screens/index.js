@@ -13,6 +13,8 @@ import CameraScreen from './CameraScreen';
 import LicensePlateNumberSelectionScreen from './LicensePlateNumberSelectionScreen';
 import InspectionInProgressScreen from './InspectionInProgressScreen';
 import DeviceScreen from './DeviceScreen';
+import TripHistoryScreen from './TripHistoryScreen';
+
 export {
   WelcomeScreen,
   RegisterScreen,
@@ -29,4 +31,5 @@ export {
   LicensePlateNumberSelectionScreen,
   InspectionInProgressScreen,
   DeviceScreen,
+  TripHistoryScreen,
 };
