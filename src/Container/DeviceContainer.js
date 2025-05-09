@@ -62,7 +62,6 @@ const DeviceContainer = ({navigation}) => {
         },
       },
     } = trip || {};
-    let distance = null;
 
     let avgSpeed = withDefault(convertSpeedToKmh(speed), '-');
     const duration = withDefault(getElapsedTime(timestampUnixMs), '-');
@@ -94,7 +93,7 @@ const DeviceContainer = ({navigation}) => {
     });
   }
 
-  const handleViewHistoryPress = () => {
+  const handleViewHistoryPress = async () => {
     navigation.navigate(ROUTES.TRIP_HISTORY);
   };
   const handleAddCommentsPress = () => {};

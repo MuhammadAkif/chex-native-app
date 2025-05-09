@@ -1,10 +1,10 @@
 import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View} from 'react-native';
 
 import Location from '../../Assets/Icons/Location';
 import styles from './styles';
 
-const TripLocation = () => (
+const TripLocation = ({startLocation = '-', endLocation = '-'}) => (
   <View style={styles.tripLocationContainer}>
     <View
       style={[
@@ -15,7 +15,7 @@ const TripLocation = () => (
       <View style={styles.locationGreen}>
         <Location />
       </View>
-      <Text style={styles.textColor}>Home</Text>
+      <Text style={styles.textColor}>{startLocation}</Text>
     </View>
     <View
       style={[
@@ -26,7 +26,7 @@ const TripLocation = () => (
       <View style={[styles.locationGreen, styles.locationRed]}>
         <Location />
       </View>
-      <Text style={styles.textColor}>Downtown office</Text>
+      <Text style={styles.textColor}>{endLocation}</Text>
     </View>
   </View>
 );

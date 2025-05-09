@@ -28,7 +28,6 @@ const initialState = {
           maxCn0: null,
           satellites: null,
         },
-
         mocked: false,
         timestamp: null,
       },
@@ -65,16 +64,21 @@ const initialState = {
       },
     },
   },
+  tripsList: [],
 };
 
-const {DEVICE_CONNECTED, DEVICE_DISCONNECTED, TRIP, COMMENT} = Types;
+const {DEVICE_CONNECTED, DEVICE_DISCONNECTED, TRIP, COMMENT, TRIPS_LIST} =
+  Types;
 
 const deviceReducer = (state = initialState, action) => {
   const {type, payload} = action;
 
   switch (type) {
     case DEVICE_CONNECTED:
-      return payload;
+      return {
+        ...initialState,
+        ...payload,
+      };
 
     case TRIP:
       return {
@@ -89,6 +93,12 @@ const deviceReducer = (state = initialState, action) => {
           ...state.trip,
           commentInfo: payload,
         },
+      };
+
+    case TRIPS_LIST:
+      return {
+        ...state,
+        tripsList: payload || [],
       };
 
     case DEVICE_DISCONNECTED:

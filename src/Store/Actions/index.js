@@ -43,6 +43,7 @@ import {
   clearDevice,
   setDeviceTrip,
   setComment,
+  setTripsList,
 } from './DeviceAction';
 
 import {
@@ -97,6 +98,7 @@ export {
   clearDevice,
   setDeviceTrip,
   setComment,
+  setTripsList,
   // Crash Detection Actions
   addCrashData,
   updateCrashStatus,

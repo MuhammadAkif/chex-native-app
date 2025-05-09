@@ -37,6 +37,8 @@ export const API_ENDPOINTS = {
   ANNOTATION_URL: generateApiUrl('file/coordinate'),
   LOCATION_URL: generateApiUrl('inspection/location'),
   SUBMIT_INSPECTION: generateApiUrl('dsp/app/producer'),
+  DEVICE_ASSIGN_URL: generateApiUrl('device'),
+  UPDATE_TRIP_LIST: generateApiUrl('update/device/tripList'),
 };
 // Api Endpoints ends here
 export const Platforms = {

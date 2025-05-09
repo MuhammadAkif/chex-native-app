@@ -78,7 +78,7 @@ const useGeolocation = () => {
         // TODO: Consider mapping error codes to user-friendly messages
         setError(error.message || 'Error getting location');
         setLoading(false);
-        onError(error);
+        onError?.(error);
       },
       {
         enableHighAccuracy: true, // Prioritize GPS over network for better precision

@@ -66,6 +66,9 @@ const useSafetyTag = (onEvents = {}) => {
   // ==========================================
   async function startDiscovery() {
     try {
+      SafetyTagModule.notifyOnDeviceReady();
+      SafetyTagModule.subscribeToTripStartAndEndEvents();
+      SafetyTagModule.subscribeToCrashData();
       console.log('Starting device discovery...');
       await requestPermissions();
       await SafetyTagModule.startDiscovery();

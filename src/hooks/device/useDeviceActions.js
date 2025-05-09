@@ -6,6 +6,7 @@ import {
   clearDevice,
   setDeviceTrip,
   setComment,
+  setTripsList,
 } from '../../Store/Actions';
 
 /**
@@ -49,6 +50,18 @@ const useDeviceActions = () => {
     setComment: useCallback(
       comment => {
         dispatch(setComment(comment));
+      },
+      [dispatch],
+    ),
+
+    /**
+     * Sets the current trip comment.
+     *
+     * @param {object} comment - The comment of the current trip.
+     */
+    setTripsList: useCallback(
+      tripsList => {
+        dispatch(setTripsList(tripsList || []));
       },
       [dispatch],
     ),

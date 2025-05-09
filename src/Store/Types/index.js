@@ -47,6 +47,7 @@ export const Types = {
 
   TRIP: 'TRIP',
   COMMENT: 'COMMENT',
+  TRIPS_LIST: 'TRIPS_LIST',
 
   // Crash Detection Types
   ADD_CRASH_EVENT: 'ADD_CRASH_EVENT',

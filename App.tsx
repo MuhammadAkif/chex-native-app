@@ -18,7 +18,6 @@ import {useAuthState} from './src/hooks';
 import LoadingIndicator from './src/Components/LoadingIndicator';
 import DeviceConnectionMonitor from './src/Components/DeviceConnectionMonitor';
 import useGeoLocation from './src/hooks/location/useGeoLocation';
-import MyApp from './src/Components/MyApp';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
@@ -32,8 +31,7 @@ function App() {
   const {isLoading} = useUIState();
   const [displayGif, setDisplayGif] = useState(true);
   const [updateAvailable, setUpdateAvailable] = useState('');
-  const {permissionGranted} = useGeoLocation();
-  console.log('permissionGranted', permissionGranted);
+  const permissionGranted = useGeoLocation();
 
   useEffect(() => {
     (async () => {

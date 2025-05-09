@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import {Platform} from 'react-native';
 
 import useSafetyTag from '../useSafetyTag';
@@ -13,6 +14,7 @@ const useTrips = () => {
     onTripStartError: onTripStartError, //for android only
     onTripEnd: onTripEnd,
     onTripDataSuccess: onTripDataReceived,
+    onTripDataWithFraudSuccess: onTripDataReceived,
     onTripDataError: onTripsDataError, //for android only
   });
   const {getTrips, getTripsWithFraudDetection} = useSafetyTagIOS({
@@ -20,6 +22,7 @@ const useTrips = () => {
     onTripEnded: onTripEnd,
     onTripsReceived: onTripDataReceived,
   });
+  const [deviceTrips, setDeviceTrips] = useState([]);
 
   function onTripStart(event) {
     console.log('Trip started:', event);
@@ -32,6 +35,7 @@ const useTrips = () => {
   }
   function onTripDataReceived(event) {
     console.log('Trips data received:', event);
+    setDeviceTrips(event);
   }
   function onTripsDataError(event) {
     console.log('Trips data error:', event);
@@ -47,7 +51,11 @@ const useTrips = () => {
   }
   async function getDeviceTripsWithFraudData() {
     if (OS === ANDROID) {
-      await queryTripWithFraudData();
+      try {
+        await queryTripWithFraudData();
+      } catch (error) {
+        setDeviceTrips({list: []});
+      }
     }
     if (OS === IOS) {
       await getTripsWithFraudDetection();
@@ -55,6 +63,7 @@ const useTrips = () => {
   }
 
   return {
+    deviceTrips,
     getDeviceTrips,
     getDeviceTripsWithFraudData,
   };

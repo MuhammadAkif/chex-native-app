@@ -1,27 +1,40 @@
 import React from 'react';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {colors, NewInspectionStyles} from '../Assets/Styles';
 import TripCard from '../Components/TripCard';
+import {BackArrow} from '../Assets/Icons';
 
 const {black, white} = colors;
 const {container, bodyContainer} = NewInspectionStyles;
 
-const dummyTrips = Array.from({length: 5}, (_, index) => ({
-  name: `Device Tag #${12345 + index}`,
-  id: Math.floor(Math.random() * 10000), // random ID between 0 and 9999
-}));
-
-const TripHistoryScreen = () => (
+const TripHistoryScreen = ({onBackPress, trips}) => (
   <View style={[container, styles.container]}>
     <View style={[bodyContainer, styles.header]}>
-      <Text style={styles.bodyHeaderTitleText}>Device</Text>
+      <TouchableOpacity style={styles.headerContainer} onPress={onBackPress}>
+        <BackArrow
+          height={hp('5%')}
+          width={wp('6%')}
+          color={black}
+          onPress={onBackPress}
+        />
+        <Text style={styles.bodyHeaderTitleText}>Trip History</Text>
+      </TouchableOpacity>
     </View>
     <View style={[styles.backgroundColor, styles.body]}>
-      <TripCard />
+      <FlatList
+        data={trips}
+        renderItem={({item}) => <TripCard trip={item} />}
+        keyExtractor={item => item.id}
+        ListEmptyComponent={
+          <View style={styles.emptyDataContainer}>
+            <Text style={styles.emptyDataText}>No Trip history</Text>
+          </View>
+        }
+      />
     </View>
   </View>
 );
@@ -40,6 +53,11 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: wp('3%'),
+  },
   bodyHeaderTitleText: {
     fontSize: hp('2.5%'),
     fontWeight: 'bold',
@@ -48,7 +66,16 @@ const styles = StyleSheet.create({
   backgroundColor: {backgroundColor: white},
   body: {
     flex: 10,
-    borderWidth: 1,
+  },
+  emptyDataText: {
+    color: black,
+    fontSize: hp('2%'),
+  },
+  emptyDataContainer: {
+    height: hp('50%'),
+    width: wp('100%'),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

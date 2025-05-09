@@ -6,6 +6,7 @@ import useSafetyTag from '../useSafetyTag';
 import useSafetyTagIOS from '../useSafetyTagIOS';
 import {Platforms} from '../../Constants';
 import {devicesListOptimized} from '../../Utils/helpers';
+import {store} from '../../Store';
 
 const {OS} = Platform;
 const {ANDROID, IOS} = Platforms;
@@ -27,6 +28,7 @@ const useDeviceConnection = (onEvents = {}) => {
     onDeviceDisconnected: onDeviceDisconnected,
     onTripStart: onTripStart,
     onTripEnd: onTripEnd,
+    onTripDataWithFraudSuccess: onTripDataWithFraudSuccess,
   });
   const {startScan, getDeviceInformation, checkConnection} = useSafetyTagIOS({
     onDeviceDiscovered: onDeviceDiscovered,
@@ -59,6 +61,7 @@ const useDeviceConnection = (onEvents = {}) => {
         coords: {latitude: null, longitude: null},
       },
     },
+    trips: [],
   });
 
   useEffect(() => {
@@ -176,7 +179,36 @@ const useDeviceConnection = (onEvents = {}) => {
     ) {
       return;
     }
+
+    const device = store?.getState()?.device;
+    const existingTrips = device?.tripsList || [];
+
+    // Check if this trip already exists in store
+    const tripExists = existingTrips.some(
+      trip =>
+        trip.endUnixTimeMs === tripEnd.timestampUnixMs &&
+        trip.startUnixTimeMs === deviceDetails.trip.tripStart.timestampUnixMs,
+    );
+
+    if (tripExists) {
+      console.log('Trip already exists in store - skipping update');
+      return;
+    }
+
     await getCurrentLocation(position => {
+      const completedTrip = {
+        receiveNumber: deviceDetails.trips.length + 1,
+        startUnixTimeMs: deviceDetails.trip.tripStart.timestampUnixMs,
+        startElapsedRealtimeMs:
+          deviceDetails.trip.tripStart.timestampElapsedRealtimeMs,
+        endUnixTimeMs: tripEnd.timestampUnixMs,
+        endElapsedRealtimeMs: tripEnd.timestampElapsedRealtimeMs,
+        connectedDuringTrip: true,
+        commentInfo: device?.trip?.commentInfo,
+        startPosition: device?.trip?.tripStart?.position,
+        endPosition: position,
+      };
+
       setDeviceDetails(prevState => ({
         ...prevState,
         trip: {
@@ -187,8 +219,15 @@ const useDeviceConnection = (onEvents = {}) => {
             position,
           },
         },
+        trips: [...prevState.trips, completedTrip],
       }));
     });
+  }
+
+  async function onTripDataWithFraudSuccess(event) {
+    // const tripEnd = JSON.parse(event?.tripEventJson);
+    console.log('Trips: ', event);
+    setDeviceDetails(prevState => ({...prevState, trips: event}));
   }
 
   function onGetConnectedDevice(event) {
