@@ -82,7 +82,7 @@ const SignInScreen = ({
         <TouchableOpacity
           onPress={handleForgetPassword}
           style={styles.forgetPasswordContainer}>
-          <Text style={styles.forgotPasswordText}>Forget Password</Text>
+          <Text style={styles.forgotPasswordText}>Forgot Password</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.footerContainer}>
