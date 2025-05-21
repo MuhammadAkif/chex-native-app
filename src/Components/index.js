@@ -88,6 +88,7 @@ import TripDetails from './Device/TripsDetails/TripDetails';
 import TripTimeline from './Device/TripTimeline/TripTimeline';
 import DeviceConnectionModal from './Device/DeviceConnectionModal';
 import IconLabel from './IconLabel/IconLabel';
+import AvailableVehicles from './AvailableVehicles/AvailableVehicles';
 
 export {
   BackgroundImageView,
@@ -180,4 +181,5 @@ export {
   TripTimeline,
   DeviceConnectionModal,
   IconLabel,
+  AvailableVehicles,
 };

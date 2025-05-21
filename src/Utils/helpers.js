@@ -7,6 +7,7 @@ import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 
 import {isNotEmpty} from './index';
 import {Landscape, Portrait} from '../Assets/Icons';
+import axios from 'axios';
 
 const {BLUETOOTH_CONNECT, BLUETOOTH_SCAN, ACCESS_FINE_LOCATION} =
   PERMISSIONS.ANDROID;
@@ -631,7 +632,7 @@ export const convertSpeedToKmh = speedInMetersPerSecond => {
  * @returns {T}
  */
 export const withDefault = (value, fallback) => {
-  return value != null ? value : fallback;
+  return value != null || value !== undefined ? value : fallback;
 };
 
 export function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -1205,8 +1206,11 @@ const __ = {
     },
   ],
 };
-export const formatTripsJSON = (tripsList = []) => {
-  return tripsList.list
+export const formatTripsJSON = (tripsList = '') => {
+  if (!isNotEmpty(tripsList)) {
+    return;
+  }
+  return tripsList
     ?.trim()
     .split('\n')
     .map(line => {
@@ -1239,3 +1243,39 @@ export const formatTripsJSON = (tripsList = []) => {
     })
     .filter(Boolean);
 };
+
+export const reverseGeocode = async (
+  latitude,
+  longitude,
+  geoNamesUsername = 'shahroz_chex',
+) => {
+  const url = `http://api.geonames.org/reverseJSON?lat=${latitude}&lng=${longitude}&username=${geoNamesUsername}`;
+
+  try {
+    const response = await axios.get(url);
+    if (response.data && response.data.address) {
+      const {countryName, city, state} = response.data.address;
+      console.log('I have response of geo names api', response?.data?.address);
+    } else {
+      console.log('Address not found');
+    }
+  } catch (error) {
+    console.warn('Error with GeoNames API:', error);
+    throw error;
+  } finally {
+  }
+};
+
+export function formatUnixTimestampIntoDate(unixTimestamp) {
+  const date = new Date(unixTimestamp * 1000); // Convert seconds to milliseconds
+
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+  const milliseconds = String(date.getUTCMilliseconds()).padStart(3, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}+00`;
+}

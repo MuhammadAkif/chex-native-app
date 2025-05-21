@@ -17,6 +17,9 @@ export const nightImageCheckAI = process.env.NIGHT_IMAGE_CHECK;
 export const MILEAGE_EXTRACTION = process.env.MILEAGE_EXTRACT;
 
 export const AI_API_TOKEN = process.env.AI_API_TOKEN;
+export const GEO_NAME_USER_NAME = process.env.GEO_NAME_USER_NAME;
+export const GEO_NAME_API = process.env.GEO_NAME_API;
+export const GEO_NAME_API_USER = process.env.GEO_NAME_API_USER;
 
 // API endpoints
 export const API_ENDPOINTS = {
@@ -37,8 +40,13 @@ export const API_ENDPOINTS = {
   ANNOTATION_URL: generateApiUrl('file/coordinate'),
   LOCATION_URL: generateApiUrl('inspection/location'),
   SUBMIT_INSPECTION: generateApiUrl('dsp/app/producer'),
-  DEVICE_ASSIGN_URL: generateApiUrl('device'),
-  UPDATE_TRIP_LIST: generateApiUrl('update/device/tripList'),
+  DEVICE_ASSIGN_URL: generateApiUrl('device/connect'),
+  DISCONNECT_DEVICE_URL: generateApiUrl('device/disconnect'),
+  UPDATE_TRIP_LIST_URL: generateApiUrl('update/device/tripList'),
+  VEHICLE_LIST_URL: generateApiUrl('user/vehicle/list'),
+  ADD_COMMENT_URL: generateApiUrl('trip/comment'),
+  TRIP_START_URL: generateApiUrl('trip/start'),
+  UPDATE_TRIP_URL: generateApiUrl('trip/update'),
 };
 // Api Endpoints ends here
 export const Platforms = {

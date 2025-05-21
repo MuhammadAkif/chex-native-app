@@ -4,6 +4,7 @@ import {View} from 'react-native';
 import LabelValuePair from './LabelValuePair';
 import ConnectionStatus from '../../UserProfile/Components/DeviceDetails/ConnectionStatus';
 import styles from './styles';
+import LabelValuePairWithProgress from './LabelValuePairWithProgress';
 
 const Details = ({
   isConnected = false,

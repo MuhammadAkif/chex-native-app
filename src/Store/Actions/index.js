@@ -27,7 +27,7 @@ import {
   setImageDimensions,
   setFlashMode,
 } from './NewInspectionAction';
-import {signIn, signOut, sessionExpired} from './AuthAction';
+import {signIn, signOut, sessionExpired, setVehiclesList} from './AuthAction';
 import {
   fetchInspectionReviewed,
   clearInspectionReviewed,
@@ -44,6 +44,11 @@ import {
   setDeviceTrip,
   setComment,
   setTripsList,
+  setNewTrip,
+  clearTrip,
+  setVehicleID,
+  setUserDeviceDetails,
+  setUserStartTripDetails,
 } from './DeviceAction';
 
 import {
@@ -61,6 +66,7 @@ export {
   numberPlateSelected,
   signIn,
   signOut,
+  setVehiclesList,
   fetchInspectionReviewed,
   clearInspectionReviewed,
   fetchInspectionInProgress,
@@ -99,6 +105,11 @@ export {
   setDeviceTrip,
   setComment,
   setTripsList,
+  setNewTrip,
+  clearTrip,
+  setVehicleID,
+  setUserDeviceDetails,
+  setUserStartTripDetails,
   // Crash Detection Actions
   addCrashData,
   updateCrashStatus,

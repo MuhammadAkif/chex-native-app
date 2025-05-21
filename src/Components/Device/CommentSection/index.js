@@ -12,6 +12,7 @@ import styles from './styles';
 import CommentModal from './CommentModal';
 import {useDeviceActions, useDeviceState} from '../../../hooks/device';
 import {format12HourTime} from '../../../Utils/helpers';
+import {setCommentAPI} from '../../../services/device';
 
 const CommentSection = ({
   onAddCommentsPress = fallBack,
@@ -19,7 +20,7 @@ const CommentSection = ({
   time = null,
   onCancelPress = fallBack,
 }) => {
-  const {trip} = useDeviceState();
+  const {trip, userStartTripDetails} = useDeviceState();
   const {setComment} = useDeviceActions();
   const [commentSectionState, setCommentSectionState] = useState({
     isVisible: false,
@@ -32,14 +33,24 @@ const CommentSection = ({
     onAddCommentsPress();
   };
 
-  const handleAddPress = comment => {
+  const handleAddPress = async comment => {
     setCommentSectionState(prevState => ({...prevState, isVisible: false}));
     if (comment !== trip?.comment) {
       const time = Date.now();
       const commentInfo = {comment: comment, time: format12HourTime(time)};
-      setComment(commentInfo);
+
+      try {
+        setComment(commentInfo);
+        if (userStartTripDetails?.id) {
+          const {data} = await setCommentAPI(userStartTripDetails?.id, comment);
+          console.log('trip comment response : ', data);
+        }
+        onAddCommentsPress();
+      } catch (error) {
+        setComment('');
+        throw error;
+      }
     }
-    onAddCommentsPress();
   };
 
   const handleCancelPress = () => {

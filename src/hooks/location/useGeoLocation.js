@@ -3,7 +3,6 @@ import {Platform, PermissionsAndroid} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 
 import {Platforms} from '../../Constants';
-import {err} from 'react-native-svg/lib/typescript/xml';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
@@ -98,6 +97,7 @@ const useGeolocation = () => {
   const startWatchingPosition = useCallback(() => {
     const id = Geolocation.watchPosition(
       position => {
+        console.log(position);
         setLocation(position);
       },
       error => {

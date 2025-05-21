@@ -2,7 +2,6 @@ import {useState} from 'react';
 import {Platform} from 'react-native';
 
 import useSafetyTag from '../useSafetyTag';
-import useSafetyTagIOS from '../useSafetyTagIOS';
 import {Platforms} from '../../Constants';
 
 const {OS} = Platform;
@@ -17,11 +16,11 @@ const useTrips = () => {
     onTripDataWithFraudSuccess: onTripDataReceived,
     onTripDataError: onTripsDataError, //for android only
   });
-  const {getTrips, getTripsWithFraudDetection} = useSafetyTagIOS({
+  /*const {getTrips, getTripsWithFraudDetection} = useSafetyTagIOS({
     onTripStarted: onTripStart,
     onTripEnded: onTripEnd,
     onTripsReceived: onTripDataReceived,
-  });
+  });*/
   const [deviceTrips, setDeviceTrips] = useState([]);
 
   function onTripStart(event) {
@@ -46,7 +45,7 @@ const useTrips = () => {
       await queryTripData();
     }
     if (OS === IOS) {
-      await getTrips();
+      //await getTrips();
     }
   }
   async function getDeviceTripsWithFraudData() {
@@ -54,11 +53,11 @@ const useTrips = () => {
       try {
         await queryTripWithFraudData();
       } catch (error) {
-        setDeviceTrips({list: []});
+        setDeviceTrips([]);
       }
     }
     if (OS === IOS) {
-      await getTripsWithFraudDetection();
+      //await getTripsWithFraudDetection();
     }
   }
 

@@ -1,7 +1,12 @@
 import {useCallback} from 'react';
 import {useDispatch} from 'react-redux';
 
-import {sessionExpired, signIn, signOut} from '../../Store/Actions';
+import {
+  sessionExpired,
+  signIn,
+  signOut,
+  setVehiclesList as setUserVehiclesList,
+} from '../../Store/Actions';
 
 /**
  * Custom hook to provide authentication-related action dispatchers.
@@ -56,9 +61,17 @@ const useAuthActions = () => {
     dispatch(sessionExpired());
   }, [dispatch]);
 
+  const setVehiclesList = useCallback(
+    (vehicles = []) => {
+      dispatch(setUserVehiclesList(vehicles));
+    },
+    [dispatch],
+  );
+
   return {
     login,
     logout,
+    setVehiclesList,
     expireSession,
   };
 };

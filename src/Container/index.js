@@ -15,6 +15,7 @@ import LicensePlateNumberSelectionContainer from './LicensePlateNumberSelectionC
 import InspectionInProgressContainer from './InspectionInProgressContainer';
 import DeviceContainer from './DeviceContainer';
 import TripHistoryContainer from './TripHistoryContainer';
+import TripDetailContainer from './TripDetailContainer';
 
 export {
   WelcomeContainer,
@@ -34,4 +35,5 @@ export {
   InspectionInProgressContainer,
   DeviceContainer,
   TripHistoryContainer,
+  TripDetailContainer,
 };

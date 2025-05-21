@@ -15,6 +15,7 @@ import {
 } from '../Components';
 import CommentSection from '../Components/Device/CommentSection';
 import NoDeviceConnected from '../Components/Device/NoDeviceConnected';
+import AvailableDevices from '../Components/Device/AvailableDevices';
 
 const {black, white, red} = colors;
 const {container, bodyContainer} = NewInspectionStyles;
@@ -39,6 +40,9 @@ const DeviceScreen = ({
   handleViewHistoryPress,
   handleAddCommentsPress,
   commentInfo,
+  primaryLocation,
+  secondaryLocation,
+  displayVehiclesList,
 }) => (
   <View style={[container, styles.container]}>
     <View style={[bodyContainer, styles.body]}>
@@ -65,7 +69,11 @@ const DeviceScreen = ({
           />
         </BaseView>
         <BaseView style={[styles.tripTimelineContainer]}>
-          <TripTimeline onAddCommentsPress={handleAddCommentsPress} />
+          <TripTimeline
+            onAddCommentsPress={handleAddCommentsPress}
+            primaryLocation={primaryLocation}
+            secondaryLocation={secondaryLocation}
+          />
         </BaseView>
         <BaseView style={[styles.commentBoxContainer]}>
           <CommentSection

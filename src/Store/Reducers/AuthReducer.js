@@ -1,9 +1,9 @@
 import {Types} from '../Types';
 
-const {SIGN_IN, SIGN_OUT, SESSION_EXPIRED} = Types;
+const {SIGN_IN, SIGN_OUT, SESSION_EXPIRED, USER_VEHICLES} = Types;
 
 const initialState = {
-  user: {token: null}, // User information (null token when not authenticated)
+  user: {token: null, vehicles: []}, // User information (null token when not authenticated)
   sessionExpired: false, // Flag indicating whether the user's session has expired
 };
 
@@ -36,6 +36,9 @@ const authReducer = (state = initialState, action) => {
 
     case SIGN_OUT:
       return initialState;
+
+    case USER_VEHICLES:
+      return {...state, user: {...state.user, vehicles: payload}};
 
     case SESSION_EXPIRED:
       return {...state, sessionExpired: true};

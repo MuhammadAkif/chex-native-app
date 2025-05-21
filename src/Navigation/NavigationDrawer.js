@@ -19,6 +19,7 @@ import {
   HeaderBackground,
   CustomDrawerContent,
 } from '../Components';
+import TripDetailContainer from '../Container/TripDetailContainer';
 
 const ScreenHeaderTitle = props => <HeaderTitle {...props} />;
 const headerBackground = () => <HeaderBackground />;
@@ -44,6 +45,7 @@ const NavigationDrawer = ({navigation}) => {
     INSPECTION_IN_PROGRESS,
     DEVICE,
     TRIP_HISTORY,
+    TRIP_DETAIL,
   } = ROUTES;
   const options = {
     headerTitleAlign: 'center',
@@ -95,6 +97,11 @@ const NavigationDrawer = ({navigation}) => {
         <Screen
           name={TRIP_HISTORY}
           component={TripHistoryContainer}
+          options={options}
+        />
+        <Screen
+          name={TRIP_DETAIL}
+          component={TripDetailContainer}
           options={options}
         />
       </Navigator>

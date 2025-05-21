@@ -28,10 +28,10 @@ import {useSelector} from 'react-redux';
 const useAuthState = () => {
   const {
     sessionExpire: isSessionExpired, // Determines whether the session has expired
-    user: {token, data: user}, // Destructures user data and token from the auth state
+    user: {token, data: user, vehicles}, // Destructures user data and token from the auth state
   } = useSelector(state => state.auth);
 
-  return {isSessionExpired, token, user};
+  return {isSessionExpired, token, user, vehicles};
 };
 
 export default useAuthState;

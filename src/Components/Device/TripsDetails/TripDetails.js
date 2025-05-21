@@ -15,12 +15,15 @@ const TripDetails = ({
   startTime = '-',
   tripStatus = 'Not Started',
   onViewHistoryPress = fallBack,
+  displayHeader = true,
 }) => (
   <View style={styles.container}>
-    <View style={styles.header}>
-      <Text style={styles.title}>Trip Details</Text>
-      <IconLabel label={'View Trip History'} onPress={onViewHistoryPress} />
-    </View>
+    {displayHeader && (
+      <View style={styles.header}>
+        <Text style={styles.title}>Trip Details</Text>
+        <IconLabel label={'View Trip History'} onPress={onViewHistoryPress} />
+      </View>
+    )}
     <View style={styles.labeledCardContainer}>
       <LabeledCard label={'Duration'} value={duration} />
       <LabeledCard label={'Distance'} value={distance} />

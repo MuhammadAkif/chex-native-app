@@ -30,6 +30,9 @@ const initialState = {
         },
         mocked: false,
         timestamp: null,
+        locality: null,
+        state: null,
+        country: null,
       },
     },
     tripStatus: 'Not Started',
@@ -58,17 +61,32 @@ const initialState = {
           maxCn0: null,
           satellites: null,
         },
-
         mocked: false,
         timestamp: null,
+        locality: null,
+        state: null,
+        country: null,
       },
     },
   },
   tripsList: [],
+  vehicleId: null,
+  userDeviceDetails: {},
+  userStartTripDetails: {},
 };
 
-const {DEVICE_CONNECTED, DEVICE_DISCONNECTED, TRIP, COMMENT, TRIPS_LIST} =
-  Types;
+const {
+  DEVICE_CONNECTED,
+  DEVICE_DISCONNECTED,
+  TRIP,
+  COMMENT,
+  TRIPS_LIST,
+  INSERT_TRIP,
+  CLEAR_TRIP,
+  VEHICLE_ID,
+  USER_DEVICE_DETAILS,
+  USER_START_TRIP_DETAILS,
+} = Types;
 
 const deviceReducer = (state = initialState, action) => {
   const {type, payload} = action;
@@ -78,6 +96,19 @@ const deviceReducer = (state = initialState, action) => {
       return {
         ...initialState,
         ...payload,
+        userDeviceDetails: state?.userDeviceDetails,
+      };
+
+    case USER_DEVICE_DETAILS:
+      return {
+        ...state,
+        userDeviceDetails: payload,
+      };
+
+    case USER_START_TRIP_DETAILS:
+      return {
+        ...state,
+        userStartTripDetails: payload,
       };
 
     case TRIP:
@@ -95,10 +126,28 @@ const deviceReducer = (state = initialState, action) => {
         },
       };
 
+    case CLEAR_TRIP:
+      return {
+        ...state,
+        trip: initialState.trip,
+      };
+
+    case INSERT_TRIP:
+      return {
+        ...state,
+        tripsList: [...state.tripsList, state.trip],
+      };
+
     case TRIPS_LIST:
       return {
         ...state,
-        tripsList: payload || [],
+        tripsList: payload,
+      };
+
+    case VEHICLE_ID:
+      return {
+        ...state,
+        vehicleId: payload,
       };
 
     case DEVICE_DISCONNECTED:

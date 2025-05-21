@@ -8,6 +8,7 @@ const {
   CLEAR_NEW_INSPECTION,
   SIGN_OUT,
   SESSION_EXPIRED,
+  USER_VEHICLES,
 } = Types;
 
 /**
@@ -67,4 +68,9 @@ export const signOut = () => {
  */
 export const sessionExpired = () => ({
   type: SESSION_EXPIRED,
+});
+
+export const setVehiclesList = (vehicles = []) => ({
+  type: USER_VEHICLES,
+  payload: vehicles,
 });

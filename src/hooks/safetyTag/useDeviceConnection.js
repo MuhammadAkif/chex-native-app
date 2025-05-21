@@ -1,15 +1,64 @@
 import {useEffect, useState} from 'react';
 import {Platform} from 'react-native';
-import useGeolocation from '../location/useGeoLocation';
 
+import useGeolocation from '../location/useGeoLocation';
 import useSafetyTag from '../useSafetyTag';
-import useSafetyTagIOS from '../useSafetyTagIOS';
 import {Platforms} from '../../Constants';
 import {devicesListOptimized} from '../../Utils/helpers';
-import {store} from '../../Store';
 
 const {OS} = Platform;
 const {ANDROID, IOS} = Platforms;
+const tripInitialState = {
+  tripStart: {
+    timestampElapsedRealtimeMs: null,
+    timestampUnixMs: null,
+    position: {
+      coords: {
+        speed: null,
+        heading: null,
+        altitude: null,
+        accuracy: null,
+        longitude: null,
+        latitude: null,
+      },
+      extras: {
+        meanCn0: null,
+        maxCn0: null,
+        satellites: null,
+      },
+      mocked: false,
+      timestamp: null,
+      locality: null,
+      state: null,
+      country: null,
+    },
+  },
+  tripStatus: 'Not Started',
+  tripEnd: {
+    timestampElapsedRealtimeMs: null,
+    timestampUnixMs: null,
+    position: {
+      coords: {
+        speed: null,
+        heading: null,
+        altitude: null,
+        accuracy: null,
+        longitude: null,
+        latitude: null,
+      },
+      extras: {
+        meanCn0: null,
+        maxCn0: null,
+        satellites: null,
+      },
+      mocked: false,
+      timestamp: null,
+      locality: null,
+      state: null,
+      country: null,
+    },
+  },
+};
 
 const useDeviceConnection = (onEvents = {}) => {
   const {
@@ -30,14 +79,14 @@ const useDeviceConnection = (onEvents = {}) => {
     onTripEnd: onTripEnd,
     onTripDataWithFraudSuccess: onTripDataWithFraudSuccess,
   });
-  const {startScan, getDeviceInformation, checkConnection} = useSafetyTagIOS({
+  /*  const {startScan, getDeviceInformation, checkConnection} = useSafetyTagIOS({
     onDeviceDiscovered: onDeviceDiscovered,
     onDeviceConnectionFailed: onDeviceConnectionFailed,
     onDeviceConnected: onDeviceConnected,
     onDeviceDisconnected: onDeviceDisconnected,
     onGetConnectedDevice: onGetConnectedDevice,
     onCheckConnection: onCheckConnection,
-  });
+  });*/
   const {getCurrentLocation} = useGeolocation();
 
   const [deviceDetails, setDeviceDetails] = useState({
@@ -48,26 +97,14 @@ const useDeviceConnection = (onEvents = {}) => {
     isScanning: false,
     connectedDevice: {},
     isLoading: false,
-    trip: {
-      tripStart: {
-        timestampElapsedRealtimeMs: null,
-        timestampUnixMs: null,
-        coords: {latitude: null, longitude: null},
-      },
-      tripStatus: 'Not Started',
-      tripEnd: {
-        timestampElapsedRealtimeMs: null,
-        timestampUnixMs: null,
-        coords: {latitude: null, longitude: null},
-      },
-    },
+    trip: tripInitialState,
     trips: [],
   });
 
   useEffect(() => {
     (async () => {
-      const isConnected =
-        OS === ANDROID ? await isDeviceConnected() : await checkConnection();
+      const isConnected = OS === ANDROID ? await isDeviceConnected() : null;
+      // OS === ANDROID ? await isDeviceConnected() : await checkConnection();
       if (isConnected) {
         setDeviceDetails(prevState => ({...prevState, isConnected}));
       }
@@ -156,59 +193,49 @@ const useDeviceConnection = (onEvents = {}) => {
     ) {
       return;
     }
-    await getCurrentLocation(position => {
-      setDeviceDetails(prevState => ({
-        ...prevState,
-        trip: {
-          ...prevState.tripEnd,
-          tripStart: {
-            ...tripStart,
-            position,
+    await handleTripLocation(tripStart);
+  }
+
+  async function handleTripLocation(tripStart) {
+    await getCurrentLocation(position =>
+      onGetCurrentLocationSuccess(position, tripStart),
+    );
+  }
+
+  async function onGetCurrentLocationSuccess(position, tripStart) {
+    // const {data: geonames} = await getNearbyPopulatedPlace(
+    //   position.coords.latitude,
+    //   position.coords.longitude,
+    // );
+    // const {toponymName, adminName1, countryName} = geonames[0];
+    setDeviceDetails(prevState => ({
+      ...prevState,
+      trip: {
+        ...prevState.tripEnd,
+        tripStart: {
+          ...tripStart,
+          position: {
+            ...position,
+            locality: null,
+            state: null,
+            country: null,
           },
-          tripStatus: 'In Progress',
         },
-      }));
-    });
+        tripStatus: 'In Progress',
+      },
+    }));
   }
 
   async function onTripEnd(event) {
     const tripEnd = JSON.parse(event?.tripEventJson);
+
     if (
-      deviceDetails?.trip?.tripStart?.timestampUnixMs ===
-      tripEnd?.timestampUnixMs
+      deviceDetails?.trip?.tripEnd?.timestampUnixMs === tripEnd?.timestampUnixMs
     ) {
       return;
     }
 
-    const device = store?.getState()?.device;
-    const existingTrips = device?.tripsList || [];
-
-    // Check if this trip already exists in store
-    const tripExists = existingTrips.some(
-      trip =>
-        trip.endUnixTimeMs === tripEnd.timestampUnixMs &&
-        trip.startUnixTimeMs === deviceDetails.trip.tripStart.timestampUnixMs,
-    );
-
-    if (tripExists) {
-      console.log('Trip already exists in store - skipping update');
-      return;
-    }
-
     await getCurrentLocation(position => {
-      const completedTrip = {
-        receiveNumber: deviceDetails.trips.length + 1,
-        startUnixTimeMs: deviceDetails.trip.tripStart.timestampUnixMs,
-        startElapsedRealtimeMs:
-          deviceDetails.trip.tripStart.timestampElapsedRealtimeMs,
-        endUnixTimeMs: tripEnd.timestampUnixMs,
-        endElapsedRealtimeMs: tripEnd.timestampElapsedRealtimeMs,
-        connectedDuringTrip: true,
-        commentInfo: device?.trip?.commentInfo,
-        startPosition: device?.trip?.tripStart?.position,
-        endPosition: position,
-      };
-
       setDeviceDetails(prevState => ({
         ...prevState,
         trip: {
@@ -219,13 +246,11 @@ const useDeviceConnection = (onEvents = {}) => {
             position,
           },
         },
-        trips: [...prevState.trips, completedTrip],
       }));
     });
   }
 
   async function onTripDataWithFraudSuccess(event) {
-    // const tripEnd = JSON.parse(event?.tripEventJson);
     console.log('Trips: ', event);
     setDeviceDetails(prevState => ({...prevState, trips: event}));
   }
@@ -249,7 +274,7 @@ const useDeviceConnection = (onEvents = {}) => {
       // await startScanning();
     }
     if (OS === IOS) {
-      await startScan();
+      //await startScan();
     }
   }
 
@@ -260,7 +285,7 @@ const useDeviceConnection = (onEvents = {}) => {
       // await startScanning();
     }
     if (OS === IOS) {
-      await startScan();
+      //await startScan();
     }
   }
 
@@ -279,7 +304,7 @@ const useDeviceConnection = (onEvents = {}) => {
       });
     }
     if (OS === IOS) {
-      await getDeviceInformation();
+      //await getDeviceInformation();
     }
   }
 
@@ -288,12 +313,16 @@ const useDeviceConnection = (onEvents = {}) => {
       return await readBatteryLevel();
     }
     if (OS === IOS) {
-      await getDeviceInformation();
+      // await getDeviceInformation();
     }
   }
 
   const connectToSelectedDevice = async device => {
     await connectToDevice(device);
+  };
+
+  const clearOnGoingTrip = () => {
+    setDeviceDetails(prevState => ({...prevState, trip: tripInitialState}));
   };
 
   return {
@@ -302,6 +331,7 @@ const useDeviceConnection = (onEvents = {}) => {
     deviceDetails,
     disconnectDevice,
     connectToSelectedDevice,
+    clearOnGoingTrip,
   };
 };
 

@@ -7,6 +7,11 @@ import {
   setDeviceTrip,
   setComment,
   setTripsList,
+  setNewTrip,
+  clearTrip,
+  setVehicleID,
+  setUserDeviceDetails,
+  setUserStartTripDetails,
 } from '../../Store/Actions';
 
 /**
@@ -62,6 +67,50 @@ const useDeviceActions = () => {
     setTripsList: useCallback(
       tripsList => {
         dispatch(setTripsList(tripsList || []));
+      },
+      [dispatch],
+    ),
+
+    /**
+     * Add the new trip to the list.
+     *
+     * @param {object} newTrip - The Completed trip.
+     */
+    setNewTrip: useCallback(
+      tripsList => {
+        dispatch(setNewTrip(tripsList || []));
+      },
+      [dispatch],
+    ),
+
+    /**
+     * Clears the ongoing trip.
+     */
+    clearTrip: useCallback(() => {
+      dispatch(clearTrip());
+    }, [dispatch]),
+
+    /**
+     * Sets the vehicle id.
+     */
+    setVehicleID: useCallback(id => dispatch(setVehicleID(id)), [dispatch]),
+
+    /**
+     * Sets the vehicle id.
+     */
+    setUserDeviceDetails: useCallback(
+      device => {
+        dispatch(setUserDeviceDetails(device));
+      },
+      [dispatch],
+    ),
+
+    /**
+     * Sets the vehicle id.
+     */
+    setUserStartTripDetails: useCallback(
+      trip => {
+        dispatch(setUserStartTripDetails(trip));
       },
       [dispatch],
     ),

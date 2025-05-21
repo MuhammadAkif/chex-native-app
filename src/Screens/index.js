@@ -14,6 +14,7 @@ import LicensePlateNumberSelectionScreen from './LicensePlateNumberSelectionScre
 import InspectionInProgressScreen from './InspectionInProgressScreen';
 import DeviceScreen from './DeviceScreen';
 import TripHistoryScreen from './TripHistoryScreen';
+import TripDetailScreen from './TripDetailScreen';
 
 export {
   WelcomeScreen,
@@ -32,4 +33,5 @@ export {
   InspectionInProgressScreen,
   DeviceScreen,
   TripHistoryScreen,
+  TripDetailScreen,
 };
