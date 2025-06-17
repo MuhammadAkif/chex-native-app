@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
+import debounce from 'lodash/debounce';
 
 import {DeviceScreen} from '../Screens';
 import {useDeviceActions, useDeviceState} from '../hooks/device';
@@ -50,6 +51,16 @@ const DeviceContainer = ({navigation}) => {
   const [deviceState, setDeviceState] = useState({displayVehiclesList: false});
   const deviceBatteryHealth = batteryHealth ? `${batteryHealth}%` : '-';
 
+  const debounceTripStart = React.useMemo(
+    () => debounce(handleStartTrip, 1000),
+    [],
+  );
+
+  const debounceEndTrip = React.useMemo(
+    () => debounce(handleEndTrip, 1000),
+    [],
+  );
+
   useEffect(() => {
     if (!isConnected) {
       setDeviceState({displayVehiclesList: false});
@@ -58,11 +69,11 @@ const DeviceContainer = ({navigation}) => {
 
   useEffect(() => {
     if (tripStatus !== 'In Progress' && isConnected) {
-      (async () => await handleStartTrip())();
+      (async () => await debounceTripStart())();
       setDeviceState({displayVehiclesList: false});
     }
     if (tripStatus === 'Completed' && isConnected) {
-      (async () => await handleEndTrip())();
+      (async () => await debounceEndTrip())();
     }
   }, [tripStatus]);
 
@@ -151,7 +162,6 @@ const DeviceContainer = ({navigation}) => {
   };
 
   async function handleStartTrip() {
-    console.log('trip started');
     const {
       tripStart: {
         position: {
@@ -192,7 +202,6 @@ const DeviceContainer = ({navigation}) => {
   }
 
   async function handleEndTrip() {
-    console.log('trip ended');
     const {
       tripEnd: {
         position: {

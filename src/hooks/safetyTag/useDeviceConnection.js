@@ -1,10 +1,11 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Platform} from 'react-native';
 
 import useGeolocation from '../location/useGeoLocation';
 import useSafetyTag from '../useSafetyTag';
 import {Platforms} from '../../Constants';
 import {devicesListOptimized} from '../../Utils/helpers';
+import debounce from 'lodash/debounce';
 
 const {OS} = Platform;
 const {ANDROID, IOS} = Platforms;
@@ -87,7 +88,7 @@ const useDeviceConnection = (onEvents = {}) => {
     onGetConnectedDevice: onGetConnectedDevice,
     onCheckConnection: onCheckConnection,
   });*/
-  const {getCurrentLocation} = useGeolocation();
+  const {getCurrentLocation, checkPermissionOnly} = useGeolocation();
 
   const [deviceDetails, setDeviceDetails] = useState({
     discoveredDevices: [],
@@ -184,7 +185,31 @@ const useDeviceConnection = (onEvents = {}) => {
       isLoading: false,
     }));
   }
-
+  const debounceTripStart = React.useMemo(
+    () =>
+      debounce(async tripStart => await handleTripLocation(tripStart), 1000),
+    [],
+  );
+  const debounceTripEnd = React.useMemo(
+    () =>
+      debounce(async tripEnd => {
+        checkPermissionOnly();
+        await getCurrentLocation(position => {
+          setDeviceDetails(prevState => ({
+            ...prevState,
+            trip: {
+              ...prevState.tripStart,
+              tripStatus: 'Completed',
+              tripEnd: {
+                ...tripEnd,
+                position,
+              },
+            },
+          }));
+        });
+      }, 1000),
+    [],
+  );
   async function onTripStart(event) {
     const tripStart = JSON.parse(event?.tripEventJson);
     if (
@@ -193,12 +218,14 @@ const useDeviceConnection = (onEvents = {}) => {
     ) {
       return;
     }
-    await handleTripLocation(tripStart);
+    await debounceTripStart(tripStart);
   }
 
   async function handleTripLocation(tripStart) {
-    await getCurrentLocation(position =>
-      onGetCurrentLocationSuccess(position, tripStart),
+    checkPermissionOnly();
+    await getCurrentLocation(
+      position => onGetCurrentLocationSuccess(position, tripStart),
+      error => console.log('location getting error: ', error),
     );
   }
 
@@ -234,25 +261,12 @@ const useDeviceConnection = (onEvents = {}) => {
     ) {
       return;
     }
-
-    await getCurrentLocation(position => {
-      setDeviceDetails(prevState => ({
-        ...prevState,
-        trip: {
-          ...prevState.tripStart,
-          tripStatus: 'Completed',
-          tripEnd: {
-            ...tripEnd,
-            position,
-          },
-        },
-      }));
-    });
+    await debounceTripEnd(tripEnd);
   }
 
   async function onTripDataWithFraudSuccess(event) {
     console.log('Trips: ', event);
-    setDeviceDetails(prevState => ({...prevState, trips: event}));
+    // setDeviceDetails(prevState => ({...prevState, trips: event}));
   }
 
   function onGetConnectedDevice(event) {

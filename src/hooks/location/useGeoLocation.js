@@ -80,7 +80,7 @@ const useGeolocation = () => {
         onError?.(error);
       },
       {
-        enableHighAccuracy: true, // Prioritize GPS over network for better precision
+        enableHighAccuracy: false, // Prioritize GPS over network for better precision
         timeout: 15000,
         maximumAge: 10000,
       },
@@ -162,6 +162,7 @@ const useGeolocation = () => {
     requestLocationPermission,
     getCurrentLocation,
     startWatchingPosition,
+    checkPermissionOnly,
   };
 };
 

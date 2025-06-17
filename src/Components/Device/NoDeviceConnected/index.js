@@ -50,7 +50,7 @@ const NoDeviceConnected = ({
     } else {
       await connectToSelectedDevice(device);
       setUserDeviceDetails(data);
-      setTimeout(() => handleOnConnectPress(device), 3000);
+      //setTimeout(() => handleOnConnectPress(device), 3000);
     }
   };
 

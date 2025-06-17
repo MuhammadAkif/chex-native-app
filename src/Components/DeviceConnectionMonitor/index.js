@@ -3,7 +3,6 @@ import {useEffect} from 'react';
 import {useSafetyTagInitializer} from '../../hooks';
 import {useUIActions} from '../../hooks/UI';
 import {useDeviceActions, useDeviceState} from '../../hooks/device';
-import useTrips from '../../hooks/safetyTag/useTrips';
 
 const DeviceConnectionMonitor = () => {
   const {toggleLoading} = useUIActions();
@@ -18,8 +17,7 @@ const DeviceConnectionMonitor = () => {
   const {deviceAddress: storeDeviceAddress, trip: storeDeviceTrip} =
     useDeviceState();
   const {deviceDetails, clearOnGoingTrip} = useSafetyTagInitializer();
-
-  const {deviceTrips} = useTrips();
+  /*const {deviceTrips} = useTrips();*/
   const {
     isLoading: isDeviceLoading = false,
     isConnected = false,
@@ -42,7 +40,10 @@ const DeviceConnectionMonitor = () => {
   useEffect(() => {
     if (storeDeviceTrip?.tripStatus === 'Completed') {
       // (async () => await handleEndTrip())();
-      setNewTrip(storeDeviceTrip);
+      /**
+       * TODO: Commented setNewTrip because it is inserting trip in store - required test cycles
+       */
+      //setNewTrip(storeDeviceTrip);
       clearTrip();
       clearOnGoingTrip();
     }
@@ -70,7 +71,7 @@ const DeviceConnectionMonitor = () => {
     }
   }, [isConnected, clearDevice]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (deviceTrips?.message) {
       try {
         const trips = deviceTrips?.message
@@ -110,7 +111,7 @@ const DeviceConnectionMonitor = () => {
         setTripsList(trips);
       } catch (error) {}
     }
-  }, [deviceTrips]);
+  }, [deviceTrips]);*/
 
   useEffect(() => {
     setTripParams();

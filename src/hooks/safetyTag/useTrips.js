@@ -24,17 +24,17 @@ const useTrips = () => {
   const [deviceTrips, setDeviceTrips] = useState([]);
 
   function onTripStart(event) {
-    console.log('Trip started:', event);
+    //console.log('Trip started:', event);
   }
   function onTripStartError(event) {
     console.log('Trip start error:', event);
   }
   function onTripEnd(event) {
-    console.log('Trip ended:', event);
+    // console.log('Trip ended:', event);
   }
   function onTripDataReceived(event) {
     console.log('Trips data received:', event);
-    setDeviceTrips(event);
+    //setDeviceTrips(event);
   }
   function onTripsDataError(event) {
     console.log('Trips data error:', event);
@@ -53,7 +53,7 @@ const useTrips = () => {
       try {
         await queryTripWithFraudData();
       } catch (error) {
-        setDeviceTrips([]);
+        //setDeviceTrips([]);
       }
     }
     if (OS === IOS) {
