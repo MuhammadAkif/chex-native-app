@@ -1,7 +1,7 @@
-package com.chex_ai;
+/*
+package com.chexnativeapp;
 
 import android.app.Application;
-import androidx.multidex.MultiDexApplication;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -10,10 +10,9 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
 import java.util.List;
-import org.devio.rn.splashscreen.SplashScreenReactPackage;
-import com.zoontek.rnpermissions.RNPermissionsPackage;
+import com.transistorsoft.locationmanager.adapter.BackgroundGeolocationPackage;
 
-public class MainApplication extends MultiDexApplication implements ReactApplication {
+public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
       new DefaultReactNativeHost(this) {
@@ -26,10 +25,8 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
         protected List<ReactPackage> getPackages() {
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
-          // Packages that cannot be autolinked yet can be added manually here, for example:
-          // packages.add(new MyReactNativePackage());
-           packages.add(new SafetyTagPackage());
-           packages.add(new ActivityRecognitionPackage());
+          // Add BackgroundGeolocation package
+          packages.add(new BackgroundGeolocationPackage());
           return packages;
         }
 
@@ -57,12 +54,13 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
   @Override
   public void onCreate() {
     super.onCreate();
-    SoLoader.init(this, /* native exopackage */ false);
-
+    SoLoader.init(this,  */
+/* native exopackage *//*
+ false);
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
       DefaultNewArchitectureEntryPoint.load();
     }
     ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
-}
+}  */

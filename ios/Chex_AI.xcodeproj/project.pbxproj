@@ -11,6 +11,8 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1864FD592E015A87008FC3E0 /* ActivityRecognition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1864FD582E015A87008FC3E0 /* ActivityRecognition.swift */; };
+		1864FD5B2E015A96008FC3E0 /* ActivityRecognition.m in Sources */ = {isa = PBXBuildFile; fileRef = 1864FD5A2E015A96008FC3E0 /* ActivityRecognition.m */; };
 		188572AA2D50B8E800775F2A /* SafetyTagModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 188572A92D50B8E300775F2A /* SafetyTagModule.m */; };
 		188572AC2D50B90A00775F2A /* SafetyTagModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188572AB2D50B90700775F2A /* SafetyTagModule.swift */; };
 		18BDC6162D51064C008A9A61 /* SafetyTag in Frameworks */ = {isa = PBXBuildFile; productRef = 18BDC6152D51064C008A9A61 /* SafetyTag */; };
@@ -39,6 +41,8 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Chex_AI/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Chex_AI/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Chex_AI/main.m; sourceTree = "<group>"; };
+		1864FD582E015A87008FC3E0 /* ActivityRecognition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRecognition.swift; sourceTree = "<group>"; };
+		1864FD5A2E015A96008FC3E0 /* ActivityRecognition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActivityRecognition.m; sourceTree = "<group>"; };
 		188572A92D50B8E300775F2A /* SafetyTagModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SafetyTagModule.m; sourceTree = "<group>"; };
 		188572AB2D50B90700775F2A /* SafetyTagModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyTagModule.swift; sourceTree = "<group>"; };
 		188572AD2D50B90F00775F2A /* Chex_AI-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Chex_AI-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -93,6 +97,8 @@
 		13B07FAE1A68108700A75B9A /* Chex_AI */ = {
 			isa = PBXGroup;
 			children = (
+				1864FD5A2E015A96008FC3E0 /* ActivityRecognition.m */,
+				1864FD582E015A87008FC3E0 /* ActivityRecognition.swift */,
 				188572AB2D50B90700775F2A /* SafetyTagModule.swift */,
 				188572A92D50B8E300775F2A /* SafetyTagModule.m */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -425,7 +431,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1864FD592E015A87008FC3E0 /* ActivityRecognition.swift in Sources */,
 				188572AA2D50B8E800775F2A /* SafetyTagModule.m in Sources */,
+				1864FD5B2E015A96008FC3E0 /* ActivityRecognition.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				188572AC2D50B90A00775F2A /* SafetyTagModule.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,

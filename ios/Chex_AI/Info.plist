@@ -49,6 +49,8 @@
 	<string>This app needs access to location when in use to detect nearby SafetyTag devices using iBeacon technology.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Microphone access required in order to record audio notes for the inspection.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>We need motion data to detect your activity type (walking, driving, etc.) for trip tracking.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We needs access to your photo library.</string>
 	<key>UIBackgroundModes</key>

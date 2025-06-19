@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
     <!--safety-tag-sdk-->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
@@ -47,6 +48,16 @@
       <service
         android:name=".SafetyTagAlignmentService"
         android:foregroundServiceType="location"
+        android:exported="false" />
+      <service
+        android:name=".ActivityRecognitionService"
+        android:exported="false" />
+      <service
+        android:name="com.transistorsoft.locationmanager.service.TrackingService"
+        android:foregroundServiceType="location"
+        android:exported="false" />
+      <receiver
+        android:name=".ActivityRecognitionReceiver"
         android:exported="false" />
     </application>
 </manifest>

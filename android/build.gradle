@@ -5,7 +5,9 @@ buildscript {
         compileSdkVersion = 34
         targetSdkVersion = 34
         ndkVersion = "23.1.7779620"
+        appCompatVersion = "1.4.2"
         kotlinVersion = project.hasProperty('kotlinVersion') ? project.kotlinVersion : "1.7.0"
+        googlePlayServicesLocationVersion = "21.0.1"  // Or higher
     }
     repositories {
         google()
@@ -16,11 +18,26 @@ buildscript {
          maven { url 'https://maven.google.com' }
          maven { url "https://www.jitpack.io" }
          // react-native-crop-image-picker config ends here
+
+          maven {
+                    // react-native-background-fetch
+                    url("${project(':react-native-background-fetch').projectDir}/libs")
+                }
     }
     dependencies {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
 //         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0") // Updated Kotlin Gradle Plugin version
+    }
+}
+
+allprojects {   // <-- NOTE:  allprojects container -- If you don't see this, create it.
+    repositories {
+       // Required for react-native-background-geolocation
+       maven { url("${project(':react-native-background-geolocation').projectDir}/libs") }
+       maven { url 'https://developer.huawei.com/repo/' }
+       // Required for react-native-background-fetch
+       maven { url("${project(':react-native-background-fetch').projectDir}/libs") }
     }
 }
