@@ -25,6 +25,8 @@ import {
   setMileage,
   setMileageMessage,
   setImageDimensions,
+  setVehicleTypeModalVisible,
+  setSelectedVehicleKind,
 } from './NewInspectionAction';
 import {signIn, signOut, sessionExpired} from './AuthAction';
 import {
@@ -76,4 +78,6 @@ export {
   setMileage,
   setMileageMessage,
   setImageDimensions,
+  setVehicleTypeModalVisible,
+  setSelectedVehicleKind,
 };

@@ -29,7 +29,7 @@ import {
   s3SignedUrl,
   uploadFileToDatabase,
 } from '../services/inspection';
-import {setFileDetails} from '../Store/Actions/NewInspectionAction';
+import {setFileDetails, setVehicleTypeModalVisible} from '../Store/Actions/NewInspectionAction';
 
 // Validation Schema
 export const validationSchema = yup.object().shape({
@@ -670,6 +670,7 @@ function onNewInspectionPressSuccess(
 ) {
   const {id = null} = response?.data || {};
   const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
+  dispatch(setVehicleTypeModalVisible(true));
 
   dispatch(numberPlateSelected(id));
   resetAllStates();
@@ -679,7 +680,6 @@ function onNewInspectionPressSuccess(
 }
 function onNewInspectionPressFail(err, dispatch) {
   const {statusCode = null} = err?.response?.data || {};
-  console.log('err => ', statusCode);
   if (statusCode === 401) {
     handle_Session_Expired(statusCode, dispatch);
   }

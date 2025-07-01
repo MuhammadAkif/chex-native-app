@@ -8,7 +8,7 @@ import {LicensePlateNumberSelectionScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS, API_ENDPOINTS, generateApiUrl} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {colors} from '../Assets/Styles';
-import {numberPlateSelected, setCompanyId} from '../Store/Actions';
+import {numberPlateSelected, setCompanyId, setVehicleTypeModalVisible} from '../Store/Actions';
 import {handle_Session_Expired, uploadInProgressMediaToStore} from '../Utils';
 
 const {CREATE_INSPECTION_URL, FETCH_NUMBER_PLATE_URL} = API_ENDPOINTS;
@@ -100,6 +100,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
         setInspectionID(response.data.id);
         dispatch(numberPlateSelected(response.data.id));
         resetAllStates();
+        dispatch(setVehicleTypeModalVisible(true));
         navigate(NEW_INSPECTION, {
           routeName: LICENSE_PLATE_SELECTION,
         });
@@ -127,6 +128,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
         uploadInProgressMediaToStore(res?.data?.files, dispatch);
         setIsLoading(false);
         dispatch(numberPlateSelected(inspectionID));
+        dispatch(setVehicleTypeModalVisible(true));
         navigate(NEW_INSPECTION, {
           routeName: LICENSE_PLATE_SELECTION,
         });

@@ -61,7 +61,7 @@ import {
   uploadFailed,
 } from '../Constants';
 import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
-import {IMAGES} from '../Assets/Images';
+import {getVehicleImages} from '../Assets/Images';
 import {
   styleMapping,
   switchFrameIcon,
@@ -82,7 +82,7 @@ const CameraContainer = ({route, navigation}) => {
   const {
     user: {token, data},
   } = useSelector(state => state?.auth);
-  const {vehicle_Type, variant} = useSelector(state => state.newInspection);
+  const {vehicle_Type, variant, selectedVehicleKind} = useSelector(state => state.newInspection);
   const isFocused = useIsFocused();
   const cameraRef = useRef();
   const appState = useRef(AppState.currentState);
@@ -129,7 +129,7 @@ const CameraContainer = ({route, navigation}) => {
     },
   };
   const activeFrameStyle = frameStyles[orientation];
-  const frameUri = IMAGES[orientation][subCategory] || '';
+  const frameUri = getVehicleImages(selectedVehicleKind)?.[orientation]?.[subCategory] || '';
   const RightIcon = switchFrameIcon[orientation];
   const haveFrame = isNotEmpty(frameUri);
 
