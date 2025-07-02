@@ -261,9 +261,9 @@ const newInspectionReducer = (state = initialState, action) => {
     case SET_IMAGE_DIMENSIONS:
       return {...state, imageDimensions: payload};
     case SET_VEHICLE_TYPE_MODAL_VISIBLE:
-      return { ...state, vehicleTypeModalVisible: payload };
+      return {...state, vehicleTypeModalVisible: payload};
     case SET_SELECTED_VEHICLE_KIND:
-      return { ...state, selectedVehicleKind: action.payload };
+      return {...state, selectedVehicleKind: action.payload};
 
     default:
       return state;

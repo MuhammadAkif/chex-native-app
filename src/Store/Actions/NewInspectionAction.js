@@ -198,7 +198,7 @@ export const setVehicleTypeModalVisible = (visible = false) => ({
   type: SET_VEHICLE_TYPE_MODAL_VISIBLE,
   payload: visible,
 });
-export const setSelectedVehicleKind = (kind) => ({
+export const setSelectedVehicleKind = kind => ({
   type: SET_SELECTED_VEHICLE_KIND,
   payload: kind,
 });

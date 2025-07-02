@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {BackHandler, Platform} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import { useFocusEffect } from '@react-navigation/native';
 
 import {NewInspectionScreen} from '../Screens';
 import {ROUTES} from '../Navigation/ROUTES';
@@ -20,8 +19,6 @@ import {
   file_Details,
   setRequired,
   setMileageVisible,
-  setVehicleTypeModalVisible,
-  setSelectedVehicleKind,
 } from '../Store/Actions';
 import {Delete_Messages, HARDWARE_BACK_PRESS, INSPECTION} from '../Constants';
 import {
@@ -51,7 +48,6 @@ import {
   location,
   vehicleTireStatus,
 } from '../services/inspection';
-import VehicleTypeModal from '../Components/VehicleTypeModal';
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllCarVerification: false,
@@ -175,6 +171,11 @@ const NewInspectionContainer = ({route, navigation}) => {
     return () => backHandler.remove();
   }, []);
   useEffect(() => {
+    if (route.params?.routeName === INSPECTION_IN_PROGRESS && checkTireStatus) {
+      vehicleTireStatusToRender(selectedInspectionID).then(() =>
+        setCheckTireStatus(false),
+      );
+    }
     handleIsAllVehicleParts();
     if (route.params) {
       const {
@@ -238,13 +239,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     !isLicensePlateUploaded && setSelectedOption(selectedOptionInitialState);
   }, [isLicensePlateUploaded]);
 
-  // Set selectedVehicleKind from route param if present
-  useEffect(() => {
-    if (route.params?.selectedVehicleKind) {
-      dispatch(setSelectedVehicleKind(route.params.selectedVehicleKind));
-    }
-  }, [route.params?.selectedVehicleKind]);
-
+  const shouldAnnotate = vehicle_Type === 'new' && isExterior;
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
       goBack();
@@ -695,86 +690,84 @@ const NewInspectionContainer = ({route, navigation}) => {
   //Annotation logic ends here
 
   return (
-    <>
-      <NewInspectionScreen
-        selectedOption={selectedOption}
-        modalVisible={modalVisible}
-        handleModalVisible={handleModalVisible}
-        source={modalDetails?.source}
-        instructionalText={modalDetails?.instructionalText}
-        buttonText={modalDetails?.buttonText}
-        title={modalDetails?.title}
-        isVideo={modalDetails?.isVideo}
-        modalKey={modalDetails?.key}
-        isExterior={modalDetails?.groupType === INSPECTION.exteriorItems}
-        isInterior={modalDetails?.groupType === INSPECTION.interiorItems}
-        isCarVerification={
-          modalDetails?.groupType === INSPECTION.carVerificiationItems
-        }
-        instructionalSubHeadingText={modalDetails?.instructionalSubHeadingText}
-        instructionalSubHeadingText_1={
-          modalDetails?.instructionalSubHeadingText_1
-        }
-        instructionalSubHeadingText_2={
-          modalDetails?.instructionalSubHeadingText_2
-        }
-        handleItemPickerPress={handleItemPickerPress}
-        handleCaptureNowPress={handleCaptureNowPress}
-        carVerificiationItems={carVerificiationItems}
-        interiorItems={interiorItems}
-        exteriorItems={exteriorItems}
-        tires={tires}
-        isBothCarVerificationImagesAvailable={
-          isAllVehicleParts.isAllCarVerification
-        }
-        isAllInteriorImagesAvailable={isAllVehicleParts.isAllInterior}
-        isAllExteriorImagesAvailable={isAllVehicleParts.isAllExterior}
-        isBothTiresImagesAvailable={isAllVehicleParts.isAllTires}
-        isVehicleAllPartsImagesAvailable={isAllVehicleParts.isAllParts}
-        handleSubmitPress={handleSubmitPress}
-        isLoading={isLoading}
-        handleMediaModalDetailsPress={handleMediaModalDetailsPress}
-        handleMediaModalDetailsCrossPress={handleMediaModalDetailsCrossPress}
-        mediaModalDetails={mediaModalDetails}
-        mediaModalVisible={mediaModalVisible}
-        onYesPress={handleYesPress}
-        onNoPress={handleNoPress}
-        isDiscardInspectionModalVisible={isDiscardInspectionModalVisible}
-        handleOnCrossPress={handleOnCrossPress}
-        handleBackPress={handleBackPress}
-        isLicenseModalVisible={isLicenseModalVisible}
-        handleConfirmModalVisible={handleConfirmModalVisible}
-        handleConfirmVehicleDetail={handleConfirmVehicleDetail}
-        plateNumber={plateNumber}
-        errorTitle={errorTitle}
-        handleYesPressOfInProgressInspection={
-          handleYesPressOfInProgressInspection
-        }
-        isInspectionInProgressModalVisible={isInspectionInProgressModalVisible}
-        inUseErrorTitle={inUseErrorTitle}
-        handleCardExpansion={handleCardExpansion}
-        /*skipLeft={skipLeft}
-        skipLeftCorners={skipLeftCorners}
-        skipRight={skipRight}
-        skipRightCorners={skipRightCorners}*/
-        displayTires={displayTires}
-        loadingIndicator={loadingIndicator}
-        displayAnnotationPopUp={displayAnnotationPopUp}
-        handleSkipPress={handleSkipPress}
-        handleAnnotatePress={handleAnnotationPress}
-        displayAnnotation={displayAnnotation}
-        handleAnnotationSubmit={handleAnnotationSubmit}
-        handleAnnotationCancel={handleAnnotationCancel}
-        annotationModalDetails={annotationModalDetails}
-        isLicensePlateUploaded={isLicensePlateUploaded}
-        ActiveExteriorItemsExpandedCard={ActiveExteriorItemsExpandedCard}
-        vehicle_Type={vehicle_Type === 'new'}
-        ActiveInteriorItemsExpandedCard={ActiveInteriorItemsExpandedCard}
-        coordinates={mediaModalDetails?.coordinates?.coordinateArray || []}
-        displayInstructions={vehicle_Type === 'new'}
-        imageDimensions={imageDimensions}
-      />
-    </>
+    <NewInspectionScreen
+      selectedOption={selectedOption}
+      modalVisible={modalVisible}
+      handleModalVisible={handleModalVisible}
+      source={modalDetails?.source}
+      instructionalText={modalDetails?.instructionalText}
+      buttonText={modalDetails?.buttonText}
+      title={modalDetails?.title}
+      isVideo={modalDetails?.isVideo}
+      modalKey={modalDetails?.key}
+      isExterior={modalDetails?.groupType === INSPECTION.exteriorItems}
+      isInterior={modalDetails?.groupType === INSPECTION.interiorItems}
+      isCarVerification={
+        modalDetails?.groupType === INSPECTION.carVerificiationItems
+      }
+      instructionalSubHeadingText={modalDetails?.instructionalSubHeadingText}
+      instructionalSubHeadingText_1={
+        modalDetails?.instructionalSubHeadingText_1
+      }
+      instructionalSubHeadingText_2={
+        modalDetails?.instructionalSubHeadingText_2
+      }
+      handleItemPickerPress={handleItemPickerPress}
+      handleCaptureNowPress={handleCaptureNowPress}
+      carVerificiationItems={carVerificiationItems}
+      interiorItems={interiorItems}
+      exteriorItems={exteriorItems}
+      tires={tires}
+      isBothCarVerificationImagesAvailable={
+        isAllVehicleParts.isAllCarVerification
+      }
+      isAllInteriorImagesAvailable={isAllVehicleParts.isAllInterior}
+      isAllExteriorImagesAvailable={isAllVehicleParts.isAllExterior}
+      isBothTiresImagesAvailable={isAllVehicleParts.isAllTires}
+      isVehicleAllPartsImagesAvailable={isAllVehicleParts.isAllParts}
+      handleSubmitPress={handleSubmitPress}
+      isLoading={isLoading}
+      handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+      handleMediaModalDetailsCrossPress={handleMediaModalDetailsCrossPress}
+      mediaModalDetails={mediaModalDetails}
+      mediaModalVisible={mediaModalVisible}
+      onYesPress={handleYesPress}
+      onNoPress={handleNoPress}
+      isDiscardInspectionModalVisible={isDiscardInspectionModalVisible}
+      handleOnCrossPress={handleOnCrossPress}
+      handleBackPress={handleBackPress}
+      isLicenseModalVisible={isLicenseModalVisible}
+      handleConfirmModalVisible={handleConfirmModalVisible}
+      handleConfirmVehicleDetail={handleConfirmVehicleDetail}
+      plateNumber={plateNumber}
+      errorTitle={errorTitle}
+      handleYesPressOfInProgressInspection={
+        handleYesPressOfInProgressInspection
+      }
+      isInspectionInProgressModalVisible={isInspectionInProgressModalVisible}
+      inUseErrorTitle={inUseErrorTitle}
+      handleCardExpansion={handleCardExpansion}
+      /*skipLeft={skipLeft}
+      skipLeftCorners={skipLeftCorners}
+      skipRight={skipRight}
+      skipRightCorners={skipRightCorners}*/
+      displayTires={displayTires}
+      loadingIndicator={loadingIndicator}
+      displayAnnotationPopUp={displayAnnotationPopUp}
+      handleSkipPress={handleSkipPress}
+      handleAnnotatePress={handleAnnotationPress}
+      displayAnnotation={displayAnnotation}
+      handleAnnotationSubmit={handleAnnotationSubmit}
+      handleAnnotationCancel={handleAnnotationCancel}
+      annotationModalDetails={annotationModalDetails}
+      isLicensePlateUploaded={isLicensePlateUploaded}
+      ActiveExteriorItemsExpandedCard={ActiveExteriorItemsExpandedCard}
+      vehicle_Type={shouldAnnotate}
+      ActiveInteriorItemsExpandedCard={ActiveInteriorItemsExpandedCard}
+      coordinates={mediaModalDetails?.coordinates?.coordinateArray || []}
+      displayInstructions={vehicle_Type === 'new'}
+      imageDimensions={imageDimensions}
+    />
   );
 };
 
