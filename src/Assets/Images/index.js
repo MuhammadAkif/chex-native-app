@@ -42,6 +42,16 @@ const portraitImages = {
     rear_left_corner: require('./Portrait/truck/Left_back.png'),
     rear_right_corner: require('./Portrait/truck/Right_back.png'),
   },
+  sedan: {
+    exterior_left: require('./Portrait/sedan/Left_side.png'),
+    exterior_right: require('./Portrait/sedan/Right_side.png'),
+    exterior_front: require('./Portrait/sedan/Front.png'),
+    exterior_rear: require('./Portrait/sedan/Back.png'),
+    front_left_corner: require('./Portrait/sedan/Left_front.png'),
+    front_right_corner: require('./Portrait/sedan/Right_front.png'),
+    rear_left_corner: require('./Portrait/sedan/Left_back.png'),
+    rear_right_corner: require('./Portrait/sedan/Right_back.png'),
+  },
 };
 
 const landscapeImages = {
@@ -64,6 +74,16 @@ const landscapeImages = {
     front_right_corner: require('./Landscape/truck/Right_front.png'),
     rear_left_corner: require('./Landscape/truck/Left_back.png'),
     rear_right_corner: require('./Landscape/truck/Right_back.png'),
+  },
+  sedan: {
+    exterior_left: require('./Landscape/sedan/Left_side.png'),
+    exterior_right: require('./Landscape/sedan/Right_side.png'),
+    exterior_front: require('./Landscape/sedan/Front.png'),
+    exterior_rear: require('./Landscape/sedan/Back.png'),
+    front_left_corner: require('./Landscape/sedan/Left_front.png'),
+    front_right_corner: require('./Landscape/sedan/Right_front.png'),
+    rear_left_corner: require('./Landscape/sedan/Left_back.png'),
+    rear_right_corner: require('./Landscape/sedan/Right_back.png'),
   },
 };
 

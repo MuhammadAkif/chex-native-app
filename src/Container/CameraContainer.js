@@ -1,3 +1,4 @@
+import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
 import {
   AppState,
@@ -7,35 +8,47 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
+import ImagePicker from 'react-native-image-crop-picker';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 import {
   Camera,
   useCameraDevice,
   useCameraFormat,
 } from 'react-native-vision-camera';
-import {useIsFocused} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
-import FastImage from 'react-native-fast-image';
-import ImagePicker from 'react-native-image-crop-picker';
 
-import {colors, PreviewStyles} from '../Assets/Styles';
 import {BackArrow} from '../Assets/Icons';
+import {getVehicleImages} from '../Assets/Images';
+import {colors, PreviewStyles} from '../Assets/Styles';
 import {
   CameraFooter,
   CameraPreview,
   CaptureImageModal,
   DiscardInspectionModal,
 } from '../Components';
+import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
+import {
+  darkImageError,
+  EXPIRY_INSPECTION,
+  HARDWARE_BACK_PRESS,
+  INSPECTION,
+  IS_BACK_CAMERA,
+  PHYSICAL_DEVICES,
+  S3_BUCKET_BASEURL,
+  SWITCH_CAMERA,
+  uploadFailed,
+} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
   clearInspectionImages,
-  setLicensePlateNumber,
   getMileage,
-  updateVehicleImage,
   setImageDimensions,
+  setLicensePlateNumber,
+  updateVehicleImage,
 } from '../Store/Actions';
 import {
   checkRelevantType,
@@ -49,19 +62,6 @@ import {
   newInspectionUploadError,
   uploadFile,
 } from '../Utils';
-import {
-  darkImageError,
-  EXPIRY_INSPECTION,
-  HARDWARE_BACK_PRESS,
-  INSPECTION,
-  IS_BACK_CAMERA,
-  PHYSICAL_DEVICES,
-  S3_BUCKET_BASEURL,
-  SWITCH_CAMERA,
-  uploadFailed,
-} from '../Constants';
-import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
-import {getVehicleImages} from '../Assets/Images';
 import {
   styleMapping,
   switchFrameIcon,
@@ -82,7 +82,9 @@ const CameraContainer = ({route, navigation}) => {
   const {
     user: {token, data},
   } = useSelector(state => state?.auth);
-  const {vehicle_Type, variant, selectedVehicleKind} = useSelector(state => state.newInspection);
+  const {vehicle_Type, variant, selectedVehicleKind} = useSelector(
+    state => state.newInspection,
+  );
   const isFocused = useIsFocused();
   const cameraRef = useRef();
   const appState = useRef(AppState.currentState);
@@ -126,10 +128,16 @@ const CameraContainer = ({route, navigation}) => {
     landscape: {
       ...styles.landscapeFrame,
       ...styleMapping[orientation][subCategory],
+      ...(selectedVehicleKind == 'sedan' && styles.sedanLandscape),
+      ...(((selectedVehicleKind == 'sedan' &&
+        subCategory == 'exterior_front') ||
+        subCategory == 'exterior_rear') &&
+        styles.sedanFrontBackInLandscape),
     },
   };
   const activeFrameStyle = frameStyles[orientation];
-  const frameUri = getVehicleImages(selectedVehicleKind)?.[orientation]?.[subCategory] || '';
+  const frameUri =
+    getVehicleImages(selectedVehicleKind)?.[orientation]?.[subCategory] || '';
   const RightIcon = switchFrameIcon[orientation];
   const haveFrame = isNotEmpty(frameUri);
 
@@ -366,6 +374,10 @@ const CameraContainer = ({route, navigation}) => {
       .catch(error => console.log(error.code));
   };
 
+  let resizeMode = 'stretch';
+  if (orientation == 'landscape' || selectedVehicleKind == 'sedan')
+    resizeMode = 'contain';
+
   return (
     <>
       {isModalVisible && (
@@ -404,7 +416,7 @@ const CameraContainer = ({route, navigation}) => {
                 {haveFrame && (
                   <View style={styles.frameContainer}>
                     <FastImage
-                      resizeMode={'stretch'}
+                      resizeMode={resizeMode}
                       priority={'high'}
                       style={activeFrameStyle}
                       source={frameUri}
@@ -484,6 +496,12 @@ const styles = StyleSheet.create({
   },
   portraitFrame: {
     width: wp('95%'),
+  },
+  sedanLandscape: {
+    minWidth: wp('100%'),
+  },
+  sedanFrontBackInLandscape: {
+    minWidth: wp('80%'),
   },
 });
 export default CameraContainer;

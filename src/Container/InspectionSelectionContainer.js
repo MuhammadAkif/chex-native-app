@@ -1,9 +1,8 @@
+import {useFocusEffect} from '@react-navigation/native';
 import React, {useCallback, useState} from 'react';
 import {BackHandler, Platform} from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {InspectionSelectionScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS, Platforms} from '../Constants';
 import {handleNewInspectionPress} from '../Utils';
 
