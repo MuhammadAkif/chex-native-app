@@ -107,7 +107,7 @@ const initialState = {
   triggerTireStatusCheck: false,
   imageDimensions: null,
   vehicleTypeModalVisible: false,
-  selectedVehicleKind: null,
+  selectedVehicleKind: 'van',
 };
 const {
   UPDATE_VEHICLE_IMAGE,

@@ -4,6 +4,7 @@ import {BackHandler, Platform} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {HARDWARE_BACK_PRESS, Platforms} from '../Constants';
+import {InspectionSelectionScreen} from '../Screens';
 import {handleNewInspectionPress} from '../Utils';
 
 const {ANDROID} = Platforms;
