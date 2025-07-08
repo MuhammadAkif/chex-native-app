@@ -1,10 +1,11 @@
 import {combineReducers} from 'redux';
 
 import authReducer from './AuthReducer';
-import newInspectionReducer from './NewInspectionReducer';
 import inspectionReviewedReducer from './InspecetionReviewedReducer';
 import inspectionInProgressReducer from './InspectionInProgressReducer';
+import newInspectionReducer from './NewInspectionReducer';
 import UIReducer from './UIReducer';
+import tripReducer from './tripReducer';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   inspectionReviewed: inspectionReviewedReducer,
   inspectionInProgress: inspectionInProgressReducer,
   ui: UIReducer,
+  trip: tripReducer,
 });
 
 export default rootReducer;

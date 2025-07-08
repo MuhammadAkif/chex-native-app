@@ -1,33 +1,37 @@
-import WelcomeContainer from './WelcomeContainer';
-import RegisterContainer from './SignIn/RegisterContainer';
-import SignInContainer from './SignIn/SignInContainer';
-import ForgotPasswordContainer from './SignIn/ForgotPasswordContainer';
-import ResetPasswordContainer from './SignIn/ResetPasswordContainer';
+import CameraContainer from './CameraContainer';
+import CompletedInspectionContainer from './CompletedInspectionContainer';
+import InspectionDetailContainer from './InspectionDetailContainer';
+import InspectionInProgressContainer from './InspectionInProgressContainer';
+import InspectionReviewedContainer from './InspectionReviewedContainer';
 import InspectionSelectionContainer from './InspectionSelectionContainer';
 import IntroContainer from './IntroContainer';
-import NewInspectionContainer from './NewInspectionContainer';
-import InspectionReviewedContainer from './InspectionReviewedContainer';
-import InspectionDetailContainer from './InspectionDetailContainer';
-import CameraContainer from './CameraContainer';
-import VideoContainer from './VideoContainer';
-import CompletedInspectionContainer from './CompletedInspectionContainer';
 import LicensePlateNumberSelectionContainer from './LicensePlateNumberSelectionContainer';
-import InspectionInProgressContainer from './InspectionInProgressContainer';
+import TripDetailContainer from './ManualTrip/TripDetailContainer';
+import TripHistoryContainer from './ManualTrip/TripHistoryContainer';
+import NewInspectionContainer from './NewInspectionContainer';
+import ForgotPasswordContainer from './SignIn/ForgotPasswordContainer';
+import RegisterContainer from './SignIn/RegisterContainer';
+import ResetPasswordContainer from './SignIn/ResetPasswordContainer';
+import SignInContainer from './SignIn/SignInContainer';
+import VideoContainer from './VideoContainer';
+import WelcomeContainer from './WelcomeContainer';
 
 export {
-  WelcomeContainer,
-  RegisterContainer,
-  SignInContainer,
+  CameraContainer,
+  CompletedInspectionContainer,
   ForgotPasswordContainer,
-  ResetPasswordContainer,
+  InspectionDetailContainer,
+  InspectionInProgressContainer,
+  InspectionReviewedContainer,
   InspectionSelectionContainer,
   IntroContainer,
-  NewInspectionContainer,
-  InspectionReviewedContainer,
-  InspectionDetailContainer,
-  CameraContainer,
-  VideoContainer,
   LicensePlateNumberSelectionContainer,
-  CompletedInspectionContainer,
-  InspectionInProgressContainer,
+  NewInspectionContainer,
+  RegisterContainer,
+  ResetPasswordContainer,
+  SignInContainer,
+  TripDetailContainer,
+  TripHistoryContainer,
+  VideoContainer,
+  WelcomeContainer,
 };

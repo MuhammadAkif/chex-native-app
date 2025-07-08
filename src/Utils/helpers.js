@@ -2,8 +2,8 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {isNotEmpty} from './index';
 import {Landscape, Portrait} from '../Assets/Icons';
+import {isNotEmpty} from './index';
 
 export const headerFlex = {
   true: 1.5,
@@ -285,4 +285,23 @@ export function resizeInnerBox(
   const newY = (yPercent / 100) * height;
 
   return {x: newX, y: newY};
+}
+
+export function calculateDistance(lat1, lon1, lat2, lon2) {
+  const toRad = degree => (degree * Math.PI) / 180;
+
+  const R = 6371; // Earth's radius in km
+
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const distance = R * c;
+
+  return distance; // in kilometers
 }

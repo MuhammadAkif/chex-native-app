@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
+import {Filter} from '../Assets/Icons';
 import {
   circleBorderRadius,
   colors,
@@ -14,10 +15,9 @@ import {
   PrimaryStartInspectionButton,
   RenderInspectionReviewed,
 } from '../Components';
-import {handleHomePress} from '../Utils';
-import {Filter} from '../Assets/Icons';
-import Filter_RBSheet from '../Components/Filter_RBSheet';
 import EmptyComponent from '../Components/EmptyComponent';
+import Filter_RBSheet from '../Components/Filter_RBSheet';
+import {handleHomePress} from '../Utils';
 
 const {black, royalBlue, gray, white, orange} = colors;
 const {container, bodyContainer, innerBody} = NewInspectionStyles;

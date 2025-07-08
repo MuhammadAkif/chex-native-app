@@ -18,6 +18,11 @@ export const MILEAGE_EXTRACTION = process.env.MILEAGE_EXTRACT;
 
 export const AI_API_TOKEN = process.env.AI_API_TOKEN;
 
+// GEONAME API
+export const GEO_NAME_USER_NAME = process.env.GEO_NAME_USER_NAME;
+export const GEO_NAME_API = process.env.GEO_NAME_API;
+export const GEO_NAME_API_USER = process.env.GEO_NAME_API_USER;
+
 // API endpoints
 export const API_ENDPOINTS = {
   FETCH_NUMBER_PLATE_URL: generateApiUrl('searchnumberplate'),
@@ -178,6 +183,7 @@ export const DRAWER = {
   HOME: 'HOME',
   THINGS_YOU_WILL_REQUIRE: 'Things you will require',
   LOGOUT: 'Logout',
+  TRIP: 'Trip',
 };
 
 export const INSPECTION_STATUSES = [

@@ -1,35 +1,34 @@
+import {getFocusedRouteNameFromRoute, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
   ScrollView,
   StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import FastImage from 'react-native-fast-image';
 import {useDispatch, useSelector} from 'react-redux';
-import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
-import {useRoute} from '@react-navigation/native';
 
-import {SignInLogo} from './index';
-import {ROUTES} from '../Navigation/ROUTES';
-import {DrawerItemText} from './index';
-import {Home, Logout, Info} from '../Assets/Icons';
+import {Home, Info, Logout} from '../Assets/Icons';
+import TripLocate from '../Assets/Icons/TripLocate';
+import {IMAGES} from '../Assets/Images';
 import {colors} from '../Assets/Styles';
+import {DRAWER, PROJECT_NAME} from '../Constants';
+import {ROUTES} from '../Navigation/ROUTES';
 import {
   clearNewInspection,
   hideToast,
   setRequired,
   signOut,
 } from '../Store/Actions';
-import {DRAWER, PROJECT_NAME} from '../Constants';
-import {IMAGES} from '../Assets/Images';
+import {DrawerItemText, SignInLogo} from './index';
 
-const {SIGN_IN, INSPECTION_SELECTION, INTRO, NEW_INSPECTION} = ROUTES;
+const {SIGN_IN, INSPECTION_SELECTION, INTRO, NEW_INSPECTION, TRIP} = ROUTES;
 const {cobaltBlue, black, red} = colors;
 
 const CustomDrawerContent = props => {
@@ -42,7 +41,7 @@ const CustomDrawerContent = props => {
   const [activeScreen, setActiveScreen] = useState('');
   let activeColor = cobaltBlue;
   const activeColorOfTextAndIcon = screen => {
-    return black;
+    return cobaltBlue;
     // return activeRouteName.toLowerCase() === screen.toLowerCase()
     //   ? white
     //   : black;
@@ -121,6 +120,19 @@ const CustomDrawerContent = props => {
           />
         }
         onPress={() => handleNavigationPress(INTRO, 'Intro ')}
+      />
+      <DrawerItemText
+        text={DRAWER.TRIP}
+        textColor={activeColorOfTextAndIcon('Trip')}
+        activeColor={activeScreen === 'Trip' ? activeColor : 'transparent'}
+        Icon={
+          <TripLocate
+            height={hp('2.5%')}
+            width={wp('5%')}
+            color={activeColorOfTextAndIcon('Trip')}
+          />
+        }
+        onPress={() => handleNavigationPress(TRIP, 'Trip ')}
       />
       <DrawerItemText
         text={DRAWER.LOGOUT}

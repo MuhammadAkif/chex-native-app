@@ -1,31 +1,35 @@
-import WelcomeScreen from './WelcomeScreen';
-import RegisterScreen from './SignIn/RegisterScreen';
-import SignInScreen from './SignIn/SignInScreen';
-import ForgotPasswordScreen from './SignIn/ForgotPasswordScreen';
-import ResetPasswordScreen from './SignIn/ResetPasswordScreen';
+import CameraScreen from './CameraScreen';
+import CompletedInspectionScreen from './CompletedInspectionScreen';
+import InspectionDetailScreen from './InspectionDetailScreen';
+import InspectionInProgressScreen from './InspectionInProgressScreen';
+import InspectionReviewedScreen from './InspectionReviewedScreen';
 import InspectionSelectionScreen from './InspectionSelectionScreen';
 import IntroScreen from './IntroScreen';
-import NewInspectionScreen from './NewInspectionScreen';
-import CompletedInspectionScreen from './CompletedInspectionScreen';
-import InspectionReviewedScreen from './InspectionReviewedScreen';
-import InspectionDetailScreen from './InspectionDetailScreen';
-import CameraScreen from './CameraScreen';
 import LicensePlateNumberSelectionScreen from './LicensePlateNumberSelectionScreen';
-import InspectionInProgressScreen from './InspectionInProgressScreen';
+import TripDetailScreen from './ManualTrip/TripDetailScreen';
+import TripHistoryScreen from './ManualTrip/TripHistoryScreen';
+import NewInspectionScreen from './NewInspectionScreen';
+import ForgotPasswordScreen from './SignIn/ForgotPasswordScreen';
+import RegisterScreen from './SignIn/RegisterScreen';
+import ResetPasswordScreen from './SignIn/ResetPasswordScreen';
+import SignInScreen from './SignIn/SignInScreen';
+import WelcomeScreen from './WelcomeScreen';
 
 export {
-  WelcomeScreen,
-  RegisterScreen,
-  SignInScreen,
+  CameraScreen,
+  CompletedInspectionScreen,
   ForgotPasswordScreen,
-  ResetPasswordScreen,
+  InspectionDetailScreen,
+  InspectionInProgressScreen,
+  InspectionReviewedScreen,
   InspectionSelectionScreen,
   IntroScreen,
-  NewInspectionScreen,
-  CompletedInspectionScreen,
-  InspectionReviewedScreen,
-  InspectionDetailScreen,
-  CameraScreen,
   LicensePlateNumberSelectionScreen,
-  InspectionInProgressScreen,
+  NewInspectionScreen,
+  RegisterScreen,
+  ResetPasswordScreen,
+  SignInScreen,
+  TripDetailScreen,
+  TripHistoryScreen,
+  WelcomeScreen,
 };

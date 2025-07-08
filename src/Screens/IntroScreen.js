@@ -1,14 +1,14 @@
 import React from 'react';
-import {View, Text, StyleSheet, Platform} from 'react-native';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
+import {External} from '../Assets/Icons';
 import {colors, dot, NavigationDrawerBackgroundColor} from '../Assets/Styles';
 import {IntroBackGroundImageView, PrimaryGradientButton} from '../Components';
 import {Platforms} from '../Constants';
-import {External} from '../Assets/Icons';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;

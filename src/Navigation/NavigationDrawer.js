@@ -1,22 +1,24 @@
-import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import React from 'react';
 
-import {ROUTES} from './ROUTES';
 import {
-  IntroContainer,
-  NewInspectionContainer,
-  InspectionReviewedContainer,
-  InspectionDetailContainer,
-  LicensePlateNumberSelectionContainer,
-  InspectionInProgressContainer,
-  InspectionSelectionContainer,
-} from '../Container';
-import {
-  HeaderBackButton,
-  HeaderTitle,
-  HeaderBackground,
   CustomDrawerContent,
+  HeaderBackButton,
+  HeaderBackground,
+  HeaderTitle,
 } from '../Components';
+import {
+  InspectionDetailContainer,
+  InspectionInProgressContainer,
+  InspectionReviewedContainer,
+  InspectionSelectionContainer,
+  IntroContainer,
+  LicensePlateNumberSelectionContainer,
+  NewInspectionContainer,
+  TripDetailContainer,
+  TripHistoryContainer,
+} from '../Container';
+import {ROUTES} from './ROUTES';
 
 const ScreenHeaderTitle = props => <HeaderTitle {...props} />;
 const headerBackground = () => <HeaderBackground />;
@@ -40,6 +42,8 @@ const NavigationDrawer = ({navigation}) => {
     INSPECTION_REVIEWED,
     INSPECTION_DETAIL,
     INSPECTION_IN_PROGRESS,
+    TRIP,
+    TRIP_HISTORY,
   } = ROUTES;
   const options = {
     headerTitleAlign: 'center',
@@ -82,9 +86,16 @@ const NavigationDrawer = ({navigation}) => {
           component={InspectionDetailContainer}
           options={options}
         />
+
+        <Screen name={TRIP} component={TripDetailContainer} options={options} />
         <Screen
           name={INSPECTION_IN_PROGRESS}
           component={InspectionInProgressContainer}
+          options={options}
+        />
+        <Screen
+          name={TRIP_HISTORY}
+          component={TripHistoryContainer}
           options={options}
         />
       </Navigator>
