@@ -66,9 +66,11 @@ class TripService {
     // Configure BackgroundGeolocation for both platforms
     BackgroundGeolocation.ready({
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
-      distanceFilter: 10,
       stopOnTerminate: false,
       startOnBoot: true,
+      distanceFilter: 200, // 0 = time-based only, or set to a value in meters if you want both
+      fastestLocationUpdateInterval: 30000, // 30 seconds (Android only)
+      locationUpdateInterval: 30000,
       notification: {
         title: 'Trip Tracking',
         text: 'Your trip is being tracked in the background',
