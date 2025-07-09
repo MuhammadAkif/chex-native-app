@@ -305,3 +305,16 @@ export function calculateDistance(lat1, lon1, lat2, lon2) {
 
   return distance; // in kilometers
 }
+
+export function calculateTotalDistance(locations) {
+  let total = 0;
+  for (let i = 1; i < locations.length; i++) {
+    total += calculateDistance(
+      locations[i - 1].latitude,
+      locations[i - 1].longitude,
+      locations[i].latitude,
+      locations[i].longitude
+    );
+  }
+  return total;
+}

@@ -2,12 +2,13 @@ import notifee, {
   AndroidCategory,
   AndroidImportance,
 } from '@notifee/react-native';
-import Geolocation from '@react-native-community/geolocation';
+import BackgroundGeolocation from 'react-native-background-geolocation';
 import {Alert, Linking, Platform} from 'react-native';
 import BackgroundFetch from 'react-native-background-fetch';
 import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 import {store} from '../Store';
 import {addLocation, setTrackingStatus} from '../Store/Actions/TripAction';
+import {Types} from '../Store/Types';
 
 class TripService {
   constructor() {
@@ -15,22 +16,79 @@ class TripService {
     this.backgroundFetchInitialized = false;
     this.notificationId = 'trip-tracking-notification';
     this.notificationIntervalId = null;
+    // Removed: this.initializeNotifications();
+    // Removed: this.setupLocationService();
+  }
 
-    this.initializeNotifications();
-    this.setupLocationService();
+  // Call this only when starting a trip!
+  async initializeForTrip() {
+    await this.initializeNotifications();
+    await this.setupLocationService();
+  }
+
+  /**
+   * Restore trip state from BackgroundGeolocation persisted locations on app launch.
+   * If a trip is active, merge any locations collected while the app was killed.
+   */
+  async restoreTripStateFromBGGeolocation(store) {
+    console.log('TRIP STATES RESTORED')
+    const state = store.getState();
+    const trip = state.trip;
+    if (trip && trip.isActive && trip.isTracking) {
+      try {
+        const bgLocations = await BackgroundGeolocation.getLocations();
+        const reduxLocations = trip.locations || [];
+        const lastReduxTimestamp = reduxLocations.length > 0 ? reduxLocations[reduxLocations.length - 1].timestamp : 0;
+        // Only append BG locations with timestamp > lastReduxTimestamp
+        const newLocations = bgLocations
+          .filter(l => l.timestamp > lastReduxTimestamp)
+          .map(l => ({
+            latitude: l.coords.latitude,
+            longitude: l.coords.longitude,
+            timestamp: l.timestamp,
+            speed: l.coords.speed || 0,
+            accuracy: l.coords.accuracy,
+          }));
+        const combinedLocations = [...reduxLocations, ...newLocations];
+        // Remove duplicates by timestamp, just in case
+        const uniqueLocations = Array.from(
+          new Map(combinedLocations.map(l => [l.timestamp, l])).values()
+        ).sort((a, b) => a.timestamp - b.timestamp);
+        store.dispatch({ type: Types.RESTORE_LOCATIONS, payload: uniqueLocations });
+      } catch (e) {
+        console.error('[TripService] Failed to restore BG locations:', e);
+      }
+    }
   }
 
   // FIXED: iOS-specific location setup
   setupLocationService() {
-    if (Platform.OS === 'ios') {
-      // Configure geolocation for iOS
-      Geolocation.setRNConfiguration({
-        skipPermissionRequests: false,
-        authorizationLevel: 'always', // or 'always' for background
-        enableBackgroundLocationUpdates: false, // Set to true if you need background
-        locationProvider: 'auto',
-      });
-    }
+    // Configure BackgroundGeolocation for both platforms
+    BackgroundGeolocation.ready({
+      desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+      distanceFilter: 10,
+      stopOnTerminate: false,
+      startOnBoot: true,
+      notification: {
+        title: 'Trip Tracking',
+        text: 'Your trip is being tracked in the background',
+      },
+      activityType:BackgroundGeolocation.ACTIVITY_TYPE_AUTOMOTIVE_NAVIGATION,
+      disableMotionActivityUpdates: true,
+      allowsBackgroundLocationUpdates: true,
+      locationAuthorizationRequest: 'Always',
+      backgroundPermissionRationale: {
+        title: 'Allow {applicationName} to access this device\'s location even when closed or not in use.',
+        message:
+          'This app collects location data to enable trip tracking even when the app is closed or not in use.',
+        positiveAction: 'Change to \'Allow all the time\'',
+        negativeAction: 'Cancel',
+      },
+    }, state => {
+      if (!state.enabled) {
+        // Do not start automatically; start when trip starts
+      }
+    });
   }
 
   async requestAllPermissions() {
@@ -78,7 +136,22 @@ class TripService {
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
           ] === 'granted';
 
-        if (!fineLocationGranted) {
+          if (!fineLocationGranted) {
+          // Check if permission is permanently denied (blocked)
+          const fineStatus = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+          if (!fineStatus) {
+            Alert.alert(
+              'Location Permission Required',
+              'Please enable location access in Settings > Apps > Your App > Permissions > Location',
+              [
+                {text: 'Cancel', style: 'cancel'},
+                {
+                  text: 'Open Settings',
+                  onPress: () => Linking.openSettings(),
+                },
+              ],
+            );
+          }
           console.error('Fine location permission not granted');
           return false;
         }
@@ -206,6 +279,24 @@ class TripService {
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
         );
         fineGranted = fineResult === PermissionsAndroid.RESULTS.GRANTED;
+        // If still not granted, check if permanently denied and show alert
+        if (!fineGranted) {
+          const fineStatus = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+          if (!fineStatus) {
+            Alert.alert(
+              'Location Permission Required',
+              'Please enable location access in Settings > Apps > Your App > Permissions > Location',
+              [
+                {text: 'Cancel', style: 'cancel'},
+                {
+                  text: 'Open Settings',
+                  onPress: () => Linking.openSettings(),
+                },
+              ],
+            );
+          }
+          return false;
+        }
       }
       if (!fineGranted) return false;
 
@@ -349,14 +440,19 @@ class TripService {
     return new Promise(resolve => {
       if (Platform.OS === 'ios') {
         // Try to get current position to check if services are enabled
-        Geolocation.getCurrentPosition(
-          position => {
+        BackgroundGeolocation.getCurrentPosition({
+          timeout: 10,
+          maximumAge: 60000,
+          desiredAccuracy: 100,
+          samples: 1,
+        })
+          .then(position => {
             console.log('[TripService] Location services are enabled');
             resolve(true);
-          },
-          error => {
+          })
+          .catch(error => {
             console.log('[TripService] Location services check error:', error);
-            if (error.code === 2) {
+            if (error && error.code === 2) {
               // POSITION_UNAVAILABLE
               Alert.alert(
                 'Location Services Disabled',
@@ -377,13 +473,7 @@ class TripService {
             } else {
               resolve(false);
             }
-          },
-          {
-            enableHighAccuracy: false,
-            timeout: 10000,
-            maximumAge: 60000,
-          },
-        );
+          });
       } else {
         resolve(true); // Android handles this differently
       }
@@ -391,127 +481,79 @@ class TripService {
   }
 
   startForegroundTracking() {
-    // Clear any existing watch
-    if (this.watchId !== null) {
-      Geolocation.clearWatch(this.watchId);
-      this.watchId = null;
-    }
+    // Remove any previous listeners
+    BackgroundGeolocation.removeListeners();
 
-    // FIXED: iOS-optimized location tracking options
-    const locationOptions =
-      Platform.OS === 'ios'
-        ? {
-            enableHighAccuracy: true,
-            timeout: 30000, // Longer timeout for iOS
-            maximumAge: 10000, // Accept newer cached locations
-            distanceFilter: 10, // Only update when moved 10m
-            useSignificantChanges: false, // Use regular location updates
-          }
-        : {
-            enableHighAccuracy: true,
-            distanceFilter: 10,
-            interval: 5000,
-            fastestInterval: 3000,
-            timeout: 15000,
-            maximumAge: 10000,
-          };
+    // Listen for location events
+    BackgroundGeolocation.onLocation(location => {
+      console.log('[TripService] BG Location update:', location);
+      const loc = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        timestamp: location.timestamp,
+        speed: location.coords.speed || 0,
+        accuracy: location.coords.accuracy,
+      };
+      store.dispatch(addLocation(loc));
+    }, error => {
+      console.error('[TripService] BG Location error:', error);
+    });
 
-    this.watchId = Geolocation.watchPosition(
-      position => {
-        console.log('[TripService] Location update:', position);
-        const location = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          timestamp: Date.now(),
-          speed: position.coords.speed || 0,
-          accuracy: position.coords.accuracy,
-        };
+    // Listen for motionchange (stationary/moving)
+    BackgroundGeolocation.onMotionChange(event => {
+      console.log('[TripService] Motion change:', event);
+    });
 
-        store.dispatch(addLocation(location));
-      },
-      error => {
-        console.error('[TripService] Foreground location error:', error);
+    // Listen for providerchange (GPS on/off, permissions, etc)
+    BackgroundGeolocation.onProviderChange(provider => {
+      console.log('[TripService] Provider change:', provider);
+    });
 
-        // FIXED: Handle iOS-specific errors
-        if (Platform.OS === 'ios') {
-          switch (error.code) {
-            case 1: // PERMISSION_DENIED
-              Alert.alert(
-                'Location Permission Denied',
-                'Please enable location access for this app in Settings.',
-              );
-              break;
-            case 2: // POSITION_UNAVAILABLE
-              console.warn(
-                '[TripService] GPS signal unavailable, will retry...',
-              );
-              // Don't show alert for temporary GPS issues
-              break;
-            case 3: // TIMEOUT
-              console.warn('[TripService] Location timeout, will retry...');
-              break;
-          }
-        }
-      },
-      locationOptions,
-    );
+    // Register no-op listeners to silence warnings
+    BackgroundGeolocation.onEnabledChange(() => {});
+    BackgroundGeolocation.onGeofencesChange(() => {});
+    BackgroundGeolocation.onConnectivityChange(() => {});
+
+    // Only start if not already enabled
+    BackgroundGeolocation.getState().then(state => {
+      if (!state.enabled) {
+        BackgroundGeolocation.start();
+      }
+    });
   }
 
   async performLocationUpdate() {
-    // This runs in foreground/background (HeadlessTask handles kill state)
-    console.log('[TripService] Performing location update');
-
-    try {
-      const location = await this.getCurrentLocation();
-      if (location) {
-        store.dispatch(addLocation(location));
-      }
-    } catch (error) {
-      console.error('[TripService] Location update error:', error);
-    }
+    // No-op: handled by BG Geolocation events
+    // Optionally, you can force a location here:
+    // BackgroundGeolocation.getCurrentPosition().then(location => { ... });
   }
 
   getCurrentLocation() {
-    return new Promise(resolve => {
-      const options =
-        Platform.OS === 'ios'
-          ? {
-              enableHighAccuracy: true,
-              timeout: 30000,
-              maximumAge: 30000,
-            }
-          : {
-              enableHighAccuracy: false,
-              timeout: 15000,
-              maximumAge: 60000,
-            };
-
-      Geolocation.getCurrentPosition(
-        position => {
-          resolve({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            timestamp: Date.now(),
-            speed: position.coords.speed || 0,
-            accuracy: position.coords.accuracy,
-          });
-        },
-        error => {
-          console.error('[TripService] getCurrentLocation error:', error);
-          resolve(null);
-        },
-        options,
-      );
+    // Use BackgroundGeolocation API
+    return BackgroundGeolocation.getCurrentPosition({
+      persist: false,
+      samples: 1,
+      timeout: 30,
+      maximumAge: 30000,
+      desiredAccuracy: 10,
+    }).then(location => {
+      return {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        timestamp: location.timestamp,
+        speed: location.coords.speed || 0,
+        accuracy: location.coords.accuracy,
+      };
+    }).catch(error => {
+      console.error('[TripService] getCurrentLocation error:', error);
+      return null;
     });
   }
 
   async stopLocationTracking() {
     try {
-      // Stop foreground tracking
-      if (this.watchId !== null) {
-        Geolocation.clearWatch(this.watchId);
-        this.watchId = null;
-      }
+      // Stop background geolocation
+      await BackgroundGeolocation.stop();
 
       // Stop BackgroundFetch
       const status = await BackgroundFetch.stop();

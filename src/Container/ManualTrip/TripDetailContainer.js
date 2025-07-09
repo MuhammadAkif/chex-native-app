@@ -1,18 +1,19 @@
-import React, {useMemo, useState, useEffect} from 'react';
+import React, {useMemo, useState, useEffect, useRef} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {TripDetailScreen} from '../../Screens';
 import TripService from '../../services/tripService';
-import {endTripAsync, startTripAsync, addComment, addTripHistory, clearTrip} from '../../Store/Actions/TripAction';
+import {endTripAsync, startTripAsync, addComment, addTripHistory} from '../../Store/Actions/TripAction';
 import {getNearbyPopulatedPlace} from '../../services/geonames';
 import AlertPopup from '../../Components/AlertPopup';
 import {Platform} from 'react-native';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import InfoModal from '../../Components/PopUpModals/InfoModal';
+import {store} from '../../Store';
 
 const TripDetailContainer = ({navigation}) => {
   const dispatch = useDispatch();
   const trip = useSelector(state => state?.trip) || {};
-  const [tripStarted, setTripStarted] = useState(trip?.tracking);
+  const [tripStarted, setTripStarted] = useState(trip?.isTracking);
 
   // Timer state for duration refresh
   const [now, setNow] = useState(Date.now());
@@ -31,7 +32,7 @@ const TripDetailContainer = ({navigation}) => {
 
   // Place name state
   const [startLocationName, setStartLocationName] = useState('Not Available');
-  const [endLocationName, setEndLocationName] = useState('Not Available');
+  const [endLocationName, setEndLocationName] = useState('Not Finished');
 
   const handleNavigationBackPress = () => {
     navigation.goBack();
@@ -103,6 +104,7 @@ const TripDetailContainer = ({navigation}) => {
         dispatch(endTripAsync());
         setTripStarted(false);
       } else  {
+        await TripService.initializeForTrip();
         // Centralized permission logic
         const granted = await TripService.requestLocationPermissionsWithModal(showCustomPermissionDialog, showBackgroundPermissionDialog);
         if (!granted) return;
@@ -183,7 +185,7 @@ const TripDetailContainer = ({navigation}) => {
 
   useEffect(() => {
     const fetchEndLocationName = async () => {
-      if (endLocation && endLocation.latitude && endLocation.longitude) {
+      if (!trip.isActive && endLocation && endLocation.latitude && endLocation.longitude) {
         try {
           const res = await getNearbyPopulatedPlace(endLocation.latitude, endLocation.longitude);
           const name = res?.data?.geonames?.[0]?.name;
@@ -192,11 +194,11 @@ const TripDetailContainer = ({navigation}) => {
           setEndLocationName('Unknown Place');
         }
       } else {
-        setEndLocationName('Not Available');
+        setEndLocationName('Not Finished');
       }
     };
-    fetchEndLocationName();
-  }, [endLocation]);
+   fetchEndLocationName();
+  }, [endLocation, trip.isActive]);
 
   return (
     <>

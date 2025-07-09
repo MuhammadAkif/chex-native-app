@@ -20,6 +20,8 @@ import {
 } from './src/Store/Actions';
 import {hasCameraAndMicrophoneAllowed} from './src/Utils';
 import {resetNavigation} from './src/services/navigationService';
+import TripService from './src/services/tripService';
+import {store} from './src/Store';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
@@ -32,6 +34,28 @@ function App() {
   const [displayGif, setDisplayGif] = useState(true);
   const [updateAvailable, setUpdateAvailable] = useState('');
   const {vehicleTypeModalVisible} = useSelector(state => state?.newInspection);
+
+  useEffect(() => {
+    // Restore trip state and register listeners once on app launch
+    TripService.restoreTripStateFromBGGeolocation(store);
+    const BG = require('react-native-background-geolocation').default;
+    BG.removeListeners();
+    BG.onLocation(() => {});
+    BG.onMotionChange(() => {});
+    BG.onProviderChange(() => {});
+    BG.onEnabledChange(() => {});
+    BG.onGeofencesChange(() => {});
+    BG.onConnectivityChange(() => {});
+    // Optionally, if trip is active and tracking, start listeners/tracking
+    const trip = store.getState().trip;
+    if (trip && trip.isActive && trip.isTracking) {
+      TripService.initializeForTrip();
+      TripService.startForegroundTracking();
+    }
+    return () => {
+      BG.removeListeners();
+    };
+  }, []);
 
   useEffect(() => {
     (async () => {

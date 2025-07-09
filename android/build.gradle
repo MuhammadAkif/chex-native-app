@@ -6,6 +6,8 @@ buildscript {
         targetSdkVersion = 34
         ndkVersion = "23.1.7779620"
         kotlinVersion = project.hasProperty('kotlinVersion') ? project.kotlinVersion : "1.7.0"
+        googlePlayServicesLocationVersion = "21.3.0"
+        appCompatVersion = "1.4.2"
     }
     repositories {
         google()
@@ -40,6 +42,9 @@ allprojects {
            // react-native-background-fetch
            url("${project(':react-native-background-fetch').projectDir}/libs")
        }
+       // Required for react-native-background-geolocation
+       maven { url("${project(':react-native-background-geolocation').projectDir}/libs") }
+       maven { url 'https://developer.huawei.com/repo/' }
 
     }
 }

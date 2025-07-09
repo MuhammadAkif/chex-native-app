@@ -11,6 +11,7 @@ const {
   CLEAR_TRIP,
   ADD_COMMENT,
   ADD_TRIP_HISTORY,
+  CLEAR_TRIP_HISTORY
 } = Types;
 
 // Async Action Creators using redux-thunk
@@ -91,6 +92,10 @@ export const restoreTrip = payload => ({
 
 export const clearTrip = () => ({
   type: CLEAR_TRIP,
+});
+
+export const clearTripHistory = () => ({
+  type: CLEAR_TRIP_HISTORY,
 });
 
 export const addComment = payload => ({

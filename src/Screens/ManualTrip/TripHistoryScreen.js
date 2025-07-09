@@ -150,7 +150,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   headerClearText: {
-    textDecorationLine:'underline'
+    textDecorationLine:'underline',
+    color: colors.black
   },
   listContent: {
     paddingHorizontal: wp('5%'),
@@ -252,7 +253,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   noTripData: {flex: 1, alignItems: 'center', justifyContent: 'center'},
-  noTripDataText: {fontSize: hp('1.8%')},
+  noTripDataText: {fontSize: hp('1.8%'), color: colors.black},
 });
 
 export default TripHistoryScreen;

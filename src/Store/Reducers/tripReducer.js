@@ -1,4 +1,4 @@
-import {calculateDistance} from '../../Utils/helpers';
+import {calculateDistance, calculateTotalDistance} from '../../Utils/helpers';
 import {Types} from '../Types';
 const {
   START_TRIP,
@@ -10,6 +10,8 @@ const {
   RESTORE_TRIP,
   CLEAR_TRIP,
   ADD_COMMENT,
+  RESTORE_LOCATIONS,
+  CLEAR_TRIP_HISTORY
 } = Types;
 
 const initialState = {
@@ -25,7 +27,7 @@ const initialState = {
   startLocation: null,
   endLocation: null,
   comments: [],
-  trips: [], // <-- Add this
+  trips: [], // Trip History
 };
 
 const tripReducer = (state = initialState, action) => {
@@ -112,6 +114,12 @@ const tripReducer = (state = initialState, action) => {
     case CLEAR_TRIP:
       return initialState;
 
+    case CLEAR_TRIP_HISTORY:
+      return {
+        ...state,
+        trips: [],
+      };
+  
     case ADD_COMMENT:
       return {
         ...state,
@@ -121,6 +129,14 @@ const tripReducer = (state = initialState, action) => {
       return {
         ...state,
         trips: [...state.trips, action.payload],
+      };
+    case RESTORE_LOCATIONS:
+      return {
+        ...state,
+        locations: action.payload,
+        totalDistance: calculateTotalDistance(action.payload),
+        startLocation: action.payload.length > 0 ? action.payload[0] : null,
+        endLocation: action.payload.length > 0 ? action.payload[action.payload.length - 1] : null,
       };
     default:
       return state;
