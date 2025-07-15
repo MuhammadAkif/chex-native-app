@@ -20,7 +20,9 @@
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
-      android:theme="@style/AppTheme">
+      android:theme="@style/AppTheme"
+      android:usesCleartextTraffic="true"
+      >
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
@@ -34,7 +36,7 @@
         </intent-filter>
       </activity>
         <!-- react-native-background-geolocation licence -->
-      <meta-data android:name="com.transistorsoft.locationmanager.license" android:value="YOUR_LICENCE_KEY_HERE" />
+      <meta-data android:name="com.transistorsoft.locationmanager.license" android:value="ec93a597472e7af6ccea766180930b2e2d396f348ef1064c1b750dce90d4c2fa" />
        <!-- HMS Background Geolocation licence -->
      <meta-data android:name="com.transistorsoft.locationmanager.hms.license" android:value="YOUR_HMS_LICENCE_KEY_HERE" />
     </application>

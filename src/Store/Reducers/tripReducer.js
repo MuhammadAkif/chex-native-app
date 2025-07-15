@@ -11,7 +11,8 @@ const {
   CLEAR_TRIP,
   ADD_COMMENT,
   RESTORE_LOCATIONS,
-  CLEAR_TRIP_HISTORY
+  SET_TRIPS,
+  SET_START_LOCATION
 } = Types;
 
 const initialState = {
@@ -44,7 +45,6 @@ const tripReducer = (state = initialState, action) => {
         isTracking: true,
         pausedTime: 0,
         isPaused: false,
-        startLocation: null,
         endLocation: null,
         comments: [],
       };
@@ -112,12 +112,20 @@ const tripReducer = (state = initialState, action) => {
       };
 
     case CLEAR_TRIP:
-      return initialState;
-
-    case CLEAR_TRIP_HISTORY:
       return {
         ...state,
-        trips: [],
+        isActive: false,
+        tripId: null,
+        startTime: null,
+        endTime: null,
+        locations: [],
+        totalDistance: 0,
+        isTracking: false,
+        pausedTime: 0,
+        isPaused: false,
+        startLocation: null,
+        endLocation: null,
+        comments: [],
       };
   
     case ADD_COMMENT:
@@ -125,19 +133,28 @@ const tripReducer = (state = initialState, action) => {
         ...state,
         comments: [...state.comments, action.payload],
       };
-    case 'ADD_TRIP_HISTORY':
-      return {
-        ...state,
-        trips: [...state.trips, action.payload],
-      };
+      
     case RESTORE_LOCATIONS:
       return {
         ...state,
         locations: action.payload,
         totalDistance: calculateTotalDistance(action.payload),
-        startLocation: action.payload.length > 0 ? action.payload[0] : null,
+        startLocation: state?.startLocation > 0 ? state.startLocation : null,
         endLocation: action.payload.length > 0 ? action.payload[action.payload.length - 1] : null,
       };
+
+    case SET_TRIPS:
+      return {
+        ...state,
+        trips: action.payload,
+      };
+
+    case SET_START_LOCATION:
+      return {
+        ...state,
+        startLocation: action.payload,
+      };
+      
     default:
       return state;
   }

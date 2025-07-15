@@ -28,16 +28,16 @@
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>localhost</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-			</dict>
-			 <key>api.geonames.org</key> <!-- Replace with your actual API host -->
+			<key>api.geonames.org</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+			<key>localhost</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 			</dict>
 		</dict>
@@ -54,6 +54,16 @@
 	<string>Microphone access required in order to record audio notes for the inspection.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access to your photo library.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>This app uses motion activity to detect user movement during trips and improve tracking accuracy.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>This app requires Bluetooth access to enhance location accuracy through nearby devices.</string>
+
+	<key>TSBackgroundGeolocation</key>
+	<dict>
+		<key>license</key>
+		<string>ec93a597472e7af6ccea766180930b2e2d396f348ef1064c1b750dce90d4c2fa</string>
+	</dict>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

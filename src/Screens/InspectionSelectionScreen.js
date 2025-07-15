@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, SafeAreaView, Platform} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -12,9 +12,10 @@ import {
   SignInLogo,
   SecondaryButton,
   AlertPopup,
+  HeaderBackButton,
 } from '../Components';
 import {ROUTES} from '../Navigation/ROUTES';
-import {exitAppInfo, PROJECT_NAME} from '../Constants';
+import {exitAppInfo, Platforms, PROJECT_NAME} from '../Constants';
 
 const {INSPECTION_REVIEWED, INSPECTION_IN_PROGRESS} = ROUTES;
 const {white, black, cobaltBlueLight} = colors;
@@ -35,6 +36,18 @@ const InspectionSelectionScreen = ({
 }) => (
   <BackgroundImageView>
     <View style={styles.container}>
+
+      {/* Platform-specific container for HeaderBackButton */}
+      {Platform.OS === Platforms.IOS ? (
+        <SafeAreaView style={styles.hamburgerIconContainer}>
+          <HeaderBackButton />
+        </SafeAreaView>
+      ) : (
+        <View style={styles.hamburgerIconContainerAndroid}>
+          <HeaderBackButton />
+        </View>
+      )}
+      
       <View style={styles.headerContainer}>
         <SignInLogo
           titleText={CHEX}
@@ -43,7 +56,7 @@ const InspectionSelectionScreen = ({
           containerStyle={styles.logoContainer}
         />
         <Text style={styles.registerTitleText}>
-          Please Select one option below
+          Please Select one option below!!
         </Text>
       </View>
       <View style={styles.bodyContainer}>
@@ -118,6 +131,13 @@ const styles = StyleSheet.create({
   },
   text: {
     color: black,
+  },
+  hamburgerIconContainer: {
+    // marginHorizontal: wp('2%'),
+    // No top margin needed for iOS due to SafeAreaView
+  },
+  hamburgerIconContainerAndroid: {
+    marginTop: hp('6.2%'), // Adjust as needed for Android status bar
   },
 });
 

@@ -318,3 +318,8 @@ export function calculateTotalDistance(locations) {
   }
   return total;
 }
+
+export function convertMsToMinutes(ms) {
+  if (!ms) return '-';
+  return Math.floor(ms / 60000);
+}

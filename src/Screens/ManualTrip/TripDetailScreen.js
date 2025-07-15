@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  ActivityIndicator,
   Modal,
   ScrollView,
   StyleSheet,
@@ -37,7 +38,8 @@ const TripScreen = ({
   handleCommentInputChange,
   handleCommentSubmit,
   onPressViewTripHistory,
-  navigation,
+  startTripLoading = false,
+  commentLoading = false,
 }) => {
   return (
     <View style={styles.container}>
@@ -151,37 +153,39 @@ const TripScreen = ({
               </View>
             </View>
 
-            {/* Comments Card */}
-            <View style={styles.commentSectionContainer}>
-              <View style={styles.commentsHeader}>
-                <Text style={styles.cardTitle}>Comment</Text>
-                <TouchableOpacity
-                  style={styles.addCommentButton}
-                  onPress={openCommentModal}>
-                  <Text style={styles.addCommentIcon}>+</Text>
-                  <Text style={styles.addCommentText}>Add Comments</Text>
-                </TouchableOpacity>
-              </View>
+            {/* Comments Card - only show if tripStarted is true */}
+            {tripStarted && (
+              <View style={styles.commentSectionContainer}>
+                <View style={styles.commentsHeader}>
+                  <Text style={styles.cardTitle}>Comment</Text>
+                  <TouchableOpacity
+                    style={styles.addCommentButton}
+                    onPress={openCommentModal}>
+                    <Text style={styles.addCommentIcon}>+</Text>
+                    <Text style={styles.addCommentText}>Add Comments</Text>
+                  </TouchableOpacity>
+                </View>
 
-              {/* Show all comments */}
-              {comments && comments.length > 0 ? (
-                comments
-                  .slice()
-                  .reverse()
-                  .map((comment, idx) => (
-                    <View style={styles.commentItem} key={idx}>
-                      <Text style={styles.commentText}>{comment.text}</Text>
-                      <Text style={styles.commentTime}>
-                        {new Date(comment.timestamp).toLocaleTimeString()}
-                      </Text>
-                    </View>
-                  ))
-              ) : (
-                <Text style={{color: colors.steelGray, marginTop: 8}}>
-                  No comments yet.
-                </Text>
-              )}
-            </View>
+                {/* Show all comments */}
+                {comments && comments.length > 0 ? (
+                  comments
+                    .slice()
+                    .reverse()
+                    .map((comment, idx) => (
+                      <View style={styles.commentItem} key={idx}>
+                        <Text style={styles.commentText}>{comment.text}</Text>
+                        <Text style={styles.commentTime}>
+                          {new Date(comment.timestamp).toLocaleTimeString()}
+                        </Text>
+                      </View>
+                    ))
+                ) : (
+                  <Text style={{color: colors.steelGray, marginTop: 8}}>
+                    No comments yet.
+                  </Text>
+                )}
+              </View>
+            )}
           </ScrollView>
         </View>
 
@@ -193,10 +197,16 @@ const TripScreen = ({
             style={[
               styles.startTripButton,
               tripStarted && styles.endTripButton,
-            ]}>
+            ]}
+            disabled={startTripLoading}
+          >
+            {startTripLoading ? (
+              <ActivityIndicator color={colors.white} />
+            ) : (
             <Text style={styles.startTripText}>
               {tripStarted ? 'End Trip' : 'Start Trip'}
             </Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
@@ -234,19 +244,27 @@ const TripScreen = ({
               {/* Add Button with gradient */}
               <TouchableOpacity
                 style={styles.addCommentAddButton}
-                onPress={handleCommentSubmit}>
+                onPress={handleCommentSubmit}
+                disabled={commentLoading}
+              >
                 <LinearGradient
                   colors={[colors.orange, colors.orangePeel]}
                   start={{x: 0, y: 0}}
                   end={{x: 1, y: 0}}
                   style={styles.addCommentAddButtonGradient}>
-                  <Text style={styles.addCommentAddButtonText}>Add</Text>
+                  {commentLoading ? (
+                    <ActivityIndicator color={colors.white} />
+                  ) : (
+                    <Text style={styles.addCommentAddButtonText}>Add</Text>
+                  )}
                 </LinearGradient>
               </TouchableOpacity>
               {/* Cancel Button */}
               <TouchableOpacity
                 style={styles.addCommentCancelButton}
-                onPress={closeCommentModal}>
+                onPress={closeCommentModal}
+                disabled={commentLoading}
+              >
                 <Text style={styles.addCommentCancelButtonText}>Cancel</Text>
               </TouchableOpacity>
             </View>

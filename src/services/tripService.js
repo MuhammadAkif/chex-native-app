@@ -16,14 +16,12 @@ class TripService {
     this.backgroundFetchInitialized = false;
     this.notificationId = 'trip-tracking-notification';
     this.notificationIntervalId = null;
-    // Removed: this.initializeNotifications();
-    // Removed: this.setupLocationService();
   }
 
   // Call this only when starting a trip!
   async initializeForTrip() {
     await this.initializeNotifications();
-    await this.setupLocationService();
+    this.setupLocationService();
   }
 
   /**
@@ -31,10 +29,10 @@ class TripService {
    * If a trip is active, merge any locations collected while the app was killed.
    */
   async restoreTripStateFromBGGeolocation(store) {
-    console.log('TRIP STATES RESTORED')
     const state = store.getState();
     const trip = state.trip;
     if (trip && trip.isActive && trip.isTracking) {
+      console.log('TRIP STATES RESTORED')
       try {
         const bgLocations = await BackgroundGeolocation.getLocations();
         const reduxLocations = trip.locations || [];
@@ -66,11 +64,12 @@ class TripService {
     // Configure BackgroundGeolocation for both platforms
     BackgroundGeolocation.ready({
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+      allowIdenticalLocations: false,
       stopOnTerminate: false,
       startOnBoot: true,
-      distanceFilter: 200, // 0 = time-based only, or set to a value in meters if you want both
-      fastestLocationUpdateInterval: 30000, // 30 seconds (Android only)
-      locationUpdateInterval: 30000,
+      distanceFilter: 100, // 0 = time-based only, or set to a value in meters if you want both
+      fastestLocationUpdateInterval: 20000, // 30 seconds (Android only)
+      locationUpdateInterval: 20000,
       notification: {
         title: 'Trip Tracking',
         text: 'Your trip is being tracked in the background',
@@ -562,9 +561,11 @@ class TripService {
       console.log('[TripService] BackgroundFetch stop status:', status);
 
       await notifee.cancelNotification(this.notificationId);
+      await notifee.cancelAllNotifications();
 
       // Stop notification timer
       if (this.notificationIntervalId) {
+        console.log('CLEAR Notification Interval')
         clearInterval(this.notificationIntervalId);
         this.notificationIntervalId = null;
       }

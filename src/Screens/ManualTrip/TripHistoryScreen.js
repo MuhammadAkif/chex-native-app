@@ -9,8 +9,9 @@ import {BackArrow} from '../../Assets/Icons';
 import ClockIcon from '../../Assets/Icons/ClockIcon';
 import LocationIcon from '../../Assets/Icons/Location';
 import {colors, NavigationDrawerBackgroundColor} from '../../Assets/Styles';
+import { convertMsToMinutes } from '../../Utils/helpers';
 
-const TripHistoryScreen = ({trips = [], navigation, onPressClear}) => {
+const TripHistoryScreen = ({trips = [], navigation, onPullToRefresh}) => {
   // Helper to format time in 12-hour lowercase am/pm
   function formatTime(time) {
     if (!time) return '-';
@@ -22,7 +23,7 @@ const TripHistoryScreen = ({trips = [], navigation, onPressClear}) => {
     <View style={styles.card}>
       {/* Date and Status Row */}
       <View style={styles.rowBetween}>
-        <Text style={styles.dateText}>{formatDate(item.date)}</Text>
+        <Text style={styles.dateText}>{formatDate(item.createdAt)}</Text>
         <View style={styles.statusRow}>
           <View style={styles.statusBadge}>
             <Text style={styles.statusBadgeText}>{item.status}</Text>
@@ -32,13 +33,12 @@ const TripHistoryScreen = ({trips = [], navigation, onPressClear}) => {
       {/* Time and Duration Row */}
       <View style={[styles.rowBetween, {marginTop: hp('1.2%')}]}>
         <View style={styles.rowCenter}>
-          {/* <Ionicons name="time-outline" size={wp('4%')} color={colors.gray} style={{marginRight: 4}} /> */}
           <ClockIcon />
-          <Text style={styles.timeText}>{formatTime(item.time)}</Text>
+          <Text style={styles.timeText}>{formatTime(item?.start?.timestamp)}</Text>
         </View>
         <Text style={styles.durationLabel}>
           Duration:{' '}
-          <Text style={styles.durationValue}>{item.duration} mins</Text>
+          <Text style={styles.durationValue}>{convertMsToMinutes(item.duration)} mins</Text>
         </Text>
       </View>
       {/* Locations */}
@@ -48,13 +48,13 @@ const TripHistoryScreen = ({trips = [], navigation, onPressClear}) => {
             style={[styles.routeIcon, {backgroundColor: colors.brightGreen}]}>
             <LocationIcon width={wp('3.2%')} height={wp('3.2%')} />
           </View>
-          <Text style={styles.locationText}>{item.startLocation}</Text>
+          <Text style={styles.locationText}>{item?.start?.location}</Text>
         </View>
         <View style={styles.locationRow}>
           <View style={[styles.routeIcon, {backgroundColor: colors.red}]}>
             <LocationIcon width={wp('3.2%')} height={wp('3.2%')} />
           </View>
-          <Text style={styles.locationText}>{item.endLocation}</Text>
+          <Text style={styles.locationText}>{item?.end?.location}</Text>
         </View>
       </View>
       {/* Divider */}
@@ -77,9 +77,9 @@ const TripHistoryScreen = ({trips = [], navigation, onPressClear}) => {
         <BackArrow height={hp('5%')} width={wp('5%')} />
       </TouchableOpacity>
       <Text style={styles.headerTitle}>Trip History</Text>
-    <TouchableOpacity onPress={onPressClear}>
+    {/* <TouchableOpacity onPress={onPressClear}>
       <Text style={styles.headerClearText}>Clear</Text>
-    </TouchableOpacity>
+    </TouchableOpacity> */}
     </View>
   );
   return (
@@ -89,6 +89,8 @@ const TripHistoryScreen = ({trips = [], navigation, onPressClear}) => {
           {/* List */}
           <FlatList
             data={trips}
+            refreshing={false}
+            onRefresh={onPullToRefresh}
             keyExtractor={item => item.id}
             renderItem={renderTrip}
             ListHeaderComponent={renderHeader}

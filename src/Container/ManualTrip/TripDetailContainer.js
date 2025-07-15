@@ -1,22 +1,23 @@
-import React, {useMemo, useState, useEffect, useRef} from 'react';
+import React, {useMemo, useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {TripDetailScreen} from '../../Screens';
 import TripService from '../../services/tripService';
-import {endTripAsync, startTripAsync, addComment, addTripHistory} from '../../Store/Actions/TripAction';
+import {endTripAsync, startTripAsync, addComment, setStartLocation} from '../../Store/Actions/TripAction';
 import {getNearbyPopulatedPlace} from '../../services/geonames';
+import { addTripComment } from '../../services/tripApi';
 import AlertPopup from '../../Components/AlertPopup';
-import {Platform} from 'react-native';
-import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import InfoModal from '../../Components/PopUpModals/InfoModal';
-import {store} from '../../Store';
+import BackgroundGeolocation from 'react-native-background-geolocation';
 
 const TripDetailContainer = ({navigation}) => {
   const dispatch = useDispatch();
   const trip = useSelector(state => state?.trip) || {};
   const [tripStarted, setTripStarted] = useState(trip?.isTracking);
-
   // Timer state for duration refresh
   const [now, setNow] = useState(Date.now());
+
+  // Loading state for start trip
+  const [startTripLoading, setStartTripLoading] = useState(false);
 
   // Permission dialog state
   const [permissionDialogVisible, setPermissionDialogVisible] = useState(false);
@@ -29,10 +30,12 @@ const TripDetailContainer = ({navigation}) => {
   // Comment modal state
   const [commentModalVisible, setCommentModalVisible] = useState(false);
   const [commentInput, setCommentInput] = useState('');
+  const [commentLoading, setCommentLoading] = useState(false);
 
   // Place name state
   const [startLocationName, setStartLocationName] = useState('Not Available');
   const [endLocationName, setEndLocationName] = useState('Not Finished');
+
 
   const handleNavigationBackPress = () => {
     navigation.goBack();
@@ -70,25 +73,26 @@ const TripDetailContainer = ({navigation}) => {
 
         // Get the last location for end location
         let endLocName = endLocationName;
+        let lat = endLocation?.latitude
+        let lng = endLocation?.longitude
 
         if (trip.locations && trip.locations.length > 0) {
           const lastLoc = trip.locations[trip.locations.length - 1];
           const res = await getNearbyPopulatedPlace(lastLoc.latitude, lastLoc.longitude);
           endLocName = res?.data?.geonames?.[0]?.name || endLocName;
+          lat = lastLoc.latitude,
+          lng = lastLoc.longitude
         }
 
         const tripData = {
-          id: Date.now().toString(),
-          date: new Date(trip.startTime).toISOString().slice(0, 10),
-          time: trip.startTime,
-          status: 'Completed',
-          duration:
-            trip.startTime
-              ? Math.round((endTime - trip.startTime) / 60000)
-              : 0,
-          startLocation: startLocationName,
-          endLocation: endLocName,
+          id: trip?.tripId,
+          status: 'COMPLETED',
+          duration: trip.startTime ? endTime - trip.startTime : 0,
+          endTime,
           distance: (trip.totalDistance || 0).toFixed(2),
+          lat,
+          lng,
+          location: endLocName,
           avgSpeed:
             trip.startTime && trip.totalDistance
               ? Math.round(
@@ -96,25 +100,44 @@ const TripDetailContainer = ({navigation}) => {
                     ((endTime - trip.startTime) / 3600000)
                 )
               : 0,
-          comments: trip.comments || [],
-          raw: { ...trip, endTime },
         };
 
-        dispatch(addTripHistory(tripData));
-        dispatch(endTripAsync());
+        dispatch(endTripAsync(tripData));
         setTripStarted(false);
       } else  {
+        setStartTripLoading(true);
         await TripService.initializeForTrip();
         // Centralized permission logic
         const granted = await TripService.requestLocationPermissionsWithModal(showCustomPermissionDialog, showBackgroundPermissionDialog);
-        if (!granted) return;
+        if (!granted) { setStartTripLoading(false); return; }
+        // Fetch current location immediately and set as startLocation
+        try {
+          const currentLocation = await BackgroundGeolocation.getCurrentPosition({
+            timeout: 10,
+            maximumAge: 0,
+            desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+          });
+          if (currentLocation && currentLocation.coords) {
+            dispatch(setStartLocation({
+              latitude: currentLocation.coords.latitude,
+              longitude: currentLocation.coords.longitude,
+              timestamp: currentLocation.timestamp,
+              speed: currentLocation.coords.speed || 0,
+              accuracy: currentLocation.coords.accuracy,
+            }));
+          }
+        } catch (e) {
+          console.warn('[TripDetailContainer] Could not fetch current location immediately:', e);
+        }
         await TripService.startLocationTracking();
         dispatch(startTripAsync());
         setTripStarted(true);
         // Reset timer to now when trip starts
         setNow(Date.now());
+        setStartTripLoading(false);
       }
     } catch (error) {
+      setStartTripLoading(false);
       console.error('[TripDetailContainer] Error toggling trip:', error);
     }
   };
@@ -123,10 +146,20 @@ const TripDetailContainer = ({navigation}) => {
   const openCommentModal = () => setCommentModalVisible(true);
   const closeCommentModal = () => setCommentModalVisible(false);
   const handleCommentInputChange = text => setCommentInput(text);
-  const handleCommentSubmit = () => {
-    if (commentInput.trim()) {
+  
+  const handleCommentSubmit = async () => {
+    if (!commentInput.trim()) return;
+    setCommentLoading(true);
+    try {
+      // Call the API to add comment
+      await addTripComment(trip?.tripId, commentInput.trim());
       dispatch(addComment({text: commentInput.trim(), timestamp: Date.now()}));
       setCommentInput('');
+    } catch (e) {
+      // Optionally show error
+      console.error('Failed to add comment:', e.response.data);
+    } finally {
+      setCommentLoading(false);
       setCommentModalVisible(false);
     }
   };
@@ -221,6 +254,8 @@ const TripDetailContainer = ({navigation}) => {
         handleCommentSubmit={handleCommentSubmit}
         onPressViewTripHistory={handleViewTripHistory}
         navigation={navigation}
+        startTripLoading={startTripLoading}
+        commentLoading={commentLoading}
       />
       <AlertPopup
         visible={permissionDialogVisible}

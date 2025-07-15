@@ -42,6 +42,12 @@ export const API_ENDPOINTS = {
   ANNOTATION_URL: generateApiUrl('file/coordinate'),
   LOCATION_URL: generateApiUrl('inspection/location'),
   SUBMIT_INSPECTION: generateApiUrl('dsp/app/producer'),
+
+  // TRIP
+  CREATE_TRIP: generateApiUrl('create/trip'),
+  ADD_TRIP_COMMENT: generateApiUrl('add/trip/comment'),
+  END_TRIP: generateApiUrl('end/trip'),
+  TRIP_HISTORY: generateApiUrl('user/trips')
 };
 // Api Endpoints ends here
 export const Platforms = {
