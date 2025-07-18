@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   NavigationContainer,
-  useNavigationContainerRef,
 } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useSelector} from 'react-redux';
@@ -18,7 +17,7 @@ import {
 } from '../Container';
 import {ROUTES} from './ROUTES';
 import NavigationDrawer from './NavigationDrawer';
-import {setNavigationRef} from '../services/navigationService';
+import {navigationRef} from '../services/navigationService';
 
 const {
   HOME,
@@ -32,19 +31,15 @@ const {
   COMPLETED_INSPECTION,
 } = ROUTES;
 
+const {Screen, Navigator} = createNativeStackNavigator();
+
 const Navigation = () => {
-  const {Screen, Navigator} = createNativeStackNavigator();
   const token = useSelector(state => state?.auth?.user?.token);
   const initialRouteName = token ? HOME : WELCOME;
   const screenOptions = {headerShown: false, gestureEnabled: false};
-  const navigationRef = useNavigationContainerRef();
-
-  function onNavigationReady() {
-    setNavigationRef(navigationRef);
-  }
 
   return (
-    <NavigationContainer ref={navigationRef} onReady={onNavigationReady}>
+    <NavigationContainer ref={navigationRef}>
       <Navigator
         initialRouteName={initialRouteName}
         screenOptions={screenOptions}>

@@ -18,6 +18,7 @@ import {
   updateVehicleImage,
   sessionExpired,
   batchUpdateVehicleImages,
+  setNewInspectionId,
 } from '../Store/Actions';
 import {IMAGES} from '../Assets/Images';
 import {store} from '../Store';
@@ -669,14 +670,11 @@ function onNewInspectionPressSuccess(
   resetAllStates,
 ) {
   const {id = null} = response?.data || {};
-  const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
   dispatch(setVehicleTypeModalVisible(true));
-
   dispatch(numberPlateSelected(id));
+  dispatch(setNewInspectionId(id)); // new action to store inspection ID
   resetAllStates();
-  navigation.navigate(NEW_INSPECTION, {
-    routeName: INSPECTION_SELECTION,
-  });
+  // navigation is now handled in App.tsx after modal selection
 }
 function onNewInspectionPressFail(err, dispatch) {
   const {statusCode = null} = err?.response?.data || {};

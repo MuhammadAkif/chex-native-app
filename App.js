@@ -4,7 +4,6 @@ import {checkVersion} from 'react-native-check-version';
 import 'react-native-devsettings';
 import SplashScreen from 'react-native-splash-screen';
 import {useDispatch, useSelector} from 'react-redux';
-
 import {DiscardInspectionModal, Splash, Toast} from './src/Components';
 import AlertPopup from './src/Components/AlertPopup';
 import VehicleTypeModal from './src/Components/VehicleTypeModal';
@@ -32,7 +31,7 @@ function App() {
   const {sessionExpired} = useSelector(state => state?.auth);
   const [displayGif, setDisplayGif] = useState(true);
   const [updateAvailable, setUpdateAvailable] = useState('');
-  const {vehicleTypeModalVisible, selectedVehicleKind, newInspectionId} = useSelector((state) => state?.newInspection);
+  const {vehicleTypeModalVisible, selectedVehicleKind, newInspectionId} = useSelector((state) => state.newInspection);
 
   useEffect(() => {
     (async () => {
@@ -55,7 +54,7 @@ function App() {
             navigate(ROUTES.NEW_INSPECTION, { routeName: ROUTES.INSPECTION_SELECTION });
           }
           dispatch(setNewInspectionId(null));
-        }
+        } 
       };
       doNavigate();
     }

@@ -1,11 +1,18 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, StatusBar} from 'react-native';
 
 import {colors} from '../Assets/Styles';
 
 const {cobaltBlueLight} = colors;
 
-const HeaderBackground = () => <View style={styles.container} />;
+const HeaderBackground = () => {
+  return (
+    <>
+    <StatusBar translucent barStyle={''}/>
+    <View style={styles.container} />
+    </>
+  )
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,

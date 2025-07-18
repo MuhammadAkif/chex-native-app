@@ -27,6 +27,7 @@ import {
   setImageDimensions,
   setVehicleTypeModalVisible,
   setSelectedVehicleKind,
+  setNewInspectionId,
 } from './NewInspectionAction';
 import {signIn, signOut, sessionExpired} from './AuthAction';
 import {
@@ -80,4 +81,5 @@ export {
   setImageDimensions,
   setVehicleTypeModalVisible,
   setSelectedVehicleKind,
+  setNewInspectionId,
 };

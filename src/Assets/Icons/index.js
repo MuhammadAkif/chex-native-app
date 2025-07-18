@@ -33,8 +33,17 @@ import Filter from './Filter';
 import Landscape from './Landscape';
 import Portrait from './Portrait';
 import CommentIcon from './CommentIcon';
+import CircledChevron from './CircledChevron';
+import PlusBlue from './PlusBlue';
+import CameraBlack from './CameraBlack';
+import PlusBlack from './PlusBlack';
+import DownloadBlue from './DownloadBlue';
 
 export {
+  DownloadBlue,
+  PlusBlack,
+  PlusBlue, CameraBlack,
+  CircledChevron,
   Check,
   Warning,
   Plus,

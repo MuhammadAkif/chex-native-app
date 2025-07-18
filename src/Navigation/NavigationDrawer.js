@@ -10,7 +10,6 @@ import {
   LicensePlateNumberSelectionContainer,
   InspectionInProgressContainer,
   InspectionSelectionContainer,
-  DriverVehicleInspectionReportChecklistContainer,
   DVIRInspectionChecklistContainer,
   DVIRVehicleInfoContainer,
 } from '../Container';
@@ -26,15 +25,19 @@ const headerBackground = () => <HeaderBackground />;
 const drawerContent = props => <CustomDrawerContent {...props} />;
 const NavigatorHeaderTitle = () => <HeaderTitle />;
 const headerBackButton = () => <HeaderBackButton />;
+
 const screenOptions = {
   headerTitle: NavigatorHeaderTitle,
   drawerType: 'front',
   drawerStatusBarAnimation: 'slide',
   headerLeft: headerBackButton,
   swipeEdgeWidth: 150,
+  unmountOnBlur: true
 };
+
+const {Screen, Navigator} = createDrawerNavigator();
+
 const NavigationDrawer = ({navigation}) => {
-  const {Screen, Navigator} = createDrawerNavigator();
   const {
     INSPECTION_SELECTION,
     INTRO,
@@ -59,7 +62,8 @@ const NavigationDrawer = ({navigation}) => {
         backBehavior={'history'}
         drawerContent={drawerContent}
         screenOptions={screenOptions}
-        initialRouteName={INSPECTION_SELECTION}>
+        initialRouteName={INSPECTION_SELECTION}
+        >
         <Screen
           name={INSPECTION_SELECTION}
           component={InspectionSelectionContainer}
