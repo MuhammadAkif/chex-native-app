@@ -1,18 +1,25 @@
 import React, {useEffect, useState} from 'react';
 import {Linking} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {checkVersion} from 'react-native-check-version';
 import 'react-native-devsettings';
 import SplashScreen from 'react-native-splash-screen';
-import {checkVersion} from 'react-native-check-version';
+import {useDispatch, useSelector} from 'react-redux';
 
-import Navigation from './src/Navigation/index';
-import {hasCameraAndMicrophoneAllowed} from './src/Utils';
 import {DiscardInspectionModal, Splash, Toast} from './src/Components';
-import {SESSION_EXPIRED, UPDATE_APP} from './src/Constants';
-import {clearNewInspection, hideToast, signOut} from './src/Store/Actions';
-import {resetNavigation} from './src/services/navigationService';
-import {ROUTES} from './src/Navigation/ROUTES';
 import AlertPopup from './src/Components/AlertPopup';
+import VehicleTypeModal from './src/Components/VehicleTypeModal';
+import {SESSION_EXPIRED, UPDATE_APP} from './src/Constants';
+import {ROUTES} from './src/Navigation/ROUTES';
+import Navigation from './src/Navigation/index';
+import {
+  clearNewInspection,
+  hideToast,
+  setSelectedVehicleKind,
+  setVehicleTypeModalVisible,
+  signOut,
+} from './src/Store/Actions';
+import {hasCameraAndMicrophoneAllowed} from './src/Utils';
+import {resetNavigation} from './src/services/navigationService';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
@@ -24,6 +31,7 @@ function App() {
   const {sessionExpired} = useSelector(state => state?.auth);
   const [displayGif, setDisplayGif] = useState(true);
   const [updateAvailable, setUpdateAvailable] = useState('');
+  const {vehicleTypeModalVisible} = useSelector(state => state?.newInspection);
 
   useEffect(() => {
     (async () => {
@@ -67,6 +75,11 @@ function App() {
     resetNavigation(SIGN_IN);
   };
 
+  const handleVehicleTypeSelect = (type: string) => {
+    dispatch(setVehicleTypeModalVisible(false));
+    dispatch(setSelectedVehicleKind(type.toLowerCase()));
+  };
+
   return displayGif ? (
     <Splash />
   ) : (
@@ -91,6 +104,10 @@ function App() {
         title={title}
         message={message}
         yesButtonText={button}
+      />
+      <VehicleTypeModal
+        visible={vehicleTypeModalVisible}
+        onSelect={handleVehicleTypeSelect}
       />
     </>
   );

@@ -19,24 +19,75 @@ export const IMAGES = {
   intro_Background: require('./IntroVehicle.png'),
   expiry_Inspection: require('./ExpiryInspection.png'),
   drawer: require('./DrawerImage.png'),
-  portrait: {
-    exterior_left: require('./Portrait/Left_side.png'),
-    exterior_right: require('./Portrait/Right_side.png'),
-    exterior_front: require('./Portrait/Front.png'),
-    exterior_rear: require('./Portrait/Back.png'),
-    front_left_corner: require('./Portrait/Left_front.png'),
-    front_right_corner: require('./Portrait/Right_front.png'),
-    rear_left_corner: require('./Portrait/Left_back.png'),
-    rear_right_corner: require('./Portrait/Right_back.png'),
+};
+
+const portraitImages = {
+  van: {
+    exterior_left: require('./Portrait/van/Left_side.png'),
+    exterior_right: require('./Portrait/van/Right_side.png'),
+    exterior_front: require('./Portrait/van/Front.png'),
+    exterior_rear: require('./Portrait/van/Back.png'),
+    front_left_corner: require('./Portrait/van/Left_front.png'),
+    front_right_corner: require('./Portrait/van/Right_front.png'),
+    rear_left_corner: require('./Portrait/van/Left_back.png'),
+    rear_right_corner: require('./Portrait/van/Right_back.png'),
   },
-  landscape: {
-    exterior_left: require('./landscape/Left_side.png'),
-    exterior_right: require('./landscape/Right_side.png'),
-    exterior_front: require('./landscape/Front.png'),
-    exterior_rear: require('./landscape/Back.png'),
-    front_left_corner: require('./landscape/Left_front.png'),
-    front_right_corner: require('./landscape/Right_front.png'),
-    rear_left_corner: require('./landscape/Left_back.png'),
-    rear_right_corner: require('./landscape/Right_back.png'),
+  truck: {
+    exterior_left: require('./Portrait/truck/Left_side.png'),
+    exterior_right: require('./Portrait/truck/Right_side.png'),
+    exterior_front: require('./Portrait/truck/Front.png'),
+    exterior_rear: require('./Portrait/truck/Back.png'),
+    front_left_corner: require('./Portrait/truck/Left_front.png'),
+    front_right_corner: require('./Portrait/truck/Right_front.png'),
+    rear_left_corner: require('./Portrait/truck/Left_back.png'),
+    rear_right_corner: require('./Portrait/truck/Right_back.png'),
+  },
+  sedan: {
+    exterior_left: require('./Portrait/sedan/Left_side.png'),
+    exterior_right: require('./Portrait/sedan/Right_side.png'),
+    exterior_front: require('./Portrait/sedan/Front.png'),
+    exterior_rear: require('./Portrait/sedan/Back.png'),
+    front_left_corner: require('./Portrait/sedan/Left_front.png'),
+    front_right_corner: require('./Portrait/sedan/Right_front.png'),
+    rear_left_corner: require('./Portrait/sedan/Left_back.png'),
+    rear_right_corner: require('./Portrait/sedan/Right_back.png'),
   },
 };
+
+const landscapeImages = {
+  van: {
+    exterior_left: require('./Landscape/van/Left_side.png'),
+    exterior_right: require('./Landscape/van/Right_side.png'),
+    exterior_front: require('./Landscape/van/Front.png'),
+    exterior_rear: require('./Landscape/van/Back.png'),
+    front_left_corner: require('./Landscape/van/Left_front.png'),
+    front_right_corner: require('./Landscape/van/Right_front.png'),
+    rear_left_corner: require('./Landscape/van/Left_back.png'),
+    rear_right_corner: require('./Landscape/van/Right_back.png'),
+  },
+  truck: {
+    exterior_left: require('./Landscape/truck/Left_side.png'),
+    exterior_right: require('./Landscape/truck/Right_side.png'),
+    exterior_front: require('./Landscape/truck/Front.png'),
+    exterior_rear: require('./Landscape/truck/Back.png'),
+    front_left_corner: require('./Landscape/truck/Left_front.png'),
+    front_right_corner: require('./Landscape/truck/Right_front.png'),
+    rear_left_corner: require('./Landscape/truck/Left_back.png'),
+    rear_right_corner: require('./Landscape/truck/Right_back.png'),
+  },
+  sedan: {
+    exterior_left: require('./Landscape/sedan/Left_side.png'),
+    exterior_right: require('./Landscape/sedan/Right_side.png'),
+    exterior_front: require('./Landscape/sedan/Front.png'),
+    exterior_rear: require('./Landscape/sedan/Back.png'),
+    front_left_corner: require('./Landscape/sedan/Left_front.png'),
+    front_right_corner: require('./Landscape/sedan/Right_front.png'),
+    rear_left_corner: require('./Landscape/sedan/Left_back.png'),
+    rear_right_corner: require('./Landscape/sedan/Right_back.png'),
+  },
+};
+
+export const getVehicleImages = (vehicleType = 'van') => ({
+  portrait: portraitImages[vehicleType],
+  landscape: landscapeImages[vehicleType],
+});

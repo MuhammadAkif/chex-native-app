@@ -32,6 +32,8 @@ const {
   SET_TRIGGER_TIRE_STATUS_CHECK,
   SET_MILEAGE_MESSAGE,
   SET_IMAGE_DIMENSIONS,
+  SET_VEHICLE_TYPE_MODAL_VISIBLE,
+  SET_SELECTED_VEHICLE_KIND,
 } = Types;
 
 const itemsImagePayload = (item = '', group = '', uri = '', id = 0) => {
@@ -191,4 +193,12 @@ export const setTriggerTireStatusCheck = (checkTireStatus = false) => ({
 export const setImageDimensions = (dimensions = null) => ({
   type: SET_IMAGE_DIMENSIONS,
   payload: dimensions,
+});
+export const setVehicleTypeModalVisible = (visible = false) => ({
+  type: SET_VEHICLE_TYPE_MODAL_VISIBLE,
+  payload: visible,
+});
+export const setSelectedVehicleKind = kind => ({
+  type: SET_SELECTED_VEHICLE_KIND,
+  payload: kind,
 });
