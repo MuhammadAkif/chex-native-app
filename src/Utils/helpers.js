@@ -4,6 +4,10 @@ import {
 } from 'react-native-responsive-screen';
 import {isNotEmpty} from './index';
 import {Landscape, Portrait} from '../Assets/Icons';
+import dayjs from 'dayjs';
+
+var relativeTime = require('dayjs/plugin/relativeTime');
+dayjs.extend(relativeTime);
 
 export const headerFlex = {
   true: 1.5,

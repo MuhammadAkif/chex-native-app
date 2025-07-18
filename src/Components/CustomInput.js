@@ -30,6 +30,7 @@ const CustomInput = forwardRef(
       onPressOut,
       inputContainerStyle,
       hidePasswordHandler,
+      editable,
     },
     ref,
   ) => (
@@ -46,13 +47,14 @@ const CustomInput = forwardRef(
         numberOfLines={1}
         multiline={false}
         onChangeText={onChangeText(valueName)}
-        onBlur={onBlur(valueName)}
+        onBlur={onBlur?.(valueName)}
         secureTextEntry={secureTextEntry}
         style={[styles.input, inputStyle, {color: black}]}
         inputMode={inputMode}
         enterKeyHint={enterKeyHint || 'next'}
         onSubmitEditing={onSubmitEditing}
         keyboardType={keyboardType}
+        editable={editable}
       />
     </View>
   ),

@@ -8,7 +8,7 @@ const ENV_TYPE_URL = {
 };
 const version = '1';
 export const API_VERSION_PATH = '/api/v' + version + '/';
-export const API_BASE_URL = ENV_TYPE_URL.production;
+export const API_BASE_URL = ENV_TYPE_URL.staging;
 export const generateApiUrl = path => API_BASE_URL + API_VERSION_PATH + path;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
 export const EXTRACT_NUMBER_PLATE_WITH_AI =
@@ -178,6 +178,7 @@ export const DRAWER = {
   HOME: 'HOME',
   THINGS_YOU_WILL_REQUIRE: 'Things you will require',
   LOGOUT: 'Logout',
+  DVIRC: 'DVIRC',
 };
 
 export const INSPECTION_STATUSES = [

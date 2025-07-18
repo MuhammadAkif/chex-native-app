@@ -10,6 +10,9 @@ import {
   LicensePlateNumberSelectionContainer,
   InspectionInProgressContainer,
   InspectionSelectionContainer,
+  DriverVehicleInspectionReportChecklistContainer,
+  DVIRInspectionChecklistContainer,
+  DVIRVehicleInfoContainer,
 } from '../Container';
 import {
   HeaderBackButton,
@@ -40,7 +43,10 @@ const NavigationDrawer = ({navigation}) => {
     INSPECTION_REVIEWED,
     INSPECTION_DETAIL,
     INSPECTION_IN_PROGRESS,
+    DVIR_INSPECTION_CHECKLIST_CONTAINER,
+    DVIR_VEHICLE_INFO_CONTAINER,
   } = ROUTES;
+
   const options = {
     headerTitleAlign: 'center',
     headerTitle: ScreenHeaderTitle,
@@ -85,6 +91,18 @@ const NavigationDrawer = ({navigation}) => {
         <Screen
           name={INSPECTION_IN_PROGRESS}
           component={InspectionInProgressContainer}
+          options={options}
+        />
+        {/* DVIR */}
+        <Screen
+          name={DVIR_INSPECTION_CHECKLIST_CONTAINER}
+          component={DVIRInspectionChecklistContainer}
+          options={options}
+        />
+
+        <Screen
+          name={DVIR_VEHICLE_INFO_CONTAINER}
+          component={DVIRVehicleInfoContainer}
           options={options}
         />
       </Navigator>

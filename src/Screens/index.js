@@ -12,8 +12,12 @@ import InspectionDetailScreen from './InspectionDetailScreen';
 import CameraScreen from './CameraScreen';
 import LicensePlateNumberSelectionScreen from './LicensePlateNumberSelectionScreen';
 import InspectionInProgressScreen from './InspectionInProgressScreen';
+import DVIRVehicleInfoScreen from './DVIR/DVIRVehicleInfoScreen';
+import DVIRInspectionChecklistScreen from './DVIR/DVIRInspectionChecklistScreen';
 
 export {
+  DVIRVehicleInfoScreen,
+  DVIRInspectionChecklistScreen,
   WelcomeScreen,
   RegisterScreen,
   SignInScreen,

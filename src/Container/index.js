@@ -13,8 +13,12 @@ import VideoContainer from './VideoContainer';
 import CompletedInspectionContainer from './CompletedInspectionContainer';
 import LicensePlateNumberSelectionContainer from './LicensePlateNumberSelectionContainer';
 import InspectionInProgressContainer from './InspectionInProgressContainer';
+import DVIRVehicleInfoContainer from './DVIR/DVIRVehicleInfoContainer';
+import DVIRInspectionChecklistContainer from './DVIR/DVIRInspectionChecklistContainer';
 
 export {
+  DVIRVehicleInfoContainer,
+  DVIRInspectionChecklistContainer,
   WelcomeContainer,
   RegisterContainer,
   SignInContainer,

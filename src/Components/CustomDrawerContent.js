@@ -29,7 +29,13 @@ import {
 import {DRAWER, PROJECT_NAME} from '../Constants';
 import {IMAGES} from '../Assets/Images';
 
-const {SIGN_IN, INSPECTION_SELECTION, INTRO, NEW_INSPECTION} = ROUTES;
+const {
+  SIGN_IN,
+  INSPECTION_SELECTION,
+  INTRO,
+  NEW_INSPECTION,
+  DVIR_VEHICLE_INFO_CONTAINER,
+} = ROUTES;
 const {cobaltBlue, black, red} = colors;
 
 const CustomDrawerContent = props => {
@@ -122,6 +128,25 @@ const CustomDrawerContent = props => {
         }
         onPress={() => handleNavigationPress(INTRO, 'Intro ')}
       />
+
+      <DrawerItemText
+        text={DRAWER.DVIRC}
+        textColor={activeColorOfTextAndIcon('DVIRC')}
+        Icon={
+          <Info
+            height={hp('2.5%')}
+            width={wp('5%')}
+            color={activeColorOfTextAndIcon('DVIRC')}
+          />
+        }
+        onPress={() =>
+          handleNavigationPress(
+            DVIR_VEHICLE_INFO_CONTAINER,
+            'DVIR_VEHICLE_INFO',
+          )
+        }
+      />
+
       <DrawerItemText
         text={DRAWER.LOGOUT}
         textColor={red}
