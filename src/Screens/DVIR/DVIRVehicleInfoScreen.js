@@ -1,146 +1,136 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
-import React, {useState} from 'react';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
-import DatePicker from 'react-native-date-picker';
-import dayjs from 'dayjs';
+import React from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import CalendarIcon from '../../Assets/Icons/CalendarIcon';
-import {CustomInput, PrimaryGradientButton} from '../../Components';
-import {colors, NewInspectionStyles} from '../../Assets/Styles';
-import {ROUTES} from '../../Navigation/ROUTES';
+import { CustomInput, PrimaryGradientButton } from '../../Components';
+import { colors, NewInspectionStyles, errorStyle } from '../../Assets/Styles';
+import AppText from '../../Components/text';
+import { CameraBorderedIcon } from '../../Assets/Icons';
 
-const {container, bodyContainer} = NewInspectionStyles;
+const { container, bodyContainer } = NewInspectionStyles;
 
-const DVIRVehicleInfoScreen = ({navigation}) => {
-  const [date, setDate] = useState(new Date());
-  const [showDateModel, setShowDateModel] = useState(false);
-  const [selectedDate, setSelectedDate] = useState('07/07/2023');
-  const [form, setForm] = useState({
-    driverName: '',
-    truckId: '',
-    mileage: '',
-    vin: '',
-    technician: '',
-  });
-
-  const handleChange = name => value => {
-    setForm(prev => ({...prev, [name]: value}));
-  };
-
-  return (
-    <View style={container}>
-      <View style={bodyContainer}>
-        <Text style={styles.headingText}>
-          DRIVER VEHICLE INSPECTION REPORT CHECKLIST
-        </Text>
-
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}>
-          <View style={styles.innerBody}>
-            {/* Driver Name */}
-            <Text style={styles.inputLabel}>Driver Name</Text>
-            <CustomInput
-              placeholder=""
-              value={form.driverName}
-              onChangeText={() => handleChange('driverName')}
-              valueName="driverName"
-              inputContainerStyle={styles.inputContainer}
-            />
-            {/* Date */}
-            <Text style={styles.inputLabel}>Date</Text>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <CustomInput
-                placeholder=""
-                value={selectedDate}
-                onChangeText={() => handleChange('date')}
-                valueName="date"
-                inputContainerStyle={styles.inputContainer}
-                editable={false}
-              />
-              <TouchableOpacity
-                style={{position: 'absolute', right: 10}}
-                onPress={() => setShowDateModel(true)}>
-                <CalendarIcon height={28} width={28} />
-              </TouchableOpacity>
-            </View>
-            {/* Truck ID/License Plate */}
-            <Text style={styles.inputLabel}>Truck ID/License Plate</Text>
-            <CustomInput
-              placeholder=""
-              value={form.truckId}
-              onChangeText={() => handleChange('truckId')}
-              valueName="truckId"
-              inputContainerStyle={styles.inputContainer}
-            />
-            {/* Mileage */}
-            <Text style={styles.inputLabel}>Mileage</Text>
-            <CustomInput
-              placeholder=""
-              value={form.mileage}
-              onChangeText={() => handleChange('mileage')}
-              valueName="mileage"
-              inputContainerStyle={styles.inputContainer}
-            />
-            {/* VIN */}
-            <Text style={styles.inputLabel}>VIN</Text>
-            <CustomInput
-              placeholder=""
-              value={form.vin}
-              onChangeText={() => handleChange('vin')}
-              valueName="vin"
-              inputContainerStyle={styles.inputContainer}
-            />
-            {/* Technician */}
-            <Text style={styles.inputLabel}>Technician</Text>
-            <CustomInput
-              placeholder=""
-              value={form.technician}
-              onChangeText={() => handleChange('technician')}
-              valueName="technician"
-              inputContainerStyle={styles.inputContainer}
-            />
-          </View>
-
-          <PrimaryGradientButton
-            onPress={() =>
-              navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST_CONTAINER)
-            }
-            disabled={false}
-            text={'Next'}
-            buttonStyle={styles.buttonContainer}
+const DVIRVehicleInfoScreen = ({
+  values,
+  errors,
+  touched,
+  handleChange,
+  handleBlur,
+  handleSubmit,
+  isSubmitting,
+  onCalendarPress,
+}) => (
+  <View style={container}>
+    <View style={bodyContainer}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+        style={styles.scrollStyle}
+      >
+        <View style={styles.innerBody}>
+          {/* Driver Name */}
+          <AppText style={styles.inputLabel}>Driver Name</AppText>
+          <CustomInput
+            placeholder=""
+            value={values.driverName}
+            onChangeText={handleChange}
+            onBlur={handleBlur}
+            valueName="driverName"
+            inputContainerStyle={styles.inputContainer}
+            touched={touched.driverName}
+            error={errors.driverName}
           />
-        </ScrollView>
-      </View>
-      <DatePicker
-        modal
-        mode="date"
-        open={showDateModel}
-        date={date}
-        maximumDate={new Date()}
-        onConfirm={date => {
-          setSelectedDate(dayjs(date).format('DD/MM/YYYY'));
-          setShowDateModel(false);
-          setDate(date);
-        }}
-        onCancel={() => {
-          setShowDateModel(false);
-        }}
-      />
+          {touched.driverName && errors.driverName && (
+            <AppText style={errorStyle.errorsTextStyle}>{errors.driverName}</AppText>
+          )}
+          {/* Date */}
+          <AppText style={styles.inputLabel}>Date</AppText>
+          <CustomInput
+            placeholder=""
+            value={values.date}
+            valueName="date"
+            inputContainerStyle={styles.inputContainer}
+            editable={false}
+            rightIcon={<CalendarIcon height={28} width={28} />}
+            onRightIconPress={() => onCalendarPress(values.date)}
+          />
+          {touched.date && errors.date && (
+            <AppText style={errorStyle.errorsTextStyle}>{errors.date}</AppText>
+          )}
+          {/* Truck ID/License Plate */}
+          <AppText style={styles.inputLabel}>Truck ID/License Plate</AppText>
+          <CustomInput
+            placeholder=""
+            value={values.truckId}
+            onChangeText={handleChange}
+            onBlur={handleBlur}
+            valueName="truckId"
+            inputContainerStyle={styles.inputContainer}
+            touched={touched.truckId}
+            error={errors.truckId}
+          />
+          {touched.truckId && errors.truckId && (
+            <AppText style={errorStyle.errorsTextStyle}>{errors.truckId}</AppText>
+          )}
+          {/* Mileage */}
+          <AppText style={styles.inputLabel}>Mileage</AppText>
+          <CustomInput
+            placeholder=""
+            value={values.mileage}
+            onChangeText={handleChange}
+            onBlur={handleBlur}
+            valueName="mileage"
+            inputContainerStyle={styles.inputContainer}
+            touched={touched.mileage}
+            error={errors.mileage}
+          />
+          {touched.mileage && errors.mileage && (
+            <AppText style={errorStyle.errorsTextStyle}>{errors.mileage}</AppText>
+          )}
+          {/* VIN */}
+          <AppText style={styles.inputLabel}>VIN</AppText>
+          <CustomInput
+            placeholder=""
+            value={values.vin}
+            onChangeText={handleChange}
+            onBlur={handleBlur}
+            valueName="vin"
+            inputContainerStyle={styles.inputContainer}
+            touched={touched.vin}
+            error={errors.vin}
+            rightIcon={<CameraBorderedIcon height={28} width={28} color={colors.brightBlue} />}
+          />
+          {touched.vin && errors.vin && (
+            <AppText style={errorStyle.errorsTextStyle}>{errors.vin}</AppText>
+          )}
+          {/* Technician */}
+          <AppText style={styles.inputLabel}>Technician</AppText>
+          <CustomInput
+            placeholder=""
+            value={values.technician}
+            onChangeText={handleChange}
+            onBlur={handleBlur}
+            valueName="technician"
+            inputContainerStyle={styles.inputContainer}
+            touched={touched.technician}
+            error={errors.technician}
+          />
+          {touched.technician && errors.technician && (
+            <AppText style={errorStyle.errorsTextStyle}>{errors.technician}</AppText>
+          )}
+        </View>
+        <PrimaryGradientButton
+          onPress={handleSubmit}
+          disabled={isSubmitting}
+          text={'Next'}
+          buttonStyle={styles.buttonContainer}
+        />
+      </ScrollView>
     </View>
-  );
-};
+  </View>
+);
 
 const styles = StyleSheet.create({
-  innerBody: {flex: 1},
+  innerBody: { flex: 1 },
   inputLabel: {
     fontWeight: 'bold',
     fontSize: hp('2%'),
@@ -148,7 +138,8 @@ const styles = StyleSheet.create({
     color: colors.black,
     marginBottom: hp('1%'),
   },
-  scrollContent: {flexGrow: 1, paddingHorizontal: '5%'},
+  scrollStyle: { marginTop: wp(5) },
+  scrollContent: { flexGrow: 1, paddingHorizontal: '5%' },
   buttonContainer: {
     height: hp('6%'),
     width: wp('70%'),
@@ -156,7 +147,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginVertical: hp('5%'),
   },
-  inputContainer: {height: hp('6%')},
+  inputContainer: { height: hp('5%') },
   headingText: {
     fontSize: hp('1.7%'),
     marginTop: hp('3%'),

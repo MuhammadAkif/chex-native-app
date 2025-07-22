@@ -34,6 +34,7 @@ const {
   INSPECTION_SELECTION,
   INTRO,
   NEW_INSPECTION,
+  DVIR_VEHICLE_INFO_CONTAINER
 } = ROUTES;
 const {cobaltBlue, black, red} = colors;
 
@@ -137,6 +138,20 @@ const CustomDrawerContent = props => {
           </TouchableOpacity>
         }
         onPress={handleLogout}
+      />
+
+      <DrawerItemText
+        text={'DVIR'}
+        textColor={activeColorOfTextAndIcon('DVIR')}
+        activeColor={activeScreen === 'DVIR' ? activeColor : 'transparent'}
+        Icon={
+          <Info
+            height={hp('2.5%')}
+            width={wp('5%')}
+            color={activeColorOfTextAndIcon('DVIR')}
+          />
+        }
+        onPress={() => handleNavigationPress(DVIR_VEHICLE_INFO_CONTAINER, 'DVIR ')}
       />
       <StatusBar backgroundColor={'transparent'} barStyle={'light-content'} />
     </ScrollView>

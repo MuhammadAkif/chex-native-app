@@ -1,5 +1,5 @@
 import React, {forwardRef} from 'react';
-import {View, TextInput, StyleSheet} from 'react-native';
+import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -31,6 +31,8 @@ const CustomInput = forwardRef(
       inputContainerStyle,
       hidePasswordHandler,
       editable,
+      rightIcon,
+      onRightIconPress,
     },
     ref,
   ) => (
@@ -46,7 +48,7 @@ const CustomInput = forwardRef(
         // textAlign={'left'}
         numberOfLines={1}
         multiline={false}
-        onChangeText={onChangeText(valueName)}
+        onChangeText={onChangeText?.(valueName)}
         onBlur={onBlur?.(valueName)}
         secureTextEntry={secureTextEntry}
         style={[styles.input, inputStyle, {color: black}]}
@@ -56,6 +58,14 @@ const CustomInput = forwardRef(
         keyboardType={keyboardType}
         editable={editable}
       />
+      {rightIcon && (
+        <TouchableOpacity
+          style={styles.rightIconContainer}
+          onPress={onRightIconPress}
+          activeOpacity={0.7}>
+          {rightIcon}
+        </TouchableOpacity>
+      )}
     </View>
   ),
 );
@@ -64,16 +74,23 @@ const styles = StyleSheet.create({
   container: {
     height: hp('7%'),
     width: wp('90%'),
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: lightSkyBlue,
     borderRadius: 5,
+    paddingHorizontal: wp('4%'),
   },
   input: {
     height: hp('7%'),
-    width: wp('80%'),
+    width: wp('75%'),
     fontSize: hp('2%'),
+    flex: 1,
+  },
+  rightIconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingLeft: wp('2%'),
   },
 });
 

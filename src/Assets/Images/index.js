@@ -19,6 +19,15 @@ export const IMAGES = {
   intro_Background: require('./IntroVehicle.png'),
   expiry_Inspection: require('./ExpiryInspection.png'),
   drawer: require('./DrawerImage.png'),
+  // FRAMES
+  truckFront: require('./Frames/TruckFront.png'),
+  truckLeft: require('./Frames/TruckLeft.png'),
+  truckRight: require('./Frames/TruckRight.png'),
+  truckInterior: require('./Frames/TruckInterior.png'),
+  truckBody: require('./Frames/TruckBody.png'),
+  vehicleTire: require('./TireLR.png'),
+  vehicleTDS: require('./vehicleTDS.png'),
+  vehicleBrakeComponent: require('./vehicleBrakeComponent.png'),
 };
 
 const portraitImages = {

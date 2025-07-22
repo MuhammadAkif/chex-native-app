@@ -1,204 +1,43 @@
-import React, {useState, useCallback, useMemo} from 'react';
+import React, {useCallback} from 'react';
 import {
-  View,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Modal,
-  TextInput,
   Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import {
-  widthPercentageToDP as wp,
   heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import {
+  CameraBorderedIcon,
+  CircledChevron,
+  CrossCircledIcon,
+  VideoBorderedIcon,
+} from '../../Assets/Icons';
+import CommentBorderedIcon from '../../Assets/Icons/CommentBorderedIcon';
+import {IMAGES} from '../../Assets/Images';
+import {colors, NewInspectionStyles} from '../../Assets/Styles';
+import {PrimaryGradientButton} from '../../Components';
 import AppText from '../../Components/text';
-import {ROUTES} from '../../Navigation/ROUTES';
-import {CircledChevron, CameraBlack, PlusBlack, DownloadBlue} from '../../Assets/Icons';
-import { colors, NewInspectionStyles } from '../../Assets/Styles';
-import { FooterButtons } from '../../Components';
 
-const DVIRInspectionChecklistScreen = ({navigation}) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [currentItemIndex, setCurrentItemIndex] = useState(null);
-  const [overallCondition, setOverallCondition] = useState('');
-  const [vehicleStatus, setVehicleStatus] = useState('Maintenance Required');
-  const [additionalComments, setAdditionalComments] = useState('');
-  const [inspectionData, setInspectionData] = useState([
-    {
-      id: 1,
-      title:
-        'Head Lights / Turn Signals / Hazard Warning Lights / Exterior Lamps / Wiper Blades',
-      status: 'Good',
-      comment: '',
-    },
-    {
-      id: 2,
-      title: 'Engine Bay (Wide Shot)',
-      status: 'Good',
-      comment: '',
-    },
-    {
-      id: 3,
-      title: 'Oil Dipstick (Photo Showing Oil Level/ Clarity)',
-      status: 'Repair',
-      comment: '',
-    },
-    {
-      id: 4,
-      title: 'Under-Body Leak Check (Photo Beneath Engine)',
-      status: 'Replace',
-      comment: '',
-    },
-    {
-      id: 5,
-      title:
-        'Full Front Interior (Dash, Steering Wheel, Seats, Seat Belts, Airbags)',
-      status: 'Good',
-      comment: '',
-    },
-    {
-      id: 6,
-      title: 'Rear Interior (Back Seats, Floor) / Truck Bed',
-      status: 'Repair',
-      comment: '',
-    },
-    {
-      id: 7,
-      title: 'Radio / Navigation Screen (Powered On)',
-      status: 'Repair',
-      comment: '',
-    },
-    {
-      id: 8,
-      title: 'Jack & Tools (Jack, Wrench, Tool Kit)',
-      status: 'Repair',
-      comment: '',
-    },
-    {
-      id: 9,
-      title:
-        'Tail Lights / Turn Signals / Brake Lights / Hazard Warning Lights / Exterior Lamps',
-      status: 'Repair',
-      comment: '',
-    },
-    {
-      id: 10,
-      title: 'Exterior Front',
-      status: 'Good',
-      comment: '',
-      hasImages: true,
-    },
-    {
-      id: 11,
-      title: 'Exterior Rear',
-      status: 'Good',
-      comment: '',
-      hasImages: true,
-    },
-  ]);
-
-  const [tireInspectionData] = useState([
-    { id: 'tdrf', title: 'Tread Depth RF (TDRF)', image: null },
-    { id: 'tdrr', title: 'Tread Depth RR (TDRR)', image: null },
-    { id: 'tdlf', title: 'Tread Depth LF (TDLF)', image: null },
-    { id: 'tdlr', title: 'Tread Depth LR (TDLR)', image: null },
-    { id: 'tdspare', title: 'Tread Depth Spare (TDSPARE)', image: null },
-    { id: 'brake', title: 'Brake Components (photo of drums/rotors/lines)', image: null },
-  ]);
-
-  const conditionOptions = [
-    'Excellent',
-    'Good',
-    'Fair',
-    'Poor',
-    'Needs Immediate Attention'
-  ];
-
-  const vehicleStatusOptions = [
-    'Safe to Operate',
-    'Maintenance Required',
-    'Out of Service'
-  ];
-
-  const {container, bodyContainer} = NewInspectionStyles;
-
-  // Memoize button styles to avoid recalculation
-  const buttonStyles = useMemo(() => ({
-    Good: {
-      backgroundColor: '#4CAF50',
-      textColor: '#FFFFFF',
-    },
-    Repair: {
-      backgroundColor: '#FFC107',
-      textColor: '#FFFFFF',
-    },
-    Replace: {
-      backgroundColor: '#F44336',
-      textColor: '#FFFFFF',
-    },
-    default: {
-      backgroundColor: '#F5F5F5',
-      textColor: '#666666',
-    },
-  }), []);
-
-  const handleStatusChange = useCallback((index, status) => {
-    setInspectionData(prevData => {
-      const newData = [...prevData];
-      newData[index].status = status;
-      return newData;
-    });
-  }, []);
-
-  const handleAddComment = useCallback((index) => {
-    setCurrentItemIndex(index);
-    setModalVisible(true);
-  }, []);
-
-  const handleSaveComment = useCallback((comments) => {
-    if (currentItemIndex !== null) {
-      setInspectionData(prevData => {
-        const newData = [...prevData];
-        newData[currentItemIndex].comment = comments;
-        return newData;
-      });
-    }
-    setModalVisible(false);
-    setCurrentItemIndex(null);
-  }, [currentItemIndex]);
-
-  const handleOpenCamera = useCallback(() => {
-    const details = {
-      title: 'Title',
-      type: '1',
-      uri: '',
-      source: '',
-      fileId: '',
-    };
-    
-    navigation.navigate(ROUTES.CAMERA, {
-      type: 1,
-      modalDetails: details,
-      inspectionId: 1,
-    });
-  }, [navigation]);
-
-  const handleCloseModal = useCallback(() => {
-    setModalVisible(false);
-  }, []);
-
-  const handleDownloadPDF = useCallback(() => {
-    // Implement PDF download logic
-    console.log('Download PDF');
-  }, []);
-
-  const StatusButton = React.memo(({title, isSelected, onPress, type}) => {
+// Move StatusButton outside so it is available to InspectionItem
+const StatusButton = React.memo(
+  ({title, isSelected, onPress, type, buttonStyles, styles, AppText, wp}) => {
     const buttonStyle = isSelected ? buttonStyles[type] : buttonStyles.default;
-
     return (
       <TouchableOpacity
-        style={[styles.statusButton, {backgroundColor: buttonStyle.backgroundColor}]}
+        style={[
+          styles.statusButton,
+          {backgroundColor: buttonStyle.backgroundColor},
+        ]}
         onPress={onPress}
         activeOpacity={0.7}>
         <AppText style={[styles.statusText, {color: buttonStyle.textColor}]}>
@@ -206,153 +45,109 @@ const DVIRInspectionChecklistScreen = ({navigation}) => {
         </AppText>
       </TouchableOpacity>
     );
-  });
+  },
+);
 
-  const UploadImageBox = React.memo(({title, onPress}) => (
-    <TouchableOpacity 
-      style={styles.uploadImageBox}
-      onPress={onPress}
-      activeOpacity={0.7}>
-      <View style={styles.uploadIcon}>
-        <CameraBlack width={wp('8%')} height={wp('8%')} color="#4285F4" />
-      </View>
-      <AppText style={styles.uploadImageText}>Upload Image</AppText>
-      <AppText style={styles.uploadImageTitle}>{title}</AppText>
-    </TouchableOpacity>
-  ));
-
-  const TireInspectionSection = React.memo(() => (
-    <View style={styles.sectionContainer}>
-      <AppText style={styles.sectionTitle}>12. Tires</AppText>
-      <View style={styles.tireGrid}>
-        {tireInspectionData.map((tire, index) => (
-          <UploadImageBox
-            key={tire.id}
-            title={tire.title}
-            onPress={() => handleOpenCamera()}
-          />
-        ))}
-      </View>
-    </View>
-  ));
-
-  const DropdownSelector = React.memo(({title, value, options, onSelect, placeholder}) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    const handleSelect = useCallback((option) => {
-      onSelect(option);
-      setIsOpen(false);
-    }, [onSelect]);
-
-    return (
-      <View style={styles.dropdownContainer}>
-        <AppText style={styles.dropdownLabel}>{title}</AppText>
-        <TouchableOpacity
-          style={styles.dropdownButton}
-          onPress={() => setIsOpen(!isOpen)}
-          activeOpacity={0.7}>
-          <AppText style={[
-            styles.dropdownButtonText,
-            !value && styles.dropdownPlaceholder
-          ]}>
-            {value || placeholder}
-          </AppText>
-          <AppText style={styles.dropdownArrow}>▼</AppText>
-        </TouchableOpacity>
-        
-        {isOpen && (
-          <View style={styles.dropdownOptions}>
-            {options.map((option, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.dropdownOption}
-                onPress={() => handleSelect(option)}
-                activeOpacity={0.7}>
-                <AppText style={styles.dropdownOptionText}>{option}</AppText>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-      </View>
-    );
-  });
-
-  const InspectionItem = React.memo(({item, index}) => {
-    const handleStatusGood = useCallback(() => handleStatusChange(index, 'Good'), [index]);
-    const handleStatusRepair = useCallback(() => handleStatusChange(index, 'Repair'), [index]);
-    const handleStatusReplace = useCallback(() => handleStatusChange(index, 'Replace'), [index]);
-    const handleComment = useCallback(() => handleAddComment(index), [index]);
-
+// Move InspectionItem outside the main component
+const InspectionItem = React.memo(
+  ({
+    item,
+    index,
+    onStatusGood,
+    onStatusRepair,
+    onStatusReplace,
+    onComment,
+    onCamera,
+    onRemove,
+    styles,
+    wp,
+    CrossCircledIcon,
+    CameraBorderedIcon,
+    VideoBorderedIcon,
+    AppText,
+    buttonStyles,
+  }) => {
     return (
       <View style={styles.itemContainer}>
         <View style={styles.itemHeader}>
-          <AppText style={styles.itemNumber}>{index + 1}.</AppText>
           <AppText style={styles.itemTitle}>{item.title}</AppText>
-          {(item.id !== 10 && item.id !== 11) && (
+          {item.id !== 10 && item.id !== 11 && (
             <View style={styles.iconContainer}>
               <TouchableOpacity
-                onPress={handleComment}
-                activeOpacity={0.7}
-                hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
-                <PlusBlack width={wp('7%')} height={wp('7%')} />
+                onPress={() => onComment(index)}
+                activeOpacity={0.7}>
+                <CommentBorderedIcon width={wp('7%')} height={wp('7%')} />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={handleOpenCamera}
-                activeOpacity={0.7}
-                hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
-                <CameraBlack width={wp('7%')} height={wp('7%')} />
+                onPress={() => onCamera(index)}
+                activeOpacity={0.7}>
+                {item?.videos ? (
+                  <VideoBorderedIcon width={wp('7%')} height={wp('7%')} />
+                ) : (
+                  <CameraBorderedIcon width={wp('7%')} height={wp('7%')} />
+                )}
               </TouchableOpacity>
             </View>
           )}
         </View>
 
-        {(item.id !== 10 && item.id !== 11) && (
+        {item.id !== 10 && item.id !== 11 && (
           <View style={styles.statusContainer}>
             <StatusButton
               title="Good"
               type="Good"
               isSelected={item.status === 'Good'}
-              onPress={handleStatusGood}
+              onPress={() => onStatusGood(index)}
+              buttonStyles={buttonStyles}
+              styles={styles}
+              AppText={AppText}
+              wp={wp}
             />
             <StatusButton
               title="Repair"
               type="Repair"
               isSelected={item.status === 'Repair'}
-              onPress={handleStatusRepair}
+              onPress={() => onStatusRepair(index)}
+              buttonStyles={buttonStyles}
+              styles={styles}
+              AppText={AppText}
+              wp={wp}
             />
             <StatusButton
               title="Replace"
               type="Replace"
               isSelected={item.status === 'Replace'}
-              onPress={handleStatusReplace}
+              onPress={() => onStatusReplace(index)}
+              buttonStyles={buttonStyles}
+              styles={styles}
+              AppText={AppText}
+              wp={wp}
             />
           </View>
         )}
 
-        {item.hasImages && (
-          <View style={styles.imageContainer}>
-            <View style={styles.imageBox}>
-              <Image
-                source={{uri: 'https://www.shutterstock.com/shutterstock/photos/384697171/display_1500/stock-vector-car-logo-vector-illustration-384697171.jpg'}}
-                style={styles.placeholderImage}
-                resizeMode="cover"
-              />
+        {/* Show captured images for items 1-9 */}
+        {item.id >= 1 &&
+          item.id <= 9 &&
+          item.images &&
+          item.images.length > 0 && (
+            <View style={styles.itemImagesContainer}>
+              {item.images.map((img, imgIdx) => (
+                <View key={imgIdx} style={styles.itemImageWrapper}>
+                  <Image
+                    source={{uri: img}}
+                    style={styles.itemImage}
+                    resizeMode="cover"
+                  />
+                  <TouchableOpacity
+                    onPress={() => onRemove(index, imgIdx)}
+                    style={styles.removeImageButton}>
+                    <CrossCircledIcon />
+                  </TouchableOpacity>
+                </View>
+              ))}
             </View>
-            <View style={styles.imageBox}>
-              <Image
-                source={{uri: 'https://www.shutterstock.com/shutterstock/photos/384697171/display_1500/stock-vector-car-logo-vector-illustration-384697171.jpg'}}
-                style={styles.placeholderImage}
-                resizeMode="cover"
-              />
-            </View>
-            <TouchableOpacity 
-              style={styles.captureImageBox}
-              activeOpacity={0.7}>
-              <CameraBlack width={wp('6%')} height={wp('6%')} color="#4285F4" />
-              <AppText style={styles.captureImageText}>Capture image</AppText>
-            </TouchableOpacity>
-          </View>
-        )}
+          )}
 
         {item.comment ? (
           <View style={styles.commentContainer}>
@@ -361,65 +156,137 @@ const DVIRInspectionChecklistScreen = ({navigation}) => {
         ) : null}
       </View>
     );
-  });
+  },
+);
 
-  const CommentModal = React.memo(() => {
-    const [text, setText] = useState('');
+// Move CommentModal outside the main component
+const CommentModal = React.memo(
+  ({visible, onClose, onSave, initialValue = '', styles, AppText}) => {
+    const [text, setText] = React.useState(initialValue);
 
-    const handleSave = useCallback(() => {
-      handleSaveComment(text);
+    React.useEffect(() => {
+      setText(initialValue);
+    }, [initialValue, visible]);
+
+    const handleSave = React.useCallback(() => {
+      onSave(text);
       setText('');
-    }, [text]);
+    }, [text, onSave]);
+
+    const handleClose = React.useCallback(() => {
+      Keyboard.dismiss();
+      onClose();
+    }, [onClose]);
 
     return (
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
-        onRequestClose={handleCloseModal}
+        visible={visible}
+        onRequestClose={handleClose}
         statusBarTranslucent={true}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Image
-              source={{uri: 'https://via.placeholder.com/300x200'}}
-              style={styles.modalImage}
-              resizeMode="cover"
-            />
-            <AppText style={styles.modalTitle}>Comments</AppText>
-            <TextInput
-              style={styles.commentInput}
-              placeholder="Add your comments here"
-              value={text}
-              onChangeText={setText}
-              multiline={true}
-              textAlignVertical="top"
-              returnKeyType="done"
-              blurOnSubmit={true}
-            />
-            <TouchableOpacity
-              style={styles.okButton}
-              onPress={handleSave}
-              activeOpacity={0.8}>
-              <AppText style={styles.okButtonText}>OK</AppText>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardAvoidingContainer}>
+          <ScrollView
+            contentContainerStyle={styles.modalOverlay}
+            keyboardShouldPersistTaps="handled"
+            bounces={false}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <View style={styles.modalContent}>
+                <Image
+                  source={{
+                    uri: 'https://www.shutterstock.com/shutterstock/photos/384697171/display_1500/stock-vector-car-logo-vector-illustration-384697171.jpg',
+                  }}
+                  style={styles.modalImage}
+                  resizeMode="cover"
+                />
+                <AppText style={styles.modalTitle}>Comments</AppText>
+                <TextInput
+                  style={styles.commentInput}
+                  placeholder="Add your comments here"
+                  value={text}
+                  onChangeText={setText}
+                  multiline={true}
+                  textAlignVertical="top"
+                  returnKeyType="done"
+                  blurOnSubmit={true}
+                />
+                <TouchableOpacity
+                  style={styles.okButton}
+                  onPress={handleSave}
+                  activeOpacity={0.8}>
+                  <AppText style={styles.okButtonText}>OK</AppText>
+                </TouchableOpacity>
+              </View>
+            </TouchableWithoutFeedback>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </Modal>
     );
-  });
+  },
+);
+
+// Remove all state, useEffect, and business logic. Accept all state, handlers, and data as props from the container.
+const DVIRInspectionChecklistScreen = ({
+  navigation,
+  route,
+  modalVisible,
+  setModalVisible,
+  currentItemIndex,
+  setCurrentItemIndex,
+  additionalComments,
+  setAdditionalComments,
+  inspectionData,
+  setInspectionData,
+  captureFrames,
+  setCaptureFrames,
+  tireInspectionData,
+  setTireInspectionData,
+  buttonStyles,
+  handleStatusChange,
+  handleAddComment,
+  handleSaveComment,
+  handleOpenCamera,
+  handleCloseModal,
+  handleRemoveImage,
+  handleTireImage,
+  showChecklistSection,
+  showTiresSection,
+  toggleChecklistSection,
+  toggleTiresSection,
+}) => {
+  const {container, bodyContainer} = NewInspectionStyles;
+
+  // Move these handlers outside of InspectionItem
+  const handleStatusGood = useCallback(
+    index => handleStatusChange(index, 'Good'),
+    [handleStatusChange],
+  );
+  const handleStatusRepair = useCallback(
+    index => handleStatusChange(index, 'Repair'),
+    [handleStatusChange],
+  );
+  const handleStatusReplace = useCallback(
+    index => handleStatusChange(index, 'Replace'),
+    [handleStatusChange],
+  );
+  const handleComment = useCallback(
+    index => handleAddComment(index),
+    [handleAddComment],
+  );
+  const handleCamera = useCallback(
+    index => handleOpenCamera(index),
+    [handleOpenCamera],
+  );
+  const handleRemove = useCallback(
+    (itemIndex, imgIdx) => handleRemoveImage(itemIndex, imgIdx),
+    [handleRemoveImage],
+  );
 
   return (
     <View style={container}>
       <View style={bodyContainer}>
-        <View style={styles.header}>
-          <AppText style={styles.headerTitle}>Interior / Exterior Items</AppText>
-          <View style={styles.headerRight}>
-            <TouchableOpacity activeOpacity={0.7}>
-              <CircledChevron width={wp('6%')} height={wp('6%')}/>
-            </TouchableOpacity>
-          </View>
-        </View>
-
         <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
@@ -427,83 +294,269 @@ const DVIRInspectionChecklistScreen = ({navigation}) => {
           windowSize={8}
           initialNumToRender={3}
           updateCellsBatchingPeriod={50}
-          contentContainerStyle={{flexGrow: 1}}
-          >
-          
-          {/* Original Inspection Items */}
-          {inspectionData.map((item, index) => (
-            <InspectionItem key={item.id} item={item} index={index} />
-          ))}
+          contentContainerStyle={{flexGrow: 1}}>
+          {/* CHECKLIST ITEMS SECTION */}
+          <View style={styles.secondBodyContainer}>
+            <View style={styles.header}>
+              <View style={styles.headerLeft}>
+                <AppText style={styles.headerLeftText}>1</AppText>
+              </View>
+              <AppText style={styles.headerTitle}>Check List Items</AppText>
+              <View style={styles.headerRight}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={toggleChecklistSection}
+                  style={!showChecklistSection && styles.rotateChevron}>
+                  <CircledChevron width={wp('6%')} height={wp('6%')} />
+                </TouchableOpacity>
+              </View>
+            </View>
 
-          {/* Tire Inspection Section */}
-          <TireInspectionSection />
+            {showChecklistSection && (
+              <>
+                <View style={styles.cardItems}>
+                  {inspectionData.map((item, index) => (
+                    <InspectionItem
+                      key={item.id}
+                      item={item}
+                      index={index}
+                      onStatusGood={handleStatusGood}
+                      onStatusRepair={handleStatusRepair}
+                      onStatusReplace={handleStatusReplace}
+                      onComment={handleComment}
+                      onCamera={handleCamera}
+                      onRemove={handleRemove}
+                      styles={styles}
+                      wp={wp}
+                      CrossCircledIcon={CrossCircledIcon}
+                      CameraBorderedIcon={CameraBorderedIcon}
+                      VideoBorderedIcon={VideoBorderedIcon}
+                      AppText={AppText}
+                      buttonStyles={buttonStyles}
+                    />
+                  ))}
+                </View>
 
-          {/* Overall Condition Section */}
-          <View style={styles.sectionContainer}>
-            <DropdownSelector
-              title="Overall Condition"
-              value={overallCondition}
-              options={conditionOptions}
-              onSelect={setOverallCondition}
-              placeholder="Select Condition"
-            />
+                <View style={{marginTop: hp(4)}}>
+                  <View
+                    style={[
+                      styles.header,
+                      {
+                        paddingLeft: wp(4),
+                        paddingBottom: hp(1.5),
+                        paddingTop: 0,
+                      },
+                    ]}>
+                    <AppText style={styles.headerTitle}>Capture Frames</AppText>
+                  </View>
+
+                  <View style={styles.cardItems}>
+                    {captureFrames.map(item => (
+                      <View
+                        style={[styles.itemContainer, {gap: wp(5)}]}
+                        key={item.id}>
+                        <AppText style={styles.captureFrameTitle}>
+                          {item?.title}
+                        </AppText>
+
+                        <View style={styles.captureFrameRow}>
+                          {item.frames.map(frame => (
+                            <TouchableOpacity
+                              key={frame.id}
+                              style={styles.captureImageBox}
+                              activeOpacity={0.7}>
+                              <Image
+                                source={frame.image}
+                                style={styles.captureImageStyle}
+                              />
+                              <AppText style={styles.captureImageText}>
+                                Capture image
+                              </AppText>
+                              <CameraBorderedIcon
+                                width={wp(6)}
+                                height={wp(6)}
+                                style={styles.captureImageBoxIcon}
+                              />
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </>
+            )}
+          </View>
+          {/* TIRES SECITON */}
+          <View style={[styles.secondBodyContainer]}>
+            <View style={[styles.header]}>
+              <View style={styles.headerLeft}>
+                <AppText style={styles.headerLeftText}>2</AppText>
+              </View>
+              <AppText style={styles.headerTitle}>Tires</AppText>
+              <View style={styles.headerRight}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={toggleTiresSection}
+                  style={!showTiresSection && styles.rotateChevron}>
+                  <CircledChevron width={wp('6%')} height={wp('6%')} />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {showTiresSection && (
+              <View style={styles.tiresContainer}>
+                {/* Main Truck with Overlaid Tire Positions */}
+                <View style={styles.truckWithTiresContainer}>
+                  {/* Truck Diagram - Larger and Centered */}
+                  <View style={styles.truckDiagramContainer}>
+                    <Image
+                      source={IMAGES.truckBody}
+                      style={styles.truckBodyImage}
+                      resizeMode="contain"
+                    />
+                  </View>
+
+                  {/* Tire Capture Boxes Positioned Over Truck Tires */}
+                  {/* Map tireInspectionData for tire positions */}
+                  {tireInspectionData.slice(0, 4).map((tire, idx) => {
+                    // Map index to position style
+                    let positionStyle = null;
+                    if (tire.id === 'tdlf') {
+                      positionStyle = styles.frontLeftPosition;
+                    } else if (tire.id === 'tdrf') {
+                      positionStyle = styles.frontRightPosition;
+                    } else if (tire.id === 'tdlr') {
+                      positionStyle = [
+                        styles.rearLeftPosition,
+                        {flexDirection: 'column-reverse'},
+                      ];
+                    } else if (tire.id === 'tdrr') {
+                      positionStyle = [
+                        styles.rearRightPosition,
+                        {flexDirection: 'column-reverse'},
+                      ];
+                    }
+                    return (
+                      <View
+                        style={[styles.tirePositionContainer, positionStyle]}
+                        key={tire.id}>
+                        <TouchableOpacity
+                          style={styles.tireCaptureBox}
+                          activeOpacity={0.7}
+                          onPress={() =>
+                            handleTireImage && handleTireImage(tire.id)
+                          }>
+                          <View style={styles.tireIconContainer}>
+                            <Image
+                              source={IMAGES[tire.icon]}
+                              style={styles.tireIcon}
+                            />
+                          </View>
+                          <CameraBorderedIcon
+                            width={wp(4)}
+                            height={wp(4)}
+                            style={styles.cameraIcon}
+                          />
+                          <AppText style={styles.tireCaptureText}>
+                            Capture image
+                          </AppText>
+                        </TouchableOpacity>
+                        <AppText style={styles.tireLabel}>{tire.title}</AppText>
+                      </View>
+                    );
+                  })}
+                </View>
+
+                {/* Bottom Section - Spare Tire and Brake Components */}
+                <View style={styles.bottomTiresRow}>
+                  {tireInspectionData.slice(4).map(tire => (
+                    <View style={styles.bottomTireItem} key={tire.id}>
+                      <TouchableOpacity
+                        style={styles.tireCaptureBox}
+                        activeOpacity={0.7}
+                        onPress={() =>
+                          handleTireImage && handleTireImage(tire.id)
+                        }>
+                        <View style={styles.tireIconContainer}>
+                          <Image
+                            source={IMAGES[tire.icon]}
+                            style={styles.tireIcon}
+                          />
+                        </View>
+                        <CameraBorderedIcon
+                          width={wp(4)}
+                          height={wp(4)}
+                          style={styles.cameraIcon}
+                        />
+                        <AppText style={styles.tireCaptureText}>
+                          Capture image
+                        </AppText>
+                      </TouchableOpacity>
+                      <AppText style={styles.tireLabel}>{tire.title}</AppText>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
           </View>
 
-          {/* Vehicle Status Section */}
-          <View style={styles.sectionContainer}>
-            <DropdownSelector
-              title="Vehicle Status"
-              value={vehicleStatus}
-              options={vehicleStatusOptions}
-              onSelect={setVehicleStatus}
-              placeholder="Select Status"
-            />
-          </View>
-
-          {/* Additional Comments Section */}
-          <View style={styles.sectionContainer}>
-            <AppText style={styles.sectionTitle}>Additional Comments</AppText>
-            <TextInput
-              style={styles.additionalCommentsInput}
-              placeholder="Add your comments here"
-              value={additionalComments}
-              onChangeText={setAdditionalComments}
-              multiline={true}
-              textAlignVertical="top"
-            />
-          </View>
-
-          {/* Download PDF Button */}
-          <TouchableOpacity
-            style={styles.downloadButton}
-            onPress={handleDownloadPDF}
-            activeOpacity={0.7}>
-            <DownloadBlue width={wp('5%')} height={wp('5%')}/>
-            <AppText style={styles.downloadButtonText}>Download Vehicle Inspection PDF</AppText>
-          </TouchableOpacity>
-
-          {/* Bottom spacing for footer */}
-          <View style={styles.bottomSpacing} />
+          <PrimaryGradientButton
+            onPress={() => {}}
+            text={'Submit'}
+            buttonStyle={styles.buttonContainer}
+          />
         </ScrollView>
       </View>
 
-      <FooterButtons 
-        containerStyle={styles.footerButtonContainer} 
-        cancelText='Back' 
-        confirmText='Next' 
+      <CommentModal
+        visible={modalVisible}
+        onClose={handleCloseModal}
+        onSave={handleSaveComment}
+        styles={styles}
+        AppText={AppText}
       />
-      
-      <CommentModal />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    height: hp('6%'),
+    width: wp('70%'),
+    borderRadius: 30,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    flexDirection: 'row',
+    alignSelf: 'center',
+    marginBottom: hp(5),
+    marginTop: hp(1),
+  },
+  keyboardAvoidingContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  secondBodyContainer: {
+    // flex: 1,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    backgroundColor: colors.white,
+    elevation: 2,
+    margin: wp(3.5),
+    borderRadius: wp(1.5),
+    paddingBottom: wp(3),
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: wp(4),
+    paddingRight: wp(4),
+    paddingLeft: wp(7),
     paddingVertical: hp(2),
   },
   headerTitle: {
@@ -512,20 +565,40 @@ const styles = StyleSheet.create({
     color: colors.royalBlue,
     flex: 1,
   },
+  headerLeft: {
+    position: 'absolute',
+    left: wp(-2),
+    backgroundColor: 'rgba(231, 239, 248, 1)',
+    borderRadius: wp(1),
+    width: wp(7),
+    height: wp(7),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   headerRight: {
     flexDirection: 'row',
   },
+  headerLeftText: {fontWeight: '500', fontSize: wp(4), color: colors.royalBlue},
   scrollView: {
     flex: 1,
-    paddingHorizontal: wp(4),
   },
   itemContainer: {
     backgroundColor: '#FFFFFF',
-    marginVertical: hp(1),
+    // marginVertical: hp(1),
     borderRadius: wp(2),
     borderBottomWidth: 0.2,
     borderBottomColor: '#E0E0E0',
-    padding: wp(4),
+    padding: wp(3),
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+
+    elevation: 2,
+    marginHorizontal: wp(3),
   },
   itemHeader: {
     flexDirection: 'row',
@@ -540,14 +613,14 @@ const styles = StyleSheet.create({
   },
   itemTitle: {
     fontSize: wp(3.8),
-    color: '#333333',
+    color: colors.black,
     flex: 1,
     lineHeight: wp(5),
   },
   iconContainer: {
     flexDirection: 'row',
     marginLeft: wp(2),
-    gap: wp('2%')
+    gap: wp('2%'),
   },
   statusContainer: {
     flexDirection: 'row',
@@ -571,6 +644,29 @@ const styles = StyleSheet.create({
     fontSize: wp(3.5),
     fontWeight: '500',
   },
+  itemImagesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    flexWrap: 'wrap',
+  },
+  itemImageWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 10,
+    marginBottom: 10,
+  },
+  itemImage: {
+    width: wp(15),
+    height: wp(15),
+    borderRadius: 8,
+    marginRight: 4,
+  },
+  removeImageButton: {
+    position: 'absolute',
+    right: -2,
+    top: -2,
+  },
   imageContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -591,16 +687,15 @@ const styles = StyleSheet.create({
     width: wp(25),
     height: hp(12),
     borderRadius: wp(2),
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderWidth: 1.3,
+    borderColor: '#D1E3F7',
     borderStyle: 'dashed',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FAFAFA',
   },
   captureImageText: {
     fontSize: wp(2.8),
-    color: '#4285F4',
+    color: colors.royalBlue,
     marginTop: hp(0.5),
     textAlign: 'center',
   },
@@ -730,7 +825,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: wp(4),
     gap: wp(2),
-    alignSelf: 'flex-start'
+    alignSelf: 'flex-start',
   },
   downloadButtonText: {
     color: colors.royalBlue,
@@ -741,8 +836,7 @@ const styles = StyleSheet.create({
     height: hp(2),
   },
   modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -801,11 +895,147 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   footerButtonContainer: {
-    backgroundColor: colors.white, 
-    width: '100%', 
-    justifyContent: "space-around", 
-    flexDirection: 'row-reverse'
-  }
+    backgroundColor: colors.white,
+    width: '100%',
+    justifyContent: 'space-around',
+    flexDirection: 'row-reverse',
+  },
+  cardItems: {gap: wp(2.5)},
+  // TIRES
+  tiresContainer: {
+    paddingHorizontal: wp(4),
+    paddingBottom: hp(3),
+  },
+  truckWithTiresContainer: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+    // marginBottom: hp(4),
+    minHeight: hp(40),
+    // backgroundColor: 'pink',
+  },
+  truckDiagramContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tirePositionContainer: {
+    position: 'absolute',
+    alignItems: 'center',
+    zIndex: 10,
+    gap: wp(5),
+  },
+  // Precise positioning for each tire over the truck image
+  frontLeftPosition: {
+    top: hp(3.2),
+    left: -wp(0),
+  },
+  frontRightPosition: {
+    top: hp(3.2),
+    right: wp(0),
+  },
+  rearLeftPosition: {
+    bottom: hp(2.5),
+    left: wp(0),
+  },
+  rearRightPosition: {
+    bottom: hp(2.5),
+    right: -wp(0),
+  },
+  tireCaptureBox: {
+    width: wp(26),
+    height: hp(10),
+    borderRadius: wp(2),
+    borderWidth: 1.3,
+    borderColor: '#D1E3F7',
+    borderStyle: 'dashed',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FAFBFC',
+    marginBottom: hp(0.5),
+    position: 'relative',
+  },
+  tireIconContainer: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: hp(0.3),
+  },
+  tireIcon: {
+    width: wp(8),
+    height: wp(8),
+    resizeMode: 'contain',
+  },
+  cameraIcon: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  tireCaptureText: {
+    fontSize: wp(2.8),
+    color: colors.royalBlue,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  tireLabel: {
+    fontSize: wp(2.8),
+    color: '#333333',
+    textAlign: 'center',
+    fontWeight: '600',
+    lineHeight: wp(3.5),
+    maxWidth: wp(26),
+  },
+  overlayBox: {
+    position: 'absolute',
+    top: hp(0.8),
+    left: wp(2),
+    backgroundColor: colors.royalBlue,
+    borderRadius: wp(0.8),
+    paddingHorizontal: wp(2),
+    paddingVertical: wp(0.8),
+    zIndex: 15,
+  },
+  overlayText: {
+    color: colors.white,
+    fontSize: wp(2.2),
+    fontWeight: '600',
+  },
+  bottomTiresRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    paddingHorizontal: wp(4),
+    gap: wp(4),
+    marginTop: hp(3),
+  },
+  bottomTireItem: {
+    flex: 1,
+    alignItems: 'center',
+    maxWidth: wp(40),
+  },
+  captureImageStyle: {
+    width: wp('14%'),
+    height: wp('14%'),
+    resizeMode: 'contain',
+  },
+  captureImageBoxIcon: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  truckBodyImage: {
+    width: wp(50),
+    height: hp(40),
+  },
+  captureFrameTitle: {
+    fontSize: wp('4%'),
+    fontWeight: '500',
+  },
+  captureFrameRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: wp(3),
+  },
+  rotateChevron: {transform: [{rotate: '180deg'}]},
 });
 
 export default DVIRInspectionChecklistScreen;

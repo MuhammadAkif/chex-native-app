@@ -308,6 +308,22 @@ const CameraContainer = ({route, navigation}) => {
   };
 
   const handleNextPress = async () => {
+    // Custom: If coming from DVIRInspectionChecklistScreen, return image and skip upload
+    if (
+      route?.params?.capturedImageIndex !== undefined &&
+      route?.params?.returnTo
+    ) {
+      navigation.navigate({
+        name: route.params.returnTo,
+        params: {
+          capturedImageIndex: route.params.capturedImageIndex,
+          capturedImageUri: isImageURL,
+        },
+        merge: true,
+      });
+      return;
+    }
+
     let extension = isImageFile.path.split('.').pop() || 'jpeg';
     const mime = 'image/' + extension;
     setIsModalVisible(true);
