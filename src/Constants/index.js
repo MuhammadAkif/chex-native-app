@@ -5,6 +5,7 @@ const ENV_TYPE_URL = {
   staging: process.env.STAGING_URL,
   production: process.env.PRODUCTION_URL,
   development: process.env.DEVELOPMENT_URL,
+  ngrok: process.env.NGROK_URL,
 };
 const version = '1';
 export const API_VERSION_PATH = '/api/v' + version + '/';

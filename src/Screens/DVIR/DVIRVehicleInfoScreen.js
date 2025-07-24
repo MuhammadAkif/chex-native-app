@@ -66,17 +66,17 @@ const DVIRVehicleInfoScreen = ({
           <AppText style={styles.inputLabel}>Truck ID/License Plate</AppText>
           <CustomInput
             placeholder=""
-            value={values.truckId}
+            value={values.licensePlateNumber}
             onChangeText={handleChange}
             onBlur={handleBlur}
-            valueName="truckId"
+            valueName="licensePlateNumber"
             inputContainerStyle={styles.inputContainer}
-            touched={touched.truckId}
-            error={errors.truckId}
+            touched={touched.licensePlateNumber}
+            error={errors.licensePlateNumber}
           />
-          {touched.truckId && errors.truckId && (
+          {touched.licensePlateNumber && errors.licensePlateNumber && (
             <AppText style={errorStyle.errorsTextStyle}>
-              {errors.truckId}
+              {errors.licensePlateNumber}
             </AppText>
           )}
           {/* Mileage */}
@@ -90,6 +90,7 @@ const DVIRVehicleInfoScreen = ({
             inputContainerStyle={styles.inputContainer}
             touched={touched.mileage}
             error={errors.mileage}
+            keyboardType="number-pad"
           />
           {touched.mileage && errors.mileage && (
             <AppText style={errorStyle.errorsTextStyle}>
@@ -124,7 +125,7 @@ const DVIRVehicleInfoScreen = ({
             <AppText style={errorStyle.errorsTextStyle}>{errors.vin}</AppText>
           )}
           {/* Technician */}
-          <AppText style={styles.inputLabel}>Technician</AppText>
+          {/* <AppText style={styles.inputLabel}>Technician</AppText>
           <CustomInput
             placeholder=""
             value={values.technician}
@@ -139,7 +140,7 @@ const DVIRVehicleInfoScreen = ({
             <AppText style={errorStyle.errorsTextStyle}>
               {errors.technician}
             </AppText>
-          )}
+          )} */}
         </View>
         <PrimaryGradientButton
           onPress={handleSubmit}

@@ -5,9 +5,11 @@ import {
 import {isNotEmpty} from './index';
 import {Landscape, Portrait} from '../Assets/Icons';
 import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 var relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
+dayjs.extend(customParseFormat);
 
 export const headerFlex = {
   true: 1.5,
@@ -290,3 +292,7 @@ export function resizeInnerBox(
 
   return {x: newX, y: newY};
 }
+
+export const getUserFullName = (first, last) => {
+  return `${first} ${last}`;
+};

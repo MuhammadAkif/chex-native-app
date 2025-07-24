@@ -13,6 +13,7 @@ import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
 import {HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
 import {showToast, signIn} from '../../Store/Actions';
+import {CommonActions} from '@react-navigation/native';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
@@ -93,7 +94,12 @@ const SignInContainer = ({navigation, route}) => {
   };
   function onCheckUserDataSuccess(resetForm) {
     resetForm();
-    navigate(HOME);
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: HOME}],
+      }),
+    );
   }
   function onCheckUserDataFail(err) {
     const {errors = null} = err?.response?.data;
