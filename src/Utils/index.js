@@ -1,36 +1,38 @@
 import {Alert} from 'react-native';
-import * as yup from 'yup';
 import {Camera} from 'react-native-vision-camera';
 import RNFetchBlob from 'rn-fetch-blob';
+import * as yup from 'yup';
 
+import {IMAGES} from '../Assets/Images';
 import {
+  customSortOrder,
+  darkImageError,
   INSPECTION,
   INSPECTION_SUBCATEGORY,
-  customSortOrder,
-  uploadFailed,
-  darkImageError,
   S3_BUCKET_BASEURL,
+  uploadFailed,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
-  numberPlateSelected,
-  setCompanyId,
-  updateVehicleImage,
-  sessionExpired,
-  batchUpdateVehicleImages,
-  setNewInspectionId,
-} from '../Store/Actions';
-import {IMAGES} from '../Assets/Images';
-import {store} from '../Store';
-import {checkAndCompleteUrl} from './helpers';
-import {
-  isImageDarkWithAI,
   createInspection,
   getInspectionDetails,
+  isImageDarkWithAI,
   s3SignedUrl,
   uploadFileToDatabase,
 } from '../services/inspection';
-import {setFileDetails, setVehicleTypeModalVisible} from '../Store/Actions/NewInspectionAction';
+import {store} from '../Store';
+import {
+  batchUpdateVehicleImages,
+  numberPlateSelected,
+  sessionExpired,
+  setCompanyId,
+  setNewInspectionId,
+} from '../Store/Actions';
+import {
+  setFileDetails,
+  setVehicleTypeModalVisible,
+} from '../Store/Actions/NewInspectionAction';
+import {checkAndCompleteUrl} from './helpers';
 
 // Validation Schema
 export const validationSchema = yup.object().shape({

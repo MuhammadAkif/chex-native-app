@@ -195,7 +195,8 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   );
 
   const handleOpenCamera = useCallback(
-    index => {
+    (index, videos) => {
+      const isVideo = !!videos;
       const details = {
         title: inspectionData[index]?.title || 'Title',
         type: '1',
@@ -203,12 +204,13 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         source: '',
         fileId: '',
       };
-      navigation.navigate(ROUTES.CAMERA, {
+
+      navigation.navigate(isVideo ? ROUTES.VIDEO : ROUTES.CAMERA, {
         type: 1,
         modalDetails: details,
         inspectionId: 1,
         capturedImageIndex: index,
-        returnTo: ROUTES.DVIR_INSPECTION_CHECKLIST_CONTAINER,
+        returnTo: ROUTES.DVIR_INSPECTION_CHECKLIST,
       });
     },
     [navigation, inspectionData],
@@ -247,7 +249,13 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       setInspectionData(prevData =>
         prevData.map((item, idx) =>
           idx === capturedImageIndex
-            ? {...item, images: [...(item.images || []), capturedImageUri]}
+            ? {
+                ...item,
+                [item.videos ? 'videos' : 'images']: [
+                  ...(item[item.videos ? 'videos' : 'images'] || []),
+                  capturedImageUri,
+                ],
+              }
             : item,
         ),
       );

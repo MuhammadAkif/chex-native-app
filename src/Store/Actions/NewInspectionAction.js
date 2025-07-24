@@ -1,10 +1,10 @@
-import {Types} from '../Types';
 import {
   ai_Mileage_Extraction,
   extractLicensePlateAI,
   getInspectionDetails,
 } from '../../services/inspection';
 import {uploadInProgressMediaToStore} from '../../Utils';
+import {Types} from '../Types';
 
 const {
   UPDATE_VEHICLE_IMAGE,

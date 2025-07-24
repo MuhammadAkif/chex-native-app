@@ -1,5 +1,3 @@
-import api from './api';
-import axios from 'axios';
 import {
   AI_API_TOKEN,
   API_ENDPOINTS,
@@ -9,6 +7,7 @@ import {
   nightImageCheckAI,
 } from '../Constants';
 import {generateRandomString} from '../Utils';
+import api from './api';
 
 const {
   EXTRACT_NUMBER_PLATE_URL,
@@ -20,6 +19,7 @@ const {
   FETCH_IN_PROGRESS_URL,
   UPLOAD_URL,
   SUBMIT_INSPECTION,
+  EXTRACT_VIN_WITH_AI,
 } = API_ENDPOINTS;
 
 export const createInspection = async companyId => {
@@ -148,6 +148,22 @@ export const extractLicensePlateAI = async image_url => {
     });
   } catch (error) {
     console.error('License Plate AI Extraction error:', error);
+    throw error;
+  }
+};
+
+export const extractVinAI = async image_url => {
+  const body = {image_url};
+  const headers = {
+    api_token: AI_API_TOKEN,
+  };
+  console.log('API CALLED:', body, headers);
+  try {
+    return await api.post(EXTRACT_NUMBER_PLATE_WITH_AI, body, {
+      headers: headers,
+    });
+  } catch (error) {
+    console.error('VIN AI Extraction error:', error.response.data);
     throw error;
   }
 };

@@ -1,33 +1,33 @@
+import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
 import {
   AppState,
-  StatusBar,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
   BackHandler,
   Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 import {
   Camera,
   useCameraDevice,
   useCameraFormat,
 } from 'react-native-vision-camera';
-import {useIsFocused} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
 
-import {colors, PreviewStyles} from '../Assets/Styles';
 import {BackArrow} from '../Assets/Icons';
+import {colors, PreviewStyles} from '../Assets/Styles';
 import {CameraFooter, CaptureImageModal, RecordingPreview} from '../Components';
+import {HARDWARE_BACK_PRESS, Platforms} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {updateVehicleImage} from '../Store/Actions';
 import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
-import {HARDWARE_BACK_PRESS, Platforms} from '../Constants';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
@@ -190,6 +190,23 @@ const VideoContainer = ({route, navigation}) => {
   const handleNextPress = () => {
     setIsModalVisible(true);
     const path = isVideoFile.path.replace('file://', '');
+
+    // Custom: If coming from DVIRInspectionChecklistScreen, return image and skip upload
+    if (
+      route?.params?.capturedImageIndex !== undefined &&
+      route?.params?.returnTo
+    ) {
+      navigation.navigate({
+        name: route.params.returnTo,
+        params: {
+          capturedImageIndex: route.params.capturedImageIndex,
+          capturedImageUri: isVideoURI,
+        },
+        merge: true,
+      });
+      return;
+    }
+
     getSignedUrl(
       token,
       'video/mp4',

@@ -14,13 +14,17 @@ import Navigation from './src/Navigation/index';
 import {
   clearNewInspection,
   hideToast,
+  setNewInspectionId,
   setSelectedVehicleKind,
   setVehicleTypeModalVisible,
   signOut,
-  setNewInspectionId,
 } from './src/Store/Actions';
 import {hasCameraAndMicrophoneAllowed} from './src/Utils';
-import {navigate, navigationRef, resetNavigation} from './src/services/navigationService';
+import {
+  navigate,
+  navigationRef,
+  resetNavigation,
+} from './src/services/navigationService';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
@@ -32,7 +36,8 @@ function App() {
   const {sessionExpired} = useSelector(state => state?.auth);
   const [displayGif, setDisplayGif] = useState(true);
   const [updateAvailable, setUpdateAvailable] = useState('');
-  const {vehicleTypeModalVisible, selectedVehicleKind, newInspectionId} = useSelector((state) => state?.newInspection);
+  const {vehicleTypeModalVisible, selectedVehicleKind, newInspectionId} =
+    useSelector(state => state?.newInspection);
 
   useEffect(() => {
     (async () => {
@@ -50,9 +55,13 @@ function App() {
       const doNavigate = () => {
         if (navigationRef.isReady()) {
           if (selectedVehicleKind.toLowerCase() === 'truck') {
-            navigate(ROUTES.DVIR_VEHICLE_INFO_CONTAINER, { routeName: ROUTES.INSPECTION_SELECTION });
+            navigate(ROUTES.DVIR_VEHICLE_INFO, {
+              routeName: ROUTES.INSPECTION_SELECTION,
+            });
           } else {
-            navigate(ROUTES.NEW_INSPECTION, { routeName: ROUTES.INSPECTION_SELECTION });
+            navigate(ROUTES.NEW_INSPECTION, {
+              routeName: ROUTES.INSPECTION_SELECTION,
+            });
           }
           dispatch(setNewInspectionId(null));
         }

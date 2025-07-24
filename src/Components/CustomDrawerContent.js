@@ -1,40 +1,38 @@
+import {getFocusedRouteNameFromRoute, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
   ScrollView,
   StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import FastImage from 'react-native-fast-image';
 import {useDispatch, useSelector} from 'react-redux';
-import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
-import {useRoute} from '@react-navigation/native';
 
-import {SignInLogo} from './index';
-import {ROUTES} from '../Navigation/ROUTES';
-import {DrawerItemText} from './index';
-import {Home, Logout, Info} from '../Assets/Icons';
+import {Home, Info, Logout} from '../Assets/Icons';
+import {IMAGES} from '../Assets/Images';
 import {colors} from '../Assets/Styles';
+import {DRAWER, PROJECT_NAME} from '../Constants';
+import {ROUTES} from '../Navigation/ROUTES';
 import {
   clearNewInspection,
   hideToast,
   setRequired,
   signOut,
 } from '../Store/Actions';
-import {DRAWER, PROJECT_NAME} from '../Constants';
-import {IMAGES} from '../Assets/Images';
+import {DrawerItemText, SignInLogo} from './index';
 
 const {
   SIGN_IN,
   INSPECTION_SELECTION,
   INTRO,
   NEW_INSPECTION,
-  DVIR_VEHICLE_INFO_CONTAINER
+  DVIR_VEHICLE_INFO,
 } = ROUTES;
 const {cobaltBlue, black, red} = colors;
 
@@ -151,7 +149,7 @@ const CustomDrawerContent = props => {
             color={activeColorOfTextAndIcon('DVIR')}
           />
         }
-        onPress={() => handleNavigationPress(DVIR_VEHICLE_INFO_CONTAINER, 'DVIR ')}
+        onPress={() => handleNavigationPress(DVIR_VEHICLE_INFO, 'DVIR ')}
       />
       <StatusBar backgroundColor={'transparent'} barStyle={'light-content'} />
     </ScrollView>

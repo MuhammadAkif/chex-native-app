@@ -1,13 +1,16 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import {ActivityIndicator, ScrollView, StyleSheet, View} from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
+import {CameraBorderedIcon} from '../../Assets/Icons';
 import CalendarIcon from '../../Assets/Icons/CalendarIcon';
-import { CustomInput, PrimaryGradientButton } from '../../Components';
-import { colors, NewInspectionStyles, errorStyle } from '../../Assets/Styles';
+import {colors, errorStyle, NewInspectionStyles} from '../../Assets/Styles';
+import {CustomInput, PrimaryGradientButton} from '../../Components';
 import AppText from '../../Components/text';
-import { CameraBorderedIcon } from '../../Assets/Icons';
 
-const { container, bodyContainer } = NewInspectionStyles;
+const {container, bodyContainer} = NewInspectionStyles;
 
 const DVIRVehicleInfoScreen = ({
   values,
@@ -18,14 +21,15 @@ const DVIRVehicleInfoScreen = ({
   handleSubmit,
   isSubmitting,
   onCalendarPress,
+  onPressVINCamera,
+  vinLoading,
 }) => (
   <View style={container}>
     <View style={bodyContainer}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
-        style={styles.scrollStyle}
-      >
+        style={styles.scrollStyle}>
         <View style={styles.innerBody}>
           {/* Driver Name */}
           <AppText style={styles.inputLabel}>Driver Name</AppText>
@@ -40,7 +44,9 @@ const DVIRVehicleInfoScreen = ({
             error={errors.driverName}
           />
           {touched.driverName && errors.driverName && (
-            <AppText style={errorStyle.errorsTextStyle}>{errors.driverName}</AppText>
+            <AppText style={errorStyle.errorsTextStyle}>
+              {errors.driverName}
+            </AppText>
           )}
           {/* Date */}
           <AppText style={styles.inputLabel}>Date</AppText>
@@ -69,7 +75,9 @@ const DVIRVehicleInfoScreen = ({
             error={errors.truckId}
           />
           {touched.truckId && errors.truckId && (
-            <AppText style={errorStyle.errorsTextStyle}>{errors.truckId}</AppText>
+            <AppText style={errorStyle.errorsTextStyle}>
+              {errors.truckId}
+            </AppText>
           )}
           {/* Mileage */}
           <AppText style={styles.inputLabel}>Mileage</AppText>
@@ -84,7 +92,9 @@ const DVIRVehicleInfoScreen = ({
             error={errors.mileage}
           />
           {touched.mileage && errors.mileage && (
-            <AppText style={errorStyle.errorsTextStyle}>{errors.mileage}</AppText>
+            <AppText style={errorStyle.errorsTextStyle}>
+              {errors.mileage}
+            </AppText>
           )}
           {/* VIN */}
           <AppText style={styles.inputLabel}>VIN</AppText>
@@ -97,7 +107,18 @@ const DVIRVehicleInfoScreen = ({
             inputContainerStyle={styles.inputContainer}
             touched={touched.vin}
             error={errors.vin}
-            rightIcon={<CameraBorderedIcon height={28} width={28} color={colors.brightBlue} />}
+            rightIcon={
+              vinLoading ? (
+                <ActivityIndicator size="small" color={colors.brightBlue} />
+              ) : (
+                <CameraBorderedIcon
+                  height={28}
+                  width={28}
+                  color={colors.brightBlue}
+                />
+              )
+            }
+            onRightIconPress={onPressVINCamera}
           />
           {touched.vin && errors.vin && (
             <AppText style={errorStyle.errorsTextStyle}>{errors.vin}</AppText>
@@ -115,7 +136,9 @@ const DVIRVehicleInfoScreen = ({
             error={errors.technician}
           />
           {touched.technician && errors.technician && (
-            <AppText style={errorStyle.errorsTextStyle}>{errors.technician}</AppText>
+            <AppText style={errorStyle.errorsTextStyle}>
+              {errors.technician}
+            </AppText>
           )}
         </View>
         <PrimaryGradientButton
@@ -130,7 +153,7 @@ const DVIRVehicleInfoScreen = ({
 );
 
 const styles = StyleSheet.create({
-  innerBody: { flex: 1 },
+  innerBody: {flex: 1},
   inputLabel: {
     fontWeight: 'bold',
     fontSize: hp('2%'),
@@ -138,8 +161,8 @@ const styles = StyleSheet.create({
     color: colors.black,
     marginBottom: hp('1%'),
   },
-  scrollStyle: { marginTop: wp(5) },
-  scrollContent: { flexGrow: 1, paddingHorizontal: '5%' },
+  scrollStyle: {marginTop: wp(5)},
+  scrollContent: {flexGrow: 1, paddingHorizontal: '5%'},
   buttonContainer: {
     height: hp('6%'),
     width: wp('70%'),
@@ -147,7 +170,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginVertical: hp('5%'),
   },
-  inputContainer: { height: hp('5%') },
+  inputContainer: {height: hp('5%')},
   headingText: {
     fontSize: hp('1.7%'),
     marginTop: hp('3%'),

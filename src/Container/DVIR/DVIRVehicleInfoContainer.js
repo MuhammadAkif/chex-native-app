@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { DVIRVehicleInfoScreen } from '../../Screens';
-import DatePicker from 'react-native-date-picker';
 import dayjs from 'dayjs';
-import { Formik } from 'formik';
-import { ROUTES } from '../../Navigation/ROUTES';
+import {Formik} from 'formik';
+import React, {useEffect, useState} from 'react';
+import DatePicker from 'react-native-date-picker';
+import {ROUTES} from '../../Navigation/ROUTES';
+import {DVIRVehicleInfoScreen} from '../../Screens';
+import {extractVinAI} from '../../services/inspection';
 
-// Custom validation function (no third-party)
 const validate = values => {
   const errors = {};
   if (!values.driverName.trim()) {
@@ -31,9 +31,10 @@ const validate = values => {
   return errors;
 };
 
-const DVIRVehicleInfoContainer = ({ navigation }) => {
+const DVIRVehicleInfoContainer = ({navigation, route}) => {
   const [showDateModel, setShowDateModel] = useState(false);
   const [dateForPicker, setDateForPicker] = useState(new Date());
+  const [vinLoading, setVinLoading] = useState(false);
 
   const handleDateConfirm = (date, setFieldValue) => {
     const formatted = dayjs(date).format('DD/MM/YYYY');
@@ -47,12 +48,30 @@ const DVIRVehicleInfoContainer = ({ navigation }) => {
   };
 
   // Handler for calendar icon press
-  const handleCalendarPress = (dateString) => {
+  const handleCalendarPress = dateString => {
     setShowDateModel(true);
     const parsed = dayjs(dateString, 'DD/MM/YYYY').isValid()
       ? dayjs(dateString, 'DD/MM/YYYY').toDate()
       : new Date();
     setDateForPicker(parsed);
+  };
+
+  const handleVINCameraPress = () => {
+    const details = {
+      title: 'Please take a photo of the VIN',
+      type: '1',
+      uri: '',
+      source: '',
+      fileId: '',
+      category: 'CarVerification',
+      subCategory: 'vin',
+      groupType: 'truck',
+    };
+    navigation.navigate(ROUTES.CAMERA, {
+      modalDetails: details,
+      returnTo: ROUTES.DVIR_VEHICLE_INFO,
+      isVinCapture: true,
+    });
   };
 
   return (
@@ -66,11 +85,10 @@ const DVIRVehicleInfoContainer = ({ navigation }) => {
         technician: '',
       }}
       // validate={validate}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={(values, {setSubmitting}) => {
         setSubmitting(false);
-        navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST_CONTAINER);
-      }}
-    >
+        navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);
+      }}>
       {({
         values,
         errors,
@@ -80,29 +98,53 @@ const DVIRVehicleInfoContainer = ({ navigation }) => {
         handleSubmit,
         setFieldValue,
         isSubmitting,
-      }) => (
-        <>
-          <DVIRVehicleInfoScreen
-            values={values}
-            errors={errors}
-            touched={touched}
-            handleChange={handleChange}
-            handleBlur={handleBlur}
-            handleSubmit={handleSubmit}
-            isSubmitting={isSubmitting}
-            onCalendarPress={handleCalendarPress}
-          />
-          <DatePicker
-            modal
-            mode="date"
-            open={showDateModel}
-            date={dateForPicker}
-            maximumDate={new Date()}
-            onConfirm={date => handleDateConfirm(date, setFieldValue)}
-            onCancel={handleDateCancel}
-          />
-        </>
-      )}
+      }) => {
+        // If coming back from camera with vinImageUri, extract VIN
+        useEffect(() => {
+          async function extractVinIfNeeded() {
+            if (route?.params?.vinImageUri) {
+              setVinLoading(true);
+              try {
+                const response = await extractVinAI(route.params.vinImageUri);
+                const {plateNumber = null} = response?.data || {};
+                setFieldValue('vin', plateNumber || '');
+              } catch (error) {
+                // Optionally show error to user
+              } finally {
+                setVinLoading(false);
+                navigation.setParams({vinImageUri: undefined});
+              }
+            }
+          }
+          extractVinIfNeeded();
+        }, [route?.params?.vinImageUri]);
+
+        return (
+          <>
+            <DVIRVehicleInfoScreen
+              values={values}
+              errors={errors}
+              touched={touched}
+              handleChange={handleChange}
+              handleBlur={handleBlur}
+              handleSubmit={handleSubmit}
+              isSubmitting={isSubmitting}
+              onCalendarPress={handleCalendarPress}
+              onPressVINCamera={handleVINCameraPress}
+              vinLoading={vinLoading}
+            />
+            <DatePicker
+              modal
+              mode="date"
+              open={showDateModel}
+              date={dateForPicker}
+              maximumDate={new Date()}
+              onConfirm={date => handleDateConfirm(date, setFieldValue)}
+              onCancel={handleDateCancel}
+            />
+          </>
+        );
+      }}
     </Formik>
   );
 };

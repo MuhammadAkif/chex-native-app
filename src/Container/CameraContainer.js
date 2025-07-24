@@ -235,6 +235,16 @@ const CameraContainer = ({route, navigation}) => {
         throw error;
       }
     }
+    // VIN capture for trucks: just return image URI, do not extract here
+    if (route?.params?.isVinCapture) {
+      console.log('VIN capture: returning image URI to container');
+      navigation.navigate({
+        name: route.params.returnTo,
+        params: {vinImageUri: image_url},
+        merge: true,
+      });
+      return;
+    }
     try {
       await uploadFile(
         uploadImageToStore,

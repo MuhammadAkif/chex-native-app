@@ -79,7 +79,7 @@ const InspectionItem = React.memo(
                 <CommentBorderedIcon width={wp('7%')} height={wp('7%')} />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => onCamera(index)}
+                onPress={() => onCamera(index, item?.videos)}
                 activeOpacity={0.7}>
                 {item?.videos ? (
                   <VideoBorderedIcon width={wp('7%')} height={wp('7%')} />
@@ -276,7 +276,7 @@ const DVIRInspectionChecklistScreen = ({
     [handleAddComment],
   );
   const handleCamera = useCallback(
-    index => handleOpenCamera(index),
+    (index, videos) => handleOpenCamera(index, videos),
     [handleOpenCamera],
   );
   const handleRemove = useCallback(
@@ -709,131 +709,11 @@ const styles = StyleSheet.create({
     fontSize: wp(3.5),
     color: '#666666',
   },
-  sectionContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: wp(2),
-    padding: wp(4),
-    borderBottomWidth: 0.2,
-    borderBottomColor: '#E0E0E0',
-  },
-  sectionTitle: {
-    fontSize: wp(4.5),
-    fontWeight: '600',
-    color: '#333333',
-    marginBottom: hp(2),
-  },
   tireGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     gap: hp(1.5),
-  },
-  uploadImageBox: {
-    width: wp(38),
-    height: hp(15),
-    borderRadius: wp(2),
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderStyle: 'dashed',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FAFAFA',
-    padding: wp(2),
-  },
-  uploadIcon: {
-    marginBottom: hp(0.5),
-  },
-  uploadImageText: {
-    fontSize: wp(3.2),
-    color: '#4285F4',
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  uploadImageTitle: {
-    fontSize: wp(2.8),
-    color: '#666666',
-    textAlign: 'center',
-    marginTop: hp(0.5),
-    lineHeight: wp(3.5),
-  },
-  dropdownContainer: {},
-  dropdownLabel: {
-    fontSize: wp(4.2),
-    fontWeight: '600',
-    color: '#333333',
-    marginBottom: hp(1),
-  },
-  dropdownButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: wp(2),
-    padding: wp(3.5),
-    backgroundColor: '#F8F9FA',
-  },
-  dropdownButtonText: {
-    fontSize: wp(4),
-    color: '#333333',
-    flex: 1,
-  },
-  dropdownPlaceholder: {
-    color: '#999999',
-  },
-  dropdownArrow: {
-    fontSize: wp(3),
-    color: '#666666',
-  },
-  dropdownOptions: {
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderTopWidth: 0,
-    borderBottomLeftRadius: wp(2),
-    borderBottomRightRadius: wp(2),
-    backgroundColor: '#FFFFFF',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  dropdownOption: {
-    padding: wp(3.5),
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  dropdownOptionText: {
-    fontSize: wp(4),
-    color: '#333333',
-  },
-  additionalCommentsInput: {
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: wp(2),
-    padding: wp(3),
-    height: hp(12),
-    fontSize: wp(4),
-    color: '#333333',
-    backgroundColor: '#F8F9FA',
-    textAlignVertical: 'top',
-  },
-  downloadButton: {
-    borderRadius: wp(2),
-    paddingVertical: wp(4),
-    alignItems: 'center',
-    flexDirection: 'row',
-    paddingHorizontal: wp(4),
-    gap: wp(2),
-    alignSelf: 'flex-start',
-  },
-  downloadButtonText: {
-    color: colors.royalBlue,
-    fontSize: wp(4),
-    fontWeight: '500',
-  },
-  bottomSpacing: {
-    height: hp(2),
   },
   modalOverlay: {
     flexGrow: 1,
@@ -910,9 +790,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
-    // marginBottom: hp(4),
     minHeight: hp(40),
-    // backgroundColor: 'pink',
   },
   truckDiagramContainer: {
     alignItems: 'center',

@@ -1,24 +1,24 @@
-import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import React from 'react';
 
-import {ROUTES} from './ROUTES';
 import {
-  IntroContainer,
-  NewInspectionContainer,
-  InspectionReviewedContainer,
-  InspectionDetailContainer,
-  LicensePlateNumberSelectionContainer,
-  InspectionInProgressContainer,
-  InspectionSelectionContainer,
+  CustomDrawerContent,
+  HeaderBackButton,
+  HeaderBackground,
+  HeaderTitle,
+} from '../Components';
+import {
   DVIRInspectionChecklistContainer,
   DVIRVehicleInfoContainer,
+  InspectionDetailContainer,
+  InspectionInProgressContainer,
+  InspectionReviewedContainer,
+  InspectionSelectionContainer,
+  IntroContainer,
+  LicensePlateNumberSelectionContainer,
+  NewInspectionContainer,
 } from '../Container';
-import {
-  HeaderBackButton,
-  HeaderTitle,
-  HeaderBackground,
-  CustomDrawerContent,
-} from '../Components';
+import {ROUTES} from './ROUTES';
 
 const ScreenHeaderTitle = props => <HeaderTitle {...props} />;
 const headerBackground = () => <HeaderBackground />;
@@ -32,7 +32,7 @@ const screenOptions = {
   drawerStatusBarAnimation: 'slide',
   headerLeft: headerBackButton,
   swipeEdgeWidth: 150,
-  unmountOnBlur: true
+  unmountOnBlur: true,
 };
 
 const {Screen, Navigator} = createDrawerNavigator();
@@ -46,8 +46,8 @@ const NavigationDrawer = ({navigation}) => {
     INSPECTION_REVIEWED,
     INSPECTION_DETAIL,
     INSPECTION_IN_PROGRESS,
-    DVIR_INSPECTION_CHECKLIST_CONTAINER,
-    DVIR_VEHICLE_INFO_CONTAINER,
+    DVIR_INSPECTION_CHECKLIST,
+    DVIR_VEHICLE_INFO,
   } = ROUTES;
 
   const options = {
@@ -62,8 +62,7 @@ const NavigationDrawer = ({navigation}) => {
         backBehavior={'history'}
         drawerContent={drawerContent}
         screenOptions={screenOptions}
-        initialRouteName={INSPECTION_SELECTION}
-        >
+        initialRouteName={INSPECTION_SELECTION}>
         <Screen
           name={INSPECTION_SELECTION}
           component={InspectionSelectionContainer}
@@ -99,13 +98,13 @@ const NavigationDrawer = ({navigation}) => {
         />
         {/* DVIR */}
         <Screen
-          name={DVIR_INSPECTION_CHECKLIST_CONTAINER}
+          name={DVIR_INSPECTION_CHECKLIST}
           component={DVIRInspectionChecklistContainer}
           options={options}
         />
 
         <Screen
-          name={DVIR_VEHICLE_INFO_CONTAINER}
+          name={DVIR_VEHICLE_INFO}
           component={DVIRVehicleInfoContainer}
           options={options}
         />
