@@ -15,7 +15,7 @@ const {
 
 const buttonSpacing = {marginVertical: 6};
 
-const VehicleTypeModal = ({visible, onSelect}) => {
+const VehicleTypeModal = ({visible, onSelect, loadingState}) => {
   return (
     <Modal
       animationType="slide"
@@ -35,7 +35,7 @@ const VehicleTypeModal = ({visible, onSelect}) => {
               paddingVertical: 10,
             }}>
             <PrimaryGradientButton
-              text="Van"
+              text={'Van'}
               buttonStyle={[
                 button,
                 buttonSpacing,
@@ -43,6 +43,26 @@ const VehicleTypeModal = ({visible, onSelect}) => {
               ]}
               textStyle={yesText}
               onPress={() => onSelect('Van')}
+              disabled={
+                loadingState?.vehicleType === 'Van'
+                  ? loadingState.isLoading
+                  : false
+              }
+            />
+            <PrimaryGradientButton
+              text={'Sedan'}
+              buttonStyle={[
+                button,
+                buttonSpacing,
+                {width: '100%', alignSelf: 'center'},
+              ]}
+              textStyle={yesText}
+              onPress={() => onSelect('Sedan')}
+              disabled={
+                loadingState?.vehicleType === 'Sedan'
+                  ? loadingState.isLoading
+                  : false
+              }
             />
             <PrimaryGradientButton
               text="Truck"
@@ -53,16 +73,6 @@ const VehicleTypeModal = ({visible, onSelect}) => {
               ]}
               textStyle={yesText}
               onPress={() => onSelect('Truck')}
-            />
-            <PrimaryGradientButton
-              text="Sedan"
-              buttonStyle={[
-                button,
-                buttonSpacing,
-                {width: '100%', alignSelf: 'center'},
-              ]}
-              textStyle={yesText}
-              onPress={() => onSelect('Sedan')}
             />
           </View>
         </View>

@@ -1,13 +1,49 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {useSelector} from 'react-redux';
 import {IMAGES} from '../../Assets/Images';
+import {
+  ExteriorItemsExpandedCard,
+  ExteriorItemsExpandedCard_Old,
+  InteriorItemsAnnotationExpandedCard,
+  InteriorItemsExpandedCard,
+} from '../../Components';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {DVIRInspectionChecklistScreen} from '../../Screens';
+
+const exteriorItemsExpandedCards = {
+  existing: ExteriorItemsExpandedCard_Old,
+  new: ExteriorItemsExpandedCard,
+};
+const interiorItemsExpandedCards = {
+  existing: InteriorItemsExpandedCard,
+  new: InteriorItemsAnnotationExpandedCard,
+};
 
 const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   // State for checklist items
   const [modalVisible, setModalVisible] = useState(false);
   const [currentItemIndex, setCurrentItemIndex] = useState(null);
   const [additionalComments, setAdditionalComments] = useState('');
+  let {
+    carVerificiationItems,
+    exteriorItems,
+    interiorItems,
+    tires,
+    selectedInspectionID,
+    plateNumber,
+    /* skipLeft,
+    skipLeftCorners,
+    skipRight,
+    skipRightCorners,*/
+    isLicensePlateUploaded,
+    vehicle_Type,
+    variant,
+    fileDetails,
+    mileage = '',
+    feedback,
+    imageDimensions,
+    newInspectionId,
+  } = useSelector(state => state.newInspection) || {};
   const [inspectionData, setInspectionData] = useState([
     {
       id: 1,
@@ -67,18 +103,18 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       id: 10,
       title: 'Exterior Front',
       frames: [
-        {id: 2, image: IMAGES.truckRight},
-        {id: 3, image: IMAGES.truckLeft},
-        {id: 1, image: IMAGES.truckFront},
+        {id: 'frontRight', image: IMAGES.truckRight},
+        {id: 'frontLeft', image: IMAGES.truckLeft},
+        {id: 'front', image: IMAGES.truckFront},
       ],
     },
     {
       id: 11,
       title: 'Exterior Rear',
       frames: [
-        {id: 2, image: IMAGES.truckRight},
-        {id: 3, image: IMAGES.truckLeft},
-        {id: 1, image: IMAGES.truckFront},
+        {id: 'rearRight', image: IMAGES.truckRight},
+        {id: 'rearLeft', image: IMAGES.truckLeft},
+        {id: 'rear', image: IMAGES.truckFront},
       ],
     },
     {
@@ -208,7 +244,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       navigation.navigate(isVideo ? ROUTES.VIDEO : ROUTES.CAMERA, {
         type: 1,
         modalDetails: details,
-        inspectionId: 1,
+        inspectionId: newInspectionId,
         capturedImageIndex: index,
         returnTo: ROUTES.DVIR_INSPECTION_CHECKLIST,
       });
@@ -238,6 +274,34 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       ),
     );
   }, []);
+
+  const ActiveExteriorItemsExpandedCard =
+    exteriorItemsExpandedCards[vehicle_Type];
+  const ActiveInteriorItemsExpandedCard =
+    interiorItemsExpandedCards[vehicle_Type];
+  console.log(
+    'ActiveExteriorItemsExpandedCard:',
+    ActiveExteriorItemsExpandedCard,
+  );
+  const handleCaptureFrame = (itemId, frameId) => {
+    // console.log('itemId', itemId);
+    // console.log('frameId', frameId);
+
+    const details = {
+      title: inspectionData[index]?.title || 'Title',
+      type: '1',
+      uri: '',
+      source: '',
+      fileId: '',
+    };
+
+    navigation.navigate(ROUTES.CAMERA, {
+      type: 1,
+      modalDetails: details,
+      inspectionId: 1,
+      returnTo: ROUTES.DVIR_INSPECTION_CHECKLIST,
+    });
+  };
 
   // Camera result handler
   useEffect(() => {
@@ -294,6 +358,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       showTiresSection={showTiresSection}
       toggleChecklistSection={toggleChecklistSection}
       toggleTiresSection={toggleTiresSection}
+      onPressCaptureFrame={handleCaptureFrame}
     />
   );
 };

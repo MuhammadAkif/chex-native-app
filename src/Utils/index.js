@@ -14,7 +14,6 @@ import {
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {
-  createInspection,
   getInspectionDetails,
   isImageDarkWithAI,
   s3SignedUrl,
@@ -26,7 +25,6 @@ import {
   numberPlateSelected,
   sessionExpired,
   setCompanyId,
-  setNewInspectionId,
 } from '../Store/Actions';
 import {
   setFileDetails,
@@ -643,42 +641,34 @@ export const generateRandomString = () => {
   return randomString;
 };
 
-export const handleNewInspectionPress = async (
+export const handleNewInspectionPress = (
   dispatch,
   setIsLoading,
   companyId,
   navigation,
   resetAllStates,
 ) => {
-  setIsLoading(true);
-
+  dispatch(setVehicleTypeModalVisible(true));
   dispatch(setCompanyId(companyId));
-  await createInspection(companyId)
-    .then(response =>
-      onNewInspectionPressSuccess(
-        response,
-        dispatch,
-        navigation,
-        resetAllStates,
-      ),
-    )
-    .catch(err => onNewInspectionPressFail(err, dispatch))
-    .finally(() => setIsLoading(false));
+  // No API call here anymore
 };
-function onNewInspectionPressSuccess(
+
+export function onNewInspectionPressSuccess(
   response,
   dispatch,
-  navigation,
+  navigate,
   resetAllStates,
 ) {
   const {id = null} = response?.data || {};
-  dispatch(setVehicleTypeModalVisible(true));
+
   dispatch(numberPlateSelected(id));
-  dispatch(setNewInspectionId(id)); // new action to store inspection ID
-  resetAllStates();
-  // navigation is now handled in App.tsx after modal selection
+
+  navigate(ROUTES.NEW_INSPECTION, {
+    routeName: ROUTES.INSPECTION_SELECTION,
+  });
 }
-function onNewInspectionPressFail(err, dispatch) {
+
+export function onNewInspectionPressFail(err, dispatch) {
   const {statusCode = null} = err?.response?.data || {};
   if (statusCode === 401) {
     handle_Session_Expired(statusCode, dispatch);

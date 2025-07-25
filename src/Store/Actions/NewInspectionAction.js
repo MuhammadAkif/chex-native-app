@@ -202,7 +202,3 @@ export const setSelectedVehicleKind = kind => ({
   type: SET_SELECTED_VEHICLE_KIND,
   payload: kind,
 });
-export const setNewInspectionId = id => ({
-  type: 'SET_NEW_INSPECTION_ID',
-  payload: id,
-});

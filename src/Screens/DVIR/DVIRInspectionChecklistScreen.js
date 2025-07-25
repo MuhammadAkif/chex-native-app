@@ -255,6 +255,7 @@ const DVIRInspectionChecklistScreen = ({
   showTiresSection,
   toggleChecklistSection,
   toggleTiresSection,
+  onPressCaptureFrame,
 }) => {
   const {container, bodyContainer} = NewInspectionStyles;
 
@@ -364,7 +365,10 @@ const DVIRInspectionChecklistScreen = ({
                             <TouchableOpacity
                               key={frame.id}
                               style={styles.captureImageBox}
-                              activeOpacity={0.7}>
+                              activeOpacity={0.7}
+                              onPress={() =>
+                                onPressCaptureFrame(item?.id, frame?.id)
+                              }>
                               <Image
                                 source={frame.image}
                                 style={styles.captureImageStyle}

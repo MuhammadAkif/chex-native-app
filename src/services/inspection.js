@@ -22,10 +22,11 @@ const {
   EXTRACT_VIN_WITH_AI,
 } = API_ENDPOINTS;
 
-export const createInspection = async companyId => {
+export const createInspection = async (companyId, data) => {
   const body = {
     licensePlateNumber: generateRandomString(),
     companyId,
+    ...data,
   };
   try {
     return await api.post(CREATE_INSPECTION_URL, body);

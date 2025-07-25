@@ -27,13 +27,7 @@ import {
 } from '../Store/Actions';
 import {DrawerItemText, SignInLogo} from './index';
 
-const {
-  SIGN_IN,
-  INSPECTION_SELECTION,
-  INTRO,
-  NEW_INSPECTION,
-  DVIR_VEHICLE_INFO,
-} = ROUTES;
+const {SIGN_IN, INSPECTION_SELECTION, INTRO, NEW_INSPECTION} = ROUTES;
 const {cobaltBlue, black, red} = colors;
 
 const CustomDrawerContent = props => {
@@ -136,20 +130,6 @@ const CustomDrawerContent = props => {
           </TouchableOpacity>
         }
         onPress={handleLogout}
-      />
-
-      <DrawerItemText
-        text={'DVIR'}
-        textColor={activeColorOfTextAndIcon('DVIR')}
-        activeColor={activeScreen === 'DVIR' ? activeColor : 'transparent'}
-        Icon={
-          <Info
-            height={hp('2.5%')}
-            width={wp('5%')}
-            color={activeColorOfTextAndIcon('DVIR')}
-          />
-        }
-        onPress={() => handleNavigationPress(DVIR_VEHICLE_INFO, 'DVIR ')}
       />
       <StatusBar backgroundColor={'transparent'} barStyle={'light-content'} />
     </ScrollView>

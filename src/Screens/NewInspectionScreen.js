@@ -1,27 +1,27 @@
 import React from 'react';
-import {View, Text, ScrollView, TouchableOpacity, Platform} from 'react-native';
+import {Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
+import {BackArrow} from '../Assets/Icons';
 import {colors, NewInspectionStyles} from '../Assets/Styles';
 import {
-  CollapsedCard,
-  CarVerificationExpandedCard,
-  CaptureImageModal,
-  TiresItemsExpandedCard,
-  DisplayMediaModal,
-  DiscardInspectionModal,
   AndroidMediaViewModal,
+  CaptureImageModal,
+  CarVerificationExpandedCard,
+  CollapsedCard,
   ConfirmVehicleDetailModal,
-  NewInspectionFooter,
+  DiscardInspectionModal,
+  DisplayMediaModal,
   MileageInput,
+  NewInspectionFooter,
+  TiresItemsExpandedCard,
 } from '../Components';
-import {BackArrow} from '../Assets/Icons';
-import LoadingIndicator from '../Components/LoadingIndicator';
-import AnnotateImageModal from '../Components/Annotation/AnnotateImageModal';
 import AnnotateImage from '../Components/Annotation/AnnotateImage';
+import AnnotateImageModal from '../Components/Annotation/AnnotateImageModal';
+import LoadingIndicator from '../Components/LoadingIndicator';
 
 const {OS} = Platform;
 const mediaViewModals = {

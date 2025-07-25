@@ -88,7 +88,6 @@ const initialState = {
     rightRearTireID: '',
   },
   selectedInspectionID: null,
-  newInspectionId: null,
   company_ID: null,
   plateNumber: null,
   plateNumberVisible: null,
@@ -188,11 +187,6 @@ const newInspectionReducer = (state = initialState, action) => {
       return {
         ...state,
         plateNumber: payload,
-      };
-    case 'SET_NEW_INSPECTION_ID':
-      return {
-        ...state,
-        newInspectionId: payload,
       };
     case SKIP_LEFT:
       return {

@@ -23,6 +23,7 @@ const DVIRVehicleInfoScreen = ({
   onCalendarPress,
   onPressVINCamera,
   vinLoading,
+  isFormSubmitLoading,
 }) => (
   <View style={container}>
     <View style={bodyContainer}>
@@ -144,7 +145,7 @@ const DVIRVehicleInfoScreen = ({
         </View>
         <PrimaryGradientButton
           onPress={handleSubmit}
-          disabled={isSubmitting}
+          disabled={isFormSubmitLoading || isSubmitting}
           text={'Next'}
           buttonStyle={styles.buttonContainer}
         />

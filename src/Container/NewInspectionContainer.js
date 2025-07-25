@@ -2,25 +2,40 @@ import React, {useEffect, useState} from 'react';
 import {BackHandler, Platform} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {NewInspectionScreen} from '../Screens';
-import {ROUTES} from '../Navigation/ROUTES';
 import {
-  updateIsLicensePlateUploaded,
+  ExteriorItemsExpandedCard,
+  ExteriorItemsExpandedCard_Old,
+  InteriorItemsAnnotationExpandedCard,
+  InteriorItemsExpandedCard,
+} from '../Components';
+import {Delete_Messages, HARDWARE_BACK_PRESS, INSPECTION} from '../Constants';
+import {ROUTES} from '../Navigation/ROUTES';
+import {NewInspectionScreen} from '../Screens';
+import {
+  clearTires,
+  deleteImageFromDatabase,
+  extractNumberPlate,
+  imageAnnotation,
+  inspectionSubmission,
+  location,
+  vehicleTireStatus,
+} from '../services/inspection';
+import {
   categoryVariant,
-  showToast,
-  removeVehicleImage,
-  clearNewInspection,
   clear_Tires,
+  clearNewInspection,
+  file_Details,
+  removeVehicleImage,
+  setMileageVisible,
+  setRequired,
+  setVehicleType,
+  showToast,
   skipLeft,
   skipLeftCorners,
   skipRight,
   skipRightCorners,
-  setVehicleType,
-  file_Details,
-  setRequired,
-  setMileageVisible,
+  updateIsLicensePlateUploaded,
 } from '../Store/Actions';
-import {Delete_Messages, HARDWARE_BACK_PRESS, INSPECTION} from '../Constants';
 import {
   exteriorVariant,
   EXTRACT_INSPECTION_ITEM_ID,
@@ -33,21 +48,6 @@ import {
   isObjectEmpty,
   LicensePlateDetails,
 } from '../Utils';
-import {
-  ExteriorItemsExpandedCard,
-  ExteriorItemsExpandedCard_Old,
-  InteriorItemsAnnotationExpandedCard,
-  InteriorItemsExpandedCard,
-} from '../Components';
-import {
-  clearTires,
-  deleteImageFromDatabase,
-  extractNumberPlate,
-  imageAnnotation,
-  inspectionSubmission,
-  location,
-  vehicleTireStatus,
-} from '../services/inspection';
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllCarVerification: false,

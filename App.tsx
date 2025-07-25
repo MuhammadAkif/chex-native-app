@@ -11,15 +11,21 @@ import VehicleTypeModal from './src/Components/VehicleTypeModal';
 import {SESSION_EXPIRED, UPDATE_APP} from './src/Constants';
 import {ROUTES} from './src/Navigation/ROUTES';
 import Navigation from './src/Navigation/index';
+import {store} from './src/Store';
 import {
   clearNewInspection,
   hideToast,
-  setNewInspectionId,
+  setCompanyId,
   setSelectedVehicleKind,
   setVehicleTypeModalVisible,
   signOut,
 } from './src/Store/Actions';
-import {hasCameraAndMicrophoneAllowed} from './src/Utils';
+import {
+  hasCameraAndMicrophoneAllowed,
+  onNewInspectionPressFail,
+  onNewInspectionPressSuccess,
+} from './src/Utils';
+import {createInspection} from './src/services/inspection';
 import {
   navigate,
   navigationRef,
@@ -36,8 +42,13 @@ function App() {
   const {sessionExpired} = useSelector(state => state?.auth);
   const [displayGif, setDisplayGif] = useState(true);
   const [updateAvailable, setUpdateAvailable] = useState('');
-  const {vehicleTypeModalVisible, selectedVehicleKind, newInspectionId} =
-    useSelector(state => state?.newInspection);
+  const {vehicleTypeModalVisible} = useSelector(
+    (state: any) => state?.newInspection || {},
+  );
+  const [loadingState, setLoadingState] = useState({
+    isLoading: false,
+    vehicleType: '',
+  });
 
   useEffect(() => {
     (async () => {
@@ -49,26 +60,6 @@ function App() {
       dispatch(hideToast());
     };
   }, [displayGif]);
-
-  useEffect(() => {
-    if (!vehicleTypeModalVisible && newInspectionId && selectedVehicleKind) {
-      const doNavigate = () => {
-        if (navigationRef.isReady()) {
-          if (selectedVehicleKind.toLowerCase() === 'truck') {
-            navigate(ROUTES.DVIR_VEHICLE_INFO, {
-              routeName: ROUTES.INSPECTION_SELECTION,
-            });
-          } else {
-            navigate(ROUTES.NEW_INSPECTION, {
-              routeName: ROUTES.INSPECTION_SELECTION,
-            });
-          }
-          dispatch(setNewInspectionId(null));
-        }
-      };
-      doNavigate();
-    }
-  }, [vehicleTypeModalVisible, selectedVehicleKind, newInspectionId]);
 
   async function initializeApp() {
     await versionCheck();
@@ -101,9 +92,40 @@ function App() {
     resetNavigation(SIGN_IN);
   };
 
-  const handleVehicleTypeSelect = (type: string) => {
-    dispatch(setVehicleTypeModalVisible(false));
+  const handleVehicleTypeSelect = async (
+    type: string,
+    setLoadingState: (val: {isLoading: boolean; vehicleType: string}) => void,
+  ) => {
     dispatch(setSelectedVehicleKind(type.toLowerCase()));
+
+    if (type.toLowerCase() === 'truck') {
+      dispatch(setVehicleTypeModalVisible(false));
+      // Navigate immediately for truck, no API call
+      if (navigationRef.isReady()) {
+        navigate(ROUTES.DVIR_VEHICLE_INFO, {
+          routeName: ROUTES.INSPECTION_SELECTION,
+        });
+      }
+    } else {
+      // For van/sedan, call API and navigate after success
+      const state = store.getState();
+      const companyId = state?.auth?.user?.data?.companyId;
+      dispatch(setCompanyId(companyId));
+      setLoadingState({isLoading: true, vehicleType: type});
+      try {
+        const response = await createInspection(companyId);
+        onNewInspectionPressSuccess(
+          response,
+          dispatch,
+          navigate, // navigation is handled in App.tsx
+        );
+      } catch (err) {
+        onNewInspectionPressFail(err, dispatch);
+      } finally {
+        dispatch(setVehicleTypeModalVisible(false));
+        setLoadingState({isLoading: false, vehicleType: type});
+      }
+    }
   };
 
   return displayGif ? (
@@ -133,7 +155,10 @@ function App() {
       />
       <VehicleTypeModal
         visible={vehicleTypeModalVisible}
-        onSelect={handleVehicleTypeSelect}
+        onSelect={(type: string) =>
+          handleVehicleTypeSelect(type, setLoadingState)
+        }
+        loadingState={loadingState}
       />
     </>
   );

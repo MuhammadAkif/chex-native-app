@@ -2,10 +2,11 @@ import dayjs from 'dayjs';
 import {Formik} from 'formik';
 import React, {useEffect, useState} from 'react';
 import DatePicker from 'react-native-date-picker';
+import {useDispatch, useSelector} from 'react-redux';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {DVIRVehicleInfoScreen} from '../../Screens';
-import {extractVinAI} from '../../services/inspection';
-import {useSelector} from 'react-redux';
+import {createInspection, extractVinAI} from '../../services/inspection';
+import {numberPlateSelected} from '../../Store/Actions';
 import {getUserFullName} from '../../Utils/helpers';
 
 const validate = values => {
@@ -37,11 +38,13 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
   const [showDateModel, setShowDateModel] = useState(false);
   const [dateForPicker, setDateForPicker] = useState(new Date());
   const [vinLoading, setVinLoading] = useState(false);
+  const [isFormSubmitLoading, setIsFormSubmitLoading] = useState(false);
   const {
     name: driverFirstName,
     lastName: driverLastName,
     companyId,
   } = useSelector(state => state?.auth?.user?.data);
+  const dispatch = useDispatch();
 
   const handleDateConfirm = (date, setFieldValue) => {
     const formatted = dayjs(date).format('DD/MM/YYYY');
@@ -65,7 +68,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
 
   const handleVINCameraPress = () => {
     const details = {
-      title: 'Please take a photo of the VIN',
+      title: 'Please take a photo \n of the VIN',
       type: '1',
       uri: '',
       source: '',
@@ -92,9 +95,23 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
       hasCheckList: true,
     };
 
-    console.log('DATA:', data);
+    setIsFormSubmitLoading(true);
 
-    // navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);
+    createInspection(companyId, data)
+      .then(response => {
+        if (response?.status === 201) {
+          const {id = null} = response?.data || {};
+          dispatch(numberPlateSelected(id));
+
+          navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);
+        }
+      })
+      .catch(error => {
+        console.log('ERROR', error);
+      })
+      .finally(() => {
+        setIsFormSubmitLoading(false);
+      });
   };
 
   const driverFullName = getUserFullName(driverFirstName, driverLastName);
@@ -128,6 +145,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
               setVinLoading(true);
               try {
                 const response = await extractVinAI(route.params.vinImageUri);
+                // console.log('RESPONSE', response);
                 const {plateNumber = null} = response?.data || {};
                 setFieldValue('vin', plateNumber || '');
               } catch (error) {
@@ -154,6 +172,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
               onCalendarPress={handleCalendarPress}
               onPressVINCamera={handleVINCameraPress}
               vinLoading={vinLoading}
+              isFormSubmitLoading={isFormSubmitLoading}
             />
             <DatePicker
               modal
