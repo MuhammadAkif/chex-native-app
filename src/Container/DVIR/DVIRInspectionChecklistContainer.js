@@ -288,7 +288,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     // console.log('frameId', frameId);
 
     const details = {
-      title: inspectionData[index]?.title || 'Title',
+      title: 'Title',
       type: '1',
       uri: '',
       source: '',
