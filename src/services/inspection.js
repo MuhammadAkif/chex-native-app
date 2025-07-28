@@ -335,3 +335,43 @@ export const updateMileageInDB = async (milage, inspectionId) => {
     throw error;
   }
 };
+
+export const getChecklists = async inspectionId => {
+  const endPoint = generateApiUrl(`checklist/${inspectionId}`);
+
+  try {
+    return await api.get(endPoint);
+  } catch (error) {
+    console.error('Checklists error:', error);
+    throw error;
+  }
+};
+
+export const updateChecklist = async (inspectionId, checkId, data) => {
+  const endPoint = generateApiUrl(`update/checklist`);
+  const body = {inspectionId, checkId, ...data};
+
+  try {
+    const response = await api.put(endPoint, body);
+    return response;
+  } catch (error) {
+    console.error('Checklist update error:', error.response.data);
+    throw error;
+  }
+};
+
+export const removeChecklistImageVideo = async (
+  inspectionId,
+  checkId,
+  data,
+) => {
+  const endPoint = generateApiUrl(`checklist/image`);
+  const body = {inspectionId, checkId, ...data};
+
+  try {
+    return await api.patch(endpoint, body);
+  } catch (error) {
+    console.error('Checklist image video remove error:', error.response.data);
+    throw error;
+  }
+};

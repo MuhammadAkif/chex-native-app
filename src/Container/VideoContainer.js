@@ -24,7 +24,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {BackArrow} from '../Assets/Icons';
 import {colors, PreviewStyles} from '../Assets/Styles';
 import {CameraFooter, CaptureImageModal, RecordingPreview} from '../Components';
-import {HARDWARE_BACK_PRESS, Platforms} from '../Constants';
+import {HARDWARE_BACK_PRESS, Platforms, S3_BUCKET_BASEURL} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {updateVehicleImage} from '../Store/Actions';
 import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
@@ -120,6 +120,9 @@ const VideoContainer = ({route, navigation}) => {
     if (isVideoURI) {
       handleRetryPress();
       return true;
+    } else if (route?.params?.returnTo) {
+      navigate(route.params.returnTo);
+      return true;
     } else if (canGoBack()) {
       navigate(NEW_INSPECTION);
       return true;
@@ -163,6 +166,25 @@ const VideoContainer = ({route, navigation}) => {
     setCounter(30);
   };
   const handleResponse = async key => {
+    const video_url = `${S3_BUCKET_BASEURL}${key}`;
+
+    if (route?.params?.returnTo) {
+      const targetScreen = route.params.returnTo;
+      const navParams = {
+        capturedImageUri: video_url,
+        capturedImageMime: 'mp4',
+        ...route?.params?.returnToParams,
+      };
+
+      navigation.navigate({
+        name: targetScreen,
+        params: navParams,
+        merge: false,
+      });
+
+      return;
+    }
+
     const body = {
       category: subCategory,
       url: key,
@@ -190,22 +212,6 @@ const VideoContainer = ({route, navigation}) => {
   const handleNextPress = () => {
     setIsModalVisible(true);
     const path = isVideoFile.path.replace('file://', '');
-
-    // Custom: If coming from DVIRInspectionChecklistScreen, return image and skip upload
-    if (
-      route?.params?.capturedImageIndex !== undefined &&
-      route?.params?.returnTo
-    ) {
-      navigation.navigate({
-        name: route.params.returnTo,
-        params: {
-          capturedImageIndex: route.params.capturedImageIndex,
-          capturedImageUri: isVideoURI,
-        },
-        merge: true,
-      });
-      return;
-    }
 
     getSignedUrl(
       token,

@@ -177,6 +177,9 @@ const CameraContainer = ({route, navigation}) => {
     if (isImageURL) {
       handleRetryPress();
       return true;
+    } else if (route?.params?.returnTo) {
+      navigate(route.params.returnTo);
+      return true;
     } else if (canGoBack()) {
       navigate(NEW_INSPECTION);
       return true;
@@ -235,16 +238,24 @@ const CameraContainer = ({route, navigation}) => {
         throw error;
       }
     }
-    // VIN capture for trucks: just return image URI, do not extract here
-    if (route?.params?.isVinCapture) {
-      console.log('VIN capture: returning image URI to container');
+
+    if (route?.params?.returnTo) {
+      const targetScreen = route.params.returnTo;
+      const navParams = {
+        capturedImageUri: image_url,
+        capturedImageMime: extension,
+        ...route?.params?.returnToParams,
+      };
+
       navigation.navigate({
-        name: route.params.returnTo,
-        params: {vinImageUri: image_url},
-        merge: true,
+        name: targetScreen,
+        params: navParams,
+        merge: false,
       });
+
       return;
     }
+
     try {
       await uploadFile(
         uploadImageToStore,
@@ -318,22 +329,6 @@ const CameraContainer = ({route, navigation}) => {
   };
 
   const handleNextPress = async () => {
-    // Custom: If coming from DVIRInspectionChecklistScreen, return image and skip upload
-    if (
-      route?.params?.capturedImageIndex !== undefined &&
-      route?.params?.returnTo
-    ) {
-      navigation.navigate({
-        name: route.params.returnTo,
-        params: {
-          capturedImageIndex: route.params.capturedImageIndex,
-          capturedImageUri: isImageURL,
-        },
-        merge: true,
-      });
-      return;
-    }
-
     let extension = isImageFile.path.split('.').pop() || 'jpeg';
     const mime = 'image/' + extension;
     setIsModalVisible(true);

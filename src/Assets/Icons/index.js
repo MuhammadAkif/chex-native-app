@@ -26,6 +26,7 @@ import InspectionDetails from './InspectionDetails';
 import InspectionReviewed from './InspectionReviewed';
 import Landscape from './Landscape';
 import Logout from './Logout';
+import MovieIcon from './MovieIcon';
 import PhotoLibrary from './PhotoLibrary';
 import Play from './Play';
 import Plus from './Plus';
@@ -71,6 +72,7 @@ export {
   InspectionReviewed,
   Landscape,
   Logout,
+  MovieIcon,
   PhotoLibrary,
   Play,
   Plus,

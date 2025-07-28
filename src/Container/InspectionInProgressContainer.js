@@ -1,19 +1,19 @@
+import {useFocusEffect} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {BackHandler} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {useFocusEffect} from '@react-navigation/native';
 
+import {HARDWARE_BACK_PRESS} from '../Constants';
+import {ROUTES} from '../Navigation/ROUTES';
 import {InspectionInProgressScreen} from '../Screens';
 import {
   clearNewInspection,
-  fetchInspectionInProgress,
   deleteInspection,
+  fetchInspectionInProgress,
+  file_Details,
   setVehicleType,
   showToast,
-  file_Details,
 } from '../Store/Actions';
-import {ROUTES} from '../Navigation/ROUTES';
-import {HARDWARE_BACK_PRESS} from '../Constants';
 import {handle_Session_Expired, handleNewInspectionPress} from '../Utils';
 
 const {NEW_INSPECTION, INSPECTION_IN_PROGRESS} = ROUTES;
@@ -82,10 +82,15 @@ const InspectionInProgressContainer = ({navigation}) => {
     const {hasAdded = 'existing'} = res?.data || {};
     const vehicleType = hasAdded || 'existing';
     dispatch(setVehicleType(vehicleType));
+
     resetAllStates();
-    navigate(NEW_INSPECTION, {
-      routeName: INSPECTION_IN_PROGRESS,
-    });
+
+    if (res?.data?.inspection?.hasCheckList)
+      return navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);
+    else
+      navigate(NEW_INSPECTION, {
+        routeName: INSPECTION_IN_PROGRESS,
+      });
   }
   function onContinuePressFail(error) {
     const {statusCode = null} = error?.response?.data || {};

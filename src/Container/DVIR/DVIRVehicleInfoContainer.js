@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import {Formik} from 'formik';
 import React, {useEffect, useState} from 'react';
+import {Alert} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import {useDispatch, useSelector} from 'react-redux';
 import {ROUTES} from '../../Navigation/ROUTES';
@@ -80,7 +81,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
     navigation.navigate(ROUTES.CAMERA, {
       modalDetails: details,
       returnTo: ROUTES.DVIR_VEHICLE_INFO,
-      isVinCapture: true,
+      returnToParams: {isVinCapture: true},
     });
   };
 
@@ -107,7 +108,9 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
         }
       })
       .catch(error => {
-        console.log('ERROR', error);
+        if (error?.response?.data.statusCode === 409) {
+          Alert.alert('Error', error?.response?.data?.errorMessage);
+        }
       })
       .finally(() => {
         setIsFormSubmitLoading(false);
@@ -141,10 +144,12 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
         // If coming back from camera with vinImageUri, extract VIN
         useEffect(() => {
           async function extractVinIfNeeded() {
-            if (route?.params?.vinImageUri) {
+            if (route?.params?.isVinCapture) {
               setVinLoading(true);
               try {
-                const response = await extractVinAI(route.params.vinImageUri);
+                const response = await extractVinAI(
+                  route.params.capturedImageUri,
+                );
                 // console.log('RESPONSE', response);
                 const {plateNumber = null} = response?.data || {};
                 setFieldValue('vin', plateNumber || '');
@@ -152,12 +157,16 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
                 // Optionally show error to user
               } finally {
                 setVinLoading(false);
-                navigation.setParams({vinImageUri: undefined});
+                navigation.setParams({
+                  capturedImageUri: undefined,
+                  isVinCapture: undefined,
+                });
               }
             }
           }
+
           extractVinIfNeeded();
-        }, [route?.params?.vinImageUri]);
+        }, [route?.params?.capturedImageUri]);
 
         return (
           <>

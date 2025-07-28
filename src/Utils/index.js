@@ -424,16 +424,22 @@ export const uploadToS3 = async (
       const percentCompleted = Math.round((written * 100) / total);
       setProgress(percentCompleted);
     });
-    await onUploadToS3Success(handleResponse, key, handleError, category);
+    await onUploadToS3Success(handleResponse, key, handleError, category, mime);
   } catch (error) {
     throw error;
   }
 };
-async function onUploadToS3Success(handleResponse, key, handleError, category) {
+async function onUploadToS3Success(
+  handleResponse,
+  key,
+  handleError,
+  category,
+  mime,
+) {
   const image_url = S3_BUCKET_BASEURL + key;
 
   try {
-    if (!SKIP_NIGHT_IMAGE_LIST.includes(category)) {
+    if (!SKIP_NIGHT_IMAGE_LIST.includes(category) && mime !== 'video/mp4') {
       const {
         data: {status = false},
       } = await isImageDarkWithAI(image_url);

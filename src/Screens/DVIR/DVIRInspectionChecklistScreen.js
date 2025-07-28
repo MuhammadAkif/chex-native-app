@@ -1,5 +1,6 @@
-import React, {useCallback} from 'react';
+import React from 'react';
 import {
+  ActivityIndicator,
   Image,
   Keyboard,
   KeyboardAvoidingView,
@@ -20,6 +21,7 @@ import {
   CameraBorderedIcon,
   CircledChevron,
   CrossCircledIcon,
+  MovieIcon,
   VideoBorderedIcon,
 } from '../../Assets/Icons';
 import CommentBorderedIcon from '../../Assets/Icons/CommentBorderedIcon';
@@ -27,20 +29,24 @@ import {IMAGES} from '../../Assets/Images';
 import {colors, NewInspectionStyles} from '../../Assets/Styles';
 import {PrimaryGradientButton} from '../../Components';
 import AppText from '../../Components/text';
+const {container, bodyContainer} = NewInspectionStyles;
 
 // Move StatusButton outside so it is available to InspectionItem
 const StatusButton = React.memo(
-  ({title, isSelected, onPress, type, buttonStyles, styles, AppText, wp}) => {
-    const buttonStyle = isSelected ? buttonStyles[type] : buttonStyles.default;
+  ({title, isSelected, onPress, type, buttonStyles}) => {
+    const buttonStyle = isSelected
+      ? buttonStyles?.[type]
+      : buttonStyles?.default;
+
     return (
       <TouchableOpacity
         style={[
           styles.statusButton,
-          {backgroundColor: buttonStyle.backgroundColor},
+          {backgroundColor: buttonStyle?.backgroundColor},
         ]}
-        onPress={onPress}
+        onPress={() => onPress(type)}
         activeOpacity={0.7}>
-        <AppText style={[styles.statusText, {color: buttonStyle.textColor}]}>
+        <AppText style={[styles.statusText, {color: buttonStyle?.textColor}]}>
           {title}
         </AppText>
       </TouchableOpacity>
@@ -48,106 +54,84 @@ const StatusButton = React.memo(
   },
 );
 
-// Move InspectionItem outside the main component
-const InspectionItem = React.memo(
+// Move ChecklistItem outside the main component
+const ChecklistItem = React.memo(
   ({
     item,
     index,
-    onStatusGood,
-    onStatusRepair,
-    onStatusReplace,
+    onChecklistStatusChange,
     onComment,
     onCamera,
     onRemove,
-    styles,
-    wp,
     CrossCircledIcon,
     CameraBorderedIcon,
     VideoBorderedIcon,
-    AppText,
     buttonStyles,
   }) => {
     return (
       <View style={styles.itemContainer}>
         <View style={styles.itemHeader}>
-          <AppText style={styles.itemTitle}>{item.title}</AppText>
-          {item.id !== 10 && item.id !== 11 && (
-            <View style={styles.iconContainer}>
-              <TouchableOpacity
-                onPress={() => onComment(index)}
-                activeOpacity={0.7}>
-                <CommentBorderedIcon width={wp('7%')} height={wp('7%')} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => onCamera(index, item?.videos)}
-                activeOpacity={0.7}>
-                {item?.videos ? (
-                  <VideoBorderedIcon width={wp('7%')} height={wp('7%')} />
-                ) : (
-                  <CameraBorderedIcon width={wp('7%')} height={wp('7%')} />
-                )}
-              </TouchableOpacity>
-            </View>
-          )}
+          <AppText style={styles.itemTitle}>{item?.name}</AppText>
+
+          <View style={styles.iconContainer}>
+            <TouchableOpacity
+              onPress={() => onComment(index)}
+              activeOpacity={0.7}>
+              <CommentBorderedIcon width={wp('7%')} height={wp('7%')} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => onCamera(index, item?.fileType == 'video')}
+              activeOpacity={0.7}>
+              {item?.fileType == 'video' ? (
+                <VideoBorderedIcon width={wp('7%')} height={wp('7%')} />
+              ) : (
+                <CameraBorderedIcon width={wp('7%')} height={wp('7%')} />
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
 
-        {item.id !== 10 && item.id !== 11 && (
-          <View style={styles.statusContainer}>
+        <View style={styles.statusContainer}>
+          {item?.options?.map((option, idx) => (
             <StatusButton
-              title="Good"
-              type="Good"
-              isSelected={item.status === 'Good'}
-              onPress={() => onStatusGood(index)}
+              key={idx}
+              title={option}
+              type={option}
+              isSelected={item.checkStatus === option}
+              onPress={() => onChecklistStatusChange(option, index, idx)}
               buttonStyles={buttonStyles}
-              styles={styles}
-              AppText={AppText}
-              wp={wp}
             />
-            <StatusButton
-              title="Repair"
-              type="Repair"
-              isSelected={item.status === 'Repair'}
-              onPress={() => onStatusRepair(index)}
-              buttonStyles={buttonStyles}
-              styles={styles}
-              AppText={AppText}
-              wp={wp}
-            />
-            <StatusButton
-              title="Replace"
-              type="Replace"
-              isSelected={item.status === 'Replace'}
-              onPress={() => onStatusReplace(index)}
-              buttonStyles={buttonStyles}
-              styles={styles}
-              AppText={AppText}
-              wp={wp}
-            />
+          ))}
+        </View>
+
+        {/* Show captured images for items*/}
+        {item?.url && item.url.length > 0 && (
+          <View style={styles.itemImagesContainer}>
+            {item.url.map((img, imgIdx) => (
+              <View key={imgIdx} style={styles.itemImageWrapper}>
+                {item?.fileType === 'video' ? (
+                  <View style={styles.itemImageContainer}>
+                    <MovieIcon width={wp(7)} height={wp(7)} />
+                  </View>
+                ) : (
+                  <View style={styles.itemImageContainer}>
+                    <Image
+                      source={{uri: img}}
+                      style={styles.itemImage}
+                      resizeMode="cover"
+                    />
+                  </View>
+                )}
+
+                <TouchableOpacity
+                  onPress={() => onRemove(index, imgIdx)}
+                  style={styles.removeImageButton}>
+                  <CrossCircledIcon />
+                </TouchableOpacity>
+              </View>
+            ))}
           </View>
         )}
-
-        {/* Show captured images for items 1-9 */}
-        {item.id >= 1 &&
-          item.id <= 9 &&
-          item.images &&
-          item.images.length > 0 && (
-            <View style={styles.itemImagesContainer}>
-              {item.images.map((img, imgIdx) => (
-                <View key={imgIdx} style={styles.itemImageWrapper}>
-                  <Image
-                    source={{uri: img}}
-                    style={styles.itemImage}
-                    resizeMode="cover"
-                  />
-                  <TouchableOpacity
-                    onPress={() => onRemove(index, imgIdx)}
-                    style={styles.removeImageButton}>
-                    <CrossCircledIcon />
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
-          )}
 
         {item.comment ? (
           <View style={styles.commentContainer}>
@@ -161,7 +145,7 @@ const InspectionItem = React.memo(
 
 // Move CommentModal outside the main component
 const CommentModal = React.memo(
-  ({visible, onClose, onSave, initialValue = '', styles, AppText}) => {
+  ({visible, onClose, onSave, initialValue = '', modalImage}) => {
     const [text, setText] = React.useState(initialValue);
 
     React.useEffect(() => {
@@ -194,13 +178,13 @@ const CommentModal = React.memo(
             bounces={false}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.modalContent}>
-                <Image
-                  source={{
-                    uri: 'https://www.shutterstock.com/shutterstock/photos/384697171/display_1500/stock-vector-car-logo-vector-illustration-384697171.jpg',
-                  }}
-                  style={styles.modalImage}
-                  resizeMode="cover"
-                />
+                {modalImage && (
+                  <Image
+                    source={{uri: modalImage}}
+                    style={styles.modalImage}
+                    resizeMode="cover"
+                  />
+                )}
                 <AppText style={styles.modalTitle}>Comments</AppText>
                 <TextInput
                   style={styles.commentInput}
@@ -237,54 +221,28 @@ const DVIRInspectionChecklistScreen = ({
   setCurrentItemIndex,
   additionalComments,
   setAdditionalComments,
-  inspectionData,
-  setInspectionData,
+  checklistData,
+  setChecklistData,
   captureFrames,
   setCaptureFrames,
   tireInspectionData,
   setTireInspectionData,
   buttonStyles,
-  handleStatusChange,
-  handleAddComment,
-  handleSaveComment,
-  handleOpenCamera,
+  onCommentIconPress,
+  onSaveComment,
+  onCheckItemCameraIconPress,
   handleCloseModal,
-  handleRemoveImage,
+  onCheckItemRemoveImage,
   handleTireImage,
   showChecklistSection,
   showTiresSection,
   toggleChecklistSection,
   toggleTiresSection,
   onPressCaptureFrame,
+  onChecklistStatusChange,
+  checklistLoading,
+  commentModalImage,
 }) => {
-  const {container, bodyContainer} = NewInspectionStyles;
-
-  // Move these handlers outside of InspectionItem
-  const handleStatusGood = useCallback(
-    index => handleStatusChange(index, 'Good'),
-    [handleStatusChange],
-  );
-  const handleStatusRepair = useCallback(
-    index => handleStatusChange(index, 'Repair'),
-    [handleStatusChange],
-  );
-  const handleStatusReplace = useCallback(
-    index => handleStatusChange(index, 'Replace'),
-    [handleStatusChange],
-  );
-  const handleComment = useCallback(
-    index => handleAddComment(index),
-    [handleAddComment],
-  );
-  const handleCamera = useCallback(
-    (index, videos) => handleOpenCamera(index, videos),
-    [handleOpenCamera],
-  );
-  const handleRemove = useCallback(
-    (itemIndex, imgIdx) => handleRemoveImage(itemIndex, imgIdx),
-    [handleRemoveImage],
-  );
-
   return (
     <View style={container}>
       <View style={bodyContainer}>
@@ -315,28 +273,29 @@ const DVIRInspectionChecklistScreen = ({
 
             {showChecklistSection && (
               <>
-                <View style={styles.cardItems}>
-                  {inspectionData.map((item, index) => (
-                    <InspectionItem
-                      key={item.id}
-                      item={item}
-                      index={index}
-                      onStatusGood={handleStatusGood}
-                      onStatusRepair={handleStatusRepair}
-                      onStatusReplace={handleStatusReplace}
-                      onComment={handleComment}
-                      onCamera={handleCamera}
-                      onRemove={handleRemove}
-                      styles={styles}
-                      wp={wp}
-                      CrossCircledIcon={CrossCircledIcon}
-                      CameraBorderedIcon={CameraBorderedIcon}
-                      VideoBorderedIcon={VideoBorderedIcon}
-                      AppText={AppText}
-                      buttonStyles={buttonStyles}
-                    />
-                  ))}
-                </View>
+                {checklistLoading ? (
+                  <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color={colors.royalBlue} />
+                  </View>
+                ) : (
+                  <View style={styles.cardItems}>
+                    {checklistData.map((item, index) => (
+                      <ChecklistItem
+                        key={item.checkId}
+                        item={item}
+                        index={index}
+                        onChecklistStatusChange={onChecklistStatusChange}
+                        onComment={onCommentIconPress}
+                        onCamera={onCheckItemCameraIconPress}
+                        onRemove={onCheckItemRemoveImage}
+                        CrossCircledIcon={CrossCircledIcon}
+                        CameraBorderedIcon={CameraBorderedIcon}
+                        VideoBorderedIcon={VideoBorderedIcon}
+                        buttonStyles={buttonStyles}
+                      />
+                    ))}
+                  </View>
+                )}
 
                 <View style={{marginTop: hp(4)}}>
                   <View
@@ -516,9 +475,8 @@ const DVIRInspectionChecklistScreen = ({
       <CommentModal
         visible={modalVisible}
         onClose={handleCloseModal}
-        onSave={handleSaveComment}
-        styles={styles}
-        AppText={AppText}
+        onSave={onSaveComment}
+        modalImage={commentModalImage}
       />
     </View>
   );
@@ -660,12 +618,21 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginBottom: 10,
   },
-  itemImage: {
+  itemImageContainer: {
     width: wp(15),
     height: wp(15),
     borderRadius: 8,
     marginRight: 4,
+    borderWidth: 1,
+    borderColor: colors.royalBlue,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+  itemImage: {
+    width: '100%',
+    height: '100%',
+  },
+
   removeImageButton: {
     position: 'absolute',
     right: -2,
@@ -918,6 +885,7 @@ const styles = StyleSheet.create({
     gap: wp(3),
   },
   rotateChevron: {transform: [{rotate: '180deg'}]},
+  loadingContainer: {alignSelf: 'center'},
 });
 
 export default DVIRInspectionChecklistScreen;
