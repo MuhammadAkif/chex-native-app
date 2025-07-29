@@ -82,7 +82,7 @@ const InspectionInProgressContainer = ({navigation}) => {
     const {hasAdded = 'existing'} = res?.data || {};
     const vehicleType = hasAdded || 'existing';
     dispatch(setVehicleType(vehicleType));
-
+    // dispatch(setSelectedVehicleKind(res?.data?.inspection?.hasCheckList ? 'tru'));
     resetAllStates();
 
     if (res?.data?.inspection?.hasCheckList)

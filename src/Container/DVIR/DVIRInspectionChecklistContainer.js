@@ -1,53 +1,94 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {IMAGES} from '../../Assets/Images';
-import {
-  ExteriorItemsExpandedCard,
-  ExteriorItemsExpandedCard_Old,
-  InteriorItemsAnnotationExpandedCard,
-  InteriorItemsExpandedCard,
-} from '../../Components';
+import {INSPECTION} from '../../Constants';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {DVIRInspectionChecklistScreen} from '../../Screens';
+import {getChecklists, removeChecklistImageVideo as removeChecklistImageVideoAPI, updateChecklist} from '../../services/inspection';
+import {categoryVariant, setRequired} from '../../Store/Actions';
 import {
-  getChecklists,
-  removeChecklistImageVideo as removeChecklistImageVideoAPI,
-  updateChecklist,
-} from '../../services/inspection';
+  ExteriorFrontDetails,
+  ExteriorLeftDetails,
+  ExteriorRearDetails,
+  ExteriorRearLeftCornerDetails,
+  ExteriorRearRightCornerDetails,
+  ExteriorRightDetails,
+  isNotEmpty,
+  LicensePlateDetails,
+} from '../../Utils';
 
-const exteriorItemsExpandedCards = {
-  existing: ExteriorItemsExpandedCard_Old,
-  new: ExteriorItemsExpandedCard,
-};
-const interiorItemsExpandedCards = {
-  existing: InteriorItemsExpandedCard,
-  new: InteriorItemsAnnotationExpandedCard,
+const frameConfigMap = {
+  exteriorFront: {
+    details: ExteriorFrontDetails,
+    source: IMAGES.truck_exterior_front,
+    index: 0,
+  },
+  exteriorRight: {
+    details: ExteriorRightDetails,
+    source: IMAGES.truck_exterior_right,
+    index: 1,
+  },
+  exteriorLeft: {
+    details: ExteriorLeftDetails,
+    source: IMAGES.truck_exterior_left,
+    index: 0,
+  },
+  rearRight: {
+    details: ExteriorRearRightCornerDetails,
+    source: IMAGES.truck_exterior_rear_right,
+    index: 1,
+  },
+  rearLeft: {
+    details: ExteriorRearLeftCornerDetails,
+    source: IMAGES.truck_exterior_rear_left,
+    index: 0,
+  },
+  rear: {
+    details: ExteriorRearDetails,
+    source: IMAGES.truck_exterior_rear_back,
+    index: 0,
+  },
+  frontInterior: {
+    source: null,
+    index: 0,
+
+    details: {
+      key: 'frontInterior',
+      title: 'Front Interior',
+      instructionalText: 'Please take a photo with clear view dashboard',
+      instructionalSubHeadingText: 'Front Interior',
+      buttonText: 'Capture Now',
+      category: 'Interior',
+      subCategory: 'front_interior',
+      groupType: INSPECTION.interiorItems,
+      isVideo: false,
+    },
+  },
+  rearInterior: {
+    source: null,
+    index: 0,
+
+    details: {
+      key: 'rearInterior',
+      title: 'Rear Interior',
+      instructionalText: 'Please take a photo with clear view of the rear interior',
+      instructionalSubHeadingText: 'Rear Interior',
+      buttonText: 'Capture Now',
+      category: 'Interior',
+      subCategory: 'front_interior',
+      groupType: INSPECTION.interiorItems,
+      isVideo: false,
+    },
+  },
 };
 
 const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   // State for checklist items
-  const [modalVisible, setModalVisible] = useState(false);
+  const [commentModalVisible, setAddCommentModalVisible] = useState(false);
   const [currentItemIndex, setCurrentItemIndex] = useState(null);
   const [additionalComments, setAdditionalComments] = useState('');
-  let {
-    carVerificiationItems,
-    exteriorItems,
-    interiorItems,
-    tires,
-    plateNumber,
-    /* skipLeft,
-    skipLeftCorners,
-    skipRight,
-    skipRightCorners,*/
-    isLicensePlateUploaded,
-    vehicle_Type,
-    variant,
-    fileDetails,
-    mileage = '',
-    feedback,
-    imageDimensions,
-    selectedInspectionID,
-  } = useSelector(state => state.newInspection) || {};
+  const reduxNewInspectionState = useSelector(state => state.newInspection) || {};
+  const selectedInspectionID = reduxNewInspectionState?.selectedInspectionID;
   const [checklistData, setChecklistData] = useState([]);
   const [checklistLoading, setChecklistLoading] = useState(false);
   const [captureFrames, setCaptureFrames] = useState([
@@ -55,29 +96,29 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       id: 10,
       title: 'Exterior Front',
       frames: [
-        {id: 'frontRight', image: IMAGES.truckRight},
-        {id: 'frontLeft', image: IMAGES.truckLeft},
-        {id: 'front', image: IMAGES.truckFront},
+        {id: 'exteriorRight', image: IMAGES.truckRight},
+        {id: 'exteriorLeft', image: IMAGES.truckLeft},
+        {id: 'exteriorFront', image: IMAGES.truckFront},
       ],
     },
     {
       id: 11,
       title: 'Exterior Rear',
       frames: [
-        {id: 'rearRight', image: IMAGES.truckRight},
-        {id: 'rearLeft', image: IMAGES.truckLeft},
-        {id: 'rear', image: IMAGES.truckFront},
+        {id: 'rearRight', image: IMAGES.truckRearRight},
+        {id: 'rearLeft', image: IMAGES.truckRearLeft},
+        {id: 'rear', image: IMAGES.truckBack},
       ],
     },
     {
       id: 12,
       title: 'Full Front Interior (dash, steering wheel, Seat)',
-      frames: [{id: 2, image: IMAGES.truckInterior}],
+      frames: [{id: 'frontInterior', image: IMAGES.truckInterior}],
     },
     {
       id: 13,
       title: 'Rear Interior (back seats, floor) / Truck Bed',
-      frames: [{id: 2, image: IMAGES.truckInterior}],
+      frames: [{id: 'rearInterior', image: IMAGES.truckInterior}],
     },
   ]);
 
@@ -127,6 +168,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   const toggleChecklistSection = useCallback(() => {
     setShowChecklistSection(prev => !prev);
   }, []);
+
   const toggleTiresSection = useCallback(() => {
     setShowTiresSection(prev => !prev);
   }, []);
@@ -156,11 +198,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
 
   const updateChecklistAPIWithCardIndex = useCallback(
     (cardIndex, data) => {
-      updateChecklist(
-        selectedInspectionID,
-        checklistData?.[cardIndex]?.checkId,
-        data,
-      );
+      updateChecklist(selectedInspectionID, checklistData?.[cardIndex]?.checkId, data);
     },
     [updateChecklist, selectedInspectionID, checklistData],
   );
@@ -182,7 +220,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
 
   const handleAddComment = useCallback(index => {
     setCurrentItemIndex(index);
-    setModalVisible(true);
+    setAddCommentModalVisible(true);
   }, []);
 
   const handleSaveComment = useCallback(
@@ -201,7 +239,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         });
       }
 
-      setModalVisible(false);
+      setAddCommentModalVisible(false);
       setCurrentItemIndex(null);
     },
     [currentItemIndex],
@@ -215,6 +253,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         uri: '',
         source: '',
         fileId: '',
+        instructionalText: `Please wait a while the ${isVideo ? 'video' : 'image'} is being uploaded`,
       };
 
       navigation.navigate(isVideo ? ROUTES.VIDEO : ROUTES.CAMERA, {
@@ -229,7 +268,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   );
 
   const handleCloseModal = useCallback(() => {
-    setModalVisible(false);
+    setAddCommentModalVisible(false);
   }, []);
 
   const handleCheckItemRemoveImage = useCallback(
@@ -261,55 +300,95 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
 
   // Handler to update tire image
   const handleTireImage = useCallback((tireId, imageUri) => {
-    setTireInspectionData(prevData =>
-      prevData.map(tire =>
-        tire.id === tireId ? {...tire, image: imageUri} : tire,
-      ),
-    );
+    setTireInspectionData(prevData => prevData.map(tire => (tire.id === tireId ? {...tire, image: imageUri} : tire)));
   }, []);
 
-  const ActiveExteriorItemsExpandedCard =
-    exteriorItemsExpandedCards[vehicle_Type];
-  const ActiveInteriorItemsExpandedCard =
-    interiorItemsExpandedCards[vehicle_Type];
+  // CAPTURE MODAL DETAILS
+  const modalDetailsInitialState = {
+    ...LicensePlateDetails,
+    isVideo: false,
+  };
+  const [modalDetails, setModalDetails] = useState(modalDetailsInitialState);
+  const [displayAnnotationPopUp, setDisplayAnnotationPopUp] = useState(false);
+  const [captureImageModalVisible, setCaptureImageModalVisible] = useState(false);
+  const [requiredFields, setRequiredFields] = useState({});
+  const dispatch = useDispatch();
+  const [annotationModalDetails, setAnnotationModalDetails] = useState({
+    title: '',
+    type: '',
+    uri: '',
+    fileId: '',
+    source: '',
+  });
 
-  const handleCaptureFrame = (itemId, frameId) => {
-    // console.log('itemId', itemId);
-    // console.log('frameId', frameId);
+  //Collapsed Cards Functions ends here
+  const handleFramePickerPress = (details, variant = 0, captureFrameId, frameId) => {
+    const haveType = checkCategory(details.category || null);
+    displayAnnotationPopUp && setDisplayAnnotationPopUp(false);
+    dispatch(categoryVariant(variant));
+    if (haveType) {
+      const {key} = details;
+      const isRequired = isNotEmpty(requiredFields[key]);
+      toggleFieldRequired(!isRequired);
+    } else {
+      toggleFieldRequired(true);
+    }
+    setModalDetails({...details, captureFrameId, frameId});
+    setCaptureImageModalVisible(true);
+  };
 
+  const handleCaptureNowPress = (isVideo, key) => {
+    const paths = {
+      true: ROUTES.VIDEO,
+      false: ROUTES.CAMERA,
+    };
+    const path = paths[isVideo];
     const details = {
-      title: 'Title',
-      type: '1',
+      title: modalDetails.title,
+      type: key,
       uri: '',
-      source: '',
+      source: modalDetails.source,
       fileId: '',
     };
 
-    navigation.navigate(ROUTES.CAMERA, {
-      type: 1,
-      modalDetails: details,
-      inspectionId: 1,
-      returnTo: ROUTES.DVIR_INSPECTION_CHECKLIST,
+    setAnnotationModalDetails(details);
+    setCaptureImageModalVisible(false);
+    setModalDetails(modalDetailsInitialState);
+
+    navigation.navigate(path, {
+      type: key,
+      modalDetails: modalDetails,
+      inspectionId: selectedInspectionID,
     });
   };
 
+  function checkCategory(category) {
+    const types = ['Interior', 'Exterior'];
+    return types.includes(category);
+  }
+
+  function toggleFieldRequired(required = null) {
+    dispatch(setRequired(required));
+  }
+
+  const handleCaptureFrame = (itemId, frameId) => {
+    const config = frameConfigMap[frameId];
+    handleFramePickerPress({...config.details, source: config.source}, config.index, itemId, frameId);
+  };
+
+  // CAPTURE MODAL DETAILS
   const getChecklistsData = useCallback(async () => {
     setChecklistLoading(true);
     const response = await getChecklists(selectedInspectionID);
     setChecklistLoading(false);
 
-    if (response.status == 200 && response?.data?.length > 0)
-      setChecklistData(response.data);
+    if (response.status == 200 && response?.data?.length > 0) setChecklistData(response.data);
   }, []);
 
   // Camera result handler
   useEffect(() => {
-    if (
-      route?.params?.capturedImageIndex !== undefined &&
-      route?.params?.capturedImageUri
-    ) {
-      const {capturedImageIndex, capturedImageUri, capturedImageMime} =
-        route.params;
+    if (route?.params?.capturedImageIndex !== undefined && route?.params?.capturedImageUri) {
+      const {capturedImageIndex, capturedImageUri, capturedImageMime} = route.params;
 
       setChecklistData(prevData =>
         prevData.map((item, idx) =>
@@ -336,6 +415,24 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   }, [route?.params?.capturedImageIndex, route?.params?.capturedImageUri]);
 
   useEffect(() => {
+    if (route?.params?.frameImage) {
+      const {captureFrameId, frameId, frameImage} = route.params;
+
+      const updatedFrames = captureFrames.map(item => {
+        if (item.id === captureFrameId) {
+          return {
+            ...item,
+            frames: item.frames.map(frame => (frame.id === frameId ? {...frame, image: frameImage} : frame)),
+          };
+        }
+        return item;
+      });
+
+      setCaptureFrames(updatedFrames);
+    }
+  }, [route?.params?.frameImage]);
+
+  useEffect(() => {
     getChecklistsData();
   }, []);
 
@@ -343,8 +440,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     <DVIRInspectionChecklistScreen
       navigation={navigation}
       route={route}
-      modalVisible={modalVisible}
-      setModalVisible={setModalVisible}
+      addCommentModalVisible={commentModalVisible}
       currentItemIndex={currentItemIndex}
       setCurrentItemIndex={setCurrentItemIndex}
       additionalComments={additionalComments}
@@ -369,7 +465,24 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       toggleChecklistSection={toggleChecklistSection}
       toggleTiresSection={toggleTiresSection}
       onPressCaptureFrame={handleCaptureFrame}
-      commentModalImage={checklistData[currentItemIndex]?.url?.[0]}
+      commentModalImage={checklistData?.[currentItemIndex]?.fileType == 'photo' ? checklistData?.[currentItemIndex]?.url?.[0] : null}
+      // CAPTURE MODAL DETAILS PROPS
+      captureImageModalVisible={captureImageModalVisible}
+      setCaptureImageModalVisible={() => setCaptureImageModalVisible(false)}
+      source={modalDetails?.source}
+      instructionalText={modalDetails?.instructionalText}
+      buttonText={modalDetails?.buttonText}
+      title={modalDetails?.title}
+      isVideo={modalDetails?.isVideo}
+      modalKey={modalDetails?.key}
+      isExterior={modalDetails?.groupType === INSPECTION.exteriorItems}
+      isInterior={modalDetails?.groupType === INSPECTION.interiorItems}
+      isCarVerification={modalDetails?.groupType === INSPECTION.carVerificiationItems}
+      instructionalSubHeadingText={modalDetails?.instructionalSubHeadingText}
+      instructionalSubHeadingText_1={modalDetails?.instructionalSubHeadingText_1}
+      instructionalSubHeadingText_2={modalDetails?.instructionalSubHeadingText_2}
+      handleFramesCaptureImage={handleCaptureNowPress}
+      // CAPTURE MODAL DETAILS PROPS
     />
   );
 };

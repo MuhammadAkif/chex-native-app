@@ -1,11 +1,4 @@
-import {
-  AI_API_TOKEN,
-  API_ENDPOINTS,
-  EXTRACT_NUMBER_PLATE_WITH_AI,
-  generateApiUrl,
-  MILEAGE_EXTRACTION,
-  nightImageCheckAI,
-} from '../Constants';
+import {AI_API_TOKEN, API_ENDPOINTS, EXTRACT_NUMBER_PLATE_WITH_AI, generateApiUrl, MILEAGE_EXTRACTION, nightImageCheckAI} from '../Constants';
 import {generateRandomString} from '../Utils';
 import api from './api';
 
@@ -31,7 +24,7 @@ export const createInspection = async (companyId, data) => {
   try {
     return await api.post(CREATE_INSPECTION_URL, body);
   } catch (error) {
-    console.error('Create inspection error:', error);
+    console.error('Create inspection error:', error.response.data);
     throw error;
   }
 };
@@ -57,11 +50,7 @@ export const getInspectionDetails = async inspectionId => {
   }
 };
 
-export const extractNumberPlate = async (
-  licensePlateNumber,
-  companyId,
-  inspectionId,
-) => {
+export const extractNumberPlate = async (licensePlateNumber, companyId, inspectionId) => {
   const body = {
     licensePlateNumber,
     companyId,
@@ -99,11 +88,7 @@ export const clearTires = async (fileIds = []) => {
   }
 };
 
-export const imageAnnotation = async (
-  coordinateArray,
-  inspectionId,
-  fileId,
-) => {
+export const imageAnnotation = async (coordinateArray, inspectionId, fileId) => {
   const body = {coordinateArray, inspectionId, fileId};
 
   try {
@@ -169,14 +154,7 @@ export const extractVinAI = async image_url => {
   }
 };
 
-export const s3SignedUrl = async (
-  type = '',
-  source = '',
-  inspectionId = '',
-  categoryName = '',
-  variant = '',
-  companyId = '',
-) => {
+export const s3SignedUrl = async (type = '', source = '', inspectionId = '', categoryName = '', variant = '', companyId = '') => {
   const data = {type, source, inspectionId, categoryName, variant, companyId};
   // const data = {type};
 
@@ -234,11 +212,7 @@ export const location = async inspectionId => {
  * @returns {Promise<axios.AxiosResponse<any>>} A promise that resolves to the Axios response object, containing the result of the PATCH request.
  * @throws {Error} If the request fails, it will throw an error.
  */
-export const inspectionSubmission = async (
-  inspectionId = '',
-  companyId = '',
-  driverComment = null,
-) => {
+export const inspectionSubmission = async (inspectionId = '', companyId = '', driverComment = null) => {
   const endPoint = generateApiUrl(`inspection/${inspectionId}`);
 
   const body = {driverComment};
@@ -342,7 +316,7 @@ export const getChecklists = async inspectionId => {
   try {
     return await api.get(endPoint);
   } catch (error) {
-    console.error('Checklists error:', error);
+    console.error('Checklists error:', error.response.data);
     throw error;
   }
 };
@@ -360,16 +334,12 @@ export const updateChecklist = async (inspectionId, checkId, data) => {
   }
 };
 
-export const removeChecklistImageVideo = async (
-  inspectionId,
-  checkId,
-  data,
-) => {
+export const removeChecklistImageVideo = async (inspectionId, checkId, data) => {
   const endPoint = generateApiUrl(`checklist/image`);
   const body = {inspectionId, checkId, ...data};
 
   try {
-    return await api.patch(endpoint, body);
+    return await api.patch(endPoint, body);
   } catch (error) {
     console.error('Checklist image video remove error:', error.response.data);
     throw error;

@@ -1,35 +1,16 @@
 import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
-import {
-  AppState,
-  BackHandler,
-  StatusBar,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {AppState, BackHandler, StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import ImagePicker from 'react-native-image-crop-picker';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
-import {
-  Camera,
-  useCameraDevice,
-  useCameraFormat,
-} from 'react-native-vision-camera';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {Camera, useCameraDevice, useCameraFormat} from 'react-native-vision-camera';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {BackArrow} from '../Assets/Icons';
 import {getVehicleImages} from '../Assets/Images';
 import {colors, PreviewStyles} from '../Assets/Styles';
-import {
-  CameraFooter,
-  CameraPreview,
-  CaptureImageModal,
-  DiscardInspectionModal,
-} from '../Components';
+import {CameraFooter, CameraPreview, CaptureImageModal, DiscardInspectionModal} from '../Components';
 import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
 import {
   darkImageError,
@@ -43,13 +24,7 @@ import {
   uploadFailed,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
-import {
-  clearInspectionImages,
-  getMileage,
-  setImageDimensions,
-  setLicensePlateNumber,
-  updateVehicleImage,
-} from '../Store/Actions';
+import {clearInspectionImages, getMileage, setImageDimensions, setLicensePlateNumber, updateVehicleImage} from '../Store/Actions';
 import {
   checkRelevantType,
   exteriorVariant,
@@ -62,11 +37,7 @@ import {
   newInspectionUploadError,
   uploadFile,
 } from '../Utils';
-import {
-  styleMapping,
-  switchFrameIcon,
-  switchOrientation,
-} from '../Utils/helpers';
+import {styleMapping, switchFrameIcon, switchOrientation} from '../Utils/helpers';
 
 const {white} = colors;
 const defaultOrientation = 'portrait';
@@ -82,9 +53,7 @@ const CameraContainer = ({route, navigation}) => {
   const {
     user: {token, data},
   } = useSelector(state => state?.auth);
-  const {vehicle_Type, variant, selectedVehicleKind} = useSelector(
-    state => state.newInspection,
-  );
+  const {vehicle_Type, variant, selectedVehicleKind} = useSelector(state => state.newInspection);
   const isFocused = useIsFocused();
   const cameraRef = useRef();
   const appState = useRef(AppState.currentState);
@@ -92,34 +61,18 @@ const CameraContainer = ({route, navigation}) => {
   const device = useCameraDevice(selectedCamera, {
     physicalDevices: PHYSICAL_DEVICES,
   });
-  const [isBackCamera, setIsBackCamera] = useState(
-    IS_BACK_CAMERA[selectedCamera],
-  );
+  const [isBackCamera, setIsBackCamera] = useState(IS_BACK_CAMERA[selectedCamera]);
   const [isImageURL, setIsImageURL] = useState('');
   const [isImageFile, setIsImageFile] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isExpiryInspectionVisible, setIsExpiryInspectionVisible] =
-    useState(false);
+  const [isExpiryInspectionVisible, setIsExpiryInspectionVisible] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [isUploadFailed, setIsUploadFailed] = useState(
-    isUploadFailedInitialState,
-  );
+  const [isUploadFailed, setIsUploadFailed] = useState(isUploadFailedInitialState);
   const {type, modalDetails, inspectionId} = route.params;
-  const format = useCameraFormat(device, [
-    {videoResolution: {width: 1280, height: 720}},
-    {fps: 30},
-  ]);
+  const format = useCameraFormat(device, [{videoResolution: {width: 1280, height: 720}}, {fps: 30}]);
   const [isLoading, setIsLoading] = useState(false);
   const [orientation, setOrientation] = useState(defaultOrientation);
-  const {
-    category,
-    subCategory,
-    instructionalText,
-    source,
-    title,
-    isVideo,
-    groupType,
-  } = modalDetails;
+  const {category, subCategory, instructionalText, source, title, isVideo, groupType, captureFrameId, frameId} = modalDetails;
   const frameStyles = {
     portrait: {
       ...styles.portraitFrame,
@@ -129,15 +82,12 @@ const CameraContainer = ({route, navigation}) => {
       ...styles.landscapeFrame,
       ...styleMapping[orientation][subCategory],
       ...(selectedVehicleKind == 'sedan' && styles.sedanLandscape),
-      ...(((selectedVehicleKind == 'sedan' &&
-        subCategory == 'exterior_front') ||
-        subCategory == 'exterior_rear') &&
+      ...(((selectedVehicleKind == 'sedan' && subCategory == 'exterior_front') || subCategory == 'exterior_rear') &&
         styles.sedanFrontBackInLandscape),
     },
   };
   const activeFrameStyle = frameStyles[orientation];
-  const frameUri =
-    getVehicleImages(selectedVehicleKind)?.[orientation]?.[subCategory] || '';
+  const frameUri = getVehicleImages(selectedVehicleKind)?.[orientation]?.[subCategory] || '';
   const RightIcon = switchFrameIcon[orientation];
   const haveFrame = isNotEmpty(frameUri);
 
@@ -153,10 +103,7 @@ const CameraContainer = ({route, navigation}) => {
   }, []);
 
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      HARDWARE_BACK_PRESS,
-      handle_Hardware_Back_Press,
-    );
+    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
     return () => backHandler.remove();
   }, [isImageURL]);
   useEffect(() => {
@@ -239,6 +186,7 @@ const CameraContainer = ({route, navigation}) => {
       }
     }
 
+    // If returnTo is present, navigate to the target screen with the captured image
     if (route?.params?.returnTo) {
       const targetScreen = route.params.returnTo;
       const navParams = {
@@ -257,14 +205,7 @@ const CameraContainer = ({route, navigation}) => {
     }
 
     try {
-      await uploadFile(
-        uploadImageToStore,
-        body,
-        inspectionId,
-        token,
-        handleError,
-        dispatch,
-      );
+      await uploadFile(c => uploadImageToStore(c, image_url), body, inspectionId, token, handleError, dispatch);
     } catch (error) {
       onUploadFailed(error);
     }
@@ -273,8 +214,7 @@ const CameraContainer = ({route, navigation}) => {
   function onUploadFailed(error) {
     const {statusCode = null} = error?.response?.data || {};
     const {message} = error;
-    const {title = uploadFailed.title, message: msg = uploadFailed.message} =
-      newInspectionUploadError(statusCode || '');
+    const {title = uploadFailed.title, message: msg = uploadFailed.message} = newInspectionUploadError(statusCode || '');
     let body = {visible: true, title, message: msg};
     const isDarkImage = message === darkImageError.message;
     const message_ = isDarkImage ? message : uploadFailed.message;
@@ -291,9 +231,8 @@ const CameraContainer = ({route, navigation}) => {
       setIsUploadFailed(body);
     }
   }
-  function uploadImageToStore(imageID) {
-    const isLicensePlate =
-      category === 'CarVerification' && type === 'licensePlate';
+  function uploadImageToStore(imageID, image_url) {
+    const isLicensePlate = category === 'CarVerification' && type === 'licensePlate';
     const isOdometer = category === 'CarVerification' && type === 'odometer';
     const types = ['Interior', 'Exterior'];
     const haveType = types.includes(category);
@@ -312,7 +251,12 @@ const CameraContainer = ({route, navigation}) => {
       annotationDetails: annotationDetails,
       is_Exterior: haveType,
     };
-    navigate(NEW_INSPECTION, params);
+
+    if (selectedVehicleKind === 'truck') {
+      if (captureFrameId && frameId) navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {frameImage: image_url, captureFrameId, frameId});
+    } else {
+      navigate(NEW_INSPECTION, params);
+    }
   }
 
   const handleExtractNumberPlate = async imageUrl => {
@@ -358,13 +302,7 @@ const CameraContainer = ({route, navigation}) => {
   }
 
   const onNewInspectionPress = async () => {
-    await handleNewInspectionPress(
-      dispatch,
-      setIsLoading,
-      data?.companyId,
-      navigation,
-      resetAllStates,
-    )
+    await handleNewInspectionPress(dispatch, setIsLoading, data?.companyId, navigation, resetAllStates)
       .then(() => {
         dispatch(clearInspectionImages());
       })
@@ -377,8 +315,7 @@ const CameraContainer = ({route, navigation}) => {
     navigate(INSPECTION_SELECTION);
   };
 
-  const handleOnRightIconPress = () =>
-    setOrientation(prevState => switchOrientation[prevState]);
+  const handleOnRightIconPress = () => setOrientation(prevState => switchOrientation[prevState]);
 
   const handleImagePicker = () => {
     ImagePicker.openPicker({
@@ -396,8 +333,7 @@ const CameraContainer = ({route, navigation}) => {
   };
 
   let resizeMode = 'stretch';
-  if (orientation == 'landscape' || selectedVehicleKind == 'sedan')
-    resizeMode = 'contain';
+  if (orientation == 'landscape' || selectedVehicleKind == 'sedan') resizeMode = 'contain';
 
   return (
     <>
@@ -425,23 +361,13 @@ const CameraContainer = ({route, navigation}) => {
       ) : (
         <View style={container}>
           {isImageURL ? (
-            <FastImage
-              priority={'normal'}
-              resizeMode={'stretch'}
-              style={[StyleSheet.absoluteFill, {borderRadius: 25}]}
-              source={{uri: isImageURL}}
-            />
+            <FastImage priority={'normal'} resizeMode={'stretch'} style={[StyleSheet.absoluteFill, {borderRadius: 25}]} source={{uri: isImageURL}} />
           ) : (
             selectedCamera && (
               <>
                 {haveFrame && (
                   <View style={styles.frameContainer}>
-                    <FastImage
-                      resizeMode={resizeMode}
-                      priority={'high'}
-                      style={activeFrameStyle}
-                      source={frameUri}
-                    />
+                    <FastImage resizeMode={resizeMode} priority={'high'} style={activeFrameStyle} source={frameUri} />
                   </View>
                 )}
                 <Camera
@@ -496,11 +422,7 @@ const CameraContainer = ({route, navigation}) => {
         />
       )}
 
-      <StatusBar
-        backgroundColor="transparent"
-        barStyle="light-content"
-        translucent={true}
-      />
+      <StatusBar backgroundColor="transparent" barStyle="light-content" translucent={true} />
     </>
   );
 };

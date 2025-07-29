@@ -25,9 +25,22 @@ export const IMAGES = {
   truckRight: require('./Frames/TruckRight.png'),
   truckInterior: require('./Frames/TruckInterior.png'),
   truckBody: require('./Frames/TruckBody.png'),
+
+  truckBack: require('./Frames/TruckBack.png'),
+  truckRearLeft: require('./Frames/TruckRearLeft.png'),
+  truckRearRight: require('./Frames/TruckRearRight.png'),
+
   vehicleTire: require('./TireLR.png'),
   vehicleTDS: require('./vehicleTDS.png'),
   vehicleBrakeComponent: require('./vehicleBrakeComponent.png'),
+
+  // TRUCK INFO PICTURES
+  truck_exterior_front: require('./InfoModal/Truck/Exterior_Front.png'),
+  truck_exterior_right: require('./InfoModal/Truck/Exterior_Right.png'),
+  truck_exterior_left: require('./InfoModal/Truck/Exterior_Left.png'),
+  truck_exterior_rear_left: require('./InfoModal/Truck/Exterior_Rear_Left.png'),
+  truck_exterior_rear_right: require('./InfoModal/Truck/Exterior_Rear_Right.png'),
+  truck_exterior_rear_back: require('./InfoModal/Truck/Exterior_Rear_Back.png'),
 };
 
 const portraitImages = {

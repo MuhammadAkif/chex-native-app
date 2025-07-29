@@ -1,15 +1,7 @@
 import React from 'react';
-import {
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {buttonTextStyle, colors as color} from '../Assets/Styles';
 
@@ -18,9 +10,7 @@ const ButtonText = (text, textStyle, disabled) => (
     {text}
   </Text>
 );
-const Loader = (loaderSize, loaderColor) => (
-  <ActivityIndicator size={loaderSize} color={loaderColor} />
-);
+const Loader = (loaderSize, loaderColor) => <ActivityIndicator size={loaderSize} color={loaderColor} />;
 
 const PrimaryGradientButton = ({
   buttonStyle,
@@ -39,11 +29,7 @@ const PrimaryGradientButton = ({
   const ButtonComponent = BUTTON[disabled];
   return (
     <TouchableOpacity onPress={onPress} disabled={disabled}>
-      <LinearGradient
-        colors={colors}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 0}}
-        style={[styles.buttonContainer, buttonStyle]}>
+      <LinearGradient colors={colors} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={[styles.buttonContainer, buttonStyle]}>
         <ButtonComponent />
       </LinearGradient>
     </TouchableOpacity>

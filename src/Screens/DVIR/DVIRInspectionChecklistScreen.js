@@ -13,75 +13,42 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
-import {
-  CameraBorderedIcon,
-  CircledChevron,
-  CrossCircledIcon,
-  MovieIcon,
-  VideoBorderedIcon,
-} from '../../Assets/Icons';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {CameraBorderedIcon, CircledChevron, CrossCircledIcon, MovieIcon, VideoBorderedIcon} from '../../Assets/Icons';
 import CommentBorderedIcon from '../../Assets/Icons/CommentBorderedIcon';
 import {IMAGES} from '../../Assets/Images';
 import {colors, NewInspectionStyles} from '../../Assets/Styles';
-import {PrimaryGradientButton} from '../../Components';
+import {CaptureImageModal, PrimaryGradientButton} from '../../Components';
 import AppText from '../../Components/text';
 const {container, bodyContainer} = NewInspectionStyles;
 
 // Move StatusButton outside so it is available to InspectionItem
-const StatusButton = React.memo(
-  ({title, isSelected, onPress, type, buttonStyles}) => {
-    const buttonStyle = isSelected
-      ? buttonStyles?.[type]
-      : buttonStyles?.default;
+const StatusButton = React.memo(({title, isSelected, onPress, type, buttonStyles}) => {
+  const buttonStyle = isSelected ? buttonStyles?.[type] : buttonStyles?.default;
 
-    return (
-      <TouchableOpacity
-        style={[
-          styles.statusButton,
-          {backgroundColor: buttonStyle?.backgroundColor},
-        ]}
-        onPress={() => onPress(type)}
-        activeOpacity={0.7}>
-        <AppText style={[styles.statusText, {color: buttonStyle?.textColor}]}>
-          {title}
-        </AppText>
-      </TouchableOpacity>
-    );
-  },
-);
+  return (
+    <TouchableOpacity
+      style={[styles.statusButton, {backgroundColor: buttonStyle?.backgroundColor}]}
+      onPress={() => onPress(type)}
+      activeOpacity={0.7}>
+      <AppText style={[styles.statusText, {color: buttonStyle?.textColor}]}>{title}</AppText>
+    </TouchableOpacity>
+  );
+});
 
 // Move ChecklistItem outside the main component
 const ChecklistItem = React.memo(
-  ({
-    item,
-    index,
-    onChecklistStatusChange,
-    onComment,
-    onCamera,
-    onRemove,
-    CrossCircledIcon,
-    CameraBorderedIcon,
-    VideoBorderedIcon,
-    buttonStyles,
-  }) => {
+  ({item, index, onChecklistStatusChange, onComment, onCamera, onRemove, CrossCircledIcon, CameraBorderedIcon, VideoBorderedIcon, buttonStyles}) => {
     return (
       <View style={styles.itemContainer}>
         <View style={styles.itemHeader}>
           <AppText style={styles.itemTitle}>{item?.name}</AppText>
 
           <View style={styles.iconContainer}>
-            <TouchableOpacity
-              onPress={() => onComment(index)}
-              activeOpacity={0.7}>
+            <TouchableOpacity onPress={() => onComment(index)} activeOpacity={0.7}>
               <CommentBorderedIcon width={wp('7%')} height={wp('7%')} />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => onCamera(index, item?.fileType == 'video')}
-              activeOpacity={0.7}>
+            <TouchableOpacity onPress={() => onCamera(index, item?.fileType == 'video')} activeOpacity={0.7}>
               {item?.fileType == 'video' ? (
                 <VideoBorderedIcon width={wp('7%')} height={wp('7%')} />
               ) : (
@@ -115,17 +82,11 @@ const ChecklistItem = React.memo(
                   </View>
                 ) : (
                   <View style={styles.itemImageContainer}>
-                    <Image
-                      source={{uri: img}}
-                      style={styles.itemImage}
-                      resizeMode="cover"
-                    />
+                    <Image source={{uri: img}} style={styles.itemImage} resizeMode="cover" />
                   </View>
                 )}
 
-                <TouchableOpacity
-                  onPress={() => onRemove(index, imgIdx)}
-                  style={styles.removeImageButton}>
+                <TouchableOpacity onPress={() => onRemove(index, imgIdx)} style={styles.removeImageButton}>
                   <CrossCircledIcon />
                 </TouchableOpacity>
               </View>
@@ -144,79 +105,57 @@ const ChecklistItem = React.memo(
 );
 
 // Move CommentModal outside the main component
-const CommentModal = React.memo(
-  ({visible, onClose, onSave, initialValue = '', modalImage}) => {
-    const [text, setText] = React.useState(initialValue);
+const CommentModal = React.memo(({visible, onClose, onSave, initialValue = '', modalImage}) => {
+  const [text, setText] = React.useState(initialValue);
 
-    React.useEffect(() => {
-      setText(initialValue);
-    }, [initialValue, visible]);
+  React.useEffect(() => {
+    setText(initialValue);
+  }, [initialValue, visible]);
 
-    const handleSave = React.useCallback(() => {
-      onSave(text);
-      setText('');
-    }, [text, onSave]);
+  const handleSave = React.useCallback(() => {
+    onSave(text);
+    setText('');
+  }, [text, onSave]);
 
-    const handleClose = React.useCallback(() => {
-      Keyboard.dismiss();
-      onClose();
-    }, [onClose]);
+  const handleClose = React.useCallback(() => {
+    Keyboard.dismiss();
+    onClose();
+  }, [onClose]);
 
-    return (
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={visible}
-        onRequestClose={handleClose}
-        statusBarTranslucent={true}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.keyboardAvoidingContainer}>
-          <ScrollView
-            contentContainerStyle={styles.modalOverlay}
-            keyboardShouldPersistTaps="handled"
-            bounces={false}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-              <View style={styles.modalContent}>
-                {modalImage && (
-                  <Image
-                    source={{uri: modalImage}}
-                    style={styles.modalImage}
-                    resizeMode="cover"
-                  />
-                )}
-                <AppText style={styles.modalTitle}>Comments</AppText>
-                <TextInput
-                  style={styles.commentInput}
-                  placeholder="Add your comments here"
-                  value={text}
-                  onChangeText={setText}
-                  multiline={true}
-                  textAlignVertical="top"
-                  returnKeyType="done"
-                  blurOnSubmit={true}
-                />
-                <TouchableOpacity
-                  style={styles.okButton}
-                  onPress={handleSave}
-                  activeOpacity={0.8}>
-                  <AppText style={styles.okButtonText}>OK</AppText>
-                </TouchableOpacity>
-              </View>
-            </TouchableWithoutFeedback>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </Modal>
-    );
-  },
-);
+  return (
+    <Modal animationType="slide" transparent={true} visible={visible} onRequestClose={handleClose} statusBarTranslucent={true}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardAvoidingContainer}>
+        <ScrollView contentContainerStyle={styles.modalOverlay} keyboardShouldPersistTaps="handled" bounces={false}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.modalContent}>
+              {modalImage && <Image source={{uri: modalImage}} style={styles.modalImage} resizeMode="cover" />}
+              <AppText style={styles.modalTitle}>Comments</AppText>
+              <TextInput
+                style={styles.commentInput}
+                placeholder="Add your comments here"
+                value={text}
+                onChangeText={setText}
+                multiline={true}
+                textAlignVertical="top"
+                returnKeyType="done"
+                blurOnSubmit={true}
+              />
+              <TouchableOpacity style={styles.okButton} onPress={handleSave} activeOpacity={0.8}>
+                <AppText style={styles.okButtonText}>OK</AppText>
+              </TouchableOpacity>
+            </View>
+          </TouchableWithoutFeedback>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </Modal>
+  );
+});
 
 // Remove all state, useEffect, and business logic. Accept all state, handlers, and data as props from the container.
 const DVIRInspectionChecklistScreen = ({
   navigation,
   route,
-  modalVisible,
-  setModalVisible,
+  addCommentModalVisible,
   currentItemIndex,
   setCurrentItemIndex,
   additionalComments,
@@ -242,6 +181,23 @@ const DVIRInspectionChecklistScreen = ({
   onChecklistStatusChange,
   checklistLoading,
   commentModalImage,
+  captureImageModalVisible,
+  setCaptureImageModalVisible,
+  // CAPTURE MODAL DETAILS
+  source,
+  instructionalText,
+  buttonText,
+  title,
+  isVideo,
+  modalKey,
+  isCarVerification,
+  isExterior,
+  isInterior,
+  instructionalSubHeadingText,
+  instructionalSubHeadingText_1,
+  instructionalSubHeadingText_2,
+  handleFramesCaptureImage,
+  // CAPTURE MODAL DETAILS
 }) => {
   return (
     <View style={container}>
@@ -262,10 +218,7 @@ const DVIRInspectionChecklistScreen = ({
               </View>
               <AppText style={styles.headerTitle}>Check List Items</AppText>
               <View style={styles.headerRight}>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={toggleChecklistSection}
-                  style={!showChecklistSection && styles.rotateChevron}>
+                <TouchableOpacity activeOpacity={0.7} onPress={toggleChecklistSection} style={!showChecklistSection && styles.rotateChevron}>
                   <CircledChevron width={wp('6%')} height={wp('6%')} />
                 </TouchableOpacity>
               </View>
@@ -312,34 +265,30 @@ const DVIRInspectionChecklistScreen = ({
 
                   <View style={styles.cardItems}>
                     {captureFrames.map(item => (
-                      <View
-                        style={[styles.itemContainer, {gap: wp(5)}]}
-                        key={item.id}>
-                        <AppText style={styles.captureFrameTitle}>
-                          {item?.title}
-                        </AppText>
+                      <View style={[styles.itemContainer, {gap: wp(5)}]} key={item.id}>
+                        <AppText style={styles.captureFrameTitle}>{item?.title}</AppText>
 
                         <View style={styles.captureFrameRow}>
-                          {item.frames.map(frame => (
+                          {item?.frames?.map(frame => (
                             <TouchableOpacity
                               key={frame.id}
-                              style={styles.captureImageBox}
+                              style={
+                                frame?.image?.startsWith?.('http')
+                                  ? [styles.captureImageBox, styles.captureImageBoxWithImage]
+                                  : styles.captureImageBox
+                              }
                               activeOpacity={0.7}
-                              onPress={() =>
-                                onPressCaptureFrame(item?.id, frame?.id)
-                              }>
+                              onPress={() => onPressCaptureFrame(item?.id, frame?.id)}>
                               <Image
-                                source={frame.image}
-                                style={styles.captureImageStyle}
+                                source={frame?.image?.startsWith?.('http') ? {uri: frame.image} : frame.image}
+                                style={frame?.image?.startsWith?.('http') ? styles.captureImageStyleWithImage : styles.captureImageStyle}
                               />
-                              <AppText style={styles.captureImageText}>
-                                Capture image
-                              </AppText>
-                              <CameraBorderedIcon
-                                width={wp(6)}
-                                height={wp(6)}
-                                style={styles.captureImageBoxIcon}
-                              />
+                              {!frame?.image?.startsWith?.('http') && (
+                                <>
+                                  <AppText style={styles.captureImageText}>Capture image</AppText>
+                                  <CameraBorderedIcon width={wp(6)} height={wp(6)} style={styles.captureImageBoxIcon} />
+                                </>
+                              )}
                             </TouchableOpacity>
                           ))}
                         </View>
@@ -358,10 +307,7 @@ const DVIRInspectionChecklistScreen = ({
               </View>
               <AppText style={styles.headerTitle}>Tires</AppText>
               <View style={styles.headerRight}>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={toggleTiresSection}
-                  style={!showTiresSection && styles.rotateChevron}>
+                <TouchableOpacity activeOpacity={0.7} onPress={toggleTiresSection} style={!showTiresSection && styles.rotateChevron}>
                   <CircledChevron width={wp('6%')} height={wp('6%')} />
                 </TouchableOpacity>
               </View>
@@ -373,11 +319,7 @@ const DVIRInspectionChecklistScreen = ({
                 <View style={styles.truckWithTiresContainer}>
                   {/* Truck Diagram - Larger and Centered */}
                   <View style={styles.truckDiagramContainer}>
-                    <Image
-                      source={IMAGES.truckBody}
-                      style={styles.truckBodyImage}
-                      resizeMode="contain"
-                    />
+                    <Image source={IMAGES.truckBody} style={styles.truckBodyImage} resizeMode="contain" />
                   </View>
 
                   {/* Tire Capture Boxes Positioned Over Truck Tires */}
@@ -390,40 +332,21 @@ const DVIRInspectionChecklistScreen = ({
                     } else if (tire.id === 'tdrf') {
                       positionStyle = styles.frontRightPosition;
                     } else if (tire.id === 'tdlr') {
-                      positionStyle = [
-                        styles.rearLeftPosition,
-                        {flexDirection: 'column-reverse'},
-                      ];
+                      positionStyle = [styles.rearLeftPosition, {flexDirection: 'column-reverse'}];
                     } else if (tire.id === 'tdrr') {
-                      positionStyle = [
-                        styles.rearRightPosition,
-                        {flexDirection: 'column-reverse'},
-                      ];
+                      positionStyle = [styles.rearRightPosition, {flexDirection: 'column-reverse'}];
                     }
                     return (
-                      <View
-                        style={[styles.tirePositionContainer, positionStyle]}
-                        key={tire.id}>
+                      <View style={[styles.tirePositionContainer, positionStyle]} key={tire.id}>
                         <TouchableOpacity
                           style={styles.tireCaptureBox}
                           activeOpacity={0.7}
-                          onPress={() =>
-                            handleTireImage && handleTireImage(tire.id)
-                          }>
+                          onPress={() => handleTireImage && handleTireImage(tire.id)}>
                           <View style={styles.tireIconContainer}>
-                            <Image
-                              source={IMAGES[tire.icon]}
-                              style={styles.tireIcon}
-                            />
+                            <Image source={IMAGES[tire.icon]} style={styles.tireIcon} />
                           </View>
-                          <CameraBorderedIcon
-                            width={wp(4)}
-                            height={wp(4)}
-                            style={styles.cameraIcon}
-                          />
-                          <AppText style={styles.tireCaptureText}>
-                            Capture image
-                          </AppText>
+                          <CameraBorderedIcon width={wp(4)} height={wp(4)} style={styles.cameraIcon} />
+                          <AppText style={styles.tireCaptureText}>Capture image</AppText>
                         </TouchableOpacity>
                         <AppText style={styles.tireLabel}>{tire.title}</AppText>
                       </View>
@@ -435,26 +358,12 @@ const DVIRInspectionChecklistScreen = ({
                 <View style={styles.bottomTiresRow}>
                   {tireInspectionData.slice(4).map(tire => (
                     <View style={styles.bottomTireItem} key={tire.id}>
-                      <TouchableOpacity
-                        style={styles.tireCaptureBox}
-                        activeOpacity={0.7}
-                        onPress={() =>
-                          handleTireImage && handleTireImage(tire.id)
-                        }>
+                      <TouchableOpacity style={styles.tireCaptureBox} activeOpacity={0.7} onPress={() => handleTireImage && handleTireImage(tire.id)}>
                         <View style={styles.tireIconContainer}>
-                          <Image
-                            source={IMAGES[tire.icon]}
-                            style={styles.tireIcon}
-                          />
+                          <Image source={IMAGES[tire.icon]} style={styles.tireIcon} />
                         </View>
-                        <CameraBorderedIcon
-                          width={wp(4)}
-                          height={wp(4)}
-                          style={styles.cameraIcon}
-                        />
-                        <AppText style={styles.tireCaptureText}>
-                          Capture image
-                        </AppText>
+                        <CameraBorderedIcon width={wp(4)} height={wp(4)} style={styles.cameraIcon} />
+                        <AppText style={styles.tireCaptureText}>Capture image</AppText>
                       </TouchableOpacity>
                       <AppText style={styles.tireLabel}>{tire.title}</AppText>
                     </View>
@@ -464,20 +373,39 @@ const DVIRInspectionChecklistScreen = ({
             )}
           </View>
 
-          <PrimaryGradientButton
-            onPress={() => {}}
-            text={'Submit'}
-            buttonStyle={styles.buttonContainer}
-          />
+          <PrimaryGradientButton onPress={() => {}} text={'Submit'} buttonStyle={styles.buttonContainer} />
         </ScrollView>
       </View>
 
-      <CommentModal
-        visible={modalVisible}
-        onClose={handleCloseModal}
-        onSave={onSaveComment}
-        modalImage={commentModalImage}
-      />
+      <CommentModal visible={addCommentModalVisible} onClose={handleCloseModal} onSave={onSaveComment} modalImage={commentModalImage} />
+
+      {captureImageModalVisible && (
+        <CaptureImageModal
+          modalVisible={captureImageModalVisible}
+          handleVisible={setCaptureImageModalVisible}
+          source={source}
+          instructionalText={instructionalText}
+          buttonText={buttonText}
+          title={title}
+          isVideo={isVideo}
+          instructionalSubHeadingText={instructionalSubHeadingText || ''}
+          instructionalSubHeadingText_1={instructionalSubHeadingText_1 || ''}
+          instructionalSubHeadingText_2={instructionalSubHeadingText_2 || ''}
+          modalKey={modalKey}
+          handleCaptureImage={handleFramesCaptureImage}
+          isCarVerification={isCarVerification}
+          isExterior={isExterior || isInterior}
+        />
+      )}
+      {/* {mediaModalVisible && (
+        <ActiveMediaViewModal
+          title={mediaModalDetails?.title}
+          isVideo={mediaModalDetails?.isVideo}
+          source={mediaModalDetails?.source}
+          coordinates={coordinates}
+          handleVisible={handleMediaModalDetailsCrossPress}
+        />
+      )} */}
     </View>
   );
 };
@@ -627,6 +555,7 @@ const styles = StyleSheet.create({
     borderColor: colors.royalBlue,
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
   },
   itemImage: {
     width: '100%',
@@ -663,6 +592,10 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  captureImageBoxWithImage: {
+    borderStyle: 'solid',
+    overflow: 'hidden',
   },
   captureImageText: {
     fontSize: wp(2.8),
@@ -865,6 +798,10 @@ const styles = StyleSheet.create({
     width: wp('14%'),
     height: wp('14%'),
     resizeMode: 'contain',
+  },
+  captureImageStyleWithImage: {
+    width: '100%',
+    height: '100%',
   },
   captureImageBoxIcon: {
     position: 'absolute',
