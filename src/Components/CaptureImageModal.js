@@ -1,17 +1,6 @@
 import React, {useState, useMemo} from 'react';
-import {
-  Modal,
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  StatusBar,
-  Platform,
-} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {Modal, StyleSheet, View, Text, TouchableOpacity, StatusBar, Platform} from 'react-native';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 import CircularProgress from 'react-native-circular-progress-indicator';
@@ -23,13 +12,7 @@ import {colors} from '../Assets/Styles';
 import {PrimaryGradientButton, RequiredIndicator, Sub_Heading} from './index';
 import Collapse from '../Assets/Icons/Collapse';
 import {Platforms} from '../Constants';
-import {
-  headerFlex,
-  headerFlexGrow,
-  headerTextBottom,
-  imageHeight,
-  instructionsContainerTop,
-} from '../Utils/helpers';
+import {headerFlex, headerFlexGrow, headerTextBottom, imageHeight, instructionsContainerTop} from '../Utils/helpers';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
@@ -87,17 +70,9 @@ const CaptureImageModal = ({
  const ActiveFooter = footers[isLoading];*/
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={handleVisible}
-      style={styles.container}>
+    <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={handleVisible} style={styles.container}>
       <View style={styles.centeredView}>
-        <TouchableOpacity
-          style={styles.crossIconContainer}
-          onPress={handleVisible}
-          disabled={isLoading}>
+        <TouchableOpacity style={styles.crossIconContainer} onPress={handleVisible} disabled={isLoading}>
           <Cross height={hp('8%')} width={wp('10%')} color={white} />
         </TouchableOpacity>
         <View
@@ -110,27 +85,14 @@ const CaptureImageModal = ({
           ]}>
           <View style={styles.headerLabels}>
             <RequiredIndicator required={labelRequired || fileRequired} />
-            <Text
-              style={[
-                styles.titleText,
-                styles.textColor,
-                {bottom: calculatedStyles.headerTextBottom},
-              ]}>
-              {title}
-            </Text>
+            <Text style={[styles.titleText, styles.textColor, {bottom: calculatedStyles.headerTextBottom}]}>{title}</Text>
           </View>
           {isVideo ? (
             <>
               {OS === ANDROID ? (
                 <View style={styles.image}>
-                  <TouchableOpacity
-                    style={styles.iconContainer}
-                    onPress={() => setIsFullScreen(!isFullScreen)}>
-                    <ACCORDION_COMPONENT
-                      height={height}
-                      width={width}
-                      color={white}
-                    />
+                  <TouchableOpacity style={styles.iconContainer} onPress={() => setIsFullScreen(!isFullScreen)}>
+                    <ACCORDION_COMPONENT height={height} width={width} color={white} />
                   </TouchableOpacity>
                   <VideoPlayer
                     video={source}
@@ -141,33 +103,16 @@ const CaptureImageModal = ({
                   />
                 </View>
               ) : (
-                <Video
-                  source={source}
-                  controls={true}
-                  playInBackground={false}
-                  resizeMode={'contain'}
-                  style={styles.image}
-                />
+                <Video source={source} controls={true} playInBackground={false} resizeMode={'contain'} style={styles.image} />
               )}
             </>
           ) : (
-            <FastImage
-              source={source}
-              priority={'normal'}
-              resizeMode={'stretch'}
-              style={[styles.image, {height: calculatedStyles.imageHeight}]}
-            />
+            <FastImage source={source} priority={'normal'} resizeMode={'stretch'} style={[styles.image, {height: calculatedStyles.imageHeight}]} />
           )}
           <View style={styles.instructionsAndSubHeadingContainer}>
-            <View
-              style={[
-                styles.instructionsContainer,
-                {top: calculatedStyles.instructionsContainerTop},
-              ]}>
+            <View style={[styles.instructionsContainer, {top: calculatedStyles.instructionsContainerTop}]}>
               <Info height={hp('4%')} width={wp('7%')} color={white} />
-              <Text style={[styles.instructionsText, styles.textColor]}>
-                {instructionalText}
-              </Text>
+              <Text style={[styles.instructionsText, styles.textColor]}>{instructionalText}</Text>
             </View>
             <Sub_Heading text={instructionalSubHeadingText} styles={styles} />
             <Sub_Heading text={instructionalSubHeadingText_1} styles={styles} />
@@ -192,25 +137,16 @@ const CaptureImageModal = ({
               activeStrokeColor={orangePeel}
               titleStyle={{fontWeight: 'bold'}}
             />
-            <Text style={[styles.textColor, styles.loadingText]}>
-              {progress === 100 ? 'Finalizing Upload' : 'Uploading'}
-            </Text>
+            <Text style={[styles.textColor, styles.loadingText]}>{progress === 100 ? 'Finalizing Upload' : 'Uploading'}</Text>
           </View>
         ) : (
           <View style={styles.body}>
-            <PrimaryGradientButton
-              text={buttonText}
-              onPress={() => handleCaptureImage(isVideo, modalKey)}
-            />
+            <PrimaryGradientButton text={buttonText} onPress={() => handleCaptureImage(isVideo, modalKey)} />
           </View>
         )}
         <View style={styles.footerView} />
       </View>
-      <StatusBar
-        backgroundColor={cobaltBlueDark}
-        barStyle="light-content"
-        translucent={true}
-      />
+      <StatusBar backgroundColor={cobaltBlueDark} barStyle="light-content" translucent={true} />
     </Modal>
   );
 };

@@ -49,7 +49,9 @@ const frameConfigMap = {
     index: 0,
   },
   frontInterior: {
-    source: null,
+    source: {
+      uri: 'https://i.pinimg.com/736x/6c/3a/90/6c3a90dd5ae3bcc98fc32b28e2408ab8.jpg',
+    },
     index: 0,
 
     details: {
@@ -65,7 +67,7 @@ const frameConfigMap = {
     },
   },
   rearInterior: {
-    source: null,
+    source: IMAGES.truck_interior_back,
     index: 0,
 
     details: {
@@ -75,8 +77,24 @@ const frameConfigMap = {
       instructionalSubHeadingText: 'Rear Interior',
       buttonText: 'Capture Now',
       category: 'Interior',
-      subCategory: 'front_interior',
+      subCategory: 'rear_interior',
       groupType: INSPECTION.interiorItems,
+      isVideo: false,
+    },
+  },
+  tire: {
+    source: IMAGES.tire,
+    index: 0,
+
+    details: {
+      key: 'tire',
+      title: 'Tire',
+      instructionalText: 'Please take a photo with clear view of the tire',
+      instructionalSubHeadingText: 'Tire',
+      buttonText: 'Capture Now',
+      category: 'Tire',
+      subCategory: '', // Dynamically
+      groupType: INSPECTION.tires,
       isVideo: false,
     },
   },
@@ -87,8 +105,8 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   const [commentModalVisible, setAddCommentModalVisible] = useState(false);
   const [currentItemIndex, setCurrentItemIndex] = useState(null);
   const [additionalComments, setAdditionalComments] = useState('');
-  const reduxNewInspectionState = useSelector(state => state.newInspection) || {};
-  const selectedInspectionID = reduxNewInspectionState?.selectedInspectionID;
+  const {selectedInspectionID} = useSelector(state => state.newInspection) || {};
+
   const [checklistData, setChecklistData] = useState([]);
   const [checklistLoading, setChecklistLoading] = useState(false);
   const [captureFrames, setCaptureFrames] = useState([
@@ -154,7 +172,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       icon: 'vehicleTDS',
     },
     {
-      id: 'brake',
+      id: 'brake_components',
       title: 'Brake Components (photo of drums/rotors/lines)',
       image: null,
       icon: 'vehicleBrakeComponent',
@@ -261,13 +279,13 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         modalDetails: details,
         inspectionId: selectedInspectionID,
         returnTo: ROUTES.DVIR_INSPECTION_CHECKLIST,
-        returnToParams: {capturedImageIndex: index},
+        returnToParams: {checklistCardIndex: index},
       });
     },
     [navigation, checklistData],
   );
 
-  const handleCloseModal = useCallback(() => {
+  const handleCloseAddCommentModal = useCallback(() => {
     setAddCommentModalVisible(false);
   }, []);
 
@@ -299,9 +317,12 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   );
 
   // Handler to update tire image
-  const handleTireImage = useCallback((tireId, imageUri) => {
-    setTireInspectionData(prevData => prevData.map(tire => (tire.id === tireId ? {...tire, image: imageUri} : tire)));
-  }, []);
+  const handlePressTireImage = tireId => {
+    handleFramePickerPress(
+      {...frameConfigMap.tire, ...frameConfigMap.tire.details, subCategory: tireId, afterFileUploadNavigationParams: {tireId}},
+      0,
+    );
+  };
 
   // CAPTURE MODAL DETAILS
   const modalDetailsInitialState = {
@@ -321,8 +342,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     source: '',
   });
 
-  //Collapsed Cards Functions ends here
-  const handleFramePickerPress = (details, variant = 0, captureFrameId, frameId) => {
+  const handleFramePickerPress = (details, variant = 0) => {
     const haveType = checkCategory(details.category || null);
     displayAnnotationPopUp && setDisplayAnnotationPopUp(false);
     dispatch(categoryVariant(variant));
@@ -333,7 +353,8 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     } else {
       toggleFieldRequired(true);
     }
-    setModalDetails({...details, captureFrameId, frameId});
+
+    setModalDetails(details);
     setCaptureImageModalVisible(true);
   };
 
@@ -371,9 +392,9 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     dispatch(setRequired(required));
   }
 
-  const handleCaptureFrame = (itemId, frameId) => {
+  const handleCaptureFrame = (captureFrameId, frameId) => {
     const config = frameConfigMap[frameId];
-    handleFramePickerPress({...config.details, source: config.source}, config.index, itemId, frameId);
+    handleFramePickerPress({...config.details, source: config.source, afterFileUploadNavigationParams: {captureFrameId, frameId}}, config.index);
   };
 
   // CAPTURE MODAL DETAILS
@@ -381,56 +402,69 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     setChecklistLoading(true);
     const response = await getChecklists(selectedInspectionID);
     setChecklistLoading(false);
-
+    console.log(response?.data);
     if (response.status == 200 && response?.data?.length > 0) setChecklistData(response.data);
   }, []);
 
   // Camera result handler
   useEffect(() => {
-    if (route?.params?.capturedImageIndex !== undefined && route?.params?.capturedImageUri) {
-      const {capturedImageIndex, capturedImageUri, capturedImageMime} = route.params;
+    if (route?.params?.capturedImageUri) {
+      if (route?.params?.checklistCardIndex !== undefined) {
+        const {checklistCardIndex, capturedImageUri, capturedImageMime} = route.params;
 
-      setChecklistData(prevData =>
-        prevData.map((item, idx) =>
-          idx === capturedImageIndex
-            ? {
-                ...item,
-                url: [...(item.url || []), capturedImageUri],
-              }
-            : item,
-        ),
-      );
+        setChecklistData(prevData =>
+          prevData.map((item, idx) =>
+            idx === checklistCardIndex
+              ? {
+                  ...item,
+                  url: [...(item.url || []), capturedImageUri],
+                }
+              : item,
+          ),
+        );
 
-      updateChecklistAPIWithCardIndex(capturedImageIndex, {
-        url: capturedImageUri,
-        extension: capturedImageMime,
-      });
+        updateChecklistAPIWithCardIndex(checklistCardIndex, {
+          url: capturedImageUri,
+          extension: capturedImageMime,
+        });
+      }
 
       navigation.setParams({
-        capturedImageIndex: undefined,
+        checklistCardIndex: undefined,
         capturedImageUri: undefined,
         capturedImageMime: undefined,
       });
     }
-  }, [route?.params?.capturedImageIndex, route?.params?.capturedImageUri]);
+  }, [route?.params?.capturedImageUri]);
 
   useEffect(() => {
-    if (route?.params?.frameImage) {
-      const {captureFrameId, frameId, frameImage} = route.params;
+    if (route?.params?.afterFileUploadImageUrl) {
+      const {captureFrameId, frameId, afterFileUploadImageUrl, tireId} = route.params;
 
-      const updatedFrames = captureFrames.map(item => {
-        if (item.id === captureFrameId) {
-          return {
-            ...item,
-            frames: item.frames.map(frame => (frame.id === frameId ? {...frame, image: frameImage} : frame)),
-          };
-        }
-        return item;
+      if (captureFrameId && frameId) {
+        const updatedFrames = captureFrames.map(item => {
+          if (item.id === captureFrameId) {
+            return {
+              ...item,
+              frames: item.frames.map(frame => (frame.id === frameId ? {...frame, image: afterFileUploadImageUrl} : frame)),
+            };
+          }
+          return item;
+        });
+
+        setCaptureFrames(updatedFrames);
+      } else if (tireId) {
+        setTireInspectionData(prevData => prevData.map(tire => (tire.id === tireId ? {...tire, image: afterFileUploadImageUrl} : tire)));
+      }
+
+      navigation.setParams({
+        afterFileUploadImageUrl: undefined,
+        tireId: undefined,
+        captureFrameId: undefined,
+        frameId: undefined,
       });
-
-      setCaptureFrames(updatedFrames);
     }
-  }, [route?.params?.frameImage]);
+  }, [route?.params?.afterFileUploadImageUrl]);
 
   useEffect(() => {
     getChecklistsData();
@@ -457,9 +491,9 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       onCommentIconPress={handleAddComment}
       onSaveComment={handleSaveComment}
       onCheckItemCameraIconPress={handleChecklistOpenCamera}
-      handleCloseModal={handleCloseModal}
+      handleCloseModal={handleCloseAddCommentModal}
       onCheckItemRemoveImage={handleCheckItemRemoveImage}
-      handleTireImage={handleTireImage}
+      onPressTireImage={handlePressTireImage}
       showChecklistSection={showChecklistSection}
       showTiresSection={showTiresSection}
       toggleChecklistSection={toggleChecklistSection}

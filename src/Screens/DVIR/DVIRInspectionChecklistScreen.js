@@ -172,7 +172,7 @@ const DVIRInspectionChecklistScreen = ({
   onCheckItemCameraIconPress,
   handleCloseModal,
   onCheckItemRemoveImage,
-  handleTireImage,
+  onPressTireImage,
   showChecklistSection,
   showTiresSection,
   toggleChecklistSection,
@@ -339,14 +339,21 @@ const DVIRInspectionChecklistScreen = ({
                     return (
                       <View style={[styles.tirePositionContainer, positionStyle]} key={tire.id}>
                         <TouchableOpacity
-                          style={styles.tireCaptureBox}
+                          style={[styles.tireCaptureBox, tire?.image && styles.tireCaptureImageBox]}
                           activeOpacity={0.7}
-                          onPress={() => handleTireImage && handleTireImage(tire.id)}>
-                          <View style={styles.tireIconContainer}>
-                            <Image source={IMAGES[tire.icon]} style={styles.tireIcon} />
+                          onPress={() => onPressTireImage && onPressTireImage(tire.id)}>
+                          <View style={[styles.tireIconContainer, tire?.image && styles.tireImageContainer]}>
+                            <Image
+                              source={tire?.image ? {uri: tire.image} : IMAGES[tire.icon]}
+                              style={tire.image ? styles.tireImage : styles.tireIcon}
+                            />
                           </View>
-                          <CameraBorderedIcon width={wp(4)} height={wp(4)} style={styles.cameraIcon} />
-                          <AppText style={styles.tireCaptureText}>Capture image</AppText>
+                          {!tire?.image && (
+                            <>
+                              <CameraBorderedIcon width={wp(4)} height={wp(4)} style={styles.cameraIcon} />
+                              <AppText style={styles.tireCaptureText}>Capture image</AppText>
+                            </>
+                          )}
                         </TouchableOpacity>
                         <AppText style={styles.tireLabel}>{tire.title}</AppText>
                       </View>
@@ -358,12 +365,22 @@ const DVIRInspectionChecklistScreen = ({
                 <View style={styles.bottomTiresRow}>
                   {tireInspectionData.slice(4).map(tire => (
                     <View style={styles.bottomTireItem} key={tire.id}>
-                      <TouchableOpacity style={styles.tireCaptureBox} activeOpacity={0.7} onPress={() => handleTireImage && handleTireImage(tire.id)}>
-                        <View style={styles.tireIconContainer}>
-                          <Image source={IMAGES[tire.icon]} style={styles.tireIcon} />
+                      <TouchableOpacity
+                        style={[styles.tireCaptureBox, tire?.image && styles.tireCaptureImageBox]}
+                        activeOpacity={0.7}
+                        onPress={() => onPressTireImage && onPressTireImage(tire.id)}>
+                        <View style={[styles.tireIconContainer, tire?.image && styles.tireImageContainer]}>
+                          <Image
+                            source={tire?.image ? {uri: tire.image} : IMAGES[tire.icon]}
+                            style={tire.image ? styles.tireImage : styles.tireIcon}
+                          />
                         </View>
-                        <CameraBorderedIcon width={wp(4)} height={wp(4)} style={styles.cameraIcon} />
-                        <AppText style={styles.tireCaptureText}>Capture image</AppText>
+                        {!tire?.image && (
+                          <>
+                            <CameraBorderedIcon width={wp(4)} height={wp(4)} style={styles.cameraIcon} />
+                            <AppText style={styles.tireCaptureText}>Capture image</AppText>
+                          </>
+                        )}
                       </TouchableOpacity>
                       <AppText style={styles.tireLabel}>{tire.title}</AppText>
                     </View>
@@ -736,17 +753,31 @@ const styles = StyleSheet.create({
     marginBottom: hp(0.5),
     position: 'relative',
   },
+  tireCaptureImageBox: {
+    overflow: 'hidden',
+    borderStyle: 'solid',
+  },
   tireIconContainer: {
     position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: hp(0.3),
   },
+  tireImageContainer: {
+    width: '100%',
+    height: '100%',
+    marginBottom: hp(0),
+  },
   tireIcon: {
     width: wp(8),
     height: wp(8),
     resizeMode: 'contain',
   },
+  tireImage: {
+    width: '100%',
+    height: '100%',
+  },
+
   cameraIcon: {
     position: 'absolute',
     right: 0,

@@ -41,6 +41,7 @@ export const IMAGES = {
   truck_exterior_rear_left: require('./InfoModal/Truck/Exterior_Rear_Left.png'),
   truck_exterior_rear_right: require('./InfoModal/Truck/Exterior_Rear_Right.png'),
   truck_exterior_rear_back: require('./InfoModal/Truck/Exterior_Rear_Back.png'),
+  truck_interior_back: require('./InfoModal/Truck/Interior_Back.png'),
 };
 
 const portraitImages = {

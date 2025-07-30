@@ -72,7 +72,7 @@ const CameraContainer = ({route, navigation}) => {
   const format = useCameraFormat(device, [{videoResolution: {width: 1280, height: 720}}, {fps: 30}]);
   const [isLoading, setIsLoading] = useState(false);
   const [orientation, setOrientation] = useState(defaultOrientation);
-  const {category, subCategory, instructionalText, source, title, isVideo, groupType, captureFrameId, frameId} = modalDetails;
+  const {category, subCategory, instructionalText, source, title, isVideo, groupType, afterFileUploadNavigationParams} = modalDetails;
   const frameStyles = {
     portrait: {
       ...styles.portraitFrame,
@@ -192,6 +192,7 @@ const CameraContainer = ({route, navigation}) => {
       const navParams = {
         capturedImageUri: image_url,
         capturedImageMime: extension,
+        capturedImageS3Key: key,
         ...route?.params?.returnToParams,
       };
 
@@ -212,6 +213,7 @@ const CameraContainer = ({route, navigation}) => {
   };
 
   function onUploadFailed(error) {
+    console.log('eRR:', error);
     const {statusCode = null} = error?.response?.data || {};
     const {message} = error;
     const {title = uploadFailed.title, message: msg = uploadFailed.message} = newInspectionUploadError(statusCode || '');
@@ -253,7 +255,7 @@ const CameraContainer = ({route, navigation}) => {
     };
 
     if (selectedVehicleKind === 'truck') {
-      if (captureFrameId && frameId) navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {frameImage: image_url, captureFrameId, frameId});
+      navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {afterFileUploadImageUrl: image_url, ...afterFileUploadNavigationParams});
     } else {
       navigate(NEW_INSPECTION, params);
     }
