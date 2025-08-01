@@ -1,50 +1,89 @@
-import React from 'react';
-import {Modal, Text, View} from 'react-native';
+import React, {useCallback, useMemo} from 'react';
+import {Modal, StyleSheet, Text, View} from 'react-native';
 import {modalStyle} from '../Assets/Styles';
-import {PrimaryGradientButton} from './index';
+import {VEHICLE_TYPES, VEHICLE_TYPE_DISPLAY_NAMES} from '../Constants';
+import VehicleTypeButton from './VehicleTypeButton';
 
 const {modalOuterContainer, container, modalContainer, header, body, button, yesText} = modalStyle;
 
 const buttonSpacing = {marginVertical: 6};
 
 const VehicleTypeModal = ({visible, onSelect, loadingState}) => {
+  const isAnyButtonLoading = loadingState.isLoading;
+  const currentLoadingVehicleType = loadingState.vehicleType;
+
+  // Memoize button data to prevent unnecessary re-renders
+  const buttonData = useMemo(
+    () => [
+      {
+        type: VEHICLE_TYPES.VAN,
+        displayName: VEHICLE_TYPE_DISPLAY_NAMES[VEHICLE_TYPES.VAN],
+      },
+      {
+        type: VEHICLE_TYPES.SEDAN,
+        displayName: VEHICLE_TYPE_DISPLAY_NAMES[VEHICLE_TYPES.SEDAN],
+      },
+      {
+        type: VEHICLE_TYPES.TRUCK,
+        displayName: VEHICLE_TYPE_DISPLAY_NAMES[VEHICLE_TYPES.TRUCK],
+      },
+      {
+        type: VEHICLE_TYPES.OTHER,
+        displayName: VEHICLE_TYPE_DISPLAY_NAMES[VEHICLE_TYPES.OTHER],
+      },
+    ],
+    [],
+  );
+
+  // Memoize event handlers to prevent unnecessary re-renders
+  const handleButtonPress = useCallback(
+    vehicleType => {
+      if (!isAnyButtonLoading) {
+        onSelect(vehicleType);
+      }
+    },
+    [isAnyButtonLoading, onSelect],
+  );
+
+  const getButtonLoadingState = useCallback(
+    vehicleType => {
+      return currentLoadingVehicleType === vehicleType && isAnyButtonLoading;
+    },
+    [currentLoadingVehicleType, isAnyButtonLoading],
+  );
+
   return (
     <Modal animationType="slide" transparent={true} visible={visible} style={modalOuterContainer}>
       <View style={container}>
         <View style={modalContainer}>
           <Text style={header}>Select Vehicle Type</Text>
           <Text style={body}>Please choose the type of vehicle for this inspection.</Text>
-          <View
-            style={{
-              flexDirection: 'column',
-              width: '80%',
-              paddingVertical: 10,
-            }}>
-            <PrimaryGradientButton
-              text={'Van'}
-              buttonStyle={[button, buttonSpacing, {width: '100%', alignSelf: 'center'}]}
-              textStyle={yesText}
-              onPress={() => (loadingState.isLoading ? null : onSelect('Van'))}
-              disabled={loadingState?.vehicleType === 'Van' ? loadingState.isLoading : false}
-            />
-            <PrimaryGradientButton
-              text={'Sedan'}
-              buttonStyle={[button, buttonSpacing, {width: '100%', alignSelf: 'center'}]}
-              textStyle={yesText}
-              onPress={() => (loadingState.isLoading ? null : onSelect('Sedan'))}
-              disabled={loadingState?.vehicleType === 'Sedan' ? loadingState.isLoading : false}
-            />
-            <PrimaryGradientButton
-              text="Truck"
-              buttonStyle={[button, buttonSpacing, {width: '100%', alignSelf: 'center'}]}
-              textStyle={yesText}
-              onPress={() => (loadingState.isLoading ? null : onSelect('Truck'))}
-            />
+          <View style={styles.buttonContainer}>
+            {buttonData.map(({type, displayName}) => (
+              <VehicleTypeButton
+                key={type}
+                text={displayName}
+                buttonStyle={[button, buttonSpacing, styles.buttonStyle]}
+                textStyle={yesText}
+                onPress={() => handleButtonPress(displayName)}
+                isLoading={getButtonLoadingState(displayName)}
+                isDisabled={isAnyButtonLoading}
+              />
+            ))}
           </View>
         </View>
       </View>
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    flexDirection: 'column',
+    width: '80%',
+    paddingVertical: 10,
+  },
+  buttonStyle: {width: '100%', alignSelf: 'center'},
+});
 
 export default VehicleTypeModal;

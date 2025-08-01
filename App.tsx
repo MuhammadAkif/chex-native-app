@@ -75,7 +75,7 @@ function App() {
     resetNavigation(SIGN_IN);
   };
 
-  const handleVehicleTypeSelect = async (type: string, setLoadingState: (val: {isLoading: boolean; vehicleType: string}) => void) => {
+  const handleVehicleTypeSelect = async (type: string) => {
     dispatch(setSelectedVehicleKind(type.toLowerCase()));
 
     if (type.toLowerCase() === VEHICLE_TYPE.truck) {
@@ -87,7 +87,7 @@ function App() {
         });
       }
     } else {
-      // For van/sedan, call API and navigate after success
+      // For van/sedan/other, call API and navigate after success
       const state = store.getState();
       const companyId = state?.auth?.user?.data?.companyId;
       dispatch(setCompanyId(companyId));
@@ -103,7 +103,7 @@ function App() {
         onNewInspectionPressFail(err, dispatch);
       } finally {
         dispatch(setVehicleTypeModalVisible(false));
-        setLoadingState({isLoading: false, vehicleType: type});
+        setLoadingState({isLoading: false, vehicleType: ''});
       }
     }
   };
@@ -127,11 +127,7 @@ function App() {
         />
       )}
       <AlertPopup visible={sessionExpired} onYesPress={onSessionExpirePress} title={title} message={message} yesButtonText={button} />
-      <VehicleTypeModal
-        visible={vehicleTypeModalVisible}
-        onSelect={(type: string) => handleVehicleTypeSelect(type, setLoadingState)}
-        loadingState={loadingState}
-      />
+      <VehicleTypeModal visible={vehicleTypeModalVisible} onSelect={handleVehicleTypeSelect} loadingState={loadingState} />
     </>
   );
 }

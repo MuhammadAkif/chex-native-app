@@ -22,6 +22,7 @@ import {
   S3_BUCKET_BASEURL,
   SWITCH_CAMERA,
   uploadFailed,
+  VEHICLE_TYPES_WITH_FRAMES,
   VEHICLE_TYPE,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
@@ -48,13 +49,12 @@ const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
 const isUploadFailedInitialState = {visible: false, title: '', message: ''};
 
 const CameraContainer = ({route, navigation}) => {
-  const {selectedInspectionID} = useSelector(state => state.newInspection);
   const dispatch = useDispatch();
   const {navigate, goBack, canGoBack} = navigation;
   const {
     user: {token, data},
   } = useSelector(state => state?.auth);
-  const {vehicle_Type, variant, selectedVehicleKind} = useSelector(state => state.newInspection);
+  const {vehicle_Type, variant, selectedVehicleKind, selectedInspectionID} = useSelector(state => state.newInspection);
   const isFocused = useIsFocused();
   const cameraRef = useRef();
   const appState = useRef(AppState.currentState);
@@ -90,7 +90,7 @@ const CameraContainer = ({route, navigation}) => {
   const activeFrameStyle = frameStyles[orientation];
   const frameUri = getVehicleImages(selectedVehicleKind)?.[orientation]?.[subCategory] || '';
   const RightIcon = switchFrameIcon[orientation];
-  const haveFrame = isNotEmpty(frameUri);
+  const haveFrame = isNotEmpty(frameUri) && VEHICLE_TYPES_WITH_FRAMES.includes(selectedVehicleKind);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {

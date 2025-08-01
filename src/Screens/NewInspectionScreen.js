@@ -1,9 +1,6 @@
 import React from 'react';
 import {Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {BackArrow} from '../Assets/Icons';
 import {colors, NewInspectionStyles} from '../Assets/Styles';
@@ -30,15 +27,7 @@ const mediaViewModals = {
 };
 const ActiveMediaViewModal = mediaViewModals[OS];
 const {black, orange, white} = colors;
-const {
-  container,
-  headerContainer,
-  headerTitleText,
-  backIconContainer,
-  bodyContainer,
-  innerBody,
-  scrollViewContainer,
-} = NewInspectionStyles;
+const {container, headerContainer, headerTitleText, backIconContainer, bodyContainer, innerBody, scrollViewContainer} = NewInspectionStyles;
 
 const NewInspectionScreen = props => {
   const {
@@ -121,19 +110,10 @@ const NewInspectionScreen = props => {
         />
       )}
       {isInspectionInProgressModalVisible && (
-        <DiscardInspectionModal
-          onYesPress={handleYesPressOfInProgressInspection}
-          description={errorTitle}
-          dualButton={false}
-        />
+        <DiscardInspectionModal onYesPress={handleYesPressOfInProgressInspection} description={errorTitle} dualButton={false} />
       )}
       {inUseErrorTitle && (
-        <DiscardInspectionModal
-          yesButtonText={'Ok'}
-          onYesPress={handleBackPress}
-          description={inUseErrorTitle}
-          dualButton={false}
-        />
+        <DiscardInspectionModal yesButtonText={'Ok'} onYesPress={handleBackPress} description={inUseErrorTitle} dualButton={false} />
       )}
       <MileageInput />
       {isLicenseModalVisible && (
@@ -167,18 +147,14 @@ const NewInspectionScreen = props => {
         />
       )}
       <View style={headerContainer}>
-        <Text style={headerTitleText}>
-          Please complete inspection items within each category below
-        </Text>
+        <Text style={headerTitleText}>Please complete inspection items within each category below</Text>
       </View>
       <TouchableOpacity style={backIconContainer} onPress={handleBackPress}>
         <BackArrow height={hp('3%')} width={wp('7%')} color={white} />
       </TouchableOpacity>
       <View style={bodyContainer}>
         <View style={innerBody}>
-          <ScrollView
-            contentContainerStyle={scrollViewContainer}
-            showsVerticalScrollIndicator={false}>
+          <ScrollView contentContainerStyle={scrollViewContainer} showsVerticalScrollIndicator={false}>
             {modalVisible && (
               <CaptureImageModal
                 modalVisible={modalVisible}
@@ -189,12 +165,8 @@ const NewInspectionScreen = props => {
                 title={title}
                 isVideo={isVideo}
                 instructionalSubHeadingText={instructionalSubHeadingText || ''}
-                instructionalSubHeadingText_1={
-                  instructionalSubHeadingText_1 || ''
-                }
-                instructionalSubHeadingText_2={
-                  instructionalSubHeadingText_2 || ''
-                }
+                instructionalSubHeadingText_1={instructionalSubHeadingText_1 || ''}
+                instructionalSubHeadingText_2={instructionalSubHeadingText_2 || ''}
                 modalKey={modalKey}
                 handleCaptureImage={handleCaptureNowPress}
                 isCarVerification={isCarVerification}
@@ -290,11 +262,7 @@ const NewInspectionScreen = props => {
             )}
           </ScrollView>
         </View>
-        <NewInspectionFooter
-          onSubmitPress={handleSubmitPress}
-          isLoading={isLoading}
-          submitVisible={isVehicleAllPartsImagesAvailable}
-        />
+        <NewInspectionFooter onSubmitPress={handleSubmitPress} isLoading={isLoading} submitVisible={isVehicleAllPartsImagesAvailable} />
       </View>
       <LoadingIndicator isLoading={loadingIndicator} />
     </View>
