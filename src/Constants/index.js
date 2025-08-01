@@ -1,5 +1,28 @@
 import {IMAGES} from '../Assets/Images';
 
+// Vehicle Types Constants
+export const VEHICLE_TYPES = {
+  VAN: 'van',
+  SEDAN: 'sedan',
+  TRUCK: 'truck',
+  OTHER: 'other',
+};
+
+// Vehicle Types Display Names
+export const VEHICLE_TYPE_DISPLAY_NAMES = {
+  [VEHICLE_TYPES.VAN]: 'Van',
+  [VEHICLE_TYPES.SEDAN]: 'Sedan',
+  [VEHICLE_TYPES.TRUCK]: 'Truck',
+  [VEHICLE_TYPES.OTHER]: 'Other',
+};
+
+// Vehicle Types that support frames
+export const VEHICLE_TYPES_WITH_FRAMES = [
+  VEHICLE_TYPES.VAN,
+  VEHICLE_TYPES.SEDAN,
+  VEHICLE_TYPES.TRUCK,
+];
+
 // Api Endpoints start here
 const ENV_TYPE_URL = {
   staging: process.env.STAGING_URL,

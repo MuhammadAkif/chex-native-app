@@ -322,7 +322,7 @@ export const getChecklists = async inspectionId => {
 };
 
 export const updateChecklist = async (inspectionId, checkId, data) => {
-  const endPoint = generateApiUrl(`update/checklist`);
+  const endPoint = generateApiUrl('update/checklist');
   const body = {inspectionId, checkId, ...data};
 
   try {
@@ -335,7 +335,7 @@ export const updateChecklist = async (inspectionId, checkId, data) => {
 };
 
 export const removeChecklistImageVideo = async (inspectionId, checkId, data) => {
-  const endPoint = generateApiUrl(`checklist/image`);
+  const endPoint = generateApiUrl('checklist/image');
   const body = {inspectionId, checkId, ...data};
 
   try {

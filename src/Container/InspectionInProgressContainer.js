@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {BackHandler} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {HARDWARE_BACK_PRESS} from '../Constants';
+import {HARDWARE_BACK_PRESS, VEHICLE_TYPES} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {InspectionInProgressScreen} from '../Screens';
 import {
@@ -11,6 +11,7 @@ import {
   deleteInspection,
   fetchInspectionInProgress,
   file_Details,
+  setSelectedVehicleKind,
   setVehicleType,
   showToast,
 } from '../Store/Actions';
@@ -24,15 +25,12 @@ const InspectionInProgressContainer = ({navigation}) => {
   const {
     user: {data},
   } = useSelector(state => state?.auth);
-  const {inspectionInProgress} = useSelector(
-    state => state?.inspectionInProgress,
-  );
+  const {inspectionInProgress} = useSelector(state => state?.inspectionInProgress);
   const [isLoading, setIsLoading] = useState(false);
   const [isNewInspectionLoading, setIsNewInspectionLoading] = useState(false);
   const [inspectionID, setInspectionID] = useState(null);
   const [deleteInspectionID, setDeleteInspectionID] = useState(null);
-  const [isDiscardInspectionModalVisible, setIsDiscardInspectionModalVisible] =
-    useState(false);
+  const [isDiscardInspectionModalVisible, setIsDiscardInspectionModalVisible] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -42,10 +40,7 @@ const InspectionInProgressContainer = ({navigation}) => {
     }, []),
   );
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      HARDWARE_BACK_PRESS,
-      handle_Hardware_Back_Press,
-    );
+    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
     return () => backHandler.remove();
   }, []);
 
@@ -78,20 +73,24 @@ const InspectionInProgressContainer = ({navigation}) => {
         setIsLoading(false);
       });
   };
+
   function onContinuePressSuccess(res, inspectionId) {
-    const {hasAdded = 'existing'} = res?.data || {};
+    const {hasAdded = 'existing', vehicleType: vehicleKind} = res?.data || {};
+    console.log(Object.keys(res?.data));
     const vehicleType = hasAdded || 'existing';
     dispatch(setVehicleType(vehicleType));
-    // dispatch(setSelectedVehicleKind(res?.data?.inspection?.hasCheckList ? 'tru'));
+    console.log('In Progress', res?.data?.vehicleType);
+    dispatch(setSelectedVehicleKind(vehicleKind));
     resetAllStates();
-
-    if (res?.data?.inspection?.hasCheckList)
+    if (vehicleKind === VEHICLE_TYPES.TRUCK) {
       return navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);
-    else
+    } else {
       navigate(NEW_INSPECTION, {
         routeName: INSPECTION_IN_PROGRESS,
       });
+    }
   }
+
   function onContinuePressFail(error) {
     const {statusCode = null} = error?.response?.data || {};
     dispatch(clearNewInspection());
@@ -112,9 +111,7 @@ const InspectionInProgressContainer = ({navigation}) => {
   async function remove_Inspection() {
     dispatch(deleteInspection(deleteInspectionID))
       .catch(error => {
-        let errorMessage =
-          error?.response?.data?.message[0] ||
-          'Something went wrong, Please try again.';
+        let errorMessage = error?.response?.data?.message[0] || 'Something went wrong, Please try again.';
         const statusCode = error?.response?.data?.statusCode;
         if (statusCode === 401) {
           handle_Session_Expired(statusCode, dispatch);
@@ -125,13 +122,7 @@ const InspectionInProgressContainer = ({navigation}) => {
   }
   const handleNoPress = () => setIsDiscardInspectionModalVisible(false);
   const onNewInspectionPress = async () => {
-    await handleNewInspectionPress(
-      dispatch,
-      setIsNewInspectionLoading,
-      data?.companyId,
-      navigation,
-      resetAllStates,
-    );
+    await handleNewInspectionPress(dispatch, setIsNewInspectionLoading, data?.companyId, navigation, resetAllStates);
   };
 
   return (

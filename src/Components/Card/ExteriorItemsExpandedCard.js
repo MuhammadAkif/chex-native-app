@@ -136,6 +136,7 @@ const ExteriorItemsExpandedCard = ({
         exteriorItems={exteriorItems}
       />
     )}
+    {/* Inside Cargo Roof - Temporarily disabled
     <ImagesPickerContainer
       ExteriorDetails={ExteriorInsideCargoRoofDetails}
       pickerText={pickerText}
@@ -152,6 +153,7 @@ const ExteriorItemsExpandedCard = ({
       exteriorItems={exteriorItems}
       borderBottomWidth={0}
     />
+    */}
   </View>
 );
 export default ExteriorItemsExpandedCard;

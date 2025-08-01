@@ -245,6 +245,7 @@ const ExteriorItemsExpandedCard = ({
     {/*    }*/}
     {/*  />*/}
     {/*</View>*/}
+    {/* Inside Cargo Roof - Temporarily disabled
     <View style={itemPickerContainer}>
       <ImagePicker
         text={ExteriorInsideCargoRoofDetails.title}
@@ -266,6 +267,7 @@ const ExteriorItemsExpandedCard = ({
         }
       />
     </View>
+    */}
   </View>
 );
 
