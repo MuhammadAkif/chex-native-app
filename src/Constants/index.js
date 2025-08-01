@@ -17,11 +17,7 @@ export const VEHICLE_TYPE_DISPLAY_NAMES = {
 };
 
 // Vehicle Types that support frames
-export const VEHICLE_TYPES_WITH_FRAMES = [
-  VEHICLE_TYPES.VAN,
-  VEHICLE_TYPES.SEDAN,
-  VEHICLE_TYPES.TRUCK,
-];
+export const VEHICLE_TYPES_WITH_FRAMES = [VEHICLE_TYPES.VAN, VEHICLE_TYPES.SEDAN, VEHICLE_TYPES.TRUCK];
 
 // Api Endpoints start here
 const ENV_TYPE_URL = {
@@ -30,9 +26,10 @@ const ENV_TYPE_URL = {
   development: process.env.DEVELOPMENT_URL,
   ngrok: process.env.NGROK_URL,
 };
+
 const version = '1';
 export const API_VERSION_PATH = '/api/v' + version + '/';
-export const API_BASE_URL = ENV_TYPE_URL.staging;
+export const API_BASE_URL = ENV_TYPE_URL.ngrok;
 export const generateApiUrl = path => API_BASE_URL + API_VERSION_PATH + path;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
 export const EXTRACT_NUMBER_PLATE_WITH_AI = process.env.EXTRACT_NUMBER_PLATE_URL;
@@ -294,8 +291,4 @@ export const exitAppInfo = {
   },
 };
 
-export const VEHICLE_TYPE = {
-  truck: 'truck',
-  van: 'van',
-  sedan: 'sedan',
-};
+export const dumpCompanyId = [2];

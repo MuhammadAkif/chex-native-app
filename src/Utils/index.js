@@ -4,32 +4,12 @@ import RNFetchBlob from 'rn-fetch-blob';
 import * as yup from 'yup';
 
 import {IMAGES} from '../Assets/Images';
-import {
-  customSortOrder,
-  darkImageError,
-  INSPECTION,
-  INSPECTION_SUBCATEGORY,
-  S3_BUCKET_BASEURL,
-  uploadFailed,
-} from '../Constants';
+import {customSortOrder, darkImageError, INSPECTION, INSPECTION_SUBCATEGORY, S3_BUCKET_BASEURL, uploadFailed} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
-import {
-  getInspectionDetails,
-  isImageDarkWithAI,
-  s3SignedUrl,
-  uploadFileToDatabase,
-} from '../services/inspection';
+import {getInspectionDetails, isImageDarkWithAI, s3SignedUrl, uploadFileToDatabase} from '../services/inspection';
 import {store} from '../Store';
-import {
-  batchUpdateVehicleImages,
-  numberPlateSelected,
-  sessionExpired,
-  setCompanyId,
-} from '../Store/Actions';
-import {
-  setFileDetails,
-  setVehicleTypeModalVisible,
-} from '../Store/Actions/NewInspectionAction';
+import {batchUpdateVehicleImages, numberPlateSelected, sessionExpired, setCompanyId} from '../Store/Actions';
+import {setFileDetails, setVehicleTypeModalVisible} from '../Store/Actions/NewInspectionAction';
 import {checkAndCompleteUrl} from './helpers';
 
 // Validation Schema
@@ -40,45 +20,23 @@ export const validationSchema = yup.object().shape({
     .string()
     .email('Please enter a valid email')
     .required('Please enter your email!')
-    .matches(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      'Invalid email format',
-    ),
+    .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Invalid email format'),
   phoneNumber: yup
     .string()
     .matches(/^[0-9]{11}$/, 'Please enter a valid phone number')
     .required('Field required'),
-  password: yup
-    .string()
-    .min(6, 'Password must be at least 8 characters')
-    .required('Please enter your password!'),
+  password: yup.string().min(6, 'Password must be at least 8 characters').required('Please enter your password!'),
 });
 export const signInValidationSchema = yup.object().shape({
-  name: yup
-    .string()
-    .required('Please enter your name!')
-    .min(2, 'Name must be at least 2 characters'),
-  password: yup
-    .string()
-    .min(1, 'Password must be at least 1 characters')
-    .required('Please enter your password!'),
+  name: yup.string().required('Please enter your name!').min(2, 'Name must be at least 2 characters'),
+  password: yup.string().min(1, 'Password must be at least 1 characters').required('Please enter your password!'),
 });
 export const forgetPasswordSchema = yup.object().shape({
-  email: yup
-    .string()
-    .required('Please enter your email!')
-    .min(2, 'Email must be at least 2 characters')
-    .email('Invalid email address'),
+  email: yup.string().required('Please enter your email!').min(2, 'Email must be at least 2 characters').email('Invalid email address'),
 });
 export const resetPasswordSchema = yup.object().shape({
-  verificationCode: yup
-    .string()
-    .min(6, 'Name must be at least 6 characters')
-    .required('Please enter your code!'),
-  password: yup
-    .string()
-    .required('Please enter your new password!')
-    .min(6, 'Password must be at least 6 characters'),
+  verificationCode: yup.string().min(6, 'Name must be at least 6 characters').required('Please enter your code!'),
+  password: yup.string().required('Please enter your new password!').min(6, 'Password must be at least 6 characters'),
   confirmPassword: yup
     .string()
     .oneOf([yup.ref('password'), null], 'Passwords must match')
@@ -101,8 +59,7 @@ export const OdometerDetails = {
   key: 'odometer',
   title: 'Odometer',
   source: IMAGES.odometer,
-  instructionalText:
-    'Please take a photo of the odometer clearly showing the mileage  on the vehicle',
+  instructionalText: 'Please take a photo of the odometer clearly showing the mileage  on the vehicle',
   // instructionalSubHeadingText: 'Vehicle mileage',
   instructionalSubHeadingText: '',
   category: 'CarVerification',
@@ -115,8 +72,7 @@ export const ExteriorFrontDetails = {
   key: 'exteriorFront',
   title: 'Exterior Front',
   source: IMAGES.exterior_Front,
-  instructionalText:
-    'Please upload a photo clearly showing the front of the vehicle',
+  instructionalText: 'Please upload a photo clearly showing the front of the vehicle',
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
   category: 'Exterior',
@@ -128,8 +84,7 @@ export const ExteriorRearDetails = {
   key: 'exteriorRear',
   title: 'Exterior Rear',
   source: IMAGES.exterior_Rear,
-  instructionalText:
-    'Please upload a photo clearly showing the rear of the vehicle ',
+  instructionalText: 'Please upload a photo clearly showing the rear of the vehicle ',
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
   category: 'Exterior',
@@ -141,8 +96,7 @@ export const ExteriorLeftDetails = {
   key: 'exteriorLeft',
   title: 'Exterior Left',
   source: IMAGES.exterior_Left,
-  instructionalText:
-    'Please take a photo clearly capturing the entire exterior left side of the vehicle',
+  instructionalText: 'Please take a photo clearly capturing the entire exterior left side of the vehicle',
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
   category: 'Exterior',
@@ -154,8 +108,7 @@ export const ExteriorRightDetails = {
   key: 'exteriorRight',
   title: 'Exterior Right',
   source: IMAGES.exterior_Right,
-  instructionalText:
-    'Please take a photo clearly capturing the entire exterior right side of the vehicle',
+  instructionalText: 'Please take a photo clearly capturing the entire exterior right side of the vehicle',
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
   category: 'Exterior',
@@ -219,8 +172,7 @@ export const ExteriorInsideCargoRoofDetails = {
   key: 'exteriorInsideCargoRoof',
   title: 'Inside Cargo Roof',
   source: IMAGES.inside_Cargo_Roof,
-  instructionalText:
-    'Please upload a photo clearly showing the inside cargo roof of the vehicle',
+  instructionalText: 'Please upload a photo clearly showing the inside cargo roof of the vehicle',
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
   category: 'Exterior',
@@ -246,8 +198,7 @@ export const InteriorDriverSide = {
   key: 'driverSide',
   title: 'Interior Driver Side',
   source: IMAGES.interior_driver_side,
-  instructionalText:
-    'Please take a photo of the interior of the vehicle with left driver side door open with clear view of the following items:',
+  instructionalText: 'Please take a photo of the interior of the vehicle with left driver side door open with clear view of the following items:',
   instructionalSubHeadingText: 'Driver seat belt buckled',
   instructionalSubHeadingText_1: 'Interior rearview mirror',
   instructionalSubHeadingText_2: 'Brake pads',
@@ -262,10 +213,8 @@ export const LeftFrontTireDetails = {
   key: 'leftFrontTire',
   title: 'Left Front Tire',
   source: IMAGES.tire,
-  instructionalText:
-    'Please place a penny on the tire thread and take a photo capturing following items:',
-  instructionalSubHeadingText:
-    'Place Lincoln’s heads on the penny upside down and facing the camera',
+  instructionalText: 'Please place a penny on the tire thread and take a photo capturing following items:',
+  instructionalSubHeadingText: 'Place Lincoln’s heads on the penny upside down and facing the camera',
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'left_front_tire',
@@ -276,10 +225,8 @@ export const LeftRearTireDetails = {
   key: 'leftRearTire',
   title: 'Left Rear Tire',
   source: IMAGES.tire,
-  instructionalText:
-    'Please place a penny on the tire thread and take a photo capturing following items:',
-  instructionalSubHeadingText:
-    'Place Lincoln’s heads on the penny upside down and facing the camera',
+  instructionalText: 'Please place a penny on the tire thread and take a photo capturing following items:',
+  instructionalSubHeadingText: 'Place Lincoln’s heads on the penny upside down and facing the camera',
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'left_rear_tire',
@@ -290,10 +237,8 @@ export const RightFrontTireDetails = {
   key: 'rightFrontTire',
   title: 'Right Front Tire',
   source: IMAGES.tire,
-  instructionalText:
-    'Please place a penny on the tire thread and take a photo capturing following items:',
-  instructionalSubHeadingText:
-    'Place Lincoln’s heads on the penny upside down and facing the camera',
+  instructionalText: 'Please place a penny on the tire thread and take a photo capturing following items:',
+  instructionalSubHeadingText: 'Place Lincoln’s heads on the penny upside down and facing the camera',
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'right_front_tire',
@@ -304,10 +249,8 @@ export const RightRearTireDetails = {
   key: 'rightRearTire',
   title: 'Right Rear Tire',
   source: IMAGES.tire,
-  instructionalText:
-    'Please place a penny on the tire thread and take a photo capturing following items:',
-  instructionalSubHeadingText:
-    'Place Lincoln’s heads on the penny upside down and facing the camera',
+  instructionalText: 'Please place a penny on the tire thread and take a photo capturing following items:',
+  instructionalSubHeadingText: 'Place Lincoln’s heads on the penny upside down and facing the camera',
   buttonText: 'Capture Now',
   category: 'Tires',
   subCategory: 'right_rear_tire',
@@ -326,14 +269,8 @@ export const hasCameraAndMicrophoneAllowed = async () => {
     await Camera.requestMicrophonePermission();
   }
 };
-export function error_Handler(
-  callback = null,
-  title = uploadFailed.title,
-  message = uploadFailed.message,
-) {
-  Alert.alert(title || uploadFailed.title, message || uploadFailed.message, [
-    {text: 'Retry', onPress: callback},
-  ]);
+export function error_Handler(callback = null, title = uploadFailed.title, message = uploadFailed.message) {
+  Alert.alert(title || uploadFailed.title, message || uploadFailed.message, [{text: 'Retry', onPress: callback}]);
 }
 export const getSignedUrl = async (
   token,
@@ -351,91 +288,37 @@ export const getSignedUrl = async (
   category,
 ) => {
   try {
-    const response = await s3SignedUrl(
-      mime,
-      source,
-      inspectionId,
-      categoryName,
-      variant,
-      companyId,
-    );
-    await onGetSignedUrlSuccess(
-      response,
-      path,
-      mime,
-      setProgress,
-      handleResponse,
-      handleError,
-      dispatch,
-      category,
-    );
+    const response = await s3SignedUrl(mime, source, inspectionId, categoryName, variant, companyId);
+    await onGetSignedUrlSuccess(response, path, mime, setProgress, handleResponse, handleError, dispatch, category);
   } catch (error) {
     onGetSignedUrlFail(error, handleError, dispatch);
     throw error;
   }
 };
-async function onGetSignedUrlSuccess(
-  res,
-  path,
-  mime,
-  setProgress,
-  handleResponse,
-  handleError,
-  dispatch,
-  category,
-) {
+async function onGetSignedUrlSuccess(res, path, mime, setProgress, handleResponse, handleError, dispatch, category) {
   try {
     const {url, key} = res.data;
 
-    await uploadToS3(
-      url,
-      key,
-      path,
-      mime,
-      setProgress,
-      handleResponse,
-      handleError,
-      dispatch,
-      category,
-    );
+    await uploadToS3(url, key, path, mime, setProgress, handleResponse, handleError, dispatch, category);
   } catch (error) {
     throw error;
   }
 }
 function onGetSignedUrlFail(error, handleError, dispatch) {}
-export const uploadToS3 = async (
-  preSignedUrl,
-  key,
-  path,
-  mime,
-  setProgress,
-  handleResponse,
-  handleError,
-  _,
-  category,
-) => {
+export const uploadToS3 = async (preSignedUrl, key, path, mime, setProgress, handleResponse, handleError, _, category) => {
   try {
-    await RNFetchBlob.fetch(
-      'PUT',
-      preSignedUrl,
-      {'Content-Type': mime, Connection: 'close'},
-      RNFetchBlob.wrap(path),
-    ).uploadProgress((written, total) => {
-      const percentCompleted = Math.round((written * 100) / total);
-      setProgress(percentCompleted);
-    });
+    await RNFetchBlob.fetch('PUT', preSignedUrl, {'Content-Type': mime, Connection: 'close'}, RNFetchBlob.wrap(path)).uploadProgress(
+      (written, total) => {
+        const percentCompleted = Math.round((written * 100) / total);
+        setProgress(percentCompleted);
+      },
+    );
     await onUploadToS3Success(handleResponse, key, handleError, category, mime);
   } catch (error) {
     throw error;
   }
 };
-async function onUploadToS3Success(
-  handleResponse,
-  key,
-  handleError,
-  category,
-  mime,
-) {
+async function onUploadToS3Success(handleResponse, key, handleError, category, mime) {
   const image_url = S3_BUCKET_BASEURL + key;
 
   try {
@@ -455,18 +338,12 @@ async function onUploadToS3Success(
   }
 }
 
-export const uploadFile = async (
-  callback,
-  body,
-  inspectionId,
-  token,
-  handleError,
-  dispatch,
-) => {
+export const uploadFile = async (callback, body, inspectionId, token, handleError, dispatch) => {
   try {
     const response = await uploadFileToDatabase(inspectionId, body);
     onUploadFileSuccess(response, callback);
   } catch (error) {
+    console.log('uploadFile error:', error.response.data);
     throw error;
   }
 };
@@ -492,8 +369,7 @@ export const extractDate = dataAndTime => {
 
   return `${month}/${day}/${year}`;
 };
-export const handleHomePress = navigation =>
-  navigation.navigate(ROUTES.INSPECTION_SELECTION);
+export const handleHomePress = navigation => navigation.navigate(ROUTES.INSPECTION_SELECTION);
 export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
   const errors = {
     409: {
@@ -514,17 +390,12 @@ export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
 };
 export const sortInspectionReviewedItems = list => {
   function customSort(a, b) {
-    const groupTypeComparison =
-      customSortOrder.groupType.indexOf(a.groupType) -
-      customSortOrder.groupType.indexOf(b.groupType);
+    const groupTypeComparison = customSortOrder.groupType.indexOf(a.groupType) - customSortOrder.groupType.indexOf(b.groupType);
     if (groupTypeComparison !== 0) {
       return groupTypeComparison;
     }
 
-    return (
-      customSortOrder[a.groupType].indexOf(a.name) -
-      customSortOrder[b.groupType].indexOf(b.name)
-    );
+    return customSortOrder[a.groupType].indexOf(a.name) - customSortOrder[b.groupType].indexOf(b.name);
   }
 
   return list.sort(customSort);
@@ -561,10 +432,8 @@ export function sortImagesByOrder(list) {
     }
 
     // Sort by llamaCost (numerically)
-    const llamaCostA =
-      a.llamaCost !== null ? parseInt(a.llamaCost, 10) : Infinity;
-    const llamaCostB =
-      b.llamaCost !== null ? parseInt(b.llamaCost, 10) : Infinity;
+    const llamaCostA = a.llamaCost !== null ? parseInt(a.llamaCost, 10) : Infinity;
+    const llamaCostB = b.llamaCost !== null ? parseInt(b.llamaCost, 10) : Infinity;
 
     return llamaCostA - llamaCostB;
   });
@@ -579,17 +448,14 @@ export const sortInspection_Reviewed_Items = list => {
 
   // Step 2: Sort the list based on custom order
   const sortedList = list.sort((a, b) => {
-    const groupTypeComparison =
-      customSortOrder.groupType.indexOf(a.groupType) -
-      customSortOrder.groupType.indexOf(b.groupType);
+    const groupTypeComparison = customSortOrder.groupType.indexOf(a.groupType) - customSortOrder.groupType.indexOf(b.groupType);
 
     if (groupTypeComparison !== 0) {
       return groupTypeComparison; // Sort by groupType first
     }
 
     return (
-      customSortOrder[a.groupType].indexOf(a.name) -
-      customSortOrder[b.groupType].indexOf(b.name) // Sort by category second
+      customSortOrder[a.groupType].indexOf(a.name) - customSortOrder[b.groupType].indexOf(b.name) // Sort by category second
     );
   });
 
@@ -631,12 +497,10 @@ export function uploadInProgressMediaToStore(files, dispatch) {
   dispatch(batchUpdateVehicleImages(updates));
 }
 export const generateRandomString = () => {
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const minLength = 5;
   const maxLength = 10;
-  const length =
-    Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
+  const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
 
   let randomString = '';
   for (let i = 0; i < length; i++) {
@@ -647,24 +511,13 @@ export const generateRandomString = () => {
   return randomString;
 };
 
-export const handleNewInspectionPress = (
-  dispatch,
-  setIsLoading,
-  companyId,
-  navigation,
-  resetAllStates,
-) => {
+export const handleNewInspectionPress = (dispatch, setIsLoading, companyId, navigation, resetAllStates) => {
   dispatch(setVehicleTypeModalVisible(true));
   dispatch(setCompanyId(companyId));
   // No API call here anymore
 };
 
-export function onNewInspectionPressSuccess(
-  response,
-  dispatch,
-  navigate,
-  resetAllStates,
-) {
+export function onNewInspectionPressSuccess(response, dispatch, navigate, resetAllStates) {
   const {id = null} = response?.data || {};
 
   dispatch(numberPlateSelected(id));
@@ -686,12 +539,7 @@ export function handle_Session_Expired(statusCode = null, dispatch) {
   }
 }
 export const EXTRACT_INSPECTION_ITEM_ID = key => {
-  const {
-    carVerificiationItems: carVerification,
-    exteriorItems: exterior,
-    interiorItems: interior,
-    tires,
-  } = store.getState().newInspection;
+  const {carVerificiationItems: carVerification, exteriorItems: exterior, interiorItems: interior, tires} = store.getState().newInspection;
   const {
     exteriorLeftID,
     exteriorLeft_1ID,
@@ -721,17 +569,9 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
     exteriorInsideCargoRoof_1ID,
     exteriorInsideCargoRoof_2ID,
   } = exterior;
-  const {
-    driverSideID,
-    driverSide_1ID,
-    driverSide_2ID,
-    passengerSideID,
-    passengerSide_1ID,
-    passengerSide_2ID,
-  } = interior;
+  const {driverSideID, driverSide_1ID, driverSide_2ID, passengerSideID, passengerSide_1ID, passengerSide_2ID} = interior;
   const {licensePlateID, odometerID} = carVerification;
-  const {leftFrontTireID, leftRearTireID, rightFrontTireID, rightRearTireID} =
-    tires;
+  const {leftFrontTireID, leftRearTireID, rightFrontTireID, rightRearTireID} = tires;
   const GET_EXTERIOR_ITEM = {
     licensePlate: licensePlateID,
     odometer: odometerID,
@@ -781,8 +621,7 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
  * @param {*} value - The value to check
  * @returns {boolean} - Returns true if the value is not empty, otherwise false
  */
-export const isNotEmpty = value =>
-  value !== null && value !== undefined && value !== '' && value !== 0;
+export const isNotEmpty = value => value !== null && value !== undefined && value !== '' && value !== 0;
 export const isObjectEmpty = (object = {}) => {
   const extractValues = Object?.values(object);
   return extractValues?.includes('');
@@ -807,26 +646,13 @@ export const checkExterior = () => {
     exteriorInsideCargoRoofID,
   } = exterior;
 
-  const leftCheck =
-    isNotEmpty(exteriorLeftID) ||
-    (isNotEmpty(exteriorFrontLeftCornerID) &&
-      isNotEmpty(exteriorRearLeftCornerID));
+  const leftCheck = isNotEmpty(exteriorLeftID) || (isNotEmpty(exteriorFrontLeftCornerID) && isNotEmpty(exteriorRearLeftCornerID));
 
-  const rightCheck =
-    isNotEmpty(exteriorRightID) ||
-    (isNotEmpty(exteriorFrontRightCornerID) &&
-      isNotEmpty(exteriorRearRightCornerID));
-  return (
-    isNotEmpty(exteriorFrontID) &&
-    isNotEmpty(exteriorRearID) &&
-    isNotEmpty(exteriorInsideCargoRoofID) &&
-    leftCheck &&
-    rightCheck
-  );
+  const rightCheck = isNotEmpty(exteriorRightID) || (isNotEmpty(exteriorFrontRightCornerID) && isNotEmpty(exteriorRearRightCornerID));
+  return isNotEmpty(exteriorFrontID) && isNotEmpty(exteriorRearID) && isNotEmpty(exteriorInsideCargoRoofID) && leftCheck && rightCheck;
 };
 export const FILTER_IMAGES = (arr = [], toFilter = 'before') => {
-  const {carVerificiationItems, exteriorItems, interiorItems, tires} =
-    INSPECTION;
+  const {carVerificiationItems, exteriorItems, interiorItems, tires} = INSPECTION;
   if (!Array.isArray(arr)) {
     return;
   }
@@ -837,10 +663,7 @@ export const FILTER_IMAGES = (arr = [], toFilter = 'before') => {
       const {groupType, pictureTag} = item;
       if (groupType === carVerificiationItems || groupType === tires) {
         return item;
-      } else if (
-        (groupType === exteriorItems || groupType === interiorItems) &&
-        pictureTag === toFilter
-      ) {
+      } else if ((groupType === exteriorItems || groupType === interiorItems) && pictureTag === toFilter) {
         return item;
       }
     });
@@ -878,15 +701,14 @@ function onGet_Inspection_DetailsFail(error, dispatch) {
   if (statusCode === 401) {
     handle_Session_Expired(statusCode, dispatch);
   }
-  console.log('error of inspection in progress => ', error);
+  console.log('error of inspection in progress => ', error.response.data);
 }
 export const getAnnotationStatus = (files = [], id = '') => {
   if (!isNotEmpty(files) || !isNotEmpty(id)) {
     return false;
   }
   for (let i = 0; i < files.length; i++) {
-    const checkById =
-      id === files[i].id && isNotEmpty(files[i].coordinateArray);
+    const checkById = id === files[i].id && isNotEmpty(files[i].coordinateArray);
     if (checkById) {
       return true;
     }

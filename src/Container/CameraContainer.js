@@ -22,8 +22,8 @@ import {
   S3_BUCKET_BASEURL,
   SWITCH_CAMERA,
   uploadFailed,
+  VEHICLE_TYPES,
   VEHICLE_TYPES_WITH_FRAMES,
-  VEHICLE_TYPE,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {clearInspectionImages, getMileage, setImageDimensions, setLicensePlateNumber, updateVehicleImage} from '../Store/Actions';
@@ -128,6 +128,9 @@ const CameraContainer = ({route, navigation}) => {
     } else if (route?.params?.returnTo) {
       navigate(route.params.returnTo);
       return true;
+    } else if (selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
+      navigation.goBack();
+      return true;
     } else if (canGoBack()) {
       navigate(NEW_INSPECTION);
       return true;
@@ -209,12 +212,12 @@ const CameraContainer = ({route, navigation}) => {
     try {
       await uploadFile(c => uploadImageToStore(c, image_url), body, inspectionId, token, handleError, dispatch);
     } catch (error) {
+      console.log('handleResponse error:', error);
       onUploadFailed(error);
     }
   };
 
   function onUploadFailed(error) {
-    console.log('eRR:', error);
     const {statusCode = null} = error?.response?.data || {};
     const {message} = error;
     const {title = uploadFailed.title, message: msg = uploadFailed.message} = newInspectionUploadError(statusCode || '');
@@ -255,7 +258,7 @@ const CameraContainer = ({route, navigation}) => {
       is_Exterior: haveType,
     };
 
-    if (selectedVehicleKind === VEHICLE_TYPE.truck) {
+    if (selectedVehicleKind === VEHICLE_TYPES.TRUCK) {
       navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {afterFileUploadImageUrl: image_url, ...afterFileUploadNavigationParams});
     } else {
       navigate(NEW_INSPECTION, params);
@@ -296,6 +299,7 @@ const CameraContainer = ({route, navigation}) => {
         category,
       );
     } catch (error) {
+      console.log('handleNextPress error:', error);
       onUploadFailed(error);
     }
   };

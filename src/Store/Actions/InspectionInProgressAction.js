@@ -1,13 +1,9 @@
+import {fetchAllInspections, removeInspection} from '../../services/inspection';
 import {Types} from '../Types';
 import {store} from '../index';
-import {fetchAllInspections, removeInspection} from '../../services/inspection';
 import {showToast} from './UIActions';
 
-const {
-  GET_INSPECTION_IN_PROGRESS,
-  REMOVE_INSPECTION,
-  CLEAR_INSPECTION_IN_PROGRESS,
-} = Types;
+const {GET_INSPECTION_IN_PROGRESS, REMOVE_INSPECTION, CLEAR_INSPECTION_IN_PROGRESS} = Types;
 
 export const fetchInspectionInProgress = () => async dispatch => {
   try {
@@ -22,12 +18,11 @@ export const fetchInspectionInProgress = () => async dispatch => {
     throw error;
   }
 };
+
 export const deleteInspection = inspectionId => async dispatch => {
   const {inspectionInProgress} = store.getState().inspectionInProgress;
 
-  let updatedInspections = inspectionInProgress.filter(
-    item => item.id !== inspectionId,
-  );
+  let updatedInspections = inspectionInProgress.filter(item => item.id !== inspectionId);
 
   try {
     await removeInspection(inspectionId);
@@ -37,7 +32,7 @@ export const deleteInspection = inspectionId => async dispatch => {
     });
     dispatch(showToast('Inspection has been deleted!', 'success'));
   } catch (error) {
-    console.error('Inspection remove error: ', error);
+    console.error('Inspection remove error: ', error.response.data);
     throw error;
   }
 };

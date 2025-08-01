@@ -1,30 +1,14 @@
 import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
-import {
-  AppState,
-  BackHandler,
-  Platform,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
-import {
-  Camera,
-  useCameraDevice,
-  useCameraFormat,
-} from 'react-native-vision-camera';
+import {AppState, BackHandler, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {Camera, useCameraDevice, useCameraFormat} from 'react-native-vision-camera';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {BackArrow} from '../Assets/Icons';
 import {colors, PreviewStyles} from '../Assets/Styles';
 import {CameraFooter, CaptureImageModal, RecordingPreview} from '../Components';
-import {HARDWARE_BACK_PRESS, Platforms, S3_BUCKET_BASEURL} from '../Constants';
+import {HARDWARE_BACK_PRESS, Platforms, S3_BUCKET_BASEURL, VEHICLE_TYPES} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {updateVehicleImage} from '../Store/Actions';
 import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
@@ -33,8 +17,7 @@ const {OS} = Platform;
 const {ANDROID} = Platforms;
 const {NEW_INSPECTION} = ROUTES;
 const {white} = colors;
-const {container, headerContainer, counterContainer, counterText} =
-  PreviewStyles;
+const {container, headerContainer, counterContainer, counterText} = PreviewStyles;
 
 const VideoContainer = ({route, navigation}) => {
   const {canGoBack, navigate, goBack} = navigation;
@@ -47,16 +30,9 @@ const VideoContainer = ({route, navigation}) => {
   const appState = useRef(AppState.currentState);
   const [selectedCamera, setSelectedCamera] = useState('back');
   const device = useCameraDevice(selectedCamera, {
-    physicalDevices: [
-      'wide-angle-camera',
-      'ultra-wide-angle-camera',
-      'telephoto-camera',
-    ],
+    physicalDevices: ['wide-angle-camera', 'ultra-wide-angle-camera', 'telephoto-camera'],
   });
-  const format = useCameraFormat(device, [
-    {videoResolution: {width: 1280, height: 720}},
-    {fps: 30},
-  ]);
+  const format = useCameraFormat(device, [{videoResolution: {width: 1280, height: 720}}, {fps: 30}]);
   // const format = useCameraFormat(device, [
   //   {videoResolution: {width: 3048, height: 2160}},
   //   {fps: 60},
@@ -69,8 +45,8 @@ const VideoContainer = ({route, navigation}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [progress, setProgress] = useState(0);
   const {type, modalDetails, inspectionId} = route.params;
-  const {subCategory, instructionalText, source, title, isVideo, groupType} =
-    modalDetails;
+  const {subCategory, instructionalText, source, title, isVideo, groupType} = modalDetails;
+  const {selectedVehicleKind} = useSelector(state => state.newInspection);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
@@ -87,10 +63,7 @@ const VideoContainer = ({route, navigation}) => {
     };
   }, []);
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      HARDWARE_BACK_PRESS,
-      handle_Hardware_Back_Press,
-    );
+    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
     return () => backHandler.remove();
   }, [isVideoURI]);
 
@@ -122,6 +95,9 @@ const VideoContainer = ({route, navigation}) => {
       return true;
     } else if (route?.params?.returnTo) {
       navigate(route.params.returnTo);
+      return true;
+    } else if (selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
+      navigation.goBack();
       return true;
     } else if (canGoBack()) {
       navigate(NEW_INSPECTION);
@@ -192,14 +168,7 @@ const VideoContainer = ({route, navigation}) => {
       groupType: groupType,
       dateImage: getCurrentDate(),
     };
-    await uploadFile(
-      uploadVideoToStore,
-      body,
-      inspectionId,
-      token,
-      handleError,
-      dispatch,
-    );
+    await uploadFile(uploadVideoToStore, body, inspectionId, token, handleError, dispatch);
   };
   function uploadVideoToStore(imageID) {
     dispatch(updateVehicleImage(groupType, type, isVideoURI, imageID));
@@ -213,15 +182,7 @@ const VideoContainer = ({route, navigation}) => {
     setIsModalVisible(true);
     const path = isVideoFile.path.replace('file://', '');
 
-    getSignedUrl(
-      token,
-      'video/mp4',
-      path,
-      setProgress,
-      handleResponse,
-      handleError,
-      dispatch,
-    ).then();
+    getSignedUrl(token, 'video/mp4', path, setProgress, handleResponse, handleError, dispatch).then();
   };
 
   return (
@@ -277,11 +238,7 @@ const VideoContainer = ({route, navigation}) => {
           />
         </View>
       )}
-      <StatusBar
-        backgroundColor="transparent"
-        barStyle="light-content"
-        translucent={true}
-      />
+      <StatusBar backgroundColor="transparent" barStyle="light-content" translucent={true} />
     </>
   );
 };

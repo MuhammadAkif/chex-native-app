@@ -1,19 +1,13 @@
+import {useFocusEffect} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {BackHandler} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {useFocusEffect} from '@react-navigation/native';
 
+import {HARDWARE_BACK_PRESS} from '../Constants';
+import {ROUTES} from '../Navigation/ROUTES';
 import {InspectionReviewedScreen} from '../Screens';
 import {fetchInspectionReviewed} from '../Store/Actions';
-import {ROUTES} from '../Navigation/ROUTES';
-import {HARDWARE_BACK_PRESS} from '../Constants';
-import {
-  FILTER_IMAGES,
-  handle_Session_Expired,
-  handleNewInspectionPress,
-  sortInspectionReviewedItems,
-  updateFiles,
-} from '../Utils';
+import {FILTER_IMAGES, handle_Session_Expired, handleNewInspectionPress, sortInspectionReviewedItems, updateFiles} from '../Utils';
 import {inspectionDetails} from '../services/inspection';
 
 const {INSPECTION_DETAIL} = ROUTES;
@@ -40,10 +34,7 @@ const InspectionReviewedContainer = ({navigation}) => {
     }, []),
   );
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      HARDWARE_BACK_PRESS,
-      handle_Hardware_Back_Press,
-    );
+    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
     return () => {
       backHandler.remove();
       resetAllStates();
@@ -85,9 +76,7 @@ const InspectionReviewedContainer = ({navigation}) => {
     setIsLoading(true);
     setSelectedInspectionID(inspectionID);
 
-    await inspectionDetails(inspectionID)
-      .then(onInspectionDetailsPressSuccess)
-      .catch(onInspectionDetailsPressFail);
+    await inspectionDetails(inspectionID).then(onInspectionDetailsPressSuccess).catch(onInspectionDetailsPressFail);
   };
   function onInspectionDetailsPressSuccess(res) {
     const {inspectionData = null, files = {}} = res?.data || {};
@@ -109,16 +98,10 @@ const InspectionReviewedContainer = ({navigation}) => {
     if (statusCode === 401) {
       handle_Session_Expired(statusCode, dispatch);
     }
-    console.log('error of inspection in progress => ', error);
+    console.log('error of inspection in progress => ', error.response.data);
   }
   const onNewInspectionPress = async () => {
-    await handleNewInspectionPress(
-      dispatch,
-      setIsNewInspectionLoading,
-      data?.companyId,
-      navigation,
-      resetAllStates,
-    );
+    await handleNewInspectionPress(dispatch, setIsNewInspectionLoading, data?.companyId, navigation, resetAllStates);
   };
   function onFilterPress() {
     setFilter(!filter);

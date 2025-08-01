@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {Alert} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import {useDispatch, useSelector} from 'react-redux';
-import {VEHICLE_TYPE} from '../../Constants';
+import {VEHICLE_TYPES} from '../../Constants';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {DVIRVehicleInfoScreen} from '../../Screens';
 import {createInspection, extractVinAI} from '../../services/inspection';
@@ -90,7 +90,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
       companyId,
       milage: values.mileage,
       hasCheckList: true,
-      vehicleType: VEHICLE_TYPE.truck,
+      vehicleType: VEHICLE_TYPES.TRUCK,
     };
 
     setIsFormSubmitLoading(true);

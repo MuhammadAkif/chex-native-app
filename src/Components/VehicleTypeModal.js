@@ -66,7 +66,7 @@ const VehicleTypeModal = ({visible, onSelect, loadingState}) => {
                 buttonStyle={[button, buttonSpacing, styles.buttonStyle]}
                 textStyle={yesText}
                 onPress={() => handleButtonPress(displayName)}
-                isLoading={getButtonLoadingState(displayName)}
+                isLoading={getButtonLoadingState(type)}
                 isDisabled={isAnyButtonLoading}
               />
             ))}

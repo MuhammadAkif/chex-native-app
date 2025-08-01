@@ -21,7 +21,7 @@ import {IMAGES} from '../../Assets/Images';
 import {colors, NewInspectionStyles} from '../../Assets/Styles';
 import {CaptureImageModal, LoadingIndicator, PrimaryGradientButton} from '../../Components';
 import AppText from '../../Components/text';
-const {container, bodyContainer} = NewInspectionStyles;
+const {container, bodyContainer, headerContainer, headerTitleText} = NewInspectionStyles;
 
 // Move StatusButton outside so it is available to InspectionItem
 const StatusButton = React.memo(({title, isSelected, onPress, type, buttonStyles}) => {
@@ -205,6 +205,9 @@ const DVIRInspectionChecklistScreen = ({
 }) => {
   return (
     <View style={container}>
+      <View style={headerContainer}>
+        <AppText style={headerTitleText}>Please complete inspection items within each category below</AppText>
+      </View>
       <View style={bodyContainer}>
         <LoadingIndicator isLoading={isLoading} />
         <ScrollView

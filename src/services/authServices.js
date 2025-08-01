@@ -1,14 +1,15 @@
-import api from './api';
 import {API_ENDPOINTS} from '../Constants';
+import api from './api';
 
 const {LOGIN_URL, FORGET_PASSWORD_URL, RESET_PASSWORD_URL} = API_ENDPOINTS;
 
 export const login = async (username, password) => {
   try {
+    console.log('Login URL:', LOGIN_URL);
     const {data} = await api.post(LOGIN_URL, {username, password});
     return data || null;
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('Login error:', error.response.data);
     throw error;
   }
 };

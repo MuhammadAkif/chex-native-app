@@ -21,6 +21,8 @@ export const createInspection = async (companyId, data) => {
     companyId,
     ...data,
   };
+  console.log('CREATE_INSPECTION_URL:', CREATE_INSPECTION_URL);
+  console.log('createInspection:', body);
   try {
     return await api.post(CREATE_INSPECTION_URL, body);
   } catch (error) {
@@ -60,7 +62,7 @@ export const extractNumberPlate = async (licensePlateNumber, companyId, inspecti
   try {
     return await api.post(EXTRACT_NUMBER_PLATE_URL, body);
   } catch (error) {
-    console.error('License plate extraction error:', error);
+    console.error('License plate extraction error:', error.response.data);
     throw error;
   }
 };
@@ -172,7 +174,7 @@ export const uploadFileToDatabase = async (inspectionId, body) => {
   try {
     return await api.post(endPoint, body);
   } catch (error) {
-    console.error('Getting s3 signed url error:', error);
+    console.error('uploadFileToDatabase error:', error.response.data);
     throw error;
   }
 };

@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {DiscardInspectionModal, Splash, Toast} from './src/Components';
 import AlertPopup from './src/Components/AlertPopup';
 import VehicleTypeModal from './src/Components/VehicleTypeModal';
-import {SESSION_EXPIRED, UPDATE_APP, VEHICLE_TYPE} from './src/Constants';
+import {SESSION_EXPIRED, UPDATE_APP, VEHICLE_TYPES} from './src/Constants';
 import {ROUTES} from './src/Navigation/ROUTES';
 import Navigation from './src/Navigation/index';
 import {store} from './src/Store';
@@ -76,9 +76,10 @@ function App() {
   };
 
   const handleVehicleTypeSelect = async (type: string) => {
-    dispatch(setSelectedVehicleKind(type.toLowerCase()));
+    const vehicleType = type.toLowerCase();
+    dispatch(setSelectedVehicleKind(vehicleType));
 
-    if (type.toLowerCase() === VEHICLE_TYPE.truck) {
+    if (vehicleType === VEHICLE_TYPES.TRUCK) {
       dispatch(setVehicleTypeModalVisible(false));
       // Navigate immediately for truck, no API call
       if (navigationRef.isReady()) {
@@ -91,9 +92,9 @@ function App() {
       const state = store.getState();
       const companyId = state?.auth?.user?.data?.companyId;
       dispatch(setCompanyId(companyId));
-      setLoadingState({isLoading: true, vehicleType: type});
+      setLoadingState({isLoading: true, vehicleType});
       try {
-        const response = await createInspection(companyId, {vehicleType: type?.toLowerCase()});
+        const response = await createInspection(companyId, {vehicleType});
         onNewInspectionPressSuccess(
           response,
           dispatch,

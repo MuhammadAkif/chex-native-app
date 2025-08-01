@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {BackHandler} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {HARDWARE_BACK_PRESS, VEHICLE_TYPE} from '../Constants';
+import {HARDWARE_BACK_PRESS, VEHICLE_TYPES} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {InspectionInProgressScreen} from '../Screens';
 import {
@@ -80,7 +80,7 @@ const InspectionInProgressContainer = ({navigation}) => {
     dispatch(setSelectedVehicleKind(vehicleKind));
     resetAllStates();
 
-    if (vehicleKind == VEHICLE_TYPE.truck) return navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);
+    if (vehicleKind == VEHICLE_TYPES.TRUCK) return navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);
     else
       navigate(NEW_INSPECTION, {
         routeName: INSPECTION_IN_PROGRESS,
@@ -92,7 +92,7 @@ const InspectionInProgressContainer = ({navigation}) => {
     if (statusCode === 401) {
       handle_Session_Expired(statusCode, dispatch);
     }
-    console.log('error of inspection in progress => ', error);
+    console.log('error of inspection in progress => ', error.response.data);
   }
   const onCrossPress = id => {
     setDeleteInspectionID(id);
