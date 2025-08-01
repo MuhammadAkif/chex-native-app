@@ -4,6 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {Alert} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import {useDispatch, useSelector} from 'react-redux';
+import {VEHICLE_TYPE} from '../../Constants';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {DVIRVehicleInfoScreen} from '../../Screens';
 import {createInspection, extractVinAI} from '../../services/inspection';
@@ -40,11 +41,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
   const [dateForPicker, setDateForPicker] = useState(new Date());
   const [vinLoading, setVinLoading] = useState(false);
   const [isFormSubmitLoading, setIsFormSubmitLoading] = useState(false);
-  const {
-    name: driverFirstName,
-    lastName: driverLastName,
-    companyId,
-  } = useSelector(state => state?.auth?.user?.data);
+  const {name: driverFirstName, lastName: driverLastName, companyId} = useSelector(state => state?.auth?.user?.data);
   const dispatch = useDispatch();
 
   const handleDateConfirm = (date, setFieldValue) => {
@@ -61,9 +58,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
   // Handler for calendar icon press
   const handleCalendarPress = dateString => {
     setShowDateModel(true);
-    const parsed = dayjs(dateString, 'DD/MM/YYYY').isValid()
-      ? dayjs(dateString, 'DD/MM/YYYY').toDate()
-      : new Date();
+    const parsed = dayjs(dateString, 'DD/MM/YYYY').isValid() ? dayjs(dateString, 'DD/MM/YYYY').toDate() : new Date();
     setDateForPicker(parsed);
   };
 
@@ -77,6 +72,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
       category: 'CarVerification',
       subCategory: 'vin',
       groupType: 'truck',
+      instructionalText: 'Please wait a while the VIN is being uploaded',
     };
     navigation.navigate(ROUTES.CAMERA, {
       modalDetails: details,
@@ -94,6 +90,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
       companyId,
       milage: values.mileage,
       hasCheckList: true,
+      vehicleType: VEHICLE_TYPE.truck,
     };
 
     setIsFormSubmitLoading(true);
@@ -109,7 +106,20 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
       })
       .catch(error => {
         if (error?.response?.data.statusCode === 409) {
-          Alert.alert('Error', error?.response?.data?.errorMessage);
+          Alert.alert('Error', error?.response?.data?.errorMessage, [
+            {
+              text: 'Cancel',
+            },
+            {
+              text: 'OK',
+              onPress: () => {
+                if (error.response?.data?.statusMessage === 'in_progress') {
+                  dispatch(numberPlateSelected(error.response?.data?.inspectionId));
+                  navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);
+                }
+              },
+            },
+          ]);
         }
       })
       .finally(() => {
@@ -131,25 +141,14 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
       }}
       validate={validate}
       onSubmit={handleSubmitForm}>
-      {({
-        values,
-        errors,
-        touched,
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        setFieldValue,
-        isSubmitting,
-      }) => {
+      {({values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue, isSubmitting}) => {
         // If coming back from camera with vinImageUri, extract VIN
         useEffect(() => {
           async function extractVinIfNeeded() {
             if (route?.params?.isVinCapture) {
               setVinLoading(true);
               try {
-                const response = await extractVinAI(
-                  route.params.capturedImageUri,
-                );
+                const response = await extractVinAI(route.params.capturedImageUri);
                 // console.log('RESPONSE', response);
                 const {plateNumber = null} = response?.data || {};
                 setFieldValue('vin', plateNumber || '');

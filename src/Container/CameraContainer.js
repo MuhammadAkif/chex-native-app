@@ -22,6 +22,7 @@ import {
   S3_BUCKET_BASEURL,
   SWITCH_CAMERA,
   uploadFailed,
+  VEHICLE_TYPE,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {clearInspectionImages, getMileage, setImageDimensions, setLicensePlateNumber, updateVehicleImage} from '../Store/Actions';
@@ -254,7 +255,7 @@ const CameraContainer = ({route, navigation}) => {
       is_Exterior: haveType,
     };
 
-    if (selectedVehicleKind === 'truck') {
+    if (selectedVehicleKind === VEHICLE_TYPE.truck) {
       navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {afterFileUploadImageUrl: image_url, ...afterFileUploadNavigationParams});
     } else {
       navigate(NEW_INSPECTION, params);

@@ -13,12 +13,13 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {CameraBorderedIcon, CircledChevron, CrossCircledIcon, MovieIcon, VideoBorderedIcon} from '../../Assets/Icons';
 import CommentBorderedIcon from '../../Assets/Icons/CommentBorderedIcon';
 import {IMAGES} from '../../Assets/Images';
 import {colors, NewInspectionStyles} from '../../Assets/Styles';
-import {CaptureImageModal, PrimaryGradientButton} from '../../Components';
+import {CaptureImageModal, LoadingIndicator, PrimaryGradientButton} from '../../Components';
 import AppText from '../../Components/text';
 const {container, bodyContainer} = NewInspectionStyles;
 
@@ -183,6 +184,9 @@ const DVIRInspectionChecklistScreen = ({
   commentModalImage,
   captureImageModalVisible,
   setCaptureImageModalVisible,
+  hasSubmitButtonShow,
+  onPressSubmit,
+  isLoading,
   // CAPTURE MODAL DETAILS
   source,
   instructionalText,
@@ -202,6 +206,7 @@ const DVIRInspectionChecklistScreen = ({
   return (
     <View style={container}>
       <View style={bodyContainer}>
+        <LoadingIndicator isLoading={isLoading} />
         <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
@@ -219,36 +224,34 @@ const DVIRInspectionChecklistScreen = ({
               <AppText style={styles.headerTitle}>Check List Items</AppText>
               <View style={styles.headerRight}>
                 <TouchableOpacity activeOpacity={0.7} onPress={toggleChecklistSection} style={!showChecklistSection && styles.rotateChevron}>
-                  <CircledChevron width={wp('6%')} height={wp('6%')} />
+                  {checklistLoading ? (
+                    <ActivityIndicator size="small" color={colors.royalBlue} />
+                  ) : (
+                    <CircledChevron width={wp('6%')} height={wp('6%')} />
+                  )}
                 </TouchableOpacity>
               </View>
             </View>
 
-            {showChecklistSection && (
+            {showChecklistSection && !checklistLoading && (
               <>
-                {checklistLoading ? (
-                  <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color={colors.royalBlue} />
-                  </View>
-                ) : (
-                  <View style={styles.cardItems}>
-                    {checklistData.map((item, index) => (
-                      <ChecklistItem
-                        key={item.checkId}
-                        item={item}
-                        index={index}
-                        onChecklistStatusChange={onChecklistStatusChange}
-                        onComment={onCommentIconPress}
-                        onCamera={onCheckItemCameraIconPress}
-                        onRemove={onCheckItemRemoveImage}
-                        CrossCircledIcon={CrossCircledIcon}
-                        CameraBorderedIcon={CameraBorderedIcon}
-                        VideoBorderedIcon={VideoBorderedIcon}
-                        buttonStyles={buttonStyles}
-                      />
-                    ))}
-                  </View>
-                )}
+                <View style={styles.cardItems}>
+                  {checklistData.map((item, index) => (
+                    <ChecklistItem
+                      key={item.checkId}
+                      item={item}
+                      index={index}
+                      onChecklistStatusChange={onChecklistStatusChange}
+                      onComment={onCommentIconPress}
+                      onCamera={onCheckItemCameraIconPress}
+                      onRemove={onCheckItemRemoveImage}
+                      CrossCircledIcon={CrossCircledIcon}
+                      CameraBorderedIcon={CameraBorderedIcon}
+                      VideoBorderedIcon={VideoBorderedIcon}
+                      buttonStyles={buttonStyles}
+                    />
+                  ))}
+                </View>
 
                 <View style={{marginTop: hp(4)}}>
                   <View
@@ -272,18 +275,14 @@ const DVIRInspectionChecklistScreen = ({
                           {item?.frames?.map(frame => (
                             <TouchableOpacity
                               key={frame.id}
-                              style={
-                                frame?.image?.startsWith?.('http')
-                                  ? [styles.captureImageBox, styles.captureImageBoxWithImage]
-                                  : styles.captureImageBox
-                              }
+                              style={frame?.image ? [styles.captureImageBox, styles.captureImageBoxWithImage] : styles.captureImageBox}
                               activeOpacity={0.7}
                               onPress={() => onPressCaptureFrame(item?.id, frame?.id)}>
                               <Image
-                                source={frame?.image?.startsWith?.('http') ? {uri: frame.image} : frame.image}
-                                style={frame?.image?.startsWith?.('http') ? styles.captureImageStyleWithImage : styles.captureImageStyle}
+                                source={frame?.image ? {uri: frame.image} : frame.icon}
+                                style={frame?.image ? styles.captureImageStyleWithImage : styles.captureImageStyle}
                               />
-                              {!frame?.image?.startsWith?.('http') && (
+                              {!frame?.image && (
                                 <>
                                   <AppText style={styles.captureImageText}>Capture image</AppText>
                                   <CameraBorderedIcon width={wp(6)} height={wp(6)} style={styles.captureImageBoxIcon} />
@@ -319,7 +318,7 @@ const DVIRInspectionChecklistScreen = ({
                 <View style={styles.truckWithTiresContainer}>
                   {/* Truck Diagram - Larger and Centered */}
                   <View style={styles.truckDiagramContainer}>
-                    <Image source={IMAGES.truckBody} style={styles.truckBodyImage} resizeMode="contain" />
+                    <FastImage source={IMAGES.truckBody} style={styles.truckBodyImage} resizeMode="contain" />
                   </View>
 
                   {/* Tire Capture Boxes Positioned Over Truck Tires */}
@@ -341,9 +340,9 @@ const DVIRInspectionChecklistScreen = ({
                         <TouchableOpacity
                           style={[styles.tireCaptureBox, tire?.image && styles.tireCaptureImageBox]}
                           activeOpacity={0.7}
-                          onPress={() => onPressTireImage && onPressTireImage(tire.id)}>
+                          onPress={() => onPressTireImage && onPressTireImage(tire.id, tire?.title)}>
                           <View style={[styles.tireIconContainer, tire?.image && styles.tireImageContainer]}>
-                            <Image
+                            <FastImage
                               source={tire?.image ? {uri: tire.image} : IMAGES[tire.icon]}
                               style={tire.image ? styles.tireImage : styles.tireIcon}
                             />
@@ -368,9 +367,9 @@ const DVIRInspectionChecklistScreen = ({
                       <TouchableOpacity
                         style={[styles.tireCaptureBox, tire?.image && styles.tireCaptureImageBox]}
                         activeOpacity={0.7}
-                        onPress={() => onPressTireImage && onPressTireImage(tire.id)}>
+                        onPress={() => onPressTireImage && onPressTireImage(tire.id, tire?.title)}>
                         <View style={[styles.tireIconContainer, tire?.image && styles.tireImageContainer]}>
-                          <Image
+                          <FastImage
                             source={tire?.image ? {uri: tire.image} : IMAGES[tire.icon]}
                             style={tire.image ? styles.tireImage : styles.tireIcon}
                           />
@@ -390,7 +389,7 @@ const DVIRInspectionChecklistScreen = ({
             )}
           </View>
 
-          <PrimaryGradientButton onPress={() => {}} text={'Submit'} buttonStyle={styles.buttonContainer} />
+          {hasSubmitButtonShow && <PrimaryGradientButton onPress={onPressSubmit} text={'Submit'} buttonStyle={styles.buttonContainer} />}
         </ScrollView>
       </View>
 
@@ -414,15 +413,6 @@ const DVIRInspectionChecklistScreen = ({
           isExterior={isExterior || isInterior}
         />
       )}
-      {/* {mediaModalVisible && (
-        <ActiveMediaViewModal
-          title={mediaModalDetails?.title}
-          isVideo={mediaModalDetails?.isVideo}
-          source={mediaModalDetails?.source}
-          coordinates={coordinates}
-          handleVisible={handleMediaModalDetailsCrossPress}
-        />
-      )} */}
     </View>
   );
 };

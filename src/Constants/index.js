@@ -12,8 +12,7 @@ export const API_VERSION_PATH = '/api/v' + version + '/';
 export const API_BASE_URL = ENV_TYPE_URL.staging;
 export const generateApiUrl = path => API_BASE_URL + API_VERSION_PATH + path;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
-export const EXTRACT_NUMBER_PLATE_WITH_AI =
-  process.env.EXTRACT_NUMBER_PLATE_URL;
+export const EXTRACT_NUMBER_PLATE_WITH_AI = process.env.EXTRACT_NUMBER_PLATE_URL;
 export const nightImageCheckAI = process.env.NIGHT_IMAGE_CHECK;
 export const MILEAGE_EXTRACTION = process.env.MILEAGE_EXTRACT;
 
@@ -137,8 +136,7 @@ export const INSPECTION_TITLE = {
 };
 export const UPDATE_APP = {
   TITLE: 'Version Update',
-  MESSAGE:
-    'A new version of the app is available. Please update to continue using the app.',
+  MESSAGE: 'A new version of the app is available. Please update to continue using the app.',
   BUTTON: 'UPDATE',
 };
 export const SESSION_EXPIRED = {
@@ -182,21 +180,13 @@ export const DRAWER = {
   DVIRC: 'DVIRC',
 };
 
-export const INSPECTION_STATUSES = [
-  'IN_REVIEW',
-  'REVIEWED',
-  'READY_FOR_REVIEW',
-];
+export const INSPECTION_STATUSES = ['IN_REVIEW', 'REVIEWED', 'READY_FOR_REVIEW'];
 export const STATUSES = {
   REVIEWED: 'Reviewed',
   READY_FOR_REVIEW: 'Ready For Review',
   IN_REVIEW: 'In Review',
 };
-export const PHYSICAL_DEVICES = [
-  'wide-angle-camera',
-  'ultra-wide-angle-camera',
-  'telephoto-camera',
-];
+export const PHYSICAL_DEVICES = ['wide-angle-camera', 'ultra-wide-angle-camera', 'telephoto-camera'];
 export const IS_BACK_CAMERA = {
   front: true,
   back: false,
@@ -205,19 +195,13 @@ export const SWITCH_CAMERA = {
   true: 'front',
   false: 'back',
 };
-export const AnnotationAlertMessage =
-  'Please highlight the damage and select a severity level to proceed. Both are required.';
+export const AnnotationAlertMessage = 'Please highlight the damage and select a severity level to proceed. Both are required.';
 export const Delete_Messages = {
   success: 'Deleted Successfully.',
   failed: 'Failed to delete. Please try again.',
 };
 export const customSortOrder = {
-  groupType: [
-    'carVerificiationItems',
-    'interiorItems',
-    'exteriorItems',
-    'tires',
-  ],
+  groupType: ['carVerificiationItems', 'interiorItems', 'exteriorItems', 'tires'],
   carVerificiationItems: ['license_plate_number', 'odometer'],
   interiorItems: [
     'interior_passenger_side',
@@ -267,17 +251,11 @@ export const customSortOrder = {
     'inside_cargo_roof1',
     'inside_cargo_roof2',
   ],
-  tires: [
-    'left_front_tire',
-    'left_rear_tire',
-    'right_front_tire',
-    'right_rear_tire',
-  ],
+  tires: ['left_front_tire', 'left_rear_tire', 'right_front_tire', 'right_rear_tire'],
 };
 export const darkImageError = {
   title: 'Image Quality Issue',
-  message:
-    'The uploaded image appears too dark. Please try uploading a clearer image with better lighting.',
+  message: 'The uploaded image appears too dark. Please try uploading a clearer image with better lighting.',
 };
 export const uploadFailed = {
   title: 'Upload Failed',
@@ -291,4 +269,10 @@ export const exitAppInfo = {
     yes: 'Yes',
     cancel: 'Cancel',
   },
+};
+
+export const VEHICLE_TYPE = {
+  truck: 'truck',
+  van: 'van',
+  sedan: 'sedan',
 };
