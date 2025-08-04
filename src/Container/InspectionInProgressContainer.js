@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {BackHandler} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {HARDWARE_BACK_PRESS, VEHICLE_TYPES} from '../Constants';
+import {HARDWARE_BACK_PRESS} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {InspectionInProgressScreen} from '../Screens';
 import {
@@ -76,15 +76,14 @@ const InspectionInProgressContainer = ({navigation}) => {
   function onContinuePressSuccess(res, inspectionId) {
     const {hasAdded = 'existing', vehicleType: vehicleKind} = res?.data || {};
     const vehicleType = hasAdded || 'existing';
+
     dispatch(setVehicleType(vehicleType));
     dispatch(setSelectedVehicleKind(vehicleKind));
     resetAllStates();
 
-    if (vehicleKind == VEHICLE_TYPES.TRUCK) return navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);
-    else
-      navigate(NEW_INSPECTION, {
-        routeName: INSPECTION_IN_PROGRESS,
-      });
+    navigate(NEW_INSPECTION, {
+      routeName: INSPECTION_IN_PROGRESS,
+    });
   }
   function onContinuePressFail(error) {
     const {statusCode = null} = error?.response?.data || {};

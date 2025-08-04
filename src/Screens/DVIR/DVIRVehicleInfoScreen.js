@@ -1,9 +1,6 @@
 import React from 'react';
 import {ActivityIndicator, ScrollView, StyleSheet, View} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {CameraBorderedIcon} from '../../Assets/Icons';
 import CalendarIcon from '../../Assets/Icons/CalendarIcon';
 import {colors, errorStyle, NewInspectionStyles} from '../../Assets/Styles';
@@ -27,10 +24,7 @@ const DVIRVehicleInfoScreen = ({
 }) => (
   <View style={container}>
     <View style={bodyContainer}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-        style={styles.scrollStyle}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent} style={styles.scrollStyle}>
         <View style={styles.innerBody}>
           {/* Driver Name */}
           <AppText style={styles.inputLabel}>Driver Name</AppText>
@@ -44,11 +38,7 @@ const DVIRVehicleInfoScreen = ({
             touched={touched.driverName}
             error={errors.driverName}
           />
-          {touched.driverName && errors.driverName && (
-            <AppText style={errorStyle.errorsTextStyle}>
-              {errors.driverName}
-            </AppText>
-          )}
+          {touched.driverName && errors.driverName && <AppText style={errorStyle.errorsTextStyle}>{errors.driverName}</AppText>}
           {/* Date */}
           <AppText style={styles.inputLabel}>Date</AppText>
           <CustomInput
@@ -60,9 +50,7 @@ const DVIRVehicleInfoScreen = ({
             rightIcon={<CalendarIcon height={28} width={28} />}
             onRightIconPress={() => onCalendarPress(values.date)}
           />
-          {touched.date && errors.date && (
-            <AppText style={errorStyle.errorsTextStyle}>{errors.date}</AppText>
-          )}
+          {touched.date && errors.date && <AppText style={errorStyle.errorsTextStyle}>{errors.date}</AppText>}
           {/* Truck ID/License Plate */}
           <AppText style={styles.inputLabel}>Truck ID/License Plate</AppText>
           <CustomInput
@@ -76,9 +64,7 @@ const DVIRVehicleInfoScreen = ({
             error={errors.licensePlateNumber}
           />
           {touched.licensePlateNumber && errors.licensePlateNumber && (
-            <AppText style={errorStyle.errorsTextStyle}>
-              {errors.licensePlateNumber}
-            </AppText>
+            <AppText style={errorStyle.errorsTextStyle}>{errors.licensePlateNumber}</AppText>
           )}
           {/* Mileage */}
           <AppText style={styles.inputLabel}>Mileage</AppText>
@@ -93,11 +79,7 @@ const DVIRVehicleInfoScreen = ({
             error={errors.mileage}
             keyboardType="number-pad"
           />
-          {touched.mileage && errors.mileage && (
-            <AppText style={errorStyle.errorsTextStyle}>
-              {errors.mileage}
-            </AppText>
-          )}
+          {touched.mileage && errors.mileage && <AppText style={errorStyle.errorsTextStyle}>{errors.mileage}</AppText>}
           {/* VIN */}
           <AppText style={styles.inputLabel}>VIN</AppText>
           <CustomInput
@@ -113,18 +95,12 @@ const DVIRVehicleInfoScreen = ({
               vinLoading ? (
                 <ActivityIndicator size="small" color={colors.brightBlue} />
               ) : (
-                <CameraBorderedIcon
-                  height={28}
-                  width={28}
-                  color={colors.brightBlue}
-                />
+                <CameraBorderedIcon height={28} width={28} color={colors.brightBlue} />
               )
             }
             onRightIconPress={onPressVINCamera}
           />
-          {touched.vin && errors.vin && (
-            <AppText style={errorStyle.errorsTextStyle}>{errors.vin}</AppText>
-          )}
+          {touched.vin && errors.vin && <AppText style={errorStyle.errorsTextStyle}>{errors.vin}</AppText>}
           {/* Technician */}
           {/* <AppText style={styles.inputLabel}>Technician</AppText>
           <CustomInput

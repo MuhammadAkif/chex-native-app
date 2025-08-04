@@ -8,7 +8,7 @@ import {
   InteriorItemsAnnotationExpandedCard,
   InteriorItemsExpandedCard,
 } from '../Components';
-import {Delete_Messages, HARDWARE_BACK_PRESS, INSPECTION} from '../Constants';
+import {Delete_Messages, HARDWARE_BACK_PRESS, hasInteriorAndRoofTopCompany, INSPECTION} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {NewInspectionScreen} from '../Screens';
 import {
@@ -28,6 +28,7 @@ import {
   removeVehicleImage,
   setMileageVisible,
   setRequired,
+  setSelectedVehicleKind,
   setVehicleType,
   showToast,
   skipLeft,
@@ -270,9 +271,9 @@ const NewInspectionContainer = ({route, navigation}) => {
       exteriorRearRightCorner,
       exteriorRearRightCorner_1,
       exteriorRearRightCorner_2,
-      // exteriorInsideCargoRoof,
-      // exteriorInsideCargoRoof_1,
-      // exteriorInsideCargoRoof_2,
+      exteriorInsideCargoRoof,
+      exteriorInsideCargoRoof_1,
+      exteriorInsideCargoRoof_2,
     } = exteriorItems;
     const {driverSide, driverSide_1, driverSide_2, passengerSide, passengerSide_1, passengerSide_2} = interiorItems;
     //Annotation or without annotation
@@ -287,18 +288,15 @@ const NewInspectionContainer = ({route, navigation}) => {
       exteriorFrontRightCorner: exteriorFrontRightCorner || exteriorFrontRightCorner_1 || exteriorFrontRightCorner_2,
       exteriorRearLeftCorner: exteriorRearLeftCorner || exteriorRearLeftCorner_1 || exteriorRearLeftCorner_2,
       exteriorRearRightCorner: exteriorRearRightCorner || exteriorRearRightCorner_1 || exteriorRearRightCorner_2,
-      /* Inside Cargo Roof - Temporarily disabled
+
       exteriorInsideCargoRoof:
-        exteriorInsideCargoRoof ||
-        exteriorInsideCargoRoof_1 ||
-        exteriorInsideCargoRoof_2,
-      */
+        !hasInteriorAndRoofTopCompany(companyId) && (exteriorInsideCargoRoof || exteriorInsideCargoRoof_1 || exteriorInsideCargoRoof_2),
     };
     if (vehicle_Type === 'new') {
-      updateRequiredFields(interior__, exterior__);
+      updateRequiredFields(hasInteriorAndRoofTopCompany(companyId) ? interior__ : {}, exterior__);
     }
     const allCarVerification = !isObjectEmpty(carVerificiationItems);
-    const allInterior = !isObjectEmpty(interior__);
+    const allInterior = hasInteriorAndRoofTopCompany(companyId) || !isObjectEmpty(interior__);
     const allExterior = !isObjectEmpty(exterior__);
     const allTires = !isObjectEmpty(tires);
     const allParts = allCarVerification && allInterior && allExterior && allTires;
@@ -526,6 +524,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     dispatch(file_Details(inspectionID)).then(onInProgressInspectionSuccess).catch(onInProgressInspectionFail);
   };
   function onInProgressInspectionSuccess(res) {
+    dispatch(setSelectedVehicleKind(res?.data?.vehicleType));
     vehicleTireStatusToRender(inspectionID).then();
   }
   function onInProgressInspectionFail(error) {
@@ -674,6 +673,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       coordinates={mediaModalDetails?.coordinates?.coordinateArray || []}
       displayInstructions={vehicle_Type === 'new'}
       imageDimensions={imageDimensions}
+      companyId={companyId}
     />
   );
 };

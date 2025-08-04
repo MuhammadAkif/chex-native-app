@@ -19,6 +19,7 @@ import {
 import AnnotateImage from '../Components/Annotation/AnnotateImage';
 import AnnotateImageModal from '../Components/Annotation/AnnotateImageModal';
 import LoadingIndicator from '../Components/LoadingIndicator';
+import {hasInteriorAndRoofTopCompany} from '../Constants';
 
 const {OS} = Platform;
 const mediaViewModals = {
@@ -97,7 +98,9 @@ const NewInspectionScreen = props => {
     coordinates,
     displayInstructions,
     imageDimensions,
+    companyId,
   } = props;
+
   return (
     <View style={container}>
       {isDiscardInspectionModalVisible && (
@@ -199,28 +202,32 @@ const NewInspectionScreen = props => {
                 isLicensePlateUploaded={!isLicensePlateUploaded}
               />
             )}
-            <CollapsedCard
-              text={'Interior items'}
-              index={2}
-              displayInstructions={displayInstructions}
-              isActive={selectedOption?.isInterior}
-              isBothItemsAvailable={isAllInteriorImagesAvailable}
-              onPress={() => handleCardExpansion('isInterior')}
-              disabled={!isLicensePlateUploaded}
-            />
-            {selectedOption?.isInterior && (
-              <ActiveInteriorItemsExpandedCard
-                handleItemPickerPress={handleItemPickerPress}
-                interiorItems={interiorItems}
-                handleCrossPress={handleOnCrossPress}
-                isLoading={isLoading}
-                handleMediaModalDetailsPress={handleMediaModalDetailsPress}
-              />
+            {!hasInteriorAndRoofTopCompany(companyId) && (
+              <>
+                <CollapsedCard
+                  text={'Interior items'}
+                  index={2}
+                  displayInstructions={displayInstructions}
+                  isActive={selectedOption?.isInterior}
+                  isBothItemsAvailable={isAllInteriorImagesAvailable}
+                  onPress={() => handleCardExpansion('isInterior')}
+                  disabled={!isLicensePlateUploaded}
+                />
+                {selectedOption?.isInterior && (
+                  <ActiveInteriorItemsExpandedCard
+                    handleItemPickerPress={handleItemPickerPress}
+                    interiorItems={interiorItems}
+                    handleCrossPress={handleOnCrossPress}
+                    isLoading={isLoading}
+                    handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+                  />
+                )}
+              </>
             )}
             <CollapsedCard
               text={'Exterior items'}
               displayInstructions={displayInstructions}
-              index={3}
+              index={hasInteriorAndRoofTopCompany(companyId) ? 2 : 3}
               isActive={selectedOption?.isExterior}
               isBothItemsAvailable={isAllExteriorImagesAvailable}
               onPress={() => handleCardExpansion('isExterior')}
@@ -237,13 +244,14 @@ const NewInspectionScreen = props => {
                 skipRight={skipRight}
                 skipRightCorners={skipRightCorners}
                 handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+                companyId={companyId}
               />
             )}
             {displayTires && (
               <>
                 <CollapsedCard
                   text={'Tires'}
-                  index={4}
+                  index={hasInteriorAndRoofTopCompany(companyId) ? 3 : 4}
                   isActive={selectedOption?.isTires}
                   isBothItemsAvailable={isBothTiresImagesAvailable}
                   onPress={() => handleCardExpansion('isTires')}

@@ -8,7 +8,7 @@ import {Camera, useCameraDevice, useCameraFormat} from 'react-native-vision-came
 import {useDispatch, useSelector} from 'react-redux';
 
 import {BackArrow} from '../Assets/Icons';
-import {getVehicleImages} from '../Assets/Images';
+import {getVehicleFrames} from '../Assets/Images';
 import {colors, PreviewStyles} from '../Assets/Styles';
 import {CameraFooter, CameraPreview, CaptureImageModal, DiscardInspectionModal} from '../Components';
 import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
@@ -22,7 +22,6 @@ import {
   S3_BUCKET_BASEURL,
   SWITCH_CAMERA,
   uploadFailed,
-  VEHICLE_TYPES,
   VEHICLE_TYPES_WITH_FRAMES,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
@@ -88,7 +87,7 @@ const CameraContainer = ({route, navigation}) => {
     },
   };
   const activeFrameStyle = frameStyles[orientation];
-  const frameUri = getVehicleImages(selectedVehicleKind)?.[orientation]?.[subCategory] || '';
+  const frameUri = getVehicleFrames(selectedVehicleKind)?.[orientation]?.[subCategory] || '';
   const RightIcon = switchFrameIcon[orientation];
   const haveFrame = isNotEmpty(frameUri) && VEHICLE_TYPES_WITH_FRAMES.includes(selectedVehicleKind);
 
@@ -127,9 +126,6 @@ const CameraContainer = ({route, navigation}) => {
       return true;
     } else if (route?.params?.returnTo) {
       navigate(route.params.returnTo);
-      return true;
-    } else if (selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
-      navigation.goBack();
       return true;
     } else if (canGoBack()) {
       navigate(NEW_INSPECTION);
@@ -258,11 +254,7 @@ const CameraContainer = ({route, navigation}) => {
       is_Exterior: haveType,
     };
 
-    if (selectedVehicleKind === VEHICLE_TYPES.TRUCK) {
-      navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {afterFileUploadImageUrl: image_url, ...afterFileUploadNavigationParams});
-    } else {
-      navigate(NEW_INSPECTION, params);
-    }
+    navigate(NEW_INSPECTION, params);
   }
 
   const handleExtractNumberPlate = async imageUrl => {

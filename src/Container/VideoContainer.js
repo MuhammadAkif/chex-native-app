@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {BackArrow} from '../Assets/Icons';
 import {colors, PreviewStyles} from '../Assets/Styles';
 import {CameraFooter, CaptureImageModal, RecordingPreview} from '../Components';
-import {HARDWARE_BACK_PRESS, Platforms, S3_BUCKET_BASEURL, VEHICLE_TYPES} from '../Constants';
+import {HARDWARE_BACK_PRESS, Platforms, S3_BUCKET_BASEURL} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {updateVehicleImage} from '../Store/Actions';
 import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
@@ -95,9 +95,6 @@ const VideoContainer = ({route, navigation}) => {
       return true;
     } else if (route?.params?.returnTo) {
       navigate(route.params.returnTo);
-      return true;
-    } else if (selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
-      navigation.goBack();
       return true;
     } else if (canGoBack()) {
       navigate(NEW_INSPECTION);

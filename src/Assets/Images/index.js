@@ -110,7 +110,7 @@ const landscapeImages = {
   },
 };
 
-export const getVehicleImages = (vehicleType = 'van') => ({
+export const getVehicleFrames = (vehicleType = 'van') => ({
   portrait: portraitImages[vehicleType],
   landscape: landscapeImages[vehicleType],
 });
