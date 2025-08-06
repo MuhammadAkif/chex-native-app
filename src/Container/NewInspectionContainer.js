@@ -8,7 +8,7 @@ import {
   InteriorItemsAnnotationExpandedCard,
   InteriorItemsExpandedCard,
 } from '../Components';
-import {Delete_Messages, HARDWARE_BACK_PRESS, INSPECTION} from '../Constants';
+import {Delete_Messages, HARDWARE_BACK_PRESS, INSPECTION, VEHICLE_TYPES} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {NewInspectionScreen} from '../Screens';
 import {
@@ -28,6 +28,7 @@ import {
   removeVehicleImage,
   setMileageVisible,
   setRequired,
+  setSelectedVehicleKind,
   setVehicleType,
   showToast,
   skipLeft,
@@ -47,7 +48,9 @@ import {
   isNotEmpty,
   isObjectEmpty,
   LicensePlateDetails,
+  uploadInProgressMediaToStore,
 } from '../Utils';
+import {numberPlateSelected, setFileDetails} from '../Store/Actions/NewInspectionAction';
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllCarVerification: false,
@@ -442,7 +445,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     }
     setIsDiscardInspectionModalVisible(false);
     const imageID = EXTRACT_INSPECTION_ITEM_ID(key_);
-
+    console.log('imageID => ', imageID);
     await deleteImageFromDatabase(imageID)
       .then(() => onImageDeleteSuccess(category, key_))
       .catch(e => onImageDeleteFail(e, category, key_));
@@ -526,6 +529,13 @@ const NewInspectionContainer = ({route, navigation}) => {
     dispatch(file_Details(inspectionID)).then(onInProgressInspectionSuccess).catch(onInProgressInspectionFail);
   };
   function onInProgressInspectionSuccess(res) {
+    const {vehicleType} = res?.data;
+
+    if (vehicleType == VEHICLE_TYPES.TRUCK) {
+      // return navigation.reset({index: 1, routes: [{name: ROUTES.INSPECTION_SELECTION}, {name: ROUTES.DVIR_INSPECTION_CHECKLIST}]});
+      return navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);
+    }
+
     vehicleTireStatusToRender(inspectionID).then();
   }
   function onInProgressInspectionFail(error) {
@@ -553,7 +563,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setLoadingIndicator(!displayTire);
   }
   function onVehicleTireStatusToRenderFail(e) {
-    console.log('error while check tire status again inspection => ', e.message);
+    console.log('error while check tire status again inspection => ', e.response.data);
   }
   async function handleRemovedAllTires() {
     let removeTiresList = extractIDs(tires) || [];

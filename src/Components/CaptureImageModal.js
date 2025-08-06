@@ -1,18 +1,18 @@
-import React, {useState, useMemo} from 'react';
-import {Modal, StyleSheet, View, Text, TouchableOpacity, StatusBar, Platform} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import FastImage from 'react-native-fast-image';
-import Video from 'react-native-video';
+import React, {useMemo, useState} from 'react';
+import {Modal, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
+import FastImage from 'react-native-fast-image';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import Video from 'react-native-video';
 import VideoPlayer from 'react-native-video-player';
 import {useSelector} from 'react-redux';
 
 import {Cross, Expand, Info} from '../Assets/Icons';
-import {colors} from '../Assets/Styles';
-import {PrimaryGradientButton, RequiredIndicator, Sub_Heading} from './index';
 import Collapse from '../Assets/Icons/Collapse';
+import {colors} from '../Assets/Styles';
 import {Platforms} from '../Constants';
 import {headerFlex, headerFlexGrow, headerTextBottom, imageHeight, instructionsContainerTop} from '../Utils/helpers';
+import {PrimaryGradientButton, RequiredIndicator, Sub_Heading} from './index';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;

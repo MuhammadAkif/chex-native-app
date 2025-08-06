@@ -1,8 +1,6 @@
-import {
-  ai_Mileage_Extraction,
-  extractLicensePlateAI,
-  getInspectionDetails,
-} from '../../services/inspection';
+import {VEHICLE_TYPES} from '../../Constants';
+import {ROUTES} from '../../Navigation/ROUTES';
+import {ai_Mileage_Extraction, extractLicensePlateAI, getInspectionDetails} from '../../services/inspection';
 import {uploadInProgressMediaToStore} from '../../Utils';
 import {Types} from '../Types';
 
@@ -72,11 +70,17 @@ export const categoryVariant = payload => ({
 export const file_Details = inspectionId => async dispatch => {
   try {
     const response = await getInspectionDetails(inspectionId);
-    const {files = {}} = response?.data || {};
+    const {files = {}, vehicleType} = response?.data || {};
 
-    dispatch(setFileDetails(files));
-    uploadInProgressMediaToStore(files, dispatch);
-    dispatch(numberPlateSelected(inspectionId));
+    dispatch(setSelectedVehicleKind(vehicleType));
+
+    if (vehicleType == VEHICLE_TYPES.TRUCK) {
+      dispatch(numberPlateSelected(inspectionId));
+    } else {
+      uploadInProgressMediaToStore(files, dispatch);
+      dispatch(setFileDetails(files));
+    }
+
     return response;
   } catch (error) {
     console.error('Inspection details getting error:', error);

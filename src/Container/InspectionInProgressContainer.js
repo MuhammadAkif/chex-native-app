@@ -77,7 +77,6 @@ const InspectionInProgressContainer = ({navigation}) => {
     const {hasAdded = 'existing', vehicleType: vehicleKind} = res?.data || {};
     const vehicleType = hasAdded || 'existing';
     dispatch(setVehicleType(vehicleType));
-    dispatch(setSelectedVehicleKind(vehicleKind));
     resetAllStates();
 
     if (vehicleKind == VEHICLE_TYPES.TRUCK) return navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);

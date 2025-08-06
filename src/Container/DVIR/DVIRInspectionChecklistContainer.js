@@ -5,6 +5,7 @@ import {INSPECTION, S3_BUCKET_BASEURL} from '../../Constants';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {DVIRInspectionChecklistScreen} from '../../Screens';
 import {
+  deleteImageFromDatabase,
   getChecklists,
   getInspectionDetails,
   inspectionSubmission,
@@ -22,6 +23,8 @@ import {
   isNotEmpty,
   LicensePlateDetails,
 } from '../../Utils';
+import {useFocusEffect} from '@react-navigation/native';
+import {BackHandler} from 'react-native';
 
 const frameConfigMap = {
   exterior_front: {
@@ -114,6 +117,9 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   const {selectedInspectionID} = useSelector(state => state.newInspection) || {};
   const [isLoading, setIsLoading] = useState(false);
   const [checklistData, setChecklistData] = useState([]);
+  console.log('selectedInspectionID:', selectedInspectionID);
+  const [mediaModalVisible, setMediaModalVisible] = useState(false);
+  const [mediaModalDetails, setMediaModalDetails] = useState({});
 
   const [checklistLoading, setChecklistLoading] = useState(false);
   const [captureFrames, setCaptureFrames] = useState([
@@ -290,6 +296,8 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
 
   const handleChecklistOpenCamera = useCallback(
     (index, isVideo) => {
+      if (checklistData?.[index]?.url?.length == 5) return alert('You can add a maximum of 5 media files');
+
       const details = {
         title: isVideo ? 'Upload Video' : 'Upload Image',
         type: '1',
@@ -299,6 +307,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         instructionalText: `Please wait a while the ${isVideo ? 'video' : 'image'} is being uploaded`,
       };
 
+      dispatch(setRequired(false));
       navigation.navigate(isVideo ? ROUTES.VIDEO : ROUTES.CAMERA, {
         type: 1,
         modalDetails: details,
@@ -418,6 +427,59 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     navigation.navigate(ROUTES.INSPECTION_SELECTION);
   };
 
+  const handleMediaModalDetailsCrossPress = () => {
+    setMediaModalVisible(false);
+    setMediaModalDetails({});
+  };
+
+  const handleRemoveFrameImage = (itemId, frameId, fileId, type) => {
+    // WE HAVE TO MAKE IMAGE KEY NULL FOR THE FRAME AND UPDATE THE API
+
+    if (type === 'capture_frames') {
+      setCaptureFrames(prevFrames =>
+        prevFrames.map(frame =>
+          frame.id === itemId ? {...frame, frames: frame.frames.map(f => (f.id === frameId ? {...f, image: null, fileId: null} : f))} : frame,
+        ),
+      );
+    } else if (type === 'tires') {
+      // DELETION FOR TIRES
+      setTireInspectionData(prevTires => prevTires.map(tire => (tire.id === itemId ? {...tire, image: null, fileId: null} : tire)));
+    }
+
+    // API TO DELETE FROM DATABASE
+    deleteImageFromDatabase(fileId)
+      .then(() => console.log('file deleted:', fileId))
+      .catch(e => console.log('file not deleted', e));
+  };
+
+  const handleMediaModalDetailsPress = (item, type, checkMediaIdx) => {
+    if (type == 'checklist') {
+      setMediaModalDetails({
+        title: item?.name,
+        source: item?.url?.[checkMediaIdx],
+        isVideo: item?.fileType == 'video',
+        coordinates: [],
+      });
+    } else if (type == 'capture_frame') {
+      // const coordinates = extractCoordinates(fileDetails, image_ID);
+      setMediaModalDetails({
+        title: frameConfigMap?.[item?.id]?.details?.title,
+        source: item?.image,
+        isVideo: false,
+        coordinates: [],
+      });
+    } else if (type == 'tire') {
+      setMediaModalDetails({
+        title: item?.title,
+        source: item?.image,
+        isVideo: false,
+        coordinates: [],
+      });
+    }
+
+    if (type) setMediaModalVisible(true);
+  };
+
   //API CALLS
   const getChecklistsData = useCallback(async () => {
     setChecklistLoading(true);
@@ -441,6 +503,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
             return {
               ...tire,
               image: S3_BUCKET_BASEURL + matchedFile.url,
+              fileId: matchedFile.id,
             };
           }
           return tire;
@@ -463,6 +526,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
               return {
                 ...frame,
                 image: S3_BUCKET_BASEURL + matchedFile.url,
+                fileId: matchedFile.id,
               };
             }
             return frame;
@@ -512,22 +576,25 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
 
   useEffect(() => {
     if (route?.params?.afterFileUploadImageUrl) {
-      const {captureFrameId, frameId, afterFileUploadImageUrl, tireId} = route.params;
+      const {captureFrameId, frameId, afterFileUploadImageUrl, tireId, fileId} = route.params;
 
+      // CAPTURE FRAMES
       if (captureFrameId && frameId) {
         const updatedFrames = captureFrames.map(item => {
           if (item.id === captureFrameId) {
             return {
               ...item,
-              frames: item.frames.map(frame => (frame.id === frameId ? {...frame, image: afterFileUploadImageUrl} : frame)),
+              frames: item.frames.map(frame => (frame.id === frameId ? {...frame, image: afterFileUploadImageUrl, fileId} : frame)),
             };
           }
           return item;
         });
 
         setCaptureFrames(updatedFrames);
+
+        // TIRES
       } else if (tireId) {
-        setTireInspectionData(prevData => prevData.map(tire => (tire.id === tireId ? {...tire, image: afterFileUploadImageUrl} : tire)));
+        setTireInspectionData(prevData => prevData.map(tire => (tire.id === tireId ? {...tire, image: afterFileUploadImageUrl, fileId} : tire)));
       }
 
       navigation.setParams({
@@ -544,14 +611,14 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       try {
         await Promise.all([getChecklistsData(), getInspectionData()]);
       } catch (error) {
-        console.error('Failed to fetch checklist or inspection data:', error);
+        console.error('Failed to fetch checklist or inspection data:', error.response.data);
       }
     };
 
     fetchData();
   }, []);
 
-  const validateSubmitButtonShow = () => {
+  const validateFramesTiresCheclist = () => {
     // 1. Validate captureFrames: all frames must have a non-null image
     const allFramesHaveImages = captureFrames.every(section => section.frames.every(frame => frame.image !== null));
 
@@ -562,8 +629,46 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     const allChecklistItemsHaveStatus = checklistData.every(item => item.checkStatus !== null);
 
     // Final result
-    return allFramesHaveImages && allTiresHaveImages && allChecklistItemsHaveStatus;
+    const allResults = allFramesHaveImages && allTiresHaveImages && allChecklistItemsHaveStatus;
+
+    return {
+      allResults,
+      allFramesHaveImages,
+      allTiresHaveImages,
+      allChecklistItemsHaveStatus,
+    };
   };
+
+  // Custom back handler
+  const customGoBack = useCallback(() => {
+    const navState = navigation.getState();
+    const routes = navState.routes;
+    const currentIndex = navState.index;
+
+    // Get previousOne and previousTwo
+    const previousOne = routes[currentIndex - 1];
+    const previousTwo = routes[currentIndex - 2];
+
+    if (previousOne && previousOne.name === ROUTES.NEW_INSPECTION && previousTwo) {
+      navigation.replace(previousTwo.name, previousTwo.params);
+    } else if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      // Optionally exit app or do nothing
+    }
+    return true; // Prevent default
+  }, [navigation]);
+
+  // Handle hardware back
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => customGoBack();
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [customGoBack]),
+  );
+
+  // Pass customGoBack to header or use it in UI as needed
 
   return (
     <DVIRInspectionChecklistScreen
@@ -595,7 +700,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       toggleTiresSection={toggleTiresSection}
       onPressCaptureFrame={handleCaptureFrame}
       commentModalImage={checklistData?.[currentItemIndex]?.fileType == 'photo' ? checklistData?.[currentItemIndex]?.url?.[0] : null}
-      hasSubmitButtonShow={validateSubmitButtonShow()}
+      hasSubmitButtonShow={validateFramesTiresCheclist().allResults}
       onPressSubmit={handleSubmit}
       isLoading={isLoading}
       // CAPTURE MODAL DETAILS PROPS
@@ -615,6 +720,16 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       instructionalSubHeadingText_2={modalDetails?.instructionalSubHeadingText_2}
       handleFramesCaptureImage={handleCaptureNowPress}
       // CAPTURE MODAL DETAILS PROPS
+
+      // DISPLAYING MEDIA
+      mediaModalDetails={mediaModalDetails}
+      mediaModalVisible={mediaModalVisible}
+      handleMediaModalDetailsCrossPress={handleMediaModalDetailsCrossPress}
+      handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+      onRemoveFrameImage={handleRemoveFrameImage}
+      isTireSectionCompleted={validateFramesTiresCheclist().allTiresHaveImages}
+      isChecklistSectionCompleted={validateFramesTiresCheclist().allChecklistItemsHaveStatus && validateFramesTiresCheclist().allFramesHaveImages}
+      initialCommentText={checklistData?.[currentItemIndex]?.comment}
     />
   );
 };

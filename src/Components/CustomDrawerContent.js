@@ -1,30 +1,16 @@
 import {getFocusedRouteNameFromRoute, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {ScrollView, StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {Home, Info, Logout} from '../Assets/Icons';
 import {IMAGES} from '../Assets/Images';
 import {colors} from '../Assets/Styles';
-import {DRAWER, PROJECT_NAME} from '../Constants';
+import {DRAWER, PROJECT_NAME, VEHICLE_TYPES} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
-import {
-  clearNewInspection,
-  hideToast,
-  setRequired,
-  signOut,
-} from '../Store/Actions';
+import {clearNewInspection, hideToast, setRequired, signOut} from '../Store/Actions';
 import {DrawerItemText, SignInLogo} from './index';
 
 const {SIGN_IN, INSPECTION_SELECTION, INTRO, NEW_INSPECTION} = ROUTES;
@@ -32,6 +18,7 @@ const {cobaltBlue, black, red} = colors;
 
 const CustomDrawerContent = props => {
   const {toast} = useSelector(state => state.ui);
+  const {selectedVehicleKind} = useSelector(state => state.newInspection);
   const dispatch = useDispatch();
   const route = useRoute();
   const {toggleDrawer, reset, navigate} = props.navigation;
@@ -46,10 +33,9 @@ const CustomDrawerContent = props => {
     //   : black;
   };
   useEffect(() => {
-    if (
-      activeRouteName !== NEW_INSPECTION &&
-      previousScreen === NEW_INSPECTION
-    ) {
+    if (activeRouteName !== NEW_INSPECTION && previousScreen === NEW_INSPECTION) {
+      if (activeRouteName == ROUTES.DVIR_INSPECTION_CHECKLIST) return;
+
       dispatch(clearNewInspection());
       dispatch(setRequired());
     }
@@ -76,19 +62,9 @@ const CustomDrawerContent = props => {
   return (
     <ScrollView style={styles.body} {...props}>
       <View style={styles.header}>
-        <FastImage
-          source={IMAGES.drawer}
-          priority={'normal'}
-          resizeMode={'cover'}
-          style={StyleSheet.absoluteFillObject}
-        />
+        <FastImage source={IMAGES.drawer} priority={'normal'} resizeMode={'cover'} style={StyleSheet.absoluteFillObject} />
         <View style={styles.logoContainer}>
-          <SignInLogo
-            titleText={PROJECT_NAME.CHEX}
-            dotTitleText={PROJECT_NAME.AI}
-            textStyle={styles.logo}
-            nestedTextStyle={styles.logo}
-          />
+          <SignInLogo titleText={PROJECT_NAME.CHEX} dotTitleText={PROJECT_NAME.AI} textStyle={styles.logo} nestedTextStyle={styles.logo} />
         </View>
       </View>
       <DrawerItemText
@@ -96,13 +72,8 @@ const CustomDrawerContent = props => {
         textColor={activeColorOfTextAndIcon(DRAWER.HOME)}
         activeColor={activeScreen === DRAWER.HOME ? activeColor : 'transparent'}
         Icon={
-          <TouchableOpacity
-            onPress={() => handleNavigationPress(INSPECTION_SELECTION, 'Home')}>
-            <Home
-              height={hp('3%')}
-              width={wp('5%')}
-              color={activeColorOfTextAndIcon('Home')}
-            />
+          <TouchableOpacity onPress={() => handleNavigationPress(INSPECTION_SELECTION, 'Home')}>
+            <Home height={hp('3%')} width={wp('5%')} color={activeColorOfTextAndIcon('Home')} />
           </TouchableOpacity>
         }
         onPress={() => handleNavigationPress(INSPECTION_SELECTION, 'Home')}
@@ -111,13 +82,7 @@ const CustomDrawerContent = props => {
         text={DRAWER.THINGS_YOU_WILL_REQUIRE}
         textColor={activeColorOfTextAndIcon('Intro')}
         activeColor={activeScreen === 'Intro' ? activeColor : 'transparent'}
-        Icon={
-          <Info
-            height={hp('2.5%')}
-            width={wp('5%')}
-            color={activeColorOfTextAndIcon('Intro')}
-          />
-        }
+        Icon={<Info height={hp('2.5%')} width={wp('5%')} color={activeColorOfTextAndIcon('Intro')} />}
         onPress={() => handleNavigationPress(INTRO, 'Intro ')}
       />
 

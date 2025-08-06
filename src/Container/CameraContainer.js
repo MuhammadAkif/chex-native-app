@@ -238,6 +238,11 @@ const CameraContainer = ({route, navigation}) => {
     }
   }
   function uploadImageToStore(imageID, image_url) {
+    // RETURNING FOR DVIR INSPECTION CHECKLIST
+    if (selectedVehicleKind === VEHICLE_TYPES.TRUCK)
+      return navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {afterFileUploadImageUrl: image_url, fileId: imageID, ...afterFileUploadNavigationParams});
+
+    // REDUX UPDATES FOR NEW INSPECTION
     const isLicensePlate = category === 'CarVerification' && type === 'licensePlate';
     const isOdometer = category === 'CarVerification' && type === 'odometer';
     const types = ['Interior', 'Exterior'];
@@ -258,11 +263,7 @@ const CameraContainer = ({route, navigation}) => {
       is_Exterior: haveType,
     };
 
-    if (selectedVehicleKind === VEHICLE_TYPES.TRUCK) {
-      navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {afterFileUploadImageUrl: image_url, ...afterFileUploadNavigationParams});
-    } else {
-      navigate(NEW_INSPECTION, params);
-    }
+    navigate(NEW_INSPECTION, params);
   }
 
   const handleExtractNumberPlate = async imageUrl => {
@@ -281,6 +282,7 @@ const CameraContainer = ({route, navigation}) => {
   const handleNextPress = async () => {
     let extension = isImageFile.path.split('.').pop() || 'jpeg';
     const mime = 'image/' + extension;
+
     setIsModalVisible(true);
     try {
       await getSignedUrl(
@@ -349,7 +351,7 @@ const CameraContainer = ({route, navigation}) => {
           isLoading={true}
           isVideo={isVideo}
           instructionalText={instructionalText}
-          source={source}
+          source={source ? source : isImageFile?.path ? {uri: `file:///${isImageFile.path}`} : undefined}
           title={title}
           progress={progress}
           handleNavigationBackPress={handleNavigationBackPress}

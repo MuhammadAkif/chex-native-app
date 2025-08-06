@@ -95,11 +95,7 @@ function App() {
       setLoadingState({isLoading: true, vehicleType});
       try {
         const response = await createInspection(companyId, {vehicleType});
-        onNewInspectionPressSuccess(
-          response,
-          dispatch,
-          navigate, // navigation is handled in App.tsx
-        );
+        onNewInspectionPressSuccess(response, dispatch, navigate);
       } catch (err) {
         onNewInspectionPressFail(err, dispatch);
       } finally {

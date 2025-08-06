@@ -192,7 +192,7 @@ const VideoContainer = ({route, navigation}) => {
           isLoading={true}
           isVideo={isVideo}
           instructionalText={instructionalText}
-          source={source}
+          source={source ? source : isVideoFile?.path ? {uri: `file:///${isVideoFile.path}`} : undefined}
           title={title}
           progress={progress}
           handleNavigationBackPress={handleNavigationBackPress}
