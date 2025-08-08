@@ -117,7 +117,6 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   const {selectedInspectionID} = useSelector(state => state.newInspection) || {};
   const [isLoading, setIsLoading] = useState(false);
   const [checklistData, setChecklistData] = useState([]);
-  console.log('selectedInspectionID:', selectedInspectionID);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
   const [mediaModalDetails, setMediaModalDetails] = useState({});
 
@@ -194,7 +193,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
 
   // Section toggle state
   const [showChecklistSection, setShowChecklistSection] = useState(true);
-  const [showTiresSection, setShowTiresSection] = useState(true);
+  const [showTiresSection, setShowTiresSection] = useState(false);
 
   // CAPTURE MODAL DETAILS
   const modalDetailsInitialState = {
@@ -543,11 +542,11 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     }
   }, [selectedInspectionID, tireInspectionData, captureFrames]);
 
-  // Camera result handler
+  // CHECKLIST Camera result handler
   useEffect(() => {
     if (route?.params?.capturedImageUri) {
       if (route?.params?.checklistCardIndex !== undefined) {
-        const {checklistCardIndex, capturedImageUri, capturedImageMime} = route.params;
+        const {checklistCardIndex, capturedImageUri, capturedImageMime, localPath} = route.params;
 
         setChecklistData(prevData =>
           prevData.map((item, idx) =>
@@ -642,15 +641,13 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   // Custom back handler
   const customGoBack = useCallback(() => {
     const navState = navigation.getState();
-    const routes = navState.routes;
-    const currentIndex = navState.index;
+    const routes = navState.history;
 
     // Get previousOne and previousTwo
-    const previousOne = routes[currentIndex - 1];
-    const previousTwo = routes[currentIndex - 2];
+    const previousOne = routes[routes.length - 2];
 
-    if (previousOne && previousOne.name === ROUTES.NEW_INSPECTION && previousTwo) {
-      navigation.replace(previousTwo.name, previousTwo.params);
+    if (previousOne && previousOne.key.includes(ROUTES.NEW_INSPECTION)) {
+      navigation.navigate(ROUTES.INSPECTION_SELECTION);
     } else if (navigation.canGoBack()) {
       navigation.goBack();
     } else {
@@ -727,8 +724,6 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       handleMediaModalDetailsCrossPress={handleMediaModalDetailsCrossPress}
       handleMediaModalDetailsPress={handleMediaModalDetailsPress}
       onRemoveFrameImage={handleRemoveFrameImage}
-      isTireSectionCompleted={validateFramesTiresCheclist().allTiresHaveImages}
-      isChecklistSectionCompleted={validateFramesTiresCheclist().allChecklistItemsHaveStatus && validateFramesTiresCheclist().allFramesHaveImages}
       initialCommentText={checklistData?.[currentItemIndex]?.comment}
     />
   );

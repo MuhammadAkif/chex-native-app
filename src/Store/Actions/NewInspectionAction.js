@@ -74,12 +74,9 @@ export const file_Details = inspectionId => async dispatch => {
 
     dispatch(setSelectedVehicleKind(vehicleType));
 
-    if (vehicleType == VEHICLE_TYPES.TRUCK) {
-      dispatch(numberPlateSelected(inspectionId));
-    } else {
-      uploadInProgressMediaToStore(files, dispatch);
-      dispatch(setFileDetails(files));
-    }
+    dispatch(numberPlateSelected(inspectionId));
+    uploadInProgressMediaToStore(files, dispatch);
+    dispatch(setFileDetails(files));
 
     return response;
   } catch (error) {

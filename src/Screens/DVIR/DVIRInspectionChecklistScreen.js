@@ -232,8 +232,6 @@ const DVIRInspectionChecklistScreen = ({
   handleMediaModalDetailsCrossPress,
   handleMediaModalDetailsPress,
   onRemoveFrameImage,
-  isTireSectionCompleted,
-  isChecklistSectionCompleted,
   initialCommentText,
 }) => {
   // Prepare sections for SectionList
@@ -266,7 +264,7 @@ const DVIRInspectionChecklistScreen = ({
                 {checklistLoading ? (
                   <ActivityIndicator size="small" color={colors.royalBlue} />
                 ) : (
-                  <CircledChevron stroke={isChecklistSectionCompleted ? colors.orangePeel : colors.gray} width={wp('6%')} height={wp('6%')} />
+                  <CircledChevron stroke={showChecklistSection ? colors.orangePeel : colors.gray} width={wp('6%')} height={wp('6%')} />
                 )}
               </TouchableOpacity>
             </View>
@@ -360,7 +358,7 @@ const DVIRInspectionChecklistScreen = ({
             <AppText style={styles.headerTitle}>Tires</AppText>
             <View style={styles.headerRight}>
               <TouchableOpacity activeOpacity={0.7} onPress={toggleTiresSection} style={!showTiresSection && styles.rotateChevron}>
-                <CircledChevron width={wp('6%')} height={wp('6%')} stroke={isTireSectionCompleted ? colors.orangePeel : colors.gray} />
+                <CircledChevron width={wp('6%')} height={wp('6%')} stroke={showTiresSection ? colors.orangePeel : colors.gray} />
               </TouchableOpacity>
             </View>
           </View>
