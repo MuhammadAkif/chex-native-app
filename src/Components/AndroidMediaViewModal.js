@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, Modal, TouchableOpacity, StatusBar, ActivityIndicator} from 'react-native';
-import VideoPlayer from 'react-native-video-player';
+import Video from 'react-native-video';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {Cross, Expand, Collapse} from '../Assets/Icons';
@@ -10,18 +10,18 @@ import {Custom_Image, RenderIcons} from './index';
 const {white, cobaltBlueDark} = colors;
 
 const AndroidMediaViewModal = ({source, handleVisible, title, isVideo, coordinates = []}) => {
-  const [isFullScreen, setIsFullScreen] = useState(false);
+  // const [isFullScreen, setIsFullScreen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const toggleIcon = {
-    true: Expand,
-    false: Collapse,
-  };
-  const toggle_Height = {
-    true: hp('50%'),
-    false: hp('25%'),
-  };
-  const activeVideoHeight = toggle_Height[isFullScreen];
-  const ActiveIcon = toggleIcon[isFullScreen];
+  // const toggleIcon = {
+  //   true: Expand,
+  //   false: Collapse,
+  // };
+  // const toggle_Height = {
+  //   true: hp('50%'),
+  //   false: hp('25%'),
+  // };
+  // const activeVideoHeight = toggle_Height[isFullScreen];
+  // const ActiveIcon = toggleIcon[isFullScreen];
 
   return (
     <Modal animationType="slide" transparent={true} visible={true} onRequestClose={handleVisible} style={styles.modalContainer}>
@@ -34,19 +34,21 @@ const AndroidMediaViewModal = ({source, handleVisible, title, isVideo, coordinat
         </View>
         <View style={styles.container}>
           {isVideo ? (
-            <View style={styles.image}>
-              <TouchableOpacity style={styles.expandIconContainer} onPress={() => setIsFullScreen(!isFullScreen)}>
+            <View style={styles.videoContainer}>
+              {/* <TouchableOpacity style={styles.expandIconContainer} onPress={() => setIsFullScreen(!isFullScreen)}>
                 <ActiveIcon height={hp('5%')} width={wp('5%')} color={white} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <ActivityIndicator color={colors.royalBlue} size={'large'} animating={isLoading} style={styles.loader} />
-              <VideoPlayer
-                video={{uri: source}}
-                videoHeight={activeVideoHeight}
-                videoWidth={wp('90%')}
-                autoplay={true}
-                fullScreenOnLongPress={true}
-                onLoadStart={e => setIsLoading(true)}
-                onLoad={e => setIsLoading(false)}
+
+              <Video
+                source={{uri: source}}
+                autoplay
+                onLoadStart={() => setIsLoading(true)}
+                onLoad={() => setIsLoading(false)}
+                style={{width: '100%', height: '100%'}}
+                controls
+                resizeMode="contain"
+                controlsStyles={{hideForward: true, hideNext: true, hidePrevious: true, hideRewind: true, hidePlayPause: true}}
               />
             </View>
           ) : (
@@ -90,6 +92,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: 20,
   },
+  videoContainer: {
+    height: hp('40%'),
+    width: wp('80%'),
+    alignSelf: 'center',
+    borderRadius: 20,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   crossIconContainer: {
     position: 'absolute',
     top: 30,
@@ -111,6 +122,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  loader: {height: hp('25%'), position: 'absolute', alignSelf: 'center'},
+  loader: {position: 'absolute', alignSelf: 'center'},
 });
 export default AndroidMediaViewModal;

@@ -335,10 +335,12 @@ PODS:
     - React-Core
   - react-native-splash-screen (3.3.0):
     - React-Core
-  - react-native-video (5.2.1):
+  - react-native-video (6.15.0):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
-    - react-native-video/Video (= 5.2.1)
-  - react-native-video/Video (5.2.1):
+    - react-native-video/Video (= 6.15.0)
+  - react-native-video/Video (6.15.0):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - React-NativeModulesApple (0.72.5):
     - hermes-engine
@@ -713,7 +715,7 @@ SPEC CHECKSUMS:
   react-native-date-picker: b64721d6278b52708457292c218196b383b553b1
   react-native-safe-area-context: 7aa8e6d9d0f3100a820efb1a98af68aa747f9284
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
-  react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
+  react-native-video: 0759a5624cbc57db8b6f77c1b7aaea677d746a52
   React-NativeModulesApple: 797bc6078d566eef3fb3f74127e6e1d2e945a15f
   React-perflogger: cd8886513f68e1c135a1e79d20575c6489641597
   React-RCTActionSheet: 726d2615ca62a77ce3e2c13d87f65379cdc73498
@@ -749,6 +751,6 @@ SPEC CHECKSUMS:
   VisionCamera: 1910a51e4c6f6b049650086d343090f267b4c260
   Yoga: 86fed2e4d425ee4c6eab3813ba1791101ee153c6
 
-PODFILE CHECKSUM: 4ab3451ca308e0ca29480887f0ab59b0efe4ee72
+PODFILE CHECKSUM: 7e85e1f8a1851fef88c1a8097900c043b12a7b36
 
 COCOAPODS: 1.16.2

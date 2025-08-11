@@ -4,7 +4,7 @@ import CircularProgress from 'react-native-circular-progress-indicator';
 import FastImage from 'react-native-fast-image';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import Video from 'react-native-video';
-import VideoPlayer from 'react-native-video-player';
+import VideoPlayer from 'react-native-video';
 import {useSelector} from 'react-redux';
 
 import {Cross, Expand, Info} from '../Assets/Icons';
@@ -95,11 +95,10 @@ const CaptureImageModal = ({
                     <ACCORDION_COMPONENT height={height} width={width} color={white} />
                   </TouchableOpacity>
                   <VideoPlayer
-                    video={source}
-                    videoHeight={isFullScreen ? hp('50%') : hp('25%')}
-                    videoWidth={wp('90%')}
+                    source={source}
                     autoplay={true}
                     fullScreenOnLongPress={true}
+                    style={{height: isFullScreen ? hp('50%') : hp('25%'), width: wp('90%')}}
                   />
                 </View>
               ) : (
