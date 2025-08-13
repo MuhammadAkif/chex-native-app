@@ -8,14 +8,14 @@ import {useDispatch, useSelector} from 'react-redux';
 import {DiscardInspectionModal, Splash, Toast} from './src/Components';
 import AlertPopup from './src/Components/AlertPopup';
 import VehicleTypeModal from './src/Components/VehicleTypeModal';
-import {SESSION_EXPIRED, UPDATE_APP} from './src/Constants';
+import {SESSION_EXPIRED, UPDATE_APP, VEHICLE_TYPES} from './src/Constants';
 import {ROUTES} from './src/Navigation/ROUTES';
 import Navigation from './src/Navigation/index';
 import {store} from './src/Store';
 import {clearNewInspection, hideToast, setCompanyId, setSelectedVehicleKind, setVehicleTypeModalVisible, signOut} from './src/Store/Actions';
 import {hasCameraAndMicrophoneAllowed, onNewInspectionPressFail, onNewInspectionPressSuccess} from './src/Utils';
 import {createInspection} from './src/services/inspection';
-import {navigate, resetNavigation} from './src/services/navigationService';
+import {navigate, navigationRef, resetNavigation} from './src/services/navigationService';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
@@ -45,7 +45,6 @@ function App() {
   }, [displayGif]);
 
   async function initializeApp() {
-    debugger;
     await versionCheck();
     SplashScreen.hide();
     if (displayGif) {
@@ -59,7 +58,6 @@ function App() {
   }
 
   async function versionCheck() {
-    debugger;
     const version = await checkVersion();
     if (version.needsUpdate) {
       setUpdateAvailable(version.url);
@@ -81,19 +79,29 @@ function App() {
     const vehicleType = type.toLowerCase();
     dispatch(setSelectedVehicleKind(vehicleType));
 
-    // For van/sedan/other, call API and navigate after success
-    const state = store.getState();
-    const companyId = state?.auth?.user?.data?.companyId;
-    dispatch(setCompanyId(companyId));
-    setLoadingState({isLoading: true, vehicleType});
-    try {
-      const response = await createInspection(companyId, {vehicleType});
-      onNewInspectionPressSuccess(response, dispatch, navigate);
-    } catch (err) {
-      onNewInspectionPressFail(err, dispatch);
-    } finally {
+    if (vehicleType === VEHICLE_TYPES.TRUCK) {
       dispatch(setVehicleTypeModalVisible(false));
-      setLoadingState({isLoading: false, vehicleType: ''});
+      // Navigate immediately for truck, no API call
+      if (navigationRef.isReady()) {
+        navigate(ROUTES.DVIR_VEHICLE_INFO, {
+          routeName: ROUTES.INSPECTION_SELECTION,
+        });
+      }
+    } else {
+      // For van/sedan/other, call API and navigate after success
+      const state = store.getState();
+      const companyId = state?.auth?.user?.data?.companyId;
+      dispatch(setCompanyId(companyId));
+      setLoadingState({isLoading: true, vehicleType});
+      try {
+        const response = await createInspection(companyId, {vehicleType});
+        onNewInspectionPressSuccess(response, dispatch, navigate);
+      } catch (err) {
+        onNewInspectionPressFail(err, dispatch);
+      } finally {
+        dispatch(setVehicleTypeModalVisible(false));
+        setLoadingState({isLoading: false, vehicleType: ''});
+      }
     }
   };
 

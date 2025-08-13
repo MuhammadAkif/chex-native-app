@@ -1,3 +1,20 @@
+def find_and_replace_boost_url
+  pod_spec = "../node_modules/react-native/third-party-podspecs/boost.podspec"
+  puts "Debug: Starting boost URL replacement"
+  if File.exist?(pod_spec)
+    puts "Debug: Found boost.podspec"
+    spec_content = File.read(pod_spec)
+    spec_content.gsub!(
+      'https://boostorg.jfrog.io/artifactory/main/release/1.76.0/source/boost_1_76_0.tar.bz2',
+      'https://archives.boost.io/release/1.76.0/source/boost_1_76_0.tar.bz2'
+    )
+    File.write(pod_spec, spec_content)
+    puts "Debug: Updated boost.podspec"
+  end
+end
+# Let the magic happen!
+find_and_replace_boost_url
+
 # Resolve react_native_pods.rb with node to allow for hoisting
 require Pod::Executable.execute_command('node', ['-p',
   'require.resolve(
