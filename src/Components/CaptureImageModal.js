@@ -4,7 +4,7 @@ import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-nativ
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 import CircularProgress from 'react-native-circular-progress-indicator';
-import VideoPlayer from 'react-native-video-player';
+import VideoPlayer from 'react-native-video';
 import {useSelector} from 'react-redux';
 
 import {Cross, Expand, Info} from '../Assets/Icons';

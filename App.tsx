@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Linking} from 'react-native';
 import {checkVersion} from 'react-native-check-version';
 import 'react-native-devsettings';
-import SplashScreen from 'react-native-splash-screen';
+// import SplashScreen from 'react-native-splash-screen';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {DiscardInspectionModal, Splash, Toast} from './src/Components';
@@ -46,7 +46,7 @@ function App() {
 
   async function initializeApp() {
     await versionCheck();
-    SplashScreen.hide();
+    // SplashScreen.hide();
     if (displayGif) {
       const timeoutId = setTimeout(() => setDisplayGif(false), 3500);
       return () => clearTimeout(timeoutId);

@@ -1,17 +1,7 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Modal,
-  TouchableOpacity,
-  StatusBar,
-} from 'react-native';
-import VideoPlayer from 'react-native-video-player';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {View, Text, StyleSheet, Modal, TouchableOpacity, StatusBar} from 'react-native';
+import VideoPlayer from 'react-native-video';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {Cross, Expand, Collapse} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
@@ -19,14 +9,7 @@ import {Custom_Image, RenderIcons} from './index';
 
 const {white, cobaltBlueDark} = colors;
 
-const AndroidMediaViewModal = ({
-  source,
-  handleVisible,
-  isLoading,
-  title,
-  isVideo,
-  coordinates = [],
-}) => {
+const AndroidMediaViewModal = ({source, handleVisible, isLoading, title, isVideo, coordinates = []}) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const toggleIcon = {
     true: Expand,
@@ -40,17 +23,9 @@ const AndroidMediaViewModal = ({
   const ActiveIcon = toggleIcon[isFullScreen];
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={true}
-      onRequestClose={handleVisible}
-      style={styles.modalContainer}>
+    <Modal animationType="slide" transparent={true} visible={true} onRequestClose={handleVisible} style={styles.modalContainer}>
       <View style={styles.centeredView}>
-        <TouchableOpacity
-          style={styles.crossIconContainer}
-          onPress={handleVisible}
-          disabled={isLoading}>
+        <TouchableOpacity style={styles.crossIconContainer} onPress={handleVisible} disabled={isLoading}>
           <Cross height={hp('8%')} width={wp('10%')} color={white} />
         </TouchableOpacity>
         <View style={[styles.container, styles.headerContainer]}>
@@ -59,9 +34,7 @@ const AndroidMediaViewModal = ({
         <View style={styles.container}>
           {isVideo ? (
             <View style={styles.image}>
-              <TouchableOpacity
-                style={styles.expandIconContainer}
-                onPress={() => setIsFullScreen(!isFullScreen)}>
+              <TouchableOpacity style={styles.expandIconContainer} onPress={() => setIsFullScreen(!isFullScreen)}>
                 <ActiveIcon height={hp('5%')} width={wp('5%')} color={white} />
               </TouchableOpacity>
               <VideoPlayer
@@ -76,24 +49,13 @@ const AndroidMediaViewModal = ({
             <View style={styles.imageContainer}>
               <Custom_Image source={{uri: source}} imageStyle={styles.image} />
               {coordinates.length > 0 &&
-                coordinates.map((marker, index) => (
-                  <RenderIcons
-                    key={marker.id}
-                    marker={marker}
-                    index={index}
-                    disabled={true}
-                  />
-                ))}
+                coordinates.map((marker, index) => <RenderIcons key={marker.id} marker={marker} index={index} disabled={true} />)}
             </View>
           )}
         </View>
         <View style={styles.container} />
       </View>
-      <StatusBar
-        backgroundColor={cobaltBlueDark}
-        barStyle="light-content"
-        translucent={true}
-      />
+      <StatusBar backgroundColor={cobaltBlueDark} barStyle="light-content" translucent={true} />
     </Modal>
   );
 };

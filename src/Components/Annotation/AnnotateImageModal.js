@@ -1,21 +1,10 @@
 import React, {useState} from 'react';
-import {
-  Modal,
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  StatusBar,
-  Platform,
-} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {Modal, StyleSheet, View, Text, TouchableOpacity, StatusBar, Platform} from 'react-native';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 import CircularProgress from 'react-native-circular-progress-indicator';
-import VideoPlayer from 'react-native-video-player';
+import VideoPlayer from 'react-native-video';
 
 import {Cross, Exclamation, Expand, Info} from '../../Assets/Icons';
 import {colors} from '../../Assets/Styles';
@@ -25,14 +14,7 @@ import {ANNOTATE_IMAGE_DETAILS, Platforms} from '../../Constants';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
-const {
-  title: Title,
-  annotateText,
-  description,
-  skipText,
-  instruction,
-  source: imagePath,
-} = ANNOTATE_IMAGE_DETAILS;
+const {title: Title, annotateText, description, skipText, instruction, source: imagePath} = ANNOTATE_IMAGE_DETAILS;
 const {white, orangePeel, royalBlue, cobaltBlueDark} = colors;
 
 const AnnotateImageModal = ({
@@ -60,17 +42,9 @@ const AnnotateImageModal = ({
     false: hp('30%'),
   };
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={handleSkipPress}
-      style={styles.container}>
+    <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={handleSkipPress} style={styles.container}>
       <View style={styles.centeredView}>
-        <TouchableOpacity
-          style={styles.crossIconContainer}
-          onPress={handleSkipPress}
-          disabled={isLoading}>
+        <TouchableOpacity style={styles.crossIconContainer} onPress={handleSkipPress} disabled={isLoading}>
           <Cross height={hp('8%')} width={wp('10%')} color={white} />
         </TouchableOpacity>
         <View
@@ -81,14 +55,7 @@ const AnnotateImageModal = ({
               flexGrow: isExterior ? 2 : 1,
             },
           ]}>
-          <Text
-            style={[
-              styles.titleText,
-              styles.textColor,
-              {bottom: isFullScreen ? hp('3%') : null},
-            ]}>
-            {title}
-          </Text>
+          <Text style={[styles.titleText, styles.textColor, {bottom: isFullScreen ? hp('3%') : null}]}>{title}</Text>
           {isVideo ? (
             <>
               {OS === ANDROID ? (
@@ -101,11 +68,7 @@ const AnnotateImageModal = ({
                       zIndex: 1,
                     }}
                     onPress={() => setIsFullScreen(!isFullScreen)}>
-                    {isFullScreen ? (
-                      <Expand height={height} width={width} color={white} />
-                    ) : (
-                      <Collapse height={height} width={width} color={white} />
-                    )}
+                    {isFullScreen ? <Expand height={height} width={width} color={white} /> : <Collapse height={height} width={width} color={white} />}
                   </TouchableOpacity>
                   <VideoPlayer
                     video={source}
@@ -116,13 +79,7 @@ const AnnotateImageModal = ({
                   />
                 </View>
               ) : (
-                <Video
-                  source={source}
-                  controls={true}
-                  playInBackground={false}
-                  resizeMode={'contain'}
-                  style={styles.image}
-                />
+                <Video source={source} controls={true} playInBackground={false} resizeMode={'contain'} style={styles.image} />
               )}
             </>
           ) : (
@@ -133,23 +90,13 @@ const AnnotateImageModal = ({
                 resizeMode={'stretch'}
                 style={[styles.image, {height: imageHeight[isCarVerification]}]}
               />
-              <Exclamation
-                style={styles.damageIcon}
-                height={hp('3%')}
-                width={wp('6%')}
-              />
+              <Exclamation style={styles.damageIcon} height={hp('3%')} width={wp('6%')} />
             </View>
           )}
           <View style={styles.instructionsAndSubHeadingContainer}>
-            <View
-              style={[
-                styles.instructionsContainer,
-                {top: isFullScreen ? hp('25%') : null},
-              ]}>
+            <View style={[styles.instructionsContainer, {top: isFullScreen ? hp('25%') : null}]}>
               <Info height={hp('4%')} width={wp('7%')} color={white} />
-              <Text style={[styles.instructionsText, styles.textColor]}>
-                {instructionalText}
-              </Text>
+              <Text style={[styles.instructionsText, styles.textColor]}>{instructionalText}</Text>
             </View>
             {instructionalSubHeadingText && (
               <View style={styles.subHeadingContainer}>
@@ -188,30 +135,17 @@ const AnnotateImageModal = ({
               activeStrokeColor={orangePeel}
               titleStyle={{fontWeight: 'bold'}}
             />
-            <Text style={[styles.textColor, styles.loadingText]}>
-              {progress === 100 ? 'Finalizing Upload' : 'Uploading'}
-            </Text>
+            <Text style={[styles.textColor, styles.loadingText]}>{progress === 100 ? 'Finalizing Upload' : 'Uploading'}</Text>
           </View>
         ) : (
           <View style={styles.footerContainer}>
-            <PrimaryGradientButton
-              text={annotateButtonText}
-              onPress={handleAnnotatePress}
-            />
-            <PrimaryGradientButton
-              text={skipButtonText}
-              colors={[royalBlue, royalBlue]}
-              onPress={handleSkipPress}
-            />
+            <PrimaryGradientButton text={annotateButtonText} onPress={handleAnnotatePress} />
+            <PrimaryGradientButton text={skipButtonText} colors={[royalBlue, royalBlue]} onPress={handleSkipPress} />
           </View>
         )}
         <View style={styles.footerView} />
       </View>
-      <StatusBar
-        backgroundColor="rgba(0, 27, 81, 0.9)"
-        barStyle="light-content"
-        translucent={true}
-      />
+      <StatusBar backgroundColor="rgba(0, 27, 81, 0.9)" barStyle="light-content" translucent={true} />
     </Modal>
   );
 };
