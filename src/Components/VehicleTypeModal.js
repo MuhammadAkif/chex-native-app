@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo} from 'react';
-import {Modal, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, Modal} from 'react-native';
 import {modalStyle} from '../Assets/Styles';
 import {VEHICLE_TYPES, VEHICLE_TYPE_DISPLAY_NAMES} from '../Constants';
 import VehicleTypeButton from './VehicleTypeButton';
@@ -53,27 +53,29 @@ const VehicleTypeModal = ({visible, onSelect, loadingState}) => {
   );
 
   return (
-    <Modal animationType="slide" transparent={true} visible={visible} style={modalOuterContainer}>
-      <View style={container}>
-        <View style={modalContainer}>
-          <Text style={header}>Select Vehicle Type</Text>
-          <Text style={body}>Please choose the type of vehicle for this inspection.</Text>
-          <View style={styles.buttonContainer}>
-            {buttonData.map(({type, displayName}) => (
-              <VehicleTypeButton
-                key={type}
-                text={displayName}
-                buttonStyle={[button, buttonSpacing, styles.buttonStyle]}
-                textStyle={yesText}
-                onPress={() => handleButtonPress(displayName)}
-                isLoading={getButtonLoadingState(type)}
-                isDisabled={isAnyButtonLoading}
-              />
-            ))}
+    <View>
+      <Modal animationType="slide" transparent={true} visible={visible}>
+        <View style={container}>
+          <View style={modalContainer}>
+            <Text style={header}>Select Vehicle Type</Text>
+            <Text style={body}>Please choose the type of vehicle for this inspection.</Text>
+            <View style={styles.buttonContainer}>
+              {buttonData.map(({type, displayName}) => (
+                <VehicleTypeButton
+                  key={type}
+                  text={displayName}
+                  buttonStyle={[button, buttonSpacing, styles.buttonStyle]}
+                  textStyle={yesText}
+                  onPress={() => handleButtonPress(displayName)}
+                  isLoading={getButtonLoadingState(type)}
+                  isDisabled={isAnyButtonLoading}
+                />
+              ))}
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+    </View>
   );
 };
 
