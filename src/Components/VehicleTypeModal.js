@@ -53,29 +53,27 @@ const VehicleTypeModal = ({visible, onSelect, loadingState}) => {
   );
 
   return (
-    <View>
-      <Modal animationType="slide" transparent={true} visible={visible}>
-        <View style={container}>
-          <View style={modalContainer}>
-            <Text style={header}>Select Vehicle Type</Text>
-            <Text style={body}>Please choose the type of vehicle for this inspection.</Text>
-            <View style={styles.buttonContainer}>
-              {buttonData.map(({type, displayName}) => (
-                <VehicleTypeButton
-                  key={type}
-                  text={displayName}
-                  buttonStyle={[button, buttonSpacing, styles.buttonStyle]}
-                  textStyle={yesText}
-                  onPress={() => handleButtonPress(displayName)}
-                  isLoading={getButtonLoadingState(type)}
-                  isDisabled={isAnyButtonLoading}
-                />
-              ))}
-            </View>
+    <Modal animationType="slide" statusBarTranslucent={true} transparent={true} visible={visible}>
+      <View style={container}>
+        <View style={modalContainer}>
+          <Text style={header}>Select Vehicle Type</Text>
+          <Text style={body}>Please choose the type of vehicle for this inspection.</Text>
+          <View style={styles.buttonContainer}>
+            {buttonData.map(({type, displayName}) => (
+              <VehicleTypeButton
+                key={type}
+                text={displayName}
+                buttonStyle={[button, buttonSpacing, styles.buttonStyle]}
+                textStyle={yesText}
+                onPress={() => handleButtonPress(displayName)}
+                isLoading={getButtonLoadingState(type)}
+                isDisabled={isAnyButtonLoading}
+              />
+            ))}
           </View>
         </View>
-      </Modal>
-    </View>
+      </View>
+    </Modal>
   );
 };
 

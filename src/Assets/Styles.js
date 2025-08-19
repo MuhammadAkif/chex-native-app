@@ -1,8 +1,5 @@
 import {Dimensions, Platform, StatusBar, StyleSheet} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {Platforms} from '../Constants';
 

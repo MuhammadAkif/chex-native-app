@@ -8,18 +8,7 @@ import {fallBack} from '../Utils';
 
 const {TITLE, MESSAGE, BUTTON} = SESSION_EXPIRED;
 
-const {
-  modalOuterContainer,
-  container,
-  modalContainer,
-  header,
-  body,
-  footer,
-  button: buttonStyle,
-  yesText,
-  noTextStyle,
-  noButton,
-} = modalStyle;
+const {modalOuterContainer, container, modalContainer, header, body, footer, button: buttonStyle, yesText, noTextStyle, noButton} = modalStyle;
 
 const AlertPopup = ({
   visible = false,
@@ -32,22 +21,13 @@ const AlertPopup = ({
   cancelButtonTextStyle = {},
   onCancelPress = fallBack,
 }) => (
-  <Modal
-    animationType="slide"
-    transparent={true}
-    visible={visible}
-    style={modalOuterContainer}>
+  <Modal animationType="slide" transparent={true} visible={visible} statusBarTranslucent style={modalOuterContainer}>
     <View style={{...container, ...StyleSheet.absoluteFillObject}}>
       <View style={modalContainer}>
         <Text style={header}>{title}</Text>
         <Text style={body}>{message}</Text>
         <View style={footer}>
-          <PrimaryGradientButton
-            text={yesButtonText}
-            buttonStyle={buttonStyle}
-            textStyle={yesText}
-            onPress={onYesPress}
-          />
+          <PrimaryGradientButton text={yesButtonText} buttonStyle={buttonStyle} textStyle={yesText} onPress={onYesPress} />
           {cancelButtonText && (
             <SecondaryButton
               text={cancelButtonText}

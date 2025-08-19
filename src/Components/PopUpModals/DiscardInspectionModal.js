@@ -4,18 +4,7 @@ import {View, Text, Modal} from 'react-native';
 import {PrimaryGradientButton, SecondaryButton} from '../index';
 import {modalStyle} from '../../Assets/Styles';
 
-const {
-  modalOuterContainer,
-  container,
-  modalContainer,
-  header,
-  body,
-  footer,
-  button,
-  yesText,
-  noButton,
-  noTextStyle,
-} = modalStyle;
+const {modalOuterContainer, container, modalContainer, header, body, footer, button, yesText, noButton, noTextStyle} = modalStyle;
 
 const DiscardInspectionModal = ({
   description,
@@ -27,23 +16,13 @@ const DiscardInspectionModal = ({
   dualButton = true,
   yesButtonText = 'Yes',
 }) => (
-  <Modal
-    animationType="slide"
-    transparent={true}
-    visible={true}
-    onRequestClose={onNoPress}
-    style={modalOuterContainer}>
+  <Modal animationType="slide" transparent={true} visible={true} onRequestClose={onNoPress} statusBarTranslucent style={modalOuterContainer}>
     <View style={container}>
       <View style={modalContainer}>
         {title && <Text style={header}>{title}</Text>}
         <Text style={body}>{description}</Text>
         <View style={footer}>
-          <PrimaryGradientButton
-            text={yesButtonText}
-            buttonStyle={button}
-            textStyle={yesText}
-            onPress={onYesPress}
-          />
+          <PrimaryGradientButton text={yesButtonText} buttonStyle={button} textStyle={yesText} onPress={onYesPress} />
           {dualButton && (
             <SecondaryButton
               text={'No'}

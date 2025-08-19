@@ -1,11 +1,12 @@
 import React from 'react';
-import {ActivityIndicator, ScrollView, StyleSheet, View} from 'react-native';
+import {ActivityIndicator, KeyboardAvoidingView, ScrollView, StyleSheet, View} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {CameraBorderedIcon} from '../../Assets/Icons';
 import CalendarIcon from '../../Assets/Icons/CalendarIcon';
 import {colors, errorStyle, NewInspectionStyles} from '../../Assets/Styles';
 import {CustomInput, PrimaryGradientButton} from '../../Components';
 import AppText from '../../Components/text';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 
 const {container, bodyContainer} = NewInspectionStyles;
 
@@ -24,7 +25,11 @@ const DVIRVehicleInfoScreen = ({
 }) => (
   <View style={container}>
     <View style={bodyContainer}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent} style={styles.scrollStyle}>
+      <KeyboardAwareScrollView
+        bottomOffset={20}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+        style={styles.scrollStyle}>
         <View style={styles.innerBody}>
           {/* Driver Name */}
           <AppText style={styles.inputLabel}>Driver Name</AppText>
@@ -125,7 +130,7 @@ const DVIRVehicleInfoScreen = ({
           text={'Next'}
           buttonStyle={styles.buttonContainer}
         />
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </View>
   </View>
 );

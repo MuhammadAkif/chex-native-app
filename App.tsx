@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Linking} from 'react-native';
+import {Linking, View} from 'react-native';
 import {checkVersion} from 'react-native-check-version';
 import 'react-native-devsettings';
 import BootSplash from 'react-native-bootsplash';
 import {useDispatch, useSelector} from 'react-redux';
-
 import {DiscardInspectionModal, Splash, Toast} from './src/Components';
 import AlertPopup from './src/Components/AlertPopup';
 import VehicleTypeModal from './src/Components/VehicleTypeModal';
@@ -16,6 +15,7 @@ import {clearNewInspection, hideToast, setCompanyId, setSelectedVehicleKind, set
 import {hasCameraAndMicrophoneAllowed, onNewInspectionPressFail, onNewInspectionPressSuccess} from './src/Utils';
 import {createInspection} from './src/services/inspection';
 import {navigate, navigationRef, resetNavigation} from './src/services/navigationService';
+import Test from './test';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
@@ -46,7 +46,7 @@ function App() {
 
   async function initializeApp() {
     await versionCheck();
-    BootSplash.hide({fade: true}).then();
+    await BootSplash.hide({fade: true});
 
     if (displayGif) {
       const timeoutId = setTimeout(() => setDisplayGif(false), 3500);
@@ -111,21 +111,25 @@ function App() {
   ) : (
     <>
       <Navigation />
+      {/* <Test /> */}
       <Toast />
-      {updateAvailable && (
-        <DiscardInspectionModal
-          onYesPress={handleUpdatePress}
-          title={TITLE}
-          description={MESSAGE}
-          yesButtonText={BUTTON}
-          dualButton={false}
-          onNoPress={undefined}
-          noButtonText={undefined}
-          noButtonStyle={undefined}
-        />
-      )}
-      <AlertPopup visible={sessionExpired} onYesPress={onSessionExpirePress} title={title} message={message} yesButtonText={button} />
-      <VehicleTypeModal visible={vehicleTypeModalVisible} onSelect={handleVehicleTypeSelect} loadingState={loadingState} />
+      <View>
+        {updateAvailable && (
+          <DiscardInspectionModal
+            onYesPress={handleUpdatePress}
+            title={TITLE}
+            description={MESSAGE}
+            yesButtonText={BUTTON}
+            dualButton={false}
+            onNoPress={undefined}
+            noButtonText={undefined}
+            noButtonStyle={undefined}
+          />
+        )}
+
+        <AlertPopup visible={sessionExpired} onYesPress={onSessionExpirePress} title={title} message={message} yesButtonText={button} />
+        <VehicleTypeModal visible={vehicleTypeModalVisible} onSelect={handleVehicleTypeSelect} loadingState={loadingState} />
+      </View>
     </>
   );
 }

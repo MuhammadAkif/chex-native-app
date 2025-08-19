@@ -2,10 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Alert, BackHandler, Keyboard, Platform, StyleSheet} from 'react-native';
 import {Formik} from 'formik';
 import {useDispatch} from 'react-redux';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {SignInScreen} from '../../Screens';
 import {signInValidationSchema} from '../../Utils';
@@ -14,6 +11,7 @@ import {colors} from '../../Assets/Styles';
 import {HARDWARE_BACK_PRESS, Platforms} from '../../Constants';
 import {showToast, signIn} from '../../Store/Actions';
 import {CommonActions} from '@react-navigation/native';
+import {useKeyboard} from '../../hooks/useKeyboard';
 
 const {OS} = Platform;
 const {ANDROID} = Platforms;
@@ -25,7 +23,7 @@ const SignInContainer = ({navigation, route}) => {
   const dispatch = useDispatch();
   const emailRef = useRef();
   const passwordRef = useRef();
-  const [isKeyboardActive, setKeyboardActive] = useState(false);
+  const {keyboardShown} = useKeyboard();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
   const initialValues = {
@@ -34,10 +32,7 @@ const SignInContainer = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      HARDWARE_BACK_PRESS,
-      handle_Hardware_Back_Press,
-    );
+    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
     return () => backHandler.remove();
   }, []);
   useEffect(() => {
@@ -45,30 +40,7 @@ const SignInContainer = ({navigation, route}) => {
       dispatch(showToast(route?.params?.toastMessage, 'success'));
     }
   }, [route.params]);
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      handleKeyboardDidShow,
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      handleKeyboardDidHide,
-    );
 
-    // Remove event listeners when the component unmounts
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-      setHidePassword(true);
-    };
-  }, []);
-
-  function handleKeyboardDidShow() {
-    setKeyboardActive(true);
-  }
-  function handleKeyboardDidHide() {
-    setKeyboardActive(false);
-  }
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
       goBack();
@@ -112,6 +84,8 @@ const SignInContainer = ({navigation, route}) => {
   }
   function onSubmit(values, resetForm) {
     setIsSubmitting(true);
+    Keyboard.dismiss();
+
     let body = {
       username: values.name.trim(),
       password: values.password.trim(),
@@ -119,10 +93,7 @@ const SignInContainer = ({navigation, route}) => {
     checkUserData(body, resetForm).then();
   }
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={signInValidationSchema}
-      onSubmit={(values, {resetForm}) => onSubmit(values, resetForm)}>
+    <Formik initialValues={initialValues} validationSchema={signInValidationSchema} onSubmit={(values, {resetForm}) => onSubmit(values, resetForm)}>
       {({values, errors, touched, handleChange, handleBlur, handleSubmit}) => (
         <SignInScreen
           values={values}
@@ -134,12 +105,8 @@ const SignInContainer = ({navigation, route}) => {
           handleBlur={handleBlur}
           errors={errors}
           touched={touched}
-          styles={
-            OS === ANDROID && isKeyboardActive
-              ? androidKeyboardOpenStyle
-              : styles
-          }
-          isKeyboardActive={isKeyboardActive}
+          styles={OS === ANDROID && keyboardShown ? androidKeyboardOpenStyle : styles}
+          isKeyboardActive={keyboardShown}
           isSubmitting={isSubmitting}
           hidePasswordHandler={hidePasswordHandler}
           hidePassword={hidePassword}
