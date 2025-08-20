@@ -70,7 +70,14 @@ const CaptureImageModal = ({
  const ActiveFooter = footers[isLoading];*/
 
   return (
-    <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={handleVisible} style={styles.container}>
+    <Modal
+      animationType="slide"
+      navigationBarTranslucent={true}
+      statusBarTranslucent
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={handleVisible}
+      style={styles.container}>
       <View style={styles.centeredView}>
         <TouchableOpacity style={styles.crossIconContainer} onPress={handleVisible} disabled={isLoading}>
           <Cross height={hp('8%')} width={wp('10%')} color={white} />

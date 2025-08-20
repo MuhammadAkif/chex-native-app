@@ -1,6 +1,6 @@
 import {Alert} from 'react-native';
 import {Camera} from 'react-native-vision-camera';
-import RNFetchBlob from 'rn-fetch-blob';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 import * as yup from 'yup';
 
 import {IMAGES} from '../Assets/Images';
@@ -307,12 +307,18 @@ async function onGetSignedUrlSuccess(res, path, mime, setProgress, handleRespons
 function onGetSignedUrlFail(error, handleError, dispatch) {}
 export const uploadToS3 = async (preSignedUrl, key, path, mime, setProgress, handleResponse, handleError, _, category) => {
   try {
-    await RNFetchBlob.fetch('PUT', preSignedUrl, {'Content-Type': mime, Connection: 'close'}, RNFetchBlob.wrap(path)).uploadProgress(
-      (written, total) => {
-        const percentCompleted = Math.round((written * 100) / total);
-        setProgress(percentCompleted);
+    await ReactNativeBlobUtil.fetch(
+      'PUT',
+      preSignedUrl,
+      {
+        'Content-Type': mime,
+        Connection: 'close',
       },
-    );
+      ReactNativeBlobUtil.wrap(path),
+    ).uploadProgress({interval: 250}, (written, total) => {
+      const percentCompleted = Math.round((written * 100) / total);
+      setProgress(percentCompleted);
+    });
     await onUploadToS3Success(handleResponse, key, handleError, category, mime);
   } catch (error) {
     throw error;

@@ -12,28 +12,13 @@ import {
   Platform,
   KeyboardAvoidingView,
 } from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import {useDispatch} from 'react-redux';
 
 import {colors} from '../../Assets/Styles';
-import {
-  PrimaryGradientButton,
-  RenderDamageTypes,
-  RenderIcons,
-  SecondaryButton,
-  Toast,
-  Mandatory,
-} from '../index';
-import {
-  ANNOTATE_IMAGE,
-  AnnotationAlertMessage,
-  DAMAGE_TYPE,
-  Platforms,
-} from '../../Constants';
+import {PrimaryGradientButton, RenderDamageTypes, RenderIcons, SecondaryButton, Toast, Mandatory} from '../index';
+import {ANNOTATE_IMAGE, AnnotationAlertMessage, DAMAGE_TYPE, Platforms} from '../../Constants';
 import {generateRandomString, isNotEmpty, mergeData} from '../../Utils';
 import {showToast} from '../../Store/Actions';
 import {resizeInnerBox} from '../../Utils/helpers';
@@ -111,14 +96,7 @@ const AnnotateImage = ({
   const onImagePress = event => {
     const {locationX, locationY} = event.nativeEvent;
     const {height, width} = imageDimensions;
-    const {x, y} = resizeInnerBox(
-      height,
-      width,
-      wp('80%'),
-      hp('25%'),
-      locationX,
-      locationY,
-    );
+    const {x, y} = resizeInnerBox(height, width, wp('80%'), hp('25%'), locationX, locationY);
     const coordinates = {
       x,
       y,
@@ -164,16 +142,8 @@ const AnnotateImage = ({
   const closeKeyboard = () => Keyboard.dismiss();
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={handleVisible}
-      style={styles.container}>
-      <TouchableOpacity
-        activeOpacity={1}
-        style={styles.centeredViewContainer}
-        onPress={closeKeyboard}>
+    <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={handleVisible} style={styles.container}>
+      <TouchableOpacity activeOpacity={1} style={styles.centeredViewContainer} onPress={closeKeyboard}>
         <KeyboardAvoidingView behavior={'padding'}>
           <View style={styles.centeredView}>
             <View
@@ -184,33 +154,19 @@ const AnnotateImage = ({
                   flexGrow: isExterior ? 2 : 1,
                 },
               ]}>
-              <Text
-                style={[
-                  styles.titleText,
-                  {bottom: isFullScreen ? hp('3%') : null},
-                ]}>
+              <Text style={[styles.titleText, {bottom: isFullScreen ? hp('3%') : null}]}>
                 {title}
                 <Mandatory style={styles.titleText} />
               </Text>
-              <TouchableOpacity
-                onPress={onImagePress}
-                activeOpacity={1}
-                disabled={isLoading}>
-                <FastImage
-                  source={{uri: source}}
-                  priority={'normal'}
-                  resizeMode={'stretch'}
-                  style={[styles.image, {height: hp('25%')}]}
-                />
+              <TouchableOpacity onPress={onImagePress} activeOpacity={1} disabled={isLoading}>
+                <FastImage source={{uri: source}} priority={'high'} resizeMode={'stretch'} style={[styles.image, {height: hp('25%')}]} />
                 {damageDetails?.length > 0 &&
                   damageDetails.map((marker, index) => {
                     return (
                       <RenderIcons
                         key={marker.id}
                         marker={marker}
-                        handleExclamationMarkPress={() =>
-                          handleExclamationMarkPress(index)
-                        }
+                        handleExclamationMarkPress={() => handleExclamationMarkPress(index)}
                         selectedMarkerId={selectedMarkerId}
                         onCrossPressed={() => removeMarker(marker.id)}
                       />
@@ -227,11 +183,7 @@ const AnnotateImage = ({
                 <FlatList
                   data={DAMAGE_TYPE}
                   renderItem={({item}) => (
-                    <RenderDamageTypes
-                      item={item}
-                      selectedDamage={damageType}
-                      handleDamageDetails={(key, value) => setDamageType(value)}
-                    />
+                    <RenderDamageTypes item={item} selectedDamage={damageType} handleDamageDetails={(key, value) => setDamageType(value)} />
                   )}
                   keyExtractor={item => item}
                   horizontal={true}
@@ -271,11 +223,7 @@ const AnnotateImage = ({
           </View>
         </KeyboardAvoidingView>
       </TouchableOpacity>
-      <StatusBar
-        backgroundColor={cobaltBlueMedium}
-        barStyle="light-content"
-        translucent={true}
-      />
+      <StatusBar backgroundColor={cobaltBlueMedium} barStyle="light-content" translucent={true} />
       <Toast isModal={true} />
     </Modal>
   );

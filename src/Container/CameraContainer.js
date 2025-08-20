@@ -69,7 +69,7 @@ const CameraContainer = ({route, navigation}) => {
   const [progress, setProgress] = useState(0);
   const [isUploadFailed, setIsUploadFailed] = useState(isUploadFailedInitialState);
   const {type, modalDetails, inspectionId} = route.params;
-  const format = useCameraFormat(device, [{videoResolution: {width: 1280, height: 720}}, {fps: 30}]);
+  const format = useCameraFormat(device, [{videoResolution: {width: 1280, height: 720}, photoResolution: {width: 1280, height: 720}}, {fps: 60}]);
   const [isLoading, setIsLoading] = useState(false);
   const [orientation, setOrientation] = useState(defaultOrientation);
   const {category, subCategory, instructionalText, source, title, isVideo, groupType, afterFileUploadNavigationParams} = modalDetails;
@@ -254,7 +254,7 @@ const CameraContainer = ({route, navigation}) => {
       is_Exterior: haveType,
     };
 
-    navigate(NEW_INSPECTION, params);
+    navigation.replace(NEW_INSPECTION, params);
   }
 
   const handleExtractNumberPlate = async imageUrl => {
