@@ -39,30 +39,36 @@ const SignInScreen = ({
           <Text style={styles.registerTitleText}>Sign in</Text>
         </View>
         <View style={styles.bodyContainer}>
-          <CustomInput
-            ref={emailRef}
-            value={values?.name}
-            onChangeText={handleChange}
-            onBlur={handleBlur}
-            valueName={'name'}
-            placeholder={'John Doe'}
-            onSubmitEditing={handlePasswordFocus}
-          />
-          <InputFieldRequiredError touched={touched.name} error={errors.name} />
-          <CustomPasswordInput
-            ref={passwordRef}
-            value={values?.password}
-            onChangeText={handleChange}
-            onBlur={handleBlur}
-            valueName={'password'}
-            placeholder={'********'}
-            onSubmitEditing={handleSubmit}
-            secureTextEntry={hidePassword}
-            enterKeyHint={'done'}
-            hidePasswordHandler={hidePasswordHandler}
-            isPasswordHidden={hidePassword}
-          />
-          <InputFieldRequiredError touched={touched.password} error={errors.password} />
+          <View style={styles.inputAndErrorTextContainer}>
+            <CustomInput
+              ref={emailRef}
+              value={values?.name}
+              onChangeText={handleChange}
+              onBlur={handleBlur}
+              valueName={'name'}
+              placeholder={'John Doe'}
+              onSubmitEditing={handlePasswordFocus}
+            />
+            <InputFieldRequiredError touched={touched.name} error={errors.name} />
+          </View>
+
+          <View style={styles.inputAndErrorTextContainer}>
+            <CustomPasswordInput
+              ref={passwordRef}
+              value={values?.password}
+              onChangeText={handleChange}
+              onBlur={handleBlur}
+              valueName={'password'}
+              placeholder={'********'}
+              onSubmitEditing={handleSubmit}
+              secureTextEntry={hidePassword}
+              enterKeyHint={'done'}
+              hidePasswordHandler={hidePasswordHandler}
+              isPasswordHidden={hidePassword}
+            />
+            <InputFieldRequiredError touched={touched.password} error={errors.password} />
+          </View>
+
           <TouchableOpacity onPress={handleForgetPassword} style={styles.forgetPasswordContainer}>
             <Text style={styles.forgotPasswordText}>Forgot Password</Text>
           </TouchableOpacity>

@@ -67,18 +67,18 @@ const AppDrawer = () => (
     <Drawer.Screen name={ROUTES.COMPLETED_INSPECTION} component={CompletedInspectionContainer} />
     <Stack.Screen
       options={{
-        headerShown: false, // hides drawer header
-        swipeEnabled: false, // disables swipe gesture for drawer
-        drawerItemStyle: {display: 'none'}, // hide from drawer menu
+        headerShown: false,
+        swipeEnabled: false,
+        drawerItemStyle: {display: 'none'},
       }}
       name={ROUTES.CAMERA}
       component={CameraContainer}
     />
     <Stack.Screen
       options={{
-        headerShown: false, // hides drawer header
-        swipeEnabled: false, // disables swipe gesture for drawer
-        drawerItemStyle: {display: 'none'}, // hide from drawer menu
+        headerShown: false,
+        swipeEnabled: false,
+        drawerItemStyle: {display: 'none'},
       }}
       name={ROUTES.VIDEO}
       component={VideoContainer}

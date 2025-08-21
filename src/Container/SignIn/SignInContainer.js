@@ -105,7 +105,7 @@ const SignInContainer = ({navigation, route}) => {
           handleBlur={handleBlur}
           errors={errors}
           touched={touched}
-          styles={OS === ANDROID && keyboardShown ? androidKeyboardOpenStyle : styles}
+          styles={styles}
           isKeyboardActive={keyboardShown}
           isSubmitting={isSubmitting}
           hidePasswordHandler={hidePasswordHandler}
@@ -138,7 +138,9 @@ const styles = StyleSheet.create({
     flex: 0.9,
     alignItems: 'center',
     justifyContent: 'space-evenly',
+    gap: 5,
   },
+  inputAndErrorTextContainer: {gap: 5, alignItems: 'center'},
   footerContainer: {
     flex: 1,
     alignItems: 'center',
@@ -178,75 +180,7 @@ const styles = StyleSheet.create({
     width: wp('90%'),
     flexDirection: 'row',
     justifyContent: 'flex-end',
-  },
-  forgotPasswordText: {
-    color: white,
-    textDecorationLine: 'underline',
-  },
-});
-
-const androidKeyboardOpenStyle = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: cobaltBlueLight,
-  },
-  headerContainer: {
-    flex: 0.1,
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  logoContainer: {
-    justifyContent: 'flex-end',
-  },
-  registerTitleText: {
-    fontSize: hp('3%'),
-    fontWeight: 'bold',
-    color: white,
-  },
-  bodyContainer: {
-    flex: 1.5,
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-  },
-  footerContainer: {
-    flex: 0.5,
-    alignItems: 'center',
-  },
-  termsText: {
-    textDecorationLine: 'underline',
-    fontWeight: 'bold',
-  },
-  registerButtonText: {
-    borderRadius: 30,
-  },
-  footerEmptyView: {
-    flex: 0.5,
-  },
-  termsOfUseContainer: {
-    flexDirection: 'row',
-    width: wp('80%'),
-    alignItems: 'center',
-  },
-  checkBox: {
-    height: hp('3%'),
-    width: wp('6.5%'),
-    alignItems: 'center',
-    borderRadius: 5,
-    backgroundColor: white,
-    marginRight: 5,
-  },
-  termsOfUseText: {
-    fontSize: hp('1.8%'),
-    color: white,
-  },
-  text: {
-    fontSize: hp('1.8%'),
-    color: white,
-  },
-  forgetPasswordContainer: {
-    width: wp('90%'),
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    marginVertical: 10,
   },
   forgotPasswordText: {
     color: white,

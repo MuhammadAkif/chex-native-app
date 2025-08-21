@@ -110,7 +110,6 @@ function App() {
   ) : (
     <>
       <Navigation />
-      {/* <Test /> */}
       <Toast />
       <View>
         {updateAvailable && (

@@ -1,12 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {BackHandler, Keyboard, Platform, StyleSheet} from 'react-native';
 import {Formik} from 'formik';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {useDispatch} from 'react-redux';
-
 import {resetPasswordSchema} from '../../Utils';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {colors} from '../../Assets/Styles';
@@ -38,21 +34,12 @@ const ResetPasswordContainer = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      HARDWARE_BACK_PRESS,
-      handle_Hardware_Back_Press,
-    );
+    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
     return () => backHandler.remove();
   }, []);
   useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      handleKeyboardDidShow,
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      handleKeyboardDidHide,
-    );
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', handleKeyboardDidShow);
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', handleKeyboardDidHide);
 
     // Remove event listeners when the component unmounts
     return () => {
@@ -84,8 +71,7 @@ const ResetPasswordContainer = ({navigation, route}) => {
   const handleConfirmPasswordFocus = () => confirmPasswordRef?.current?.focus();
   // Focus handling ends here
   const hidePasswordHandler = () => setHidePassword(!hidePassword);
-  const hideConfirmPasswordHandler = () =>
-    setHideConfirmPassword(!hideConfirmPassword);
+  const hideConfirmPasswordHandler = () => setHideConfirmPassword(!hideConfirmPassword);
   const handleForgetPassword = () => navigate(FORGET_PASSWORD);
   const handleResetPassword = async (body, resetForm) => {
     let {verificationCode, password, confirmPassword} = body;
@@ -110,14 +96,12 @@ const ResetPasswordContainer = ({navigation, route}) => {
   const handleKnowYourPassword = () => navigate(SIGN_IN);
   const handleNavigationBackPress = () => goBack();
   function onSubmit(values, resetForm) {
+    Keyboard.dismiss();
     setIsSubmitting(true);
     handleResetPassword(values, resetForm).then();
   }
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={resetPasswordSchema}
-      onSubmit={(values, {resetForm}) => onSubmit(values, resetForm)}>
+    <Formik initialValues={initialValues} validationSchema={resetPasswordSchema} onSubmit={(values, {resetForm}) => onSubmit(values, resetForm)}>
       {({values, errors, touched, handleChange, handleBlur, handleSubmit}) => (
         <ResetPasswordScreen
           values={values}
@@ -131,11 +115,7 @@ const ResetPasswordContainer = ({navigation, route}) => {
           handleBlur={handleBlur}
           errors={errors}
           touched={touched}
-          styles={
-            OS === ANDROID && isKeyboardActive
-              ? androidKeyboardOpenStyle
-              : styles
-          }
+          styles={styles}
           isKeyboardActive={isKeyboardActive}
           isSubmitting={isSubmitting}
           hidePasswordHandler={hidePasswordHandler}
@@ -172,6 +152,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-evenly',
+    gap: 10,
+    marginVertical: 10,
   },
   footerContainer: {
     flex: 1,
@@ -212,76 +194,13 @@ const styles = StyleSheet.create({
     width: wp('90%'),
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    gap: 5,
   },
+  inputAndErrorTextContainer: {gap: 5, alignItems: 'center'},
   forgotPasswordText: {
     color: white,
     textDecorationLine: 'underline',
   },
 });
 
-const androidKeyboardOpenStyle = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: cobaltBlueLight,
-  },
-  headerContainer: {
-    flex: 0.3,
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  logoContainer: {
-    justifyContent: 'flex-end',
-  },
-  registerTitleText: {
-    paddingHorizontal: wp('2%'),
-    fontSize: hp('2.2%'),
-    color: gray,
-  },
-  bodyContainer: {
-    flex: 1.5,
-    // flex: 0.9,
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-  },
-  footerContainer: {
-    flex: 0.5,
-    alignItems: 'center',
-  },
-  termsText: {
-    textDecorationLine: 'underline',
-    fontWeight: 'bold',
-  },
-  registerButtonText: {
-    borderRadius: 30,
-  },
-  footerEmptyView: {
-    flex: 0.5,
-  },
-  termsOfUseContainer: {
-    flexDirection: 'row',
-    width: wp('80%'),
-    alignItems: 'center',
-  },
-  checkBox: {
-    height: hp('3%'),
-    width: wp('6.5%'),
-    alignItems: 'center',
-    borderRadius: 5,
-    backgroundColor: white,
-    marginRight: 5,
-  },
-  termsOfUseText: {
-    fontSize: hp('1.8%'),
-    color: white,
-  },
-  text: {
-    fontSize: hp('1.8%'),
-    color: white,
-  },
-  forgetPasswordContainer: {
-    width: wp('90%'),
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-});
 export default ResetPasswordContainer;

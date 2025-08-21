@@ -5,8 +5,8 @@ import {errorStyle} from '../Assets/Styles';
 
 const {errorsTextStyle} = errorStyle;
 
-const InputFieldRequiredError = ({touched, error}) => (
-  <>{touched && error && <Text style={errorsTextStyle}>{error}</Text>}</>
-);
+const InputFieldRequiredError = ({touched, error}) => {
+  return touched && error ? <Text style={errorsTextStyle}>{error}</Text> : null;
+};
 
 export default InputFieldRequiredError;
