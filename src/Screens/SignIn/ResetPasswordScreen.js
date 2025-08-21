@@ -38,7 +38,7 @@ const ResetPasswordScreen = ({
   handleNavigationBackPress,
 }) => (
   <BackgroundImageView>
-    <View style={[headerContainer, styles.container, {paddingTop: StatusBar.currentHeight + 15, flex: undefined}]}>
+    <View style={[headerContainer, styles.container, {paddingTop: OS == 'ios' ? 35 : StatusBar.currentHeight + 15, flex: undefined}]}>
       <BackArrow height={hp('8%')} width={wp('8%')} color={white} onPress={handleNavigationBackPress} />
     </View>
 

@@ -1,16 +1,9 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import LinearGradient from 'react-native-linear-gradient';
 
-import {
-  BackgroundImageView,
-  PrimaryGradientButton,
-  SignInLogo,
-} from '../Components';
+import {BackgroundImageView, PrimaryGradientButton, SignInLogo} from '../Components';
 import {colors} from '../Assets/Styles';
 
 const {cobaltBlue} = colors;
@@ -18,20 +11,11 @@ const {cobaltBlue} = colors;
 const WelcomeScreen = ({handleSignInPress}) => (
   <BackgroundImageView>
     <View style={styles.container}>
-      <LinearGradient
-        colors={['#1876CC', 'transparent']}
-        start={{x: 0, y: 0}}
-        end={{x: 0, y: 1}}
-        locations={[0, 0.6]}
-        style={styles.headerGradient}>
+      <LinearGradient colors={['#1876CC', 'transparent']} start={{x: 0, y: 0}} end={{x: 0, y: 1}} locations={[0, 0.6]} style={styles.headerGradient}>
         <View style={styles.headerEmptyView} />
         <View style={styles.headerContainer}>
           <Text style={styles.welcomeText}>Welcome to</Text>
-          <SignInLogo
-            titleText={'CHEX'}
-            dotTitleText={'.AI'}
-            subtitleText={'Virtual Inspections'}
-          />
+          <SignInLogo titleText={'CHEX'} dotTitleText={'.AI'} subtitleText={'Virtual Inspections'} />
         </View>
       </LinearGradient>
       <View style={styles.bodyContainer}>

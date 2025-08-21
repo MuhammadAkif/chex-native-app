@@ -102,10 +102,11 @@ const CameraContainer = ({route, navigation}) => {
     };
   }, []);
 
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
-    return () => backHandler.remove();
-  }, [isImageURL]);
+  // useEffect(() => {
+  //   const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
+  //   return () => backHandler.remove();
+  // }, [isImageURL]);
+
   useEffect(() => {
     setSelectedCamera(SWITCH_CAMERA[isBackCamera]);
   }, [isBackCamera, device]);
@@ -120,19 +121,19 @@ const CameraContainer = ({route, navigation}) => {
     setIsUploadFailed(isUploadFailedInitialState);
   }
 
-  function handle_Hardware_Back_Press() {
-    if (isImageURL) {
-      handleRetryPress();
-      return true;
-    } else if (route?.params?.returnTo) {
-      navigate(route.params.returnTo);
-      return true;
-    } else if (canGoBack()) {
-      navigate(NEW_INSPECTION);
-      return true;
-    }
-    return false;
-  }
+  // function handle_Hardware_Back_Press() {
+  //   if (isImageURL) {
+  //     handleRetryPress();
+  //     return true;
+  //   } else if (route?.params?.returnTo) {
+  //     navigate(route.params.returnTo);
+  //     return true;
+  //   } else if (canGoBack()) {
+  //     navigate(NEW_INSPECTION);
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   const handleNavigationBackPress = () => goBack();
 
@@ -254,7 +255,7 @@ const CameraContainer = ({route, navigation}) => {
       is_Exterior: haveType,
     };
 
-    navigation.replace(NEW_INSPECTION, params);
+    navigate(NEW_INSPECTION, params);
   }
 
   const handleExtractNumberPlate = async imageUrl => {

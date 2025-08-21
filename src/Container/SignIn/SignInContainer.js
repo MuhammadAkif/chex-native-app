@@ -66,12 +66,12 @@ const SignInContainer = ({navigation, route}) => {
   };
   function onCheckUserDataSuccess(resetForm) {
     resetForm();
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{name: HOME}],
-      }),
-    );
+    // navigation.dispatch(
+    //   CommonActions.reset({
+    //     index: 0,
+    //     routes: [{name: ROUTES.INSPECTION_SELECTION}],
+    //   }),
+    // );
   }
   function onCheckUserDataFail(err) {
     const {errors = null} = err?.response?.data;

@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		3FCF6A4BA61A3491C97E28B4 /* libPods-Chex_AI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA6CDD50B7D4E1C605AEF97D /* libPods-Chex_AI.a */; };
 		57550726F129CDC952C4A2A0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
+		7BCD4AB7580D8C74507C02BB /* libPods-Chex_AI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 662C0B58CEDCD2504DC2E318 /* libPods-Chex_AI.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		D610DFAB3B4749C7A95A3ADE /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4CA4E898D3E94CDC8C4164E8 /* Colors.xcassets */; };
 		FBA783547F7143CFBB345FA5 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9FBF363C16A94618B5B9E17C /* BootSplash.storyboard */; };
@@ -21,14 +21,14 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Chex_AI/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Chex_AI/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = Chex_Ai/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		420D8D1D57687F6DB199039E /* Pods-Chex_AI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chex_AI.debug.xcconfig"; path = "Target Support Files/Pods-Chex_AI/Pods-Chex_AI.debug.xcconfig"; sourceTree = "<group>"; };
 		4CA4E898D3E94CDC8C4164E8 /* Colors.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Colors.xcassets; path = Chex_AI/Colors.xcassets; sourceTree = "<group>"; };
-		6887E812507E5EE005E82157 /* Pods-Chex_AI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chex_AI.release.xcconfig"; path = "Target Support Files/Pods-Chex_AI/Pods-Chex_AI.release.xcconfig"; sourceTree = "<group>"; };
+		6186D6F0B98B1A2256C19594 /* Pods-Chex_AI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chex_AI.debug.xcconfig"; path = "Target Support Files/Pods-Chex_AI/Pods-Chex_AI.debug.xcconfig"; sourceTree = "<group>"; };
+		662C0B58CEDCD2504DC2E318 /* libPods-Chex_AI.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Chex_AI.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Chex_Ai/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Chex_AI/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9FBF363C16A94618B5B9E17C /* BootSplash.storyboard */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = BootSplash.storyboard; path = Chex_AI/BootSplash.storyboard; sourceTree = "<group>"; };
+		CF3240A7FDBE0DF3BAECC9A4 /* Pods-Chex_AI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chex_AI.release.xcconfig"; path = "Target Support Files/Pods-Chex_AI/Pods-Chex_AI.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		FA6CDD50B7D4E1C605AEF97D /* libPods-Chex_AI.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Chex_AI.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,7 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3FCF6A4BA61A3491C97E28B4 /* libPods-Chex_AI.a in Frameworks */,
+				7BCD4AB7580D8C74507C02BB /* libPods-Chex_AI.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,7 +61,7 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				FA6CDD50B7D4E1C605AEF97D /* libPods-Chex_AI.a */,
+				662C0B58CEDCD2504DC2E318 /* libPods-Chex_AI.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -98,8 +98,8 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				420D8D1D57687F6DB199039E /* Pods-Chex_AI.debug.xcconfig */,
-				6887E812507E5EE005E82157 /* Pods-Chex_AI.release.xcconfig */,
+				6186D6F0B98B1A2256C19594 /* Pods-Chex_AI.debug.xcconfig */,
+				CF3240A7FDBE0DF3BAECC9A4 /* Pods-Chex_AI.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -111,13 +111,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Chex_AI" */;
 			buildPhases = (
-				52C72C436F254938F43A2506 /* [CP] Check Pods Manifest.lock */,
+				4A100732E7280A3836BC1E72 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				0802DF00CBD63C26F8EF7A8B /* [CP] Embed Pods Frameworks */,
-				5EEFFF78D9CE94799EA5B79E /* [CP] Copy Pods Resources */,
+				6EE42C9E666C18BA93D76DE9 /* [CP] Embed Pods Frameworks */,
+				F52EA6BA617D61DD1936A7C5 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -191,24 +191,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"$REACT_NATIVE_PATH/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		0802DF00CBD63C26F8EF7A8B /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Chex_AI/Pods-Chex_AI-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Chex_AI/Pods-Chex_AI-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Chex_AI/Pods-Chex_AI-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		52C72C436F254938F43A2506 /* [CP] Check Pods Manifest.lock */ = {
+		4A100732E7280A3836BC1E72 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -230,7 +213,24 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		5EEFFF78D9CE94799EA5B79E /* [CP] Copy Pods Resources */ = {
+		6EE42C9E666C18BA93D76DE9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Chex_AI/Pods-Chex_AI-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Chex_AI/Pods-Chex_AI-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Chex_AI/Pods-Chex_AI-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F52EA6BA617D61DD1936A7C5 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -263,7 +263,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 420D8D1D57687F6DB199039E /* Pods-Chex_AI.debug.xcconfig */;
+			baseConfigurationReference = 6186D6F0B98B1A2256C19594 /* Pods-Chex_AI.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -296,7 +296,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6887E812507E5EE005E82157 /* Pods-Chex_AI.release.xcconfig */;
+			baseConfigurationReference = CF3240A7FDBE0DF3BAECC9A4 /* Pods-Chex_AI.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

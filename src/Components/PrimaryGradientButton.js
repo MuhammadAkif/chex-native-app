@@ -30,7 +30,7 @@ const PrimaryGradientButton = ({
   return (
     <TouchableOpacity onPress={onPress} disabled={disabled}>
       <LinearGradient colors={colors} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={[styles.buttonContainer, buttonStyle]}>
-        <ButtonComponent />
+        {ButtonComponent()}
       </LinearGradient>
     </TouchableOpacity>
   );

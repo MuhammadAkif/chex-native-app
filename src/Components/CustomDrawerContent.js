@@ -17,13 +17,13 @@ const {SIGN_IN, INSPECTION_SELECTION, INTRO, NEW_INSPECTION} = ROUTES;
 const {cobaltBlue, black, red} = colors;
 
 const CustomDrawerContent = props => {
-  // const {toast} = useSelector(state => state.ui);
+  const {toast} = useSelector(state => state.ui);
   const dispatch = useDispatch();
   const {state, navigation} = props;
   const {toggleDrawer, reset, navigate} = props.navigation;
   const currentRoute = state.routes[state.index];
   const activeScreen = getFocusedRouteNameFromRoute(currentRoute) ?? currentRoute?.name;
-  // const [previousScreen, setPreviousScreen] = useState('');
+  const [previousScreen, setPreviousScreen] = useState('');
   // const [activeScreen, setActiveScreen] = useState('');
 
   let activeColor = cobaltBlue;
@@ -33,14 +33,15 @@ const CustomDrawerContent = props => {
     //   ? white
     //   : black;
   };
-  // useEffect(() => {
-  //   if (activeRouteName !== NEW_INSPECTION && previousScreen === NEW_INSPECTION) {
-  //     dispatch(clearNewInspection());
-  //     dispatch(setRequired());
-  //   }
-  //   toast.visible && dispatch(hideToast());
-  //   setPreviousScreen(activeRouteName);
-  // }, [activeRouteName]);
+
+  useEffect(() => {
+    if (activeScreen !== NEW_INSPECTION && previousScreen === NEW_INSPECTION) {
+      dispatch(clearNewInspection());
+      dispatch(setRequired());
+    }
+    toast.visible && dispatch(hideToast());
+    setPreviousScreen(activeScreen);
+  }, [activeScreen]);
 
   const handleNavigationPress = (path, active_Screen) => {
     // setActiveScreen(activeScreen);
@@ -56,7 +57,7 @@ const CustomDrawerContent = props => {
   };
   const handleLogout = () => {
     dispatch(signOut());
-    handleNavigationPress(SIGN_IN, DRAWER.LOGOUT);
+    // handleNavigationPress(SIGN_IN, DRAWER.LOGOUT);
   };
   return (
     <ScrollView style={styles.body} {...props}>

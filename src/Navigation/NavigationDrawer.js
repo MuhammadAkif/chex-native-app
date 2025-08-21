@@ -1,12 +1,7 @@
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import React from 'react';
 
-import {
-  CustomDrawerContent,
-  HeaderBackButton,
-  HeaderBackground,
-  HeaderTitle,
-} from '../Components';
+import {CustomDrawerContent, HeaderBackButton, HeaderBackground, HeaderTitle} from '../Components';
 import {
   DVIRInspectionChecklistContainer,
   DVIRVehicleInfoContainer,
@@ -57,59 +52,24 @@ const NavigationDrawer = ({navigation}) => {
   };
 
   return (
-    <>
-      <Navigator
-        backBehavior={'history'}
-        drawerContent={drawerContent}
-        screenOptions={screenOptions}
-        initialRouteName={INSPECTION_SELECTION}>
-        <Screen
-          name={INSPECTION_SELECTION}
-          component={InspectionSelectionContainer}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Screen name={INTRO} component={IntroContainer} options={options} />
-        <Screen
-          name={LICENSE_PLATE_SELECTION}
-          component={LicensePlateNumberSelectionContainer}
-          options={options}
-        />
-        <Screen
-          name={NEW_INSPECTION}
-          component={NewInspectionContainer}
-          options={options}
-        />
-        <Screen
-          name={INSPECTION_REVIEWED}
-          component={InspectionReviewedContainer}
-          options={options}
-        />
-        <Screen
-          name={INSPECTION_DETAIL}
-          component={InspectionDetailContainer}
-          options={options}
-        />
-        <Screen
-          name={INSPECTION_IN_PROGRESS}
-          component={InspectionInProgressContainer}
-          options={options}
-        />
-        {/* DVIR */}
-        <Screen
-          name={DVIR_INSPECTION_CHECKLIST}
-          component={DVIRInspectionChecklistContainer}
-          options={options}
-        />
-
-        <Screen
-          name={DVIR_VEHICLE_INFO}
-          component={DVIRVehicleInfoContainer}
-          options={options}
-        />
-      </Navigator>
-    </>
+    <Navigator backBehavior={'history'} drawerContent={drawerContent} screenOptions={screenOptions} initialRouteName={INSPECTION_SELECTION}>
+      <Screen
+        name={INSPECTION_SELECTION}
+        component={InspectionSelectionContainer}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Screen name={INTRO} component={IntroContainer} options={options} />
+      <Screen name={LICENSE_PLATE_SELECTION} component={LicensePlateNumberSelectionContainer} options={options} />
+      <Screen name={NEW_INSPECTION} component={NewInspectionContainer} options={options} />
+      <Screen name={INSPECTION_REVIEWED} component={InspectionReviewedContainer} options={options} />
+      <Screen name={INSPECTION_DETAIL} component={InspectionDetailContainer} options={options} />
+      <Screen name={INSPECTION_IN_PROGRESS} component={InspectionInProgressContainer} options={options} />
+      {/* DVIR */}
+      <Screen name={DVIR_INSPECTION_CHECKLIST} component={DVIRInspectionChecklistContainer} options={options} />
+      <Screen name={DVIR_VEHICLE_INFO} component={DVIRVehicleInfoContainer} options={options} />
+    </Navigator>
   );
 };
 

@@ -349,7 +349,7 @@ export const uploadFile = async (callback, body, inspectionId, token, handleErro
     const response = await uploadFileToDatabase(inspectionId, body);
     onUploadFileSuccess(response, callback);
   } catch (error) {
-    console.log('uploadFile error:', error.response.data);
+    console.log('uploadFile error:', error);
     throw error;
   }
 };

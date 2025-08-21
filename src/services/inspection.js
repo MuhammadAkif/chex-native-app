@@ -306,7 +306,7 @@ export const updateMileageInDB = async (milage, inspectionId) => {
   try {
     return await api.put(endPoint, body);
   } catch (error) {
-    console.error('Mileage update error:', error.message);
+    console.error('Mileage update error:', error.response.data);
     throw error;
   }
 };

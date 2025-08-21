@@ -146,10 +146,11 @@ const NewInspectionContainer = ({route, navigation}) => {
   const ActiveExteriorItemsExpandedCard = exteriorItemsExpandedCards[vehicle_Type];
   const ActiveInteriorItemsExpandedCard = interiorItemsExpandedCards[vehicle_Type];
 
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
-    return () => backHandler.remove();
-  }, []);
+  // useEffect(() => {
+  //   const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
+  //   return () => backHandler.remove();
+  // }, []);
+
   useEffect(() => {
     if (route.params?.routeName === INSPECTION_IN_PROGRESS && checkTireStatus) {
       vehicleTireStatusToRender(selectedInspectionID).then(() => setCheckTireStatus(false));
@@ -172,6 +173,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       }
     }
   }, [route]);
+
   useEffect(() => {
     handleExteriorLeft();
     handleExteriorRight();
@@ -203,13 +205,13 @@ const NewInspectionContainer = ({route, navigation}) => {
   }, [isLicensePlateUploaded]);
 
   const shouldAnnotate = vehicle_Type === 'new' && isExterior;
-  function handle_Hardware_Back_Press() {
-    if (canGoBack()) {
-      goBack();
-      return true;
-    }
-    return false;
-  }
+  // function handle_Hardware_Back_Press() {
+  //   if (canGoBack()) {
+  //     goBack();
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   function resetAllStates() {
     setSelectedOption(selectedOptionInitialState);
@@ -342,6 +344,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     const haveType = checkCategory(details.category || null);
     displayAnnotationPopUp && setDisplayAnnotationPopUp(false);
     dispatch(categoryVariant(variant));
+
+    // SHOULD DISPLAY REQUIRED TAG ON INFO MODAL
     if (haveType) {
       const {key} = details;
       const isRequired = isNotEmpty(requiredFields[key]);
@@ -349,6 +353,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     } else {
       toggleFieldRequired(true);
     }
+
+    // INFO MODAL STATES
     setModalDetails(details);
     setModalVisible(true);
   };
@@ -374,10 +380,15 @@ const NewInspectionContainer = ({route, navigation}) => {
   };
   // Media Modal logic ends here
   const handleCaptureNowPress = (isVideo, key) => {
+    // HIDE INFO MODAL FIRST!
+    setModalVisible(false);
+
+    // READY DETAILS FOR THE CAMERA SCREEN
     const paths = {
       true: VIDEO,
       false: CAMERA,
     };
+
     const path = paths[isVideo];
     const details = {
       title: modalDetails.title,
@@ -386,9 +397,10 @@ const NewInspectionContainer = ({route, navigation}) => {
       source: modalDetails.source,
       fileId: '',
     };
+
     setAnnotationModalDetails(details);
-    setModalVisible(false);
     setModalDetails(modalDetailsInitialState);
+
     navigate(path, {
       type: key,
       modalDetails: modalDetails,

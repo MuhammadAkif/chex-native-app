@@ -1,10 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {CompletedInspectionBackgroundImage} from '../Components';
 import {colors} from '../Assets/Styles';
@@ -18,29 +15,15 @@ const {CHEX_AI} = PROJECT_NAME;
 const CompletedInspectionScreen = ({navigation}) => (
   <CompletedInspectionBackgroundImage>
     <View style={styles.container}>
-      <LinearGradient
-        colors={['transparent', '#001B51']}
-        start={{x: 0, y: 0}}
-        end={{x: 0, y: 1}}
-        locations={[0, 0.7]}
-        style={styles.body}>
+      <LinearGradient colors={['transparent', '#001B51']} start={{x: 0, y: 0}} end={{x: 0, y: 1}} locations={[0, 0.7]} style={styles.body}>
         <View style={{flex: 1}} />
         <View style={styles.bodyFooterContainer}>
-          <Text style={{...styles.textColor, ...styles.titleText}}>
-            Thank you for using
-          </Text>
-          <Text style={{...styles.textColor, ...styles.subheadingText}}>
-            {CHEX_AI}
-          </Text>
+          <Text style={{...styles.textColor, ...styles.titleText}}>Thank you for using</Text>
+          <Text style={{...styles.textColor, ...styles.subheadingText}}>{CHEX_AI}</Text>
           <Text style={{...styles.textColor, ...styles.subTitleText}}>
-            You may now exit our app. Our representatives will reach out to you
-            if we need any further help
+            You may now exit our app. Our representatives will reach out to you if we need any further help
           </Text>
-          <PrimaryGradientButton
-            buttonStyle={styles.button}
-            text={'Home'}
-            onPress={() => handleHomePress(navigation)}
-          />
+          <PrimaryGradientButton buttonStyle={styles.button} text={'Home'} onPress={() => handleHomePress(navigation)} />
           <View style={styles.bodyFooterEmptyView} />
         </View>
       </LinearGradient>

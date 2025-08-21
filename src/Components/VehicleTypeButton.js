@@ -5,59 +5,64 @@ import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-nativ
 
 import {buttonTextStyle, colors as color} from '../Assets/Styles';
 
-const VehicleTypeButton = React.memo(({
-  text,
-  onPress,
-  isLoading = false,
-  isDisabled = false,
-  buttonStyle,
-  textStyle,
-  loaderSize = 'small',
-  loaderColor = color.white,
-  colors = ['#FF7A00', '#F90'],
-}) => {
-  const isButtonDisabled = isDisabled || isLoading;
-
-  // Memoize button content to prevent unnecessary re-renders
-  const buttonContent = useMemo(() => {
-    if (isLoading) {
-      return <ActivityIndicator size={loaderSize} color={loaderColor} />;
-    }
-    return (
-      <Text disabled={isButtonDisabled} style={[buttonTextStyle, textStyle]}>
-        {text}
-      </Text>
-    );
-  }, [isLoading, loaderSize, loaderColor, isButtonDisabled, text, textStyle]);
-
-  // Memoize button styles to prevent unnecessary style recalculations
-  const buttonStyles = useMemo(() => [
-    styles.buttonContainer, 
-    buttonStyle,
-    isButtonDisabled && styles.disabledButton
-  ], [buttonStyle, isButtonDisabled]);
-
-  // Memoize prop objects to reduce environmental impact
-  const touchableProps = useMemo(() => ({
+const VehicleTypeButton = React.memo(
+  ({
+    text,
     onPress,
-    disabled: isButtonDisabled,
-  }), [onPress, isButtonDisabled]);
+    isLoading = false,
+    isDisabled = false,
+    buttonStyle,
+    textStyle,
+    loaderSize = 'small',
+    loaderColor = color.white,
+    colors = ['#FF7A00', '#F90'],
+  }) => {
+    const isButtonDisabled = isDisabled || isLoading;
 
-  const gradientProps = useMemo(() => ({
-    colors,
-    start: {x: 0, y: 0},
-    end: {x: 1, y: 0},
-    style: buttonStyles,
-  }), [colors, buttonStyles]);
+    // Memoize button content to prevent unnecessary re-renders
+    const buttonContent = useMemo(() => {
+      if (isLoading) {
+        return <ActivityIndicator size={loaderSize} color={loaderColor} />;
+      }
+      return (
+        <Text disabled={isButtonDisabled} style={[buttonTextStyle, textStyle]}>
+          {text}
+        </Text>
+      );
+    }, [isLoading, loaderSize, loaderColor, isButtonDisabled, text, textStyle]);
 
-  return (
-    <TouchableOpacity {...touchableProps}>
-      <LinearGradient {...gradientProps}>
-        {buttonContent}
-      </LinearGradient>
-    </TouchableOpacity>
-  );
-});
+    // Memoize button styles to prevent unnecessary style recalculations
+    const buttonStyles = useMemo(
+      () => [styles.buttonContainer, buttonStyle, isButtonDisabled && styles.disabledButton],
+      [buttonStyle, isButtonDisabled],
+    );
+
+    // Memoize prop objects to reduce environmental impact
+    const touchableProps = useMemo(
+      () => ({
+        onPress,
+        disabled: isButtonDisabled,
+      }),
+      [onPress, isButtonDisabled],
+    );
+
+    const gradientProps = useMemo(
+      () => ({
+        colors,
+        start: {x: 0, y: 0},
+        end: {x: 1, y: 0},
+        style: buttonStyles,
+      }),
+      [colors, buttonStyles],
+    );
+
+    return (
+      <TouchableOpacity {...touchableProps}>
+        <LinearGradient {...gradientProps}>{buttonContent}</LinearGradient>
+      </TouchableOpacity>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   buttonContainer: {
@@ -72,4 +77,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VehicleTypeButton; 
+export default VehicleTypeButton;

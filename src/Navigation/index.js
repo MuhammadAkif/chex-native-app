@@ -1,6 +1,5 @@
-// Navigation.js
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useIsFocused} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {useSelector} from 'react-redux';
@@ -55,21 +54,38 @@ const AuthStack = () => (
   </Stack.Navigator>
 );
 
+function UnmountOnBlur({children}) {
+  const isFocused = useIsFocused();
+
+  if (!isFocused) {
+    return null;
+  }
+
+  return children;
+}
+
 // ----------------------
 // APP DRAWER
 // ----------------------
 const AppDrawer = () => (
   <Drawer.Navigator
     backBehavior="history"
+    screenLayout={({children}) => <UnmountOnBlur>{children}</UnmountOnBlur>}
     drawerContent={props => <CustomDrawerContent {...props} />}
     screenOptions={drawerScreenOptions}
     initialRouteName={ROUTES.INSPECTION_SELECTION}>
-    <Drawer.Screen name={ROUTES.COMPLETED_INSPECTION} component={CompletedInspectionContainer} />
+    <Drawer.Screen
+      name={ROUTES.COMPLETED_INSPECTION}
+      component={CompletedInspectionContainer}
+      options={{
+        headerShown: false,
+        swipeEnabled: false,
+      }}
+    />
     <Stack.Screen
       options={{
         headerShown: false,
         swipeEnabled: false,
-        drawerItemStyle: {display: 'none'},
       }}
       name={ROUTES.CAMERA}
       component={CameraContainer}
@@ -78,7 +94,6 @@ const AppDrawer = () => (
       options={{
         headerShown: false,
         swipeEnabled: false,
-        drawerItemStyle: {display: 'none'},
       }}
       name={ROUTES.VIDEO}
       component={VideoContainer}
@@ -86,7 +101,7 @@ const AppDrawer = () => (
     <Drawer.Screen name={ROUTES.INSPECTION_SELECTION} component={InspectionSelectionContainer} options={{headerShown: false}} />
     <Drawer.Screen name={ROUTES.INTRO} component={IntroContainer} options={headerOptions} />
     <Drawer.Screen name={ROUTES.LICENSE_PLATE_SELECTION} component={LicensePlateNumberSelectionContainer} options={headerOptions} />
-    <Drawer.Screen name={ROUTES.NEW_INSPECTION} component={NewInspectionContainer} options={headerOptions} />
+    <Drawer.Screen layout={({children}) => <>{children}</>} name={ROUTES.NEW_INSPECTION} component={NewInspectionContainer} options={headerOptions} />
     <Drawer.Screen name={ROUTES.INSPECTION_REVIEWED} component={InspectionReviewedContainer} options={headerOptions} />
     <Drawer.Screen name={ROUTES.INSPECTION_DETAIL} component={InspectionDetailContainer} options={headerOptions} />
     <Drawer.Screen name={ROUTES.INSPECTION_IN_PROGRESS} component={InspectionInProgressContainer} options={headerOptions} />

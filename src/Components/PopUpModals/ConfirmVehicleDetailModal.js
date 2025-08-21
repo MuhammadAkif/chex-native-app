@@ -1,34 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  Modal,
-  StyleSheet,
-  TextInput,
-  Keyboard,
-  TouchableOpacity,
-} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {View, Text, Modal, StyleSheet, TextInput, Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform} from 'react-native';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {PrimaryGradientButton} from '../index';
 import {circleBorderRadius, colors, modalStyle} from '../../Assets/Styles';
 import {removeAlphabets} from '../../Utils/helpers';
-import {useSelector} from 'react-redux';
 
 const {red, gray, orange, black} = colors;
-const {
-  modalOuterContainer,
-  container,
-  modalContainer,
-  header,
-  body,
-  footer,
-  button,
-  yesText,
-} = modalStyle;
+const {modalOuterContainer, container, modalContainer, header, body, footer, button, yesText} = modalStyle;
 
 const ConfirmVehicleDetailModal = ({
   visible = true,
@@ -72,51 +51,43 @@ const ConfirmVehicleDetailModal = ({
   }
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      style={modalOuterContainer}>
-      <TouchableOpacity
-        style={container}
-        activeOpacity={1}
-        onPress={onTouchDismissKeyboard}>
-        <View style={modalContainer}>
-          <Text style={header}>{title}</Text>
-          {numberPlateText?.length === 0 && (
-            <Text style={[body, {color: red}]}>{description}</Text>
-          )}
-          {errorMessage && (
-            <Text style={[body, {color: red}]}>{errorMessage}</Text>
-          )}
-          <TextInput
-            value={numberPlate}
-            placeholder={placeHolder}
-            placeholderTextColor={gray}
-            style={styles.numberPlateInput}
-            enterKeyHint={'done'}
-            editable={!isLoading}
-            onChangeText={handleInputChange}
-            maxLength={textLimit}
-            keyboardType={keyboardType}
-            inputMode={inputMode}
-            onSubmitEditing={() => onConfirmPress(numberPlate)}
-          />
-          <Text style={styles.textLimit}>{text_Limit}</Text>
-          <View style={footer}>
-            <PrimaryGradientButton
-              text={buttonText}
-              disabled={isLoading}
-              buttonStyle={button}
-              textStyle={yesText}
-              onPress={() => onConfirmPress(numberPlate, clearState)}
+    <Modal animationType="slide" statusBarTranslucent transparent={true} visible={visible} style={modalOuterContainer}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{flex: 1}}>
+        <TouchableOpacity style={container} activeOpacity={1} onPress={onTouchDismissKeyboard}>
+          <View style={modalContainer}>
+            <Text style={header}>{title}</Text>
+            {numberPlateText?.length === 0 && <Text style={[body, {color: red}]}>{description}</Text>}
+            {errorMessage && <Text style={[body, {color: red}]}>{errorMessage}</Text>}
+            <TextInput
+              value={numberPlate}
+              placeholder={placeHolder}
+              placeholderTextColor={gray}
+              style={styles.numberPlateInput}
+              enterKeyHint={'done'}
+              editable={!isLoading}
+              onChangeText={handleInputChange}
+              maxLength={textLimit}
+              keyboardType={keyboardType}
+              inputMode={inputMode}
+              onSubmitEditing={() => onConfirmPress(numberPlate)}
             />
+            <Text style={styles.textLimit}>{text_Limit}</Text>
+            <View style={footer}>
+              <PrimaryGradientButton
+                text={buttonText}
+                disabled={isLoading}
+                buttonStyle={button}
+                textStyle={yesText}
+                onPress={() => onConfirmPress(numberPlate, clearState)}
+              />
+            </View>
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
+
 const styles = StyleSheet.create({
   crossIcon: {
     backgroundColor: orange,
