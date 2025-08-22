@@ -23,7 +23,7 @@ const AndroidMediaViewModal = ({source, handleVisible, isLoading, title, isVideo
   const ActiveIcon = toggleIcon[isFullScreen];
 
   return (
-    <Modal animationType="slide" transparent={true} visible={true} onRequestClose={handleVisible} style={styles.modalContainer}>
+    <Modal statusBarTranslucent animationType="slide" transparent={true} visible={true} onRequestClose={handleVisible} style={styles.modalContainer}>
       <View style={styles.centeredView}>
         <TouchableOpacity style={styles.crossIconContainer} onPress={handleVisible} disabled={isLoading}>
           <Cross height={hp('8%')} width={wp('10%')} color={white} />
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   },
   crossIconContainer: {
     position: 'absolute',
-    top: 30,
+    top: hp('5%'),
     right: 20,
     zIndex: 1,
   },

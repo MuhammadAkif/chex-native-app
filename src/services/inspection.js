@@ -144,7 +144,7 @@ export const extractVinAI = async image_url => {
   const headers = {
     api_token: AI_API_TOKEN,
   };
-  console.log('API CALLED:', body, headers);
+
   try {
     return await api.post(EXTRACT_NUMBER_PLATE_WITH_AI, body, {
       headers: headers,
@@ -303,6 +303,7 @@ export const updateMileageInDB = async (milage, inspectionId) => {
   const endPoint = generateApiUrl(`update/vehicle/milage/${inspectionId}`);
 
   const body = {milage};
+
   try {
     return await api.put(endPoint, body);
   } catch (error) {

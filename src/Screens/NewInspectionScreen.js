@@ -12,6 +12,8 @@ import {
   ConfirmVehicleDetailModal,
   DiscardInspectionModal,
   DisplayMediaModal,
+  HeaderBackground,
+  HeaderTitle,
   MileageInput,
   NewInspectionFooter,
   TiresItemsExpandedCard,

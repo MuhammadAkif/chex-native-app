@@ -66,6 +66,7 @@ const SignInContainer = ({navigation, route}) => {
   };
   function onCheckUserDataSuccess(resetForm) {
     resetForm();
+    navigation.replace(ROUTES.HOME);
     // navigation.dispatch(
     //   CommonActions.reset({
     //     index: 0,

@@ -14,7 +14,6 @@ export const drawerScreenOptions = {
   drawerType: 'front',
   drawerStatusBarAnimation: 'slide',
   swipeEdgeWidth: 150,
-  unmountOnBlur: true,
   drawerStyle: {width: '70%'},
 };
 

@@ -146,16 +146,18 @@ const NewInspectionContainer = ({route, navigation}) => {
   const ActiveExteriorItemsExpandedCard = exteriorItemsExpandedCards[vehicle_Type];
   const ActiveInteriorItemsExpandedCard = interiorItemsExpandedCards[vehicle_Type];
 
-  // useEffect(() => {
-  //   const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
-  //   return () => backHandler.remove();
-  // }, []);
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
+    return () => backHandler.remove();
+  }, []);
 
   useEffect(() => {
     if (route.params?.routeName === INSPECTION_IN_PROGRESS && checkTireStatus) {
       vehicleTireStatusToRender(selectedInspectionID).then(() => setCheckTireStatus(false));
     }
+
     handleIsAllVehicleParts();
+
     if (route.params) {
       const {isLicensePlate, isOdometer, displayAnnotation, fileId, annotationDetails, is_Exterior, routeName} = route.params;
       if (routeName !== INSPECTION_SELECTION) {
@@ -205,13 +207,13 @@ const NewInspectionContainer = ({route, navigation}) => {
   }, [isLicensePlateUploaded]);
 
   const shouldAnnotate = vehicle_Type === 'new' && isExterior;
-  // function handle_Hardware_Back_Press() {
-  //   if (canGoBack()) {
-  //     goBack();
-  //     return true;
-  //   }
-  //   return false;
-  // }
+  function handle_Hardware_Back_Press() {
+    if (canGoBack()) {
+      goBack();
+      return true;
+    }
+    return false;
+  }
 
   function resetAllStates() {
     setSelectedOption(selectedOptionInitialState);

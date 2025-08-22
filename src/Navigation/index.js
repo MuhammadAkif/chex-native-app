@@ -37,8 +37,24 @@ const Drawer = createDrawerNavigator();
 // ----------------------
 const RootNavigation = () => {
   const token = useSelector(state => state?.auth?.user?.token);
+  const initialRouteName = token ? ROUTES.HOME : 'AuthStack';
+  const screenOptions = {headerShown: false, gestureEnabled: false};
 
-  return <NavigationContainer ref={navigationRef}>{token ? <AppDrawer /> : <AuthStack />}</NavigationContainer>;
+  return (
+    <NavigationContainer ref={navigationRef}>
+      <Stack.Navigator initialRouteName={initialRouteName} screenOptions={screenOptions}>
+        {/* AUTH STACK */}
+        <Stack.Screen name={'AuthStack'} component={AuthStack} />
+
+        {/* HOME STACK DRAWER */}
+        <Stack.Screen name={ROUTES.HOME} component={AppDrawer} />
+
+        <Stack.Screen name={ROUTES.CAMERA} component={CameraContainer} />
+        <Stack.Screen name={ROUTES.VIDEO} component={VideoContainer} />
+        <Stack.Screen name={ROUTES.COMPLETED_INSPECTION} component={CompletedInspectionContainer} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 };
 
 // ----------------------
@@ -70,38 +86,14 @@ function UnmountOnBlur({children}) {
 const AppDrawer = () => (
   <Drawer.Navigator
     backBehavior="history"
-    screenLayout={({children}) => <UnmountOnBlur>{children}</UnmountOnBlur>}
+    // screenLayout={({children}) => <UnmountOnBlur>{children}</UnmountOnBlur>}
     drawerContent={props => <CustomDrawerContent {...props} />}
     screenOptions={drawerScreenOptions}
     initialRouteName={ROUTES.INSPECTION_SELECTION}>
-    <Drawer.Screen
-      name={ROUTES.COMPLETED_INSPECTION}
-      component={CompletedInspectionContainer}
-      options={{
-        headerShown: false,
-        swipeEnabled: false,
-      }}
-    />
-    <Stack.Screen
-      options={{
-        headerShown: false,
-        swipeEnabled: false,
-      }}
-      name={ROUTES.CAMERA}
-      component={CameraContainer}
-    />
-    <Stack.Screen
-      options={{
-        headerShown: false,
-        swipeEnabled: false,
-      }}
-      name={ROUTES.VIDEO}
-      component={VideoContainer}
-    />
     <Drawer.Screen name={ROUTES.INSPECTION_SELECTION} component={InspectionSelectionContainer} options={{headerShown: false}} />
     <Drawer.Screen name={ROUTES.INTRO} component={IntroContainer} options={headerOptions} />
     <Drawer.Screen name={ROUTES.LICENSE_PLATE_SELECTION} component={LicensePlateNumberSelectionContainer} options={headerOptions} />
-    <Drawer.Screen layout={({children}) => <>{children}</>} name={ROUTES.NEW_INSPECTION} component={NewInspectionContainer} options={headerOptions} />
+    <Drawer.Screen name={ROUTES.NEW_INSPECTION} component={NewInspectionContainer} options={headerOptions} />
     <Drawer.Screen name={ROUTES.INSPECTION_REVIEWED} component={InspectionReviewedContainer} options={headerOptions} />
     <Drawer.Screen name={ROUTES.INSPECTION_DETAIL} component={InspectionDetailContainer} options={headerOptions} />
     <Drawer.Screen name={ROUTES.INSPECTION_IN_PROGRESS} component={InspectionInProgressContainer} options={headerOptions} />

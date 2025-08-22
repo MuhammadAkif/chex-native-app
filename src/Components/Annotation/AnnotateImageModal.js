@@ -41,8 +41,15 @@ const AnnotateImageModal = ({
     true: hp('20%'),
     false: hp('30%'),
   };
+  console.log('source:', source);
   return (
-    <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={handleSkipPress} style={styles.container}>
+    <Modal
+      statusBarTranslucent
+      animationType="slide"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={handleSkipPress}
+      style={styles.container}>
       <View style={styles.centeredView}>
         <TouchableOpacity style={styles.crossIconContainer} onPress={handleSkipPress} disabled={isLoading}>
           <Cross height={hp('8%')} width={wp('10%')} color={white} />
@@ -204,7 +211,7 @@ const styles = StyleSheet.create({
   },
   crossIconContainer: {
     position: 'absolute',
-    top: 30,
+    top: hp('5%'),
     right: 20,
     zIndex: 1,
   },

@@ -19,13 +19,11 @@ const {cobaltBlue, black, red} = colors;
 const CustomDrawerContent = props => {
   const {toast} = useSelector(state => state.ui);
   const dispatch = useDispatch();
-  const {state, navigation} = props;
-  const {toggleDrawer, reset, navigate} = props.navigation;
-  const currentRoute = state.routes[state.index];
-  const activeScreen = getFocusedRouteNameFromRoute(currentRoute) ?? currentRoute?.name;
+  const route = useRoute();
+  const {toggleDrawer, reset, navigate, replace} = props.navigation;
+  const activeRouteName = getFocusedRouteNameFromRoute(route);
   const [previousScreen, setPreviousScreen] = useState('');
-  // const [activeScreen, setActiveScreen] = useState('');
-
+  const [activeScreen, setActiveScreen] = useState('');
   let activeColor = cobaltBlue;
   const activeColorOfTextAndIcon = screen => {
     return black;
@@ -33,31 +31,33 @@ const CustomDrawerContent = props => {
     //   ? white
     //   : black;
   };
-
   useEffect(() => {
-    if (activeScreen !== NEW_INSPECTION && previousScreen === NEW_INSPECTION) {
+    if (activeRouteName !== NEW_INSPECTION && previousScreen === NEW_INSPECTION) {
+      if (activeRouteName == ROUTES.DVIR_INSPECTION_CHECKLIST) return;
+
       dispatch(clearNewInspection());
       dispatch(setRequired());
     }
     toast.visible && dispatch(hideToast());
-    setPreviousScreen(activeScreen);
-  }, [activeScreen]);
+    setPreviousScreen(activeRouteName);
+  }, [activeRouteName]);
 
   const handleNavigationPress = (path, active_Screen) => {
     // setActiveScreen(activeScreen);
     toggleDrawer();
     if (active_Screen === DRAWER.LOGOUT) {
-      reset({
-        index: 0,
-        routes: [{name: SIGN_IN}],
-      });
+      replace('AuthStack');
+      // reset({
+      //   index: 0,
+      //   routes: [{name: SIGN_IN}],
+      // });
     } else {
       navigate(path);
     }
   };
   const handleLogout = () => {
     dispatch(signOut());
-    // handleNavigationPress(SIGN_IN, DRAWER.LOGOUT);
+    handleNavigationPress(SIGN_IN, DRAWER.LOGOUT);
   };
   return (
     <ScrollView style={styles.body} {...props}>

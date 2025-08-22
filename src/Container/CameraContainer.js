@@ -1,4 +1,5 @@
 import {useIsFocused} from '@react-navigation/native';
+
 import React, {useEffect, useRef, useState} from 'react';
 import {AppState, BackHandler, StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -102,10 +103,10 @@ const CameraContainer = ({route, navigation}) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
-  //   return () => backHandler.remove();
-  // }, [isImageURL]);
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
+    return () => backHandler.remove();
+  }, [isImageURL]);
 
   useEffect(() => {
     setSelectedCamera(SWITCH_CAMERA[isBackCamera]);
@@ -121,19 +122,19 @@ const CameraContainer = ({route, navigation}) => {
     setIsUploadFailed(isUploadFailedInitialState);
   }
 
-  // function handle_Hardware_Back_Press() {
-  //   if (isImageURL) {
-  //     handleRetryPress();
-  //     return true;
-  //   } else if (route?.params?.returnTo) {
-  //     navigate(route.params.returnTo);
-  //     return true;
-  //   } else if (canGoBack()) {
-  //     navigate(NEW_INSPECTION);
-  //     return true;
-  //   }
-  //   return false;
-  // }
+  function handle_Hardware_Back_Press() {
+    if (isImageURL) {
+      handleRetryPress();
+      return true;
+    } else if (route?.params?.returnTo) {
+      navigate(route.params.returnTo);
+      return true;
+    } else if (canGoBack()) {
+      navigate(NEW_INSPECTION);
+      return true;
+    }
+    return false;
+  }
 
   const handleNavigationBackPress = () => goBack();
 
@@ -255,7 +256,7 @@ const CameraContainer = ({route, navigation}) => {
       is_Exterior: haveType,
     };
 
-    navigate(NEW_INSPECTION, params);
+    navigation.popTo(ROUTES.HOME, {screen: NEW_INSPECTION, params});
   }
 
   const handleExtractNumberPlate = async imageUrl => {
