@@ -9,6 +9,7 @@ import CircledChevron from './CircledChevron';
 import Collapse from './Collapse';
 import CommentIcon from './CommentIcon';
 import Cross from './Cross';
+import CrossBlue from './CrossBlue';
 import CrossCircledIcon from './CrossCircled';
 import CrossFilled from './CrossFilled';
 import Damage_Vehicle from './Damage_Vehicle';
@@ -44,6 +45,7 @@ import VideoBorderedIcon from './VideoBorderedIcon';
 import Warning from './Warning';
 import XMark from './XMark';
 export {
+  CrossBlue,
   BackArrow,
   Bars,
   Camera,

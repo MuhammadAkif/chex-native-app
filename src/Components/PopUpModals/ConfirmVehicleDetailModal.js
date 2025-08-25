@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Modal, StyleSheet, TextInput, Keyboard, TouchableOpacity, KeyboardAvoidingView, Platform} from 'react-native';
+import {View, Text, Modal, StyleSheet, TextInput, Keyboard, TouchableOpacity, Platform} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {PrimaryGradientButton} from '../index';
 import {circleBorderRadius, colors, modalStyle} from '../../Assets/Styles';
 import {removeAlphabets} from '../../Utils/helpers';
+import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 
 const {red, gray, orange, black} = colors;
 const {modalOuterContainer, container, modalContainer, header, body, footer, button, yesText} = modalStyle;
@@ -52,7 +53,7 @@ const ConfirmVehicleDetailModal = ({
 
   return (
     <Modal animationType="slide" statusBarTranslucent transparent={true} visible={visible} style={modalOuterContainer}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{flex: 1}}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{flex: 1}}>
         <TouchableOpacity style={container} activeOpacity={1} onPress={onTouchDismissKeyboard}>
           <View style={modalContainer}>
             <Text style={header}>{title}</Text>

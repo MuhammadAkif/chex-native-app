@@ -66,7 +66,6 @@ export const categoryVariant = payload => ({
   payload: payload,
 });
 export const file_Details = inspectionId => async dispatch => {
-  console.log('INSPECTION ID:', inspectionId);
   try {
     const response = await getInspectionDetails(inspectionId);
     const {files = {}} = response?.data || {};

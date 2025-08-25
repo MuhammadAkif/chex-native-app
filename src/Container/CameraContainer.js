@@ -23,6 +23,7 @@ import {
   S3_BUCKET_BASEURL,
   SWITCH_CAMERA,
   uploadFailed,
+  VEHICLE_TYPES,
   VEHICLE_TYPES_WITH_FRAMES,
 } from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
@@ -129,6 +130,9 @@ const CameraContainer = ({route, navigation}) => {
     } else if (route?.params?.returnTo) {
       navigate(route.params.returnTo);
       return true;
+    } else if (selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
+      navigation.goBack();
+      return true;
     } else if (canGoBack()) {
       navigate(NEW_INSPECTION);
       return true;
@@ -198,13 +202,7 @@ const CameraContainer = ({route, navigation}) => {
         ...route?.params?.returnToParams,
       };
 
-      navigation.navigate({
-        name: targetScreen,
-        params: navParams,
-        merge: false,
-      });
-
-      return;
+      return navigation.popTo(ROUTES.HOME, {screen: targetScreen, params: navParams});
     }
 
     try {
@@ -256,7 +254,14 @@ const CameraContainer = ({route, navigation}) => {
       is_Exterior: haveType,
     };
 
-    navigation.popTo(ROUTES.HOME, {screen: NEW_INSPECTION, params});
+    if (selectedVehicleKind === VEHICLE_TYPES.TRUCK) {
+      navigation.popTo(ROUTES.HOME, {
+        screen: ROUTES.DVIR_INSPECTION_CHECKLIST,
+        params: {afterFileUploadImageUrl: image_url, ...afterFileUploadNavigationParams},
+      });
+    } else {
+      navigation.popTo(ROUTES.HOME, {screen: NEW_INSPECTION, params});
+    }
   }
 
   const handleExtractNumberPlate = async imageUrl => {

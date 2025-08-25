@@ -4,8 +4,6 @@ import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-nativ
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 import CircularProgress from 'react-native-circular-progress-indicator';
-import VideoPlayer from 'react-native-video';
-
 import {Cross, Exclamation, Expand, Info} from '../../Assets/Icons';
 import {colors} from '../../Assets/Styles';
 import {PrimaryGradientButton} from '../index';
@@ -41,7 +39,6 @@ const AnnotateImageModal = ({
     true: hp('20%'),
     false: hp('30%'),
   };
-  console.log('source:', source);
   return (
     <Modal
       statusBarTranslucent
@@ -77,12 +74,11 @@ const AnnotateImageModal = ({
                     onPress={() => setIsFullScreen(!isFullScreen)}>
                     {isFullScreen ? <Expand height={height} width={width} color={white} /> : <Collapse height={height} width={width} color={white} />}
                   </TouchableOpacity>
-                  <VideoPlayer
-                    video={source}
-                    videoHeight={isFullScreen ? hp('50%') : hp('25%')}
-                    videoWidth={wp('90%')}
+                  <Video
+                    source={source}
                     autoplay={true}
                     fullScreenOnLongPress={true}
+                    style={{height: isFullScreen ? hp('50%') : hp('25%'), width: wp('90%')}}
                   />
                 </View>
               ) : (
@@ -211,7 +207,7 @@ const styles = StyleSheet.create({
   },
   crossIconContainer: {
     position: 'absolute',
-    top: hp('5%'),
+    top: 30,
     right: 20,
     zIndex: 1,
   },

@@ -86,18 +86,23 @@ function UnmountOnBlur({children}) {
 const AppDrawer = () => (
   <Drawer.Navigator
     backBehavior="history"
-    // screenLayout={({children}) => <UnmountOnBlur>{children}</UnmountOnBlur>}
+    screenLayout={({children}) => <UnmountOnBlur>{children}</UnmountOnBlur>}
     drawerContent={props => <CustomDrawerContent {...props} />}
     screenOptions={drawerScreenOptions}
     initialRouteName={ROUTES.INSPECTION_SELECTION}>
     <Drawer.Screen name={ROUTES.INSPECTION_SELECTION} component={InspectionSelectionContainer} options={{headerShown: false}} />
     <Drawer.Screen name={ROUTES.INTRO} component={IntroContainer} options={headerOptions} />
     <Drawer.Screen name={ROUTES.LICENSE_PLATE_SELECTION} component={LicensePlateNumberSelectionContainer} options={headerOptions} />
-    <Drawer.Screen name={ROUTES.NEW_INSPECTION} component={NewInspectionContainer} options={headerOptions} />
+    <Drawer.Screen layout={({children}) => children} name={ROUTES.NEW_INSPECTION} component={NewInspectionContainer} options={headerOptions} />
     <Drawer.Screen name={ROUTES.INSPECTION_REVIEWED} component={InspectionReviewedContainer} options={headerOptions} />
     <Drawer.Screen name={ROUTES.INSPECTION_DETAIL} component={InspectionDetailContainer} options={headerOptions} />
     <Drawer.Screen name={ROUTES.INSPECTION_IN_PROGRESS} component={InspectionInProgressContainer} options={headerOptions} />
-    <Drawer.Screen name={ROUTES.DVIR_INSPECTION_CHECKLIST} component={DVIRInspectionChecklistContainer} options={headerOptions} />
+    <Drawer.Screen
+      layout={({children}) => children}
+      name={ROUTES.DVIR_INSPECTION_CHECKLIST}
+      component={DVIRInspectionChecklistContainer}
+      options={headerOptions}
+    />
     <Drawer.Screen name={ROUTES.DVIR_VEHICLE_INFO} component={DVIRVehicleInfoContainer} options={headerOptions} />
   </Drawer.Navigator>
 );

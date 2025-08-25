@@ -305,25 +305,54 @@ async function onGetSignedUrlSuccess(res, path, mime, setProgress, handleRespons
   }
 }
 function onGetSignedUrlFail(error, handleError, dispatch) {}
+
 export const uploadToS3 = async (preSignedUrl, key, path, mime, setProgress, handleResponse, handleError, _, category) => {
   try {
-    await ReactNativeBlobUtil.fetch(
-      'PUT',
-      preSignedUrl,
-      {
-        'Content-Type': mime,
-        Connection: 'close',
-      },
-      ReactNativeBlobUtil.wrap(path),
-    ).uploadProgress({interval: 250}, (written, total) => {
-      const percentCompleted = Math.round((written * 100) / total);
-      setProgress(percentCompleted);
+    // Normalize path (strip file://)
+    const normalizedPath = path.replace(/^file:\/\//, '');
+
+    // Try to get file size (helps progress accuracy)
+    let size = 0;
+    try {
+      const stat = await ReactNativeBlobUtil.fs.stat(normalizedPath);
+      size = Number(stat.size) || 0;
+    } catch (e) {
+      // fs.stat may fail on some URIs (content://, ph:// etc.)
+      console.warn('Could not stat file size, progress may be less accurate');
+    }
+
+    const headers = {
+      'Content-Type': mime,
+      ...(size ? {'Content-Length': String(size)} : {}),
+    };
+
+    const task = ReactNativeBlobUtil.fetch('PUT', preSignedUrl, headers, ReactNativeBlobUtil.wrap(path));
+
+    // Start with 0
+    setProgress(0);
+
+    // Progress listener
+    task.uploadProgress({interval: 100}, (written, totalFromCb) => {
+      const total = totalFromCb && totalFromCb > 0 ? totalFromCb : size;
+      if (total > 0) {
+        const pct = Math.min(99, Math.round((written * 100) / total));
+        setProgress(pct);
+      }
     });
+
+    // Wait for upload to finish
+    await task;
+
+    // Force 100 at the end
+    setProgress(100);
+
     await onUploadToS3Success(handleResponse, key, handleError, category, mime);
   } catch (error) {
+    handleError?.(error);
     throw error;
   }
 };
+
 async function onUploadToS3Success(handleResponse, key, handleError, category, mime) {
   const image_url = S3_BUCKET_BASEURL + key;
 

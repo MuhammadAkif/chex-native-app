@@ -8,7 +8,7 @@ import {
   InteriorItemsAnnotationExpandedCard,
   InteriorItemsExpandedCard,
 } from '../Components';
-import {Delete_Messages, HARDWARE_BACK_PRESS, hasInteriorAndRoofTopCompany, INSPECTION} from '../Constants';
+import {Delete_Messages, HARDWARE_BACK_PRESS, hasInteriorAndRoofTopCompany, INSPECTION, VEHICLE_TYPES} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {NewInspectionScreen} from '../Screens';
 import {
@@ -538,7 +538,12 @@ const NewInspectionContainer = ({route, navigation}) => {
     dispatch(file_Details(inspectionID)).then(onInProgressInspectionSuccess).catch(onInProgressInspectionFail);
   };
   function onInProgressInspectionSuccess(res) {
-    dispatch(setSelectedVehicleKind(res?.data?.vehicleType));
+    const {vehicleType} = res?.data;
+
+    if (vehicleType == VEHICLE_TYPES.TRUCK) {
+      return navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);
+    }
+
     vehicleTireStatusToRender(inspectionID).then();
   }
   function onInProgressInspectionFail(error) {
