@@ -20,7 +20,7 @@ const {white} = colors;
 const {container, headerContainer, counterContainer, counterText} = PreviewStyles;
 
 const VideoContainer = ({route, navigation}) => {
-  const {canGoBack, navigate, goBack} = navigation;
+  const {canGoBack, goBack} = navigation;
   const dispatch = useDispatch();
   const {
     user: {token},
@@ -94,13 +94,13 @@ const VideoContainer = ({route, navigation}) => {
       handleRetryPress();
       return true;
     } else if (route?.params?.returnTo) {
-      navigate(route.params.returnTo);
+      navigation.popTo(ROUTES.HOME, {screen: route.params.returnTo});
       return true;
     } else if (selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
       navigation.goBack();
       return true;
     } else if (canGoBack()) {
-      navigate(NEW_INSPECTION);
+      navigation.popTo(ROUTES.HOME, {screen: NEW_INSPECTION});
       return true;
     }
     return false;
@@ -166,7 +166,7 @@ const VideoContainer = ({route, navigation}) => {
   };
   function uploadVideoToStore(imageID) {
     dispatch(updateVehicleImage(groupType, type, isVideoURI, imageID));
-    navigate(NEW_INSPECTION);
+    navigation.popTo(ROUTES.HOME, {screen: NEW_INSPECTION});
   }
   const handleError = () => {
     setIsModalVisible(false);

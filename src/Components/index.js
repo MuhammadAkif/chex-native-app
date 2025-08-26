@@ -57,8 +57,7 @@ import ExpiredInspectionModal from './PopUpModals/ExpiredInspectionModal';
 import InfoModal from './PopUpModals/InfoModal';
 import PrimaryGradientButton from './PrimaryGradientButton';
 import PrimaryStartInspectionButton from './PrimaryStartInspectionButton';
-import ProgressBar from './ProgressBar';
-import ProgressCircle from './ProgressCircle';
+
 import PreviewFooter from './Recording/PreviewFooter';
 import RecordingPreview from './Recording/RecordingPreview';
 import RenderDamageTypes from './RenderItem/RenderDamageTypes';
@@ -138,8 +137,6 @@ export {
   PreviewFooter,
   PrimaryGradientButton,
   PrimaryStartInspectionButton,
-  ProgressBar,
-  ProgressCircle,
   RecordingPreview,
   RenderDamageTypes,
   RenderIcons,

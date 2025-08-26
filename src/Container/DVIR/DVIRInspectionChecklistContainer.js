@@ -23,7 +23,7 @@ import {
   isNotEmpty,
   LicensePlateDetails,
 } from '../../Utils';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused, useNavigationState, usePreventRemove} from '@react-navigation/native';
 import {BackHandler} from 'react-native';
 
 const frameConfigMap = {
@@ -109,91 +109,72 @@ const frameConfigMap = {
   },
 };
 
+// Helpers to centralize initial state
+const getInitialCaptureFrames = () => [
+  {
+    id: 'exterior_front',
+    title: 'Exterior Front',
+    frames: [
+      {id: 'exterior_right', icon: IMAGES.truckRight, image: null},
+      {id: 'exterior_left', icon: IMAGES.truckLeft, image: null},
+      {id: 'exterior_front', icon: IMAGES.truckFront, image: null},
+    ],
+  },
+  {
+    id: 'exterior_rear',
+    title: 'Exterior Rear',
+    frames: [
+      {id: 'rear_right_corner', icon: IMAGES.truckRearRight, image: null},
+      {id: 'rear_left_corner', icon: IMAGES.truckRearLeft, image: null},
+      {id: 'exterior_rear', icon: IMAGES.truckBack, image: null},
+    ],
+  },
+  {
+    id: 'interior_front',
+    title: 'Full Front Interior (dash, steering wheel, Seat)',
+    frames: [{id: 'front_interior', icon: IMAGES.truckInterior, image: null}],
+  },
+  {
+    id: 'interior_rear',
+    title: 'Rear Interior (back seats, floor) / Truck Bed',
+    frames: [{id: 'rear_interior', icon: IMAGES.truckInterior, image: null}],
+  },
+];
+
+const getInitialTireInspectionData = () => [
+  {id: 'tdrf', title: 'Tread Depth RF (TDRF)', image: null, icon: 'vehicleTire'},
+  {id: 'tdrr', title: 'Tread Depth RR (TDRR)', image: null, icon: 'vehicleTire'},
+  {id: 'tdlf', title: 'Tread Depth LF (TDLF)', image: null, icon: 'vehicleTire'},
+  {id: 'tdlr', title: 'Tread Depth LR (TDLR)', image: null, icon: 'vehicleTire'},
+  {id: 'tdspare', title: 'Tread Depth Spare (TDSPARE)', image: null, icon: 'vehicleTDS'},
+  {
+    id: 'brake_components',
+    title: 'Brake Components (photo of drums/rotors/lines)',
+    image: null,
+    icon: 'vehicleBrakeComponent',
+  },
+];
+
 const DVIRInspectionChecklistContainer = ({navigation, route}) => {
+  const {selectedInspectionID} = useSelector(state => state.newInspection);
+
   // State for checklist items
   const [commentModalVisible, setAddCommentModalVisible] = useState(false);
   const [currentItemIndex, setCurrentItemIndex] = useState(null);
   const [additionalComments, setAdditionalComments] = useState('');
-  const {selectedInspectionID} = useSelector(state => state.newInspection) || {};
   const [isLoading, setIsLoading] = useState(false);
   const [checklistData, setChecklistData] = useState([]);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
   const [mediaModalDetails, setMediaModalDetails] = useState({});
-
   const [checklistLoading, setChecklistLoading] = useState(false);
-  const [captureFrames, setCaptureFrames] = useState([
-    {
-      id: 'exterior_front',
-      title: 'Exterior Front',
-      frames: [
-        {id: 'exterior_right', icon: IMAGES.truckRight, image: null},
-        {id: 'exterior_left', icon: IMAGES.truckLeft, image: null},
-        {id: 'exterior_front', icon: IMAGES.truckFront, image: null},
-      ],
-    },
-    {
-      id: 'exterior_rear',
-      title: 'Exterior Rear',
-      frames: [
-        {id: 'rear_right_corner', icon: IMAGES.truckRearRight, image: null},
-        {id: 'rear_left_corner', icon: IMAGES.truckRearLeft, image: null},
-        {id: 'exterior_rear', icon: IMAGES.truckBack, image: null},
-      ],
-    },
-    {
-      id: 'interior_front',
-      title: 'Full Front Interior (dash, steering wheel, Seat)',
-      frames: [{id: 'front_interior', icon: IMAGES.truckInterior, image: null}],
-    },
-    {
-      id: 'interior_rear',
-      title: 'Rear Interior (back seats, floor) / Truck Bed',
-      frames: [{id: 'rear_interior', icon: IMAGES.truckInterior, image: null}],
-    },
-  ]);
+  const [captureFrames, setCaptureFrames] = useState(getInitialCaptureFrames());
 
-  const [tireInspectionData, setTireInspectionData] = useState([
-    {
-      id: 'tdrf',
-      title: 'Tread Depth RF (TDRF)',
-      image: null,
-      icon: 'vehicleTire',
-    },
-    {
-      id: 'tdrr',
-      title: 'Tread Depth RR (TDRR)',
-      image: null,
-      icon: 'vehicleTire',
-    },
-    {
-      id: 'tdlf',
-      title: 'Tread Depth LF (TDLF)',
-      image: null,
-      icon: 'vehicleTire',
-    },
-    {
-      id: 'tdlr',
-      title: 'Tread Depth LR (TDLR)',
-      image: null,
-      icon: 'vehicleTire',
-    },
-    {
-      id: 'tdspare',
-      title: 'Tread Depth Spare (TDSPARE)',
-      image: null,
-      icon: 'vehicleTDS',
-    },
-    {
-      id: 'brake_components',
-      title: 'Brake Components (photo of drums/rotors/lines)',
-      image: null,
-      icon: 'vehicleBrakeComponent',
-    },
-  ]);
+  const [tireInspectionData, setTireInspectionData] = useState(getInitialTireInspectionData());
 
   // Section toggle state
-  const [showChecklistSection, setShowChecklistSection] = useState(true);
+  const [showChecklistSection, setShowChecklistSection] = useState(false);
   const [showTiresSection, setShowTiresSection] = useState(false);
+  const routes = useNavigationState(state => state.routes);
 
   // CAPTURE MODAL DETAILS
   const modalDetailsInitialState = {
@@ -479,14 +460,35 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     if (type) setMediaModalVisible(true);
   };
 
+  const resetState = useCallback(() => {
+    setAddCommentModalVisible(false);
+    setCurrentItemIndex(null);
+    setAdditionalComments('');
+    setIsLoading(false);
+    setChecklistData([]);
+    setMediaModalVisible(false);
+    setMediaModalDetails({});
+    setChecklistLoading(false);
+    setCaptureFrames(getInitialCaptureFrames());
+    setTireInspectionData(getInitialTireInspectionData());
+    setModalDetails(modalDetailsInitialState);
+    setDisplayAnnotationPopUp(false);
+    setCaptureImageModalVisible(false);
+    setRequiredFields({});
+    setShowChecklistSection(false);
+  }, []);
+
   //API CALLS
   const getChecklistsData = useCallback(async () => {
     setChecklistLoading(true);
     const response = await getChecklists(selectedInspectionID);
     setChecklistLoading(false);
 
-    if (response.status == 200 && response?.data?.length > 0) setChecklistData(response.data);
-  }, []);
+    if (response.status == 200 && response?.data?.length > 0) {
+      setChecklistData(response.data);
+      setShowChecklistSection(true);
+    }
+  }, [selectedInspectionID]);
 
   const getInspectionData = useCallback(async () => {
     const response = await getInspectionDetails(selectedInspectionID);
@@ -541,6 +543,14 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       }
     }
   }, [selectedInspectionID, tireInspectionData, captureFrames]);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        navigation.setParams({hasNewFetch: undefined});
+      };
+    }, []),
+  );
 
   // CHECKLIST Camera result handler
   useEffect(() => {
@@ -606,16 +616,21 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   }, [route?.params?.afterFileUploadImageUrl]);
 
   useEffect(() => {
+    if (!selectedInspectionID) return;
+    if (!route?.params?.hasNewFetch) return;
+    // Reset all local states to initial values
+    resetState();
+
     const fetchData = async () => {
       try {
         await Promise.all([getChecklistsData(), getInspectionData()]);
       } catch (error) {
-        console.error('Failed to fetch checklist or inspection data:', error.response.data);
+        console.error('Failed to fetch checklist or inspection data:', error.response?.data || error);
       }
     };
 
     fetchData();
-  }, [selectedInspectionID]);
+  }, [selectedInspectionID, route?.params?.hasNewFetch]);
 
   const validateFramesTiresCheclist = () => {
     // 1. Validate captureFrames: all frames must have a non-null image
@@ -625,7 +640,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     const allTiresHaveImages = tireInspectionData.every(tire => tire.image !== null);
 
     // 3. Validate checklist: all items must have a non-empty checkStatus
-    const allChecklistItemsHaveStatus = checklistData.every(item => item.checkStatus !== null);
+    const allChecklistItemsHaveStatus = checklistData?.every?.(item => item?.checkStatus !== null);
 
     // Final result
     const allResults = allFramesHaveImages && allTiresHaveImages && allChecklistItemsHaveStatus;

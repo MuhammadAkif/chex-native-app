@@ -541,7 +541,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     const {vehicleType} = res?.data;
 
     if (vehicleType == VEHICLE_TYPES.TRUCK) {
-      return navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);
+      return navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {hasNewFetch: true});
     }
 
     vehicleTireStatusToRender(inspectionID).then();

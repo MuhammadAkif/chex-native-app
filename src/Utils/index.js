@@ -404,7 +404,7 @@ export const extractDate = dataAndTime => {
 
   return `${month}/${day}/${year}`;
 };
-export const handleHomePress = navigation => navigation.navigate(ROUTES.INSPECTION_SELECTION);
+export const handleHomePress = navigation => navigation.popTo(ROUTES.HOME);
 export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
   const errors = {
     409: {

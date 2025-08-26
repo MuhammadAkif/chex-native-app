@@ -23,23 +23,29 @@ api.interceptors.request.use(
 );
 
 // ❌ Response error interceptor (normalize all errors)
-// api.interceptors.response.use(
-//   response => response,
-//   error => {
-//     // Axios error → wrap in Error
-//     if (axios.isAxiosError(error)) {
-//       const message = error.response?.data?.message || error.message || 'Unknown network error';
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (axios.isAxiosError(error)) {
+      const safeError = new Error(error.response?.data?.message || error.message || 'Unknown network error');
 
-//       return Promise.reject(new Error(message));
-//     }
+      // Preserve useful fields
+      safeError.isAxiosError = true;
+      safeError.code = error.code;
+      safeError.config = error.config;
+      safeError.request = error.request;
+      safeError.response = error.response;
 
-//     // Non-Axios error → always convert to Error
-//     if (!(error instanceof Error)) {
-//       return Promise.reject(new Error(String(error)));
-//     }
+      return Promise.reject(safeError);
+    }
 
-//     return Promise.reject(error);
-//   },
-// );
+    // Non-Axios errors → wrap safely
+    if (!(error instanceof Error)) {
+      return Promise.reject(new Error(String(error)));
+    }
+
+    return Promise.reject(error);
+  },
+);
 
 export default api;

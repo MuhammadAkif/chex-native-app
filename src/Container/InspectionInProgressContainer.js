@@ -81,7 +81,7 @@ const InspectionInProgressContainer = ({navigation}) => {
     dispatch(setSelectedVehicleKind(vehicleKind));
     resetAllStates();
 
-    if (vehicleKind == VEHICLE_TYPES.TRUCK) return navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);
+    if (vehicleKind == VEHICLE_TYPES.TRUCK) return navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {hasNewFetch: true});
     else
       navigate(NEW_INSPECTION, {
         routeName: INSPECTION_IN_PROGRESS,

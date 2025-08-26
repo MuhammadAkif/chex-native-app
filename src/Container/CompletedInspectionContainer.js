@@ -10,19 +10,10 @@ const {INSPECTION_SELECTION} = ROUTES;
 
 const CompletedInspectionContainer = ({navigation}) => {
   const {canGoBack, navigate} = navigation;
-  const {
-    value: boxVisible,
-    setTrue,
-    setFalse,
-    reset,
-    toggle,
-  } = useBoolean(false);
+  const {value: boxVisible, setTrue, setFalse, reset, toggle} = useBoolean(false);
 
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      HARDWARE_BACK_PRESS,
-      handle_Hardware_Back_Press,
-    );
+    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
     return () => backHandler.remove();
   }, []);
   useEffect(() => {
@@ -31,7 +22,7 @@ const CompletedInspectionContainer = ({navigation}) => {
 
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
-      navigate(INSPECTION_SELECTION);
+      navigation.popTo(ROUTES.HOME);
       return true;
     }
     return false;
@@ -39,12 +30,7 @@ const CompletedInspectionContainer = ({navigation}) => {
   function resetAllStates() {
     reset();
   }
-  return (
-    <CompletedInspectionScreen
-      navigation={navigation}
-      boxVisible={boxVisible}
-    />
-  );
+  return <CompletedInspectionScreen navigation={navigation} boxVisible={boxVisible} />;
 };
 
 export default CompletedInspectionContainer;

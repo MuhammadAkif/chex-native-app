@@ -3,9 +3,8 @@ import {Modal, StyleSheet, View, Text, TouchableOpacity, StatusBar, Platform} fr
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
-import CircularProgress from 'react-native-circular-progress-indicator';
 import {useSelector} from 'react-redux';
-
+import * as Progress from 'react-native-progress';
 import {Cross, Expand, Info} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {PrimaryGradientButton, RequiredIndicator, Sub_Heading} from './index';
@@ -57,17 +56,8 @@ const CaptureImageModal = ({
     }),
     [instructionalSubHeadingText, isExterior, isFullScreen, isCarVerification],
   );
-  /*const button = () => (
-   <View style={styles.body}>
-     <PrimaryGradientButton
-       text={buttonText}
-       onPress={() => handleCaptureImage(isVideo, modalKey)}
-     />
-   </View>
- );
- const footers = {true: ProgressCircle, false: button};
- const ActiveFooter = footers[isLoading];*/
 
+  const normalizedProgressValue = Math.min(Math.max(progress / 100, 0), 1); // clamp
   return (
     <Modal
       animationType="slide"
@@ -134,14 +124,19 @@ const CaptureImageModal = ({
                 top: OS === ANDROID && isFullScreen ? hp('8%') : null,
               },
             ]}>
-            <CircularProgress
-              maxValue={100}
-              value={progress}
-              valueSuffix={'%'}
-              radius={OS === ANDROID && isFullScreen ? 40 : 80}
-              progressValueColor={white}
-              activeStrokeColor={orangePeel}
-              titleStyle={{fontWeight: 'bold'}}
+            <Progress.Circle
+              borderColor={colors.orangePeel}
+              strokeCap="round"
+              animated={true}
+              color={colors.orangePeel}
+              unfilledColor={colors.gray}
+              size={wp('35%')}
+              borderWidth={0}
+              thickness={10}
+              progress={normalizedProgressValue}
+              showsText
+              formatText={() => `${progress}%`}
+              textStyle={{fontWeight: 'bold', color: colors.white}}
             />
             <Text style={[styles.textColor, styles.loadingText]}>{progress === 100 ? 'Finalizing Upload' : 'Uploading'}</Text>
           </View>

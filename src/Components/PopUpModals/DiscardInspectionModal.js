@@ -16,7 +16,7 @@ const DiscardInspectionModal = ({
   dualButton = true,
   yesButtonText = 'Yes',
 }) => (
-  <Modal animationType="slide" transparent={true} visible={true} onRequestClose={onNoPress} statusBarTranslucent style={modalOuterContainer}>
+  <Modal statusBarTranslucent animationType="slide" transparent={true} visible={true} onRequestClose={onNoPress} style={modalOuterContainer}>
     <View style={container}>
       <View style={modalContainer}>
         {title && <Text style={header}>{title}</Text>}

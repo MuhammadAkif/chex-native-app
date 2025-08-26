@@ -529,8 +529,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     alignSelf: 'center',
-    marginBottom: hp(1.5),
+    // marginBottom: hp(1.5),
     marginTop: hp(1),
+    marginBottom: hp(2),
   },
   keyboardAvoidingContainer: {
     flex: 1,

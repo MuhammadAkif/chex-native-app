@@ -51,7 +51,7 @@ const isUploadFailedInitialState = {visible: false, title: '', message: ''};
 
 const CameraContainer = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const {navigate, goBack, canGoBack} = navigation;
+  const {goBack, canGoBack} = navigation;
   const {
     user: {token, data},
   } = useSelector(state => state?.auth);
@@ -128,13 +128,13 @@ const CameraContainer = ({route, navigation}) => {
       handleRetryPress();
       return true;
     } else if (route?.params?.returnTo) {
-      navigate(route.params.returnTo);
+      navigation.popTo(ROUTES.HOME, {name: route.params.returnTo});
       return true;
     } else if (selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
       navigation.goBack();
       return true;
     } else if (canGoBack()) {
-      navigate(NEW_INSPECTION);
+      navigation.popTo(ROUTES.HOME, {screen: NEW_INSPECTION});
       return true;
     }
     return false;
@@ -318,7 +318,7 @@ const CameraContainer = ({route, navigation}) => {
 
   const handleExitPress = () => {
     resetAllStates();
-    navigate(INSPECTION_SELECTION);
+    navigation.popTo(ROUTES.HOME, {screen: INSPECTION_SELECTION});
   };
 
   const handleOnRightIconPress = () => setOrientation(prevState => switchOrientation[prevState]);

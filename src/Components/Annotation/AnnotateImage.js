@@ -142,7 +142,13 @@ const AnnotateImage = ({
   const closeKeyboard = () => Keyboard.dismiss();
 
   return (
-    <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={handleVisible} style={styles.container}>
+    <Modal
+      statusBarTranslucent
+      animationType="slide"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={handleVisible}
+      style={styles.container}>
       <TouchableOpacity activeOpacity={1} style={styles.centeredViewContainer} onPress={closeKeyboard}>
         <KeyboardAvoidingView behavior={'padding'}>
           <View style={styles.centeredView}>

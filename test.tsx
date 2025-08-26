@@ -1,93 +1,29 @@
-// Navigation.js
+import {View, Text} from 'react-native';
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import {useSelector} from 'react-redux';
+import * as Progress from 'react-native-progress';
+import {colors} from './src/Assets/Styles';
+import {widthPercentageToDP} from 'react-native-responsive-screen';
 
-import {
-  RegisterContainer,
-  WelcomeContainer,
-  SignInContainer,
-  ResetPasswordContainer,
-  ForgotPasswordContainer,
-  CameraContainer,
-  VideoContainer,
-  CompletedInspectionContainer,
-  InspectionSelectionContainer,
-  DVIRInspectionChecklistContainer,
-  DVIRVehicleInfoContainer,
-  InspectionDetailContainer,
-  InspectionInProgressContainer,
-  InspectionReviewedContainer,
-  IntroContainer,
-  LicensePlateNumberSelectionContainer,
-  NewInspectionContainer,
-} from '../Container';
-
-import {ROUTES} from './ROUTES';
-import {navigationRef} from '../services/navigationService';
-import {CustomDrawerContent} from '../Components';
-import {drawerScreenOptions, stackScreenOptions, headerOptions} from './navigationOptions';
-
-const Stack = createNativeStackNavigator();
-const Drawer = createDrawerNavigator();
-
-// ----------------------
-// ROOT NAVIGATION
-// ----------------------
-const RootNavigation = () => {
-  const token = useSelector(state => state?.auth?.user?.token);
-
+const Test = () => {
   return (
-    <NavigationContainer ref={navigationRef}>
-      {token ? (
-        <Stack.Navigator screenOptions={stackScreenOptions}>
-          <Stack.Screen name={ROUTES.AppDrawer} component={AppDrawer} />
-          <Stack.Screen name={ROUTES.CAMERA} component={CameraContainer} />
-          <Stack.Screen name={ROUTES.VIDEO} component={VideoContainer} />
-        </Stack.Navigator>
-      ) : (
-        <AuthStack />
-      )}
-    </NavigationContainer>
+    <View>
+      <Progress.Circle
+        borderColor={colors.orangePeel}
+        strokeCap="round"
+        animated={true}
+        color={colors.orangePeel}
+        unfilledColor={colors.gray}
+        size={widthPercentageToDP('35%')}
+        borderWidth={0}
+        thickness={10}
+        // maxValue={100}
+        progress={0.2}
+        showsText
+        formatText={() => '100%'}
+        textStyle={{fontWeight: 'bold', color: colors.black}}
+      />
+    </View>
   );
 };
 
-// ----------------------
-// AUTH STACK
-// ----------------------
-const AuthStack = () => (
-  <Stack.Navigator initialRouteName={ROUTES.WELCOME} screenOptions={stackScreenOptions}>
-    <Stack.Screen name={ROUTES.WELCOME} component={WelcomeContainer} />
-    <Stack.Screen name={ROUTES.REGISTER} component={RegisterContainer} />
-    <Stack.Screen name={ROUTES.SIGN_IN} component={SignInContainer} />
-    <Stack.Screen name={ROUTES.FORGET_PASSWORD} component={ForgotPasswordContainer} />
-    <Stack.Screen name={ROUTES.RESET_PASSWORD} component={ResetPasswordContainer} />
-  </Stack.Navigator>
-);
-
-// ----------------------
-// APP DRAWER
-// ----------------------
-const AppDrawer = () => (
-  <Drawer.Navigator
-    backBehavior="history"
-    drawerContent={props => <CustomDrawerContent {...props} />}
-    screenOptions={drawerScreenOptions}
-    initialRouteName={ROUTES.INSPECTION_SELECTION}>
-    <Drawer.Screen name={ROUTES.COMPLETED_INSPECTION} component={CompletedInspectionContainer} />
-
-    <Drawer.Screen name={ROUTES.INSPECTION_SELECTION} component={InspectionSelectionContainer} options={{headerShown: false}} />
-    <Drawer.Screen name={ROUTES.INTRO} component={IntroContainer} options={headerOptions} />
-    <Drawer.Screen name={ROUTES.LICENSE_PLATE_SELECTION} component={LicensePlateNumberSelectionContainer} options={headerOptions} />
-    <Drawer.Screen name={ROUTES.NEW_INSPECTION} component={NewInspectionContainer} options={headerOptions} />
-    <Drawer.Screen name={ROUTES.INSPECTION_REVIEWED} component={InspectionReviewedContainer} options={headerOptions} />
-    <Drawer.Screen name={ROUTES.INSPECTION_DETAIL} component={InspectionDetailContainer} options={headerOptions} />
-    <Drawer.Screen name={ROUTES.INSPECTION_IN_PROGRESS} component={InspectionInProgressContainer} options={headerOptions} />
-    <Drawer.Screen name={ROUTES.DVIR_INSPECTION_CHECKLIST} component={DVIRInspectionChecklistContainer} options={headerOptions} />
-    <Drawer.Screen name={ROUTES.DVIR_VEHICLE_INFO} component={DVIRVehicleInfoContainer} options={headerOptions} />
-  </Drawer.Navigator>
-);
-
-export default RootNavigation;
+export default Test;

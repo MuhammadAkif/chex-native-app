@@ -1,11 +1,8 @@
 import React, {useEffect, useState, memo} from 'react';
 import {StyleSheet} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
-import {ProgressBar, Image} from './index';
+import {Image} from './index';
 import {progressZIndex} from '../Utils/helpers';
 import {fallBack} from '../Utils';
 
@@ -14,16 +11,8 @@ const loadingProgressInitialState = {
   display: true,
 };
 
-const Custom_Image = ({
-  source,
-  onProgress = fallBack,
-  onLoadEnd = fallBack,
-  loadingContainerStyle = {},
-  imageStyle = {},
-}) => {
-  const [loadingProgress, setLoadingProgress] = useState(
-    loadingProgressInitialState,
-  );
+const Custom_Image = ({source, onProgress = fallBack, onLoadEnd = fallBack, loadingContainerStyle = {}, imageStyle = {}}) => {
+  const [loadingProgress, setLoadingProgress] = useState(loadingProgressInitialState);
   const zIndex = progressZIndex[loadingProgress.progress === 1];
 
   useEffect(() => {
@@ -53,19 +42,7 @@ const Custom_Image = ({
       style={[styles.image, imageStyle]}
       // onProgress={on_Progress}
       // onLoadEnd={on_LoadEnd}
-    >
-      {/*{loadingProgress.display && (*/}
-      {/*  <ProgressBar*/}
-      {/*    value={loadingProgress.progress * 100}*/}
-      {/*    containerStyle={[*/}
-      {/*      styles.image,*/}
-      {/*      imageStyle,*/}
-      {/*      loadingContainerStyle,*/}
-      {/*      {zIndex},*/}
-      {/*    ]}*/}
-      {/*  />*/}
-      {/*)}*/}
-    </Image>
+    ></Image>
   );
 };
 

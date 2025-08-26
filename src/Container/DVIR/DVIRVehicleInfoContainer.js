@@ -101,7 +101,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
           const {id = null} = response?.data || {};
           dispatch(numberPlateSelected(id));
 
-          navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);
+          navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {hasNewFetch: true});
         }
       })
       .catch(error => {
@@ -115,7 +115,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
               onPress: () => {
                 if (error.response?.data?.statusMessage === 'in_progress') {
                   dispatch(numberPlateSelected(error.response?.data?.inspectionId));
-                  navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST);
+                  navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {hasNewFetch: true});
                 }
               },
             },
