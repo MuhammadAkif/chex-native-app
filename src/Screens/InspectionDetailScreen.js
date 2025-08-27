@@ -1,23 +1,9 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  Platform,
-  Text,
-  ScrollView,
-} from 'react-native';
+import {View, StyleSheet, FlatList, Platform, Text, ScrollView} from 'react-native';
 
 import {colors, NewInspectionStyles} from '../Assets/Styles';
-import {
-  AndroidMediaViewModal,
-  DisplayMediaModal,
-  RenderInspectionDetail,
-} from '../Components';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {AndroidMediaViewModal, DisplayMediaModal, RenderInspectionDetail} from '../Components';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {INSPECTION_STATUS} from '../Utils/helpers';
 
 const {OS} = Platform;
@@ -48,26 +34,16 @@ const InspectionDetailScreen = ({
         title={modalDetails?.title}
         isVideo={modalDetails?.isVideo}
         source={modalDetails?.source}
+        coordinates={modalDetails?.coordinates}
       />
     )}
     <View style={{...bodyContainer, paddingHorizontal: '5%'}}>
       <View style={styles.headerContainer}>
-        <Text style={{...styles.headerText, ...styles.textColor}}>
-          Inspection Details
-        </Text>
+        <Text style={{...styles.headerText, ...styles.textColor}}>Inspection Details</Text>
         <View style={styles.finalStatusContainer}>
-          <Text style={{...styles.text, ...styles.textColor, width: wp('30%')}}>
-            Final Status
-          </Text>
-          <ICON_COMPONENT
-            height={hp('3%')}
-            width={wp('8%')}
-            color={iconColor}
-          />
-          <Text
-            style={{...styles.text, ...styles.statusText, ...styles.textColor}}>
-            {INSPECTION_STATUS[isPassed]}
-          </Text>
+          <Text style={{...styles.text, ...styles.textColor, width: wp('30%')}}>Final Status</Text>
+          <ICON_COMPONENT height={hp('3%')} width={wp('8%')} color={iconColor} />
+          <Text style={{...styles.text, ...styles.statusText, ...styles.textColor}}>{INSPECTION_STATUS[isPassed]}</Text>
         </View>
         <View style={styles.statusDescriptionContainer}>
           <ScrollView>
@@ -79,12 +55,7 @@ const InspectionDetailScreen = ({
         <FlatList
           data={detailsFiles}
           numColumns={2}
-          renderItem={({item}) => (
-            <RenderInspectionDetail
-              item={item}
-              handleDisplayMedia={handleDisplayMedia}
-            />
-          )}
+          renderItem={({item}) => <RenderInspectionDetail item={item} handleDisplayMedia={handleDisplayMedia} />}
           keyExtractor={item => item?.id}
         />
       </View>

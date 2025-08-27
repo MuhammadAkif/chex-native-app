@@ -22,9 +22,7 @@ const InspectionDetailContainer = ({navigation, route}) => {
     let {files, finalStatus, remarks} = route.params;
     detailsFiles = {files: files, finalStatus: finalStatus, remarks: remarks};
   }
-  const isPassed =
-    detailsFiles?.finalStatus &&
-    detailsFiles?.finalStatus.toLowerCase() === 'pass';
+  const isPassed = detailsFiles?.finalStatus && detailsFiles?.finalStatus.toLowerCase() === 'pass';
   const ICON_COLOR = {
     true: deepGreen,
     false: red,
@@ -32,10 +30,7 @@ const InspectionDetailContainer = ({navigation, route}) => {
   const ICON_COMPONENT = STATUS_ICON[isPassed];
 
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      HARDWARE_BACK_PRESS,
-      handle_Hardware_Back_Press,
-    );
+    const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
     return () => backHandler.remove();
   }, []);
 
@@ -58,6 +53,7 @@ const InspectionDetailContainer = ({navigation, route}) => {
       source,
       title,
       isVideo,
+      coordinates: item?.coordinateArray?.coordinateArray,
     });
     setIsModalVisible(true);
   };

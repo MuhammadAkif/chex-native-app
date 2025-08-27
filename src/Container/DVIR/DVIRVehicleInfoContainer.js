@@ -81,7 +81,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
     });
   };
 
-  const handleSubmitForm = (values, {setSubmitting}) => {
+  const handleSubmitForm = (values, {setSubmitting, resetForm}) => {
     setSubmitting(false);
     const data = {
       licensePlateNumber: values?.licensePlateNumber,
@@ -93,14 +93,17 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
       vehicleType: VEHICLE_TYPES.TRUCK,
     };
 
-    setIsFormSubmitLoading(true);
+    apiCallToCreateInspection(data, resetForm);
+  };
 
+  const apiCallToCreateInspection = (data, resetForm) => {
+    setIsFormSubmitLoading(true);
     createInspection(companyId, data)
       .then(response => {
         if (response?.status === 201) {
           const {id = null} = response?.data || {};
           dispatch(numberPlateSelected(id));
-
+          resetForm();
           navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {hasNewFetch: true});
         }
       })
@@ -120,6 +123,8 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
               },
             },
           ]);
+        } else if (error.response.data.statusCode === 400) {
+          alert(error?.response?.data?.message);
         }
       })
       .finally(() => {
@@ -127,20 +132,16 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
       });
   };
 
-  const driverFullName = getUserFullName(driverFirstName, driverLastName);
+  const initialStates = {
+    driverName: getUserFullName(driverFirstName, driverLastName),
+    date: '07/07/2023',
+    licensePlateNumber: '',
+    mileage: '',
+    vin: '',
+  };
 
   return (
-    <Formik
-      initialValues={{
-        driverName: driverFullName,
-        date: '07/07/2023',
-        licensePlateNumber: '',
-        mileage: '',
-        vin: '',
-        // technician: '',
-      }}
-      validate={validate}
-      onSubmit={handleSubmitForm}>
+    <Formik initialValues={initialStates} validate={validate} onSubmit={handleSubmitForm}>
       {({values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue, isSubmitting}) => {
         // If coming back from camera with vinImageUri, extract VIN
         useEffect(() => {

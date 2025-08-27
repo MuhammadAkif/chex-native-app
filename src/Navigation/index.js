@@ -103,7 +103,7 @@ const AppDrawer = () => (
       component={DVIRInspectionChecklistContainer}
       options={headerOptions}
     />
-    <Drawer.Screen name={ROUTES.DVIR_VEHICLE_INFO} component={DVIRVehicleInfoContainer} options={headerOptions} />
+    <Drawer.Screen layout={({children}) => children} name={ROUTES.DVIR_VEHICLE_INFO} component={DVIRVehicleInfoContainer} options={headerOptions} />
   </Drawer.Navigator>
 );
 

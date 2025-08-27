@@ -2,7 +2,6 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
-
 import {CompletedInspectionBackgroundImage} from '../Components';
 import {colors} from '../Assets/Styles';
 import {PrimaryGradientButton} from '../Components';

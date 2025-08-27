@@ -1,9 +1,6 @@
 import React from 'react';
 import {Text, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {circleBorderRadius, colors} from '../../Assets/Styles';
 import {Platforms, S3_BUCKET_BASEURL} from '../../Constants';
@@ -20,10 +17,7 @@ const RenderInspectionDetail = ({item, handleDisplayMedia, categoryCount}) => {
   let title = formatTitle(category);
   let {completedUrl: source} = checkAndCompleteUrl(url);
   return (
-    <TouchableOpacity
-      disabled={!isNotEmpty(source)}
-      style={styles.container}
-      onPress={() => handleDisplayMedia(item)}>
+    <TouchableOpacity disabled={!isNotEmpty(source)} style={styles.container} onPress={() => handleDisplayMedia(item)}>
       <Custom_Image source={{uri: source}} />
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>

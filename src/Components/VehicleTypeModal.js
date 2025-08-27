@@ -3,6 +3,7 @@ import {StyleSheet, Text, View, Modal} from 'react-native';
 import {modalStyle} from '../Assets/Styles';
 import {VEHICLE_TYPES, VEHICLE_TYPE_DISPLAY_NAMES} from '../Constants';
 import VehicleTypeButton from './VehicleTypeButton';
+import PrimaryGradientButton from './PrimaryGradientButton';
 
 const {modalOuterContainer, container, modalContainer, header, body, button, yesText} = modalStyle;
 

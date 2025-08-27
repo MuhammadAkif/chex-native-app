@@ -31,16 +31,23 @@ const CustomDrawerContent = props => {
     //   ? white
     //   : black;
   };
-  useEffect(() => {
-    if (activeRouteName !== NEW_INSPECTION && previousScreen === NEW_INSPECTION) {
-      if (activeRouteName == ROUTES.DVIR_INSPECTION_CHECKLIST) return;
 
+  useEffect(() => {
+    const isLeavingNewInspection = previousScreen === NEW_INSPECTION && activeRouteName !== NEW_INSPECTION;
+    const isLeavingChecklist = previousScreen === ROUTES.DVIR_INSPECTION_CHECKLIST && activeRouteName !== ROUTES.DVIR_INSPECTION_CHECKLIST;
+    const isChecklistFromNewInspection = previousScreen === NEW_INSPECTION && activeRouteName === ROUTES.DVIR_INSPECTION_CHECKLIST;
+
+    if ((isLeavingNewInspection || isLeavingChecklist) && !isChecklistFromNewInspection) {
       dispatch(clearNewInspection());
       dispatch(setRequired());
     }
-    toast.visible && dispatch(hideToast());
+
+    if (toast.visible) {
+      dispatch(hideToast());
+    }
+
     setPreviousScreen(activeRouteName);
-  }, [activeRouteName]);
+  }, [activeRouteName, previousScreen, toast.visible, dispatch]);
 
   const handleNavigationPress = (path, active_Screen) => {
     // setActiveScreen(activeScreen);

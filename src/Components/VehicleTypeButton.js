@@ -1,9 +1,8 @@
 import React, {useMemo} from 'react';
-import {ActivityIndicator, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import {StyleSheet} from 'react-native';
+import PrimaryGradientButton from './PrimaryGradientButton';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
-
-import {buttonTextStyle, colors as color} from '../Assets/Styles';
+import {colors as color} from '../Assets/Styles';
 
 const VehicleTypeButton = React.memo(
   ({
@@ -19,47 +18,24 @@ const VehicleTypeButton = React.memo(
   }) => {
     const isButtonDisabled = isDisabled || isLoading;
 
-    // Memoize button content to prevent unnecessary re-renders
-    const buttonContent = useMemo(() => {
-      if (isLoading) {
-        return <ActivityIndicator size={loaderSize} color={loaderColor} />;
-      }
-      return (
-        <Text disabled={isButtonDisabled} style={[buttonTextStyle, textStyle]}>
-          {text}
-        </Text>
-      );
-    }, [isLoading, loaderSize, loaderColor, isButtonDisabled, text, textStyle]);
-
-    // Memoize button styles to prevent unnecessary style recalculations
+    // Final button styles
     const buttonStyles = useMemo(
       () => [styles.buttonContainer, buttonStyle, isButtonDisabled && styles.disabledButton],
       [buttonStyle, isButtonDisabled],
     );
 
-    // Memoize prop objects to reduce environmental impact
-    const touchableProps = useMemo(
-      () => ({
-        onPress,
-        disabled: isButtonDisabled,
-      }),
-      [onPress, isButtonDisabled],
-    );
-
-    const gradientProps = useMemo(
-      () => ({
-        colors,
-        start: {x: 0, y: 0},
-        end: {x: 1, y: 0},
-        style: buttonStyles,
-      }),
-      [colors, buttonStyles],
-    );
-
     return (
-      <TouchableOpacity {...touchableProps}>
-        <LinearGradient {...gradientProps}>{buttonContent}</LinearGradient>
-      </TouchableOpacity>
+      <PrimaryGradientButton
+        onPress={onPress}
+        buttonStyle={buttonStyles}
+        disabled={isLoading}
+        buttonDisabled={isDisabled}
+        colors={colors}
+        loaderSize={loaderSize}
+        loaderColor={loaderColor}
+        textStyle={textStyle}
+        text={text}
+      />
     );
   },
 );

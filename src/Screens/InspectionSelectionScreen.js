@@ -1,18 +1,9 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {colors} from '../Assets/Styles';
-import {
-  BackgroundImageView,
-  PrimaryGradientButton,
-  SignInLogo,
-  SecondaryButton,
-  AlertPopup,
-} from '../Components';
+import {BackgroundImageView, PrimaryGradientButton, SignInLogo, SecondaryButton, AlertPopup} from '../Components';
 import {ROUTES} from '../Navigation/ROUTES';
 import {exitAppInfo, PROJECT_NAME} from '../Constants';
 
@@ -25,26 +16,12 @@ const {
   button: {yes, cancel},
 } = exitAppInfo;
 
-const InspectionSelectionScreen = ({
-  handleNewInspectionPress,
-  handleNavigation,
-  isLoading,
-  showExitPopup,
-  onExitPress,
-  onExitCancelPress,
-}) => (
+const InspectionSelectionScreen = ({handleNewInspectionPress, handleNavigation, isLoading, showExitPopup, onExitPress, onExitCancelPress}) => (
   <BackgroundImageView>
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <SignInLogo
-          titleText={CHEX}
-          dotTitleText={AI}
-          subtitleText={'Virtual Inspections'}
-          containerStyle={styles.logoContainer}
-        />
-        <Text style={styles.registerTitleText}>
-          Please Select one option below
-        </Text>
+        <SignInLogo titleText={CHEX} dotTitleText={AI} subtitleText={'Virtual Inspections'} containerStyle={styles.logoContainer} />
+        <Text style={styles.registerTitleText}>Please Select one option below</Text>
       </View>
       <View style={styles.bodyContainer}>
         <PrimaryGradientButton
@@ -53,16 +30,8 @@ const InspectionSelectionScreen = ({
           onPress={handleNewInspectionPress}
           disabled={isLoading}
         />
-        <SecondaryButton
-          text={'Inspection In Progress'}
-          onPress={() => handleNavigation(INSPECTION_IN_PROGRESS)}
-          disabled={isLoading}
-        />
-        <SecondaryButton
-          text={'Inspection Submitted'}
-          onPress={() => handleNavigation(INSPECTION_REVIEWED)}
-          disabled={isLoading}
-        />
+        <SecondaryButton text={'Inspection In Progress'} onPress={() => handleNavigation(INSPECTION_IN_PROGRESS)} disabled={isLoading} />
+        <SecondaryButton text={'Inspection Submitted'} onPress={() => handleNavigation(INSPECTION_REVIEWED)} disabled={isLoading} />
       </View>
       <View style={styles.emptyFooterView} />
       <AlertPopup

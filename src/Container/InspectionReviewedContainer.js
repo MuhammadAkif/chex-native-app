@@ -86,6 +86,7 @@ const InspectionReviewedContainer = ({navigation}) => {
     const updatedBeforeImages = updateFiles(beforeImages);
     let files_ = sortInspectionReviewedItems(updatedBeforeImages);
     resetAllStates();
+
     navigate(INSPECTION_DETAIL, {
       files: files_,
       finalStatus: finalStatus,
