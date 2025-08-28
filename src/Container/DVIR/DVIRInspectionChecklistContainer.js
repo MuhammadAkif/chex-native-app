@@ -23,7 +23,7 @@ import {
   isNotEmpty,
   LicensePlateDetails,
 } from '../../Utils';
-import {useFocusEffect, useIsFocused, useNavigationState, usePreventRemove} from '@react-navigation/native';
+import {useFocusEffect, useNavigationState} from '@react-navigation/native';
 import {BackHandler} from 'react-native';
 
 const frameConfigMap = {
@@ -174,7 +174,6 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   // Section toggle state
   const [showChecklistSection, setShowChecklistSection] = useState(false);
   const [showTiresSection, setShowTiresSection] = useState(false);
-  const routes = useNavigationState(state => state.routes);
 
   // CAPTURE MODAL DETAILS
   const modalDetailsInitialState = {
@@ -404,7 +403,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     await inspectionSubmission(selectedInspectionID);
     setIsLoading(false);
 
-    navigation.navigate(ROUTES.INSPECTION_SELECTION);
+    navigation.navigate(ROUTES.COMPLETED_INSPECTION);
   };
 
   const handleMediaModalDetailsCrossPress = () => {

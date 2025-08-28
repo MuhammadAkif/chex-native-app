@@ -11,7 +11,7 @@ import {PROJECT_NAME} from '../Constants';
 const {white, blueGray} = colors;
 const {CHEX_AI} = PROJECT_NAME;
 
-const CompletedInspectionScreen = ({navigation}) => (
+const CompletedInspectionScreen = ({navigation, dispatch}) => (
   <CompletedInspectionBackgroundImage>
     <View style={styles.container}>
       <LinearGradient colors={['transparent', '#001B51']} start={{x: 0, y: 0}} end={{x: 0, y: 1}} locations={[0, 0.7]} style={styles.body}>
@@ -22,7 +22,7 @@ const CompletedInspectionScreen = ({navigation}) => (
           <Text style={{...styles.textColor, ...styles.subTitleText}}>
             You may now exit our app. Our representatives will reach out to you if we need any further help
           </Text>
-          <PrimaryGradientButton buttonStyle={styles.button} text={'Home'} onPress={() => handleHomePress(navigation)} />
+          <PrimaryGradientButton buttonStyle={styles.button} text={'Home'} onPress={() => handleHomePress(navigation, dispatch)} />
           <View style={styles.bodyFooterEmptyView} />
         </View>
       </LinearGradient>

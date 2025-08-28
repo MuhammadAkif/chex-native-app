@@ -2,7 +2,6 @@ import React from 'react';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Svg, {Defs, LinearGradient as SvgGradient, Stop, Rect} from 'react-native-svg';
-
 import {buttonTextStyle, colors as color} from '../Assets/Styles';
 
 const PrimaryGradientButton = ({

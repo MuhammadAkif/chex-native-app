@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     width: wp('40%'),
-    borderRadius: hp('10%'),
+    borderRadius: hp('3%'),
   },
   cancelButton: {
     width: wp('40%'),

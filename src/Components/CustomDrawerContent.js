@@ -38,6 +38,7 @@ const CustomDrawerContent = props => {
     const isChecklistFromNewInspection = previousScreen === NEW_INSPECTION && activeRouteName === ROUTES.DVIR_INSPECTION_CHECKLIST;
 
     if ((isLeavingNewInspection || isLeavingChecklist) && !isChecklistFromNewInspection) {
+      console.log('⚠️ REDUX INSPECTION DATA CLEARED FROM CUSTOM DRAWER USEEFFECT ⚠️');
       dispatch(clearNewInspection());
       dispatch(setRequired());
     }

@@ -5,12 +5,15 @@ import {CompletedInspectionScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS} from '../Constants';
 import {ROUTES} from '../Navigation/ROUTES';
 import {useBoolean} from '../hooks';
+import {useDispatch} from 'react-redux';
+import {clearNewInspection, hideToast, setRequired} from '../Store/Actions';
 
 const {INSPECTION_SELECTION} = ROUTES;
 
 const CompletedInspectionContainer = ({navigation}) => {
   const {canGoBack, navigate} = navigation;
   const {value: boxVisible, setTrue, setFalse, reset, toggle} = useBoolean(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
@@ -22,7 +25,12 @@ const CompletedInspectionContainer = ({navigation}) => {
 
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
-      navigation.popTo(ROUTES.HOME);
+      navigation.navigate(ROUTES.HOME, {name: ROUTES.INSPECTION_SELECTION});
+      // CLEAR INSPECTION STATES OF REDUX
+      dispatch(clearNewInspection());
+      dispatch(setRequired());
+      dispatch(hideToast());
+
       return true;
     }
     return false;
@@ -30,7 +38,7 @@ const CompletedInspectionContainer = ({navigation}) => {
   function resetAllStates() {
     reset();
   }
-  return <CompletedInspectionScreen navigation={navigation} boxVisible={boxVisible} />;
+  return <CompletedInspectionScreen navigation={navigation} boxVisible={boxVisible} dispatch={dispatch} />;
 };
 
 export default CompletedInspectionContainer;

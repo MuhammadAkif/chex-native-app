@@ -116,7 +116,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
             {
               text: 'OK',
               onPress: () => {
-                if (error.response?.data?.statusMessage === 'in_progress') {
+                if (error.response?.data?.vehicleType === VEHICLE_TYPES.TRUCK) {
                   dispatch(numberPlateSelected(error.response?.data?.inspectionId));
                   navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {hasNewFetch: true});
                 }

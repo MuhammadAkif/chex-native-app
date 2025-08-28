@@ -8,8 +8,8 @@ import {customSortOrder, darkImageError, INSPECTION, INSPECTION_SUBCATEGORY, S3_
 import {ROUTES} from '../Navigation/ROUTES';
 import {getInspectionDetails, isImageDarkWithAI, s3SignedUrl, uploadFileToDatabase} from '../services/inspection';
 import {store} from '../Store';
-import {batchUpdateVehicleImages, numberPlateSelected, sessionExpired, setCompanyId} from '../Store/Actions';
-import {setFileDetails, setVehicleTypeModalVisible} from '../Store/Actions/NewInspectionAction';
+import {batchUpdateVehicleImages, hideToast, numberPlateSelected, sessionExpired, setCompanyId} from '../Store/Actions';
+import {clearNewInspection, setFileDetails, setRequired, setVehicleTypeModalVisible} from '../Store/Actions/NewInspectionAction';
 import {checkAndCompleteUrl} from './helpers';
 
 // Validation Schema
@@ -404,7 +404,14 @@ export const extractDate = dataAndTime => {
 
   return `${month}/${day}/${year}`;
 };
-export const handleHomePress = navigation => navigation.popTo(ROUTES.HOME, {name: ROUTES.INSPECTION_SELECTION});
+export const handleHomePress = (navigation, dispatch) => {
+  // CLEAR INSPECTION STATES OF REDUX
+  dispatch(clearNewInspection());
+  dispatch(setRequired());
+  dispatch(hideToast());
+
+  navigation.navigate(ROUTES.HOME, {name: ROUTES.INSPECTION_SELECTION});
+};
 export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
   const errors = {
     409: {
