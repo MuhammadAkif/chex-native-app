@@ -257,7 +257,7 @@ const CameraContainer = ({route, navigation}) => {
     if (selectedVehicleKind === VEHICLE_TYPES.TRUCK) {
       navigation.popTo(ROUTES.HOME, {
         screen: ROUTES.DVIR_INSPECTION_CHECKLIST,
-        params: {afterFileUploadImageUrl: image_url, ...afterFileUploadNavigationParams},
+        params: {afterFileUploadImageUrl: image_url, fileId: imageID, ...afterFileUploadNavigationParams},
       });
     } else {
       navigation.popTo(ROUTES.HOME, {screen: NEW_INSPECTION, params});

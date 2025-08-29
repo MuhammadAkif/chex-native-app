@@ -699,8 +699,8 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   captureImageBox: {
-    width: wp(25),
-    height: hp(12),
+    width: wp(24),
+    height: hp(11),
     borderRadius: wp(2),
     borderWidth: 1.3,
     borderColor: '#D1E3F7',

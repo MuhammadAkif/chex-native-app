@@ -184,7 +184,7 @@ export const deleteImageFromDatabase = async fileId => {
   try {
     return await api.delete(endPoint);
   } catch (error) {
-    console.error('Deleting image from database error:', error);
+    console.error('Deleting image from database error:', error?.response?.data);
     throw error;
   }
 };

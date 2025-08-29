@@ -1,9 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {useSelector} from 'react-redux';
 
 import {ImagePicker_New, ItemPickerLabel} from '../index';
@@ -39,9 +36,7 @@ const ImagesPickerContainer = ({
     imageURLOne: false,
     imageURLTwo: false,
   });
-  const {fileDetails, exteriorItems} = useSelector(
-    state => state.newInspection,
-  );
+  const {fileDetails, exteriorItems} = useSelector(state => state.newInspection);
   let {title, groupType, key} = ExteriorDetails;
   const displayLabel = imageURL || imageURLOne || imageURLTwo;
   const labelVisible = hideAddLAbel ? !hideAddLAbel : isNotEmpty(displayLabel);
@@ -86,17 +81,8 @@ const ImagesPickerContainer = ({
   }
   return (
     <View style={styles.OuterContainer}>
-      <ItemPickerLabel
-        label={title}
-        labelVisible={labelVisible}
-        onAddNotePress={onAddImagePress}
-      />
-      <View
-        style={[
-          styles.container,
-          styles.singleTileContainer,
-          {borderBottomWidth},
-        ]}>
+      <ItemPickerLabel label={title} labelVisible={labelVisible} onAddNotePress={onAddImagePress} />
+      <View style={[styles.container, styles.singleTileContainer, {borderBottomWidth}]}>
         {displayImage && (
           <ImagePicker_New
             text={title}
@@ -105,9 +91,7 @@ const ImagesPickerContainer = ({
             isLoading={isLoading}
             onPress={() => handleItemPickerPress(ExteriorDetails)}
             onClearPress={() => handleCrossPress(groupType, key)}
-            handleMediaModalDetailsPress={() =>
-              handleMediaModalDetailsPress(title, imageURL, false, imageURL_ID)
-            }
+            handleMediaModalDetailsPress={() => handleMediaModalDetailsPress(title, imageURL, false, imageURL_ID)}
             isAnnotated={annotations.imageURL}
           />
         )}
@@ -119,14 +103,7 @@ const ImagesPickerContainer = ({
             isLoading={isLoading}
             onPress={() => handleItemPickerPress(ExteriorDetails, 1)}
             onClearPress={() => handleCrossPress(groupType, key, 1)}
-            handleMediaModalDetailsPress={() =>
-              handleMediaModalDetailsPress(
-                title,
-                imageURLOne,
-                false,
-                imageURLOne_ID,
-              )
-            }
+            handleMediaModalDetailsPress={() => handleMediaModalDetailsPress(title, imageURLOne, false, imageURLOne_ID)}
             isAnnotated={annotations.imageURLOne}
           />
         )}
@@ -138,14 +115,7 @@ const ImagesPickerContainer = ({
             isLoading={isLoading}
             onPress={() => handleItemPickerPress(ExteriorDetails, 2)}
             onClearPress={() => handleCrossPress(groupType, key, 2)}
-            handleMediaModalDetailsPress={() =>
-              handleMediaModalDetailsPress(
-                title,
-                imageURLTwo,
-                false,
-                imageURLTwo_ID,
-              )
-            }
+            handleMediaModalDetailsPress={() => handleMediaModalDetailsPress(title, imageURLTwo, false, imageURLTwo_ID)}
             isAnnotated={annotations.imageURLTwo}
           />
         )}
