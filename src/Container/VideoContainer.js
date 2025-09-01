@@ -96,9 +96,6 @@ const VideoContainer = ({route, navigation}) => {
     } else if (route?.params?.returnTo) {
       navigation.popTo(ROUTES.HOME, {screen: route.params.returnTo});
       return true;
-    } else if (selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
-      navigation.goBack();
-      return true;
     } else if (canGoBack()) {
       navigation.popTo(ROUTES.HOME, {screen: NEW_INSPECTION});
       return true;

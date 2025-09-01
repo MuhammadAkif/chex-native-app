@@ -4,7 +4,6 @@ import {ScrollView, StatusBar, StyleSheet, TouchableOpacity, View} from 'react-n
 import FastImage from 'react-native-fast-image';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
-
 import {Home, Info, Logout} from '../Assets/Icons';
 import {IMAGES} from '../Assets/Images';
 import {colors} from '../Assets/Styles';
@@ -55,16 +54,14 @@ const CustomDrawerContent = props => {
     toggleDrawer();
     if (active_Screen === DRAWER.LOGOUT) {
       replace('AuthStack');
-      // reset({
-      //   index: 0,
-      //   routes: [{name: SIGN_IN}],
-      // });
+      setTimeout(() => {
+        dispatch(signOut());
+      }, 100);
     } else {
       navigate(path);
     }
   };
   const handleLogout = () => {
-    dispatch(signOut());
     handleNavigationPress(SIGN_IN, DRAWER.LOGOUT);
   };
   return (

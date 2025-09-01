@@ -1,19 +1,9 @@
 import React from 'react';
 import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
-import {
-  circleBorderRadius,
-  colors,
-  NewInspectionStyles,
-} from '../Assets/Styles';
-import {
-  PrimaryStartInspectionButton,
-  RenderInspectionReviewed,
-} from '../Components';
+import {circleBorderRadius, colors, NewInspectionStyles} from '../Assets/Styles';
+import {PrimaryStartInspectionButton, RenderInspectionReviewed} from '../Components';
 import {handleHomePress} from '../Utils';
 import {Filter} from '../Assets/Icons';
 import Filter_RBSheet from '../Components/Filter_RBSheet';
@@ -43,9 +33,7 @@ const InspectionReviewedScreen = ({
     <View style={bodyContainer}>
       <View style={styles.bodyHeaderContainer}>
         <Text style={styles.bodyHeaderTitleText}>Inspection Reviewed</Text>
-        <TouchableOpacity
-          style={styles.filterContainer}
-          onPress={onFilterPress}>
+        <TouchableOpacity style={styles.filterContainer} onPress={onFilterPress}>
           <Filter height={hp('2%')} width={wp('5%')} />
           <Text style={{...styles.homeText, ...styles.filterText}}>Filter</Text>
         </TouchableOpacity>
@@ -82,13 +70,7 @@ const InspectionReviewedScreen = ({
         disabled={isNewInspectionLoading}
       />
     </View>
-    <Filter_RBSheet
-      filter={filter}
-      setFilter={setFilter}
-      inspections={inspections}
-      setInspections={setInspections}
-      navigation={navigation}
-    />
+    <Filter_RBSheet filter={filter} setFilter={setFilter} inspections={inspections} setInspections={setInspections} navigation={navigation} />
   </View>
 );
 

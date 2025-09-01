@@ -15,7 +15,6 @@ import {clearNewInspection, hideToast, setCompanyId, setSelectedVehicleKind, set
 import {hasCameraAndMicrophoneAllowed, onNewInspectionPressFail, onNewInspectionPressSuccess} from './src/Utils';
 import {createInspection} from './src/services/inspection';
 import {navigate, navigationRef, resetNavigation} from './src/services/navigationService';
-import Test from './test';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
@@ -80,29 +79,19 @@ function App() {
     const vehicleType = type.toLowerCase();
     dispatch(setSelectedVehicleKind(vehicleType));
 
-    if (vehicleType === VEHICLE_TYPES.TRUCK) {
+    // For van/sedan/other, call API and navigate after success
+    const state = store.getState();
+    const companyId = state?.auth?.user?.data?.companyId;
+    dispatch(setCompanyId(companyId));
+    setLoadingState({isLoading: true, vehicleType});
+    try {
+      const response = await createInspection(companyId, {vehicleType});
+      onNewInspectionPressSuccess(response, dispatch, navigate);
+    } catch (err) {
+      onNewInspectionPressFail(err, dispatch);
+    } finally {
       dispatch(setVehicleTypeModalVisible(false));
-      // Navigate immediately for truck, no API call
-      if (navigationRef.isReady()) {
-        navigate(ROUTES.DVIR_VEHICLE_INFO, {
-          routeName: ROUTES.INSPECTION_SELECTION,
-        });
-      }
-    } else {
-      // For van/sedan/other, call API and navigate after success
-      const state = store.getState();
-      const companyId = state?.auth?.user?.data?.companyId;
-      dispatch(setCompanyId(companyId));
-      setLoadingState({isLoading: true, vehicleType});
-      try {
-        const response = await createInspection(companyId, {vehicleType});
-        onNewInspectionPressSuccess(response, dispatch, navigate);
-      } catch (err) {
-        onNewInspectionPressFail(err, dispatch);
-      } finally {
-        dispatch(setVehicleTypeModalVisible(false));
-        setLoadingState({isLoading: false, vehicleType: ''});
-      }
+      setLoadingState({isLoading: false, vehicleType: ''});
     }
   };
 

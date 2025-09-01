@@ -130,9 +130,6 @@ const CameraContainer = ({route, navigation}) => {
     } else if (route?.params?.returnTo) {
       navigation.popTo(ROUTES.HOME, {name: route.params.returnTo});
       return true;
-    } else if (selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
-      navigation.goBack();
-      return true;
     } else if (canGoBack()) {
       navigation.popTo(ROUTES.HOME, {screen: NEW_INSPECTION});
       return true;
@@ -228,6 +225,7 @@ const CameraContainer = ({route, navigation}) => {
     } else if (statusCode === 401) {
       handle_Session_Expired(statusCode, dispatch);
     } else if (statusCode === 403) {
+      console.log('Error, Why The Inspection Expired Modal Displaying: ', error?.response?.data);
       handleError(true);
     } else {
       setIsUploadFailed(body);
@@ -254,14 +252,7 @@ const CameraContainer = ({route, navigation}) => {
       is_Exterior: haveType,
     };
 
-    if (selectedVehicleKind === VEHICLE_TYPES.TRUCK) {
-      navigation.popTo(ROUTES.HOME, {
-        screen: ROUTES.DVIR_INSPECTION_CHECKLIST,
-        params: {afterFileUploadImageUrl: image_url, fileId: imageID, ...afterFileUploadNavigationParams},
-      });
-    } else {
-      navigation.popTo(ROUTES.HOME, {screen: NEW_INSPECTION, params});
-    }
+    navigation.popTo(ROUTES.HOME, {screen: NEW_INSPECTION, params});
   }
 
   const handleExtractNumberPlate = async imageUrl => {

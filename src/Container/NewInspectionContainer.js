@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {BackHandler, Platform} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-
 import {
   ExteriorItemsExpandedCard,
   ExteriorItemsExpandedCard_Old,
@@ -108,12 +107,9 @@ const NewInspectionContainer = ({route, navigation}) => {
     mileage = '',
     feedback,
     imageDimensions,
-  } = useSelector(state => state.newInspection);
-  const {
-    user: {
-      data: {companyId},
-    },
-  } = useSelector(state => state?.auth);
+  } = useSelector(state => state.newInspection) || {};
+  const {user} = useSelector(state => state?.auth) || {};
+  const {companyId} = user?.data || {};
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
   const [mediaModalDetails, setMediaModalDetails] = useState({});
@@ -525,7 +521,9 @@ const NewInspectionContainer = ({route, navigation}) => {
       const vehicleType = hasAdded || 'existing';
       dispatch(setVehicleType(vehicleType));
       setInspectionID(inspectionId);
-      setIsInspectionInProgressModalVisible(true);
+      setTimeout(() => {
+        setIsInspectionInProgressModalVisible(true); // FOR IOS LITTLE DELAY
+      }, 100);
       setErrorTitle(errorMessage);
     } else if (statusCode === 400) {
       setInUseErrorTitle(message);
@@ -538,12 +536,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     dispatch(file_Details(inspectionID)).then(onInProgressInspectionSuccess).catch(onInProgressInspectionFail);
   };
   function onInProgressInspectionSuccess(res) {
-    const {vehicleType} = res?.data;
-
-    if (vehicleType == VEHICLE_TYPES.TRUCK) {
-      return navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {hasNewFetch: true});
-    }
-
+    dispatch(setSelectedVehicleKind(res?.data?.vehicleType));
     vehicleTireStatusToRender(inspectionID).then();
   }
   function onInProgressInspectionFail(error) {

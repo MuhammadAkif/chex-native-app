@@ -1,26 +1,13 @@
 import React from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
-
-import {
-  DiscardInspectionModal,
-  PrimaryStartInspectionButton,
-  RenderInspectionInProgress,
-} from '../Components';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {DiscardInspectionModal, PrimaryStartInspectionButton, RenderInspectionInProgress} from '../Components';
 import {colors, NewInspectionStyles, ShadowEffect} from '../Assets/Styles';
+import {ROUTES} from '../Navigation/ROUTES';
 import {handleHomePress} from '../Utils';
 
 const {black, white, royalBlue} = colors;
-const {
-  container,
-  bodyContainer,
-  bodyHeaderContainer,
-  bodyHeaderTitleText,
-  innerBody,
-} = NewInspectionStyles;
+const {container, bodyContainer, bodyHeaderContainer, bodyHeaderTitleText, innerBody} = NewInspectionStyles;
 
 const InspectionInProgressScreen = ({
   data,
@@ -38,11 +25,7 @@ const InspectionInProgressScreen = ({
 }) => (
   <View style={container}>
     {isDiscardInspectionModalVisible && (
-      <DiscardInspectionModal
-        onYesPress={onYesPress}
-        onNoPress={onNoPress}
-        description={'Are You Sure Want To Discard Your Inspection?'}
-      />
+      <DiscardInspectionModal onYesPress={onYesPress} onNoPress={onNoPress} description={'Are You Sure Want To Discard Your Inspection?'} />
     )}
     <View style={bodyContainer}>
       <View style={styles.bodyHeaderContainer}>
@@ -50,8 +33,7 @@ const InspectionInProgressScreen = ({
       </View>
       <View style={{...bodyHeaderContainer, ...styles.bodyHeaderBorderRadius}}>
         <Text style={{...bodyHeaderTitleText, ...styles.headerHeaderTextTitle}}>
-          Please select inspection below to continue. Once you submit, we will
-          review and issue certificate
+          Please select inspection below to continue. Once you submit, we will review and issue certificate
         </Text>
       </View>
       <View style={innerBody}>
@@ -71,13 +53,7 @@ const InspectionInProgressScreen = ({
           )}
           ListEmptyComponent={
             <View style={styles.emptyDataContainer}>
-              {isLoading ? (
-                <Text style={styles.emptyDataText}>Loading...</Text>
-              ) : (
-                <Text style={styles.emptyDataText}>
-                  No Inspection in progress
-                </Text>
-              )}
+              {isLoading ? <Text style={styles.emptyDataText}>Loading...</Text> : <Text style={styles.emptyDataText}>No Inspection in progress</Text>}
             </View>
           }
         />
