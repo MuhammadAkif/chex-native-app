@@ -1,9 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {useSelector} from 'react-redux';
 
 import {ButtonFooter, Custom_RBSheet, RenderStatuses} from './index';
@@ -25,13 +22,7 @@ const statusesInitialState = [
   },
 ];
 
-const Filter_RBSheet = ({
-  filter,
-  setFilter,
-  inspections,
-  setInspections,
-  navigation,
-}) => {
+const Filter_RBSheet = ({filter, setFilter, inspections, setInspections, navigation}) => {
   const {inspectionReviewed} = useSelector(state => state?.inspectionReviewed);
   const rbSheetRef = useRef(null);
   const [statuses, setStatuses] = useState(statusesInitialState);
@@ -71,18 +62,12 @@ const Filter_RBSheet = ({
   const openSheet = () => rbSheetRef.current?.open();
   const closeSheet = () => rbSheetRef.current?.close();
   const handleStatusPress = (item, index) => {
-    const updatedStatuses = statuses.map((status, i) =>
-      i === index ? {...status, selected: !status.selected} : status,
-    );
+    const updatedStatuses = statuses.map((status, i) => (i === index ? {...status, selected: !status.selected} : status));
     setStatuses(updatedStatuses);
   };
   const changeFilter = () => {
-    const selectedStatusKeys = statuses
-      .filter(status => status.selected)
-      .map(status => status.key);
-    const filteredInspections = inspectionReviewed.filter(({status}) =>
-      selectedStatusKeys.includes(status.toLowerCase()),
-    );
+    const selectedStatusKeys = statuses.filter(status => status.selected).map(status => status.key);
+    const filteredInspections = inspectionReviewed.filter(({status}) => selectedStatusKeys.includes(status.toLowerCase()));
     setInspections(filteredInspections);
     setFilter(false);
   };
@@ -111,12 +96,7 @@ const Filter_RBSheet = ({
   };
 
   return (
-    <Custom_RBSheet
-      ref={rbSheetRef}
-      useNativeDriver={false}
-      height={hp('40%')}
-      closeOnPressBack={false}
-      closeOnPressMask={false}>
+    <Custom_RBSheet ref={rbSheetRef} useNativeDriver={false} height={hp('40%')} closeOnPressBack={false} closeOnPressMask={false}>
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Filter</Text>
@@ -127,17 +107,9 @@ const Filter_RBSheet = ({
         <View style={styles.body}>
           <FlatList
             data={statuses}
-            renderItem={({item, index}) => (
-              <RenderStatuses
-                item={item}
-                index={index}
-                onPress={handleStatusPress}
-              />
-            )}
+            renderItem={({item, index}) => <RenderStatuses item={item} index={index} onPress={handleStatusPress} />}
             keyExtractor={item => item.id.toString()}
-            ListEmptyComponent={
-              <EmptyComponent text={'No statuses available'} />
-            }
+            ListEmptyComponent={<EmptyComponent text={'No statuses available'} />}
           />
         </View>
         <View style={styles.footer}>
@@ -146,6 +118,7 @@ const Filter_RBSheet = ({
             noText={'Clear'}
             onYesPress={handleApplyPress}
             onNoPress={handleClearPress}
+            yesButtonStyle={{borderRadius: hp('3%')}}
           />
         </View>
       </View>

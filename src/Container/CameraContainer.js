@@ -261,7 +261,7 @@ const CameraContainer = ({route, navigation}) => {
 
   const handleError = (inspectionDeleted = false) => {
     setIsUploadFailed(isUploadFailedInitialState);
-    if (inspectionDeleted) {
+    if (inspectionDeleted === true) {
       setIsExpiryInspectionVisible(true);
     } else {
       setProgress(0);
