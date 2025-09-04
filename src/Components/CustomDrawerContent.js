@@ -55,16 +55,14 @@ const CustomDrawerContent = props => {
     toggleDrawer();
     if (active_Screen === DRAWER.LOGOUT) {
       replace('AuthStack');
-      // reset({
-      //   index: 0,
-      //   routes: [{name: SIGN_IN}],
-      // });
+      setTimeout(() => {
+        dispatch(signOut());
+      }, 100);
     } else {
       navigate(path);
     }
   };
   const handleLogout = () => {
-    dispatch(signOut());
     handleNavigationPress(SIGN_IN, DRAWER.LOGOUT);
   };
   return (

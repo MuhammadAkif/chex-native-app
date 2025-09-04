@@ -15,7 +15,6 @@ import {clearNewInspection, hideToast, setCompanyId, setSelectedVehicleKind, set
 import {hasCameraAndMicrophoneAllowed, onNewInspectionPressFail, onNewInspectionPressSuccess} from './src/Utils';
 import {createInspection} from './src/services/inspection';
 import {navigate, navigationRef, resetNavigation} from './src/services/navigationService';
-import Test from './test';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;

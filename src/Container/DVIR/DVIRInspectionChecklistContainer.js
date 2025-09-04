@@ -476,7 +476,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     setRequiredFields({});
     setShowChecklistSection(false);
   }, []);
-
+  console.log(selectedInspectionID);
   //API CALLS
   const getChecklistsData = useCallback(async () => {
     setChecklistLoading(true);

@@ -34,7 +34,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Camera access required in order to capture vehicle images and videos for the inspection.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Your location is used to tag inspections and improve route accuracy while the app is in use.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Microphone access required in order to record audio notes for the inspection.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

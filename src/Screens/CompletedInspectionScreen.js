@@ -5,13 +5,12 @@ import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-nativ
 import {CompletedInspectionBackgroundImage} from '../Components';
 import {colors} from '../Assets/Styles';
 import {PrimaryGradientButton} from '../Components';
-import {handleHomePress} from '../Utils';
 import {PROJECT_NAME} from '../Constants';
 
 const {white, blueGray} = colors;
 const {CHEX_AI} = PROJECT_NAME;
 
-const CompletedInspectionScreen = ({navigation, dispatch}) => (
+const CompletedInspectionScreen = ({onHomePress}) => (
   <CompletedInspectionBackgroundImage>
     <View style={styles.container}>
       <LinearGradient colors={['transparent', '#001B51']} start={{x: 0, y: 0}} end={{x: 0, y: 1}} locations={[0, 0.7]} style={styles.body}>
@@ -22,7 +21,7 @@ const CompletedInspectionScreen = ({navigation, dispatch}) => (
           <Text style={{...styles.textColor, ...styles.subTitleText}}>
             You may now exit our app. Our representatives will reach out to you if we need any further help
           </Text>
-          <PrimaryGradientButton buttonStyle={styles.button} text={'Home'} onPress={() => handleHomePress(navigation, dispatch)} />
+          <PrimaryGradientButton buttonStyle={styles.button} text={'Home'} onPress={onHomePress} />
           <View style={styles.bodyFooterEmptyView} />
         </View>
       </LinearGradient>

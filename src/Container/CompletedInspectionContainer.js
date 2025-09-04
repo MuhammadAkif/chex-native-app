@@ -23,9 +23,17 @@ const CompletedInspectionContainer = ({navigation}) => {
     return resetAllStates;
   }, []);
 
+  const handleHomePress = () => {
+    dispatch(clearNewInspection());
+    dispatch(setRequired());
+    dispatch(hideToast());
+
+    navigation.navigate(ROUTES.HOME, {name: INSPECTION_SELECTION});
+  };
+
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
-      navigation.navigate(ROUTES.HOME, {name: ROUTES.INSPECTION_SELECTION});
+      navigation.navigate(ROUTES.HOME, {name: INSPECTION_SELECTION});
       // CLEAR INSPECTION STATES OF REDUX
       dispatch(clearNewInspection());
       dispatch(setRequired());
@@ -38,7 +46,7 @@ const CompletedInspectionContainer = ({navigation}) => {
   function resetAllStates() {
     reset();
   }
-  return <CompletedInspectionScreen navigation={navigation} boxVisible={boxVisible} dispatch={dispatch} />;
+  return <CompletedInspectionScreen boxVisible={boxVisible} onHomePress={handleHomePress} />;
 };
 
 export default CompletedInspectionContainer;

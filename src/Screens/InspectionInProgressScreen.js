@@ -11,6 +11,7 @@ import {
   RenderInspectionInProgress,
 } from '../Components';
 import {colors, NewInspectionStyles, ShadowEffect} from '../Assets/Styles';
+import {ROUTES} from '../Navigation/ROUTES';
 import {handleHomePress} from '../Utils';
 
 const {black, white, royalBlue} = colors;
