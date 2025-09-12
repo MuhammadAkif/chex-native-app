@@ -14,8 +14,9 @@ import LicensePlateNumberSelectionScreen from './LicensePlateNumberSelectionScre
 import InspectionInProgressScreen from './InspectionInProgressScreen';
 import DVIRVehicleInfoScreen from './DVIR/DVIRVehicleInfoScreen';
 import DVIRInspectionChecklistScreen from './DVIR/DVIRInspectionChecklistScreen';
-
+import VehicleInformation from './NewDesign/VehicleInformation';
 export {
+  VehicleInformation,
   DVIRVehicleInfoScreen,
   DVIRInspectionChecklistScreen,
   WelcomeScreen,

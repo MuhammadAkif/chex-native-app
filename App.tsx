@@ -16,6 +16,7 @@ import {hasCameraAndMicrophoneAllowed, onNewInspectionPressFail, onNewInspection
 import {createInspection} from './src/services/inspection';
 import {navigate, navigationRef, resetNavigation} from './src/services/navigationService';
 import Home from './src/Screens/NewDesign/Home';
+import {VehicleInformation} from './src/Screens';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
@@ -111,7 +112,7 @@ function App() {
   ) : (
     <>
       {/* <Navigation /> */}
-      <Home />
+      <VehicleInformation />
       <Toast />
       <View>
         {updateAvailable && (

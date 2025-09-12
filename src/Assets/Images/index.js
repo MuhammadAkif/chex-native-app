@@ -21,6 +21,8 @@ export const IMAGES = {
   drawer: require('./DrawerImage.png'),
   VanOutline: require('./VanOutline.png'),
   Van: require('./Van.png'),
+  Sedan: require('./Sedan.png'),
+  Truck: require('./Truck.png'),
   // FRAMES
   truckFront: require('./Frames/TruckFront.png'),
   truckLeft: require('./Frames/TruckLeft.png'),

@@ -9,6 +9,7 @@ import CameraFooter from './CameraFooter';
 import CaptureImageModal from './CaptureImageModal';
 import InteriorItemsAnnotationExpandedCard from './Card/Annotation/InteriorItemsAnnotationExpandedCard';
 import CarVerificationExpandedCard from './Card/CarVerificationExpandedCard';
+import CardWrapper from './Card/CardWrapper';
 import CollapsedCard from './Card/CollapsedCard';
 import ExteriorItemsExpandedCard from './Card/ExteriorItemsExpandedCard';
 import ExteriorItemsExpandedCard_Old from './Card/ExteriorItemsExpandedCard_Old';
@@ -49,6 +50,7 @@ import ImagesPickerContainer from './ItemPicker/ImagesPickerContainer';
 import ItemPickerLabel from './ItemPicker/ItemPickerLabel';
 import VideoPicker from './ItemPicker/VideoPicker';
 import LoadingIndicator from './LoadingIndicator';
+import LogoHeader from './LogoHeader';
 import Mandatory from './Mandatory';
 import NewInspectionFooter from './NewInspectionFooter';
 import NumberPlateInUseModal from './NumberPlateInUseModal';
@@ -79,7 +81,10 @@ import Sub_Heading from './Sub_Heading';
 import Toast from './Toast';
 import VehicleCard from './VehicleCard';
 import WarningModal from './WarningModal';
+
 export {
+  CardWrapper,
+  LogoHeader,
   InspectionCard,
   VehicleCard,
   AlertPopup,

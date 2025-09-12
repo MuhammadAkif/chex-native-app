@@ -1,17 +1,17 @@
 import React, {forwardRef} from 'react';
 import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {colors} from '../Assets/Styles';
+import {AppTest} from 'aws-sdk';
+import AppText from './text';
 
 const {steelGray, black, lightSkyBlue} = colors;
 
 const CustomInput = forwardRef(
   (
     {
+      label,
       placeholder,
       inputStyle,
       inputMode,
@@ -36,36 +36,36 @@ const CustomInput = forwardRef(
     },
     ref,
   ) => (
-    <View style={[styles.container, inputContainerStyle]}>
-      <TextInput
-        ref={ref}
-        placeholder={placeholder}
-        placeholderTextColor={steelGray}
-        value={value}
-        onChange={onChange}
-        onPressIn={onPressIn}
-        onPressOut={onPressOut}
-        // textAlign={'left'}
-        numberOfLines={1}
-        multiline={false}
-        onChangeText={onChangeText?.(valueName)}
-        onBlur={onBlur?.(valueName)}
-        secureTextEntry={secureTextEntry}
-        style={[styles.input, inputStyle, {color: black}]}
-        inputMode={inputMode}
-        enterKeyHint={enterKeyHint || 'next'}
-        onSubmitEditing={onSubmitEditing}
-        keyboardType={keyboardType}
-        editable={editable}
-      />
-      {rightIcon && (
-        <TouchableOpacity
-          style={styles.rightIconContainer}
-          onPress={onRightIconPress}
-          activeOpacity={0.7}>
-          {rightIcon}
-        </TouchableOpacity>
-      )}
+    <View>
+      {label && <AppText style={styles.label}>{label}</AppText>}
+      <View style={[styles.container, inputContainerStyle]}>
+        <TextInput
+          ref={ref}
+          placeholder={placeholder}
+          placeholderTextColor={steelGray}
+          value={value}
+          onChange={onChange}
+          onPressIn={onPressIn}
+          onPressOut={onPressOut}
+          // textAlign={'left'}
+          numberOfLines={1}
+          multiline={false}
+          onChangeText={onChangeText?.(valueName)}
+          onBlur={onBlur?.(valueName)}
+          secureTextEntry={secureTextEntry}
+          style={[styles.input, inputStyle, {color: black}]}
+          inputMode={inputMode}
+          enterKeyHint={enterKeyHint || 'next'}
+          onSubmitEditing={onSubmitEditing}
+          keyboardType={keyboardType}
+          editable={editable}
+        />
+        {rightIcon && (
+          <TouchableOpacity style={styles.rightIconContainer} onPress={onRightIconPress} activeOpacity={0.7}>
+            {rightIcon}
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   ),
 );
@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: wp('2%'),
   },
+  label: {marginBottom: 8},
 });
 
 export default CustomInput;

@@ -3,8 +3,9 @@ import React from 'react';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import AppText from './text';
 import {colors} from '../Assets/Styles';
+import CardWrapper from './Card/CardWrapper';
 
-const VehicleCard = ({item, CardWrapper}) => {
+const VehicleCard = ({item}) => {
   return (
     <CardWrapper style={styles.container}>
       <Image source={item?.image} style={styles.image} />

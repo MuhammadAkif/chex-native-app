@@ -1,17 +1,17 @@
-import {View, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import React from 'react';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import AppText from './text';
 import {colors} from '../Assets/Styles';
 import GreenCheckIcon from '../Assets/Icons/NewDesign/GreenCheck';
+import CardWrapper from './Card/CardWrapper';
 
-const InspectionCard = ({item, CardWrapper}) => {
+const InspectionCard = ({item}) => {
   let statusBGColor = colors.tealGreen;
   if (item.status == 'Pending') statusBGColor = colors.orange;
 
   return (
     <CardWrapper style={styles.container}>
-      {/* <View style={styles.mainContentContainer}> */}
       <View style={styles.contentContainer}>
         <AppText fontSize={wp(3.8)} fontWeight={'800'}>
           {item?.licencseNumber}
@@ -31,8 +31,7 @@ const InspectionCard = ({item, CardWrapper}) => {
         </View>
       </View>
 
-      <GreenCheckIcon style={styles.check} />
-      {/* </View> */}
+      {item.status == 'Passed' && <GreenCheckIcon style={styles.check} />}
 
       <View style={styles.inspectionBy}>
         <AppText color={colors.steelGray} fontSize={wp(2.8)}>

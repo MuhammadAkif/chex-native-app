@@ -1,13 +1,11 @@
-import {View, StatusBar, TouchableOpacity, ScrollView, Image, FlatList} from 'react-native';
+import {View, StatusBar, ScrollView, Image, FlatList} from 'react-native';
 import React from 'react';
 import {styles} from './styles';
 import AppText from '../../../Components/text';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {InspectionCard, SignInLogo, VehicleCard} from '../../../Components';
-import {PROJECT_NAME} from '../../../Constants';
+import {CardWrapper, InspectionCard, LogoHeader, VehicleCard} from '../../../Components';
 import {colors} from '../../../Assets/Styles';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {BellWhiteIcon, BlueTruckStatIcon, HamburgerIcon, InProgressStatIcon, SubmittedStatIcon, TotalStatIcon} from '../../../Assets/Icons';
+import {BlueTruckStatIcon, InProgressStatIcon, SubmittedStatIcon, TotalStatIcon} from '../../../Assets/Icons';
 import {IMAGES} from '../../../Assets/Images';
 
 const Home = () => {
@@ -29,32 +27,14 @@ const Home = () => {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContentContainer} style={styles.container}>
         {/* BLUE HEADER */}
         <View style={styles.blueHeaderContainer}>
-          <SafeAreaView>
-            <View style={styles.headerContentContainer}>
-              <IconWrapper>
-                <HamburgerIcon />
-              </IconWrapper>
+          <LogoHeader />
 
-              <SignInLogo
-                titleText={PROJECT_NAME.CHEX}
-                dotTitleText={PROJECT_NAME.AI}
-                textStyle={styles.logo}
-                nestedTextStyle={styles.logo}
-                containerStyle={styles.logoContainer}
-              />
-
-              <IconWrapper>
-                <BellWhiteIcon />
-              </IconWrapper>
-            </View>
-
-            <View style={styles.usernameContainer}>
-              <AppText color={colors.white} fontSize={wp(6)} style={styles.username}>
-                Hi, Ali Tariq
-              </AppText>
-              <AppText color={colors.white}>Let's check your vehicle today</AppText>
-            </View>
-          </SafeAreaView>
+          <View style={styles.usernameContainer}>
+            <AppText color={colors.white} fontSize={wp(6)} style={styles.username}>
+              Hi, Ali Tariq
+            </AppText>
+            <AppText color={colors.white}>Let's check your vehicle today</AppText>
+          </View>
 
           <Image source={IMAGES.VanOutline} style={styles.vanoutlineContainer} />
         </View>
@@ -85,14 +65,6 @@ const Home = () => {
   );
 };
 
-const IconWrapper = ({children}) => {
-  return (
-    <TouchableOpacity activeOpacity={0.7} style={styles.iconWrapperContainer}>
-      {children}
-    </TouchableOpacity>
-  );
-};
-
 const StatBox = ({count = 0, icon: Icon, title}) => {
   return (
     <CardWrapper style={styles.statBoxContainer}>
@@ -109,10 +81,6 @@ const StatBox = ({count = 0, icon: Icon, title}) => {
   );
 };
 
-const CardWrapper = ({children, style}) => {
-  return <View style={[styles.cardContainer, style]}>{children}</View>;
-};
-
 const RegisteredVehicles = ({data}) => {
   return (
     <FlatList
@@ -122,7 +90,7 @@ const RegisteredVehicles = ({data}) => {
       contentContainerStyle={styles.vehicleContentList}
       showsHorizontalScrollIndicator={false}
       keyExtractor={(item, index) => index.toString()}
-      renderItem={({item, index}) => <VehicleCard item={item} CardWrapper={CardWrapper} />}
+      renderItem={({item, index}) => <VehicleCard item={item} />}
     />
   );
 };
@@ -136,7 +104,7 @@ const RecentInspections = ({data}) => {
       contentContainerStyle={styles.vehicleContentList}
       showsHorizontalScrollIndicator={false}
       keyExtractor={(item, index) => index.toString()}
-      renderItem={({item, index}) => <InspectionCard item={item} CardWrapper={CardWrapper} />}
+      renderItem={({item, index}) => <InspectionCard item={item} />}
     />
   );
 };
