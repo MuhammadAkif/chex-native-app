@@ -28,6 +28,12 @@ import InspectionReviewed from './InspectionReviewed';
 import Landscape from './Landscape';
 import Logout from './Logout';
 import MovieIcon from './MovieIcon';
+import BellWhiteIcon from './NewDesign/BellWhite';
+import BlueTruckStatIcon from './NewDesign/BlueTruck';
+import HamburgerIcon from './NewDesign/Hamburger';
+import InProgressStatIcon from './NewDesign/Inprogress';
+import SubmittedStatIcon from './NewDesign/SubmittedState';
+import TotalStatIcon from './NewDesign/TotalStat';
 import PhotoLibrary from './PhotoLibrary';
 import Play from './Play';
 import Plus from './Plus';
@@ -45,6 +51,12 @@ import VideoBorderedIcon from './VideoBorderedIcon';
 import Warning from './Warning';
 import XMark from './XMark';
 export {
+  TotalStatIcon,
+  BlueTruckStatIcon,
+  SubmittedStatIcon,
+  InProgressStatIcon,
+  HamburgerIcon,
+  BellWhiteIcon,
   CrossBlue,
   BackArrow,
   Bars,

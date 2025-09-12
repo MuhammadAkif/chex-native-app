@@ -40,6 +40,7 @@ import InputFieldRequiredError from './InputFieldRequiredError';
 import InputModal from './InputModal/InputModal';
 import LicensePlateInput from './InputModal/LicensePlateInput';
 import MileageInput from './InputModal/MileageInput';
+import InspectionCard from './InspectionCard';
 import IntroBackGroundImageView from './IntroBackgroundImageView';
 import ImagePicker from './ItemPicker/ImagePicker';
 import ImagePickerWithFooterList from './ItemPicker/ImagePickerWithFooterList';
@@ -76,9 +77,11 @@ import SignInLogo from './SignInLogo';
 import Splash from './Splash';
 import Sub_Heading from './Sub_Heading';
 import Toast from './Toast';
+import VehicleCard from './VehicleCard';
 import WarningModal from './WarningModal';
-
 export {
+  InspectionCard,
+  VehicleCard,
   AlertPopup,
   AndroidMediaViewModal,
   AnnotateImage,

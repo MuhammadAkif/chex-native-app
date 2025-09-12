@@ -19,6 +19,8 @@ export const IMAGES = {
   intro_Background: require('./IntroVehicle.png'),
   expiry_Inspection: require('./ExpiryInspection.png'),
   drawer: require('./DrawerImage.png'),
+  VanOutline: require('./VanOutline.png'),
+  Van: require('./Van.png'),
   // FRAMES
   truckFront: require('./Frames/TruckFront.png'),
   truckLeft: require('./Frames/TruckLeft.png'),
