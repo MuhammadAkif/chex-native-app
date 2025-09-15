@@ -32,6 +32,8 @@ export const colors = {
   silverGray: '#F3F3F3',
   lightGray: '#FAFAFA',
   icyBlue: '#EFFBF7',
+  oceanBlue: '#0C79FE',
+  slateGray: '#657381',
 };
 
 export const buttonTextStyle = {

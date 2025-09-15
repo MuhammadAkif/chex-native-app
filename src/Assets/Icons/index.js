@@ -1,5 +1,10 @@
 import BackArrow from './BackArrow';
 import Bars from './Bars';
+import GradientCircleTabIcon from './BottomTab/GradientCircle';
+import HomeTabIcon from './BottomTab/Home';
+import ProfileTabIcon from './BottomTab/Profile';
+import ReportTabIcon from './BottomTab/Report';
+import TripTabIcon from './BottomTab/Trip';
 import Camera from './Camera';
 import CameraBlack from './CameraBlack';
 import CameraBorderedIcon from './CameraCameraBorderedIcon';
@@ -30,6 +35,9 @@ import Logout from './Logout';
 import MovieIcon from './MovieIcon';
 import BellWhiteIcon from './NewDesign/BellWhite';
 import BlueTruckStatIcon from './NewDesign/BlueTruck';
+import CameraOutlineIcon from './NewDesign/CameraOutline';
+import ChevronIcon from './NewDesign/Chevron';
+import CircleTickIcon from './NewDesign/CircleTick';
 import HamburgerIcon from './NewDesign/Hamburger';
 import InProgressStatIcon from './NewDesign/Inprogress';
 import SubmittedStatIcon from './NewDesign/SubmittedState';
@@ -51,6 +59,16 @@ import VideoBorderedIcon from './VideoBorderedIcon';
 import Warning from './Warning';
 import XMark from './XMark';
 export {
+  //TAB ICONS
+  HomeTabIcon,
+  ProfileTabIcon,
+  GradientCircleTabIcon,
+  ReportTabIcon,
+  TripTabIcon,
+  //TAB ICONS
+  CameraOutlineIcon,
+  ChevronIcon,
+  CircleTickIcon,
   TotalStatIcon,
   BlueTruckStatIcon,
   SubmittedStatIcon,

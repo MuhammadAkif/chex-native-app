@@ -3,7 +3,6 @@ import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {colors} from '../Assets/Styles';
-import {AppTest} from 'aws-sdk';
 import AppText from './text';
 
 const {steelGray, black, lightSkyBlue} = colors;
@@ -13,6 +12,7 @@ const CustomInput = forwardRef(
     {
       label,
       placeholder,
+      placeholderTextColor,
       inputStyle,
       inputMode,
       value,
@@ -42,7 +42,7 @@ const CustomInput = forwardRef(
         <TextInput
           ref={ref}
           placeholder={placeholder}
-          placeholderTextColor={steelGray}
+          placeholderTextColor={placeholderTextColor || steelGray}
           value={value}
           onChange={onChange}
           onPressIn={onPressIn}

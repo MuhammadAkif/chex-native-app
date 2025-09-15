@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {colors} from '../../../Assets/Styles';
+import {colors, expandedCardStyles} from '../../../Assets/Styles';
 
 const CARD_PADDING = wp(4);
 export const styles = StyleSheet.create({
@@ -13,9 +13,11 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: wp(7),
     marginHorizontal: wp(3),
+    paddingVertical: hp(3),
+    gap: 15,
   },
   scrollContentContainer: {flexGrow: 1, backgroundColor: colors.white},
-  infoContainer: {paddingHorizontal: CARD_PADDING, paddingVertical: hp(3), gap: 7},
+  infoContainer: {paddingHorizontal: CARD_PADDING, gap: 7},
   vehicleTypeContainer: {gap: 15},
   vehicleTypeText: {paddingHorizontal: CARD_PADDING, marginBottom: 8},
   vehicleTypeContentList: {flexGrow: 1, gap: 10, paddingHorizontal: CARD_PADDING},
@@ -30,5 +32,15 @@ export const styles = StyleSheet.create({
   },
   vehicleImg: {width: '85%', height: '80%', resizeMode: 'contain'},
   vehicleItemName: {justifyContent: 'center', flex: 1},
-  inputsContainer: {paddingHorizontal: CARD_PADDING},
+  inputsContainer: {paddingHorizontal: CARD_PADDING, gap: 15},
+  inputContainer: {
+    height: hp('5%'),
+    width: '100%',
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderRadius: 100,
+    borderColor: expandedCardStyles.uploadImageContainer.borderColor,
+  },
+  input: {fontSize: wp(3.5)},
+  nextButton: {height: hp(5), width: '90%', alignSelf: 'center', marginTop: hp(3)},
 });

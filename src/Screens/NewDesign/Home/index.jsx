@@ -22,7 +22,7 @@ const Home = () => {
 
   return (
     <View style={styles.blueContainer}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+      <StatusBar translucent backgroundColor={'transparent'} barStyle="light-content" />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContentContainer} style={styles.container}>
         {/* BLUE HEADER */}

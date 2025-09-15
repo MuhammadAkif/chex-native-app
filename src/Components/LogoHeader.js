@@ -1,16 +1,18 @@
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
 import {BellWhiteIcon, HamburgerIcon} from '../Assets/Icons';
 import SignInLogo from './SignInLogo';
 import {PROJECT_NAME} from '../Constants';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useNavigation} from '@react-navigation/native';
 
 const LogoHeader = () => {
+  const navigation = useNavigation();
   return (
     <SafeAreaView edges={['top', 'left', 'right']}>
       <View style={styles.headerContentContainer}>
-        <IconWrapper>
+        <IconWrapper onPress={navigation?.openDrawer}>
           <HamburgerIcon />
         </IconWrapper>
 
@@ -30,9 +32,9 @@ const LogoHeader = () => {
   );
 };
 
-const IconWrapper = ({children}) => {
+const IconWrapper = ({children, onPress}) => {
   return (
-    <TouchableOpacity activeOpacity={0.7} style={styles.iconWrapperContainer}>
+    <TouchableOpacity activeOpacity={0.7} style={styles.iconWrapperContainer} onPress={onPress}>
       {children}
     </TouchableOpacity>
   );

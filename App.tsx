@@ -111,8 +111,9 @@ function App() {
     <Splash />
   ) : (
     <>
-      {/* <Navigation /> */}
-      <VehicleInformation />
+      <Navigation />
+      {/* <Home /> */}
+      {/* <VehicleInformation /> */}
       <Toast />
       <View>
         {updateAvailable && (

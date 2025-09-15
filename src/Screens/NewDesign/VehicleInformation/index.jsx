@@ -1,12 +1,13 @@
 import {View, StatusBar, ScrollView, Image, Pressable} from 'react-native';
 import React, {useState} from 'react';
 import {styles} from './styles';
-import {CardWrapper, CustomInput, LogoHeader} from '../../../Components';
+import {CardWrapper, CustomInput, LogoHeader, PrimaryGradientButton, SecondaryButton} from '../../../Components';
 import AppText from '../../../Components/text';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {colors} from '../../../Assets/Styles';
 import {IMAGES} from '../../../Assets/Images';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
+import {CameraOutlineIcon, ChevronIcon, CircleTickIcon} from '../../../Assets/Icons';
 
 const VehicleInformation = () => {
   const [selectedVehicle, setSelectedVehicle] = useState(1);
@@ -39,8 +40,7 @@ const VehicleInformation = () => {
           </View>
 
           <View style={styles.vehicleTypeContainer}>
-            {/* VEHICLES */}
-
+            {/* VEHICLE TYPES */}
             <View>
               <AppText style={styles.vehicleTypeText}>Vehicle Type</AppText>
               <ScrollView showsHorizontalScrollIndicator={false} horizontal contentContainerStyle={styles.vehicleTypeContentList}>
@@ -66,9 +66,44 @@ const VehicleInformation = () => {
 
             {/* INPUTS */}
             <View style={styles.inputsContainer}>
-              <CustomInput label="Truck ID/License Plate" />
+              <CustomInput
+                inputContainerStyle={styles.inputContainer}
+                placeholderTextColor={'#BDBDBD'}
+                rightIcon={<CircleTickIcon />}
+                inputStyle={styles.input}
+                placeholder="Enter Truck ID/License Plate"
+                label="Truck ID/License Plate"
+              />
+
+              <CustomInput
+                inputContainerStyle={styles.inputContainer}
+                placeholderTextColor={'#BDBDBD'}
+                rightIcon={<CameraOutlineIcon />}
+                inputStyle={styles.input}
+                placeholder="Enter Mileage"
+                label="Mileage"
+              />
+
+              <CustomInput
+                inputContainerStyle={styles.inputContainer}
+                placeholderTextColor={'#BDBDBD'}
+                inputStyle={styles.input}
+                placeholder="Enter VIN"
+                label="VIN"
+              />
+
+              <CustomInput
+                inputContainerStyle={styles.inputContainer}
+                placeholderTextColor={'#BDBDBD'}
+                rightIcon={<ChevronIcon />}
+                inputStyle={styles.input}
+                placeholder="Select Inspection Type"
+                label="Inspection Type"
+              />
             </View>
           </View>
+
+          <PrimaryGradientButton text="Next" buttonStyle={styles.nextButton} />
         </CardWrapper>
       </KeyboardAwareScrollView>
     </View>

@@ -28,6 +28,7 @@ import {ROUTES} from './ROUTES';
 import {navigationRef} from '../services/navigationService';
 import {CustomDrawerContent} from '../Components';
 import {drawerScreenOptions, stackScreenOptions, headerOptions} from './navigationOptions';
+import BottomTab from './bottomTab';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -89,12 +90,13 @@ const AppDrawer = () => (
     screenLayout={({children}) => <UnmountOnBlur>{children}</UnmountOnBlur>}
     drawerContent={props => <CustomDrawerContent {...props} />}
     screenOptions={drawerScreenOptions}
-    initialRouteName={ROUTES.INSPECTION_SELECTION}>
+    initialRouteName={ROUTES.Tabs}>
+    <Drawer.Screen name={ROUTES.Tabs} component={BottomTab} options={headerOptions} />
     <Drawer.Screen name={ROUTES.INSPECTION_SELECTION} component={InspectionSelectionContainer} options={{headerShown: false}} />
     <Drawer.Screen name={ROUTES.INTRO} component={IntroContainer} options={headerOptions} />
     <Drawer.Screen name={ROUTES.LICENSE_PLATE_SELECTION} component={LicensePlateNumberSelectionContainer} options={headerOptions} />
     <Drawer.Screen layout={({children}) => children} name={ROUTES.NEW_INSPECTION} component={NewInspectionContainer} options={headerOptions} />
-    <Drawer.Screen name={ROUTES.INSPECTION_REVIEWED} component={InspectionReviewedContainer} options={headerOptions} />
+    {/* <Drawer.Screen name={ROUTES.INSPECTION_REVIEWED} component={InspectionReviewedContainer} options={headerOptions} /> */}
     <Drawer.Screen name={ROUTES.INSPECTION_DETAIL} component={InspectionDetailContainer} options={headerOptions} />
     <Drawer.Screen name={ROUTES.INSPECTION_IN_PROGRESS} component={InspectionInProgressContainer} options={headerOptions} />
     <Drawer.Screen
