@@ -3,12 +3,10 @@ import {View, StyleSheet, Pressable} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AppText from '../Components/text';
-import Home from '../Screens/NewDesign/Home';
-import {VehicleInformation} from '../Screens';
 import {GradientCircleTabIcon, HomeTabIcon, ProfileTabIcon, ReportTabIcon, TripTabIcon} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {TABS} from './ROUTES';
-import {InspectionReviewedContainer} from '../Container';
+import {HomeTabStack, InspectionTabStack, MyTripsTabStack, ProfileTabStack, ReportTabStack} from './stacks';
 
 const Tab = createBottomTabNavigator();
 
@@ -29,17 +27,17 @@ const BottomTab = () => (
       headerShown: false,
       tabBarHideOnKeyboard: true,
     }}>
-    <Tab.Screen name={TABS.HOME} component={Home} options={{tabBarLabel: 'Home'}} />
-    <Tab.Screen name={TABS.REPORTS} component={InspectionReviewedContainer} options={{tabBarLabel: 'Reports'}} />
-    <Tab.Screen name={TABS.INSPECTION} component={VehicleInformation} options={{tabBarLabel: 'Inspection'}} />
-    <Tab.Screen name={TABS.MY_TRIPS} component={VehicleInformation} options={{tabBarLabel: 'My Trips'}} />
-    <Tab.Screen name={TABS.PROFILE} component={VehicleInformation} options={{tabBarLabel: 'Profile'}} />
+    <Tab.Screen name={TABS.HOME} component={HomeTabStack} options={{tabBarLabel: 'Home'}} />
+    <Tab.Screen name={TABS.REPORTS} component={ReportTabStack} options={{tabBarLabel: 'Reports'}} />
+    <Tab.Screen name={TABS.INSPECTION} component={InspectionTabStack} options={{tabBarLabel: 'Inspection'}} />
+    <Tab.Screen name={TABS.MY_TRIPS} component={MyTripsTabStack} options={{tabBarLabel: 'My Trips'}} />
+    <Tab.Screen name={TABS.PROFILE} component={ProfileTabStack} options={{tabBarLabel: 'Profile'}} />
   </Tab.Navigator>
 );
 
 export default BottomTab;
 
-const CustomTabBar = memo(({state, descriptors, navigation}) => {
+const CustomTabBar = ({state, descriptors, navigation}) => {
   return (
     <View style={styles.container}>
       {state.routes.map((route, index) => {
@@ -84,7 +82,7 @@ const CustomTabBar = memo(({state, descriptors, navigation}) => {
       })}
     </View>
   );
-});
+};
 
 const styles = StyleSheet.create({
   container: {

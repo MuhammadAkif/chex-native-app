@@ -112,8 +112,6 @@ function App() {
   ) : (
     <>
       <Navigation />
-      {/* <Home /> */}
-      {/* <VehicleInformation /> */}
       <Toast />
       <View>
         {updateAvailable && (

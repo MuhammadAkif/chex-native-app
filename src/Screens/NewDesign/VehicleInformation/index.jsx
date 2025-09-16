@@ -7,7 +7,7 @@ import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-nativ
 import {colors} from '../../../Assets/Styles';
 import {IMAGES} from '../../../Assets/Images';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
-import {CameraOutlineIcon, ChevronIcon, CircleTickIcon} from '../../../Assets/Icons';
+import {CameraOutlineIcon, ChevronIcon, CircleTickIcon, HamburgerIcon} from '../../../Assets/Icons';
 
 const VehicleInformation = () => {
   const [selectedVehicle, setSelectedVehicle] = useState(1);
@@ -16,6 +16,7 @@ const VehicleInformation = () => {
     {id: 1, name: 'VAN', image: IMAGES.Van},
     {id: 2, name: 'TRUCK', image: IMAGES.Truck},
     {id: 3, name: 'SEDAN', image: IMAGES.Sedan},
+    {id: 4, name: 'OTHER', image: IMAGES.other_vehicle},
   ];
 
   return (
@@ -25,7 +26,7 @@ const VehicleInformation = () => {
       <KeyboardAwareScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContentContainer} style={styles.container}>
         {/* BLUE HEADER */}
         <View style={styles.blueHeaderContainer}>
-          <LogoHeader />
+          <LogoHeader leftIcon={<HamburgerIcon />} />
         </View>
 
         {/* WHITE CONTAINER */}

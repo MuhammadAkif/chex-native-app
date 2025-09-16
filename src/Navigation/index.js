@@ -5,11 +5,6 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {useSelector} from 'react-redux';
 
 import {
-  RegisterContainer,
-  WelcomeContainer,
-  SignInContainer,
-  ResetPasswordContainer,
-  ForgotPasswordContainer,
   CameraContainer,
   VideoContainer,
   CompletedInspectionContainer,
@@ -24,11 +19,12 @@ import {
   NewInspectionContainer,
 } from '../Container';
 
-import {ROUTES} from './ROUTES';
+import {ROUTES, STACKS} from './ROUTES';
 import {navigationRef} from '../services/navigationService';
 import {CustomDrawerContent} from '../Components';
-import {drawerScreenOptions, stackScreenOptions, headerOptions} from './navigationOptions';
+import {drawerScreenOptions, headerOptions} from './navigationOptions';
 import BottomTab from './bottomTab';
+import {AuthStack} from './stacks';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -38,18 +34,19 @@ const Drawer = createDrawerNavigator();
 // ----------------------
 const RootNavigation = () => {
   const token = useSelector(state => state?.auth?.user?.token);
-  const initialRouteName = token ? ROUTES.HOME : 'AuthStack';
+  const initialRouteName = token ? ROUTES.DRAWER : STACKS.AUTH_STACK;
   const screenOptions = {headerShown: false, gestureEnabled: false};
 
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator initialRouteName={initialRouteName} screenOptions={screenOptions}>
+      <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{...screenOptions}}>
         {/* AUTH STACK */}
-        <Stack.Screen name={'AuthStack'} component={AuthStack} />
+        <Stack.Screen name={STACKS.AUTH_STACK} component={AuthStack} />
 
         {/* HOME STACK DRAWER */}
-        <Stack.Screen name={ROUTES.HOME} component={AppDrawer} />
+        <Stack.Screen name={ROUTES.DRAWER} component={AppDrawer} />
 
+        <Stack.Screen name={ROUTES.INSPECTION_IN_PROGRESS} component={InspectionInProgressContainer} />
         <Stack.Screen name={ROUTES.CAMERA} component={CameraContainer} />
         <Stack.Screen name={ROUTES.VIDEO} component={VideoContainer} />
         <Stack.Screen name={ROUTES.COMPLETED_INSPECTION} component={CompletedInspectionContainer} />
@@ -57,19 +54,6 @@ const RootNavigation = () => {
     </NavigationContainer>
   );
 };
-
-// ----------------------
-// AUTH STACK
-// ----------------------
-const AuthStack = () => (
-  <Stack.Navigator initialRouteName={ROUTES.WELCOME} screenOptions={stackScreenOptions}>
-    <Stack.Screen name={ROUTES.WELCOME} component={WelcomeContainer} />
-    <Stack.Screen name={ROUTES.REGISTER} component={RegisterContainer} />
-    <Stack.Screen name={ROUTES.SIGN_IN} component={SignInContainer} />
-    <Stack.Screen name={ROUTES.FORGET_PASSWORD} component={ForgotPasswordContainer} />
-    <Stack.Screen name={ROUTES.RESET_PASSWORD} component={ResetPasswordContainer} />
-  </Stack.Navigator>
-);
 
 function UnmountOnBlur({children}) {
   const isFocused = useIsFocused();
@@ -98,7 +82,6 @@ const AppDrawer = () => (
     <Drawer.Screen layout={({children}) => children} name={ROUTES.NEW_INSPECTION} component={NewInspectionContainer} options={headerOptions} />
     {/* <Drawer.Screen name={ROUTES.INSPECTION_REVIEWED} component={InspectionReviewedContainer} options={headerOptions} /> */}
     <Drawer.Screen name={ROUTES.INSPECTION_DETAIL} component={InspectionDetailContainer} options={headerOptions} />
-    <Drawer.Screen name={ROUTES.INSPECTION_IN_PROGRESS} component={InspectionInProgressContainer} options={headerOptions} />
     <Drawer.Screen
       layout={({children}) => children}
       name={ROUTES.DVIR_INSPECTION_CHECKLIST}

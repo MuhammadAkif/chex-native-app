@@ -1,10 +1,14 @@
-import {View, StyleSheet, Platform} from 'react-native';
+import {View, StyleSheet, Platform, Pressable} from 'react-native';
 import React from 'react';
 import {colors} from '../../Assets/Styles';
 import {Platforms} from '../../Constants';
 
-const CardWrapper = ({children, style}) => {
-  return <View style={[styles.cardContainer, style]}>{children}</View>;
+const CardWrapper = ({children, style, onPress}) => {
+  return (
+    <Pressable onPress={onPress} style={[styles.cardContainer, style]}>
+      {children}
+    </Pressable>
+  );
 };
 
 const styles = StyleSheet.create({

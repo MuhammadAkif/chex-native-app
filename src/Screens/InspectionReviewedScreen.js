@@ -3,9 +3,9 @@ import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {circleBorderRadius, colors, NewInspectionStyles} from '../Assets/Styles';
-import {PrimaryStartInspectionButton, RenderInspectionReviewed} from '../Components';
+import {HeaderBackground, HeaderTitle, LogoHeader, PrimaryStartInspectionButton, RenderInspectionReviewed} from '../Components';
 import {handleHomePress} from '../Utils';
-import {Filter} from '../Assets/Icons';
+import {Filter, HamburgerIcon} from '../Assets/Icons';
 import Filter_RBSheet from '../Components/Filter_RBSheet';
 import EmptyComponent from '../Components/EmptyComponent';
 
@@ -30,7 +30,8 @@ const InspectionReviewedScreen = ({
   inspections,
 }) => (
   <View style={container}>
-    <View style={bodyContainer}>
+    <LogoHeader leftIcon={<HamburgerIcon />} />
+    <View style={[bodyContainer, {marginTop: wp(5)}]}>
       <View style={styles.bodyHeaderContainer}>
         <Text style={styles.bodyHeaderTitleText}>Inspection Reviewed</Text>
         <TouchableOpacity style={styles.filterContainer} onPress={onFilterPress}>

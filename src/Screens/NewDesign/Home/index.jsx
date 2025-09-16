@@ -5,10 +5,11 @@ import AppText from '../../../Components/text';
 import {CardWrapper, InspectionCard, LogoHeader, VehicleCard} from '../../../Components';
 import {colors} from '../../../Assets/Styles';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {BlueTruckStatIcon, InProgressStatIcon, SubmittedStatIcon, TotalStatIcon} from '../../../Assets/Icons';
+import {BlueTruckStatIcon, HamburgerIcon, InProgressStatIcon, SubmittedStatIcon, TotalStatIcon} from '../../../Assets/Icons';
 import {IMAGES} from '../../../Assets/Images';
+import {ROUTES, TABS} from '../../../Navigation/ROUTES';
 
-const Home = () => {
+const Home = ({navigation}) => {
   const VehiclesData = [
     {name: 'Macapa Logistics LLC', licencseNumber: '145-1234', status: 'Reviewed', timestamp: 'Jun 3, 2025 3:33PM', image: IMAGES.Van},
     {name: 'Macapa Logistics LLC', licencseNumber: '145-1234', status: 'Reviewed', timestamp: 'Jun 3, 2025 3:33PM', image: IMAGES.Van},
@@ -20,6 +21,11 @@ const Home = () => {
     {licencseNumber: 'XYZ-123', id: 'ID: VH-2848', status: 'Pending', days: '2 day'},
   ];
 
+  const handlePressStatCard = id => {
+    if (id === 1) navigation.navigate(ROUTES.INSPECTION_IN_PROGRESS);
+    else if (id === 2) navigation.navigate(TABS.REPORTS);
+  };
+
   return (
     <View style={styles.blueContainer}>
       <StatusBar translucent backgroundColor={'transparent'} barStyle="light-content" />
@@ -27,7 +33,7 @@ const Home = () => {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContentContainer} style={styles.container}>
         {/* BLUE HEADER */}
         <View style={styles.blueHeaderContainer}>
-          <LogoHeader />
+          <LogoHeader leftIcon={<HamburgerIcon />} />
 
           <View style={styles.usernameContainer}>
             <AppText color={colors.white} fontSize={wp(6)} style={styles.username}>
@@ -42,10 +48,10 @@ const Home = () => {
         {/* WHITE CONTAINER */}
         <View style={styles.whiteContainerContent}>
           <View style={styles.statsContainer}>
-            <StatBox title={'Total\nVehicles'} icon={BlueTruckStatIcon} count={8} />
-            <StatBox title={'In Progress\nInspections'} icon={InProgressStatIcon} count={2} />
-            <StatBox title={'Submitted\nInspections'} icon={SubmittedStatIcon} count={3} />
-            <StatBox title={'Total\nInspections'} icon={TotalStatIcon} count={8} />
+            <StatBox title={'Total\nVehicles'} icon={BlueTruckStatIcon} count={8} id={0} />
+            <StatBox title={'In Progress\nInspections'} icon={InProgressStatIcon} count={2} id={1} onPress={handlePressStatCard} />
+            <StatBox title={'Submitted\nInspections'} icon={SubmittedStatIcon} count={3} id={2} onPress={handlePressStatCard} />
+            <StatBox title={'Total\nInspections'} icon={TotalStatIcon} count={8} id={3} />
           </View>
 
           <View style={styles.withHeadingContentContainer}>
@@ -65,9 +71,9 @@ const Home = () => {
   );
 };
 
-const StatBox = ({count = 0, icon: Icon, title}) => {
+const StatBox = ({count = 0, icon: Icon, title, id, onPress}) => {
   return (
-    <CardWrapper style={styles.statBoxContainer}>
+    <CardWrapper onPress={() => onPress?.(id)} style={styles.statBoxContainer}>
       <View style={styles.numberAndIcon}>
         <AppText fontSize={wp(9)} style={styles.statNumberText}>
           {count}

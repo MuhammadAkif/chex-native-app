@@ -3,6 +3,7 @@ import AndroidMediaViewModal from './AndroidMediaViewModal';
 import AnnotateImage from './Annotation/AnnotateImage';
 import AnnotateImageModal from './Annotation/AnnotateImageModal';
 import BackgroundImageView from './BackgroundImageView';
+
 import ButtonFooter from './ButtonFooter';
 import CameraPreview from './Camera/CameraPreview';
 import CameraFooter from './CameraFooter';
@@ -81,7 +82,6 @@ import Sub_Heading from './Sub_Heading';
 import Toast from './Toast';
 import VehicleCard from './VehicleCard';
 import WarningModal from './WarningModal';
-
 export {
   CardWrapper,
   LogoHeader,

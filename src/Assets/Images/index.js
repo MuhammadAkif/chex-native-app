@@ -23,6 +23,7 @@ export const IMAGES = {
   Van: require('./Van.png'),
   Sedan: require('./Sedan.png'),
   Truck: require('./Truck.png'),
+  other_vehicle: require('./Other_Vehicle.png'),
   // FRAMES
   truckFront: require('./Frames/TruckFront.png'),
   truckLeft: require('./Frames/TruckLeft.png'),
