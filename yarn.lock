@@ -2040,16 +2040,6 @@
     use-latest-callback "^0.2.4"
     use-sync-external-store "^1.5.0"
 
-"@react-navigation/drawer@^7.5.7":
-  version "7.5.7"
-  resolved "https://registry.yarnpkg.com/@react-navigation/drawer/-/drawer-7.5.7.tgz#563407da08289e97a9c6e293423560cb7bc80288"
-  integrity sha512-iRmeFUMZ4DPYgiuPVKsohL40flGAO0rxWwOg4iWkh0DsglI9yKpDXTUsUjmY4bMTv61jYYWV92OcSCBJjXwJoA==
-  dependencies:
-    "@react-navigation/elements" "^2.6.3"
-    color "^4.2.3"
-    react-native-drawer-layout "^4.1.12"
-    use-latest-callback "^0.2.4"
-
 "@react-navigation/elements@^2.6.3":
   version "2.6.3"
   resolved "https://registry.yarnpkg.com/@react-navigation/elements/-/elements-2.6.3.tgz#77cc4d989c0831ec59dc87b982f18bc644ac8e67"
@@ -6571,13 +6561,6 @@ react-native-dotenv@^3.4.9:
   integrity sha512-6vnIE+WHABSeHCaYP6l3O1BOEhWxKH6nHAdV7n/wKn/sciZ64zPPp2NUdEUf1m7g4uuzlLbjgr+6uDt89q2DOg==
   dependencies:
     dotenv "^16.4.5"
-
-react-native-drawer-layout@^4.1.12:
-  version "4.1.12"
-  resolved "https://registry.yarnpkg.com/react-native-drawer-layout/-/react-native-drawer-layout-4.1.12.tgz#0cdfe2d2ca9288cb099f1e1808c8addf2fad25de"
-  integrity sha512-oKolvp5seiUieG+RHGjpFe8rH8Ds24iW0QBl31TlCVOX7tdn42IQIBl5tuD1i7h3q+VqqnbcT+NB2dcJ5suZkw==
-  dependencies:
-    use-latest-callback "^0.2.4"
 
 react-native-fast-image@^8.6.3:
   version "8.6.3"

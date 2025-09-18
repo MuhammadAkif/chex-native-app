@@ -4,25 +4,29 @@ import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-nativ
 import AppText from './text';
 import {colors} from '../Assets/Styles';
 import CardWrapper from './Card/CardWrapper';
+import {IMAGES} from '../Assets/Images';
+import dayjs from 'dayjs';
 
 const VehicleCard = ({item}) => {
   return (
     <CardWrapper style={styles.container}>
-      <Image source={item?.image} style={styles.image} />
+      <Image source={IMAGES.Van} style={styles.image} />
 
       <View style={styles.contentContainer}>
         <AppText fontWeight={'700'} fontSize={wp(3.5)} color={colors.royalBlue}>
-          {item?.licencseNumber}
+          {item?.licensePlateNumber}
         </AppText>
-        <AppText fontWeight={'500'}>{item?.name}</AppText>
+        <AppText fontWeight={'500'}>{item?.companyName}</AppText>
         <View style={styles.statusContainer}>
           <AppText fontWeight={'700'} fontSize={wp(3.2)} color={colors.white}>
-            {item?.status}
+            {item?.inspectionStatus}
           </AppText>
         </View>
-        <AppText fontSize={wp(3)} fontWeight={'500'}>
-          {item?.timestamp}
-        </AppText>
+        {item?.reviewedDate && (
+          <AppText fontSize={wp(3)} fontWeight={'500'}>
+            {dayjs(item?.reviewedDate).format('MMM D, YYYY')}
+          </AppText>
+        )}
       </View>
     </CardWrapper>
   );

@@ -29,7 +29,7 @@ const ENV_TYPE_URL = {
 
 const version = '1';
 export const API_VERSION_PATH = '/api/v' + version + '/';
-export const API_BASE_URL = ENV_TYPE_URL.staging;
+export const API_BASE_URL = ENV_TYPE_URL.ngrok;
 export const generateApiUrl = path => API_BASE_URL + API_VERSION_PATH + path;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
 export const EXTRACT_NUMBER_PLATE_WITH_AI = process.env.EXTRACT_NUMBER_PLATE_URL;
@@ -50,6 +50,8 @@ export const API_ENDPOINTS = {
   UPLOAD_URL: generateApiUrl('file/upload'),
   CREATE_INSPECTION_URL: generateApiUrl('create/inspection'),
   FETCH_IN_PROGRESS_URL: generateApiUrl('status/vehicle'),
+  VEHICLE_INFO_AGAINSET_LICENSE_PLATE: generateApiUrl('inspections/vehicle-info'),
+  REGISTERED_VEHICLES: generateApiUrl('inspections/user-vehicles'),
   FORGET_PASSWORD_URL: generateApiUrl('auth/reset/email'),
   RESET_PASSWORD_URL: generateApiUrl('auth/reset/password'),
   INSPECTION_TIRE_STATUS_URL: generateApiUrl('display/tire'),
@@ -57,6 +59,7 @@ export const API_ENDPOINTS = {
   ANNOTATION_URL: generateApiUrl('file/coordinate'),
   LOCATION_URL: generateApiUrl('inspection/location'),
   SUBMIT_INSPECTION: generateApiUrl('dsp/app/producer'),
+  GET_USER_INSPECTION_STATS: generateApiUrl('user/stats'),
 };
 // Api Endpoints ends here
 export const Platforms = {

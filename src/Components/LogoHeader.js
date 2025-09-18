@@ -3,93 +3,93 @@ import {View, TouchableOpacity, StyleSheet, StatusBar, Platform} from 'react-nat
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
-
-import {BellWhiteIcon, HamburgerIcon} from '../Assets/Icons';
 import SignInLogo from './SignInLogo';
 import {PROJECT_NAME} from '../Constants';
-import HeaderBackButton from './HeaderBackButton';
+import {BackArrow} from '../Assets/Icons';
+import {colors} from '../Assets/Styles';
 
-const HEADER_HEIGHT = 45; // consistent height for all cases
+const HEADER_HEIGHT = 50; // consistent height for all cases
 
-const LogoHeader = ({
-  showLeft = true,
-  showRight = true,
-  leftIcon = <HeaderBackButton />,
-  rightIcon = <BellWhiteIcon />,
-  onLeftPress,
-  onRightPress,
-}) => {
+const LogoHeader = ({showLeft = true, leftIcon, rightIcon, onLeftPress, onRightPress}) => {
   const navigation = useNavigation();
+
+  const renderLeft = () => {
+    if (!showLeft) return null;
+    return (
+      <TouchableOpacity activeOpacity={0.7} onPress={onLeftPress || navigation?.goBack}>
+        {leftIcon ? leftIcon : <BackArrow width={24} height={24} color={colors.white} />}
+      </TouchableOpacity>
+    );
+  };
+
+  const renderRight = () => {
+    return (
+      <TouchableOpacity activeOpacity={0.7} onPress={onRightPress}>
+        {rightIcon ? rightIcon : null}
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <SafeAreaView
       edges={Platform.OS === 'ios' ? ['top', 'left', 'right'] : ['left', 'right']}
       style={[styles.safeArea, Platform.OS === 'android' && {paddingTop: StatusBar.currentHeight}]}>
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+
       <View style={styles.headerRow}>
         {/* Left slot */}
-        <View style={styles.side}>{showLeft && <IconWrapper onPress={onLeftPress || navigation?.openDrawer}>{leftIcon}</IconWrapper>}</View>
+        <View style={styles.leftSide}>{renderLeft()}</View>
 
         {/* Center logo */}
-
-        <SignInLogo
-          titleText={PROJECT_NAME.CHEX}
-          dotTitleText={PROJECT_NAME.AI}
-          textStyle={styles.logo}
-          nestedTextStyle={styles.logo}
-          containerStyle={styles.logoContainer}
-        />
+        <View style={styles.center}>
+          <SignInLogo
+            titleText={PROJECT_NAME.CHEX}
+            dotTitleText={PROJECT_NAME.AI}
+            textStyle={styles.logo}
+            nestedTextStyle={styles.logo}
+            containerStyle={styles.logoContainer}
+          />
+        </View>
 
         {/* Right slot */}
-        <View style={styles.side}>{showRight && <IconWrapper onPress={onRightPress}>{rightIcon}</IconWrapper>}</View>
+        <View style={styles.rightSide}>{renderRight()}</View>
       </View>
     </SafeAreaView>
-  );
-};
-
-const IconWrapper = ({children, onPress}) => {
-  return (
-    <TouchableOpacity activeOpacity={0.7} style={styles.iconWrapperContainer} onPress={onPress}>
-      {children}
-    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   safeArea: {
     // backgroundColor: '#1E7DCB',
-    // paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   headerRow: {
     height: HEADER_HEIGHT,
     flexDirection: 'row',
-    alignItems: 'center', // keeps everything vertically centered
+    alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: wp(5),
   },
-  side: {
-    width: 50, // keeps space reserved
+  leftSide: {
+    width: 50,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+  rightSide: {
+    width: 50,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+  },
+  center: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-
   logo: {
     fontSize: wp(6.5),
   },
   logoContainer: {
     height: undefined,
     width: undefined,
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconWrapperContainer: {
-    backgroundColor: '#1E7DCB',
-    width: 45,
-    height: 45,
-    borderRadius: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 

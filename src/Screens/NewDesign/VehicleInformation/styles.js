@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Keyboard, StyleSheet} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {colors, expandedCardStyles} from '../../../Assets/Styles';
 
@@ -8,8 +8,7 @@ export const styles = StyleSheet.create({
   container: {flex: 1},
   blueHeaderContainer: {backgroundColor: colors.royalBlue, height: hp(22)},
   whiteContainerContent: {
-    flex: 1,
-    marginTop: -hp(6),
+    top: -hp(6),
     backgroundColor: colors.white,
     borderRadius: wp(7),
     marginHorizontal: wp(3),

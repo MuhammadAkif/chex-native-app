@@ -2,7 +2,7 @@ import React, {forwardRef} from 'react';
 import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
-import {colors} from '../Assets/Styles';
+import {colors, errorStyle} from '../Assets/Styles';
 import AppText from './text';
 
 const {steelGray, black, lightSkyBlue} = colors;
@@ -60,12 +60,14 @@ const CustomInput = forwardRef(
           keyboardType={keyboardType}
           editable={editable}
         />
+
         {rightIcon && (
           <TouchableOpacity style={styles.rightIconContainer} onPress={onRightIconPress} activeOpacity={0.7}>
             {rightIcon}
           </TouchableOpacity>
         )}
       </View>
+      {touched && error && <AppText style={[errorStyle.errorsTextStyle, styles.error]}>{error}</AppText>}
     </View>
   ),
 );
@@ -93,6 +95,7 @@ const styles = StyleSheet.create({
     paddingLeft: wp('2%'),
   },
   label: {marginBottom: 8},
+  error: {marginTop: 3},
 });
 
 export default CustomInput;

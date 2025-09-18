@@ -13,6 +13,9 @@ const {
   UPLOAD_URL,
   SUBMIT_INSPECTION,
   EXTRACT_VIN_WITH_AI,
+  VEHICLE_INFO_AGAINSET_LICENSE_PLATE,
+  REGISTERED_VEHICLES,
+  GET_USER_INSPECTION_STATS,
 } = API_ENDPOINTS;
 
 export const createInspection = async (companyId, data) => {
@@ -24,6 +27,24 @@ export const createInspection = async (companyId, data) => {
 
   try {
     return await api.post(CREATE_INSPECTION_URL, body);
+  } catch (error) {
+    console.error('Create inspection error:', error.response.data);
+    throw error;
+  }
+};
+
+export const getVehicleInformationAgainstLicenseId = async licensePlateNumber => {
+  try {
+    return await api.post(VEHICLE_INFO_AGAINSET_LICENSE_PLATE, {licensePlateNumber});
+  } catch (error) {
+    console.error('Create inspection error:', error.response.data);
+    throw error;
+  }
+};
+
+export const getRegisteredVehicles = async () => {
+  try {
+    return await api.get(REGISTERED_VEHICLES);
   } catch (error) {
     console.error('Create inspection error:', error.response.data);
     throw error;
@@ -47,6 +68,15 @@ export const getInspectionDetails = async inspectionId => {
     return await api.get(endPoint);
   } catch (error) {
     console.error('Fetching inspection details error:', error);
+    throw error;
+  }
+};
+
+export const getUserInspectionStats = async () => {
+  try {
+    return await api.get(GET_USER_INSPECTION_STATS);
+  } catch (error) {
+    console.error('Fetching user inspection stats error:', error.response.data);
     throw error;
   }
 };

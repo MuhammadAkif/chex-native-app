@@ -23,6 +23,11 @@ const useDebounce = (callback, delay) => {
     }, delay);
   };
 
+  // Allow consumers to cancel a pending debounce (e.g., when clearing input)
+  debouncedFn.cancel = () => {
+    clearTimeout(timeoutRef.current);
+  };
+
   return debouncedFn;
 };
 

@@ -12,7 +12,6 @@ import {DRAWER, PROJECT_NAME} from '../Constants';
 import {ROUTES, STACKS} from '../Navigation/ROUTES';
 import {clearNewInspection, hideToast, setRequired, signOut} from '../Store/Actions';
 import {DrawerItemText, SignInLogo} from './index';
-
 const {SIGN_IN, INSPECTION_SELECTION, INTRO, NEW_INSPECTION} = ROUTES;
 const {cobaltBlue, black, red} = colors;
 

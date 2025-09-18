@@ -37,6 +37,7 @@ import FooterButtons from './FooterButtons';
 import HeaderBackButton from './HeaderBackButton';
 import HeaderBackground from './HeaderBackground';
 import HeaderTitle from './HeaderTitle';
+import IconWrapper from './IconWrapper';
 import Image from './Image';
 import InputFieldRequiredError from './InputFieldRequiredError';
 import InputModal from './InputModal/InputModal';
@@ -83,6 +84,7 @@ import Toast from './Toast';
 import VehicleCard from './VehicleCard';
 import WarningModal from './WarningModal';
 export {
+  IconWrapper,
   CardWrapper,
   LogoHeader,
   InspectionCard,
