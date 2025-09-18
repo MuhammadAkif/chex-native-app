@@ -32,4 +32,6 @@ export const styles = StyleSheet.create({
   sectionWrapper: {marginTop: hp(3), gap: hp(1)},
   vehicleList: {paddingVertical: wp(2)},
   vehicleContentList: {paddingHorizontal: wp(5), flexGrow: 1, gap: wp(4)},
+  noRegisterText: {textAlign: 'center', flex: 1},
+  registerVehicleLoader: {alignSelf: 'center', flex: 1},
 });

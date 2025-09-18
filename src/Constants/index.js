@@ -203,11 +203,12 @@ export const DRAWER = {
   DVIRC: 'DVIRC',
 };
 
-export const INSPECTION_STATUSES = ['IN_REVIEW', 'REVIEWED', 'READY_FOR_REVIEW'];
+export const INSPECTION_STATUSES = ['IN_REVIEW', 'REVIEWED', 'READY_FOR_REVIEW', 'IN_PROGRESS'];
 export const STATUSES = {
   REVIEWED: 'Reviewed',
   READY_FOR_REVIEW: 'Ready For Review',
   IN_REVIEW: 'In Review',
+  IN_PROGRESS: 'In Progress',
 };
 export const PHYSICAL_DEVICES = ['wide-angle-camera', 'ultra-wide-angle-camera', 'telephoto-camera'];
 export const IS_BACK_CAMERA = {
@@ -299,4 +300,11 @@ export const NoInteriorAndRoofTopCompanyIds = [121];
 export const hasInteriorAndRoofTopCompany = companyId => {
   if (NoInteriorAndRoofTopCompanyIds.includes(companyId)) return true;
   return false;
+};
+
+export const VEHICLE_IMAGES = {
+  [VEHICLE_TYPES.VAN]: IMAGES.Van,
+  [VEHICLE_TYPES.TRUCK]: IMAGES.Truck,
+  [VEHICLE_TYPES.SEDAN]: IMAGES.Sedan,
+  [VEHICLE_TYPES.OTHER]: IMAGES.other_vehicle,
 };

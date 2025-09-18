@@ -1,22 +1,37 @@
 import {View, StatusBar, ScrollView, Image, Pressable, ActivityIndicator} from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {styles} from './styles';
-import {CardWrapper, CustomInput, IconWrapper, LogoHeader, PrimaryGradientButton, SecondaryButton} from '../../../Components';
+import {
+  CardWrapper,
+  CustomInput,
+  DiscardInspectionModal,
+  IconWrapper,
+  LoadingIndicator,
+  LogoHeader,
+  PrimaryGradientButton,
+  SecondaryButton,
+} from '../../../Components';
 import AppText from '../../../Components/text';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {colors} from '../../../Assets/Styles';
 import {IMAGES} from '../../../Assets/Images';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
-import {BellWhiteIcon, CameraOutlineIcon, ChevronIcon, CircleTickIcon, HamburgerIcon} from '../../../Assets/Icons';
+import {BellWhiteIcon, CameraOutlineIcon, CircleTickIcon} from '../../../Assets/Icons';
 import {Formik} from 'formik';
 import {VEHICLE_TYPES} from '../../../Constants';
-import {getVehicleInformationAgainstLicenseId} from '../../../services/inspection';
+import {createInspection, getVehicleInformationAgainstLicenseId} from '../../../services/inspection';
 import useDebounce from '../../../hooks/useDebounce';
+import {ROUTES, TABS} from '../../../Navigation/ROUTES';
+import {useDispatch, useSelector} from 'react-redux';
+import {file_Details, numberPlateSelected, setCompanyId, setVehicleType} from '../../../Store/Actions';
+import {handle_Session_Expired, OdometerDetails, onNewInspectionPressSuccess} from '../../../Utils';
+import {navigate} from '../../../services/navigationService';
+import {useIsFocused, useRoute} from '@react-navigation/native';
 
 const validate = values => {
   const errors = {};
-  if (!values.licensePlate.trim()) {
-    errors.licensePlate = 'Truck ID/License Plate is required';
+  if (!values.licensePlateNumber.trim()) {
+    errors.licensePlateNumber = 'Truck ID/License Plate is required';
   }
   if (!values.mileage.trim()) {
     errors.mileage = 'Mileage is required';
@@ -28,8 +43,9 @@ const validate = values => {
   }
   return errors;
 };
+
 const intialData = {
-  licensePlate: '',
+  licensePlateNumber: '',
   mileage: '',
   vin: '',
   vehicleType: '',
@@ -42,15 +58,32 @@ const VehicleTypes = [
   {id: VEHICLE_TYPES.OTHER, name: 'OTHER', image: IMAGES.other_vehicle},
 ];
 
-const VehicleInformation = () => {
+const VehicleInformation = props => {
+  const {navigation} = props;
+  const authState = useSelector(state => state?.auth);
+  const dispatch = useDispatch();
+  const route = useRoute();
+  const user = authState?.user?.data;
+  const companyId = user?.companyId;
   const [showVehicleType, setShowVehicleType] = useState(false);
   const [hasApiDetectedVehicleType, setHasApiDetectedVehicleType] = useState(false);
   const [isFetchingVehicleInfo, setIsFetchingVehicleInfo] = useState(false);
+  const [isInspectionInProgressModalVisible, setIsInspectionInProgressModalVisible] = useState(false);
+  const [errorModalDetail, setErrorModalDetail] = useState({title: '', message: '', inspectionId: ''});
+  const [isLoading, setIsLoading] = useState(false);
   const vehicleTypesScrollRef = useRef(null);
+  const isScreenFocused = useIsFocused();
 
   // Dimensions used to calculate scroll offset (keep in sync with styles.js)
   const VEHICLE_ITEM_WIDTH = wp(38);
   const VEHICLE_ITEM_GAP = 10;
+
+  useEffect(() => {
+    if (route?.params?.isMileageCapture && isScreenFocused) {
+      const {isLicensePlate, isOdometer, displayAnnotation, fileId, annotationDetails, is_Exterior, routeName} = route.params;
+      console.log('ROUTE:', route?.params);
+    }
+  }, [route, isScreenFocused]);
 
   const scrollToVehicleType = useCallback(
     typeId => {
@@ -59,18 +92,69 @@ const VehicleInformation = () => {
       const x = index * (VEHICLE_ITEM_WIDTH + VEHICLE_ITEM_GAP);
       vehicleTypesScrollRef.current?.scrollTo({x, y: 0, animated: true});
     },
-    [VEHICLE_ITEM_GAP, VEHICLE_ITEM_WIDTH],
+    [VEHICLE_ITEM_GAP, VEHICLE_ITEM_WIDTH]
   );
 
-  const handleSubmitForm = (values, {setSubmitting}) => {
+  const handleSubmitForm = (values, {setSubmitting, resetForm}) => {
     setSubmitting(false);
 
-    console.log('values:', values);
+    setIsLoading(true);
+    createInspection(companyId, values)
+      .then(response => {
+        dispatch(setCompanyId(companyId));
+        onNewInspectionPressSuccess(response, dispatch, navigate);
+      })
+      .catch(error => {
+        const {
+          statusCode = null,
+          hasAdded = 'existing',
+          inspectionId = null,
+          errorMessage = 'An error occurred',
+          message = 'An error occurred',
+        } = error?.response?.data || {};
+
+        if (statusCode === 409) {
+          const vehicleType = hasAdded || 'existing';
+          dispatch(setVehicleType(vehicleType));
+          setTimeout(() => setIsInspectionInProgressModalVisible(true), 100);
+          setErrorModalDetail({title: message, message: errorMessage, inspectionId});
+        }
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  const handleYesPressOfInProgressInspection = async () => {
+    setIsInspectionInProgressModalVisible(false);
+
+    dispatch(setCompanyId(companyId));
+    dispatch(numberPlateSelected(errorModalDetail.inspectionId));
+    setErrorModalDetail({message: '', title: '', inspectionId: ''});
+    navigation.navigate(ROUTES.NEW_INSPECTION, {isInProgress: true});
+  };
+
+  const handlePressMileageCameraIcon = () => {
+    const details = {
+      title: OdometerDetails.title,
+      type: 'odometer',
+      uri: '',
+      source: OdometerDetails.source,
+      fileId: '',
+      category: OdometerDetails.category,
+      subCategory: OdometerDetails.subCategory,
+      groupType: OdometerDetails.groupType,
+      instructionalText: OdometerDetails.instructionalText,
+    };
+    navigation.navigate(ROUTES.CAMERA, {
+      modalDetails: details,
+      returnTo: ROUTES.VEHICLE_INFORMATION,
+      returnToParams: {isMileageCapture: true},
+    });
   };
 
   return (
     <View style={styles.blueContainer}>
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+      <LoadingIndicator isLoading={isLoading} />
 
       <KeyboardAwareScrollView
         nestedScrollEnabled
@@ -112,8 +196,8 @@ const VehicleInformation = () => {
             onSubmit={handleSubmitForm}>
             {({values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue, isSubmitting, submitCount}) => {
               const fetchVehicleInfo = useCallback(
-                async licensePlate => {
-                  const plate = licensePlate?.trim();
+                async licensePlateNumber => {
+                  const plate = licensePlateNumber?.trim();
                   if (!plate) return;
                   try {
                     setIsFetchingVehicleInfo(true);
@@ -140,7 +224,7 @@ const VehicleInformation = () => {
                     setIsFetchingVehicleInfo(false);
                   }
                 },
-                [setFieldValue, scrollToVehicleType],
+                [setFieldValue, scrollToVehicleType]
               );
 
               const debouncedFetchVehicleInfo = useDebounce(fetchVehicleInfo, 600);
@@ -159,7 +243,7 @@ const VehicleInformation = () => {
                   }
                   debouncedFetchVehicleInfo(text);
                 },
-                [setFieldValue, debouncedFetchVehicleInfo],
+                [setFieldValue, debouncedFetchVehicleInfo]
               );
               return (
                 <>
@@ -178,12 +262,12 @@ const VehicleInformation = () => {
                         inputStyle={styles.input}
                         placeholder="Enter Truck ID/License Plate"
                         label="Truck ID/License Plate"
-                        value={values.licensePlate}
+                        value={values.licensePlateNumber}
                         onChangeText={handleLicensePlateChangeFactory}
                         onBlur={handleBlur}
-                        valueName="licensePlate"
-                        touched={touched.licensePlate}
-                        error={errors.licensePlate}
+                        valueName="licensePlateNumber"
+                        touched={touched.licensePlateNumber}
+                        error={errors.licensePlateNumber}
                       />
                     </View>
 
@@ -206,7 +290,13 @@ const VehicleInformation = () => {
                               }}
                               activeOpacity={0.7}
                               key={v.id}
-                              style={[styles.vehicleItemContainer, {backgroundColor: values.vehicleType == v.id ? colors.royalBlue : '#E7EFF8'}]}>
+                              style={[
+                                styles.vehicleItemContainer,
+                                {
+                                  backgroundColor: values.vehicleType == v.id ? colors.royalBlue : '#E7EFF8',
+                                  opacity: values.vehicleType !== v.id && hasApiDetectedVehicleType ? 0.7 : 1,
+                                },
+                              ]}>
                               <View style={styles.vehicleItemImageContainer}>
                                 <Image source={v.image} style={styles.vehicleImg} />
                               </View>
@@ -241,6 +331,7 @@ const VehicleInformation = () => {
                         touched={touched.mileage}
                         error={errors.mileage}
                         keyboardType="number-pad"
+                        onRightIconPress={handlePressMileageCameraIcon}
                       />
 
                       <CustomInput
@@ -268,13 +359,24 @@ const VehicleInformation = () => {
                       */}
                     </View>
                   </View>
-                  <PrimaryGradientButton onPress={handleSubmit} disabled={isSubmitting} text="Next" buttonStyle={styles.nextButton} />
+                  <PrimaryGradientButton onPress={handleSubmit} text="Next" buttonStyle={styles.nextButton} />
                 </>
               );
             }}
           </Formik>
         </CardWrapper>
       </KeyboardAwareScrollView>
+
+      {isInspectionInProgressModalVisible && (
+        <View>
+          <DiscardInspectionModal
+            title={errorModalDetail.title}
+            onYesPress={handleYesPressOfInProgressInspection}
+            description={errorModalDetail.message}
+            dualButton={false}
+          />
+        </View>
+      )}
     </View>
   );
 };

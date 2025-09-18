@@ -202,6 +202,7 @@ const CameraContainer = ({route, navigation}) => {
         ...route?.params?.returnToParams,
       };
 
+      return navigation.popTo(ROUTES.TABS, {screen: ROUTES.VEHICLE_INFORMATION, params: navParams});
       return navigation.popTo(ROUTES.HOME, {screen: targetScreen, params: navParams});
     }
 
@@ -260,7 +261,7 @@ const CameraContainer = ({route, navigation}) => {
         params: {afterFileUploadImageUrl: image_url, fileId: imageID, ...afterFileUploadNavigationParams},
       });
     } else {
-      navigation.popTo(ROUTES.HOME, {screen: NEW_INSPECTION, params});
+      navigation.popTo({screen: NEW_INSPECTION, params});
     }
   }
 
@@ -295,7 +296,7 @@ const CameraContainer = ({route, navigation}) => {
         variant || 0,
         'app',
         data?.companyId,
-        category,
+        category
       );
     } catch (error) {
       console.log('handleNextPress error:', error);

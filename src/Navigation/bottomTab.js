@@ -37,7 +37,9 @@ const BottomTab = () => (
 
 export default BottomTab;
 
-const CustomTabBar = ({state, descriptors, navigation}) => {
+const CustomTabBar = props => {
+  const {state, descriptors, navigation} = props;
+  console.log('PROPS:', props);
   return (
     <View style={styles.container}>
       {state.routes.map((route, index) => {

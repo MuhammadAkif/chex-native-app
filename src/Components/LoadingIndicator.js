@@ -1,29 +1,25 @@
 import React from 'react';
-import {View, Modal, ActivityIndicator, StyleSheet, StatusBar} from 'react-native';
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
-
+import {View, Modal, ActivityIndicator, StyleSheet, Dimensions} from 'react-native';
 import {colors} from '../Assets/Styles';
-
-const {white, cobaltBlueLight} = colors;
+const {width, height} = Dimensions.get('window');
 
 const LoadingIndicator = ({isLoading}) => (
-  <Modal animationType="slide" transparent={true} statusBarTranslucent visible={isLoading} style={styles.container}>
-    <View style={styles.centeredView}>
-      <ActivityIndicator size={'large'} color={white} />
+  <Modal animationType="fade" transparent={false} statusBarTranslucent visible={isLoading}>
+    <View style={styles.overlay}>
+      <ActivityIndicator size="large" color={colors.royalBlue} />
     </View>
-    <StatusBar backgroundColor={cobaltBlueLight} barStyle="light-content" translucent={true} />
   </Modal>
 );
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  centeredView: {
-    flex: 1,
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width,
+    height,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: cobaltBlueLight,
-    paddingTop: hp('7%'),
   },
 });
 

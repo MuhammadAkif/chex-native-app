@@ -6,11 +6,12 @@ import {colors} from '../Assets/Styles';
 import CardWrapper from './Card/CardWrapper';
 import {IMAGES} from '../Assets/Images';
 import dayjs from 'dayjs';
+import {STATUSES, VEHICLE_IMAGES} from '../Constants';
 
 const VehicleCard = ({item}) => {
   return (
     <CardWrapper style={styles.container}>
-      <Image source={IMAGES.Van} style={styles.image} />
+      <Image source={VEHICLE_IMAGES[item?.vehicleType] || IMAGES.Van} style={styles.image} />
 
       <View style={styles.contentContainer}>
         <AppText fontWeight={'700'} fontSize={wp(3.5)} color={colors.royalBlue}>
@@ -19,7 +20,7 @@ const VehicleCard = ({item}) => {
         <AppText fontWeight={'500'}>{item?.companyName}</AppText>
         <View style={styles.statusContainer}>
           <AppText fontWeight={'700'} fontSize={wp(3.2)} color={colors.white}>
-            {item?.inspectionStatus}
+            {STATUSES[item?.inspectionStatus] || item?.inspectionStatus}
           </AppText>
         </View>
         {item?.reviewedDate && (

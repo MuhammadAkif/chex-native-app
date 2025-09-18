@@ -203,6 +203,11 @@ const NewInspectionContainer = ({route, navigation}) => {
     !isLicensePlateUploaded && setSelectedOption(selectedOptionInitialState);
   }, [isLicensePlateUploaded]);
 
+  useEffect(() => {
+    if (route?.params?.isInProgress)
+      dispatch(file_Details(selectedInspectionID)).then(onInProgressInspectionSuccess).catch(onInProgressInspectionFail);
+  }, [route?.params?.isInProgress, selectedInspectionID]);
+
   const shouldAnnotate = vehicle_Type === 'new' && isExterior;
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
@@ -537,12 +542,6 @@ const NewInspectionContainer = ({route, navigation}) => {
     dispatch(file_Details(inspectionID)).then(onInProgressInspectionSuccess).catch(onInProgressInspectionFail);
   };
   function onInProgressInspectionSuccess(res) {
-    const {vehicleType} = res?.data;
-
-    if (vehicleType == VEHICLE_TYPES.TRUCK) {
-      return navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {hasNewFetch: true});
-    }
-
     vehicleTireStatusToRender(inspectionID).then();
   }
   function onInProgressInspectionFail(error) {

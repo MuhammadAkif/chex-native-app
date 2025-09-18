@@ -1,16 +1,20 @@
-import {View, StatusBar, ScrollView, Image, FlatList, RefreshControl} from 'react-native';
+import {View, StatusBar, ScrollView, Image, FlatList, RefreshControl, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {styles} from './styles';
 import AppText from '../../../Components/text';
 import {CardWrapper, IconWrapper, InspectionCard, LogoHeader, VehicleCard} from '../../../Components';
 import {colors} from '../../../Assets/Styles';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {BellWhiteIcon, BlueTruckStatIcon, HamburgerIcon, InProgressStatIcon, SubmittedStatIcon, TotalStatIcon} from '../../../Assets/Icons';
+import {BellWhiteIcon, BlueTruckStatIcon, InProgressStatIcon, SubmittedStatIcon, TotalStatIcon} from '../../../Assets/Icons';
 import {IMAGES} from '../../../Assets/Images';
 import {ROUTES, TABS} from '../../../Navigation/ROUTES';
 import {getUserInspectionStats, getRegisteredVehicles} from '../../../services/inspection';
+import {useSelector} from 'react-redux';
+import {getUserFullName} from '../../../Utils/helpers';
 
 const Home = ({navigation}) => {
+  const authState = useSelector(state => state?.auth);
+  const user = authState?.user?.data;
   const [userInspectionStats, setUserInspectionStats] = useState({
     totalVehicles: 0,
     inProgressInspections: 0,
@@ -18,6 +22,7 @@ const Home = ({navigation}) => {
     totalInspections: 0,
   });
   const [isStatsLoading, setIsStatsLoading] = useState(false);
+  const [isVehicleRegisterLoading, setIsVehicleRegisterLoading] = useState(false);
   const [vehiclesData, setVehiclesData] = useState([]);
 
   const RecentInpsectionData = [
@@ -28,15 +33,18 @@ const Home = ({navigation}) => {
   const getUserInspectionStatsAPI = async () => {
     setIsStatsLoading(true);
     const response = await getUserInspectionStats();
+    setIsStatsLoading(false);
+
     const {totalVehicles = 0, inProgressInspections = 0, submittedInspections = 0, totalInspections = 0} = response?.data || {};
     setUserInspectionStats({totalVehicles, inProgressInspections, submittedInspections, totalInspections});
-    setIsStatsLoading(false);
   };
 
   const getRegisteredVehiclesAPI = async () => {
+    setIsVehicleRegisterLoading(true);
     const response = await getRegisteredVehicles();
+    setIsVehicleRegisterLoading(false);
+
     const {vehicles = []} = response?.data || {};
-    console.log('vehicles:', vehicles);
     setVehiclesData(vehicles);
   };
 
@@ -72,7 +80,7 @@ const Home = ({navigation}) => {
 
           <View style={styles.usernameContainer}>
             <AppText color={colors.white} fontSize={wp(6)} style={styles.username}>
-              Hi, Ali Tariq
+              Hi, {getUserFullName(user?.name, user?.lastName)}
             </AppText>
             <AppText color={colors.white}>Let's check your vehicle today</AppText>
           </View>
@@ -104,7 +112,7 @@ const Home = ({navigation}) => {
           <View style={styles.withHeadingContentContainer}>
             <View style={styles.sectionWrapper}>
               <AppText style={styles.headingText}>My Registered Vehicles</AppText>
-              <RegisteredVehicles data={vehiclesData} />
+              <RegisteredVehicles data={vehiclesData} isLoading={isVehicleRegisterLoading} />
             </View>
 
             <View style={styles.sectionWrapper}>
@@ -134,7 +142,7 @@ const StatBox = ({count = 0, icon: Icon, title, id, onPress}) => {
   );
 };
 
-const RegisteredVehicles = ({data}) => {
+const RegisteredVehicles = ({data, isLoading}) => {
   return (
     <FlatList
       horizontal
@@ -144,6 +152,13 @@ const RegisteredVehicles = ({data}) => {
       showsHorizontalScrollIndicator={false}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item, index}) => <VehicleCard item={item} />}
+      ListEmptyComponent={
+        isLoading ? (
+          <ActivityIndicator style={styles.registerVehicleLoader} size={'small'} color={colors.royalBlue} />
+        ) : (
+          <AppText style={styles.noRegisterText}>No Registered Vehicle</AppText>
+        )
+      }
     />
   );
 };

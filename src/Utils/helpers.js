@@ -273,5 +273,6 @@ export function resizeInnerBox(outerWidth, outerHeight, initialWidth, initialHei
 }
 
 export const getUserFullName = (first, last) => {
+  if (!first || !last) return 'there';
   return `${first} ${last}`;
 };
