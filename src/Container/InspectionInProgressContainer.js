@@ -37,7 +37,7 @@ const InspectionInProgressContainer = ({navigation}) => {
       setIsLoading(true);
       fetchInProgressInspections().then();
       return () => resetAllStates();
-    }, []),
+    }, [])
   );
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
@@ -81,11 +81,9 @@ const InspectionInProgressContainer = ({navigation}) => {
     dispatch(setSelectedVehicleKind(vehicleKind));
     resetAllStates();
 
-    if (vehicleKind == VEHICLE_TYPES.TRUCK) return navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {hasNewFetch: true});
-    else
-      navigate(NEW_INSPECTION, {
-        routeName: INSPECTION_IN_PROGRESS,
-      });
+    navigate(NEW_INSPECTION, {
+      routeName: INSPECTION_IN_PROGRESS,
+    });
   }
   function onContinuePressFail(error) {
     const {statusCode = null} = error?.response?.data || {};

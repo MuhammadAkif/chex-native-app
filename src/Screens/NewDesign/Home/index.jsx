@@ -8,7 +8,7 @@ import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {BellWhiteIcon, BlueTruckStatIcon, InProgressStatIcon, SubmittedStatIcon, TotalStatIcon} from '../../../Assets/Icons';
 import {IMAGES} from '../../../Assets/Images';
 import {ROUTES, TABS} from '../../../Navigation/ROUTES';
-import {getUserInspectionStats, getRegisteredVehicles} from '../../../services/inspection';
+import {getUserInspectionStats, getRegisteredVehicles, getRecentInspections} from '../../../services/inspection';
 import {useSelector} from 'react-redux';
 import {getUserFullName} from '../../../Utils/helpers';
 
@@ -24,6 +24,8 @@ const Home = ({navigation}) => {
   const [isStatsLoading, setIsStatsLoading] = useState(false);
   const [isVehicleRegisterLoading, setIsVehicleRegisterLoading] = useState(false);
   const [vehiclesData, setVehiclesData] = useState([]);
+  const [recentInspections, setRecentInspections] = useState([]);
+  const [isRecentInspectionLoading, setIsRecentInspectionLoading] = useState(false);
 
   const RecentInpsectionData = [
     {licencseNumber: 'ABC-123', id: 'ID: VH-2847', status: 'Passed'},
@@ -48,9 +50,21 @@ const Home = ({navigation}) => {
     setVehiclesData(vehicles);
   };
 
+  const getRecentInspectionsAPI = () => {
+    setIsRecentInspectionLoading(true);
+    getRecentInspections()
+      .then(response => {
+        if (response.status === 200) {
+          setRecentInspections(response?.data.inspections);
+        }
+      })
+      .finally(() => setIsRecentInspectionLoading(false));
+  };
+
   useEffect(() => {
     getUserInspectionStatsAPI();
     getRegisteredVehiclesAPI();
+    getRecentInspectionsAPI();
   }, []);
 
   const handlePressStatCard = id => {
@@ -63,7 +77,7 @@ const Home = ({navigation}) => {
       <StatusBar translucent backgroundColor={'transparent'} barStyle="light-content" />
 
       <ScrollView
-        refreshControl={<RefreshControl refreshing={isStatsLoading} colors={[colors.white, colors.orange]} onRefresh={getUserInspectionStatsAPI} />}
+        refreshControl={<RefreshControl refreshing={false} colors={[colors.white, colors.orange]} onRefresh={getUserInspectionStatsAPI} />}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContentContainer}
         style={styles.container}>
@@ -117,7 +131,7 @@ const Home = ({navigation}) => {
 
             <View style={styles.sectionWrapper}>
               <AppText style={styles.headingText}>Recent Inspections</AppText>
-              <RecentInspections data={RecentInpsectionData} />
+              <RecentInspections data={recentInspections} isLoading={isRecentInspectionLoading} />
             </View>
           </View>
         </View>
@@ -163,7 +177,7 @@ const RegisteredVehicles = ({data, isLoading}) => {
   );
 };
 
-const RecentInspections = ({data}) => {
+const RecentInspections = ({data, isLoading}) => {
   return (
     <FlatList
       horizontal
@@ -173,6 +187,13 @@ const RecentInspections = ({data}) => {
       showsHorizontalScrollIndicator={false}
       keyExtractor={(item, index) => index.toString()}
       renderItem={({item, index}) => <InspectionCard item={item} />}
+      ListEmptyComponent={
+        isLoading ? (
+          <ActivityIndicator style={styles.registerVehicleLoader} size={'small'} color={colors.royalBlue} />
+        ) : (
+          <AppText style={styles.noRegisterText}>No Recent Inspection</AppText>
+        )
+      }
     />
   );
 };

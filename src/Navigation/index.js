@@ -20,7 +20,6 @@ import {
 
 import {ROUTES, STACKS} from './ROUTES';
 import {navigationRef} from '../services/navigationService';
-import {drawerScreenOptions, headerOptions} from './navigationOptions';
 import BottomTab from './bottomTab';
 import {AuthStack} from './stacks';
 
@@ -32,7 +31,7 @@ const Stack = createNativeStackNavigator();
 const RootNavigation = () => {
   const token = useSelector(state => state?.auth?.user?.token);
   const initialRouteName = token ? ROUTES.TABS : STACKS.AUTH_STACK;
-  const screenOptions = {headerShown: false};
+  const screenOptions = {headerShown: false, gestureEnabled: false};
 
   return (
     <NavigationContainer ref={navigationRef}>

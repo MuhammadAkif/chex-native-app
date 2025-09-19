@@ -1,5 +1,5 @@
 import {View, StatusBar, ScrollView, Image, Pressable, ActivityIndicator} from 'react-native';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {styles} from './styles';
 import {
   CardWrapper,
@@ -9,7 +9,6 @@ import {
   LoadingIndicator,
   LogoHeader,
   PrimaryGradientButton,
-  SecondaryButton,
 } from '../../../Components';
 import AppText from '../../../Components/text';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
@@ -21,12 +20,12 @@ import {Formik} from 'formik';
 import {VEHICLE_TYPES} from '../../../Constants';
 import {createInspection, getVehicleInformationAgainstLicenseId} from '../../../services/inspection';
 import useDebounce from '../../../hooks/useDebounce';
-import {ROUTES, TABS} from '../../../Navigation/ROUTES';
+import {ROUTES} from '../../../Navigation/ROUTES';
 import {useDispatch, useSelector} from 'react-redux';
-import {file_Details, numberPlateSelected, setCompanyId, setVehicleType} from '../../../Store/Actions';
-import {handle_Session_Expired, OdometerDetails, onNewInspectionPressSuccess} from '../../../Utils';
+import {getMileage, numberPlateSelected, setCompanyId, setSelectedVehicleKind, setVehicleType, showToast} from '../../../Store/Actions';
+import {OdometerDetails, onNewInspectionPressSuccess} from '../../../Utils';
 import {navigate} from '../../../services/navigationService';
-import {useIsFocused, useRoute} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 
 const validate = values => {
   const errors = {};
@@ -63,6 +62,7 @@ const VehicleInformation = props => {
   const authState = useSelector(state => state?.auth);
   const dispatch = useDispatch();
   const route = useRoute();
+  const mileageInputRef = useRef(null);
   const user = authState?.user?.data;
   const companyId = user?.companyId;
   const [showVehicleType, setShowVehicleType] = useState(false);
@@ -72,18 +72,10 @@ const VehicleInformation = props => {
   const [errorModalDetail, setErrorModalDetail] = useState({title: '', message: '', inspectionId: ''});
   const [isLoading, setIsLoading] = useState(false);
   const vehicleTypesScrollRef = useRef(null);
-  const isScreenFocused = useIsFocused();
 
   // Dimensions used to calculate scroll offset (keep in sync with styles.js)
   const VEHICLE_ITEM_WIDTH = wp(38);
   const VEHICLE_ITEM_GAP = 10;
-
-  useEffect(() => {
-    if (route?.params?.isMileageCapture && isScreenFocused) {
-      const {isLicensePlate, isOdometer, displayAnnotation, fileId, annotationDetails, is_Exterior, routeName} = route.params;
-      console.log('ROUTE:', route?.params);
-    }
-  }, [route, isScreenFocused]);
 
   const scrollToVehicleType = useCallback(
     typeId => {
@@ -102,7 +94,9 @@ const VehicleInformation = props => {
     createInspection(companyId, values)
       .then(response => {
         dispatch(setCompanyId(companyId));
+        dispatch(setSelectedVehicleKind(values?.vehicleType));
         onNewInspectionPressSuccess(response, dispatch, navigate);
+        resetForm();
       })
       .catch(error => {
         const {
@@ -110,12 +104,14 @@ const VehicleInformation = props => {
           hasAdded = 'existing',
           inspectionId = null,
           errorMessage = 'An error occurred',
-          message = 'An error occurred',
+          message = 'Already In Progress',
+          vehicleType: vehicleKind,
         } = error?.response?.data || {};
 
         if (statusCode === 409) {
           const vehicleType = hasAdded || 'existing';
           dispatch(setVehicleType(vehicleType));
+          dispatch(setSelectedVehicleKind(vehicleKind));
           setTimeout(() => setIsInspectionInProgressModalVisible(true), 100);
           setErrorModalDetail({title: message, message: errorMessage, inspectionId});
         }
@@ -144,6 +140,7 @@ const VehicleInformation = props => {
       groupType: OdometerDetails.groupType,
       instructionalText: OdometerDetails.instructionalText,
     };
+
     navigation.navigate(ROUTES.CAMERA, {
       modalDetails: details,
       returnTo: ROUTES.VEHICLE_INFORMATION,
@@ -194,7 +191,35 @@ const VehicleInformation = props => {
               return errors;
             }}
             onSubmit={handleSubmitForm}>
-            {({values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue, isSubmitting, submitCount}) => {
+            {({values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue, isSubmitting, submitCount, setFieldError}) => {
+              useEffect(() => {
+                if (route?.params?.isMileageCapture) {
+                  getMileageFromImage();
+                }
+              }, [route]);
+
+              const getMileageFromImage = async () => {
+                const {capturedImageUri} = route?.params;
+                dispatch(getMileage(capturedImageUri))
+                  .then(response => {
+                    const {mileage} = response?.data || {};
+                    if (mileage) {
+                      setFieldValue('mileage', mileage, false);
+                    } else {
+                      showToast('Unable to get mileage from image', 'error');
+                      mileageInputRef.current?.focus();
+                    }
+                  })
+                  .catch(error => {
+                    //Get Mileage manually from user
+                    showToast('Unable to get mileage from image', 'error');
+                    mileageInputRef.current?.focus();
+                  })
+                  .finally(() => {
+                    navigation.setParams({capturedImageUri: '', capturedImageMime: '', capturedImageS3Key: '', isMileageCapture: false});
+                  });
+              };
+
               const fetchVehicleInfo = useCallback(
                 async licensePlateNumber => {
                   const plate = licensePlateNumber?.trim();
@@ -203,11 +228,14 @@ const VehicleInformation = props => {
                     setIsFetchingVehicleInfo(true);
                     const response = await getVehicleInformationAgainstLicenseId(plate);
                     const apiVehicleType = response?.data?.vehicleType ?? null;
-                    const apiVin = response?.data?.vin ?? null;
+                    const apiVin = response?.data?.vin || '';
                     const normalized = typeof apiVehicleType === 'string' ? apiVehicleType.toLowerCase() : null;
                     if (normalized && Object.values(VEHICLE_TYPES).includes(normalized)) {
                       setFieldValue('vehicleType', normalized, false);
                       setFieldValue('vin', apiVin, false);
+                      setFieldError('vin', '');
+                      setFieldError('vehicleType', '');
+
                       setHasApiDetectedVehicleType(true);
                       setShowVehicleType(true);
                       requestAnimationFrame(() => scrollToVehicleType(normalized));
@@ -245,6 +273,12 @@ const VehicleInformation = props => {
                 },
                 [setFieldValue, debouncedFetchVehicleInfo]
               );
+              const renderRightIcon = useMemo(() => {
+                if (isFetchingVehicleInfo) return <ActivityIndicator size="small" color={colors.royalBlue} />;
+                if (hasApiDetectedVehicleType) return <CircleTickIcon />;
+                return null;
+              }, [isFetchingVehicleInfo, hasApiDetectedVehicleType]);
+
               return (
                 <>
                   <View style={styles.vehicleTypeContainer}>
@@ -252,13 +286,7 @@ const VehicleInformation = props => {
                       <CustomInput
                         inputContainerStyle={styles.inputContainer}
                         placeholderTextColor={'#BDBDBD'}
-                        rightIcon={
-                          isFetchingVehicleInfo ? (
-                            <ActivityIndicator size="small" color={colors.royalBlue} />
-                          ) : hasApiDetectedVehicleType ? (
-                            <CircleTickIcon />
-                          ) : null
-                        }
+                        rightIcon={renderRightIcon}
                         inputStyle={styles.input}
                         placeholder="Enter Truck ID/License Plate"
                         label="Truck ID/License Plate"
@@ -310,7 +338,7 @@ const VehicleInformation = props => {
                           ))}
                         </ScrollView>
                         {errors.vehicleType && (touched.vehicleType || submitCount > 0) && (
-                          <AppText style={[styles.vehicleTypeText, {color: colors.red}]}> {errors.vehicleType} </AppText>
+                          <AppText style={[styles.vehicleTypeText, {color: colors.red, marginTop: 3}]}> {errors.vehicleType} </AppText>
                         )}
                       </View>
                     )}
@@ -318,6 +346,7 @@ const VehicleInformation = props => {
                     {/* INPUTS */}
                     <View style={styles.inputsContainer}>
                       <CustomInput
+                        ref={mileageInputRef}
                         inputContainerStyle={styles.inputContainer}
                         placeholderTextColor={'#BDBDBD'}
                         rightIcon={<CameraOutlineIcon />}

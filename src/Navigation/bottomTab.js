@@ -20,26 +20,28 @@ const ICON_MAP = {
 
 const getIconColor = isFocused => (isFocused ? colors.oceanBlue : colors.slateGray);
 
-const BottomTab = () => (
-  <Tab.Navigator
-    tabBar={props => <CustomTabBar {...props} />}
-    screenOptions={{
-      headerShown: false,
-      tabBarHideOnKeyboard: true,
-    }}>
-    <Tab.Screen name={TABS.HOME} component={HomeTabStack} options={{tabBarLabel: 'Home'}} />
-    <Tab.Screen name={TABS.REPORTS} component={ReportTabStack} options={{tabBarLabel: 'Reports'}} />
-    <Tab.Screen name={TABS.INSPECTION} component={InspectionTabStack} options={{tabBarLabel: 'Inspection'}} />
-    <Tab.Screen name={TABS.MY_TRIPS} component={MyTripsTabStack} options={{tabBarLabel: 'My Trips'}} />
-    <Tab.Screen name={TABS.PROFILE} component={ProfileTabStack} options={{tabBarLabel: 'Profile'}} />
-  </Tab.Navigator>
-);
+const BottomTab = () => {
+  return (
+    <Tab.Navigator
+      tabBar={props => <CustomTabBar {...props} />}
+      screenOptions={{
+        headerShown: false,
+        tabBarHideOnKeyboard: true,
+      }}>
+      <Tab.Screen name={TABS.HOME} component={HomeTabStack} options={{tabBarLabel: 'Home'}} />
+      <Tab.Screen name={TABS.REPORTS} component={ReportTabStack} options={{tabBarLabel: 'Reports'}} />
+      <Tab.Screen name={TABS.INSPECTION} component={InspectionTabStack} options={{tabBarLabel: 'Inspection'}} />
+      <Tab.Screen name={TABS.MY_TRIPS} component={MyTripsTabStack} options={{tabBarLabel: 'My Trips'}} />
+      <Tab.Screen name={TABS.PROFILE} component={ProfileTabStack} options={{tabBarLabel: 'Profile'}} />
+    </Tab.Navigator>
+  );
+};
 
 export default BottomTab;
 
 const CustomTabBar = props => {
   const {state, descriptors, navigation} = props;
-  console.log('PROPS:', props);
+
   return (
     <View style={styles.container}>
       {state.routes.map((route, index) => {

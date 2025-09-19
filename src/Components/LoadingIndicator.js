@@ -4,7 +4,7 @@ import {colors} from '../Assets/Styles';
 const {width, height} = Dimensions.get('window');
 
 const LoadingIndicator = ({isLoading}) => (
-  <Modal animationType="fade" transparent={false} statusBarTranslucent visible={isLoading}>
+  <Modal animationType="fade" transparent={true} backdropColor={'rgba(0,0,0,.3)'} statusBarTranslucent visible={isLoading}>
     <View style={styles.overlay}>
       <ActivityIndicator size="large" color={colors.royalBlue} />
     </View>
@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     height,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'transparent',
   },
 });
 

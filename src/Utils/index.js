@@ -5,7 +5,7 @@ import * as yup from 'yup';
 
 import {IMAGES} from '../Assets/Images';
 import {customSortOrder, darkImageError, INSPECTION, INSPECTION_SUBCATEGORY, S3_BUCKET_BASEURL, uploadFailed} from '../Constants';
-import {ROUTES} from '../Navigation/ROUTES';
+import {ROUTES, TABS} from '../Navigation/ROUTES';
 import {getInspectionDetails, isImageDarkWithAI, s3SignedUrl, uploadFileToDatabase} from '../services/inspection';
 import {store} from '../Store';
 import {batchUpdateVehicleImages, numberPlateSelected, sessionExpired, setCompanyId} from '../Store/Actions';
@@ -285,7 +285,7 @@ export const getSignedUrl = async (
   variant = 0,
   source = 'app',
   companyId,
-  category,
+  category
 ) => {
   try {
     const response = await s3SignedUrl(mime, source, inspectionId, categoryName, variant, companyId);
@@ -404,7 +404,7 @@ export const extractDate = dataAndTime => {
 
   return `${month}/${day}/${year}`;
 };
-export const handleHomePress = navigation => navigation?.navigate?.(ROUTES.INSPECTION_SELECTION);
+export const handleHomePress = navigation => navigation?.navigate?.(ROUTES.TABS);
 export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
   const errors = {
     409: {
@@ -547,7 +547,8 @@ export const generateRandomString = () => {
 };
 
 export const handleNewInspectionPress = (dispatch, setIsLoading, companyId, navigation, resetAllStates) => {
-  dispatch(setVehicleTypeModalVisible(true));
+  // dispatch(setVehicleTypeModalVisible(true));
+  navigation.navigate(ROUTES.TABS, {screen: TABS.INSPECTION});
   dispatch(setCompanyId(companyId));
   // No API call here anymore
 };

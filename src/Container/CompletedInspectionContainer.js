@@ -3,12 +3,10 @@ import {BackHandler} from 'react-native';
 
 import {CompletedInspectionScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS} from '../Constants';
-import {ROUTES} from '../Navigation/ROUTES';
+import {ROUTES, TABS} from '../Navigation/ROUTES';
 import {useBoolean} from '../hooks';
 import {useDispatch} from 'react-redux';
 import {clearNewInspection, hideToast, setRequired} from '../Store/Actions';
-
-const {INSPECTION_SELECTION} = ROUTES;
 
 const CompletedInspectionContainer = ({navigation}) => {
   const {canGoBack, navigate} = navigation;
@@ -28,16 +26,17 @@ const CompletedInspectionContainer = ({navigation}) => {
     dispatch(setRequired());
     dispatch(hideToast());
 
-    navigation.navigate(ROUTES.HOME, {name: INSPECTION_SELECTION});
+    navigation.navigate(ROUTES.TABS, {name: TABS.HOME});
   };
 
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
-      navigation.navigate(ROUTES.HOME, {name: INSPECTION_SELECTION});
       // CLEAR INSPECTION STATES OF REDUX
       dispatch(clearNewInspection());
       dispatch(setRequired());
       dispatch(hideToast());
+
+      navigation.navigate(ROUTES.TABS, {name: TABS.HOME});
 
       return true;
     }

@@ -276,3 +276,25 @@ export const getUserFullName = (first, last) => {
   if (!first || !last) return 'there';
   return `${first} ${last}`;
 };
+
+export function navigateBackWithParams(navigation, route, extraParams = {}) {
+  if (!route?.params?.returnTo) {
+    return navigation.goBack();
+  }
+
+  const targetScreen = route.params.returnTo;
+  const parentOfTargetScreen = route.params.parentOfTargetScreen;
+  const returnToParams = route.params.returnToParams || {};
+
+  // merge captured params + caller-provided extras
+  const navParams = {
+    ...returnToParams.params,
+    ...extraParams,
+  };
+
+  // Use navigate with merge:true to update existing nested screen
+  navigation.popTo(parentOfTargetScreen, {
+    screen: targetScreen,
+    params: navParams,
+  });
+}

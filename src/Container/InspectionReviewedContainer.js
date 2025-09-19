@@ -31,7 +31,7 @@ const InspectionReviewedContainer = ({navigation}) => {
       setIsLoading(true);
       fetchInspection().then();
       return () => resetAllStates();
-    }, []),
+    }, [])
   );
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);

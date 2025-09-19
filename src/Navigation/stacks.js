@@ -1,5 +1,5 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {ROUTES} from './ROUTES';
+import {ROUTES, STACKS} from './ROUTES';
 import {stackScreenOptions} from './navigationOptions';
 import {
   ForgotPasswordContainer,
@@ -12,9 +12,11 @@ import {
 import Home from '../Screens/NewDesign/Home';
 import {VehicleInformation} from '../Screens';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {StatusBar} from 'react-native';
+import {Pressable, StatusBar, View} from 'react-native';
 import {colors} from '../Assets/Styles';
 import AppText from '../Components/text';
+import {useDispatch} from 'react-redux';
+import {signOut} from '../Store/Actions';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,11 +29,26 @@ const MyTripsScreen = () => {
   );
 };
 
-const ProfileScreen = () => {
+const ProfileScreen = ({navigation}) => {
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    navigation.replace(STACKS.AUTH_STACK);
+    setTimeout(() => {
+      dispatch(signOut());
+    }, 100);
+  };
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{flex: 1}}>
       <StatusBar backgroundColor={colors.black} translucent barStyle={'dark-content'} />
-      <AppText>{'Profile'}</AppText>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Pressable onPress={handleLogout} style={{backgroundColor: colors.red, padding: 5, borderRadius: 10}}>
+          <AppText color={colors.white} fontWeight={'700'}>
+            Logout
+          </AppText>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 };

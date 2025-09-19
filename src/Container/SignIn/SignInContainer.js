@@ -66,7 +66,7 @@ const SignInContainer = ({navigation, route}) => {
   };
   function onCheckUserDataSuccess(resetForm) {
     resetForm();
-    navigation.replace(ROUTES.DRAWER);
+    navigation.replace(ROUTES.TABS);
   }
   function onCheckUserDataFail(err) {
     const {errors = null} = err?.response?.data;

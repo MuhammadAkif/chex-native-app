@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {BackHandler, Platform} from 'react-native';
+import {BackHandler, Button, Platform} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {
@@ -49,9 +49,11 @@ import {
   isObjectEmpty,
   LicensePlateDetails,
 } from '../Utils';
+import {useIsFocused, usePreventRemove} from '@react-navigation/native';
+import AppText from '../Components/text';
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
-  isAllCarVerification: false,
+  isAllCarVerification: true,
   isAllInterior: false,
   isAllExterior: false,
   isAllTires: false,
@@ -110,6 +112,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     imageDimensions,
   } = useSelector(state => state.newInspection) || {};
   const {user} = useSelector(state => state?.auth) || {};
+  const isScreenFocused = useIsFocused();
   const {companyId} = user?.data || {};
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
@@ -149,7 +152,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   }, []);
 
   useEffect(() => {
-    if (route.params?.routeName === INSPECTION_IN_PROGRESS && checkTireStatus) {
+    if (route.params?.routeName === INSPECTION_IN_PROGRESS || (route.params?.routeName === ROUTES.NEW_INSPECTION && checkTireStatus)) {
       vehicleTireStatusToRender(selectedInspectionID).then(() => setCheckTireStatus(false));
     }
 
@@ -204,9 +207,20 @@ const NewInspectionContainer = ({route, navigation}) => {
   }, [isLicensePlateUploaded]);
 
   useEffect(() => {
-    if (route?.params?.isInProgress)
+    if (route?.params?.isInProgress && isScreenFocused && selectedInspectionID) {
+      setLoadingIndicator(true);
       dispatch(file_Details(selectedInspectionID)).then(onInProgressInspectionSuccess).catch(onInProgressInspectionFail);
-  }, [route?.params?.isInProgress, selectedInspectionID]);
+    }
+  }, [route?.params?.isInProgress, selectedInspectionID, isScreenFocused]);
+
+  // // Cleanup ONLY on screen unmount
+  usePreventRemove(true, ({data}) => {
+    console.log('Inspection Redux CleanUp!');
+    dispatch(clearNewInspection());
+    dispatch(setRequired());
+
+    navigation.dispatch(data.action);
+  });
 
   const shouldAnnotate = vehicle_Type === 'new' && isExterior;
   function handle_Hardware_Back_Press() {
@@ -301,7 +315,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     if (vehicle_Type === 'new') {
       updateRequiredFields(hasInteriorAndRoofTopCompany(companyId) ? interior__ : {}, exterior__);
     }
-    const allCarVerification = !isObjectEmpty(carVerificiationItems);
+    // const allCarVerification = !isObjectEmpty(carVerificiationItems);
+    const allCarVerification = true;
     const allInterior = hasInteriorAndRoofTopCompany(companyId) || !isObjectEmpty(interior__);
     const allExterior = !isObjectEmpty(exterior__);
     const allTires = !isObjectEmpty(tires);
@@ -542,7 +557,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     dispatch(file_Details(inspectionID)).then(onInProgressInspectionSuccess).catch(onInProgressInspectionFail);
   };
   function onInProgressInspectionSuccess(res) {
-    vehicleTireStatusToRender(inspectionID).then();
+    vehicleTireStatusToRender(selectedInspectionID).then();
   }
   function onInProgressInspectionFail(error) {
     const {statusCode = null} = error?.response?.data || {};
