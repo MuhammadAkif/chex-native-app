@@ -277,7 +277,7 @@ const NewInspectionScreen = props => {
         </View>
         <NewInspectionFooter onSubmitPress={handleSubmitPress} isLoading={isLoading} submitVisible={isVehicleAllPartsImagesAvailable} />
       </View>
-      <LoadingIndicator isLoading={loadingIndicator} />
+      <LoadingIndicator isLoading={isLoading} />
     </View>
   );
 };

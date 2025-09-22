@@ -1,18 +1,11 @@
 import React, {useCallback} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {PrimaryGradientButton, SecondaryButton} from './index';
 import {colors, modalStyle} from '../Assets/Styles';
 
-const {
-  footer: container_,
-  button: buttonStyles,
-  yesText: textStyle,
-} = modalStyle;
+const {footer: container_, button: buttonStyles, yesText: textStyle} = modalStyle;
 const {royalBlue} = colors;
 
 const FooterButtons = ({
@@ -26,6 +19,7 @@ const FooterButtons = ({
   onSubmit,
   onCancel,
   cancelText = 'Cancel',
+  disabledConfirm = false,
 }) => {
   const handleSubmit = useCallback(onSubmit, [onSubmit]);
   const handleCancel = useCallback(onCancel, [onCancel]);
@@ -38,6 +32,7 @@ const FooterButtons = ({
         buttonStyle={[buttonStyles, styles.buttons, confirmButtonStyle]}
         textStyle={[textStyle, confirmTextStyle]}
         onPress={handleSubmit}
+        buttonDisabled={disabledConfirm}
       />
       <SecondaryButton
         text={cancelText}

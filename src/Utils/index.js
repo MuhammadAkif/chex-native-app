@@ -559,7 +559,7 @@ export function onNewInspectionPressSuccess(response, dispatch, navigate, resetA
   dispatch(numberPlateSelected(id));
 
   navigate(ROUTES.NEW_INSPECTION, {
-    routeName: ROUTES.INSPECTION_SELECTION,
+    routeName: ROUTES.VEHICLE_INFORMATION,
   });
 }
 

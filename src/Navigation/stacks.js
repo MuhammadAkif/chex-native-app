@@ -10,13 +10,11 @@ import {
   WelcomeContainer,
 } from '../Container';
 import Home from '../Screens/NewDesign/Home';
-import {VehicleInformation} from '../Screens';
+import {MyProfile, VehicleInformation} from '../Screens';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Pressable, StatusBar, View} from 'react-native';
 import {colors} from '../Assets/Styles';
 import AppText from '../Components/text';
-import {useDispatch} from 'react-redux';
-import {signOut} from '../Store/Actions';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,30 +23,6 @@ const MyTripsScreen = () => {
     <SafeAreaView>
       <StatusBar backgroundColor={colors.black} translucent barStyle={'dark-content'} />
       <AppText>{'My Trips'}</AppText>
-    </SafeAreaView>
-  );
-};
-
-const ProfileScreen = ({navigation}) => {
-  const dispatch = useDispatch();
-
-  const handleLogout = () => {
-    navigation.replace(STACKS.AUTH_STACK);
-    setTimeout(() => {
-      dispatch(signOut());
-    }, 100);
-  };
-
-  return (
-    <SafeAreaView style={{flex: 1}}>
-      <StatusBar backgroundColor={colors.black} translucent barStyle={'dark-content'} />
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Pressable onPress={handleLogout} style={{backgroundColor: colors.red, padding: 5, borderRadius: 10}}>
-          <AppText color={colors.white} fontWeight={'700'}>
-            Logout
-          </AppText>
-        </Pressable>
-      </View>
     </SafeAreaView>
   );
 };
@@ -89,7 +63,7 @@ export const MyTripsTabStack = () => (
 );
 
 export const ProfileTabStack = () => (
-  <Stack.Navigator initialRouteName={ROUTES.PROFILE} screenOptions={stackScreenOptions}>
-    <Stack.Screen name={ROUTES.PROFILE} component={ProfileScreen} />
+  <Stack.Navigator initialRouteName={ROUTES.MY_PROFILE} screenOptions={stackScreenOptions}>
+    <Stack.Screen name={ROUTES.MY_PROFILE} component={MyProfile} />
   </Stack.Navigator>
 );

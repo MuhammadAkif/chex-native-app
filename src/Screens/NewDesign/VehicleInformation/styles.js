@@ -1,4 +1,4 @@
-import {Keyboard, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {colors, expandedCardStyles} from '../../../Assets/Styles';
 
@@ -8,16 +8,18 @@ export const styles = StyleSheet.create({
   container: {flex: 1},
   blueHeaderContainer: {backgroundColor: colors.royalBlue, height: hp(22)},
   whiteContainerContent: {
-    top: -hp(6),
+    top: -hp(8),
     backgroundColor: colors.white,
     borderRadius: wp(7),
     marginHorizontal: wp(3),
-    paddingVertical: hp(3),
+    paddingTop: hp(3),
+    paddingBottom: hp(1),
     gap: 15,
+    flex: 1,
   },
-  scrollContentContainer: {flexGrow: 1, backgroundColor: colors.white, paddingBottom: hp(3)},
+  scrollContentContainer: {flexGrow: 1, paddingBottom: hp(3)},
   infoContainer: {paddingHorizontal: CARD_PADDING, gap: 7},
-  vehicleTypeContainer: {gap: 15},
+  vehicleTypeContainer: {gap: 15, flex: 1, marginTop: 15},
   vehicleTypeText: {paddingHorizontal: CARD_PADDING, marginBottom: 8},
   vehicleTypeContentList: {flexGrow: 1, gap: 10, paddingHorizontal: CARD_PADDING},
   vehicleItemContainer: {width: wp(38), height: wp(38), borderRadius: 15, alignItems: 'center', padding: 4.5, paddingBottom: 0},
@@ -42,4 +44,5 @@ export const styles = StyleSheet.create({
   },
   input: {fontSize: wp(3.5)},
   nextButton: {height: hp(5), width: '90%', alignSelf: 'center', marginTop: hp(3)},
+  cardWrapper: {flex: 1, backgroundColor: colors.white},
 });

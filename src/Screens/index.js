@@ -15,7 +15,9 @@ import InspectionInProgressScreen from './InspectionInProgressScreen';
 import DVIRVehicleInfoScreen from './DVIR/DVIRVehicleInfoScreen';
 import DVIRInspectionChecklistScreen from './DVIR/DVIRInspectionChecklistScreen';
 import VehicleInformation from './NewDesign/VehicleInformation';
+import MyProfile from './NewDesign/MyProfile';
 export {
+  MyProfile,
   VehicleInformation,
   DVIRVehicleInfoScreen,
   DVIRInspectionChecklistScreen,

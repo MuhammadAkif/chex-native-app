@@ -27,11 +27,6 @@ const Home = ({navigation}) => {
   const [recentInspections, setRecentInspections] = useState([]);
   const [isRecentInspectionLoading, setIsRecentInspectionLoading] = useState(false);
 
-  const RecentInpsectionData = [
-    {licencseNumber: 'ABC-123', id: 'ID: VH-2847', status: 'Passed'},
-    {licencseNumber: 'XYZ-123', id: 'ID: VH-2848', status: 'Pending', days: '2 day'},
-  ];
-
   const getUserInspectionStatsAPI = async () => {
     setIsStatsLoading(true);
     const response = await getUserInspectionStats();
@@ -62,10 +57,14 @@ const Home = ({navigation}) => {
   };
 
   useEffect(() => {
+    getHomeData();
+  }, []);
+
+  const getHomeData = () => {
     getUserInspectionStatsAPI();
     getRegisteredVehiclesAPI();
     getRecentInspectionsAPI();
-  }, []);
+  };
 
   const handlePressStatCard = id => {
     if (id === 1) navigation.navigate(ROUTES.INSPECTION_IN_PROGRESS);
@@ -77,7 +76,7 @@ const Home = ({navigation}) => {
       <StatusBar translucent backgroundColor={'transparent'} barStyle="light-content" />
 
       <ScrollView
-        refreshControl={<RefreshControl refreshing={false} colors={[colors.white, colors.orange]} onRefresh={getUserInspectionStatsAPI} />}
+        refreshControl={<RefreshControl refreshing={false} colors={[colors.white, colors.orange]} onRefresh={getHomeData} />}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContentContainer}
         style={styles.container}>

@@ -56,6 +56,7 @@ import LogoHeader from './LogoHeader';
 import Mandatory from './Mandatory';
 import NewInspectionFooter from './NewInspectionFooter';
 import NumberPlateInUseModal from './NumberPlateInUseModal';
+import PhoneInput from './PhoneInput';
 import ConfirmVehicleDetailModal from './PopUpModals/ConfirmVehicleDetailModal';
 import DiscardInspectionModal from './PopUpModals/DiscardInspectionModal';
 import ExpiredInspectionModal from './PopUpModals/ExpiredInspectionModal';
@@ -84,6 +85,7 @@ import Toast from './Toast';
 import VehicleCard from './VehicleCard';
 import WarningModal from './WarningModal';
 export {
+  PhoneInput,
   IconWrapper,
   CardWrapper,
   LogoHeader,

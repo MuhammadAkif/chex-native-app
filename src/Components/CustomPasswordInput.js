@@ -1,9 +1,6 @@
 import React, {forwardRef} from 'react';
 import {View, TextInput, StyleSheet, TouchableOpacity} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {colors} from '../Assets/Styles';
 import {HidePassword, ShowPassword} from '../Assets/Icons';
@@ -35,8 +32,9 @@ const CustomPasswordInput = forwardRef(
       inputContainerStyle,
       hidePasswordHandler,
       isPasswordHidden,
+      maxLength,
     },
-    ref,
+    ref
   ) => {
     const ICON_COMPONENT = Password_Icon[isPasswordHidden];
     return (
@@ -59,13 +57,14 @@ const CustomPasswordInput = forwardRef(
           enterKeyHint={enterKeyHint}
           onSubmitEditing={onSubmitEditing}
           keyboardType={keyboardType}
+          maxLength={maxLength}
         />
         <TouchableOpacity onPress={hidePasswordHandler}>
           <ICON_COMPONENT height={hp('3%')} width={wp('6%')} color={gray} />
         </TouchableOpacity>
       </View>
     );
-  },
+  }
 );
 
 const styles = StyleSheet.create({

@@ -152,7 +152,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   }, []);
 
   useEffect(() => {
-    if (route.params?.routeName === INSPECTION_IN_PROGRESS || (route.params?.routeName === ROUTES.NEW_INSPECTION && checkTireStatus)) {
+    if ((route.params?.routeName === INSPECTION_IN_PROGRESS || route?.params?.routeName === ROUTES.VEHICLE_INFORMATION) && checkTireStatus) {
       vehicleTireStatusToRender(selectedInspectionID).then(() => setCheckTireStatus(false));
     }
 
@@ -174,7 +174,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         setIsExterior(is_Exterior || false);
       }
     }
-  }, [route]);
+  }, [route?.params]);
 
   useEffect(() => {
     handleExteriorLeft();
@@ -208,7 +208,7 @@ const NewInspectionContainer = ({route, navigation}) => {
 
   useEffect(() => {
     if (route?.params?.isInProgress && isScreenFocused && selectedInspectionID) {
-      setLoadingIndicator(true);
+      setIsLoading(true);
       dispatch(file_Details(selectedInspectionID)).then(onInProgressInspectionSuccess).catch(onInProgressInspectionFail);
     }
   }, [route?.params?.isInProgress, selectedInspectionID, isScreenFocused]);
@@ -562,6 +562,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   function onInProgressInspectionFail(error) {
     const {statusCode = null} = error?.response?.data || {};
     setLoadingIndicator(false);
+    setIsLoading(false);
     if (statusCode === 401) {
       handle_Session_Expired(statusCode, dispatch);
     }
@@ -569,12 +570,14 @@ const NewInspectionContainer = ({route, navigation}) => {
   }
   //Tire Rendering logic start here
   async function vehicleTireStatusToRender(inspection_ID) {
-    setLoadingIndicator(true);
+    setIsLoading(true);
 
     await vehicleTireStatus(inspection_ID)
       .then(onVehicleTireStatusToRenderSuccess)
       .catch(onVehicleTireStatusToRenderFail)
-      .finally(() => setLoadingIndicator(false));
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
   function onVehicleTireStatusToRenderSuccess(res) {
     const {

@@ -204,7 +204,7 @@ export const DRAWER = {
   DVIRC: 'DVIRC',
 };
 
-export const INSPECTION_STATUSES = ['IN_REVIEW', 'REVIEWED', 'READY_FOR_REVIEW', 'IN_PROGRESS'];
+export const INSPECTION_STATUSES = ['IN_REVIEW', 'REVIEWED', 'READY_FOR_REVIEW'];
 export const STATUSES = {
   REVIEWED: 'Reviewed',
   READY_FOR_REVIEW: 'Ready For Review',

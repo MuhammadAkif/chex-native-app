@@ -43,7 +43,7 @@ const validate = values => {
   return errors;
 };
 
-const intialData = {
+const initialData = {
   licensePlateNumber: '',
   mileage: '',
   vin: '',
@@ -91,11 +91,14 @@ const VehicleInformation = props => {
     setSubmitting(false);
 
     setIsLoading(true);
+
     createInspection(companyId, values)
       .then(response => {
         dispatch(setCompanyId(companyId));
+        dispatch(setVehicleType(response?.data?.hasAdded || 'existing'));
         dispatch(setSelectedVehicleKind(values?.vehicleType));
         onNewInspectionPressSuccess(response, dispatch, navigate);
+        setHasApiDetectedVehicleType(false);
         resetForm();
       })
       .catch(error => {
@@ -148,253 +151,253 @@ const VehicleInformation = props => {
     });
   };
 
+  const handleNoPressOfAlreadyInProgressModal = () => {
+    setIsInspectionInProgressModalVisible(false);
+    setErrorModalDetail({title: '', message: '', inspectionId: ''});
+  };
+
   return (
     <View style={styles.blueContainer}>
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
       <LoadingIndicator isLoading={isLoading} />
 
-      <KeyboardAwareScrollView
-        nestedScrollEnabled
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContentContainer}
-        style={styles.container}>
-        {/* BLUE HEADER */}
-        <View style={styles.blueHeaderContainer}>
-          <LogoHeader
-            showLeft={false}
-            rightIcon={
-              <IconWrapper>
-                <BellWhiteIcon />
-              </IconWrapper>
-            }
-          />
-        </View>
+      {/* BLUE HEADER */}
+      <View style={styles.blueHeaderContainer}>
+        <LogoHeader
+          showLeft={false}
+          rightIcon={
+            <IconWrapper>
+              <BellWhiteIcon />
+            </IconWrapper>
+          }
+        />
+      </View>
 
+      <View style={styles.cardWrapper}>
         {/* WHITE CONTAINER */}
         <CardWrapper style={styles.whiteContainerContent}>
-          <View style={styles.infoContainer}>
-            <AppText fontSize={wp(4.5)} fontWeight={'600'}>
-              Vehicle Information
-            </AppText>
-            <AppText fontSize={wp(3)} color={colors.steelGray}>
-              Please provide the vehicle information below to begin your inspection. All fields are required to ensure accurate compliance.
-            </AppText>
-          </View>
+          <KeyboardAwareScrollView
+            nestedScrollEnabled
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContentContainer}
+            style={styles.container}>
+            <View style={styles.infoContainer}>
+              <AppText fontSize={wp(4.5)} fontWeight={'600'}>
+                Vehicle Information
+              </AppText>
+              <AppText fontSize={wp(3)} color={colors.steelGray}>
+                Please provide the vehicle information below to begin your inspection. All fields are required to ensure accurate compliance.
+              </AppText>
+            </View>
 
-          <Formik
-            initialValues={intialData}
-            validate={values => {
-              const errors = validate(values);
-              if (showVehicleType && !values.vehicleType) {
-                errors.vehicleType = 'Please select a vehicle type';
-              }
-              return errors;
-            }}
-            onSubmit={handleSubmitForm}>
-            {({values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue, isSubmitting, submitCount, setFieldError}) => {
-              useEffect(() => {
-                if (route?.params?.isMileageCapture) {
-                  getMileageFromImage();
+            <Formik
+              initialValues={initialData}
+              validate={values => {
+                const errors = validate(values);
+                if (showVehicleType && !values.vehicleType) {
+                  errors.vehicleType = 'Please select a vehicle type';
                 }
-              }, [route]);
+                return errors;
+              }}
+              onSubmit={handleSubmitForm}>
+              {({values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue, isSubmitting, submitCount, setFieldError}) => {
+                useEffect(() => {
+                  if (route?.params?.isMileageCapture) {
+                    getMileageFromImage();
+                  }
+                }, [route]);
 
-              const getMileageFromImage = async () => {
-                const {capturedImageUri} = route?.params;
-                dispatch(getMileage(capturedImageUri))
-                  .then(response => {
-                    const {mileage} = response?.data || {};
-                    if (mileage) {
-                      setFieldValue('mileage', mileage, false);
-                    } else {
+                const getMileageFromImage = async () => {
+                  const {capturedImageUri} = route?.params;
+                  dispatch(getMileage(capturedImageUri))
+                    .then(response => {
+                      const {mileage} = response?.data || {};
+
+                      if (mileage) {
+                        setFieldValue('mileage', mileage, false);
+                      } else {
+                        showToast('Unable to get mileage from image', 'error');
+                        mileageInputRef.current?.focus();
+                      }
+                    })
+                    .catch(error => {
+                      //Get Mileage manually from user
                       showToast('Unable to get mileage from image', 'error');
                       mileageInputRef.current?.focus();
-                    }
-                  })
-                  .catch(error => {
-                    //Get Mileage manually from user
-                    showToast('Unable to get mileage from image', 'error');
-                    mileageInputRef.current?.focus();
-                  })
-                  .finally(() => {
-                    navigation.setParams({capturedImageUri: '', capturedImageMime: '', capturedImageS3Key: '', isMileageCapture: false});
-                  });
-              };
+                    })
+                    .finally(() => {
+                      navigation.setParams({capturedImageUri: '', capturedImageMime: '', capturedImageS3Key: '', isMileageCapture: false});
+                    });
+                };
 
-              const fetchVehicleInfo = useCallback(
-                async licensePlateNumber => {
-                  const plate = licensePlateNumber?.trim();
-                  if (!plate) return;
-                  try {
-                    setIsFetchingVehicleInfo(true);
-                    const response = await getVehicleInformationAgainstLicenseId(plate);
-                    const apiVehicleType = response?.data?.vehicleType ?? null;
-                    const apiVin = response?.data?.vin || '';
-                    const normalized = typeof apiVehicleType === 'string' ? apiVehicleType.toLowerCase() : null;
-                    if (normalized && Object.values(VEHICLE_TYPES).includes(normalized)) {
-                      setFieldValue('vehicleType', normalized, false);
-                      setFieldValue('vin', apiVin, false);
-                      setFieldError('vin', '');
-                      setFieldError('vehicleType', '');
+                const fetchVehicleInfo = useCallback(
+                  async licensePlateNumber => {
+                    const plate = licensePlateNumber?.trim();
+                    if (!plate) return;
+                    try {
+                      setIsFetchingVehicleInfo(true);
+                      const response = await getVehicleInformationAgainstLicenseId(plate);
+                      const apiVehicleType = response?.data?.vehicleType ?? null;
+                      const apiVin = response?.data?.vin || '';
+                      const normalized = typeof apiVehicleType === 'string' ? apiVehicleType.toLowerCase() : null;
+                      if (normalized && Object.values(VEHICLE_TYPES).includes(normalized)) {
+                        setFieldValue('vehicleType', normalized, false);
+                        setFieldValue('vin', apiVin, false);
+                        setFieldError('vin', '');
+                        setFieldError('vehicleType', '');
 
-                      setHasApiDetectedVehicleType(true);
-                      setShowVehicleType(true);
-                      requestAnimationFrame(() => scrollToVehicleType(normalized));
-                    } else {
+                        setHasApiDetectedVehicleType(true);
+                        setShowVehicleType(true);
+                        requestAnimationFrame(() => scrollToVehicleType(normalized));
+                      } else {
+                        setFieldValue('vehicleType', '', false);
+                        setHasApiDetectedVehicleType(false);
+                        setShowVehicleType(true);
+                      }
+                    } catch (error) {
                       setFieldValue('vehicleType', '', false);
                       setHasApiDetectedVehicleType(false);
                       setShowVehicleType(true);
+                    } finally {
+                      setIsFetchingVehicleInfo(false);
                     }
-                  } catch (error) {
-                    setFieldValue('vehicleType', '', false);
-                    setHasApiDetectedVehicleType(false);
-                    setShowVehicleType(true);
-                  } finally {
-                    setIsFetchingVehicleInfo(false);
-                  }
-                },
-                [setFieldValue, scrollToVehicleType]
-              );
+                  },
+                  [setFieldValue, scrollToVehicleType]
+                );
 
-              const debouncedFetchVehicleInfo = useDebounce(fetchVehicleInfo, 600);
+                const debouncedFetchVehicleInfo = useDebounce(fetchVehicleInfo, 600);
 
-              const handleLicensePlateChangeFactory = useCallback(
-                name => text => {
-                  setFieldValue(name, text);
-                  const plate = text?.trim?.() || '';
-                  if (plate.length <= 3) {
-                    debouncedFetchVehicleInfo.cancel?.();
-                    setShowVehicleType(false);
-                    setFieldValue('vehicleType', '', false);
-                    setHasApiDetectedVehicleType(false);
-                    setIsFetchingVehicleInfo(false);
-                    return;
-                  }
-                  debouncedFetchVehicleInfo(text);
-                },
-                [setFieldValue, debouncedFetchVehicleInfo]
-              );
-              const renderRightIcon = useMemo(() => {
-                if (isFetchingVehicleInfo) return <ActivityIndicator size="small" color={colors.royalBlue} />;
-                if (hasApiDetectedVehicleType) return <CircleTickIcon />;
-                return null;
-              }, [isFetchingVehicleInfo, hasApiDetectedVehicleType]);
+                const handleLicensePlateChangeFactory = useCallback(
+                  name => text => {
+                    setFieldValue(name, text);
+                    const plate = text?.trim?.() || '';
+                    if (plate.length <= 3) {
+                      debouncedFetchVehicleInfo.cancel?.();
+                      setShowVehicleType(false);
+                      setFieldValue('vehicleType', '', false);
+                      setHasApiDetectedVehicleType(false);
+                      setIsFetchingVehicleInfo(false);
+                      return;
+                    }
+                    debouncedFetchVehicleInfo(text);
+                  },
+                  [setFieldValue, debouncedFetchVehicleInfo]
+                );
+                const renderRightIcon = useMemo(() => {
+                  if (isFetchingVehicleInfo) return <ActivityIndicator size="small" color={colors.royalBlue} />;
+                  if (hasApiDetectedVehicleType) return <CircleTickIcon />;
+                  return null;
+                }, [isFetchingVehicleInfo, hasApiDetectedVehicleType]);
 
-              return (
-                <>
-                  <View style={styles.vehicleTypeContainer}>
-                    <View style={styles.inputsContainer}>
-                      <CustomInput
-                        inputContainerStyle={styles.inputContainer}
-                        placeholderTextColor={'#BDBDBD'}
-                        rightIcon={renderRightIcon}
-                        inputStyle={styles.input}
-                        placeholder="Enter Truck ID/License Plate"
-                        label="Truck ID/License Plate"
-                        value={values.licensePlateNumber}
-                        onChangeText={handleLicensePlateChangeFactory}
-                        onBlur={handleBlur}
-                        valueName="licensePlateNumber"
-                        touched={touched.licensePlateNumber}
-                        error={errors.licensePlateNumber}
-                      />
-                    </View>
-
-                    {/* VEHICLE TYPES */}
-                    {showVehicleType && (
-                      <View>
-                        <AppText style={styles.vehicleTypeText}>Vehicle Type</AppText>
-                        <ScrollView
-                          nestedScrollEnabled
-                          showsHorizontalScrollIndicator={false}
-                          horizontal
-                          ref={vehicleTypesScrollRef}
-                          contentContainerStyle={styles.vehicleTypeContentList}>
-                          {VehicleTypes.map(v => (
-                            <Pressable
-                              onPress={() => {
-                                if (!hasApiDetectedVehicleType) {
-                                  setFieldValue('vehicleType', v.id);
-                                }
-                              }}
-                              activeOpacity={0.7}
-                              key={v.id}
-                              style={[
-                                styles.vehicleItemContainer,
-                                {
-                                  backgroundColor: values.vehicleType == v.id ? colors.royalBlue : '#E7EFF8',
-                                  opacity: values.vehicleType !== v.id && hasApiDetectedVehicleType ? 0.7 : 1,
-                                },
-                              ]}>
-                              <View style={styles.vehicleItemImageContainer}>
-                                <Image source={v.image} style={styles.vehicleImg} />
-                              </View>
-
-                              <View style={styles.vehicleItemName}>
-                                <AppText fontWeight={'700'} color={values.vehicleType == v.id ? colors.white : colors.steelGray}>
-                                  {v.name}
-                                </AppText>
-                              </View>
-                            </Pressable>
-                          ))}
-                        </ScrollView>
-                        {errors.vehicleType && (touched.vehicleType || submitCount > 0) && (
-                          <AppText style={[styles.vehicleTypeText, {color: colors.red, marginTop: 3}]}> {errors.vehicleType} </AppText>
-                        )}
-                      </View>
-                    )}
-
-                    {/* INPUTS */}
-                    <View style={styles.inputsContainer}>
-                      <CustomInput
-                        ref={mileageInputRef}
-                        inputContainerStyle={styles.inputContainer}
-                        placeholderTextColor={'#BDBDBD'}
-                        rightIcon={<CameraOutlineIcon />}
-                        inputStyle={styles.input}
-                        placeholder="Enter Mileage"
-                        label="Mileage"
-                        value={values.mileage}
-                        onChangeText={handleChange}
-                        onBlur={handleBlur}
-                        valueName="mileage"
-                        touched={touched.mileage}
-                        error={errors.mileage}
-                        keyboardType="number-pad"
-                        onRightIconPress={handlePressMileageCameraIcon}
-                      />
-
-                      <CustomInput
-                        inputContainerStyle={styles.inputContainer}
-                        placeholderTextColor={'#BDBDBD'}
-                        inputStyle={styles.input}
-                        placeholder="Enter VIN"
-                        label="VIN"
-                        value={values.vin}
-                        onChangeText={handleChange}
-                        onBlur={handleBlur}
-                        valueName="vin"
-                        touched={touched.vin}
-                        error={errors.vin}
-                      />
-
-                      {/* <CustomInput
+                return (
+                  <>
+                    <View style={styles.vehicleTypeContainer}>
+                      <View style={styles.inputsContainer}>
+                        <CustomInput
                           inputContainerStyle={styles.inputContainer}
                           placeholderTextColor={'#BDBDBD'}
-                          rightIcon={<ChevronIcon />}
+                          rightIcon={renderRightIcon}
                           inputStyle={styles.input}
-                          placeholder="Select Inspection Type"
-                          label="Inspection Type"
-                          /> 
-                      */}
+                          placeholder="Enter Truck ID/License Plate"
+                          label="Truck ID/License Plate"
+                          value={values.licensePlateNumber}
+                          onChangeText={handleLicensePlateChangeFactory}
+                          onBlur={handleBlur}
+                          valueName="licensePlateNumber"
+                          touched={touched.licensePlateNumber}
+                          error={errors.licensePlateNumber}
+                          maxLength={10}
+                        />
+                      </View>
+
+                      {/* VEHICLE TYPES */}
+                      {showVehicleType && (
+                        <View>
+                          <AppText style={styles.vehicleTypeText}>Vehicle Type</AppText>
+                          <ScrollView
+                            nestedScrollEnabled
+                            showsHorizontalScrollIndicator={false}
+                            horizontal
+                            ref={vehicleTypesScrollRef}
+                            contentContainerStyle={styles.vehicleTypeContentList}>
+                            {VehicleTypes.map(v => (
+                              <Pressable
+                                onPress={() => {
+                                  if (!hasApiDetectedVehicleType) {
+                                    setFieldValue('vehicleType', v.id);
+                                  }
+                                }}
+                                activeOpacity={0.7}
+                                key={v.id}
+                                style={[
+                                  styles.vehicleItemContainer,
+                                  {
+                                    backgroundColor: values.vehicleType == v.id ? colors.royalBlue : '#E7EFF8',
+                                    opacity: values.vehicleType !== v.id && hasApiDetectedVehicleType ? 0.7 : 1,
+                                  },
+                                ]}>
+                                <View style={styles.vehicleItemImageContainer}>
+                                  <Image source={v.image} style={styles.vehicleImg} />
+                                </View>
+
+                                <View style={styles.vehicleItemName}>
+                                  <AppText fontWeight={'700'} color={values.vehicleType == v.id ? colors.white : colors.steelGray}>
+                                    {v.name}
+                                  </AppText>
+                                </View>
+                              </Pressable>
+                            ))}
+                          </ScrollView>
+                          {errors.vehicleType && (touched.vehicleType || submitCount > 0) && (
+                            <AppText style={[styles.vehicleTypeText, {color: colors.red, marginTop: 3}]}> {errors.vehicleType} </AppText>
+                          )}
+                        </View>
+                      )}
+
+                      {/* INPUTS */}
+                      <View style={styles.inputsContainer}>
+                        <CustomInput
+                          inputContainerStyle={styles.inputContainer}
+                          placeholderTextColor={'#BDBDBD'}
+                          rightIcon={<CameraOutlineIcon />}
+                          inputStyle={styles.input}
+                          placeholder="Enter Mileage"
+                          label="Mileage"
+                          value={values.mileage}
+                          onChangeText={handleChange}
+                          onBlur={handleBlur}
+                          valueName="mileage"
+                          touched={touched.mileage}
+                          error={errors.mileage}
+                          keyboardType="number-pad"
+                          onRightIconPress={handlePressMileageCameraIcon}
+                          maxLength={20}
+                        />
+
+                        <CustomInput
+                          inputContainerStyle={styles.inputContainer}
+                          placeholderTextColor={'#BDBDBD'}
+                          inputStyle={styles.input}
+                          placeholder="Enter VIN"
+                          label="VIN"
+                          value={values.vin}
+                          onChangeText={handleChange}
+                          onBlur={handleBlur}
+                          valueName="vin"
+                          touched={touched.vin}
+                          error={errors.vin}
+                          maxLength={30}
+                        />
+                      </View>
                     </View>
-                  </View>
-                  <PrimaryGradientButton onPress={handleSubmit} text="Next" buttonStyle={styles.nextButton} />
-                </>
-              );
-            }}
-          </Formik>
+                    <PrimaryGradientButton onPress={handleSubmit} text="Next" buttonStyle={styles.nextButton} />
+                  </>
+                );
+              }}
+            </Formik>
+          </KeyboardAwareScrollView>
         </CardWrapper>
-      </KeyboardAwareScrollView>
+      </View>
 
       {isInspectionInProgressModalVisible && (
         <View>
@@ -402,7 +405,8 @@ const VehicleInformation = props => {
             title={errorModalDetail.title}
             onYesPress={handleYesPressOfInProgressInspection}
             description={errorModalDetail.message}
-            dualButton={false}
+            dualButton={true}
+            onNoPress={handleNoPressOfAlreadyInProgressModal}
           />
         </View>
       )}

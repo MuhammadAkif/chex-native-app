@@ -30,15 +30,16 @@ const CustomInput = forwardRef(
       onPressOut,
       inputContainerStyle,
       hidePasswordHandler,
-      editable,
+      editable = true,
       rightIcon,
       onRightIconPress,
+      maxLength,
     },
-    ref,
+    ref
   ) => (
     <View>
       {label && <AppText style={styles.label}>{label}</AppText>}
-      <View style={[styles.container, inputContainerStyle]}>
+      <View style={[styles.container, {opacity: !editable ? 0.6 : 1}, inputContainerStyle]}>
         <TextInput
           ref={ref}
           placeholder={placeholder}
@@ -59,6 +60,7 @@ const CustomInput = forwardRef(
           onSubmitEditing={onSubmitEditing}
           keyboardType={keyboardType}
           editable={editable}
+          maxLength={maxLength}
         />
 
         {rightIcon && (
@@ -69,7 +71,7 @@ const CustomInput = forwardRef(
       </View>
       {touched && error && <AppText style={[errorStyle.errorsTextStyle, styles.error]}>{error}</AppText>}
     </View>
-  ),
+  )
 );
 
 const styles = StyleSheet.create({

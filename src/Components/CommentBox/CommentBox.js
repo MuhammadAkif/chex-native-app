@@ -1,14 +1,13 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import {Keyboard, StyleSheet, Text} from 'react-native';
-
-import ModalContainer from './ModalContainer';
+import {Keyboard, Modal, Platform, ScrollView, StyleSheet, Text, View} from 'react-native';
 import InputField from './InputField';
 import TextLimit from './TextLimit';
 import {modalStyle} from '../../Assets/Styles';
 import {FooterButtons} from '../index';
 import {fallBack} from '../../Utils';
+import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
 
-const {modalOuterContainer, header, body} = modalStyle;
+const {modalOuterContainer, header, body, modalContainer} = modalStyle;
 
 const CommentBox = ({
   title = 'Add a Comment',
@@ -45,27 +44,34 @@ const CommentBox = ({
   const onPressModal = () => Keyboard.dismiss();
 
   return (
-    <ModalContainer
-      visible={visible}
+    <Modal
+      animationType="slide"
+      statusBarTranslucent
+      backdropColor={'rgba(0,0,0,.5)'}
       style={modalOuterContainer}
+      visible={visible}
       onPress={onPressModal}>
-      <Text style={header}>{title}</Text>
-      <Text style={[body, styles.subHeading]}>{description}</Text>
-      <InputField
-        value={input}
-        onChange={setInput}
-        placeholder={placeHolder}
-        maxLength={textLimit}
-        editable={!isLoading}
-        onSubmitEditing={handleConfirm}
-      />
-      <TextLimit currentLength={input.length} maxLength={textLimit} />
-      <FooterButtons
-        onSubmit={handleConfirm}
-        onCancel={handleCancel}
-        isLoading={isLoading}
-      />
-    </ModalContainer>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{flex: 1}}>
+        <ScrollView contentContainerStyle={{flexGrow: 1, justifyContent: 'center', alignItems: 'center'}} keyboardShouldPersistTaps="handled">
+          <View style={modalContainer}>
+            <Text style={header}>{title}</Text>
+            <Text style={[body, styles.subHeading]}>{description}</Text>
+
+            <InputField
+              value={input}
+              onChange={setInput}
+              placeholder={placeHolder}
+              maxLength={textLimit}
+              editable={!isLoading}
+              onSubmitEditing={handleConfirm}
+            />
+            <TextLimit currentLength={input.length} maxLength={textLimit} />
+
+            <FooterButtons disabledConfirm={input === feedback} onSubmit={handleConfirm} onCancel={handleCancel} isLoading={isLoading} />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </Modal>
   );
 };
 

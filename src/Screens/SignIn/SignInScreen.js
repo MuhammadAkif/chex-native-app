@@ -48,6 +48,7 @@ const SignInScreen = ({
               valueName={'name'}
               placeholder={'John Doe'}
               onSubmitEditing={handlePasswordFocus}
+              maxLength={25}
             />
             <InputFieldRequiredError touched={touched.name} error={errors.name} />
           </View>
@@ -65,6 +66,7 @@ const SignInScreen = ({
               enterKeyHint={'done'}
               hidePasswordHandler={hidePasswordHandler}
               isPasswordHidden={hidePassword}
+              maxLength={20}
             />
             <InputFieldRequiredError touched={touched.password} error={errors.password} />
           </View>
