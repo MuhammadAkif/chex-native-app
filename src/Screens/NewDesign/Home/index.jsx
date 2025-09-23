@@ -1,8 +1,8 @@
-import {View, StatusBar, ScrollView, Image, FlatList, RefreshControl, ActivityIndicator} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {View, StatusBar, ScrollView, Image, FlatList, RefreshControl, ActivityIndicator, BackHandler, Platform} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
 import {styles} from './styles';
 import AppText from '../../../Components/text';
-import {CardWrapper, IconWrapper, InspectionCard, LogoHeader, VehicleCard} from '../../../Components';
+import {AlertPopup, CardWrapper, IconWrapper, InspectionCard, LogoHeader, VehicleCard} from '../../../Components';
 import {colors} from '../../../Assets/Styles';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {BellWhiteIcon, BlueTruckStatIcon, InProgressStatIcon, SubmittedStatIcon, TotalStatIcon} from '../../../Assets/Icons';
@@ -11,6 +11,14 @@ import {ROUTES, TABS} from '../../../Navigation/ROUTES';
 import {getUserInspectionStats, getRegisteredVehicles, getRecentInspections} from '../../../services/inspection';
 import {useSelector} from 'react-redux';
 import {getUserFullName} from '../../../Utils/helpers';
+import {useFocusEffect} from '@react-navigation/native';
+import {ANDROID, exitAppInfo, HARDWARE_BACK_PRESS} from '../../../Constants';
+
+const {
+  title,
+  message,
+  button: {yes, cancel},
+} = exitAppInfo;
 
 const Home = ({navigation}) => {
   const authState = useSelector(state => state?.auth);
@@ -26,6 +34,7 @@ const Home = ({navigation}) => {
   const [vehiclesData, setVehiclesData] = useState([]);
   const [recentInspections, setRecentInspections] = useState([]);
   const [isRecentInspectionLoading, setIsRecentInspectionLoading] = useState(false);
+  const [showExitPopup, setShowExitPopup] = useState(false);
 
   const getUserInspectionStatsAPI = async () => {
     setIsStatsLoading(true);
@@ -59,6 +68,30 @@ const Home = ({navigation}) => {
   useEffect(() => {
     getHomeData();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, hardwareBackPress);
+      return () => backHandler.remove();
+    }, [])
+  );
+
+  function hardwareBackPress() {
+    if (Platform.OS === ANDROID) {
+      setShowExitPopup(true);
+      return true;
+    }
+  }
+
+  function onExitCancelPress() {
+    setShowExitPopup(false);
+    return null;
+  }
+
+  function onExitPress() {
+    setShowExitPopup(false);
+    BackHandler.exitApp();
+  }
 
   const getHomeData = () => {
     getUserInspectionStatsAPI();
@@ -135,6 +168,16 @@ const Home = ({navigation}) => {
           </View>
         </View>
       </ScrollView>
+
+      <AlertPopup
+        visible={showExitPopup}
+        onYesPress={onExitPress}
+        onCancelPress={onExitCancelPress}
+        title={title}
+        message={message}
+        yesButtonText={yes}
+        cancelButtonText={cancel}
+      />
     </View>
   );
 };

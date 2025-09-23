@@ -48,7 +48,7 @@ const SignInScreen = ({
               valueName={'name'}
               placeholder={'John Doe'}
               onSubmitEditing={handlePasswordFocus}
-              maxLength={25}
+              maxLength={100}
             />
             <InputFieldRequiredError touched={touched.name} error={errors.name} />
           </View>

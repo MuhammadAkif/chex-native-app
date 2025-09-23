@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {BackHandler, Button, Platform} from 'react-native';
+import {BackHandler, Platform} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-
 import {
   ExteriorItemsExpandedCard,
   ExteriorItemsExpandedCard_Old,
@@ -153,7 +152,7 @@ const NewInspectionContainer = ({route, navigation}) => {
 
   useEffect(() => {
     if ((route.params?.routeName === INSPECTION_IN_PROGRESS || route?.params?.routeName === ROUTES.VEHICLE_INFORMATION) && checkTireStatus) {
-      vehicleTireStatusToRender(selectedInspectionID).then(() => setCheckTireStatus(false));
+      vehicleTireStatusToRender(selectedInspectionID);
     }
 
     handleIsAllVehicleParts();
@@ -439,7 +438,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   function onGetLocationSuccess() {
     dispatch(clearNewInspection());
     resetAllStates();
-    navigate(COMPLETED_INSPECTION);
+    navigation.replace(COMPLETED_INSPECTION);
   }
   function onGetLocationFail(error) {
     const {statusCode = null} = error?.response?.data;
@@ -572,7 +571,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   async function vehicleTireStatusToRender(inspection_ID) {
     setIsLoading(true);
 
-    await vehicleTireStatus(inspection_ID)
+    vehicleTireStatus(inspection_ID)
       .then(onVehicleTireStatusToRenderSuccess)
       .catch(onVehicleTireStatusToRenderFail)
       .finally(() => {

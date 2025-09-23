@@ -115,11 +115,11 @@ const NewInspectionScreen = props => {
           noButtonStyle={{borderColor: orange}}
         />
       )}
-      {isInspectionInProgressModalVisible && (
+      {/* {isInspectionInProgressModalVisible && (
         <View>
           <DiscardInspectionModal onYesPress={handleYesPressOfInProgressInspection} description={errorTitle} dualButton={false} />
         </View>
-      )}
+      )} */}
       {inUseErrorTitle && (
         <DiscardInspectionModal yesButtonText={'Ok'} onYesPress={handleBackPress} description={inUseErrorTitle} dualButton={false} />
       )}

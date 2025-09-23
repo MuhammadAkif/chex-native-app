@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
   cardWrapper: {flex: 1, backgroundColor: colors.white},
   blueHeaderContainer: {backgroundColor: colors.royalBlue, height: hp(22)},
   inputsContainer: {gap: 15, marginTop: '5%', flex: 1},
-  nextButton: {height: hp(5), width: '90%', alignSelf: 'center', marginTop: hp(3)},
+  nextButton: {height: hp(5), width: '80%', alignSelf: 'center', marginTop: hp(3)},
   inputContainer: {
     height: hp('5%'),
     width: '100%',

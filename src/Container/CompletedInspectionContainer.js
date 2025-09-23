@@ -3,13 +3,13 @@ import {BackHandler} from 'react-native';
 
 import {CompletedInspectionScreen} from '../Screens';
 import {HARDWARE_BACK_PRESS} from '../Constants';
-import {ROUTES, TABS} from '../Navigation/ROUTES';
+import {ROUTES} from '../Navigation/ROUTES';
 import {useBoolean} from '../hooks';
 import {useDispatch} from 'react-redux';
 import {clearNewInspection, hideToast, setRequired} from '../Store/Actions';
 
 const CompletedInspectionContainer = ({navigation}) => {
-  const {canGoBack, navigate} = navigation;
+  const {canGoBack} = navigation;
   const {value: boxVisible, setTrue, setFalse, reset, toggle} = useBoolean(false);
   const dispatch = useDispatch();
 
@@ -21,12 +21,14 @@ const CompletedInspectionContainer = ({navigation}) => {
     return resetAllStates;
   }, []);
 
+  const resetNavigationToHome = () => navigation.reset({index: 0, routes: [{name: ROUTES.TABS}]});
+
   const handleHomePress = () => {
     dispatch(clearNewInspection());
     dispatch(setRequired());
     dispatch(hideToast());
 
-    navigation.navigate(ROUTES.TABS, {name: TABS.HOME});
+    resetNavigationToHome();
   };
 
   function handle_Hardware_Back_Press() {
@@ -36,7 +38,7 @@ const CompletedInspectionContainer = ({navigation}) => {
       dispatch(setRequired());
       dispatch(hideToast());
 
-      navigation.navigate(ROUTES.TABS, {name: TABS.HOME});
+      resetNavigationToHome();
 
       return true;
     }

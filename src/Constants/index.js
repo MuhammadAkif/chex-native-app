@@ -56,6 +56,7 @@ export const API_ENDPOINTS = {
   FORGET_PASSWORD_URL: generateApiUrl('auth/reset/email'),
   RESET_PASSWORD_URL: generateApiUrl('auth/reset/password'),
   INSPECTION_TIRE_STATUS_URL: generateApiUrl('display/tire'),
+  UPDATE_MY_PROFILE: generateApiUrl('user'),
   REMOVE_ALL_TIRES_URL: generateApiUrl('delete/file'),
   ANNOTATION_URL: generateApiUrl('file/coordinate'),
   LOCATION_URL: generateApiUrl('inspection/location'),

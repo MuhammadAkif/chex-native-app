@@ -1,4 +1,4 @@
-import {Alert} from 'react-native';
+import {Alert, Platform} from 'react-native';
 import {Camera} from 'react-native-vision-camera';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import * as yup from 'yup';
@@ -558,9 +558,14 @@ export function onNewInspectionPressSuccess(response, dispatch, navigate, resetA
 
   dispatch(numberPlateSelected(id));
 
-  navigate(ROUTES.NEW_INSPECTION, {
-    routeName: ROUTES.VEHICLE_INFORMATION,
-  });
+  setTimeout(
+    () => {
+      navigate(ROUTES.NEW_INSPECTION, {
+        routeName: ROUTES.VEHICLE_INFORMATION,
+      });
+    },
+    Platform.OS === 'ios' ? 200 : 0
+  );
 }
 
 export function onNewInspectionPressFail(err, dispatch) {

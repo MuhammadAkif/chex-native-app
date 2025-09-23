@@ -43,6 +43,6 @@ export const styles = StyleSheet.create({
     borderColor: expandedCardStyles.uploadImageContainer.borderColor,
   },
   input: {fontSize: wp(3.5)},
-  nextButton: {height: hp(5), width: '90%', alignSelf: 'center', marginTop: hp(3)},
+  nextButton: {height: hp(5), width: '80%', alignSelf: 'center', marginTop: hp(3)},
   cardWrapper: {flex: 1, backgroundColor: colors.white},
 });

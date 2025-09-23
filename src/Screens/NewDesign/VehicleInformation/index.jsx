@@ -72,10 +72,19 @@ const VehicleInformation = props => {
   const [errorModalDetail, setErrorModalDetail] = useState({title: '', message: '', inspectionId: ''});
   const [isLoading, setIsLoading] = useState(false);
   const vehicleTypesScrollRef = useRef(null);
+  const lastQueriedPlateRef = useRef('');
+  const latestRequestIdRef = useRef(0);
+  const responseCacheRef = useRef(new Map()); // plate -> {vehicleType, vin}
 
   // Dimensions used to calculate scroll offset (keep in sync with styles.js)
   const VEHICLE_ITEM_WIDTH = wp(38);
   const VEHICLE_ITEM_GAP = 10;
+
+  const resetRefCacheOfPlateNumber = () => {
+    lastQueriedPlateRef.current = '';
+    latestRequestIdRef.current = 0;
+    responseCacheRef.current = new Map();
+  };
 
   const scrollToVehicleType = useCallback(
     typeId => {
@@ -87,21 +96,50 @@ const VehicleInformation = props => {
     [VEHICLE_ITEM_GAP, VEHICLE_ITEM_WIDTH]
   );
 
-  const handleSubmitForm = (values, {setSubmitting, resetForm}) => {
-    setSubmitting(false);
+  // Helpers: normalize and validate plate
+  const normalizePlate = useCallback(text => (text || '').replace(/\s+/g, '').toUpperCase(), []);
+  const isValidPlate = useCallback(plate => /^[A-Z0-9-]{4,}$/.test(plate), []);
 
+  // Apply vehicle info from API/cache into form and UI state
+  const applyVehicleInfo = useCallback(
+    (data, setFieldValue, setFieldError) => {
+      const apiVehicleType = data?.vehicleType ?? null;
+      const apiVin = data?.vin || '';
+      const normalizedType = typeof apiVehicleType === 'string' ? apiVehicleType.toLowerCase() : null;
+
+      if (normalizedType && Object.values(VEHICLE_TYPES).includes(normalizedType)) {
+        setFieldValue('vehicleType', normalizedType, false);
+        setFieldValue('vin', apiVin, false);
+        setFieldError?.('vin', '');
+        setFieldError?.('vehicleType', '');
+        setHasApiDetectedVehicleType(true);
+        setShowVehicleType(true);
+        requestAnimationFrame(() => scrollToVehicleType(normalizedType));
+      } else {
+        setFieldValue('vehicleType', '', false);
+        setHasApiDetectedVehicleType(false);
+        setShowVehicleType(true);
+      }
+    },
+    [scrollToVehicleType]
+  );
+
+  const handleSubmitForm = (values, {setSubmitting, resetForm}) => {
     setIsLoading(true);
 
     createInspection(companyId, values)
       .then(response => {
+        setIsLoading(false);
         dispatch(setCompanyId(companyId));
         dispatch(setVehicleType(response?.data?.hasAdded || 'existing'));
         dispatch(setSelectedVehicleKind(values?.vehicleType));
         onNewInspectionPressSuccess(response, dispatch, navigate);
         setHasApiDetectedVehicleType(false);
+        setShowVehicleType(false);
         resetForm();
       })
       .catch(error => {
+        setIsLoading(false);
         const {
           statusCode = null,
           hasAdded = 'existing',
@@ -116,10 +154,13 @@ const VehicleInformation = props => {
           dispatch(setVehicleType(vehicleType));
           dispatch(setSelectedVehicleKind(vehicleKind));
           setTimeout(() => setIsInspectionInProgressModalVisible(true), 100);
-          setErrorModalDetail({title: message, message: errorMessage, inspectionId});
+          setErrorModalDetail({title: message, message: errorMessage, inspectionId, resetForm: resetForm});
         }
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        setSubmitting(false);
+        resetRefCacheOfPlateNumber();
+      });
   };
 
   const handleYesPressOfInProgressInspection = async () => {
@@ -127,8 +168,12 @@ const VehicleInformation = props => {
 
     dispatch(setCompanyId(companyId));
     dispatch(numberPlateSelected(errorModalDetail.inspectionId));
+    errorModalDetail?.resetForm?.();
+    setHasApiDetectedVehicleType(false);
+    setShowVehicleType(false);
     setErrorModalDetail({message: '', title: '', inspectionId: ''});
-    navigation.navigate(ROUTES.NEW_INSPECTION, {isInProgress: true});
+    resetRefCacheOfPlateNumber();
+    setTimeout(() => navigation.navigate(ROUTES.NEW_INSPECTION, {isInProgress: true}), 500);
   };
 
   const handlePressMileageCameraIcon = () => {
@@ -215,6 +260,7 @@ const VehicleInformation = props => {
 
                       if (mileage) {
                         setFieldValue('mileage', mileage, false);
+                        setFieldError('mileage', undefined);
                       } else {
                         showToast('Unable to get mileage from image', 'error');
                         mileageInputRef.current?.focus();
@@ -232,37 +278,43 @@ const VehicleInformation = props => {
 
                 const fetchVehicleInfo = useCallback(
                   async licensePlateNumber => {
-                    const plate = licensePlateNumber?.trim();
-                    if (!plate) return;
-                    try {
-                      setIsFetchingVehicleInfo(true);
-                      const response = await getVehicleInformationAgainstLicenseId(plate);
-                      const apiVehicleType = response?.data?.vehicleType ?? null;
-                      const apiVin = response?.data?.vin || '';
-                      const normalized = typeof apiVehicleType === 'string' ? apiVehicleType.toLowerCase() : null;
-                      if (normalized && Object.values(VEHICLE_TYPES).includes(normalized)) {
-                        setFieldValue('vehicleType', normalized, false);
-                        setFieldValue('vin', apiVin, false);
-                        setFieldError('vin', '');
-                        setFieldError('vehicleType', '');
+                    const normalizedPlate = normalizePlate(licensePlateNumber);
+                    if (!normalizedPlate || !isValidPlate(normalizedPlate)) return;
 
-                        setHasApiDetectedVehicleType(true);
-                        setShowVehicleType(true);
-                        requestAnimationFrame(() => scrollToVehicleType(normalized));
-                      } else {
-                        setFieldValue('vehicleType', '', false);
-                        setHasApiDetectedVehicleType(false);
-                        setShowVehicleType(true);
+                    // Return cached result if available
+                    const cached = responseCacheRef.current.get(normalizedPlate);
+                    if (cached) {
+                      applyVehicleInfo(cached, setFieldValue, setFieldError);
+                      lastQueriedPlateRef.current = normalizedPlate;
+                      return;
+                    }
+
+                    // Sequence guard to ignore stale responses
+                    const requestId = ++latestRequestIdRef.current;
+                    lastQueriedPlateRef.current = normalizedPlate;
+                    setIsFetchingVehicleInfo(true);
+                    try {
+                      const response = await getVehicleInformationAgainstLicenseId(normalizedPlate);
+                      if (requestId !== latestRequestIdRef.current) return; // stale
+
+                      const data = response?.data || {};
+                      // Cache small number of recent results
+                      if (responseCacheRef.current.size > 20) {
+                        const firstKey = responseCacheRef.current.keys().next().value;
+                        responseCacheRef.current.delete(firstKey);
                       }
+                      responseCacheRef.current.set(normalizedPlate, data);
+                      applyVehicleInfo(data, setFieldValue, setFieldError);
                     } catch (error) {
+                      if (requestId !== latestRequestIdRef.current) return; // stale
                       setFieldValue('vehicleType', '', false);
                       setHasApiDetectedVehicleType(false);
                       setShowVehicleType(true);
                     } finally {
-                      setIsFetchingVehicleInfo(false);
+                      if (requestId === latestRequestIdRef.current) setIsFetchingVehicleInfo(false);
                     }
                   },
-                  [setFieldValue, scrollToVehicleType]
+                  [applyVehicleInfo, isValidPlate, normalizePlate, setFieldError, setFieldValue]
                 );
 
                 const debouncedFetchVehicleInfo = useDebounce(fetchVehicleInfo, 600);
@@ -270,18 +322,19 @@ const VehicleInformation = props => {
                 const handleLicensePlateChangeFactory = useCallback(
                   name => text => {
                     setFieldValue(name, text);
-                    const plate = text?.trim?.() || '';
-                    if (plate.length <= 3) {
+                    const normalizedPlate = normalizePlate(text);
+                    if (!isValidPlate(normalizedPlate)) {
                       debouncedFetchVehicleInfo.cancel?.();
+                      latestRequestIdRef.current++;
                       setShowVehicleType(false);
                       setFieldValue('vehicleType', '', false);
                       setHasApiDetectedVehicleType(false);
                       setIsFetchingVehicleInfo(false);
                       return;
                     }
-                    debouncedFetchVehicleInfo(text);
+                    debouncedFetchVehicleInfo(normalizedPlate);
                   },
-                  [setFieldValue, debouncedFetchVehicleInfo]
+                  [debouncedFetchVehicleInfo, isValidPlate, normalizePlate, setFieldValue]
                 );
                 const renderRightIcon = useMemo(() => {
                   if (isFetchingVehicleInfo) return <ActivityIndicator size="small" color={colors.royalBlue} />;
@@ -390,7 +443,7 @@ const VehicleInformation = props => {
                         />
                       </View>
                     </View>
-                    <PrimaryGradientButton onPress={handleSubmit} text="Next" buttonStyle={styles.nextButton} />
+                    <PrimaryGradientButton onPress={handleSubmit} text="Next" buttonStyle={styles.nextButton} disabled={isLoading} />
                   </>
                 );
               }}

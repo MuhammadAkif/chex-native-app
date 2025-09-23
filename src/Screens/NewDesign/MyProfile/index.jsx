@@ -1,7 +1,7 @@
 import {StatusBar, View} from 'react-native';
 import React, {useState} from 'react';
 import {styles} from './styles';
-import {CardWrapper, CustomInput, IconWrapper, LogoHeader, PhoneInput, PrimaryGradientButton} from '../../../Components';
+import {CardWrapper, CustomInput, IconWrapper, LoadingIndicator, LogoHeader, PhoneInput, PrimaryGradientButton} from '../../../Components';
 import {useDispatch, useSelector} from 'react-redux';
 import {STACKS} from '../../../Navigation/ROUTES';
 import {Logout} from '../../../Assets/Icons';
@@ -11,15 +11,18 @@ import AppText from '../../../Components/text';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {Formik} from 'formik';
 import {signOut} from '../../../Store/Actions';
+import api from '../../../services/api';
+import {API_ENDPOINTS} from '../../../Constants';
+import authReducer from '../../../Store/Reducers/AuthReducer';
 
 const validate = values => {
   const errors = {};
 
-  if (!values.firstName.trim()) {
-    errors.firstName = 'First name is required';
+  if (!values?.name?.trim?.()) {
+    errors.name = 'First name is required';
   }
 
-  if (!values.lastName.trim()) {
+  if (!values?.lastName?.trim?.()) {
     errors.lastName = 'Last name is required';
   }
 
@@ -35,20 +38,14 @@ const validate = values => {
     errors.phoneNumber = 'Phone number must be between 10–15 digits';
   }
 
-  if (!values.password.trim()) {
-    errors.password = 'Password is required';
-  } else if (values.password.length < 6) {
-    errors.password = 'Password must be at least 6 characters';
-  }
-
   return errors;
 };
 
 const MyProfile = ({navigation}) => {
   const userState = useSelector(state => state?.auth?.user?.data);
-
+  const [isLoading, setIsLoading] = useState(false);
   const initialData = {
-    firstName: userState?.name,
+    name: userState?.name,
     lastName: userState?.lastName,
     email: userState?.email,
     phoneNumber: userState?.phone?.replace(/\D/g, '').slice(-10),
@@ -64,11 +61,33 @@ const MyProfile = ({navigation}) => {
     }, 100);
   };
 
-  const handleSubmitForm = () => {};
+  const handleSubmitForm = (values, {setSubmitting, resetForm}) => {
+    setSubmitting(false);
+
+    updateProfileAPI(values);
+  };
+
+  const updateProfileAPI = async data => {
+    try {
+      setIsLoading(true);
+      const response = await api.patch(API_ENDPOINTS.UPDATE_MY_PROFILE, data);
+      setIsLoading(false);
+
+      const user = response?.data?.user;
+      const token = response?.data?.token;
+      if (response?.status === 200 && user && token) {
+        dispatch({type: 'UPDATE_USER', payload: {data: user, token}});
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.log('ERROR:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+      <LoadingIndicator isLoading={isLoading} />
       <View style={styles.blueHeaderContainer}>
         <LogoHeader
           showLeft={false}
@@ -116,12 +135,13 @@ const MyProfile = ({navigation}) => {
                         inputStyle={styles.input}
                         placeholder="Enter First Name"
                         label="First Name"
-                        value={values.firstName}
+                        value={values.name}
                         onChangeText={handleChange}
                         onBlur={handleBlur}
-                        valueName="firstName"
-                        touched={touched.firstName}
-                        error={errors.firstName}
+                        valueName="name"
+                        touched={touched.name}
+                        error={errors.name}
+                        maxLength={100}
                       />
 
                       <CustomInput
@@ -136,6 +156,7 @@ const MyProfile = ({navigation}) => {
                         valueName="lastName"
                         touched={touched.lastName}
                         error={errors.lastName}
+                        maxLength={100}
                       />
 
                       <CustomInput
@@ -169,6 +190,7 @@ const MyProfile = ({navigation}) => {
                         valueName="phoneNumber"
                         touched={touched.phoneNumber}
                         error={errors.phoneNumber}
+                        maxLength={50}
                       />
                     </View>
                     <PrimaryGradientButton onPress={handleSubmit} text="Update Profile" buttonStyle={styles.nextButton} />

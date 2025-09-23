@@ -84,6 +84,7 @@ const ResetPasswordScreen = ({
             hidePasswordHandler={hidePasswordHandler}
             isPasswordHidden={hidePassword}
             onSubmitEditing={handleConfirmPasswordFocus}
+            maxLength={20}
           />
           <InputFieldRequiredError touched={touched.password} error={errors.password} />
         </View>
@@ -100,6 +101,7 @@ const ResetPasswordScreen = ({
             hidePasswordHandler={hideConfirmPasswordHandler}
             isPasswordHidden={hideConfirmPassword}
             onSubmitEditing={handleSubmit}
+            maxLength={20}
           />
           <InputFieldRequiredError touched={touched.confirmPassword} error={errors.confirmPassword} />
         </View>

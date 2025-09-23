@@ -47,7 +47,8 @@ const CommentBox = ({
     <Modal
       animationType="slide"
       statusBarTranslucent
-      backdropColor={'rgba(0,0,0,.5)'}
+      transparent={false}
+      backdropColor={'rgba(0,0,0,.3)'}
       style={modalOuterContainer}
       visible={visible}
       onPress={onPressModal}>
