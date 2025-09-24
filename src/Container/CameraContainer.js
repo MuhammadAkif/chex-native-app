@@ -184,13 +184,13 @@ const CameraContainer = ({route, navigation}) => {
     if (category === 'CarVerification' && type === 'licensePlate') {
       await handleExtractNumberPlate(image_url);
     }
-    // if (category === 'CarVerification' && type === 'odometer') {
-    //   try {
-    //     dispatch(getMileage(image_url));
-    //   } catch (error) {
-    //     throw error;
-    //   }
-    // }
+    if (category === 'CarVerification' && type === 'odometer') {
+      try {
+        dispatch(getMileage(image_url));
+      } catch (error) {
+        throw error;
+      }
+    }
 
     // If returnTo is present, navigate to the target screen with the captured image
     if (route?.params?.returnTo) {
@@ -204,8 +204,6 @@ const CameraContainer = ({route, navigation}) => {
 
       if (targetScreen == ROUTES.VEHICLE_INFORMATION) {
         navigation.popTo(ROUTES.TABS, {screen: TABS.INSPECTION, params: {screen: ROUTES.VEHICLE_INFORMATION, params: navParams}});
-      } else {
-        navigation.navigate(ROUTES.TABS, {screen: targetScreen, params: navParams});
       }
 
       return;

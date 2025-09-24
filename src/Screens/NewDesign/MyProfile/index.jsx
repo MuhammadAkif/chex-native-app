@@ -1,5 +1,5 @@
 import {StatusBar, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {styles} from './styles';
 import {CardWrapper, CustomInput, IconWrapper, LoadingIndicator, LogoHeader, PhoneInput, PrimaryGradientButton} from '../../../Components';
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,7 +13,8 @@ import {Formik} from 'formik';
 import {signOut} from '../../../Store/Actions';
 import api from '../../../services/api';
 import {API_ENDPOINTS} from '../../../Constants';
-import authReducer from '../../../Store/Reducers/AuthReducer';
+import {useFocusEffect} from '@react-navigation/native';
+import {Types} from '../../../Store/Types';
 
 const validate = values => {
   const errors = {};
@@ -32,10 +33,12 @@ const validate = values => {
     errors.email = 'Invalid email format';
   }
 
-  if (!values.phoneNumber.trim()) {
-    errors.phoneNumber = 'Phone number is required';
-  } else if (!/^\d{10,15}$/.test(values.phoneNumber)) {
-    errors.phoneNumber = 'Phone number must be between 10–15 digits';
+  const cleanedPhone = values?.phone.replace(/\D/g, '');
+
+  if (!cleanedPhone.trim()) {
+    errors.phone = 'Phone number is required';
+  } else if (!/^\d{10,15}$/.test(cleanedPhone)) {
+    errors.phone = 'Phone number must be between 10–15 digits';
   }
 
   return errors;
@@ -48,10 +51,15 @@ const MyProfile = ({navigation}) => {
     name: userState?.name,
     lastName: userState?.lastName,
     email: userState?.email,
-    phoneNumber: userState?.phone?.replace(/\D/g, '').slice(-10),
+    phone: userState?.phone?.replace(/\D/g, '').slice(-10),
   };
 
   const dispatch = useDispatch();
+
+  // Track whether user left the screen with unsaved (dirty) form changes
+  const wasDirtyRef = useRef(false);
+  // Keep latest Formik helpers available to focus/blur effects
+  const formikHelpersRef = useRef({resetForm: null, dirty: false});
 
   const handleLogout = () => {
     navigation.replace(STACKS.AUTH_STACK);
@@ -76,13 +84,39 @@ const MyProfile = ({navigation}) => {
       const user = response?.data?.user;
       const token = response?.data?.token;
       if (response?.status === 200 && user && token) {
-        dispatch({type: 'UPDATE_USER', payload: {data: user, token}});
+        dispatch({type: Types.UPDATE_USER, payload: {data: user, token}});
+        // Reinitialize Formik with latest saved values from API
+        const updatedInitialData = {
+          name: user?.name,
+          lastName: user?.lastName,
+          email: user?.email,
+          phone: user?.phone?.replace(/\D/g, '').slice(-10),
+        };
+        if (formikHelpersRef.current?.resetForm) {
+          formikHelpersRef.current.resetForm({values: updatedInitialData});
+          wasDirtyRef.current = false;
+        }
       }
     } catch (error) {
       setIsLoading(false);
       console.log('ERROR:', error);
     }
   };
+
+  // On focus, if we previously left with dirty changes, reset to initial values
+  useFocusEffect(
+    useCallback(() => {
+      if (wasDirtyRef.current && formikHelpersRef.current?.resetForm && !isLoading) {
+        formikHelpersRef.current.resetForm({values: initialData});
+        wasDirtyRef.current = false;
+      }
+
+      // On blur, remember if the form was dirty
+      return () => {
+        wasDirtyRef.current = !!formikHelpersRef.current?.dirty;
+      };
+    }, [initialData])
+  );
 
   return (
     <View style={styles.container}>
@@ -125,7 +159,11 @@ const MyProfile = ({navigation}) => {
                 submitCount,
                 setFieldError,
                 setFieldTouched,
+                resetForm,
+                dirty,
               }) => {
+                // Keep helpers fresh for focus/blur effects
+                formikHelpersRef.current = {resetForm, dirty};
                 return (
                   <>
                     <View style={styles.inputsContainer}>
@@ -180,16 +218,16 @@ const MyProfile = ({navigation}) => {
                         inputStyle={styles.input}
                         placeholder="Enter Phone"
                         label="Phone"
-                        value={values.phoneNumber}
+                        value={values.phone}
                         onChangeText={(masked, unmasked) => {
-                          setFieldValue('phoneNumber', unmasked);
+                          setFieldValue('phone', masked);
                         }}
                         onBlur={e => {
-                          setFieldTouched('phoneNumber', true, true);
+                          setFieldTouched('phone', true, true);
                         }}
-                        valueName="phoneNumber"
-                        touched={touched.phoneNumber}
-                        error={errors.phoneNumber}
+                        valueName="phone"
+                        touched={touched.phone}
+                        error={errors.phone}
                         maxLength={50}
                       />
                     </View>

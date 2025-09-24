@@ -23,9 +23,10 @@ import useDebounce from '../../../hooks/useDebounce';
 import {ROUTES} from '../../../Navigation/ROUTES';
 import {useDispatch, useSelector} from 'react-redux';
 import {getMileage, numberPlateSelected, setCompanyId, setSelectedVehicleKind, setVehicleType, showToast} from '../../../Store/Actions';
-import {OdometerDetails, onNewInspectionPressSuccess} from '../../../Utils';
+import {LicensePlateDetails, OdometerDetails, onNewInspectionPressSuccess} from '../../../Utils';
 import {navigate} from '../../../services/navigationService';
 import {useRoute} from '@react-navigation/native';
+import dayjs from 'dayjs';
 
 const validate = values => {
   const errors = {};
@@ -57,12 +58,17 @@ const VehicleTypes = [
   {id: VEHICLE_TYPES.OTHER, name: 'OTHER', image: IMAGES.other_vehicle},
 ];
 
+const currentDate = new Date().toISOString();
+
 const VehicleInformation = props => {
   const {navigation} = props;
   const authState = useSelector(state => state?.auth);
+  const {mileage, plateNumber} = useSelector(state => state?.newInspection) || {};
   const dispatch = useDispatch();
   const route = useRoute();
   const mileageInputRef = useRef(null);
+  const licensePlateInputRef = useRef(null);
+  const licensePlateAndMileageImages = useRef({mileage: {uri: '', extension: ''}, numberPlate: {uri: '', extension: ''}});
   const user = authState?.user?.data;
   const companyId = user?.companyId;
   const [showVehicleType, setShowVehicleType] = useState(false);
@@ -127,7 +133,30 @@ const VehicleInformation = props => {
   const handleSubmitForm = (values, {setSubmitting, resetForm}) => {
     setIsLoading(true);
 
-    createInspection(companyId, values)
+    const {numberPlate, mileage} = licensePlateAndMileageImages.current;
+    const dateImage = dayjs(currentDate).format('DD-M-YYYY');
+
+    const data = {
+      ...values,
+      files: [
+        {
+          url: numberPlate?.uri,
+          category: LicensePlateDetails.category,
+          extension: numberPlate?.extension,
+          groupType: LicensePlateDetails.groupType,
+          dateImage,
+        },
+        {
+          url: mileage?.uri,
+          category: OdometerDetails.category,
+          extension: mileage?.extension,
+          groupType: OdometerDetails.groupType,
+          dateImage,
+        },
+      ],
+    };
+
+    createInspection(companyId, data)
       .then(response => {
         setIsLoading(false);
         dispatch(setCompanyId(companyId));
@@ -136,6 +165,7 @@ const VehicleInformation = props => {
         onNewInspectionPressSuccess(response, dispatch, navigate);
         setHasApiDetectedVehicleType(false);
         setShowVehicleType(false);
+        licensePlateAndMileageImages.current = {mileage: {uri: '', extension: ''}, numberPlate: {uri: '', extension: ''}};
         resetForm();
       })
       .catch(error => {
@@ -155,6 +185,7 @@ const VehicleInformation = props => {
           dispatch(setSelectedVehicleKind(vehicleKind));
           setTimeout(() => setIsInspectionInProgressModalVisible(true), 100);
           setErrorModalDetail({title: message, message: errorMessage, inspectionId, resetForm: resetForm});
+          licensePlateAndMileageImages.current = {mileage: {uri: '', extension: ''}, numberPlate: {uri: '', extension: ''}};
         }
       })
       .finally(() => {
@@ -179,7 +210,7 @@ const VehicleInformation = props => {
   const handlePressMileageCameraIcon = () => {
     const details = {
       title: OdometerDetails.title,
-      type: 'odometer',
+      type: OdometerDetails.key,
       uri: '',
       source: OdometerDetails.source,
       fileId: '',
@@ -191,8 +222,30 @@ const VehicleInformation = props => {
 
     navigation.navigate(ROUTES.CAMERA, {
       modalDetails: details,
+      type: OdometerDetails.key,
       returnTo: ROUTES.VEHICLE_INFORMATION,
       returnToParams: {isMileageCapture: true},
+    });
+  };
+
+  const handlePressNumberPlateCameraIcon = () => {
+    const details = {
+      title: LicensePlateDetails.title,
+      type: LicensePlateDetails.key,
+      uri: '',
+      source: LicensePlateDetails.source,
+      fileId: '',
+      category: LicensePlateDetails.category,
+      subCategory: LicensePlateDetails.subCategory,
+      groupType: LicensePlateDetails.groupType,
+      instructionalText: LicensePlateDetails.instructionalText,
+    };
+
+    navigation.navigate(ROUTES.CAMERA, {
+      modalDetails: details,
+      type: LicensePlateDetails.key,
+      returnTo: ROUTES.VEHICLE_INFORMATION,
+      returnToParams: {isLicensePlateCapture: true},
     });
   };
 
@@ -248,33 +301,61 @@ const VehicleInformation = props => {
               {({values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue, isSubmitting, submitCount, setFieldError}) => {
                 useEffect(() => {
                   if (route?.params?.isMileageCapture) {
-                    getMileageFromImage();
+                    if (mileage !== '') {
+                      setFieldValue('mileage', mileage, false);
+                      setFieldError('mileage', undefined);
+                    } else {
+                      dispatch(showToast('Unable to get mileage from image', 'error'));
+                      setTimeout(() => mileageInputRef.current?.focus(), 200);
+                    }
+
+                    licensePlateAndMileageImages.current.mileage = {
+                      uri: route?.params?.capturedImageUri,
+                      extension: route?.params?.capturedImageMime,
+                    };
+                    navigation.setParams({isMileageCapture: false, capturedImageUri: undefined, capturedImageMime: undefined});
                   }
-                }, [route]);
 
-                const getMileageFromImage = async () => {
-                  const {capturedImageUri} = route?.params;
-                  dispatch(getMileage(capturedImageUri))
-                    .then(response => {
-                      const {mileage} = response?.data || {};
+                  if (route?.params?.isLicensePlateCapture) {
+                    if (plateNumber) {
+                      setFieldValue('licensePlateNumber', plateNumber, false);
+                      setFieldError('licensePlateNumber', undefined);
+                    } else {
+                      dispatch(showToast('Unable to get license plate from image', 'error'));
+                      setTimeout(() => licensePlateInputRef.current?.focus(), 200);
+                    }
 
-                      if (mileage) {
-                        setFieldValue('mileage', mileage, false);
-                        setFieldError('mileage', undefined);
-                      } else {
-                        showToast('Unable to get mileage from image', 'error');
-                        mileageInputRef.current?.focus();
-                      }
-                    })
-                    .catch(error => {
-                      //Get Mileage manually from user
-                      showToast('Unable to get mileage from image', 'error');
-                      mileageInputRef.current?.focus();
-                    })
-                    .finally(() => {
-                      navigation.setParams({capturedImageUri: '', capturedImageMime: '', capturedImageS3Key: '', isMileageCapture: false});
-                    });
-                };
+                    licensePlateAndMileageImages.current.numberPlate = {
+                      uri: route?.params?.capturedImageUri,
+                      extension: route?.params?.capturedImageMime,
+                    };
+                    navigation.setParams({isLicensePlateCapture: false, capturedImageUri: undefined, capturedImageMime: undefined});
+                  }
+                }, [mileage, plateNumber, route]);
+
+                // const getMileageFromImage = async () => {
+                //   const {capturedImageUri} = route?.params;
+                //   dispatch(getMileage(capturedImageUri))
+                //     .then(response => {
+                //       const {mileage} = response?.data || {};
+
+                //       if (mileage) {
+                //         setFieldValue('mileage', mileage, false);
+                //         setFieldError('mileage', undefined);
+                //       } else {
+                //         showToast('Unable to get mileage from image', 'error');
+                //         mileageInputRef.current?.focus();
+                //       }
+                //     })
+                //     .catch(error => {
+                //       //Get Mileage manually from user
+                //       showToast('Unable to get mileage from image', 'error');
+                //       mileageInputRef.current?.focus();
+                //     })
+                //     .finally(() => {
+                //       navigation.setParams({capturedImageUri: '', capturedImageMime: '', capturedImageS3Key: '', isMileageCapture: false});
+                //     });
+                // };
 
                 const fetchVehicleInfo = useCallback(
                   async licensePlateNumber => {
@@ -336,20 +417,24 @@ const VehicleInformation = props => {
                   },
                   [debouncedFetchVehicleInfo, isValidPlate, normalizePlate, setFieldValue]
                 );
-                const renderRightIcon = useMemo(() => {
-                  if (isFetchingVehicleInfo) return <ActivityIndicator size="small" color={colors.royalBlue} />;
-                  if (hasApiDetectedVehicleType) return <CircleTickIcon />;
-                  return null;
-                }, [isFetchingVehicleInfo, hasApiDetectedVehicleType]);
+                // const renderRightIcon = useMemo(() => {
+                //   if (true) return <CameraOutlineIcon />;
+                //   if (isFetchingVehicleInfo) return <ActivityIndicator size="small" color={colors.royalBlue} />;
+                //   if (hasApiDetectedVehicleType) return <CircleTickIcon />;
+                //   return null;
+                // }, [isFetchingVehicleInfo, hasApiDetectedVehicleType]);
 
                 return (
                   <>
                     <View style={styles.vehicleTypeContainer}>
                       <View style={styles.inputsContainer}>
                         <CustomInput
+                          editable={!!licensePlateAndMileageImages?.current?.numberPlate?.uri}
+                          ref={licensePlateInputRef}
                           inputContainerStyle={styles.inputContainer}
                           placeholderTextColor={'#BDBDBD'}
-                          rightIcon={renderRightIcon}
+                          rightIcon={isFetchingVehicleInfo ? <ActivityIndicator size="small" color={colors.royalBlue} /> : <CameraOutlineIcon />}
+                          onRightIconPress={handlePressNumberPlateCameraIcon}
                           inputStyle={styles.input}
                           placeholder="Enter Truck ID/License Plate"
                           label="Truck ID/License Plate"
@@ -410,6 +495,7 @@ const VehicleInformation = props => {
                       {/* INPUTS */}
                       <View style={styles.inputsContainer}>
                         <CustomInput
+                          ref={mileageInputRef}
                           inputContainerStyle={styles.inputContainer}
                           placeholderTextColor={'#BDBDBD'}
                           rightIcon={<CameraOutlineIcon />}

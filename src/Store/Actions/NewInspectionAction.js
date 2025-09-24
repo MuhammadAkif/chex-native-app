@@ -158,14 +158,14 @@ export const getMileage =
   (image_url = '') =>
   async dispatch => {
     try {
-      return await ai_Mileage_Extraction(image_url);
-      // const {mileage = ''} = response?.data || {};
+      const response = await ai_Mileage_Extraction(image_url);
+      const {mileage = ''} = response?.data || {};
 
-      // const mileage_ = removeAlphabets(mileage);
+      const mileage_ = removeAlphabets(mileage);
 
-      // dispatch(setMileage(mileage));
+      dispatch(setMileage(mileage));
     } catch (error) {
-      // dispatch(setMileage(''));
+      dispatch(setMileage(''));
       console.error('Setting extraction odometer error:', error);
       throw error;
     }

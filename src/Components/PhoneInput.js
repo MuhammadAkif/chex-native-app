@@ -5,7 +5,7 @@ import AppText from './text';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {colors} from '../Assets/Styles';
 
-const USA_PHONE_MASK = ['+', '1', ' ', '(', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
+const USA_PHONE_MASK = ['+', '1', ' ', '(', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/];
 
 const PhoneInput = ({value, onChangeText, onBlur, touched, error, inputContainerStyle, inputStyle, label}) => {
   return (

@@ -39,7 +39,7 @@ const CustomInput = forwardRef(
   ) => (
     <View>
       {label && <AppText style={styles.label}>{label}</AppText>}
-      <View style={[styles.container, {opacity: !editable ? 0.6 : 1}, inputContainerStyle]}>
+      <View style={[styles.container, inputContainerStyle]}>
         <TextInput
           ref={ref}
           placeholder={placeholder}
@@ -54,7 +54,7 @@ const CustomInput = forwardRef(
           onChangeText={onChangeText?.(valueName)}
           onBlur={onBlur?.(valueName)}
           secureTextEntry={secureTextEntry}
-          style={[styles.input, inputStyle, {color: black}]}
+          style={[styles.input, inputStyle, {color: black, opacity: !editable ? 0.6 : 1}]}
           inputMode={inputMode}
           enterKeyHint={enterKeyHint || 'next'}
           onSubmitEditing={onSubmitEditing}

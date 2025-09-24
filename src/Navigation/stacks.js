@@ -12,7 +12,7 @@ import {
 import Home from '../Screens/NewDesign/Home';
 import {MyProfile, VehicleInformation} from '../Screens';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Pressable, StatusBar, View} from 'react-native';
+import {StatusBar} from 'react-native';
 import {colors} from '../Assets/Styles';
 import AppText from '../Components/text';
 
@@ -20,9 +20,9 @@ const Stack = createNativeStackNavigator();
 
 const MyTripsScreen = () => {
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <StatusBar backgroundColor={colors.black} translucent barStyle={'dark-content'} />
-      <AppText>{'My Trips'}</AppText>
+      <AppText fontSize={18}>{'My Trips'}</AppText>
     </SafeAreaView>
   );
 };

@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
     gap: 15,
     flex: 1,
   },
-  infoContainer: {paddingHorizontal: CARD_PADDING, gap: 7},
+  infoContainer: {gap: 7},
   cardWrapper: {flex: 1, backgroundColor: colors.white},
   blueHeaderContainer: {backgroundColor: colors.royalBlue, height: hp(22)},
   inputsContainer: {gap: 15, marginTop: '5%', flex: 1},
