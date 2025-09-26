@@ -18,7 +18,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 import {BellWhiteIcon, CameraOutlineIcon, CircleTickIcon} from '../../../Assets/Icons';
 import {Formik} from 'formik';
 import {VEHICLE_TYPES} from '../../../Constants';
-import {createInspection, getVehicleInformationAgainstLicenseId} from '../../../services/inspection';
+import {createInspection, extractVinAI, getVehicleInformationAgainstLicenseId} from '../../../services/inspection';
 import useDebounce from '../../../hooks/useDebounce';
 import {ROUTES} from '../../../Navigation/ROUTES';
 import {useDispatch, useSelector} from 'react-redux';
@@ -77,6 +77,7 @@ const VehicleInformation = props => {
   const [isInspectionInProgressModalVisible, setIsInspectionInProgressModalVisible] = useState(false);
   const [errorModalDetail, setErrorModalDetail] = useState({title: '', message: '', inspectionId: ''});
   const [isLoading, setIsLoading] = useState(false);
+  const [vinLoading, setVinLoading] = useState(false);
   const vehicleTypesScrollRef = useRef(null);
   const lastQueriedPlateRef = useRef('');
   const latestRequestIdRef = useRef(0);
@@ -162,11 +163,18 @@ const VehicleInformation = props => {
         dispatch(setCompanyId(companyId));
         dispatch(setVehicleType(response?.data?.hasAdded || 'existing'));
         dispatch(setSelectedVehicleKind(values?.vehicleType));
-        onNewInspectionPressSuccess(response, dispatch, navigate);
+        dispatch(numberPlateSelected(response?.data?.id));
+
+        // RESET STATES
         setHasApiDetectedVehicleType(false);
         setShowVehicleType(false);
         licensePlateAndMileageImages.current = {mileage: {uri: '', extension: ''}, numberPlate: {uri: '', extension: ''}};
         resetForm();
+
+        // NAVIGATE
+        navigation.navigate(ROUTES.NEW_INSPECTION, {
+          routeName: ROUTES.VEHICLE_INFORMATION,
+        });
       })
       .catch(error => {
         setIsLoading(false);
@@ -186,6 +194,8 @@ const VehicleInformation = props => {
           setTimeout(() => setIsInspectionInProgressModalVisible(true), 100);
           setErrorModalDetail({title: message, message: errorMessage, inspectionId, resetForm: resetForm});
           licensePlateAndMileageImages.current = {mileage: {uri: '', extension: ''}, numberPlate: {uri: '', extension: ''}};
+        } else {
+          dispatch(showToast(message, 'error'));
         }
       })
       .finally(() => {
@@ -225,6 +235,25 @@ const VehicleInformation = props => {
       type: OdometerDetails.key,
       returnTo: ROUTES.VEHICLE_INFORMATION,
       returnToParams: {isMileageCapture: true},
+    });
+  };
+
+  const handlePressVinCamareIcon = () => {
+    const details = {
+      title: 'Please take a photo \n of the VIN',
+      type: '1',
+      uri: '',
+      source: '',
+      fileId: '',
+      category: 'CarVerification',
+      subCategory: 'vin',
+      groupType: 'truck',
+      instructionalText: 'Please wait a while the VIN is being uploaded',
+    };
+    navigation.navigate(ROUTES.CAMERA, {
+      modalDetails: details,
+      returnTo: ROUTES.VEHICLE_INFORMATION,
+      returnToParams: {isVinCapture: true},
     });
   };
 
@@ -320,6 +349,7 @@ const VehicleInformation = props => {
                     if (plateNumber) {
                       setFieldValue('licensePlateNumber', plateNumber, false);
                       setFieldError('licensePlateNumber', undefined);
+                      fetchVehicleInfo(plateNumber);
                     } else {
                       dispatch(showToast('Unable to get license plate from image', 'error'));
                       setTimeout(() => licensePlateInputRef.current?.focus(), 200);
@@ -331,31 +361,29 @@ const VehicleInformation = props => {
                     };
                     navigation.setParams({isLicensePlateCapture: false, capturedImageUri: undefined, capturedImageMime: undefined});
                   }
+
+                  if (route?.params?.isVinCapture) {
+                    extractVinIfNeeded();
+                  }
+
+                  async function extractVinIfNeeded() {
+                    setVinLoading(true);
+                    try {
+                      const response = await extractVinAI(route.params.capturedImageUri);
+                      // console.log('RESPONSE', response);
+                      const {plateNumber = null} = response?.data || {};
+                      setFieldValue('vin', plateNumber || '');
+                    } catch (error) {
+                      // Optionally show error to user
+                    } finally {
+                      setVinLoading(false);
+                      navigation.setParams({
+                        capturedImageUri: undefined,
+                        isVinCapture: undefined,
+                      });
+                    }
+                  }
                 }, [mileage, plateNumber, route]);
-
-                // const getMileageFromImage = async () => {
-                //   const {capturedImageUri} = route?.params;
-                //   dispatch(getMileage(capturedImageUri))
-                //     .then(response => {
-                //       const {mileage} = response?.data || {};
-
-                //       if (mileage) {
-                //         setFieldValue('mileage', mileage, false);
-                //         setFieldError('mileage', undefined);
-                //       } else {
-                //         showToast('Unable to get mileage from image', 'error');
-                //         mileageInputRef.current?.focus();
-                //       }
-                //     })
-                //     .catch(error => {
-                //       //Get Mileage manually from user
-                //       showToast('Unable to get mileage from image', 'error');
-                //       mileageInputRef.current?.focus();
-                //     })
-                //     .finally(() => {
-                //       navigation.setParams({capturedImageUri: '', capturedImageMime: '', capturedImageS3Key: '', isMileageCapture: false});
-                //     });
-                // };
 
                 const fetchVehicleInfo = useCallback(
                   async licensePlateNumber => {
@@ -417,12 +445,6 @@ const VehicleInformation = props => {
                   },
                   [debouncedFetchVehicleInfo, isValidPlate, normalizePlate, setFieldValue]
                 );
-                // const renderRightIcon = useMemo(() => {
-                //   if (true) return <CameraOutlineIcon />;
-                //   if (isFetchingVehicleInfo) return <ActivityIndicator size="small" color={colors.royalBlue} />;
-                //   if (hasApiDetectedVehicleType) return <CircleTickIcon />;
-                //   return null;
-                // }, [isFetchingVehicleInfo, hasApiDetectedVehicleType]);
 
                 return (
                   <>
@@ -515,6 +537,8 @@ const VehicleInformation = props => {
 
                         <CustomInput
                           inputContainerStyle={styles.inputContainer}
+                          rightIcon={vinLoading ? <ActivityIndicator size="small" color={colors.royalBlue} /> : <CameraOutlineIcon />}
+                          onRightIconPress={handlePressVinCamareIcon}
                           placeholderTextColor={'#BDBDBD'}
                           inputStyle={styles.input}
                           placeholder="Enter VIN"

@@ -161,7 +161,7 @@ export const getMileage =
       const response = await ai_Mileage_Extraction(image_url);
       const {mileage = ''} = response?.data || {};
 
-      const mileage_ = removeAlphabets(mileage);
+      // const mileage_ = removeAlphabets(mileage);
 
       dispatch(setMileage(mileage));
     } catch (error) {

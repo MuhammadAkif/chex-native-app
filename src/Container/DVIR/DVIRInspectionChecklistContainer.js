@@ -221,14 +221,14 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         textColor: '#666666',
       },
     }),
-    [],
+    []
   );
 
   const updateChecklistAPIWithCardIndex = useCallback(
     (cardIndex, data) => {
       updateChecklist(selectedInspectionID, checklistData?.[cardIndex]?.checkId, data);
     },
-    [updateChecklist, selectedInspectionID, checklistData],
+    [updateChecklist, selectedInspectionID, checklistData]
   );
 
   const handleChecklistStatusChange = useCallback(
@@ -243,7 +243,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         checkStatus: option,
       });
     },
-    [updateChecklistAPIWithCardIndex],
+    [updateChecklistAPIWithCardIndex]
   );
 
   const handleAddComment = useCallback(index => {
@@ -270,7 +270,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       setAddCommentModalVisible(false);
       setCurrentItemIndex(null);
     },
-    [currentItemIndex],
+    [currentItemIndex]
   );
 
   const handleChecklistOpenCamera = useCallback(
@@ -295,7 +295,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         returnToParams: {checklistCardIndex: index},
       });
     },
-    [navigation, checklistData],
+    [navigation, checklistData]
   );
 
   const handleCloseAddCommentModal = useCallback(() => {
@@ -326,7 +326,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         return newData;
       });
     },
-    [removeChecklistImageVideoAPI, selectedInspectionID],
+    [removeChecklistImageVideoAPI, selectedInspectionID]
   );
 
   // Handler to update tire image
@@ -339,7 +339,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         subCategory: tireId,
         afterFileUploadNavigationParams: {tireId},
       },
-      0,
+      0
     );
   };
 
@@ -417,8 +417,8 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     if (type === 'capture_frames') {
       setCaptureFrames(prevFrames =>
         prevFrames.map(frame =>
-          frame.id === itemId ? {...frame, frames: frame.frames.map(f => (f.id === frameId ? {...f, image: null, fileId: null} : f))} : frame,
-        ),
+          frame.id === itemId ? {...frame, frames: frame.frames.map(f => (f.id === frameId ? {...f, image: null, fileId: null} : f))} : frame
+        )
       );
     } else if (type === 'tires') {
       // DELETION FOR TIRES
@@ -548,7 +548,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       return () => {
         navigation.setParams({hasNewFetch: undefined});
       };
-    }, []),
+    }, [])
   );
 
   // CHECKLIST Camera result handler
@@ -564,8 +564,8 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
                   ...item,
                   url: [...(item.url || []), capturedImageUri],
                 }
-              : item,
-          ),
+              : item
+          )
         );
 
         updateChecklistAPIWithCardIndex(checklistCardIndex, {
@@ -615,11 +615,6 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   }, [route?.params?.afterFileUploadImageUrl]);
 
   useEffect(() => {
-    if (!selectedInspectionID) return;
-    if (!route?.params?.hasNewFetch) return;
-    // Reset all local states to initial values
-    resetState();
-
     const fetchData = async () => {
       try {
         await Promise.all([getChecklistsData(), getInspectionData()]);
@@ -628,8 +623,8 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       }
     };
 
-    fetchData();
-  }, [selectedInspectionID, route?.params?.hasNewFetch]);
+    if (selectedInspectionID) fetchData();
+  }, [selectedInspectionID]);
 
   const validateFramesTiresCheclist = () => {
     // 1. Validate captureFrames: all frames must have a non-null image
@@ -676,7 +671,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       const onBackPress = () => customGoBack();
       const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
       return () => subscription.remove();
-    }, [customGoBack]),
+    }, [customGoBack])
   );
 
   // Pass customGoBack to header or use it in UI as needed

@@ -12,7 +12,8 @@ export const styles = StyleSheet.create({
   scrollContentContainer: {flexGrow: 1, backgroundColor: colors.white, paddingBottom: hp(3)},
   vanoutlineContainer: {position: 'absolute', right: 0, bottom: hp(3), width: wp(40), height: wp(40), resizeMode: 'contain'},
   statBoxContainer: {
-    width: wp(43),
+    flex: 1,
+    minWidth: wp(40),
     height: wp(30),
     padding: wp(5),
     gap: wp(1),

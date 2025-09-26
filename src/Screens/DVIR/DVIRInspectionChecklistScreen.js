@@ -21,7 +21,15 @@ import CommentBorderedIcon from '../../Assets/Icons/CommentBorderedIcon';
 import CrossBlue from '../../Assets/Icons/CrossBlue';
 import {IMAGES} from '../../Assets/Images';
 import {colors, NewInspectionStyles} from '../../Assets/Styles';
-import {AndroidMediaViewModal, CaptureImageModal, DisplayMediaModal, LoadingIndicator, PrimaryGradientButton, VideoPicker} from '../../Components';
+import {
+  AndroidMediaViewModal,
+  CaptureImageModal,
+  DisplayMediaModal,
+  LoadingIndicator,
+  LogoHeader,
+  PrimaryGradientButton,
+  VideoPicker,
+} from '../../Components';
 import AppText from '../../Components/text';
 
 const {container, bodyContainer, headerContainer, headerTitleText} = NewInspectionStyles;
@@ -124,7 +132,7 @@ const ChecklistItem = React.memo(
         ) : null}
       </View>
     );
-  },
+  }
 );
 
 // Move CommentModal outside the main component
@@ -464,6 +472,7 @@ const DVIRInspectionChecklistScreen = ({
 
   return (
     <View style={container}>
+      <LogoHeader />
       <View style={headerContainer}>
         <AppText style={headerTitleText}>Please complete inspection items within each category below</AppText>
       </View>
