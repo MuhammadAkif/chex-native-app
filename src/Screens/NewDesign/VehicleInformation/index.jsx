@@ -145,14 +145,14 @@ const VehicleInformation = props => {
       files: [
         {
           url: numberPlate?.uri,
-          category: LicensePlateDetails.category,
+          category: LicensePlateDetails.subCategory,
           extension: numberPlate?.extension,
           groupType: LicensePlateDetails.groupType,
           dateImage,
         },
         {
           url: mileage?.uri,
-          category: OdometerDetails.category,
+          category: OdometerDetails.subCategory,
           extension: mileage?.extension,
           groupType: OdometerDetails.groupType,
           dateImage,
