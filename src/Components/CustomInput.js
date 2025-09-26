@@ -1,5 +1,5 @@
 import React, {forwardRef} from 'react';
-import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
+import {Pressable, StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {colors, errorStyle} from '../Assets/Styles';
@@ -34,12 +34,13 @@ const CustomInput = forwardRef(
       rightIcon,
       onRightIconPress,
       maxLength,
+      onPress,
     },
     ref
   ) => (
     <View>
       {label && <AppText style={styles.label}>{label}</AppText>}
-      <View style={[styles.container, inputContainerStyle]}>
+      <Pressable onPress={onPress} style={[styles.container, inputContainerStyle]}>
         <TextInput
           ref={ref}
           placeholder={placeholder}
@@ -68,7 +69,7 @@ const CustomInput = forwardRef(
             {rightIcon}
           </TouchableOpacity>
         )}
-      </View>
+      </Pressable>
       {touched && error && <AppText style={[errorStyle.errorsTextStyle, styles.error]}>{error}</AppText>}
     </View>
   )

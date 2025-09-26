@@ -17,7 +17,7 @@ import {IMAGES} from '../../../Assets/Images';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 import {BellWhiteIcon, CameraOutlineIcon, CircleTickIcon} from '../../../Assets/Icons';
 import {Formik} from 'formik';
-import {VEHICLE_TYPES} from '../../../Constants';
+import {isIOS, VEHICLE_TYPES} from '../../../Constants';
 import {createInspection, extractVinAI, getVehicleInformationAgainstLicenseId} from '../../../services/inspection';
 import useDebounce from '../../../hooks/useDebounce';
 import {ROUTES} from '../../../Navigation/ROUTES';
@@ -126,6 +126,9 @@ const VehicleInformation = props => {
         setFieldValue('vehicleType', '', false);
         setHasApiDetectedVehicleType(false);
         setShowVehicleType(true);
+        setFieldValue?.('vin', '', false);
+        setFieldValue?.('mileage', '', false);
+        licensePlateAndMileageImages.current.mileage.uri = '';
       }
     },
     [scrollToVehicleType]
@@ -172,9 +175,14 @@ const VehicleInformation = props => {
         resetForm();
 
         // NAVIGATE
-        navigation.navigate(ROUTES.NEW_INSPECTION, {
-          routeName: ROUTES.VEHICLE_INFORMATION,
-        });
+        setTimeout(
+          () => {
+            navigation.navigate(ROUTES.NEW_INSPECTION, {
+              routeName: ROUTES.VEHICLE_INFORMATION,
+            });
+          },
+          isIOS ? 500 : 100
+        );
       })
       .catch(error => {
         setIsLoading(false);
@@ -283,6 +291,18 @@ const VehicleInformation = props => {
     setErrorModalDetail({title: '', message: '', inspectionId: ''});
   };
 
+  const handlePressLicensePlateInput = () => {
+    if (!licensePlateAndMileageImages?.current?.numberPlate?.uri) {
+      handlePressNumberPlateCameraIcon();
+    }
+  };
+
+  const handlePressMileageInput = () => {
+    if (!licensePlateAndMileageImages?.current?.mileage?.uri) {
+      handlePressMileageCameraIcon();
+    }
+  };
+
   return (
     <View style={styles.blueContainer}>
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
@@ -375,6 +395,7 @@ const VehicleInformation = props => {
                       setFieldValue('vin', plateNumber || '');
                     } catch (error) {
                       // Optionally show error to user
+                      setFieldValue('vin', '');
                     } finally {
                       setVinLoading(false);
                       navigation.setParams({
@@ -417,6 +438,7 @@ const VehicleInformation = props => {
                     } catch (error) {
                       if (requestId !== latestRequestIdRef.current) return; // stale
                       setFieldValue('vehicleType', '', false);
+                      setFieldValue('vin', '', false);
                       setHasApiDetectedVehicleType(false);
                       setShowVehicleType(true);
                     } finally {
@@ -451,6 +473,7 @@ const VehicleInformation = props => {
                     <View style={styles.vehicleTypeContainer}>
                       <View style={styles.inputsContainer}>
                         <CustomInput
+                          onPress={handlePressLicensePlateInput}
                           editable={!!licensePlateAndMileageImages?.current?.numberPlate?.uri}
                           ref={licensePlateInputRef}
                           inputContainerStyle={styles.inputContainer}
@@ -517,7 +540,9 @@ const VehicleInformation = props => {
                       {/* INPUTS */}
                       <View style={styles.inputsContainer}>
                         <CustomInput
+                          onPress={handlePressMileageInput}
                           ref={mileageInputRef}
+                          editable={!!licensePlateAndMileageImages?.current?.mileage?.uri}
                           inputContainerStyle={styles.inputContainer}
                           placeholderTextColor={'#BDBDBD'}
                           rightIcon={<CameraOutlineIcon />}

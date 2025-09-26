@@ -1,3 +1,4 @@
+import {Platform} from 'react-native';
 import {IMAGES} from '../Assets/Images';
 
 // Vehicle Types Constants
@@ -316,3 +317,5 @@ export const INSPECTION_RESULTS = {
   pass: 'Passed',
   fail: 'Failed',
 };
+
+export const isIOS = Platform.OS == Platforms.IOS;
