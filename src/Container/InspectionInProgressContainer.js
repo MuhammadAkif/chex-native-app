@@ -81,9 +81,15 @@ const InspectionInProgressContainer = ({navigation}) => {
     dispatch(setSelectedVehicleKind(vehicleKind));
     resetAllStates();
 
-    navigate(NEW_INSPECTION, {
-      routeName: INSPECTION_IN_PROGRESS,
-    });
+    if (vehicleKind == VEHICLE_TYPES.TRUCK) {
+      navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {
+        routeName: ROUTES.DVIR_INSPECTION_CHECKLIST,
+      });
+    } else {
+      navigate(NEW_INSPECTION, {
+        routeName: INSPECTION_IN_PROGRESS,
+      });
+    }
   }
   function onContinuePressFail(error) {
     const {statusCode = null} = error?.response?.data || {};

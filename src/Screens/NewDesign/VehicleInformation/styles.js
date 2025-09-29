@@ -45,4 +45,14 @@ export const styles = StyleSheet.create({
   input: {fontSize: wp(3.5)},
   nextButton: {height: hp(5), width: '80%', alignSelf: 'center', marginTop: hp(3)},
   cardWrapper: {flex: 1, backgroundColor: colors.white},
+  dropdownList: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    marginTop: 6,
+    overflow: 'hidden',
+    zIndex: 10,
+  },
+  dropdownContainer: {flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: '5%'},
 });

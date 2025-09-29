@@ -9,7 +9,7 @@ import {BackArrow} from '../Assets/Icons';
 import {colors, PreviewStyles} from '../Assets/Styles';
 import {CameraFooter, CaptureImageModal, RecordingPreview} from '../Components';
 import {HARDWARE_BACK_PRESS, Platforms, S3_BUCKET_BASEURL, VEHICLE_TYPES} from '../Constants';
-import {ROUTES} from '../Navigation/ROUTES';
+import {ROUTES, TABS} from '../Navigation/ROUTES';
 import {updateVehicleImage} from '../Store/Actions';
 import {getCurrentDate, getSignedUrl, uploadFile} from '../Utils';
 
@@ -94,13 +94,14 @@ const VideoContainer = ({route, navigation}) => {
       handleRetryPress();
       return true;
     } else if (route?.params?.returnTo) {
-      navigation.popTo(ROUTES.HOME, {screen: route.params.returnTo});
+      if (route?.params?.returnTo === ROUTES.DVIR_INSPECTION_CHECKLIST) navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST);
+      else navigation.popTo(ROUTES.TABS, {name: route.params.returnTo});
       return true;
     } else if (selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
       navigation.goBack();
       return true;
     } else if (canGoBack()) {
-      navigation.popTo(ROUTES.HOME, {screen: NEW_INSPECTION});
+      navigation.popTo(NEW_INSPECTION);
       return true;
     }
     return false;
@@ -152,7 +153,13 @@ const VideoContainer = ({route, navigation}) => {
         ...route?.params?.returnToParams,
       };
 
-      return navigation.popTo(ROUTES.HOME, {screen: targetScreen, params: navParams});
+      if (targetScreen == ROUTES.VEHICLE_INFORMATION) {
+        navigation.popTo(ROUTES.TABS, {screen: TABS.INSPECTION, params: {screen: ROUTES.VEHICLE_INFORMATION, params: navParams}});
+      } else if (targetScreen == ROUTES.DVIR_INSPECTION_CHECKLIST) {
+        navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST, navParams);
+      }
+
+      return;
     }
 
     const body = {

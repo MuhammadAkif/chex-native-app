@@ -128,7 +128,8 @@ const CameraContainer = ({route, navigation}) => {
       handleRetryPress();
       return true;
     } else if (route?.params?.returnTo) {
-      navigation.popTo(ROUTES.TABS, {name: route.params.returnTo});
+      if (route?.params?.returnTo === ROUTES.DVIR_INSPECTION_CHECKLIST) navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST);
+      else navigation.popTo(ROUTES.TABS, {name: route.params.returnTo});
       return true;
     } else if (selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
       navigation.goBack();
@@ -204,6 +205,8 @@ const CameraContainer = ({route, navigation}) => {
 
       if (targetScreen == ROUTES.VEHICLE_INFORMATION) {
         navigation.popTo(ROUTES.TABS, {screen: TABS.INSPECTION, params: {screen: ROUTES.VEHICLE_INFORMATION, params: navParams}});
+      } else if (targetScreen == ROUTES.DVIR_INSPECTION_CHECKLIST) {
+        navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST, navParams);
       }
 
       return;
@@ -258,7 +261,11 @@ const CameraContainer = ({route, navigation}) => {
       is_Exterior: haveType,
     };
 
-    navigation.popTo(NEW_INSPECTION, params);
+    if (selectedVehicleKind === VEHICLE_TYPES.TRUCK) {
+      navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST, {afterFileUploadImageUrl: image_url, fileId: imageID, ...afterFileUploadNavigationParams});
+    } else {
+      navigation.popTo(NEW_INSPECTION, params);
+    }
   }
 
   const handleExtractNumberPlate = async imageUrl => {

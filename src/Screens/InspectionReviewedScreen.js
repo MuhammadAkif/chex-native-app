@@ -25,6 +25,7 @@ const InspectionReviewedScreen = ({
   onNewInspectionPress,
   onFilterPress,
   filter,
+  filterResetKey,
   setInspections,
   setFilter,
   inspections,
@@ -78,7 +79,14 @@ const InspectionReviewedScreen = ({
         disabled={isNewInspectionLoading}
       /> */}
     </View>
-    <Filter_RBSheet filter={filter} setFilter={setFilter} inspections={inspections} setInspections={setInspections} navigation={navigation} />
+    <Filter_RBSheet
+      filter={filter}
+      setFilter={setFilter}
+      inspections={inspections}
+      setInspections={setInspections}
+      navigation={navigation}
+      filterResetKey={filterResetKey}
+    />
   </View>
 );
 

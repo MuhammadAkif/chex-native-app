@@ -476,7 +476,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     setRequiredFields({});
     setShowChecklistSection(false);
   }, []);
-  console.log(selectedInspectionID);
+
   //API CALLS
   const getChecklistsData = useCallback(async () => {
     setChecklistLoading(true);
@@ -543,13 +543,13 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     }
   }, [selectedInspectionID, tireInspectionData, captureFrames]);
 
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        navigation.setParams({hasNewFetch: undefined});
-      };
-    }, [])
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     return () => {
+  //       navigation.setParams({hasNewFetch: undefined});
+  //     };
+  //   }, [])
+  // );
 
   // CHECKLIST Camera result handler
   useEffect(() => {
@@ -648,31 +648,31 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   };
 
   // Custom back handler
-  const customGoBack = useCallback(() => {
-    const navState = navigation.getState();
-    const routes = navState.history;
+  // const customGoBack = useCallback(() => {
+  //   const navState = navigation.getState();
+  //   const routes = navState.history;
 
-    // Get previousOne and previousTwo
-    const previousOne = routes[routes.length - 2];
+  //   // Get previousOne and previousTwo
+  //   const previousOne = routes[routes.length - 2];
 
-    if (previousOne && previousOne.key.includes(ROUTES.NEW_INSPECTION)) {
-      navigation.navigate(ROUTES.INSPECTION_SELECTION);
-    } else if (navigation.canGoBack()) {
-      navigation.goBack();
-    } else {
-      // Optionally exit app or do nothing
-    }
-    return true; // Prevent default
-  }, [navigation]);
+  //   if (previousOne && previousOne.key.includes(ROUTES.NEW_INSPECTION)) {
+  //     navigation.navigate(ROUTES.INSPECTION_SELECTION);
+  //   } else if (navigation.canGoBack()) {
+  //     navigation.goBack();
+  //   } else {
+  //     // Optionally exit app or do nothing
+  //   }
+  //   return true; // Prevent default
+  // }, [navigation]);
 
-  // Handle hardware back
-  useFocusEffect(
-    useCallback(() => {
-      const onBackPress = () => customGoBack();
-      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
-      return () => subscription.remove();
-    }, [customGoBack])
-  );
+  // // Handle hardware back
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const onBackPress = () => customGoBack();
+  //     const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+  //     return () => subscription.remove();
+  //   }, [customGoBack])
+  // );
 
   // Pass customGoBack to header or use it in UI as needed
 

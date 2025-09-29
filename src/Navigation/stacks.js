@@ -22,7 +22,7 @@ const MyTripsScreen = () => {
   return (
     <SafeAreaView style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <StatusBar backgroundColor={colors.black} translucent barStyle={'dark-content'} />
-      <AppText fontSize={18}>{'My Trips'}</AppText>
+      <AppText fontSize={18}>{'Coming Soon!'}</AppText>
     </SafeAreaView>
   );
 };

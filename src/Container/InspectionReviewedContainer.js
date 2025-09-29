@@ -25,6 +25,7 @@ const InspectionReviewedContainer = ({navigation}) => {
   const [selectedInspectionID, setSelectedInspectionID] = useState(null);
   const [filter, setFilter] = useState(false);
   const [inspections, setInspections] = useState(inspectionReviewed || []);
+  const [filterResetKey, setFilterResetKey] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -61,6 +62,11 @@ const InspectionReviewedContainer = ({navigation}) => {
     setFilter(false);
   }
   async function fetchInspection() {
+    // Reset filter sheet selections on refresh
+    setFilter(false);
+    setInspections(inspectionReviewed || []);
+    setFilterResetKey(prev => prev + 1);
+
     dispatch(fetchInspectionReviewed()).finally(() => setIsLoading(false));
   }
   const handleIsExpanded = id => {
@@ -123,6 +129,7 @@ const InspectionReviewedContainer = ({navigation}) => {
       onNewInspectionPress={onNewInspectionPress}
       onFilterPress={onFilterPress}
       filter={filter}
+      filterResetKey={filterResetKey}
       setInspections={setInspections}
       setFilter={setFilter}
       inspections={inspections}

@@ -35,6 +35,7 @@ const CustomInput = forwardRef(
       onRightIconPress,
       maxLength,
       onPress,
+      pointerEvents,
     },
     ref
   ) => (
@@ -62,6 +63,7 @@ const CustomInput = forwardRef(
           keyboardType={keyboardType}
           editable={editable}
           maxLength={maxLength}
+          pointerEvents={pointerEvents}
         />
 
         {rightIcon && (

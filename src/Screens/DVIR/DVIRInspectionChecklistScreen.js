@@ -25,6 +25,7 @@ import {
   AndroidMediaViewModal,
   CaptureImageModal,
   DisplayMediaModal,
+  FooterButtons,
   LoadingIndicator,
   LogoHeader,
   PrimaryGradientButton,
@@ -172,9 +173,13 @@ const CommentModal = React.memo(({visible, onClose, onSave, initialValue = '', m
                 blurOnSubmit={true}
                 placeholderTextColor={colors.steelGray}
               />
-              <TouchableOpacity style={styles.okButton} onPress={handleSave} activeOpacity={0.8}>
-                <AppText style={styles.okButtonText}>OK</AppText>
-              </TouchableOpacity>
+              <FooterButtons
+                containerStyle={{width: '100%', gap: 15, paddingHorizontal: 0}}
+                disabledConfirm={initialValue === text}
+                onSubmit={handleSave}
+                onCancel={handleClose}
+                isLoading={false}
+              />
             </View>
           </TouchableWithoutFeedback>
         </ScrollView>

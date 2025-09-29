@@ -220,7 +220,7 @@ const MyProfile = ({navigation}) => {
                         label="Phone"
                         value={values.phone}
                         onChangeText={(masked, unmasked) => {
-                          setFieldValue('phone', masked);
+                          setFieldValue('phone', masked, true);
                         }}
                         onBlur={e => {
                           setFieldTouched('phone', true, true);
@@ -231,7 +231,7 @@ const MyProfile = ({navigation}) => {
                         maxLength={50}
                       />
                     </View>
-                    <PrimaryGradientButton onPress={handleSubmit} text="Update Profile" buttonStyle={styles.nextButton} />
+                    <PrimaryGradientButton onPress={handleSubmit} text="Update Profile" buttonStyle={styles.nextButton} buttonDisabled={!dirty} />
                   </>
                 );
               }}

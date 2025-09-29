@@ -22,7 +22,7 @@ const statusesInitialState = [
   },
 ];
 
-const Filter_RBSheet = ({filter, setFilter, inspections, setInspections, navigation}) => {
+const Filter_RBSheet = ({filter, setFilter, inspections, setInspections, navigation, filterResetKey}) => {
   const {inspectionReviewed} = useSelector(state => state?.inspectionReviewed);
   const rbSheetRef = useRef(null);
   const [statuses, setStatuses] = useState(statusesInitialState);
@@ -42,6 +42,18 @@ const Filter_RBSheet = ({filter, setFilter, inspections, setInspections, navigat
       handleStatusesUpdate(inspectionReviewed);
     }
   }, [inspectionReviewed]);
+  useEffect(() => {
+    if (filterResetKey !== undefined) {
+      // Clear selections and reset list when reset key changes
+      const resetStatuses = statuses.map(status => ({
+        ...status,
+        selected: true,
+      }));
+      setStatuses(resetStatuses);
+      setInspections(inspectionReviewed || []);
+      setFilter(false);
+    }
+  }, [filterResetKey]);
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       handleClearPress();
