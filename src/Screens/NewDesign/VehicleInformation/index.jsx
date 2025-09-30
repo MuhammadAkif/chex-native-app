@@ -22,10 +22,11 @@ import {createInspection, extractVinAI, getVehicleInformationAgainstLicenseId} f
 import useDebounce from '../../../hooks/useDebounce';
 import {ROUTES} from '../../../Navigation/ROUTES';
 import {useDispatch, useSelector} from 'react-redux';
-import {getMileage, numberPlateSelected, setCompanyId, setSelectedVehicleKind, setVehicleType, showToast} from '../../../Store/Actions';
+import {getMileage, numberPlateSelected, setCompanyId, setMileage, setSelectedVehicleKind, setVehicleType, showToast} from '../../../Store/Actions';
 import {LicensePlateDetails, OdometerDetails, onNewInspectionPressSuccess} from '../../../Utils';
 import {useRoute} from '@react-navigation/native';
 import dayjs from 'dayjs';
+import {Types} from '../../../Store/Types';
 
 const validate = values => {
   const errors = {};
@@ -393,6 +394,7 @@ const VehicleInformation = props => {
                       if (mileage !== '') {
                         setFieldValue('mileage', mileage, false);
                         setFieldError('mileage', undefined);
+                        dispatch(setMileage(''));
                       } else {
                         dispatch(showToast('Unable to get mileage from image', 'error'));
                         setTimeout(() => mileageInputRef.current?.focus(), 200);
@@ -402,6 +404,7 @@ const VehicleInformation = props => {
                         uri: route?.params?.capturedImageUri,
                         extension: route?.params?.capturedImageMime,
                       };
+
                       navigation.setParams({isMileageCapture: false, capturedImageUri: undefined, capturedImageMime: undefined});
                     }
 
@@ -410,6 +413,7 @@ const VehicleInformation = props => {
                         setFieldValue('licensePlateNumber', plateNumber, false);
                         setFieldError('licensePlateNumber', undefined);
                         fetchVehicleInfo(plateNumber);
+                        dispatch({type: Types.LICENSE_PLATE_NUMBER, payload: null});
                       } else {
                         dispatch(showToast('Unable to get license plate from image', 'error'));
                         setTimeout(() => licensePlateInputRef.current?.focus(), 200);
@@ -419,6 +423,7 @@ const VehicleInformation = props => {
                         uri: route?.params?.capturedImageUri,
                         extension: route?.params?.capturedImageMime,
                       };
+
                       navigation.setParams({isLicensePlateCapture: false, capturedImageUri: undefined, capturedImageMime: undefined});
                     }
 
@@ -436,6 +441,7 @@ const VehicleInformation = props => {
                       } catch (error) {
                         // Optionally show error to user
                         setFieldValue('vin', '');
+                        dispatch(showToast('Unable to get VIN from image', 'error'));
                       } finally {
                         setVinLoading(false);
                         navigation.setParams({
@@ -444,7 +450,7 @@ const VehicleInformation = props => {
                         });
                       }
                     }
-                  }, [mileage, plateNumber, route]);
+                  }, [mileage, plateNumber, route?.params?.isMileageCapture, route?.params?.isLicensePlateCapture, route?.params?.isVinCapture]);
 
                   const fetchVehicleInfo = useCallback(
                     async licensePlateNumber => {
@@ -530,7 +536,7 @@ const VehicleInformation = props => {
                             touched={touched.licensePlateNumber}
                             error={errors.licensePlateNumber}
                             maxLength={10}
-                            pointerEvents="none"
+                            pointerEvents={!licensePlateAndMileageImages?.current?.numberPlate?.uri ? 'none' : 'auto'}
                           />
                         </View>
 
@@ -599,7 +605,7 @@ const VehicleInformation = props => {
                             keyboardType="number-pad"
                             onRightIconPress={handlePressMileageCameraIcon}
                             maxLength={20}
-                            pointerEvents="none"
+                            pointerEvents={!licensePlateAndMileageImages?.current?.mileage?.uri ? 'none' : 'auto'}
                           />
 
                           <CustomInput
