@@ -44,33 +44,28 @@ const CommentBox = ({
   const onPressModal = () => Keyboard.dismiss();
 
   return (
-    <Modal
-      animationType="slide"
-      statusBarTranslucent
-      transparent={false}
-      backdropColor={'rgba(0,0,0,.3)'}
-      style={modalOuterContainer}
-      visible={visible}
-      onPress={onPressModal}>
+    <Modal animationType="slide" statusBarTranslucent transparent={true} onRequestClose={onCancel} visible={visible} onPress={onPressModal}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{flex: 1}}>
-        <ScrollView contentContainerStyle={{flexGrow: 1, justifyContent: 'center', alignItems: 'center'}} keyboardShouldPersistTaps="handled">
-          <View style={modalContainer}>
-            <Text style={header}>{title}</Text>
-            <Text style={[body, styles.subHeading]}>{description}</Text>
+        <View style={styles.backdrop}>
+          <ScrollView contentContainerStyle={{flexGrow: 1, justifyContent: 'center', alignItems: 'center'}} keyboardShouldPersistTaps="handled">
+            <View style={modalContainer}>
+              <Text style={header}>{title}</Text>
+              <Text style={[body, styles.subHeading]}>{description}</Text>
 
-            <InputField
-              value={input}
-              onChange={setInput}
-              placeholder={placeHolder}
-              maxLength={textLimit}
-              editable={!isLoading}
-              onSubmitEditing={handleConfirm}
-            />
-            <TextLimit currentLength={input.length} maxLength={textLimit} />
+              <InputField
+                value={input}
+                onChange={setInput}
+                placeholder={placeHolder}
+                maxLength={textLimit}
+                editable={!isLoading}
+                onSubmitEditing={handleConfirm}
+              />
+              <TextLimit currentLength={input.length} maxLength={textLimit} />
 
-            <FooterButtons disabledConfirm={input === feedback} onSubmit={handleConfirm} onCancel={handleCancel} isLoading={isLoading} />
-          </View>
-        </ScrollView>
+              <FooterButtons disabledConfirm={input === feedback} onSubmit={handleConfirm} onCancel={handleCancel} isLoading={isLoading} />
+            </View>
+          </ScrollView>
+        </View>
       </KeyboardAvoidingView>
     </Modal>
   );
@@ -79,6 +74,10 @@ const CommentBox = ({
 const styles = StyleSheet.create({
   subHeading: {
     fontWeight: '400',
+  },
+  backdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)', // semi-transparent backdrop
   },
 });
 
