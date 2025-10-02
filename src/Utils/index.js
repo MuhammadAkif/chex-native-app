@@ -4,7 +4,7 @@ import ReactNativeBlobUtil from 'react-native-blob-util';
 import * as yup from 'yup';
 
 import {IMAGES} from '../Assets/Images';
-import {customSortOrder, darkImageError, INSPECTION, INSPECTION_SUBCATEGORY, S3_BUCKET_BASEURL, uploadFailed} from '../Constants';
+import {customSortOrder, darkImageError, INSPECTION, INSPECTION_SUBCATEGORY, S3_BUCKET_BASEURL, uploadFailed, VEHICLE_TYPES} from '../Constants';
 import {ROUTES, TABS} from '../Navigation/ROUTES';
 import {getInspectionDetails, isImageDarkWithAI, s3SignedUrl, uploadFileToDatabase} from '../services/inspection';
 import {store} from '../Store';
@@ -68,10 +68,10 @@ export const OdometerDetails = {
   buttonText: 'Capture Now',
 };
 //___________________________Exterior______________________________
-export const ExteriorFrontDetails = {
+export const ExteriorFrontDetails = vehicleType => ({
   key: 'exteriorFront',
   title: 'Exterior Front',
-  source: IMAGES.exterior_Front,
+  source: vehicleType === VEHICLE_TYPES.SEDAN ? IMAGES.sedan_exterior_front : IMAGES.exterior_Front,
   instructionalText: 'Please upload a photo clearly showing the front of the vehicle',
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
@@ -79,11 +79,12 @@ export const ExteriorFrontDetails = {
   subCategory: 'exterior_front',
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
-};
-export const ExteriorRearDetails = {
+});
+
+export const ExteriorRearDetails = vehicleType => ({
   key: 'exteriorRear',
   title: 'Exterior Rear',
-  source: IMAGES.exterior_Rear,
+  source: vehicleType === VEHICLE_TYPES.SEDAN ? IMAGES.sedan_exterior_rear : IMAGES.exterior_Rear,
   instructionalText: 'Please upload a photo clearly showing the rear of the vehicle ',
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
@@ -91,7 +92,8 @@ export const ExteriorRearDetails = {
   subCategory: 'exterior_rear',
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
-};
+});
+
 export const ExteriorLeftDetails = {
   key: 'exteriorLeft',
   title: 'Exterior Left',
@@ -104,6 +106,7 @@ export const ExteriorLeftDetails = {
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
 };
+
 export const ExteriorRightDetails = {
   key: 'exteriorRight',
   title: 'Exterior Right',
@@ -116,10 +119,11 @@ export const ExteriorRightDetails = {
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
 };
-export const ExteriorFrontLeftCornerDetails = {
+
+export const ExteriorFrontLeftCornerDetails = vehicleType => ({
   key: 'exteriorFrontLeftCorner',
   title: 'Front Left Corner',
-  source: IMAGES.front_Left_Corner,
+  source: vehicleType === VEHICLE_TYPES.SEDAN ? IMAGES.sedan_exterior_front_Left : IMAGES.front_Left_Corner,
   instructionalText:
     'Please take a photo from the front left corner of the vehicle clearly capturing the left headlight, driver door and roof on the exterior left side of the vehicle',
   instructionalSubHeadingText: '',
@@ -128,11 +132,12 @@ export const ExteriorFrontLeftCornerDetails = {
   subCategory: 'front_left_corner',
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
-};
-export const ExteriorFrontRightCornerDetails = {
+});
+
+export const ExteriorFrontRightCornerDetails = vehicleType => ({
   key: 'exteriorFrontRightCorner',
   title: 'Front Right Corner',
-  source: IMAGES.front_Right_Corner,
+  source: vehicleType === VEHICLE_TYPES.SEDAN ? IMAGES.sedan_exterior_front_Right : IMAGES.front_Right_Corner,
   instructionalText:
     'Please take a photo from the front right corner of the vehicle clearly capturing the right headlight, passenger door and roof on the exterior right side of the vehicle',
   instructionalSubHeadingText: '',
@@ -141,11 +146,12 @@ export const ExteriorFrontRightCornerDetails = {
   subCategory: 'front_right_corner',
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
-};
-export const ExteriorRearLeftCornerDetails = {
+});
+
+export const ExteriorRearLeftCornerDetails = vehicleType => ({
   key: 'exteriorRearLeftCorner',
   title: 'Rear Left Corner',
-  source: IMAGES.rear_Left_Corner,
+  source: vehicleType === VEHICLE_TYPES.SEDAN ? IMAGES.sedan_exterior_rear_left : IMAGES.rear_Left_Corner,
   instructionalText:
     'Please take a photo from the rear left corner of the vehicle clearly capturing the left tail light, rear door and roof on the exterior left side of the vehicle',
   instructionalSubHeadingText: '',
@@ -154,11 +160,12 @@ export const ExteriorRearLeftCornerDetails = {
   subCategory: 'rear_left_corner',
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
-};
-export const ExteriorRearRightCornerDetails = {
+});
+
+export const ExteriorRearRightCornerDetails = vehicleType => ({
   key: 'exteriorRearRightCorner',
   title: 'Rear Right Corner',
-  source: IMAGES.rear_Right_Corner,
+  source: vehicleType === VEHICLE_TYPES.SEDAN ? IMAGES.sedan_exterior_rear_right : IMAGES.rear_Right_Corner,
   instructionalText:
     'Please take a photo from the rear right corner of the vehicle clearly capturing the right tail light, rear door and roof on the exterior right side of the vehicle',
   instructionalSubHeadingText: '',
@@ -167,7 +174,8 @@ export const ExteriorRearRightCornerDetails = {
   subCategory: 'rear_right_corner',
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
-};
+});
+
 export const ExteriorInsideCargoRoofDetails = {
   key: 'exteriorInsideCargoRoof',
   title: 'Inside Cargo Roof',
