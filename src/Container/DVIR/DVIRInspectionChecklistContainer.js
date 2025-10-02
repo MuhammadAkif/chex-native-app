@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {IMAGES} from '../../Assets/Images';
-import {INSPECTION, S3_BUCKET_BASEURL} from '../../Constants';
+import {INSPECTION, S3_BUCKET_BASEURL, VEHICLE_TYPES} from '../../Constants';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {DVIRInspectionChecklistScreen} from '../../Screens';
 import {
@@ -23,12 +23,10 @@ import {
   isNotEmpty,
   LicensePlateDetails,
 } from '../../Utils';
-import {useFocusEffect, useNavigationState} from '@react-navigation/native';
-import {BackHandler} from 'react-native';
 
 const frameConfigMap = {
   exterior_front: {
-    details: ExteriorFrontDetails,
+    details: ExteriorFrontDetails(VEHICLE_TYPES.TRUCK),
     source: IMAGES.truck_exterior_front,
     index: 0,
   },
@@ -43,17 +41,17 @@ const frameConfigMap = {
     index: 0,
   },
   rear_right_corner: {
-    details: ExteriorRearRightCornerDetails,
+    details: ExteriorRearRightCornerDetails(VEHICLE_TYPES.TRUCK),
     source: IMAGES.truck_exterior_rear_right,
     index: 1,
   },
   rear_left_corner: {
-    details: ExteriorRearLeftCornerDetails,
+    details: ExteriorRearLeftCornerDetails(VEHICLE_TYPES.TRUCK),
     source: IMAGES.truck_exterior_rear_left,
     index: 0,
   },
   exterior_rear: {
-    details: ExteriorRearDetails,
+    details: ExteriorRearDetails(VEHICLE_TYPES.TRUCK),
     source: IMAGES.truck_exterior_rear_back,
     index: 0,
   },

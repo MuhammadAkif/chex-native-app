@@ -352,7 +352,7 @@ const CameraContainer = ({route, navigation}) => {
           isLoading={true}
           isVideo={isVideo}
           instructionalText={instructionalText}
-          source={source}
+          source={source ? source : {uri: isImageURL}}
           title={title}
           progress={progress}
           handleNavigationBackPress={handleNavigationBackPress}
