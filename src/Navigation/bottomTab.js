@@ -1,4 +1,4 @@
-import React, {memo, useCallback} from 'react';
+import React, {useCallback} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -91,7 +91,7 @@ const CustomTabBar = props => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: hp(9),
+    height: hp(10.5),
     backgroundColor: colors.white,
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   },
   activeIndicator: {
     position: 'absolute',
-    top: -hp(1.9),
+    top: -hp(2.7),
     width: '50%',
     height: 3,
     borderRadius: 2,

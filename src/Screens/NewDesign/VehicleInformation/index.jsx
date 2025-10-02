@@ -87,7 +87,7 @@ const VehicleInformation = props => {
   const lastQueriedPlateRef = useRef('');
   const latestRequestIdRef = useRef(0);
   const responseCacheRef = useRef(new Map()); // plate -> {vehicleType, vin}
-  const inspectionTypeOptions = useMemo(() => ['Regular', 'Truck'], []);
+  const inspectionTypeOptions = useMemo(() => ['Regular', 'DVIR'], []);
 
   // Dimensions used to calculate scroll offset (keep in sync with styles.js)
   const VEHICLE_ITEM_WIDTH = wp(38);
@@ -428,27 +428,20 @@ const VehicleInformation = props => {
                     }
 
                     if (route?.params?.isVinCapture) {
-                      extractVinIfNeeded();
-                    }
-
-                    async function extractVinIfNeeded() {
                       setVinLoading(true);
-                      try {
-                        const response = await extractVinAI(route.params.capturedImageUri);
-                        // console.log('RESPONSE', response);
-                        const {plateNumber = null} = response?.data || {};
-                        setFieldValue('vin', plateNumber || '');
-                      } catch (error) {
-                        // Optionally show error to user
-                        setFieldValue('vin', '');
-                        dispatch(showToast('Unable to get VIN from image', 'error'));
-                      } finally {
-                        setVinLoading(false);
-                        navigation.setParams({
-                          capturedImageUri: undefined,
-                          isVinCapture: undefined,
+                      extractVinAI(route.params.capturedImageUri)
+                        .then(response => {
+                          const {plateNumber = null} = response?.data || {};
+                          setFieldValue('vin', plateNumber || '');
+                        })
+                        .catch(error => {
+                          setFieldValue('vin', '');
+                          dispatch(showToast('Unable to get VIN from image', 'error'));
+                        })
+                        .finally(() => {
+                          setVinLoading(false);
+                          navigation.setParams({isVinCapture: undefined, capturedImageUri: undefined});
                         });
-                      }
                     }
                   }, [mileage, plateNumber, route?.params?.isMileageCapture, route?.params?.isLicensePlateCapture, route?.params?.isVinCapture]);
 
