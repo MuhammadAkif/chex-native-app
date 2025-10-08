@@ -25,6 +25,7 @@ const InspectionInProgressContainer = ({navigation}) => {
   const {
     user: {data},
   } = useSelector(state => state?.auth);
+  const demoUser = data?.demoUser || false;
   const {inspectionInProgress} = useSelector(state => state?.inspectionInProgress);
   const [isLoading, setIsLoading] = useState(false);
   const [isNewInspectionLoading, setIsNewInspectionLoading] = useState(false);
@@ -81,7 +82,7 @@ const InspectionInProgressContainer = ({navigation}) => {
     dispatch(setSelectedVehicleKind(vehicleKind));
     resetAllStates();
 
-    if (vehicleKind == VEHICLE_TYPES.TRUCK) {
+    if (!demoUser && vehicleKind == VEHICLE_TYPES.TRUCK) {
       navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {
         routeName: ROUTES.DVIR_INSPECTION_CHECKLIST,
       });

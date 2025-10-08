@@ -28,25 +28,6 @@ import {useRoute} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import {Types} from '../../../Store/Types';
 
-const validate = values => {
-  const errors = {};
-  if (!values.licensePlateNumber.trim()) {
-    errors.licensePlateNumber = 'Truck ID/License Plate is required';
-  }
-  if (!values.mileage.trim()) {
-    errors.mileage = 'Mileage is required';
-  } else if (isNaN(values.mileage) || Number(values.mileage) < 0) {
-    errors.mileage = 'Mileage must be a positive number';
-  }
-  if (!values.vin.trim()) {
-    errors.vin = 'VIN is required';
-  }
-  if (!values.inspectionType?.trim?.()) {
-    errors.inspectionType = 'Inspection Type is required';
-  }
-  return errors;
-};
-
 const initialData = {
   licensePlateNumber: '',
   mileage: '',
@@ -75,6 +56,7 @@ const VehicleInformation = props => {
   const licensePlateAndMileageImages = useRef({mileage: {uri: '', extension: ''}, numberPlate: {uri: '', extension: ''}});
   const user = authState?.user?.data;
   const companyId = user?.companyId;
+  const demoUser = user?.demoUser || false;
   const [showVehicleType, setShowVehicleType] = useState(false);
   const [hasApiDetectedVehicleType, setHasApiDetectedVehicleType] = useState(false);
   const [isFetchingVehicleInfo, setIsFetchingVehicleInfo] = useState(false);
@@ -92,6 +74,29 @@ const VehicleInformation = props => {
   // Dimensions used to calculate scroll offset (keep in sync with styles.js)
   const VEHICLE_ITEM_WIDTH = wp(38);
   const VEHICLE_ITEM_GAP = 10;
+
+  const validate = useCallback(
+    values => {
+      const errors = {};
+      if (!values.licensePlateNumber.trim()) {
+        errors.licensePlateNumber = 'Truck ID/License Plate is required';
+      }
+      if (!values.mileage.trim()) {
+        errors.mileage = 'Mileage is required';
+      } else if (isNaN(values.mileage) || Number(values.mileage) < 0) {
+        errors.mileage = 'Mileage must be a positive number';
+      }
+      if (!values.vin.trim()) {
+        errors.vin = 'VIN is required';
+      }
+      if (!demoUser && !values.inspectionType?.trim?.()) {
+        errors.inspectionType = 'Inspection Type is required';
+      }
+
+      return errors;
+    },
+    [demoUser]
+  );
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => setIsInspectionTypeOpen(false));
@@ -152,7 +157,7 @@ const VehicleInformation = props => {
 
     const data = {
       ...values,
-      hasCheckList: vehicleType === VEHICLE_TYPES.TRUCK,
+      hasCheckList: !demoUser && vehicleType === VEHICLE_TYPES.TRUCK,
       files: [
         {
           url: numberPlate?.uri,
@@ -188,7 +193,7 @@ const VehicleInformation = props => {
 
         // NAVIGATE
 
-        if (vehicleType == VEHICLE_TYPES.TRUCK) {
+        if (!demoUser && vehicleType == VEHICLE_TYPES.TRUCK) {
           setTimeout(
             () => {
               navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {
@@ -388,6 +393,7 @@ const VehicleInformation = props => {
                   submitCount,
                   setFieldError,
                   setFieldTouched,
+                  validateField,
                 }) => {
                   useEffect(() => {
                     if (route?.params?.isMileageCapture) {
@@ -619,43 +625,45 @@ const VehicleInformation = props => {
                           />
 
                           {/* INSPECTION TYPE DROPDOWN */}
-                          <View>
-                            <AppText style={{marginBottom: 6}}>Inspection Type</AppText>
-                            <Pressable
-                              onPress={() => setIsInspectionTypeOpen(prev => !prev)}
-                              style={[styles.inputContainer, styles.dropdownContainer]}>
-                              <AppText style={{...styles.input, color: values.inspectionType ? colors.black : '#BDBDBD'}}>
-                                {values.inspectionType || 'Inspection Type'}
-                              </AppText>
-                              <ChevronIcon />
-                            </Pressable>
+                          {!demoUser && (
+                            <View>
+                              <AppText style={{marginBottom: 6}}>Inspection Type</AppText>
+                              <Pressable
+                                onPress={() => setIsInspectionTypeOpen(prev => !prev)}
+                                style={[styles.inputContainer, styles.dropdownContainer]}>
+                                <AppText style={{...styles.input, color: values.inspectionType ? colors.black : '#BDBDBD'}}>
+                                  {values.inspectionType || 'Inspection Type'}
+                                </AppText>
+                                <ChevronIcon />
+                              </Pressable>
 
-                            {isInspectionTypeOpen && (
-                              <>
-                                <View style={styles.dropdownList}>
-                                  {inspectionTypeOptions.map(option => (
-                                    <Pressable
-                                      key={option}
-                                      onPress={() => {
-                                        setFieldValue('inspectionType', option, true);
-                                        setFieldTouched('inspectionType', true, false);
-                                        setIsInspectionTypeOpen(false);
-                                      }}
-                                      style={{
-                                        padding: 12,
-                                        backgroundColor: values.inspectionType === option ? '#F0F6FF' : '#fff',
-                                      }}>
-                                      <AppText style={{color: colors.black}}>{option}</AppText>
-                                    </Pressable>
-                                  ))}
-                                </View>
-                              </>
-                            )}
+                              {isInspectionTypeOpen && (
+                                <>
+                                  <View style={styles.dropdownList}>
+                                    {inspectionTypeOptions.map(option => (
+                                      <Pressable
+                                        key={option}
+                                        onPress={() => {
+                                          setFieldValue('inspectionType', option, true);
+                                          setFieldTouched('inspectionType', true, false);
+                                          setIsInspectionTypeOpen(false);
+                                        }}
+                                        style={{
+                                          padding: 12,
+                                          backgroundColor: values.inspectionType === option ? '#F0F6FF' : '#fff',
+                                        }}>
+                                        <AppText style={{color: colors.black}}>{option}</AppText>
+                                      </Pressable>
+                                    ))}
+                                  </View>
+                                </>
+                              )}
 
-                            {errors.inspectionType && touched.inspectionType && (
-                              <AppText style={{color: colors.red, marginTop: 4}}>{errors.inspectionType}</AppText>
-                            )}
-                          </View>
+                              {errors.inspectionType && touched.inspectionType && (
+                                <AppText style={{color: colors.red, marginTop: 4}}>{errors.inspectionType}</AppText>
+                              )}
+                            </View>
+                          )}
                         </View>
                       </View>
                       <PrimaryGradientButton onPress={handleSubmit} text="Next" buttonStyle={styles.nextButton} />
