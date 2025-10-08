@@ -3,7 +3,7 @@ import React, {useCallback, useRef, useState} from 'react';
 import {styles} from './styles';
 import {CardWrapper, CustomInput, IconWrapper, LoadingIndicator, LogoHeader, PhoneInput, PrimaryGradientButton} from '../../../Components';
 import {useDispatch, useSelector} from 'react-redux';
-import {STACKS} from '../../../Navigation/ROUTES';
+import {ROUTES, STACKS} from '../../../Navigation/ROUTES';
 import {Logout} from '../../../Assets/Icons';
 import {colors} from '../../../Assets/Styles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';

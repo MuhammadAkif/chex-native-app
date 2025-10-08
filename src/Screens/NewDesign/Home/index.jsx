@@ -117,11 +117,11 @@ const Home = ({navigation}) => {
         <View style={styles.blueHeaderContainer}>
           <LogoHeader
             showLeft={false}
-            rightIcon={
-              <IconWrapper>
-                <BellWhiteIcon />
-              </IconWrapper>
-            }
+            // rightIcon={
+            //   <IconWrapper>
+            //     <BellWhiteIcon />
+            //   </IconWrapper>
+            // }
           />
 
           <View style={styles.usernameContainer}>

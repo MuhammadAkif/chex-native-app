@@ -341,11 +341,11 @@ const VehicleInformation = props => {
       <View style={styles.blueHeaderContainer}>
         <LogoHeader
           showLeft={false}
-          rightIcon={
-            <IconWrapper>
-              <BellWhiteIcon />
-            </IconWrapper>
-          }
+          // rightIcon={
+          //   <IconWrapper>
+          //     <BellWhiteIcon />
+          //   </IconWrapper>
+          // }
         />
       </View>
       <TouchableWithoutFeedback onPress={() => setIsInspectionTypeOpen(false)}>

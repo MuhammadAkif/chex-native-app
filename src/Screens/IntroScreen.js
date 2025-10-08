@@ -1,12 +1,9 @@
 import React from 'react';
 import {View, Text, StyleSheet, Platform} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {colors, dot, NavigationDrawerBackgroundColor} from '../Assets/Styles';
-import {IntroBackGroundImageView, PrimaryGradientButton} from '../Components';
+import {IntroBackGroundImageView, LogoHeader, PrimaryGradientButton} from '../Components';
 import {Platforms} from '../Constants';
 import {External} from '../Assets/Icons';
 
@@ -16,12 +13,9 @@ let isAndroid = OS === ANDROID && 'Apps > ';
 
 const {cobaltBlueTwo, white, black} = colors;
 
-const IntroScreen = ({
-  handleStartInspection,
-  handleOpenSettings,
-  isLoading,
-}) => (
+const IntroScreen = ({handleStartInspection, handleOpenSettings, isLoading}) => (
   <View style={styles.container}>
+    <LogoHeader />
     <View style={styles.innerContainer}>
       <View style={styles.bodyContainer}>
         <IntroBackGroundImageView>
@@ -31,26 +25,16 @@ const IntroScreen = ({
           <View style={styles.introductionContainer}>
             <View style={styles.emptyView} />
             <View style={styles.introTextContainer}>
-              <Text style={styles.introTitle}>
-                Camera Access for the Mobile Browser
-              </Text>
+              <Text style={styles.introTitle}>Camera Access for the Mobile Browser</Text>
               <Text style={styles.introDescription}>
-                In some cases your camera may not work to upload items. In that
-                case don’t worry, follow the steps below in your phone settings:
+                In some cases your camera may not work to upload items. In that case don’t worry, follow the steps below in your phone settings:
               </Text>
             </View>
-            <Text
-              style={styles.settingsText}
-              onPress={handleOpenSettings}
-              disabled={isLoading}>
+            <Text style={styles.settingsText} onPress={handleOpenSettings} disabled={isLoading}>
               Settings {'>'} {isAndroid}Chex DSP {'>'} Allow Camera
               <Text onPress={handleOpenSettings} disabled={isLoading}>
                 {' '}
-                <External
-                  height={hp('2%')}
-                  width={wp('5%')}
-                  color={cobaltBlueTwo}
-                />
+                <External height={hp('2%')} width={wp('5%')} color={cobaltBlueTwo} />
               </Text>
             </Text>
             <View style={styles.introTextContainer}>

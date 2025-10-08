@@ -104,13 +104,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: hp(0.5),
+    gap: hp(1),
+    bottom: hp(0.8),
   },
   label: {
     fontSize: wp(3),
     color: colors.slateGray,
     fontWeight: '500',
-    marginTop: 2,
   },
   labelFocused: {
     color: colors.oceanBlue,
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   inspectionButtonWrapper: {
     alignItems: 'center',
     justifyContent: 'center',
-    top: -hp(2.5),
+    top: -hp(3.5),
   },
   inspectionButton: {
     width: wp(14),
@@ -133,13 +133,13 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   inspectionLabel: {
-    top: hp(1),
+    top: hp(1.4),
     color: colors.slateGray,
     fontWeight: '500',
   },
   activeIndicator: {
     position: 'absolute',
-    top: -hp(2.7),
+    top: -hp(1.6),
     width: '50%',
     height: 3,
     borderRadius: 2,

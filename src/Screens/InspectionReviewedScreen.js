@@ -33,11 +33,11 @@ const InspectionReviewedScreen = ({
   <View style={container}>
     <LogoHeader
       showLeft={false}
-      rightIcon={
-        <IconWrapper>
-          <BellWhiteIcon />
-        </IconWrapper>
-      }
+      // rightIcon={
+      //   <IconWrapper>
+      //     <BellWhiteIcon />
+      //   </IconWrapper>
+      // }
     />
     <View style={[bodyContainer, {marginTop: wp(5)}]}>
       <View style={styles.bodyHeaderContainer}>
