@@ -28,6 +28,26 @@ import {useRoute} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import {Types} from '../../../Store/Types';
 
+const validate = (values, demoUser) => {
+  const errors = {};
+  if (!values.licensePlateNumber.trim()) {
+    errors.licensePlateNumber = 'Truck ID/License Plate is required';
+  }
+  if (!values.mileage.trim()) {
+    errors.mileage = 'Mileage is required';
+  } else if (isNaN(values.mileage) || Number(values.mileage) < 0) {
+    errors.mileage = 'Mileage must be a positive number';
+  }
+  if (!values.vin.trim()) {
+    errors.vin = 'VIN is required';
+  }
+  if (!demoUser && !values.inspectionType?.trim?.()) {
+    errors.inspectionType = 'Inspection Type is required';
+  }
+
+  return errors;
+};
+
 const initialData = {
   licensePlateNumber: '',
   mileage: '',
@@ -74,29 +94,6 @@ const VehicleInformation = props => {
   // Dimensions used to calculate scroll offset (keep in sync with styles.js)
   const VEHICLE_ITEM_WIDTH = wp(38);
   const VEHICLE_ITEM_GAP = 10;
-
-  const validate = useCallback(
-    values => {
-      const errors = {};
-      if (!values.licensePlateNumber.trim()) {
-        errors.licensePlateNumber = 'Truck ID/License Plate is required';
-      }
-      if (!values.mileage.trim()) {
-        errors.mileage = 'Mileage is required';
-      } else if (isNaN(values.mileage) || Number(values.mileage) < 0) {
-        errors.mileage = 'Mileage must be a positive number';
-      }
-      if (!values.vin.trim()) {
-        errors.vin = 'VIN is required';
-      }
-      if (!demoUser && !values.inspectionType?.trim?.()) {
-        errors.inspectionType = 'Inspection Type is required';
-      }
-
-      return errors;
-    },
-    [demoUser]
-  );
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => setIsInspectionTypeOpen(false));
@@ -374,10 +371,12 @@ const VehicleInformation = props => {
               <Formik
                 initialValues={initialData}
                 validate={values => {
-                  const errors = validate(values);
+                  const errors = validate(values, demoUser);
+
                   if (showVehicleType && !values.vehicleType) {
                     errors.vehicleType = 'Please select a vehicle type';
                   }
+
                   return errors;
                 }}
                 onSubmit={handleSubmitForm}>
