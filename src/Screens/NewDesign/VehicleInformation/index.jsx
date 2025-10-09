@@ -33,7 +33,8 @@ const validate = (values, hasInspectionType) => {
   if (!values.vin.trim()) {
     errors.vin = 'VIN is required';
   }
-  if (hasInspectionType && !values.inspectionType?.trim?.()) {
+
+  if (values.vehicleType === VEHICLE_TYPES.TRUCK && hasInspectionType && !values.inspectionType?.trim?.()) {
     errors.inspectionType = 'Inspection Type is required';
   }
 
