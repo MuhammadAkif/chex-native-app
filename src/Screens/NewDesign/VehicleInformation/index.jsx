@@ -1,34 +1,26 @@
 import {View, StatusBar, ScrollView, Image, Pressable, ActivityIndicator, TouchableWithoutFeedback} from 'react-native';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {styles} from './styles';
-import {
-  CardWrapper,
-  CustomInput,
-  DiscardInspectionModal,
-  IconWrapper,
-  LoadingIndicator,
-  LogoHeader,
-  PrimaryGradientButton,
-} from '../../../Components';
+import {CardWrapper, CustomInput, DiscardInspectionModal, LoadingIndicator, LogoHeader, PrimaryGradientButton} from '../../../Components';
 import AppText from '../../../Components/text';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {colors} from '../../../Assets/Styles';
 import {IMAGES} from '../../../Assets/Images';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
-import {BellWhiteIcon, CameraOutlineIcon, ChevronIcon, CircleTickIcon} from '../../../Assets/Icons';
+import {CameraOutlineIcon, ChevronIcon} from '../../../Assets/Icons';
 import {Formik} from 'formik';
 import {isIOS, VEHICLE_TYPES} from '../../../Constants';
 import {createInspection, extractVinAI, getVehicleInformationAgainstLicenseId} from '../../../services/inspection';
 import useDebounce from '../../../hooks/useDebounce';
 import {ROUTES} from '../../../Navigation/ROUTES';
 import {useDispatch, useSelector} from 'react-redux';
-import {getMileage, numberPlateSelected, setCompanyId, setMileage, setSelectedVehicleKind, setVehicleType, showToast} from '../../../Store/Actions';
-import {LicensePlateDetails, OdometerDetails, onNewInspectionPressSuccess} from '../../../Utils';
+import {numberPlateSelected, setCompanyId, setMileage, setSelectedVehicleKind, setVehicleType, showToast} from '../../../Store/Actions';
+import {LicensePlateDetails, OdometerDetails} from '../../../Utils';
 import {useRoute} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import {Types} from '../../../Store/Types';
 
-const validate = (values, demoUser) => {
+const validate = (values, hasInspectionType) => {
   const errors = {};
   if (!values.licensePlateNumber.trim()) {
     errors.licensePlateNumber = 'Truck ID/License Plate is required';
@@ -41,7 +33,7 @@ const validate = (values, demoUser) => {
   if (!values.vin.trim()) {
     errors.vin = 'VIN is required';
   }
-  if (!demoUser && !values.inspectionType?.trim?.()) {
+  if (hasInspectionType && !values.inspectionType?.trim?.()) {
     errors.inspectionType = 'Inspection Type is required';
   }
 
@@ -76,7 +68,7 @@ const VehicleInformation = props => {
   const licensePlateAndMileageImages = useRef({mileage: {uri: '', extension: ''}, numberPlate: {uri: '', extension: ''}});
   const user = authState?.user?.data;
   const companyId = user?.companyId;
-  const demoUser = user?.demoUser || false;
+  const hasInspectionType = user?.hasInspectionType || false;
   const [showVehicleType, setShowVehicleType] = useState(false);
   const [hasApiDetectedVehicleType, setHasApiDetectedVehicleType] = useState(false);
   const [isFetchingVehicleInfo, setIsFetchingVehicleInfo] = useState(false);
@@ -154,7 +146,7 @@ const VehicleInformation = props => {
 
     const data = {
       ...values,
-      hasCheckList: !demoUser && vehicleType === VEHICLE_TYPES.TRUCK,
+      ...(vehicleType === VEHICLE_TYPES.TRUCK && hasInspectionType && {hasCheckList: values.inspectionType === 'DVIR'}),
       files: [
         {
           url: numberPlate?.uri,
@@ -190,7 +182,7 @@ const VehicleInformation = props => {
 
         // NAVIGATE
 
-        if (!demoUser && vehicleType == VEHICLE_TYPES.TRUCK) {
+        if (data?.hasCheckList) {
           setTimeout(
             () => {
               navigation.navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {
@@ -371,7 +363,7 @@ const VehicleInformation = props => {
               <Formik
                 initialValues={initialData}
                 validate={values => {
-                  const errors = validate(values, demoUser);
+                  const errors = validate(values, hasInspectionType);
 
                   if (showVehicleType && !values.vehicleType) {
                     errors.vehicleType = 'Please select a vehicle type';
@@ -624,7 +616,7 @@ const VehicleInformation = props => {
                           />
 
                           {/* INSPECTION TYPE DROPDOWN */}
-                          {!demoUser && (
+                          {hasInspectionType && values.vehicleType === VEHICLE_TYPES.TRUCK && (
                             <View>
                               <AppText style={{marginBottom: 6}}>Inspection Type</AppText>
                               <Pressable

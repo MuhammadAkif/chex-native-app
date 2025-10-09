@@ -71,7 +71,12 @@ export const OdometerDetails = {
 export const ExteriorFrontDetails = vehicleType => ({
   key: 'exteriorFront',
   title: 'Exterior Front',
-  source: vehicleType === VEHICLE_TYPES.SEDAN ? IMAGES.sedan_exterior_front : IMAGES.exterior_Front,
+  source:
+    vehicleType === VEHICLE_TYPES.SEDAN
+      ? IMAGES.sedan_exterior_front
+      : vehicleType === VEHICLE_TYPES.TRUCK
+      ? IMAGES.truck_exterior_front
+      : IMAGES.exterior_Front,
   instructionalText: 'Please upload a photo clearly showing the front of the vehicle',
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
@@ -84,7 +89,12 @@ export const ExteriorFrontDetails = vehicleType => ({
 export const ExteriorRearDetails = vehicleType => ({
   key: 'exteriorRear',
   title: 'Exterior Rear',
-  source: vehicleType === VEHICLE_TYPES.SEDAN ? IMAGES.sedan_exterior_rear : IMAGES.exterior_Rear,
+  source:
+    vehicleType === VEHICLE_TYPES.SEDAN
+      ? IMAGES.sedan_exterior_rear
+      : vehicleType === VEHICLE_TYPES.TRUCK
+      ? IMAGES.truck_exterior_rear_back
+      : IMAGES.exterior_Rear,
   instructionalText: 'Please upload a photo clearly showing the rear of the vehicle ',
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
@@ -123,7 +133,12 @@ export const ExteriorRightDetails = {
 export const ExteriorFrontLeftCornerDetails = vehicleType => ({
   key: 'exteriorFrontLeftCorner',
   title: 'Front Left Corner',
-  source: vehicleType === VEHICLE_TYPES.SEDAN ? IMAGES.sedan_exterior_front_Left : IMAGES.front_Left_Corner,
+  source:
+    vehicleType === VEHICLE_TYPES.SEDAN
+      ? IMAGES.sedan_exterior_front_Left
+      : vehicleType === VEHICLE_TYPES.TRUCK
+      ? IMAGES.truck_exterior_front_Left
+      : IMAGES.front_Left_Corner,
   instructionalText:
     'Please take a photo from the front left corner of the vehicle clearly capturing the left headlight, driver door and roof on the exterior left side of the vehicle',
   instructionalSubHeadingText: '',
@@ -137,7 +152,12 @@ export const ExteriorFrontLeftCornerDetails = vehicleType => ({
 export const ExteriorFrontRightCornerDetails = vehicleType => ({
   key: 'exteriorFrontRightCorner',
   title: 'Front Right Corner',
-  source: vehicleType === VEHICLE_TYPES.SEDAN ? IMAGES.sedan_exterior_front_Right : IMAGES.front_Right_Corner,
+  source:
+    vehicleType === VEHICLE_TYPES.SEDAN
+      ? IMAGES.sedan_exterior_front_Right
+      : vehicleType === VEHICLE_TYPES.TRUCK
+      ? IMAGES.truck_exterior_front_right
+      : IMAGES.front_Right_Corner,
   instructionalText:
     'Please take a photo from the front right corner of the vehicle clearly capturing the right headlight, passenger door and roof on the exterior right side of the vehicle',
   instructionalSubHeadingText: '',
@@ -151,7 +171,12 @@ export const ExteriorFrontRightCornerDetails = vehicleType => ({
 export const ExteriorRearLeftCornerDetails = vehicleType => ({
   key: 'exteriorRearLeftCorner',
   title: 'Rear Left Corner',
-  source: vehicleType === VEHICLE_TYPES.SEDAN ? IMAGES.sedan_exterior_rear_left : IMAGES.rear_Left_Corner,
+  source:
+    vehicleType === VEHICLE_TYPES.SEDAN
+      ? IMAGES.sedan_exterior_rear_left
+      : vehicleType === VEHICLE_TYPES.TRUCK
+      ? IMAGES.truck_exterior_rear_left
+      : IMAGES.rear_Left_Corner,
   instructionalText:
     'Please take a photo from the rear left corner of the vehicle clearly capturing the left tail light, rear door and roof on the exterior left side of the vehicle',
   instructionalSubHeadingText: '',
@@ -165,7 +190,12 @@ export const ExteriorRearLeftCornerDetails = vehicleType => ({
 export const ExteriorRearRightCornerDetails = vehicleType => ({
   key: 'exteriorRearRightCorner',
   title: 'Rear Right Corner',
-  source: vehicleType === VEHICLE_TYPES.SEDAN ? IMAGES.sedan_exterior_rear_right : IMAGES.rear_Right_Corner,
+  source:
+    vehicleType === VEHICLE_TYPES.SEDAN
+      ? IMAGES.sedan_exterior_rear_right
+      : vehicleType === VEHICLE_TYPES.TRUCK
+      ? IMAGES.truck_exterior_rear_right
+      : IMAGES.rear_Right_Corner,
   instructionalText:
     'Please take a photo from the rear right corner of the vehicle clearly capturing the right tail light, rear door and roof on the exterior right side of the vehicle',
   instructionalSubHeadingText: '',

@@ -47,6 +47,8 @@ export const IMAGES = {
   truck_exterior_rear_right: require('./InfoModal/Truck/Exterior_Rear_Right.png'),
   truck_exterior_rear_back: require('./InfoModal/Truck/Exterior_Rear_Back.png'),
   truck_interior_back: require('./InfoModal/Truck/Interior_Back.png'),
+  truck_exterior_front_right: require('./InfoModal/Truck/Exterior_Front-Right.png'),
+  truck_exterior_front_Left: require('./InfoModal/Truck/Exterior_Front-Left.png'),
 
   // SEDAN
   sedan_exterior_front: require('./InfoModal/Sedan/Exterior_Front.jpg'),

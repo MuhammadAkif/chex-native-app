@@ -25,7 +25,6 @@ const InspectionInProgressContainer = ({navigation}) => {
   const {
     user: {data},
   } = useSelector(state => state?.auth);
-  const demoUser = data?.demoUser || false;
   const {inspectionInProgress} = useSelector(state => state?.inspectionInProgress);
   const [isLoading, setIsLoading] = useState(false);
   const [isNewInspectionLoading, setIsNewInspectionLoading] = useState(false);
@@ -75,14 +74,14 @@ const InspectionInProgressContainer = ({navigation}) => {
       });
   };
   function onContinuePressSuccess(res, inspectionId) {
-    const {hasAdded = 'existing', vehicleType: vehicleKind} = res?.data || {};
+    const {hasAdded = 'existing', vehicleType: vehicleKind, inspection} = res?.data || {};
     const vehicleType = hasAdded || 'existing';
 
     dispatch(setVehicleType(vehicleType));
     dispatch(setSelectedVehicleKind(vehicleKind));
     resetAllStates();
 
-    if (!demoUser && vehicleKind == VEHICLE_TYPES.TRUCK) {
+    if (vehicleKind == VEHICLE_TYPES.TRUCK && inspection?.hasCheckList) {
       navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {
         routeName: ROUTES.DVIR_INSPECTION_CHECKLIST,
       });
