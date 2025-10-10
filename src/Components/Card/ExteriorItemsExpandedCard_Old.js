@@ -217,14 +217,16 @@ const ExteriorItemsExpandedCard = ({
       {!hasInteriorAndRoofTopCompany(companyId) && (
         <View style={itemPickerContainer}>
           <ImagePicker
-            text={ExteriorInsideCargoRoofDetails.title}
+            text={ExteriorInsideCargoRoofDetails(selectedVehicleKind).title}
             pickerText={pickerText}
             imageURL={exteriorItems?.exteriorInsideCargoRoof}
             isLoading={isLoading}
-            onPress={() => handleItemPickerPress(ExteriorInsideCargoRoofDetails)}
-            onClearPress={() => handleCrossPress(ExteriorInsideCargoRoofDetails.groupType, ExteriorInsideCargoRoofDetails.key)}
+            onPress={() => handleItemPickerPress(ExteriorInsideCargoRoofDetails(selectedVehicleKind))}
+            onClearPress={() =>
+              handleCrossPress(ExteriorInsideCargoRoofDetails(selectedVehicleKind).groupType, ExteriorInsideCargoRoofDetails(selectedVehicleKind).key)
+            }
             handleMediaModalDetailsPress={() =>
-              handleMediaModalDetailsPress(ExteriorInsideCargoRoofDetails.title, exteriorItems?.exteriorInsideCargoRoof)
+              handleMediaModalDetailsPress(ExteriorInsideCargoRoofDetails(selectedVehicleKind).title, exteriorItems?.exteriorInsideCargoRoof)
             }
           />
         </View>

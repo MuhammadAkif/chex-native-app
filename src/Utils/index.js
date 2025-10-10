@@ -206,10 +206,10 @@ export const ExteriorRearRightCornerDetails = vehicleType => ({
   isVideo: false,
 });
 
-export const ExteriorInsideCargoRoofDetails = {
+export const ExteriorInsideCargoRoofDetails = vehicleType => ({
   key: 'exteriorInsideCargoRoof',
   title: 'Inside Cargo Roof',
-  source: IMAGES.inside_Cargo_Roof,
+  source: VEHICLE_TYPES.TRUCK === vehicleType ? IMAGES.truck_interior_back : IMAGES.inside_Cargo_Roof,
   instructionalText: 'Please upload a photo clearly showing the inside cargo roof of the vehicle',
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
@@ -217,7 +217,7 @@ export const ExteriorInsideCargoRoofDetails = {
   subCategory: 'inside_cargo_roof',
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
-};
+});
 //___________________________Interior______________________________
 export const InteriorPassengerSide = {
   key: 'passengerSide',

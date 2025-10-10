@@ -9,16 +9,8 @@ const {white} = colors;
 
 const Splash = () => (
   <>
-    <FastImage
-      source={IMAGES.splash}
-      resizeMode={'contain'}
-      style={[StyleSheet.absoluteFill, {backgroundColor: white}]}
-    />
-    <StatusBar
-      backgroundColor="transparent"
-      barStyle="light-content"
-      translucent={true}
-    />
+    <FastImage source={IMAGES.splash} resizeMode={'contain'} style={[StyleSheet.absoluteFill, {backgroundColor: white}]} />
+    <StatusBar backgroundColor="transparent" barStyle="light-content" translucent={true} />
   </>
 );
 export default Splash;

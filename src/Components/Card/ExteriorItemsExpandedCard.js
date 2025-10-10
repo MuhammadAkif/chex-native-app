@@ -144,7 +144,7 @@ const ExteriorItemsExpandedCard = ({
       )}
       {!hasInteriorAndRoofTopCompany(companyId) && (
         <ImagesPickerContainer
-          ExteriorDetails={ExteriorInsideCargoRoofDetails}
+          ExteriorDetails={ExteriorInsideCargoRoofDetails(selectedVehicleKind)}
           pickerText={pickerText}
           imageURL={exteriorItems?.exteriorInsideCargoRoof}
           imageURLOne={exteriorItems?.exteriorInsideCargoRoof_1}
