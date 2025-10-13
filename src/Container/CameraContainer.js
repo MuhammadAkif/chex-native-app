@@ -131,7 +131,7 @@ const CameraContainer = ({route, navigation}) => {
       if (route?.params?.returnTo === ROUTES.DVIR_INSPECTION_CHECKLIST) navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST);
       else navigation.popTo(ROUTES.TABS, {name: route.params.returnTo});
       return true;
-    } else if (selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
+    } else if (route?.params?.prevScreen === ROUTES.DVIR_INSPECTION_CHECKLIST && selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
       navigation.goBack();
       return true;
     } else if (canGoBack()) {
@@ -240,6 +240,7 @@ const CameraContainer = ({route, navigation}) => {
       setIsUploadFailed(body);
     }
   }
+
   function uploadImageToStore(imageID, image_url) {
     const isLicensePlate = category === 'CarVerification' && type === 'licensePlate';
     const isOdometer = category === 'CarVerification' && type === 'odometer';
@@ -261,7 +262,7 @@ const CameraContainer = ({route, navigation}) => {
       is_Exterior: haveType,
     };
 
-    if (selectedVehicleKind === VEHICLE_TYPES.TRUCK) {
+    if (route?.params?.prevScreen === ROUTES.DVIR_INSPECTION_CHECKLIST && selectedVehicleKind === VEHICLE_TYPES.TRUCK) {
       navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST, {afterFileUploadImageUrl: image_url, fileId: imageID, ...afterFileUploadNavigationParams});
     } else {
       navigation.popTo(NEW_INSPECTION, params);

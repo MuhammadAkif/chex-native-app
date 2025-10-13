@@ -291,6 +291,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         inspectionId: selectedInspectionID,
         returnTo: ROUTES.DVIR_INSPECTION_CHECKLIST,
         returnToParams: {checklistCardIndex: index},
+        prevScreen: ROUTES.DVIR_INSPECTION_CHECKLIST,
       });
     },
     [navigation, checklistData]
@@ -379,6 +380,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       type: key,
       modalDetails: modalDetails,
       inspectionId: selectedInspectionID,
+      prevScreen: ROUTES.DVIR_INSPECTION_CHECKLIST,
     });
   };
 

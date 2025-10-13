@@ -97,7 +97,7 @@ const VideoContainer = ({route, navigation}) => {
       if (route?.params?.returnTo === ROUTES.DVIR_INSPECTION_CHECKLIST) navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST);
       else navigation.popTo(ROUTES.TABS, {name: route.params.returnTo});
       return true;
-    } else if (selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
+    } else if (route?.params?.prevScreen === ROUTES.DVIR_INSPECTION_CHECKLIST && selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
       navigation.goBack();
       return true;
     } else if (canGoBack()) {
