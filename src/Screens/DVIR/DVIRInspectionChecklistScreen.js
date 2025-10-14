@@ -478,11 +478,11 @@ const DVIRInspectionChecklistScreen = ({
   return (
     <View style={container}>
       <LogoHeader />
+      <LoadingIndicator isLoading={isLoading} />
       <View style={headerContainer}>
         <AppText style={headerTitleText}>Please complete inspection items within each category below</AppText>
       </View>
       <View style={bodyContainer}>
-        <LoadingIndicator isLoading={isLoading} />
         <SectionList
           sections={sections}
           keyExtractor={(_, index) => `${index}`}
