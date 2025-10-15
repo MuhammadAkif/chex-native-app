@@ -10,7 +10,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 import AppText from '../../../Components/text';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {Formik} from 'formik';
-import {signOut} from '../../../Store/Actions';
+import {showToast, signOut} from '../../../Store/Actions';
 import api from '../../../services/api';
 import {API_ENDPOINTS} from '../../../Constants';
 import {useFocusEffect} from '@react-navigation/native';
@@ -84,6 +84,7 @@ const MyProfile = ({navigation}) => {
       const user = response?.data?.user;
       const token = response?.data?.token;
       if (response?.status === 200 && user && token) {
+        dispatch(showToast('Profile Updated', 'success'));
         dispatch({type: Types.UPDATE_USER, payload: {data: user, token}});
         // Reinitialize Formik with latest saved values from API
         const updatedInitialData = {

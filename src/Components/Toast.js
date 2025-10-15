@@ -1,22 +1,13 @@
 import React, {useEffect} from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  StatusBar,
-  Platform,
-} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {Text, View, TouchableOpacity, StyleSheet, StatusBar, Platform} from 'react-native';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {XMark, Check, Cross, Exclamation} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {hideToast} from '../Store/Actions';
 import {Platforms} from '../Constants';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const {OS} = Platform;
 const {ANDROID, IOS} = Platforms;
@@ -38,6 +29,7 @@ const Toast = props => {
     toast: {visible, message, type},
   } = useSelector(state => state.ui);
   const dispatch = useDispatch();
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     let timeoutID = setTimeout(() => visible && onCrossPress(), 5000);
@@ -57,20 +49,17 @@ const Toast = props => {
   const BACKGROUND_COLOR = Background_Color[type];
   const containerStyle = {
     ...styles.centeredView,
-    top: isModal && OS === ANDROID ? hp('0.7%') : hp('5%'),
+    top: isModal && OS === ANDROID ? StatusBar.currentHeight : insets?.top,
     marginTop: isModal && OS === IOS ? StatusBar.currentHeight : null,
   };
   return (
     <View style={containerStyle}>
       <View style={styles.messageTextContainer}>
-        <View
-          style={{...styles.iconContainer, backgroundColor: BACKGROUND_COLOR}}>
+        <View style={{...styles.iconContainer, backgroundColor: BACKGROUND_COLOR}}>
           <ICON_COMPONENT height={hp('3%')} width={wp('5%')} color={white} />
         </View>
         <Text style={styles.messageText}>{message || 'Message'}</Text>
-        <TouchableOpacity
-          style={{...styles.iconContainer, ...styles.crossIconContainer}}
-          onPress={onCrossPress}>
+        <TouchableOpacity style={{...styles.iconContainer, ...styles.crossIconContainer}} onPress={onCrossPress}>
           <XMark height={hp('3%')} width={wp('5%')} color={gray} />
         </TouchableOpacity>
       </View>
