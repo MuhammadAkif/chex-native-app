@@ -7,12 +7,10 @@ import {
   CameraContainer,
   VideoContainer,
   CompletedInspectionContainer,
-  InspectionSelectionContainer,
   DVIRInspectionChecklistContainer,
   DVIRVehicleInfoContainer,
   InspectionDetailContainer,
   InspectionInProgressContainer,
-  InspectionReviewedContainer,
   IntroContainer,
   LicensePlateNumberSelectionContainer,
   NewInspectionContainer,
@@ -46,7 +44,6 @@ const RootNavigation = () => {
         <Stack.Screen name={ROUTES.VIDEO} component={VideoContainer} />
         <Stack.Screen name={ROUTES.COMPLETED_INSPECTION} component={CompletedInspectionContainer} />
 
-        <Stack.Screen name={ROUTES.INSPECTION_SELECTION} component={InspectionSelectionContainer} />
         <Stack.Screen name={ROUTES.INTRO} component={IntroContainer} />
         <Stack.Screen name={ROUTES.LICENSE_PLATE_SELECTION} component={LicensePlateNumberSelectionContainer} />
         <Stack.Screen name={ROUTES.NEW_INSPECTION} component={NewInspectionContainer} />

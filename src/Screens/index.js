@@ -3,7 +3,6 @@ import RegisterScreen from './SignIn/RegisterScreen';
 import SignInScreen from './SignIn/SignInScreen';
 import ForgotPasswordScreen from './SignIn/ForgotPasswordScreen';
 import ResetPasswordScreen from './SignIn/ResetPasswordScreen';
-import InspectionSelectionScreen from './InspectionSelectionScreen';
 import IntroScreen from './IntroScreen';
 import NewInspectionScreen from './NewInspectionScreen';
 import CompletedInspectionScreen from './CompletedInspectionScreen';
@@ -26,7 +25,6 @@ export {
   SignInScreen,
   ForgotPasswordScreen,
   ResetPasswordScreen,
-  InspectionSelectionScreen,
   IntroScreen,
   NewInspectionScreen,
   CompletedInspectionScreen,

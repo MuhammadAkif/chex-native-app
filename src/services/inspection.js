@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {AI_API_TOKEN, API_ENDPOINTS, EXTRACT_NUMBER_PLATE_WITH_AI, generateApiUrl, MILEAGE_EXTRACTION, nightImageCheckAI} from '../Constants';
 import {generateRandomString} from '../Utils';
 import api from './api';
@@ -181,9 +182,13 @@ export const extractVinAI = async image_url => {
   };
 
   try {
-    return await api.post(EXTRACT_NUMBER_PLATE_WITH_AI, body, {
-      headers: headers,
-    });
+
+    // return await api.post(EXTRACT_NUMBER_PLATE_WITH_AI, body, {
+    //   headers: headers,
+    // });
+
+    return await axios.post('http://ec2-34-203-143-240.compute-1.amazonaws.com:8000/vin-extraction', body)
+    
   } catch (error) {
     console.error('VIN AI Extraction error:', error.response.data);
     throw error;

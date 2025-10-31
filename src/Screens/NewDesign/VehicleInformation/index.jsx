@@ -427,10 +427,10 @@ const VehicleInformation = props => {
 
                     if (route?.params?.isVinCapture) {
                       setVinLoading(true);
-                      extractVinAI(route.params.capturedImageUri)
+                      extractVinAI('https://chex-ai-uploads.s3.amazonaws.com/uploads/8073/xTWv5mr_VgD2iqxz9cCme')
                         .then(response => {
-                          const {plateNumber = null} = response?.data || {};
-                          setFieldValue('vin', plateNumber || '');
+                          const {vin_num = null} = response?.data || {};
+                          setFieldValue('vin', vin_num || '');
                         })
                         .catch(error => {
                           setFieldValue('vin', '');
