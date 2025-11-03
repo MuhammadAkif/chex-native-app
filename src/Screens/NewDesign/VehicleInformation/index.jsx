@@ -70,7 +70,11 @@ const VehicleInformation = props => {
   const route = useRoute();
   const mileageInputRef = useRef(null);
   const licensePlateInputRef = useRef(null);
+  const vinInputRef = useRef(null);
   const licensePlateAndMileageImages = useRef({mileage: {uri: '', extension: ''}, numberPlate: {uri: '', extension: ''}});
+  const licensePlateWaitTimerRef = useRef(null);
+  const lastProcessedCaptureRef = useRef({plateUri: '', mileageUri: ''});
+  const isMountedRef = useRef(true);
   const user = authState?.user?.data;
   const companyId = user?.companyId;
   const hasInspectionType = user?.hasInspectionType || false;
@@ -96,6 +100,16 @@ const VehicleInformation = props => {
     const unsubscribe = navigation.addListener('blur', () => setIsInspectionTypeOpen(false));
     return unsubscribe;
   }, [navigation]);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+      if (licensePlateWaitTimerRef.current) {
+        clearTimeout(licensePlateWaitTimerRef.current);
+        licensePlateWaitTimerRef.current = null;
+      }
+    };
+  }, []);
 
   const resetRefCacheOfPlateNumber = () => {
     lastQueriedPlateRef.current = '';
@@ -392,60 +406,95 @@ const VehicleInformation = props => {
                   validateField,
                 }) => {
                   useEffect(() => {
-                    if (route?.params?.isMileageCapture) {
-                      if (mileage !== '') {
+                    const {isMileageCapture, isLicensePlateCapture, isVinCapture, capturedImageUri, capturedImageMime} = route?.params || {};
+
+                    const resetParams = params =>
+                      navigation.setParams({
+                        capturedImageUri: undefined,
+                        capturedImageMime: undefined,
+                        ...params,
+                      });
+
+                    if (isMileageCapture) {
+                      if (!capturedImageUri) return; // guard
+                      licensePlateAndMileageImages.current.mileage = {
+                        uri: capturedImageUri,
+                        extension: capturedImageMime,
+                      };
+
+                      if (lastProcessedCaptureRef.current.mileageUri !== capturedImageUri) {
+                        lastProcessedCaptureRef.current.mileageUri = capturedImageUri;
+                      }
+
+                      if (mileage) {
                         setFieldValue('mileage', mileage, false);
                         setFieldError('mileage', undefined);
                         dispatch(setMileage(''));
+                        resetParams({isMileageCapture: false});
                       } else {
+                        // Keep isMileageCapture true until mileage arrives to avoid race conditions
+                        // Optionally guide the user while waiting
                         dispatch(showToast('Unable to get mileage from image', 'error'));
+                        resetParams({isMileageCapture: false});
                         setTimeout(() => mileageInputRef.current?.focus(), 200);
                       }
-
-                      licensePlateAndMileageImages.current.mileage = {
-                        uri: route?.params?.capturedImageUri,
-                        extension: route?.params?.capturedImageMime,
-                      };
-
-                      navigation.setParams({isMileageCapture: false, capturedImageUri: undefined, capturedImageMime: undefined});
                     }
 
-                    if (route?.params?.isLicensePlateCapture) {
+                    if (isLicensePlateCapture) {
+                      if (!capturedImageUri) return; // guard
+                      licensePlateAndMileageImages.current.numberPlate = {
+                        uri: capturedImageUri,
+                        extension: capturedImageMime,
+                      };
+
+                      if (lastProcessedCaptureRef.current.plateUri !== capturedImageUri) {
+                        lastProcessedCaptureRef.current.plateUri = capturedImageUri;
+                      }
+
                       if (plateNumber) {
+                        if (licensePlateWaitTimerRef.current) {
+                          clearTimeout(licensePlateWaitTimerRef.current);
+                          licensePlateWaitTimerRef.current = null;
+                        }
                         setFieldValue('licensePlateNumber', plateNumber, false);
                         setFieldError('licensePlateNumber', undefined);
                         fetchVehicleInfo(plateNumber);
                         dispatch({type: Types.LICENSE_PLATE_NUMBER, payload: null});
-                      } else {
-                        dispatch(showToast('Unable to get license plate from image', 'error'));
-                        setTimeout(() => licensePlateInputRef.current?.focus(), 200);
+                        resetParams({isLicensePlateCapture: false});
+                      } else if (!licensePlateWaitTimerRef.current) {
+                        // After timeout, inform user that OCR did not detect a plate
+                        licensePlateWaitTimerRef.current = setTimeout(() => {
+                          if (!isMountedRef.current) return;
+                          dispatch(showToast('Unable to get license plate from image', 'error'));
+                          resetParams({isLicensePlateCapture: false});
+                          setTimeout(() => licensePlateInputRef.current?.focus(), 200);
+                          licensePlateWaitTimerRef.current = null;
+                        }, 2000);
                       }
-
-                      licensePlateAndMileageImages.current.numberPlate = {
-                        uri: route?.params?.capturedImageUri,
-                        extension: route?.params?.capturedImageMime,
-                      };
-
-                      navigation.setParams({isLicensePlateCapture: false, capturedImageUri: undefined, capturedImageMime: undefined});
                     }
 
-                    if (route?.params?.isVinCapture) {
+                    if (isVinCapture) {
                       setVinLoading(true);
-                      extractVinAI('https://chex-ai-uploads.s3.amazonaws.com/uploads/8073/xTWv5mr_VgD2iqxz9cCme')
+                      extractVinAI(capturedImageUri)
                         .then(response => {
-                          const {vin_num = null} = response?.data || {};
-                          setFieldValue('vin', vin_num || '');
-                        })
-                        .catch(error => {
-                          setFieldValue('vin', '');
-                          dispatch(showToast('Unable to get VIN from image', 'error'));
+                          if (response?.data?.status === true) {
+                            const vin_num = response?.data?.vin_num ?? '';
+                            setFieldValue('vin', vin_num);
+                          } else {
+                            setFieldValue('vin', '');
+                            dispatch(showToast('Unable to get VIN from image', 'error'));
+                            vinInputRef.current?.focus();
+                          }
                         })
                         .finally(() => {
                           setVinLoading(false);
-                          navigation.setParams({isVinCapture: undefined, capturedImageUri: undefined});
+                          navigation.setParams({
+                            isVinCapture: undefined,
+                            capturedImageUri: undefined,
+                          });
                         });
                     }
-                  }, [mileage, plateNumber, route?.params?.isMileageCapture, route?.params?.isLicensePlateCapture, route?.params?.isVinCapture]);
+                  }, [route?.params?.isMileageCapture, route?.params?.isLicensePlateCapture, route?.params?.isVinCapture, plateNumber]);
 
                   const fetchVehicleInfo = useCallback(
                     async licensePlateNumber => {
@@ -604,6 +653,7 @@ const VehicleInformation = props => {
                           />
 
                           <CustomInput
+                            ref={vinInputRef}
                             inputContainerStyle={styles.inputContainer}
                             rightIcon={vinLoading ? <ActivityIndicator size="small" color={colors.royalBlue} /> : <CameraOutlineIcon />}
                             onRightIconPress={handlePressVinCamareIcon}
@@ -617,7 +667,7 @@ const VehicleInformation = props => {
                             valueName="vin"
                             touched={touched.vin}
                             error={errors.vin}
-                            maxLength={30}
+                            maxLength={17}
                           />
 
                           {/* INSPECTION TYPE DROPDOWN */}
