@@ -25,13 +25,17 @@ const validate = (values, hasInspectionType) => {
   if (!values.licensePlateNumber.trim()) {
     errors.licensePlateNumber = 'Truck ID/License Plate is required';
   }
+
   if (!values.mileage.trim()) {
     errors.mileage = 'Mileage is required';
   } else if (isNaN(values.mileage) || Number(values.mileage) < 0) {
     errors.mileage = 'Mileage must be a positive number';
   }
+
   if (!values.vin.trim()) {
     errors.vin = 'VIN is required';
+  } else if (values?.vin?.length < 17) {
+    errors.vin = 'VIN must be 17 characters long';
   }
 
   if (values.vehicleType === VEHICLE_TYPES.TRUCK && hasInspectionType && !values.inspectionType?.trim?.()) {
@@ -526,7 +530,7 @@ const VehicleInformation = props => {
                             valueName="licensePlateNumber"
                             touched={touched.licensePlateNumber}
                             error={errors.licensePlateNumber}
-                            maxLength={10}
+                            maxLength={16}
                             pointerEvents={!licensePlateAndMileageImages?.current?.numberPlate?.uri ? 'none' : 'auto'}
                           />
                         </View>
@@ -595,7 +599,7 @@ const VehicleInformation = props => {
                             error={errors.mileage}
                             keyboardType="number-pad"
                             onRightIconPress={handlePressMileageCameraIcon}
-                            maxLength={20}
+                            maxLength={17}
                             pointerEvents={!licensePlateAndMileageImages?.current?.mileage?.uri ? 'none' : 'auto'}
                           />
 
