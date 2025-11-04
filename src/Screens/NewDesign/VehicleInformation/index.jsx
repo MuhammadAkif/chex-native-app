@@ -10,7 +10,13 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 import {CameraOutlineIcon, ChevronIcon} from '../../../Assets/Icons';
 import {Formik} from 'formik';
 import {isIOS, VEHICLE_TYPES} from '../../../Constants';
-import {createInspection, extractVinAI, getVehicleInformationAgainstLicenseId} from '../../../services/inspection';
+import {
+  ai_Mileage_Extraction,
+  createInspection,
+  extractLicensePlateAI,
+  extractVinAI,
+  getVehicleInformationAgainstLicenseId,
+} from '../../../services/inspection';
 import useDebounce from '../../../hooks/useDebounce';
 import {ROUTES} from '../../../Navigation/ROUTES';
 import {useDispatch, useSelector} from 'react-redux';
@@ -65,16 +71,13 @@ const currentDate = new Date().toISOString();
 const VehicleInformation = props => {
   const {navigation} = props;
   const authState = useSelector(state => state?.auth);
-  const {mileage, plateNumber} = useSelector(state => state?.newInspection) || {};
   const dispatch = useDispatch();
   const route = useRoute();
   const mileageInputRef = useRef(null);
   const licensePlateInputRef = useRef(null);
   const vinInputRef = useRef(null);
   const licensePlateAndMileageImages = useRef({mileage: {uri: '', extension: ''}, numberPlate: {uri: '', extension: ''}});
-  const licensePlateWaitTimerRef = useRef(null);
   const lastProcessedCaptureRef = useRef({plateUri: '', mileageUri: ''});
-  const isMountedRef = useRef(true);
   const user = authState?.user?.data;
   const companyId = user?.companyId;
   const hasInspectionType = user?.hasInspectionType || false;
@@ -85,6 +88,7 @@ const VehicleInformation = props => {
   const [errorModalDetail, setErrorModalDetail] = useState({title: '', message: '', inspectionId: ''});
   const [isLoading, setIsLoading] = useState(false);
   const [vinLoading, setVinLoading] = useState(false);
+  const [mileageLoading, setMileageLoading] = useState(false);
   const [isInspectionTypeOpen, setIsInspectionTypeOpen] = useState(false);
   const vehicleTypesScrollRef = useRef(null);
   const lastQueriedPlateRef = useRef('');
@@ -100,16 +104,6 @@ const VehicleInformation = props => {
     const unsubscribe = navigation.addListener('blur', () => setIsInspectionTypeOpen(false));
     return unsubscribe;
   }, [navigation]);
-
-  useEffect(() => {
-    return () => {
-      isMountedRef.current = false;
-      if (licensePlateWaitTimerRef.current) {
-        clearTimeout(licensePlateWaitTimerRef.current);
-        licensePlateWaitTimerRef.current = null;
-      }
-    };
-  }, []);
 
   const resetRefCacheOfPlateNumber = () => {
     lastQueriedPlateRef.current = '';
@@ -417,60 +411,70 @@ const VehicleInformation = props => {
 
                     if (isMileageCapture) {
                       if (!capturedImageUri) return; // guard
-                      licensePlateAndMileageImages.current.mileage = {
-                        uri: capturedImageUri,
-                        extension: capturedImageMime,
-                      };
+                      setMileageLoading(true);
+                      ai_Mileage_Extraction(capturedImageUri)
+                        .then(response => {
+                          const {mileage = '', status = false} = response?.data || {};
 
-                      if (lastProcessedCaptureRef.current.mileageUri !== capturedImageUri) {
-                        lastProcessedCaptureRef.current.mileageUri = capturedImageUri;
-                      }
+                          if (status === true && mileage) {
+                            setFieldValue('mileage', mileage, false);
+                            setFieldError('mileage', undefined);
+                            dispatch(setMileage(mileage));
+                            resetParams({isMileageCapture: false});
 
-                      if (mileage) {
-                        setFieldValue('mileage', mileage, false);
-                        setFieldError('mileage', undefined);
-                        dispatch(setMileage(''));
-                        resetParams({isMileageCapture: false});
-                      } else {
-                        // Keep isMileageCapture true until mileage arrives to avoid race conditions
-                        // Optionally guide the user while waiting
-                        dispatch(showToast('Unable to get mileage from image', 'error'));
-                        resetParams({isMileageCapture: false});
-                        setTimeout(() => mileageInputRef.current?.focus(), 200);
-                      }
+                            licensePlateAndMileageImages.current.mileage = {
+                              uri: capturedImageUri,
+                              extension: capturedImageMime,
+                            };
+
+                            if (lastProcessedCaptureRef.current.mileageUri !== capturedImageUri) {
+                              lastProcessedCaptureRef.current.mileageUri = capturedImageUri;
+                            }
+                          } else {
+                            dispatch(showToast('Unable to get mileage from image', 'error'));
+                            resetParams({isMileageCapture: false});
+                            dispatch(setMileage(''));
+                            setTimeout(() => mileageInputRef.current?.focus(), 200);
+                          }
+                        })
+                        .catch(error => {
+                          console.log('error', error);
+                        })
+                        .finally(() => {
+                          setMileageLoading(false);
+                        });
                     }
 
                     if (isLicensePlateCapture) {
                       if (!capturedImageUri) return; // guard
-                      licensePlateAndMileageImages.current.numberPlate = {
-                        uri: capturedImageUri,
-                        extension: capturedImageMime,
-                      };
+                      setIsFetchingVehicleInfo(true);
+                      extractLicensePlateAI(capturedImageUri)
+                        .then(response => {
+                          const {plateNumber = null, status = false} = response?.data || {};
+                          if (status === true && plateNumber) {
+                            setFieldValue('licensePlateNumber', plateNumber, false);
+                            setFieldError('licensePlateNumber', undefined);
+                            fetchVehicleInfo(plateNumber);
+                            dispatch({type: Types.LICENSE_PLATE_NUMBER, payload: plateNumber});
+                            resetParams({isLicensePlateCapture: false});
 
-                      if (lastProcessedCaptureRef.current.plateUri !== capturedImageUri) {
-                        lastProcessedCaptureRef.current.plateUri = capturedImageUri;
-                      }
+                            licensePlateAndMileageImages.current.numberPlate = {
+                              uri: capturedImageUri,
+                              extension: capturedImageMime,
+                            };
 
-                      if (plateNumber) {
-                        if (licensePlateWaitTimerRef.current) {
-                          clearTimeout(licensePlateWaitTimerRef.current);
-                          licensePlateWaitTimerRef.current = null;
-                        }
-                        setFieldValue('licensePlateNumber', plateNumber, false);
-                        setFieldError('licensePlateNumber', undefined);
-                        fetchVehicleInfo(plateNumber);
-                        dispatch({type: Types.LICENSE_PLATE_NUMBER, payload: null});
-                        resetParams({isLicensePlateCapture: false});
-                      } else if (!licensePlateWaitTimerRef.current) {
-                        // After timeout, inform user that OCR did not detect a plate
-                        licensePlateWaitTimerRef.current = setTimeout(() => {
-                          if (!isMountedRef.current) return;
+                            if (lastProcessedCaptureRef.current.plateUri !== capturedImageUri) {
+                              lastProcessedCaptureRef.current.plateUri = capturedImageUri;
+                            }
+                          }
+                        })
+                        .catch(error => {
+                          setIsFetchingVehicleInfo(false);
                           dispatch(showToast('Unable to get license plate from image', 'error'));
+                          dispatch({type: Types.LICENSE_PLATE_NUMBER, payload: null});
                           resetParams({isLicensePlateCapture: false});
                           setTimeout(() => licensePlateInputRef.current?.focus(), 200);
-                          licensePlateWaitTimerRef.current = null;
-                        }, 2000);
-                      }
+                        });
                     }
 
                     if (isVinCapture) {
@@ -494,7 +498,7 @@ const VehicleInformation = props => {
                           });
                         });
                     }
-                  }, [route?.params?.isMileageCapture, route?.params?.isLicensePlateCapture, route?.params?.isVinCapture, plateNumber]);
+                  }, [route?.params?.isMileageCapture, route?.params?.isLicensePlateCapture, route?.params?.isVinCapture]);
 
                   const fetchVehicleInfo = useCallback(
                     async licensePlateNumber => {
@@ -636,7 +640,7 @@ const VehicleInformation = props => {
                             editable={!!licensePlateAndMileageImages?.current?.mileage?.uri}
                             inputContainerStyle={styles.inputContainer}
                             placeholderTextColor={'#BDBDBD'}
-                            rightIcon={<CameraOutlineIcon />}
+                            rightIcon={mileageLoading ? <ActivityIndicator size="small" color={colors.royalBlue} /> : <CameraOutlineIcon />}
                             inputStyle={styles.input}
                             placeholder="Enter Mileage"
                             label="Mileage"

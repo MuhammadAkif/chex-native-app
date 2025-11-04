@@ -176,19 +176,16 @@ export const extractLicensePlateAI = async image_url => {
 };
 
 export const extractVinAI = async image_url => {
-  const body = {image_url};
   const headers = {
     api_token: AI_API_TOKEN,
   };
 
   try {
+    const endPoint = generateApiUrl(`vin?image_url=${image_url}`);
 
-    // return await api.post(EXTRACT_NUMBER_PLATE_WITH_AI, body, {
-    //   headers: headers,
-    // });
-
-    return await axios.post('http://ec2-34-203-143-240.compute-1.amazonaws.com:8000/vin-extraction', body)
-    
+    return await api.get(endPoint, {
+      headers: headers,
+    });
   } catch (error) {
     console.error('VIN AI Extraction error:', error.response.data);
     throw error;

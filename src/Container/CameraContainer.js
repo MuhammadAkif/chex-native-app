@@ -182,16 +182,16 @@ const CameraContainer = ({route, navigation}) => {
       body = {...body, variant: variant};
     }
     const image_url = `${S3_BUCKET_BASEURL}${key}`;
-    if (category === 'CarVerification' && type === 'licensePlate') {
-      await handleExtractNumberPlate(image_url);
-    }
-    if (category === 'CarVerification' && type === 'odometer') {
-      try {
-        dispatch(getMileage(image_url));
-      } catch (error) {
-        throw error;
-      }
-    }
+    // if (category === 'CarVerification' && type === 'licensePlate') {
+    //   await handleExtractNumberPlate(image_url);
+    // }
+    // if (category === 'CarVerification' && type === 'odometer') {
+    //   try {
+    //     dispatch(getMileage(image_url));
+    //   } catch (error) {
+    //     throw error;
+    //   }
+    // }
 
     // If returnTo is present, navigate to the target screen with the captured image
     if (route?.params?.returnTo) {
@@ -269,9 +269,9 @@ const CameraContainer = ({route, navigation}) => {
     }
   }
 
-  const handleExtractNumberPlate = async imageUrl => {
-    dispatch(setLicensePlateNumber(imageUrl));
-  };
+  // const handleExtractNumberPlate = async imageUrl => {
+  //   dispatch(setLicensePlateNumber(imageUrl));
+  // };
 
   const handleError = (inspectionDeleted = false) => {
     setIsUploadFailed(isUploadFailedInitialState);

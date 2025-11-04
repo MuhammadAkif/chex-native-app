@@ -121,7 +121,7 @@ export const setLicensePlateNumber = image_url => async dispatch => {
   try {
     const response = await extractLicensePlateAI(image_url);
     const {plateNumber = null} = response?.data || {};
-
+    console.log('plateNumber from action:', plateNumber);
     dispatch({
       type: LICENSE_PLATE_NUMBER,
       payload: plateNumber,
