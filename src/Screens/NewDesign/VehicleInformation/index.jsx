@@ -402,15 +402,24 @@ const VehicleInformation = props => {
                   useEffect(() => {
                     const {isMileageCapture, isLicensePlateCapture, isVinCapture, capturedImageUri, capturedImageMime} = route?.params || {};
 
-                    const resetParams = params =>
+                    const resetCaptureImageParams = () =>
                       navigation.setParams({
                         capturedImageUri: undefined,
                         capturedImageMime: undefined,
-                        ...params,
                       });
 
                     if (isMileageCapture) {
+                      navigation.setParams({isMileageCapture: false});
+
                       if (!capturedImageUri) return; // guard
+
+                      const mileageNotDetected = () => {
+                        dispatch(showToast('Unable to get mileage from image', 'error'));
+                        dispatch(setMileage(''));
+                        resetCaptureImageParams();
+                        setTimeout(() => mileageInputRef.current?.focus(), 200);
+                      };
+
                       setMileageLoading(true);
                       ai_Mileage_Extraction(capturedImageUri)
                         .then(response => {
@@ -420,7 +429,6 @@ const VehicleInformation = props => {
                             setFieldValue('mileage', mileage, false);
                             setFieldError('mileage', undefined);
                             dispatch(setMileage(mileage));
-                            resetParams({isMileageCapture: false});
 
                             licensePlateAndMileageImages.current.mileage = {
                               uri: capturedImageUri,
@@ -431,14 +439,11 @@ const VehicleInformation = props => {
                               lastProcessedCaptureRef.current.mileageUri = capturedImageUri;
                             }
                           } else {
-                            dispatch(showToast('Unable to get mileage from image', 'error'));
-                            resetParams({isMileageCapture: false});
-                            dispatch(setMileage(''));
-                            setTimeout(() => mileageInputRef.current?.focus(), 200);
+                            mileageNotDetected();
                           }
                         })
                         .catch(error => {
-                          console.log('error', error);
+                          mileageNotDetected();
                         })
                         .finally(() => {
                           setMileageLoading(false);
@@ -446,7 +451,18 @@ const VehicleInformation = props => {
                     }
 
                     if (isLicensePlateCapture) {
+                      navigation.setParams({isLicensePlateCapture: false});
+
                       if (!capturedImageUri) return; // guard
+
+                      const licensePlateNotDetected = () => {
+                        setIsFetchingVehicleInfo(false);
+                        dispatch(showToast('Unable to get license plate from image', 'error'));
+                        dispatch({type: Types.LICENSE_PLATE_NUMBER, payload: null});
+                        resetCaptureImageParams();
+                        setTimeout(() => licensePlateInputRef.current?.focus(), 200);
+                      };
+
                       setIsFetchingVehicleInfo(true);
                       extractLicensePlateAI(capturedImageUri)
                         .then(response => {
@@ -456,8 +472,7 @@ const VehicleInformation = props => {
                             setFieldError('licensePlateNumber', undefined);
                             fetchVehicleInfo(plateNumber);
                             dispatch({type: Types.LICENSE_PLATE_NUMBER, payload: plateNumber});
-                            resetParams({isLicensePlateCapture: false});
-
+                            resetCaptureImageParams();
                             licensePlateAndMileageImages.current.numberPlate = {
                               uri: capturedImageUri,
                               extension: capturedImageMime,
@@ -466,36 +481,45 @@ const VehicleInformation = props => {
                             if (lastProcessedCaptureRef.current.plateUri !== capturedImageUri) {
                               lastProcessedCaptureRef.current.plateUri = capturedImageUri;
                             }
+                          } else {
+                            licensePlateNotDetected();
                           }
                         })
                         .catch(error => {
+                          licensePlateNotDetected();
+                        })
+                        .finally(() => {
                           setIsFetchingVehicleInfo(false);
-                          dispatch(showToast('Unable to get license plate from image', 'error'));
-                          dispatch({type: Types.LICENSE_PLATE_NUMBER, payload: null});
-                          resetParams({isLicensePlateCapture: false});
-                          setTimeout(() => licensePlateInputRef.current?.focus(), 200);
                         });
                     }
 
                     if (isVinCapture) {
+                      navigation.setParams({isVinCapture: false});
+
+                      if (!capturedImageUri) return; // guard
+                      const vinNotDetected = () => {
+                        setFieldValue('vin', '');
+                        dispatch(showToast('Unable to get VIN from image', 'error'));
+                        resetCaptureImageParams();
+                        vinInputRef.current?.focus();
+                      };
+
                       setVinLoading(true);
                       extractVinAI(capturedImageUri)
                         .then(response => {
                           if (response?.data?.status === true) {
                             const vin_num = response?.data?.vin_num ?? '';
                             setFieldValue('vin', vin_num);
+                            resetCaptureImageParams();
                           } else {
-                            setFieldValue('vin', '');
-                            dispatch(showToast('Unable to get VIN from image', 'error'));
-                            vinInputRef.current?.focus();
+                            vinNotDetected();
                           }
+                        })
+                        .catch(error => {
+                          vinNotDetected();
                         })
                         .finally(() => {
                           setVinLoading(false);
-                          navigation.setParams({
-                            isVinCapture: undefined,
-                            capturedImageUri: undefined,
-                          });
                         });
                     }
                   }, [route?.params?.isMileageCapture, route?.params?.isLicensePlateCapture, route?.params?.isVinCapture]);
