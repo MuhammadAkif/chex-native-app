@@ -6,17 +6,12 @@ import BootSplash from 'react-native-bootsplash';
 import {useDispatch, useSelector} from 'react-redux';
 import {DiscardInspectionModal, Splash, Toast} from './src/Components';
 import AlertPopup from './src/Components/AlertPopup';
-import VehicleTypeModal from './src/Components/VehicleTypeModal';
-import {SESSION_EXPIRED, UPDATE_APP, VEHICLE_TYPES} from './src/Constants';
+import {SESSION_EXPIRED, UPDATE_APP} from './src/Constants';
 import {ROUTES} from './src/Navigation/ROUTES';
 import Navigation from './src/Navigation/index';
-import {store} from './src/Store';
-import {clearNewInspection, hideToast, setCompanyId, setSelectedVehicleKind, setVehicleTypeModalVisible, signOut} from './src/Store/Actions';
-import {hasCameraAndMicrophoneAllowed, onNewInspectionPressFail, onNewInspectionPressSuccess} from './src/Utils';
-import {createInspection} from './src/services/inspection';
-import {navigate, navigationRef, resetNavigation} from './src/services/navigationService';
-import Home from './src/Screens/NewDesign/Home';
-import {VehicleInformation} from './src/Screens';
+import {clearNewInspection, hideToast, signOut} from './src/Store/Actions';
+import {hasCameraAndMicrophoneAllowed} from './src/Utils';
+import {resetNavigation} from './src/services/navigationService';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
@@ -28,11 +23,6 @@ function App() {
   const {sessionExpired} = useSelector(state => state?.auth);
   const [displayGif, setDisplayGif] = useState(true);
   const [updateAvailable, setUpdateAvailable] = useState('');
-  const {vehicleTypeModalVisible} = useSelector((state: any) => state?.newInspection || {});
-  const [loadingState, setLoadingState] = useState({
-    isLoading: false,
-    vehicleType: '',
-  });
 
   useEffect(() => {
     (async () => {
@@ -77,36 +67,6 @@ function App() {
     resetNavigation(SIGN_IN);
   };
 
-  const handleVehicleTypeSelect = async (type: string) => {
-    const vehicleType = type.toLowerCase();
-    dispatch(setSelectedVehicleKind(vehicleType));
-
-    if (vehicleType === VEHICLE_TYPES.TRUCK) {
-      dispatch(setVehicleTypeModalVisible(false));
-      // Navigate immediately for truck, no API call
-      if (navigationRef.isReady()) {
-        navigate(ROUTES.DVIR_VEHICLE_INFO, {
-          routeName: ROUTES.INSPECTION_SELECTION,
-        });
-      }
-    } else {
-      // For van/sedan/other, call API and navigate after success
-      const state = store.getState();
-      const companyId = state?.auth?.user?.data?.companyId;
-      dispatch(setCompanyId(companyId));
-      setLoadingState({isLoading: true, vehicleType});
-      try {
-        const response = await createInspection(companyId, {vehicleType});
-        onNewInspectionPressSuccess(response, dispatch, navigate);
-      } catch (err) {
-        onNewInspectionPressFail(err, dispatch);
-      } finally {
-        dispatch(setVehicleTypeModalVisible(false));
-        setLoadingState({isLoading: false, vehicleType: ''});
-      }
-    }
-  };
-
   return displayGif ? (
     <Splash />
   ) : (
@@ -128,7 +88,6 @@ function App() {
         )}
 
         <AlertPopup visible={sessionExpired} onYesPress={onSessionExpirePress} title={title} message={message} yesButtonText={button} />
-        <VehicleTypeModal visible={vehicleTypeModalVisible} onSelect={handleVehicleTypeSelect} loadingState={loadingState} />
       </View>
     </>
   );
