@@ -414,7 +414,7 @@ const VehicleInformation = props => {
                       if (!capturedImageUri) return; // guard
 
                       const mileageNotDetected = () => {
-                        dispatch(showToast('Unable to get mileage from image', 'error'));
+                        dispatch(showToast('Reading undetected. Please input mileage manually', 'error'));
                         dispatch(setMileage(''));
                         resetCaptureImageParams();
                         setTimeout(() => mileageInputRef.current?.focus(), 200);
@@ -455,7 +455,7 @@ const VehicleInformation = props => {
 
                       const licensePlateNotDetected = () => {
                         setIsFetchingVehicleInfo(false);
-                        dispatch(showToast('Unable to get license plate from image', 'error'));
+                        dispatch(showToast('Reading undetected. Please input license plate number manually', 'error'));
                         dispatch({type: Types.LICENSE_PLATE_NUMBER, payload: null});
                         resetCaptureImageParams();
                         setTimeout(() => licensePlateInputRef.current?.focus(), 200);
@@ -496,7 +496,7 @@ const VehicleInformation = props => {
 
                       const vinNotDetected = () => {
                         setFieldValue('vin', '');
-                        dispatch(showToast('Unable to get VIN from image', 'error'));
+                        dispatch(showToast('Reading undetected. Please input VIN manually', 'error'));
                         resetCaptureImageParams();
                         setTimeout(() => vinInputRef.current?.focus(), 200);
                       };

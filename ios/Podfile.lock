@@ -61,6 +61,7 @@ PODS:
     - React-RCTText (= 0.78.0)
     - React-RCTVibration (= 0.78.0)
   - React-callinvoker (0.78.0)
+  - React-Codegen (0.1.0)
   - React-Core (0.78.0):
     - glog
     - hermes-engine
@@ -1294,6 +1295,28 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-image-resizer (3.0.11):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-keyboard-controller (1.18.5):
     - DoubleConversion
     - glog
@@ -2178,6 +2201,7 @@ DEPENDENCIES:
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - react-native-blob-util (from `../node_modules/react-native-blob-util`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
+  - "react-native-image-resizer (from `../node_modules/@bam.tech/react-native-image-resizer`)"
   - react-native-keyboard-controller (from `../node_modules/react-native-keyboard-controller`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-video (from `../node_modules/react-native-video`)
@@ -2226,6 +2250,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - libwebp
+    - React-Codegen
     - SDWebImage
     - SDWebImageWebPCoder
     - SocketRocket
@@ -2313,6 +2338,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-blob-util"
   react-native-date-picker:
     :path: "../node_modules/react-native-date-picker"
+  react-native-image-resizer:
+    :path: "../node_modules/@bam.tech/react-native-image-resizer"
   react-native-keyboard-controller:
     :path: "../node_modules/react-native-keyboard-controller"
   react-native-safe-area-context:
@@ -2418,6 +2445,7 @@ SPEC CHECKSUMS:
   RCTTypeSafety: c135dd2bf50402d87fd12884cbad5d5e64850edd
   React: b229c49ed5898dab46d60f61ed5a0bfa2ee2fadb
   React-callinvoker: 2ac508e92c8bd9cf834cc7d7787d94352e4af58f
+  React-Codegen: 4b8b4817cea7a54b83851d4c1f91f79aa73de30a
   React-Core: 13cdd1558d0b3f6d9d5a22e14d89150280e79f02
   React-CoreModules: b07a6744f48305405e67c845ebf481b6551b712a
   React-cxxreact: 1055a86c66ac35b4e80bd5fb766aed5f494dfff4
@@ -2444,6 +2472,7 @@ SPEC CHECKSUMS:
   React-microtasksnativemodule: 663bc64e3a96c5fc91081923ae7481adc1359a78
   react-native-blob-util: f34cc69fa87f54ca7a3608a61d6519fd6127688c
   react-native-date-picker: b7d4183bed3f5ddb67e295cf24b468af1dfb5ffb
+  react-native-image-resizer: 28f08fb5fb9b0b2d0bc24f57228ac2eb80b1d0ad
   react-native-keyboard-controller: c10caccbe47d55c9de9884d4bc64b7394daa3433
   react-native-safe-area-context: 673dffed28e5ed410e0ed789b22eea27dacf3fca
   react-native-video: 53a3402b77f2b6c0c572f082f623b31315bdd452

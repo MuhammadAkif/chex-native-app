@@ -11,6 +11,7 @@ import {store} from '../Store';
 import {batchUpdateVehicleImages, numberPlateSelected, sessionExpired, setCompanyId} from '../Store/Actions';
 import {setFileDetails, setVehicleTypeModalVisible} from '../Store/Actions/NewInspectionAction';
 import {checkAndCompleteUrl} from './helpers';
+import imageResizer from '@bam.tech/react-native-image-resizer';
 
 // Validation Schema
 export const validationSchema = yup.object().shape({
@@ -871,3 +872,24 @@ export function extractValidUrls(file = {}) {
   return list;
 }
 export const SKIP_NIGHT_IMAGE_LIST = ['CarVerification', 'Tires'];
+
+export async function fixImageOrientation(uri) {
+  try {
+    const result = await imageResizer.createResizedImage(
+      uri,
+      1280,
+      1280,
+      'JPEG',
+      100,
+      0, // auto-rotation handled internally
+      undefined,
+      false, // remove EXIF orientation
+      {mode: 'contain', onlyScaleDown: true}
+    );
+
+    return result.uri;
+  } catch (error) {
+    console.warn('⚠️ Error fixing image orientation:', error);
+    return uri; // fallback to original if resizing fails
+  }
+}

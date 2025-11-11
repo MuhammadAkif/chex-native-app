@@ -1,7 +1,7 @@
 import {useIsFocused} from '@react-navigation/native';
 
 import React, {useEffect, useRef, useState} from 'react';
-import {AppState, BackHandler, StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {AppState, BackHandler, Platform, StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import ImagePicker from 'react-native-image-crop-picker';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
@@ -31,6 +31,7 @@ import {clearInspectionImages, getMileage, setImageDimensions, setLicensePlateNu
 import {
   checkRelevantType,
   exteriorVariant,
+  fixImageOrientation,
   getCurrentDate,
   getSignedUrl,
   handle_Session_Expired,
@@ -286,11 +287,12 @@ const CameraContainer = ({route, navigation}) => {
     let extension = isImageFile.path.split('.').pop() || 'jpeg';
     const mime = 'image/' + extension;
     setIsModalVisible(true);
+    const normalizedPath = Platform.OS === 'ios' ? await fixImageOrientation(isImageFile.path) : isImageFile.path;
     try {
       await getSignedUrl(
         token,
         mime,
-        isImageFile.path,
+        normalizedPath,
         setProgress,
         handleResponse,
         handleError,
