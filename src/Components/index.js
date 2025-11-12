@@ -3,12 +3,14 @@ import AndroidMediaViewModal from './AndroidMediaViewModal';
 import AnnotateImage from './Annotation/AnnotateImage';
 import AnnotateImageModal from './Annotation/AnnotateImageModal';
 import BackgroundImageView from './BackgroundImageView';
+
 import ButtonFooter from './ButtonFooter';
 import CameraPreview from './Camera/CameraPreview';
 import CameraFooter from './CameraFooter';
 import CaptureImageModal from './CaptureImageModal';
 import InteriorItemsAnnotationExpandedCard from './Card/Annotation/InteriorItemsAnnotationExpandedCard';
 import CarVerificationExpandedCard from './Card/CarVerificationExpandedCard';
+import CardWrapper from './Card/CardWrapper';
 import CollapsedCard from './Card/CollapsedCard';
 import ExteriorItemsExpandedCard from './Card/ExteriorItemsExpandedCard';
 import ExteriorItemsExpandedCard_Old from './Card/ExteriorItemsExpandedCard_Old';
@@ -35,11 +37,13 @@ import FooterButtons from './FooterButtons';
 import HeaderBackButton from './HeaderBackButton';
 import HeaderBackground from './HeaderBackground';
 import HeaderTitle from './HeaderTitle';
+import IconWrapper from './IconWrapper';
 import Image from './Image';
 import InputFieldRequiredError from './InputFieldRequiredError';
 import InputModal from './InputModal/InputModal';
 import LicensePlateInput from './InputModal/LicensePlateInput';
 import MileageInput from './InputModal/MileageInput';
+import InspectionCard from './InspectionCard';
 import IntroBackGroundImageView from './IntroBackgroundImageView';
 import ImagePicker from './ItemPicker/ImagePicker';
 import ImagePickerWithFooterList from './ItemPicker/ImagePickerWithFooterList';
@@ -48,9 +52,11 @@ import ImagesPickerContainer from './ItemPicker/ImagesPickerContainer';
 import ItemPickerLabel from './ItemPicker/ItemPickerLabel';
 import VideoPicker from './ItemPicker/VideoPicker';
 import LoadingIndicator from './LoadingIndicator';
+import LogoHeader from './LogoHeader';
 import Mandatory from './Mandatory';
 import NewInspectionFooter from './NewInspectionFooter';
 import NumberPlateInUseModal from './NumberPlateInUseModal';
+import PhoneInput from './PhoneInput';
 import ConfirmVehicleDetailModal from './PopUpModals/ConfirmVehicleDetailModal';
 import DiscardInspectionModal from './PopUpModals/DiscardInspectionModal';
 import ExpiredInspectionModal from './PopUpModals/ExpiredInspectionModal';
@@ -76,9 +82,15 @@ import SignInLogo from './SignInLogo';
 import Splash from './Splash';
 import Sub_Heading from './Sub_Heading';
 import Toast from './Toast';
+import VehicleCard from './VehicleCard';
 import WarningModal from './WarningModal';
-
 export {
+  PhoneInput,
+  IconWrapper,
+  CardWrapper,
+  LogoHeader,
+  InspectionCard,
+  VehicleCard,
   AlertPopup,
   AndroidMediaViewModal,
   AnnotateImage,

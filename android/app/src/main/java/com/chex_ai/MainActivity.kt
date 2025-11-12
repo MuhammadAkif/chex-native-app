@@ -26,7 +26,12 @@ class MainActivity : ReactActivity() {
       DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    // Prevent Android from restoring Fragments
+    if (savedInstanceState != null) {
+        savedInstanceState.remove("android:support:fragments")
+    }
+
     RNBootSplash.init(this, R.style.BootTheme) // ⬅️ initialize the splash screen
-    super.onCreate(savedInstanceState) // super.onCreate(null) with react-native-screens
+    super.onCreate(null)
   }     
 }

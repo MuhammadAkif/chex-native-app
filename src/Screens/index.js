@@ -3,7 +3,6 @@ import RegisterScreen from './SignIn/RegisterScreen';
 import SignInScreen from './SignIn/SignInScreen';
 import ForgotPasswordScreen from './SignIn/ForgotPasswordScreen';
 import ResetPasswordScreen from './SignIn/ResetPasswordScreen';
-import InspectionSelectionScreen from './InspectionSelectionScreen';
 import IntroScreen from './IntroScreen';
 import NewInspectionScreen from './NewInspectionScreen';
 import CompletedInspectionScreen from './CompletedInspectionScreen';
@@ -14,8 +13,11 @@ import LicensePlateNumberSelectionScreen from './LicensePlateNumberSelectionScre
 import InspectionInProgressScreen from './InspectionInProgressScreen';
 import DVIRVehicleInfoScreen from './DVIR/DVIRVehicleInfoScreen';
 import DVIRInspectionChecklistScreen from './DVIR/DVIRInspectionChecklistScreen';
-
+import VehicleInformation from './NewDesign/VehicleInformation';
+import MyProfile from './NewDesign/MyProfile';
 export {
+  MyProfile,
+  VehicleInformation,
   DVIRVehicleInfoScreen,
   DVIRInspectionChecklistScreen,
   WelcomeScreen,
@@ -23,7 +25,6 @@ export {
   SignInScreen,
   ForgotPasswordScreen,
   ResetPasswordScreen,
-  InspectionSelectionScreen,
   IntroScreen,
   NewInspectionScreen,
   CompletedInspectionScreen,

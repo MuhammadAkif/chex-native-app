@@ -1,7 +1,7 @@
 import {useIsFocused} from '@react-navigation/native';
 
 import React, {useEffect, useRef, useState} from 'react';
-import {AppState, BackHandler, StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {AppState, BackHandler, Platform, StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import ImagePicker from 'react-native-image-crop-picker';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
@@ -26,11 +26,12 @@ import {
   VEHICLE_TYPES,
   VEHICLE_TYPES_WITH_FRAMES,
 } from '../Constants';
-import {ROUTES} from '../Navigation/ROUTES';
+import {ROUTES, TABS} from '../Navigation/ROUTES';
 import {clearInspectionImages, getMileage, setImageDimensions, setLicensePlateNumber, updateVehicleImage} from '../Store/Actions';
 import {
   checkRelevantType,
   exteriorVariant,
+  fixImageOrientation,
   getCurrentDate,
   getSignedUrl,
   handle_Session_Expired,
@@ -40,7 +41,7 @@ import {
   newInspectionUploadError,
   uploadFile,
 } from '../Utils';
-import {styleMapping, switchFrameIcon, switchOrientation} from '../Utils/helpers';
+import {navigateBackWithParams, styleMapping, switchFrameIcon, switchOrientation} from '../Utils/helpers';
 
 const {white} = colors;
 const defaultOrientation = 'portrait';
@@ -128,10 +129,14 @@ const CameraContainer = ({route, navigation}) => {
       handleRetryPress();
       return true;
     } else if (route?.params?.returnTo) {
-      navigation.popTo(ROUTES.HOME, {name: route.params.returnTo});
+      if (route?.params?.returnTo === ROUTES.DVIR_INSPECTION_CHECKLIST) navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST);
+      else navigation.popTo(ROUTES.TABS, {name: route.params.returnTo});
+      return true;
+    } else if (route?.params?.prevScreen === ROUTES.DVIR_INSPECTION_CHECKLIST && selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
+      navigation.goBack();
       return true;
     } else if (canGoBack()) {
-      navigation.popTo(ROUTES.HOME, {screen: NEW_INSPECTION});
+      navigation.popTo(NEW_INSPECTION);
       return true;
     }
     return false;
@@ -178,16 +183,16 @@ const CameraContainer = ({route, navigation}) => {
       body = {...body, variant: variant};
     }
     const image_url = `${S3_BUCKET_BASEURL}${key}`;
-    if (category === 'CarVerification' && type === 'licensePlate') {
-      await handleExtractNumberPlate(image_url);
-    }
-    if (category === 'CarVerification' && type === 'odometer') {
-      try {
-        dispatch(getMileage(image_url));
-      } catch (error) {
-        throw error;
-      }
-    }
+    // if (category === 'CarVerification' && type === 'licensePlate') {
+    //   await handleExtractNumberPlate(image_url);
+    // }
+    // if (category === 'CarVerification' && type === 'odometer') {
+    //   try {
+    //     dispatch(getMileage(image_url));
+    //   } catch (error) {
+    //     throw error;
+    //   }
+    // }
 
     // If returnTo is present, navigate to the target screen with the captured image
     if (route?.params?.returnTo) {
@@ -199,7 +204,13 @@ const CameraContainer = ({route, navigation}) => {
         ...route?.params?.returnToParams,
       };
 
-      return navigation.popTo(ROUTES.HOME, {screen: targetScreen, params: navParams});
+      if (targetScreen == ROUTES.VEHICLE_INFORMATION) {
+        navigation.popTo(ROUTES.TABS, {screen: TABS.INSPECTION, params: {screen: ROUTES.VEHICLE_INFORMATION, params: navParams}});
+      } else if (targetScreen == ROUTES.DVIR_INSPECTION_CHECKLIST) {
+        navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST, navParams);
+      }
+
+      return;
     }
 
     try {
@@ -231,6 +242,7 @@ const CameraContainer = ({route, navigation}) => {
       setIsUploadFailed(body);
     }
   }
+
   function uploadImageToStore(imageID, image_url) {
     const isLicensePlate = category === 'CarVerification' && type === 'licensePlate';
     const isOdometer = category === 'CarVerification' && type === 'odometer';
@@ -252,12 +264,16 @@ const CameraContainer = ({route, navigation}) => {
       is_Exterior: haveType,
     };
 
-    navigation.popTo(ROUTES.HOME, {screen: NEW_INSPECTION, params});
+    if (route?.params?.prevScreen === ROUTES.DVIR_INSPECTION_CHECKLIST && selectedVehicleKind === VEHICLE_TYPES.TRUCK) {
+      navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST, {afterFileUploadImageUrl: image_url, fileId: imageID, ...afterFileUploadNavigationParams});
+    } else {
+      navigation.popTo(NEW_INSPECTION, params);
+    }
   }
 
-  const handleExtractNumberPlate = async imageUrl => {
-    dispatch(setLicensePlateNumber(imageUrl));
-  };
+  // const handleExtractNumberPlate = async imageUrl => {
+  //   dispatch(setLicensePlateNumber(imageUrl));
+  // };
 
   const handleError = (inspectionDeleted = false) => {
     setIsUploadFailed(isUploadFailedInitialState);
@@ -272,11 +288,12 @@ const CameraContainer = ({route, navigation}) => {
     let extension = isImageFile.path.split('.').pop() || 'jpeg';
     const mime = 'image/' + extension;
     setIsModalVisible(true);
+    const normalizedPath = Platform.OS === 'ios' ? await fixImageOrientation(isImageFile.path) : isImageFile.path;
     try {
       await getSignedUrl(
         token,
         mime,
-        isImageFile.path,
+        normalizedPath,
         setProgress,
         handleResponse,
         handleError,
@@ -286,7 +303,7 @@ const CameraContainer = ({route, navigation}) => {
         variant || 0,
         'app',
         data?.companyId,
-        category,
+        category
       );
     } catch (error) {
       console.log('handleNextPress error:', error);
@@ -339,7 +356,7 @@ const CameraContainer = ({route, navigation}) => {
           isLoading={true}
           isVideo={isVideo}
           instructionalText={instructionalText}
-          source={source}
+          source={source ? source : {uri: isImageURL}}
           title={title}
           progress={progress}
           handleNavigationBackPress={handleNavigationBackPress}

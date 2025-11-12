@@ -6,11 +6,7 @@ import {modalStyle} from '../../Assets/Styles';
 const {container, modalContainer} = modalStyle;
 
 const ModalContainer = ({visible, children, style, onPress}) => (
-  <Modal
-    animationType="slide"
-    transparent={true}
-    visible={visible}
-    style={style}>
+  <Modal animationType="slide" statusBarTranslucent transparent={true} visible={visible} style={style}>
     <TouchableOpacity style={container} activeOpacity={1} onPress={onPress}>
       <View style={modalContainer}>{children}</View>
     </TouchableOpacity>

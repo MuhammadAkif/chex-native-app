@@ -15,6 +15,7 @@ export const drawerScreenOptions = {
   drawerStatusBarAnimation: 'slide',
   swipeEdgeWidth: 150,
   drawerStyle: {width: '70%'},
+  headerShown: false,
 };
 
 export const headerOptions = {

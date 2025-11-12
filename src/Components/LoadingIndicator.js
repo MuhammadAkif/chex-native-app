@@ -1,29 +1,39 @@
 import React from 'react';
-import {View, Modal, ActivityIndicator, StyleSheet, StatusBar} from 'react-native';
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
-
+import {View, Modal, ActivityIndicator, StyleSheet} from 'react-native';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {colors} from '../Assets/Styles';
 
 const {white, cobaltBlueLight} = colors;
 
-const LoadingIndicator = ({isLoading}) => (
-  <Modal animationType="slide" transparent={true} statusBarTranslucent visible={isLoading} style={styles.container}>
-    <View style={styles.centeredView}>
-      <ActivityIndicator size={'large'} color={white} />
+const LoadingIndicator = ({isLoading}) => {
+  if (!isLoading) return null;
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.loaderBox}>
+        <ActivityIndicator size="large" color={white} />
+      </View>
     </View>
-    <StatusBar backgroundColor={cobaltBlueLight} barStyle="light-content" translucent={true} />
-  </Modal>
-);
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
+    position: 'absolute',
     flex: 1,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
+    width: wp(100),
+    height: hp(100),
+    zIndex: 100,
     alignItems: 'center',
-    backgroundColor: cobaltBlueLight,
-    paddingTop: hp('7%'),
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 27, 81, 0.5)',
+  },
+
+  loaderBox: {
+    padding: hp('2%'),
+    borderRadius: 10,
+    // optional background if you want a card-like loader
+    // backgroundColor: 'rgba(0,0,0,0.5)',
   },
 });
 

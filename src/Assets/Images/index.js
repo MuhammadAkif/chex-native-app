@@ -19,6 +19,11 @@ export const IMAGES = {
   intro_Background: require('./IntroVehicle.png'),
   expiry_Inspection: require('./ExpiryInspection.png'),
   drawer: require('./DrawerImage.png'),
+  VanOutline: require('./VanOutline.png'),
+  Van: require('./Van.png'),
+  Sedan: require('./Sedan.png'),
+  Truck: require('./Truck.png'),
+  other_vehicle: require('./Other_Vehicle.png'),
   // FRAMES
   truckFront: require('./Frames/TruckFront.png'),
   truckLeft: require('./Frames/TruckLeft.png'),
@@ -42,6 +47,18 @@ export const IMAGES = {
   truck_exterior_rear_right: require('./InfoModal/Truck/Exterior_Rear_Right.png'),
   truck_exterior_rear_back: require('./InfoModal/Truck/Exterior_Rear_Back.png'),
   truck_interior_back: require('./InfoModal/Truck/Interior_Back.png'),
+  truck_exterior_front_right: require('./InfoModal/Truck/Exterior_Front-Right.png'),
+  truck_exterior_front_Left: require('./InfoModal/Truck/Exterior_Front-Left.png'),
+
+  // SEDAN
+  sedan_exterior_front: require('./InfoModal/Sedan/Exterior_Front.jpg'),
+  sedan_exterior_front_Left: require('./InfoModal/Sedan/Exterior_Front_Left.jpg'),
+  sedan_exterior_front_Right: require('./InfoModal/Sedan/Exterior_Front_Right.jpg'),
+  sedan_exterior_right: require('./InfoModal/Sedan/Exterior_Right.jpg'),
+  sedan_exterior_left: require('./InfoModal/Sedan/Exterior_Left.jpg'),
+  sedan_exterior_rear_left: require('./InfoModal/Sedan/Exterior_Rear_Left.jpg'),
+  sedan_exterior_rear_right: require('./InfoModal/Sedan/Exterior_Rear_Right.jpg'),
+  sedan_exterior_rear: require('./InfoModal/Sedan/Exterior_Back.jpg'),
 };
 
 const portraitImages = {

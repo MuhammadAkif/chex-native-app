@@ -2,7 +2,7 @@ import React from 'react';
 import {View, StyleSheet, FlatList, Platform, Text, ScrollView} from 'react-native';
 
 import {colors, NewInspectionStyles} from '../Assets/Styles';
-import {AndroidMediaViewModal, DisplayMediaModal, RenderInspectionDetail} from '../Components';
+import {AndroidMediaViewModal, DisplayMediaModal, LogoHeader, RenderInspectionDetail} from '../Components';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {INSPECTION_STATUS} from '../Utils/helpers';
 
@@ -28,6 +28,8 @@ const InspectionDetailScreen = ({
   isPassed,
 }) => (
   <View style={container}>
+    <LogoHeader />
+
     {isModalVisible && (
       <ActiveMediaViewModal
         handleVisible={handleDisplayMediaCrossPress}

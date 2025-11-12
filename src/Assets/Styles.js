@@ -32,6 +32,8 @@ export const colors = {
   silverGray: '#F3F3F3',
   lightGray: '#FAFAFA',
   icyBlue: '#EFFBF7',
+  oceanBlue: '#0C79FE',
+  slateGray: '#657381',
 };
 
 export const buttonTextStyle = {
@@ -40,7 +42,7 @@ export const buttonTextStyle = {
   fontWeight: 'bold',
 };
 export const circleBorderRadius = Math.round(height + width) / 2;
-export const NavigationDrawerBackgroundColor = colors.cobaltBlueLight;
+export const NavigationDrawerBackgroundColor = colors.royalBlue;
 export const dot = {
   height: 5,
   width: 5,
@@ -152,7 +154,7 @@ export const NewInspectionStyles = StyleSheet.create({
   },
   bodyContainer: {
     flex: 5,
-    marginTop: '3%',
+    marginTop: '5%',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: colors.white,

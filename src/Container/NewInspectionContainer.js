@@ -48,9 +48,11 @@ import {
   isObjectEmpty,
   LicensePlateDetails,
 } from '../Utils';
+import {useIsFocused, usePreventRemove} from '@react-navigation/native';
+import AppText from '../Components/text';
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
-  isAllCarVerification: false,
+  isAllCarVerification: true,
   isAllInterior: false,
   isAllExterior: false,
   isAllTires: false,
@@ -109,6 +111,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     imageDimensions,
   } = useSelector(state => state.newInspection) || {};
   const {user} = useSelector(state => state?.auth) || {};
+  const isScreenFocused = useIsFocused();
   const {companyId} = user?.data || {};
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
@@ -148,8 +151,8 @@ const NewInspectionContainer = ({route, navigation}) => {
   }, []);
 
   useEffect(() => {
-    if (route.params?.routeName === INSPECTION_IN_PROGRESS && checkTireStatus) {
-      vehicleTireStatusToRender(selectedInspectionID).then(() => setCheckTireStatus(false));
+    if ((route.params?.routeName === INSPECTION_IN_PROGRESS || route?.params?.routeName === ROUTES.VEHICLE_INFORMATION) && checkTireStatus) {
+      vehicleTireStatusToRender(selectedInspectionID);
     }
 
     handleIsAllVehicleParts();
@@ -170,7 +173,7 @@ const NewInspectionContainer = ({route, navigation}) => {
         setIsExterior(is_Exterior || false);
       }
     }
-  }, [route]);
+  }, [route?.params]);
 
   useEffect(() => {
     handleExteriorLeft();
@@ -201,6 +204,22 @@ const NewInspectionContainer = ({route, navigation}) => {
   useEffect(() => {
     !isLicensePlateUploaded && setSelectedOption(selectedOptionInitialState);
   }, [isLicensePlateUploaded]);
+
+  useEffect(() => {
+    if (route?.params?.isInProgress && isScreenFocused && selectedInspectionID) {
+      setIsLoading(true);
+      dispatch(file_Details(selectedInspectionID)).then(onInProgressInspectionSuccess).catch(onInProgressInspectionFail);
+    }
+  }, [route?.params?.isInProgress, selectedInspectionID, isScreenFocused]);
+
+  // // Cleanup ONLY on screen unmount
+  usePreventRemove(true, ({data}) => {
+    console.log('Inspection Redux CleanUp!');
+    dispatch(clearNewInspection());
+    dispatch(setRequired());
+
+    navigation.dispatch(data.action);
+  });
 
   const shouldAnnotate = vehicle_Type === 'new' && isExterior;
   function handle_Hardware_Back_Press() {
@@ -295,7 +314,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     if (vehicle_Type === 'new') {
       updateRequiredFields(hasInteriorAndRoofTopCompany(companyId) ? interior__ : {}, exterior__);
     }
-    const allCarVerification = !isObjectEmpty(carVerificiationItems);
+    // const allCarVerification = !isObjectEmpty(carVerificiationItems);
+    const allCarVerification = true;
     const allInterior = hasInteriorAndRoofTopCompany(companyId) || !isObjectEmpty(interior__);
     const allExterior = !isObjectEmpty(exterior__);
     const allTires = !isObjectEmpty(tires);
@@ -418,7 +438,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   function onGetLocationSuccess() {
     dispatch(clearNewInspection());
     resetAllStates();
-    navigate(COMPLETED_INSPECTION);
+    navigation.replace(COMPLETED_INSPECTION);
   }
   function onGetLocationFail(error) {
     const {statusCode = null} = error?.response?.data;
@@ -536,12 +556,12 @@ const NewInspectionContainer = ({route, navigation}) => {
     dispatch(file_Details(inspectionID)).then(onInProgressInspectionSuccess).catch(onInProgressInspectionFail);
   };
   function onInProgressInspectionSuccess(res) {
-    dispatch(setSelectedVehicleKind(res?.data?.vehicleType));
-    vehicleTireStatusToRender(inspectionID).then();
+    vehicleTireStatusToRender(selectedInspectionID).then();
   }
   function onInProgressInspectionFail(error) {
     const {statusCode = null} = error?.response?.data || {};
     setLoadingIndicator(false);
+    setIsLoading(false);
     if (statusCode === 401) {
       handle_Session_Expired(statusCode, dispatch);
     }
@@ -549,12 +569,14 @@ const NewInspectionContainer = ({route, navigation}) => {
   }
   //Tire Rendering logic start here
   async function vehicleTireStatusToRender(inspection_ID) {
-    setLoadingIndicator(true);
+    setIsLoading(true);
 
-    await vehicleTireStatus(inspection_ID)
+    vehicleTireStatus(inspection_ID)
       .then(onVehicleTireStatusToRenderSuccess)
       .catch(onVehicleTireStatusToRenderFail)
-      .finally(() => setLoadingIndicator(false));
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
   function onVehicleTireStatusToRenderSuccess(res) {
     const {

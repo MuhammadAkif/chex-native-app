@@ -1,6 +1,6 @@
 import {Types} from '../Types';
 
-const {SIGN_IN, SIGN_OUT, SESSION_EXPIRED} = Types;
+const {SIGN_IN, SIGN_OUT, SESSION_EXPIRED, UPDATE_USER} = Types;
 const initialState = {
   user: {token: null},
   sessionExpired: false,
@@ -15,6 +15,11 @@ const authReducer = (state = initialState, action) => {
         ...state,
         user: payload,
         sessionExpired: false,
+      };
+    case UPDATE_USER:
+      return {
+        ...state,
+        user: payload,
       };
     case SIGN_OUT:
       return initialState;

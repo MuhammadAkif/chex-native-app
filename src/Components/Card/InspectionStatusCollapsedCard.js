@@ -1,15 +1,6 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {View, Text, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {circleBorderRadius, colors, ShadowEffect} from '../../Assets/Styles';
 import {DownArrow, UpArrow} from '../../Assets/Icons';
@@ -22,15 +13,7 @@ const IS_IN_REVIEW = {
   'Ready For Review': true,
   Reviewed: false,
 };
-const {
-  orangePeel,
-  skyBlue,
-  deepGreen,
-  lightSteelBlue,
-  white,
-  royalBlue,
-  black,
-} = colors;
+const {orangePeel, skyBlue, deepGreen, lightSteelBlue, white, royalBlue, black} = colors;
 const STATUS_BACKGROUND_COLOR = {
   'Ready For Review': orangePeel,
   'In Review': skyBlue,
@@ -45,24 +28,13 @@ const ActiveColor = {
   false: lightSteelBlue,
 };
 
-const InspectionStatusCollapsedCard = ({
-  textOne,
-  textTwo,
-  onPress,
-  isActive,
-  labelOne,
-  labelTwo,
-  isReviewed,
-}) => {
+const InspectionStatusCollapsedCard = ({textOne, textTwo, onPress, isActive, labelOne, labelTwo, isReviewed}) => {
   const ArrowComponent = Arrow[isActive];
   const isNotInPreview = !IS_IN_REVIEW[isReviewed];
   const iconHeight = hp('4%');
   const iconWidth = wp('4%');
   return (
-    <TouchableOpacity
-      style={styles.collapsedCardContainer}
-      disabled={IS_IN_REVIEW[isReviewed]}
-      onPress={onPress}>
+    <TouchableOpacity style={styles.collapsedCardContainer} disabled={IS_IN_REVIEW[isReviewed]} onPress={onPress}>
       <View
         style={[
           styles.statusContainer,
@@ -91,13 +63,7 @@ const InspectionStatusCollapsedCard = ({
               borderWidth: isNotInPreview ? 3 : 0,
             },
           ]}>
-          {isNotInPreview && (
-            <ArrowComponent
-              height={iconHeight}
-              width={iconWidth}
-              color={ActiveColor[isActive]}
-            />
-          )}
+          {isNotInPreview && <ArrowComponent height={iconHeight} width={iconWidth} color={ActiveColor[isActive]} />}
         </View>
       </View>
     </TouchableOpacity>
@@ -106,7 +72,7 @@ const InspectionStatusCollapsedCard = ({
 
 const styles = StyleSheet.create({
   collapsedCardContainer: {
-    height: hp('10%'),
+    height: hp('12%'),
     width: wp('90%'),
     justifyContent: 'center',
     borderRadius: 5,
@@ -120,6 +86,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-evenly',
     paddingVertical: '2%',
+    marginTop: '2%',
   },
   titleText: {
     fontSize: hp('2%'),

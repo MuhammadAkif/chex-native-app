@@ -21,7 +21,16 @@ import CommentBorderedIcon from '../../Assets/Icons/CommentBorderedIcon';
 import CrossBlue from '../../Assets/Icons/CrossBlue';
 import {IMAGES} from '../../Assets/Images';
 import {colors, NewInspectionStyles} from '../../Assets/Styles';
-import {AndroidMediaViewModal, CaptureImageModal, DisplayMediaModal, LoadingIndicator, PrimaryGradientButton, VideoPicker} from '../../Components';
+import {
+  AndroidMediaViewModal,
+  CaptureImageModal,
+  DisplayMediaModal,
+  FooterButtons,
+  LoadingIndicator,
+  LogoHeader,
+  PrimaryGradientButton,
+  VideoPicker,
+} from '../../Components';
 import AppText from '../../Components/text';
 
 const {container, bodyContainer, headerContainer, headerTitleText} = NewInspectionStyles;
@@ -124,7 +133,7 @@ const ChecklistItem = React.memo(
         ) : null}
       </View>
     );
-  },
+  }
 );
 
 // Move CommentModal outside the main component
@@ -164,9 +173,13 @@ const CommentModal = React.memo(({visible, onClose, onSave, initialValue = '', m
                 blurOnSubmit={true}
                 placeholderTextColor={colors.steelGray}
               />
-              <TouchableOpacity style={styles.okButton} onPress={handleSave} activeOpacity={0.8}>
-                <AppText style={styles.okButtonText}>OK</AppText>
-              </TouchableOpacity>
+              <FooterButtons
+                containerStyle={{width: '100%', gap: 15, paddingHorizontal: 0}}
+                disabledConfirm={initialValue === text}
+                onSubmit={handleSave}
+                onCancel={handleClose}
+                isLoading={false}
+              />
             </View>
           </TouchableWithoutFeedback>
         </ScrollView>
@@ -464,11 +477,12 @@ const DVIRInspectionChecklistScreen = ({
 
   return (
     <View style={container}>
+      <LogoHeader />
+      <LoadingIndicator isLoading={isLoading} />
       <View style={headerContainer}>
         <AppText style={headerTitleText}>Please complete inspection items within each category below</AppText>
       </View>
       <View style={bodyContainer}>
-        <LoadingIndicator isLoading={isLoading} />
         <SectionList
           sections={sections}
           keyExtractor={(_, index) => `${index}`}

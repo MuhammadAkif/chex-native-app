@@ -54,7 +54,7 @@ const CaptureImageModal = ({
       imageHeight: imageHeight[isCarVerification],
       instructionsContainerTop: instructionsContainerTop[isFullScreen],
     }),
-    [instructionalSubHeadingText, isExterior, isFullScreen, isCarVerification],
+    [instructionalSubHeadingText, isExterior, isFullScreen, isCarVerification]
   );
 
   const normalizedProgressValue = Math.min(Math.max(progress / 100, 0), 1); // clamp
@@ -103,7 +103,7 @@ const CaptureImageModal = ({
               )}
             </>
           ) : (
-            <FastImage source={source} priority={'normal'} resizeMode={'stretch'} style={[styles.image, {height: calculatedStyles.imageHeight}]} />
+            <FastImage source={source} priority={'normal'} resizeMode={'cover'} style={[styles.image, {height: calculatedStyles.imageHeight}]} />
           )}
           <View style={styles.instructionsAndSubHeadingContainer}>
             <View style={[styles.instructionsContainer, {top: calculatedStyles.instructionsContainerTop}]}>

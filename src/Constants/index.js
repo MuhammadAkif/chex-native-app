@@ -1,3 +1,4 @@
+import {Platform} from 'react-native';
 import {IMAGES} from '../Assets/Images';
 
 // Vehicle Types Constants
@@ -49,13 +50,18 @@ export const API_ENDPOINTS = {
   UPLOAD_URL: generateApiUrl('file/upload'),
   CREATE_INSPECTION_URL: generateApiUrl('create/inspection'),
   FETCH_IN_PROGRESS_URL: generateApiUrl('status/vehicle'),
+  VEHICLE_INFO_AGAINSET_LICENSE_PLATE: generateApiUrl('inspections/vehicle-info'),
+  REGISTERED_VEHICLES: generateApiUrl('inspections/user-vehicles'),
+  RECENT_INSPECTION: generateApiUrl('inspections/recent'),
   FORGET_PASSWORD_URL: generateApiUrl('auth/reset/email'),
   RESET_PASSWORD_URL: generateApiUrl('auth/reset/password'),
   INSPECTION_TIRE_STATUS_URL: generateApiUrl('display/tire'),
+  UPDATE_MY_PROFILE: generateApiUrl('user'),
   REMOVE_ALL_TIRES_URL: generateApiUrl('delete/file'),
   ANNOTATION_URL: generateApiUrl('file/coordinate'),
   LOCATION_URL: generateApiUrl('inspection/location'),
   SUBMIT_INSPECTION: generateApiUrl('dsp/app/producer'),
+  GET_USER_INSPECTION_STATS: generateApiUrl('user/stats'),
 };
 // Api Endpoints ends here
 export const Platforms = {
@@ -204,6 +210,7 @@ export const STATUSES = {
   REVIEWED: 'Reviewed',
   READY_FOR_REVIEW: 'Ready For Review',
   IN_REVIEW: 'In Review',
+  IN_PROGRESS: 'In Progress',
 };
 export const PHYSICAL_DEVICES = ['wide-angle-camera', 'ultra-wide-angle-camera', 'telephoto-camera'];
 export const IS_BACK_CAMERA = {
@@ -296,3 +303,18 @@ export const hasInteriorAndRoofTopCompany = companyId => {
   if (NoInteriorAndRoofTopCompanyIds.includes(companyId)) return true;
   return false;
 };
+
+export const VEHICLE_IMAGES = {
+  [VEHICLE_TYPES.VAN]: IMAGES.Van,
+  [VEHICLE_TYPES.TRUCK]: IMAGES.Truck,
+  [VEHICLE_TYPES.SEDAN]: IMAGES.Sedan,
+  [VEHICLE_TYPES.OTHER]: IMAGES.other_vehicle,
+};
+
+export const INSPECTION_RESULTS = {
+  pending: 'Pending',
+  pass: 'Passed',
+  fail: 'Failed',
+};
+
+export const isIOS = Platform.OS == Platforms.IOS;

@@ -37,7 +37,7 @@ const InspectionInProgressContainer = ({navigation}) => {
       setIsLoading(true);
       fetchInProgressInspections().then();
       return () => resetAllStates();
-    }, []),
+    }, [])
   );
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
@@ -74,16 +74,22 @@ const InspectionInProgressContainer = ({navigation}) => {
       });
   };
   function onContinuePressSuccess(res, inspectionId) {
-    const {hasAdded = 'existing', vehicleType: vehicleKind} = res?.data || {};
+    const {hasAdded = 'existing', vehicleType: vehicleKind, inspection} = res?.data || {};
     const vehicleType = hasAdded || 'existing';
 
     dispatch(setVehicleType(vehicleType));
     dispatch(setSelectedVehicleKind(vehicleKind));
     resetAllStates();
 
-    navigate(NEW_INSPECTION, {
-      routeName: INSPECTION_IN_PROGRESS,
-    });
+    if (vehicleKind == VEHICLE_TYPES.TRUCK && inspection?.hasCheckList) {
+      navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {
+        routeName: ROUTES.DVIR_INSPECTION_CHECKLIST,
+      });
+    } else {
+      navigate(NEW_INSPECTION, {
+        routeName: INSPECTION_IN_PROGRESS,
+      });
+    }
   }
   function onContinuePressFail(error) {
     const {statusCode = null} = error?.response?.data || {};

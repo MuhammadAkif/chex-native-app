@@ -20,7 +20,7 @@ const PrimaryGradientButton = ({
   const borderRadius = flattenedStyle?.borderRadius ?? styles.buttonContainer.borderRadius;
 
   return (
-    <TouchableOpacity onPress={onPress} disabled={disabled || buttonDisabled} activeOpacity={0.8}>
+    <TouchableOpacity onPress={onPress} disabled={disabled || buttonDisabled} style={{opacity: buttonDisabled ? 0.6 : 1}} activeOpacity={0.8}>
       <View style={[styles.buttonContainer, buttonStyle]}>
         {/* SVG gradient background */}
         <Svg style={StyleSheet.absoluteFill} preserveAspectRatio="none">

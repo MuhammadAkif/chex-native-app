@@ -8,10 +8,9 @@ import {Home, Info, Logout} from '../Assets/Icons';
 import {IMAGES} from '../Assets/Images';
 import {colors} from '../Assets/Styles';
 import {DRAWER, PROJECT_NAME} from '../Constants';
-import {ROUTES} from '../Navigation/ROUTES';
+import {ROUTES, STACKS} from '../Navigation/ROUTES';
 import {clearNewInspection, hideToast, setRequired, signOut} from '../Store/Actions';
 import {DrawerItemText, SignInLogo} from './index';
-
 const {SIGN_IN, INSPECTION_SELECTION, INTRO, NEW_INSPECTION} = ROUTES;
 const {cobaltBlue, black, red} = colors;
 
@@ -53,7 +52,7 @@ const CustomDrawerContent = props => {
     // setActiveScreen(activeScreen);
     toggleDrawer();
     if (active_Screen === DRAWER.LOGOUT) {
-      replace('AuthStack');
+      replace(STACKS.AUTH_STACK);
       setTimeout(() => {
         dispatch(signOut());
       }, 100);

@@ -1,7 +1,8 @@
 import React from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {DiscardInspectionModal, PrimaryStartInspectionButton, RenderInspectionInProgress} from '../Components';
+
+import {DiscardInspectionModal, LogoHeader, PrimaryStartInspectionButton, RenderInspectionInProgress} from '../Components';
 import {colors, NewInspectionStyles, ShadowEffect} from '../Assets/Styles';
 import {ROUTES} from '../Navigation/ROUTES';
 import {handleHomePress} from '../Utils';
@@ -27,6 +28,7 @@ const InspectionInProgressScreen = ({
     {isDiscardInspectionModalVisible && (
       <DiscardInspectionModal onYesPress={onYesPress} onNoPress={onNoPress} description={'Are You Sure Want To Discard Your Inspection?'} />
     )}
+    <LogoHeader showRight={false} />
     <View style={bodyContainer}>
       <View style={styles.bodyHeaderContainer}>
         <Text style={styles.bodyHeaderTitleText}>Inspections in Progress</Text>

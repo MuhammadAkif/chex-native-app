@@ -3,7 +3,6 @@ import RegisterContainer from './SignIn/RegisterContainer';
 import SignInContainer from './SignIn/SignInContainer';
 import ForgotPasswordContainer from './SignIn/ForgotPasswordContainer';
 import ResetPasswordContainer from './SignIn/ResetPasswordContainer';
-import InspectionSelectionContainer from './InspectionSelectionContainer';
 import IntroContainer from './IntroContainer';
 import NewInspectionContainer from './NewInspectionContainer';
 import InspectionReviewedContainer from './InspectionReviewedContainer';
@@ -24,7 +23,6 @@ export {
   SignInContainer,
   ForgotPasswordContainer,
   ResetPasswordContainer,
-  InspectionSelectionContainer,
   IntroContainer,
   NewInspectionContainer,
   InspectionReviewedContainer,

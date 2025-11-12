@@ -8,10 +8,8 @@ import {useBoolean} from '../hooks';
 import {useDispatch} from 'react-redux';
 import {clearNewInspection, hideToast, setRequired} from '../Store/Actions';
 
-const {INSPECTION_SELECTION} = ROUTES;
-
 const CompletedInspectionContainer = ({navigation}) => {
-  const {canGoBack, navigate} = navigation;
+  const {canGoBack} = navigation;
   const {value: boxVisible, setTrue, setFalse, reset, toggle} = useBoolean(false);
   const dispatch = useDispatch();
 
@@ -23,21 +21,24 @@ const CompletedInspectionContainer = ({navigation}) => {
     return resetAllStates;
   }, []);
 
+  const resetNavigationToHome = () => navigation.reset({index: 0, routes: [{name: ROUTES.TABS}]});
+
   const handleHomePress = () => {
     dispatch(clearNewInspection());
     dispatch(setRequired());
     dispatch(hideToast());
 
-    navigation.navigate(ROUTES.HOME, {name: INSPECTION_SELECTION});
+    resetNavigationToHome();
   };
 
   function handle_Hardware_Back_Press() {
     if (canGoBack()) {
-      navigation.navigate(ROUTES.HOME, {name: INSPECTION_SELECTION});
       // CLEAR INSPECTION STATES OF REDUX
       dispatch(clearNewInspection());
       dispatch(setRequired());
       dispatch(hideToast());
+
+      resetNavigationToHome();
 
       return true;
     }

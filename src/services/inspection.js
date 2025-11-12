@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {AI_API_TOKEN, API_ENDPOINTS, EXTRACT_NUMBER_PLATE_WITH_AI, generateApiUrl, MILEAGE_EXTRACTION, nightImageCheckAI} from '../Constants';
 import {generateRandomString} from '../Utils';
 import api from './api';
@@ -13,19 +14,45 @@ const {
   UPLOAD_URL,
   SUBMIT_INSPECTION,
   EXTRACT_VIN_WITH_AI,
+  VEHICLE_INFO_AGAINSET_LICENSE_PLATE,
+  RECENT_INSPECTION,
+  REGISTERED_VEHICLES,
+  GET_USER_INSPECTION_STATS,
 } = API_ENDPOINTS;
 
 export const createInspection = async (companyId, data) => {
-  const body = {
-    licensePlateNumber: generateRandomString(),
-    companyId,
-    ...data,
-  };
-
+  const body = {companyId, ...data};
   try {
     return await api.post(CREATE_INSPECTION_URL, body);
   } catch (error) {
     console.error('Create inspection error:', error.response.data);
+    throw error;
+  }
+};
+
+export const getVehicleInformationAgainstLicenseId = async licensePlateNumber => {
+  try {
+    return await api.post(VEHICLE_INFO_AGAINSET_LICENSE_PLATE, {licensePlateNumber});
+  } catch (error) {
+    console.error('getVehicleInformationAgainstLicenseId error:', error.response.data);
+    throw error;
+  }
+};
+
+export const getRecentInspections = async () => {
+  try {
+    return await api.get(RECENT_INSPECTION);
+  } catch (error) {
+    console.error('getRecentInspections error:', error.response.data);
+    throw error;
+  }
+};
+
+export const getRegisteredVehicles = async () => {
+  try {
+    return await api.get(REGISTERED_VEHICLES);
+  } catch (error) {
+    console.error('getRegisteredVehicles error:', error.response.data);
     throw error;
   }
 };
@@ -47,6 +74,15 @@ export const getInspectionDetails = async inspectionId => {
     return await api.get(endPoint);
   } catch (error) {
     console.error('Fetching inspection details error:', error);
+    throw error;
+  }
+};
+
+export const getUserInspectionStats = async () => {
+  try {
+    return await api.get(GET_USER_INSPECTION_STATS);
+  } catch (error) {
+    console.error('Fetching user inspection stats error:', error.response.data);
     throw error;
   }
 };
@@ -140,13 +176,14 @@ export const extractLicensePlateAI = async image_url => {
 };
 
 export const extractVinAI = async image_url => {
-  const body = {image_url};
   const headers = {
     api_token: AI_API_TOKEN,
   };
 
   try {
-    return await api.post(EXTRACT_NUMBER_PLATE_WITH_AI, body, {
+    const endPoint = generateApiUrl(`vin?image_url=${image_url}`);
+
+    return await api.get(endPoint, {
       headers: headers,
     });
   } catch (error) {

@@ -1,7 +1,4 @@
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {isNotEmpty} from './index';
 import {Landscape, Portrait} from '../Assets/Icons';
 import dayjs from 'dayjs';
@@ -122,11 +119,7 @@ const vehichle_Categories = {
 };
 
 export function checkAndCompleteUrl(url, paramsToCheck = []) {
-  const domainsToCheck = [
-    'chex-dsp-files.s3.amazonaws.com/',
-    'chex-dsp.s3.amazonaws.com',
-    'chex-ai-uploads.s3.amazonaws.com',
-  ];
+  const domainsToCheck = ['chex-dsp-files.s3.amazonaws.com/', 'chex-dsp.s3.amazonaws.com', 'chex-ai-uploads.s3.amazonaws.com'];
   const defaultDomains = {
     dsp: 'https://chex-dsp.s3.amazonaws.com',
     uploads: 'https://chex-ai-uploads.s3.amazonaws.com',
@@ -170,9 +163,7 @@ export function checkAndCompleteUrl(url, paramsToCheck = []) {
     }
 
     // Check if the URL's domain matches any specified domains
-    result.domainMatch = domainsToCheck.some(domain =>
-      urlObj.hostname.includes(domain),
-    );
+    result.domainMatch = domainsToCheck.some(domain => urlObj.hostname.includes(domain));
   } catch (error) {
     // Handle invalid URL format
     result.isValidUrl = false;
@@ -240,12 +231,7 @@ export function removeAlphabets(input) {
  * const newDimensions = calculateImageDimensions(1200, 600, 800, 480);
  * console.log(newDimensions); // { width: 800, height: 400 }
  */
-const calculateImageDimensions = (
-  imageWidth,
-  image_Height,
-  maxWidth = 800,
-  maxHeight = 480,
-) => {
+const calculateImageDimensions = (imageWidth, image_Height, maxWidth = 800, maxHeight = 480) => {
   const containerAspectRatio = maxWidth / maxHeight;
   const imageAspectRatio = imageWidth / image_Height;
 
@@ -275,14 +261,7 @@ const calculateImageDimensions = (
  * @param {number} initialY The initial y-coordinate of the inner box.
  * @returns {{x: number, y: number}} An object containing the new x and y coordinates of the inner box.
  */
-export function resizeInnerBox(
-  outerWidth,
-  outerHeight,
-  initialWidth,
-  initialHeight,
-  initialX,
-  initialY,
-) {
+export function resizeInnerBox(outerWidth, outerHeight, initialWidth, initialHeight, initialX, initialY) {
   const {width, height} = calculateImageDimensions(outerWidth, outerHeight);
   const xPercent = (initialX / initialWidth) * 100;
   const yPercent = (initialY / initialHeight) * 100;
@@ -294,5 +273,28 @@ export function resizeInnerBox(
 }
 
 export const getUserFullName = (first, last) => {
+  // if (!first || !last) return 'there';
   return `${first} ${last}`;
 };
+
+export function navigateBackWithParams(navigation, route, extraParams = {}) {
+  if (!route?.params?.returnTo) {
+    return navigation.goBack();
+  }
+
+  const targetScreen = route.params.returnTo;
+  const parentOfTargetScreen = route.params.parentOfTargetScreen;
+  const returnToParams = route.params.returnToParams || {};
+
+  // merge captured params + caller-provided extras
+  const navParams = {
+    ...returnToParams.params,
+    ...extraParams,
+  };
+
+  // Use navigate with merge:true to update existing nested screen
+  navigation.popTo(parentOfTargetScreen, {
+    screen: targetScreen,
+    params: navParams,
+  });
+}

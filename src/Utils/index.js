@@ -1,16 +1,17 @@
-import {Alert} from 'react-native';
+import {Alert, Platform} from 'react-native';
 import {Camera} from 'react-native-vision-camera';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import * as yup from 'yup';
 
 import {IMAGES} from '../Assets/Images';
-import {customSortOrder, darkImageError, INSPECTION, INSPECTION_SUBCATEGORY, S3_BUCKET_BASEURL, uploadFailed} from '../Constants';
-import {ROUTES} from '../Navigation/ROUTES';
+import {customSortOrder, darkImageError, INSPECTION, INSPECTION_SUBCATEGORY, S3_BUCKET_BASEURL, uploadFailed, VEHICLE_TYPES} from '../Constants';
+import {ROUTES, TABS} from '../Navigation/ROUTES';
 import {getInspectionDetails, isImageDarkWithAI, s3SignedUrl, uploadFileToDatabase} from '../services/inspection';
 import {store} from '../Store';
 import {batchUpdateVehicleImages, numberPlateSelected, sessionExpired, setCompanyId} from '../Store/Actions';
 import {setFileDetails, setVehicleTypeModalVisible} from '../Store/Actions/NewInspectionAction';
 import {checkAndCompleteUrl} from './helpers';
+import imageResizer from '@bam.tech/react-native-image-resizer';
 
 // Validation Schema
 export const validationSchema = yup.object().shape({
@@ -68,10 +69,15 @@ export const OdometerDetails = {
   buttonText: 'Capture Now',
 };
 //___________________________Exterior______________________________
-export const ExteriorFrontDetails = {
+export const ExteriorFrontDetails = vehicleType => ({
   key: 'exteriorFront',
   title: 'Exterior Front',
-  source: IMAGES.exterior_Front,
+  source:
+    vehicleType === VEHICLE_TYPES.SEDAN
+      ? IMAGES.sedan_exterior_front
+      : vehicleType === VEHICLE_TYPES.TRUCK
+      ? IMAGES.truck_exterior_front
+      : IMAGES.exterior_Front,
   instructionalText: 'Please upload a photo clearly showing the front of the vehicle',
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
@@ -79,11 +85,17 @@ export const ExteriorFrontDetails = {
   subCategory: 'exterior_front',
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
-};
-export const ExteriorRearDetails = {
+});
+
+export const ExteriorRearDetails = vehicleType => ({
   key: 'exteriorRear',
   title: 'Exterior Rear',
-  source: IMAGES.exterior_Rear,
+  source:
+    vehicleType === VEHICLE_TYPES.SEDAN
+      ? IMAGES.sedan_exterior_rear
+      : vehicleType === VEHICLE_TYPES.TRUCK
+      ? IMAGES.truck_exterior_rear_back
+      : IMAGES.exterior_Rear,
   instructionalText: 'Please upload a photo clearly showing the rear of the vehicle ',
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
@@ -91,7 +103,8 @@ export const ExteriorRearDetails = {
   subCategory: 'exterior_rear',
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
-};
+});
+
 export const ExteriorLeftDetails = {
   key: 'exteriorLeft',
   title: 'Exterior Left',
@@ -104,6 +117,7 @@ export const ExteriorLeftDetails = {
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
 };
+
 export const ExteriorRightDetails = {
   key: 'exteriorRight',
   title: 'Exterior Right',
@@ -116,10 +130,16 @@ export const ExteriorRightDetails = {
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
 };
-export const ExteriorFrontLeftCornerDetails = {
+
+export const ExteriorFrontLeftCornerDetails = vehicleType => ({
   key: 'exteriorFrontLeftCorner',
   title: 'Front Left Corner',
-  source: IMAGES.front_Left_Corner,
+  source:
+    vehicleType === VEHICLE_TYPES.SEDAN
+      ? IMAGES.sedan_exterior_front_Left
+      : vehicleType === VEHICLE_TYPES.TRUCK
+      ? IMAGES.truck_exterior_front_Left
+      : IMAGES.front_Left_Corner,
   instructionalText:
     'Please take a photo from the front left corner of the vehicle clearly capturing the left headlight, driver door and roof on the exterior left side of the vehicle',
   instructionalSubHeadingText: '',
@@ -128,11 +148,17 @@ export const ExteriorFrontLeftCornerDetails = {
   subCategory: 'front_left_corner',
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
-};
-export const ExteriorFrontRightCornerDetails = {
+});
+
+export const ExteriorFrontRightCornerDetails = vehicleType => ({
   key: 'exteriorFrontRightCorner',
   title: 'Front Right Corner',
-  source: IMAGES.front_Right_Corner,
+  source:
+    vehicleType === VEHICLE_TYPES.SEDAN
+      ? IMAGES.sedan_exterior_front_Right
+      : vehicleType === VEHICLE_TYPES.TRUCK
+      ? IMAGES.truck_exterior_front_right
+      : IMAGES.front_Right_Corner,
   instructionalText:
     'Please take a photo from the front right corner of the vehicle clearly capturing the right headlight, passenger door and roof on the exterior right side of the vehicle',
   instructionalSubHeadingText: '',
@@ -141,11 +167,17 @@ export const ExteriorFrontRightCornerDetails = {
   subCategory: 'front_right_corner',
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
-};
-export const ExteriorRearLeftCornerDetails = {
+});
+
+export const ExteriorRearLeftCornerDetails = vehicleType => ({
   key: 'exteriorRearLeftCorner',
   title: 'Rear Left Corner',
-  source: IMAGES.rear_Left_Corner,
+  source:
+    vehicleType === VEHICLE_TYPES.SEDAN
+      ? IMAGES.sedan_exterior_rear_left
+      : vehicleType === VEHICLE_TYPES.TRUCK
+      ? IMAGES.truck_exterior_rear_left
+      : IMAGES.rear_Left_Corner,
   instructionalText:
     'Please take a photo from the rear left corner of the vehicle clearly capturing the left tail light, rear door and roof on the exterior left side of the vehicle',
   instructionalSubHeadingText: '',
@@ -154,11 +186,17 @@ export const ExteriorRearLeftCornerDetails = {
   subCategory: 'rear_left_corner',
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
-};
-export const ExteriorRearRightCornerDetails = {
+});
+
+export const ExteriorRearRightCornerDetails = vehicleType => ({
   key: 'exteriorRearRightCorner',
   title: 'Rear Right Corner',
-  source: IMAGES.rear_Right_Corner,
+  source:
+    vehicleType === VEHICLE_TYPES.SEDAN
+      ? IMAGES.sedan_exterior_rear_right
+      : vehicleType === VEHICLE_TYPES.TRUCK
+      ? IMAGES.truck_exterior_rear_right
+      : IMAGES.rear_Right_Corner,
   instructionalText:
     'Please take a photo from the rear right corner of the vehicle clearly capturing the right tail light, rear door and roof on the exterior right side of the vehicle',
   instructionalSubHeadingText: '',
@@ -167,11 +205,12 @@ export const ExteriorRearRightCornerDetails = {
   subCategory: 'rear_right_corner',
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
-};
-export const ExteriorInsideCargoRoofDetails = {
+});
+
+export const ExteriorInsideCargoRoofDetails = vehicleType => ({
   key: 'exteriorInsideCargoRoof',
   title: 'Inside Cargo Roof',
-  source: IMAGES.inside_Cargo_Roof,
+  source: VEHICLE_TYPES.TRUCK === vehicleType ? IMAGES.truck_interior_back : IMAGES.inside_Cargo_Roof,
   instructionalText: 'Please upload a photo clearly showing the inside cargo roof of the vehicle',
   instructionalSubHeadingText: '',
   buttonText: 'Capture Now',
@@ -179,7 +218,7 @@ export const ExteriorInsideCargoRoofDetails = {
   subCategory: 'inside_cargo_roof',
   groupType: INSPECTION.exteriorItems,
   isVideo: false,
-};
+});
 //___________________________Interior______________________________
 export const InteriorPassengerSide = {
   key: 'passengerSide',
@@ -285,7 +324,7 @@ export const getSignedUrl = async (
   variant = 0,
   source = 'app',
   companyId,
-  category,
+  category
 ) => {
   try {
     const response = await s3SignedUrl(mime, source, inspectionId, categoryName, variant, companyId);
@@ -404,7 +443,7 @@ export const extractDate = dataAndTime => {
 
   return `${month}/${day}/${year}`;
 };
-export const handleHomePress = navigation => navigation?.navigate?.(ROUTES.INSPECTION_SELECTION);
+export const handleHomePress = navigation => navigation?.navigate?.(ROUTES.TABS);
 export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
   const errors = {
     409: {
@@ -547,7 +586,8 @@ export const generateRandomString = () => {
 };
 
 export const handleNewInspectionPress = (dispatch, setIsLoading, companyId, navigation, resetAllStates) => {
-  dispatch(setVehicleTypeModalVisible(true));
+  // dispatch(setVehicleTypeModalVisible(true));
+  navigation.navigate(ROUTES.TABS, {screen: TABS.INSPECTION});
   dispatch(setCompanyId(companyId));
   // No API call here anymore
 };
@@ -557,9 +597,14 @@ export function onNewInspectionPressSuccess(response, dispatch, navigate, resetA
 
   dispatch(numberPlateSelected(id));
 
-  navigate(ROUTES.NEW_INSPECTION, {
-    routeName: ROUTES.INSPECTION_SELECTION,
-  });
+  setTimeout(
+    () => {
+      navigate(ROUTES.NEW_INSPECTION, {
+        routeName: ROUTES.VEHICLE_INFORMATION,
+      });
+    },
+    Platform.OS === 'ios' ? 200 : 0
+  );
 }
 
 export function onNewInspectionPressFail(err, dispatch) {
@@ -827,3 +872,24 @@ export function extractValidUrls(file = {}) {
   return list;
 }
 export const SKIP_NIGHT_IMAGE_LIST = ['CarVerification', 'Tires'];
+
+export async function fixImageOrientation(uri) {
+  try {
+    const result = await imageResizer.createResizedImage(
+      uri,
+      1280,
+      1280,
+      'JPEG',
+      100,
+      0, // auto-rotation handled internally
+      undefined,
+      false, // remove EXIF orientation
+      {mode: 'contain', onlyScaleDown: true}
+    );
+
+    return result.uri;
+  } catch (error) {
+    console.warn('⚠️ Error fixing image orientation:', error);
+    return uri; // fallback to original if resizing fails
+  }
+}

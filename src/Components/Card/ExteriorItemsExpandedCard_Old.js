@@ -35,26 +35,31 @@ const ExteriorItemsExpandedCard = ({
       data: {companyId},
     },
   } = useSelector(state => state?.auth);
+  const {selectedVehicleKind} = useSelector(state => state?.newInspection);
   return (
     <View style={[expandedCardContainer, container]}>
       <View style={itemPickerContainer}>
         <ImagePicker
-          text={ExteriorFrontDetails.title}
+          text={ExteriorFrontDetails(selectedVehicleKind).title}
           pickerText={pickerText}
           imageURL={exteriorItems?.exteriorFront}
           isLoading={isLoading}
-          onPress={() => handleItemPickerPress(ExteriorFrontDetails)}
-          onClearPress={() => handleCrossPress(ExteriorFrontDetails.groupType, ExteriorFrontDetails.key)}
-          handleMediaModalDetailsPress={() => handleMediaModalDetailsPress(ExteriorFrontDetails.title, exteriorItems?.exteriorFront)}
+          onPress={() => handleItemPickerPress(ExteriorFrontDetails(selectedVehicleKind))}
+          onClearPress={() => handleCrossPress(ExteriorFrontDetails(selectedVehicleKind).groupType, ExteriorFrontDetails(selectedVehicleKind).key)}
+          handleMediaModalDetailsPress={() =>
+            handleMediaModalDetailsPress(ExteriorFrontDetails(selectedVehicleKind).title, exteriorItems?.exteriorFront)
+          }
         />
         <ImagePicker
-          text={ExteriorRearDetails.title}
+          text={ExteriorRearDetails(selectedVehicleKind).title}
           pickerText={pickerText}
           imageURL={exteriorItems?.exteriorRear}
           isLoading={isLoading}
-          onPress={() => handleItemPickerPress(ExteriorRearDetails)}
-          onClearPress={() => handleCrossPress(ExteriorRearDetails.groupType, ExteriorRearDetails.key)}
-          handleMediaModalDetailsPress={() => handleMediaModalDetailsPress(ExteriorRearDetails.title, exteriorItems?.exteriorRear)}
+          onPress={() => handleItemPickerPress(ExteriorRearDetails(selectedVehicleKind))}
+          onClearPress={() => handleCrossPress(ExteriorRearDetails(selectedVehicleKind).groupType, ExteriorRearDetails(selectedVehicleKind).key)}
+          handleMediaModalDetailsPress={() =>
+            handleMediaModalDetailsPress(ExteriorRearDetails(selectedVehicleKind).title, exteriorItems?.exteriorRear)
+          }
         />
       </View>
       {/*<View style={itemPickerContainer}>*/}
@@ -104,27 +109,34 @@ const ExteriorItemsExpandedCard = ({
       <View style={itemPickerContainer}>
         {!skipLeftCorners && (
           <ImagePicker
-            text={ExteriorFrontLeftCornerDetails.title}
+            text={ExteriorFrontLeftCornerDetails(selectedVehicleKind).title}
             pickerText={pickerText}
             imageURL={exteriorItems?.exteriorFrontLeftCorner}
             isLoading={isLoading}
-            onPress={() => handleItemPickerPress(ExteriorFrontLeftCornerDetails)}
-            onClearPress={() => handleCrossPress(ExteriorFrontLeftCornerDetails.groupType, ExteriorFrontLeftCornerDetails.key)}
+            onPress={() => handleItemPickerPress(ExteriorFrontLeftCornerDetails(selectedVehicleKind))}
+            onClearPress={() =>
+              handleCrossPress(ExteriorFrontLeftCornerDetails(selectedVehicleKind).groupType, ExteriorFrontLeftCornerDetails(selectedVehicleKind).key)
+            }
             handleMediaModalDetailsPress={() =>
-              handleMediaModalDetailsPress(ExteriorFrontLeftCornerDetails.title, exteriorItems?.exteriorFrontLeftCorner)
+              handleMediaModalDetailsPress(ExteriorFrontLeftCornerDetails(selectedVehicleKind).title, exteriorItems?.exteriorFrontLeftCorner)
             }
           />
         )}
         {!skipRightCorners && (
           <ImagePicker
-            text={ExteriorFrontRightCornerDetails.title}
+            text={ExteriorFrontRightCornerDetails(selectedVehicleKind).title}
             pickerText={pickerText}
             imageURL={exteriorItems?.exteriorFrontRightCorner}
             isLoading={isLoading}
-            onPress={() => handleItemPickerPress(ExteriorFrontRightCornerDetails)}
-            onClearPress={() => handleCrossPress(ExteriorFrontRightCornerDetails.groupType, ExteriorFrontRightCornerDetails.key)}
+            onPress={() => handleItemPickerPress(ExteriorFrontRightCornerDetails(selectedVehicleKind))}
+            onClearPress={() =>
+              handleCrossPress(
+                ExteriorFrontRightCornerDetails(selectedVehicleKind).groupType,
+                ExteriorFrontRightCornerDetails(selectedVehicleKind).key
+              )
+            }
             handleMediaModalDetailsPress={() =>
-              handleMediaModalDetailsPress(ExteriorFrontRightCornerDetails.title, exteriorItems?.exteriorFrontRightCorner)
+              handleMediaModalDetailsPress(ExteriorFrontRightCornerDetails(selectedVehicleKind).title, exteriorItems?.exteriorFrontRightCorner)
             }
           />
         )}
@@ -132,27 +144,31 @@ const ExteriorItemsExpandedCard = ({
       <View style={itemPickerContainer}>
         {!skipLeftCorners && (
           <ImagePicker
-            text={ExteriorRearLeftCornerDetails.title}
+            text={ExteriorRearLeftCornerDetails(selectedVehicleKind).title}
             pickerText={pickerText}
             imageURL={exteriorItems?.exteriorRearLeftCorner}
             isLoading={isLoading}
-            onPress={() => handleItemPickerPress(ExteriorRearLeftCornerDetails)}
-            onClearPress={() => handleCrossPress(ExteriorRearLeftCornerDetails.groupType, ExteriorRearLeftCornerDetails.key)}
+            onPress={() => handleItemPickerPress(ExteriorRearLeftCornerDetails(selectedVehicleKind))}
+            onClearPress={() =>
+              handleCrossPress(ExteriorRearLeftCornerDetails(selectedVehicleKind).groupType, ExteriorRearLeftCornerDetails(selectedVehicleKind).key)
+            }
             handleMediaModalDetailsPress={() =>
-              handleMediaModalDetailsPress(ExteriorRearLeftCornerDetails.title, exteriorItems?.exteriorRearLeftCorner)
+              handleMediaModalDetailsPress(ExteriorRearLeftCornerDetails(selectedVehicleKind).title, exteriorItems?.exteriorRearLeftCorner)
             }
           />
         )}
         {!skipRightCorners && (
           <ImagePicker
-            text={ExteriorRearRightCornerDetails.title}
+            text={ExteriorRearRightCornerDetails(selectedVehicleKind).title}
             pickerText={pickerText}
             imageURL={exteriorItems?.exteriorRearRightCorner}
             isLoading={isLoading}
-            onPress={() => handleItemPickerPress(ExteriorRearRightCornerDetails)}
-            onClearPress={() => handleCrossPress(ExteriorRearRightCornerDetails.groupType, ExteriorRearRightCornerDetails.key)}
+            onPress={() => handleItemPickerPress(ExteriorRearRightCornerDetails(selectedVehicleKind))}
+            onClearPress={() =>
+              handleCrossPress(ExteriorRearRightCornerDetails(selectedVehicleKind).groupType, ExteriorRearRightCornerDetails(selectedVehicleKind).key)
+            }
             handleMediaModalDetailsPress={() =>
-              handleMediaModalDetailsPress(ExteriorRearRightCornerDetails.title, exteriorItems?.exteriorRearRightCorner)
+              handleMediaModalDetailsPress(ExteriorRearRightCornerDetails(selectedVehicleKind).title, exteriorItems?.exteriorRearRightCorner)
             }
           />
         )}
@@ -201,14 +217,16 @@ const ExteriorItemsExpandedCard = ({
       {!hasInteriorAndRoofTopCompany(companyId) && (
         <View style={itemPickerContainer}>
           <ImagePicker
-            text={ExteriorInsideCargoRoofDetails.title}
+            text={ExteriorInsideCargoRoofDetails(selectedVehicleKind).title}
             pickerText={pickerText}
             imageURL={exteriorItems?.exteriorInsideCargoRoof}
             isLoading={isLoading}
-            onPress={() => handleItemPickerPress(ExteriorInsideCargoRoofDetails)}
-            onClearPress={() => handleCrossPress(ExteriorInsideCargoRoofDetails.groupType, ExteriorInsideCargoRoofDetails.key)}
+            onPress={() => handleItemPickerPress(ExteriorInsideCargoRoofDetails(selectedVehicleKind))}
+            onClearPress={() =>
+              handleCrossPress(ExteriorInsideCargoRoofDetails(selectedVehicleKind).groupType, ExteriorInsideCargoRoofDetails(selectedVehicleKind).key)
+            }
             handleMediaModalDetailsPress={() =>
-              handleMediaModalDetailsPress(ExteriorInsideCargoRoofDetails.title, exteriorItems?.exteriorInsideCargoRoof)
+              handleMediaModalDetailsPress(ExteriorInsideCargoRoofDetails(selectedVehicleKind).title, exteriorItems?.exteriorInsideCargoRoof)
             }
           />
         </View>

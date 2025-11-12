@@ -1,18 +1,18 @@
 import React, {forwardRef} from 'react';
-import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
+import {Pressable, StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
-import {colors} from '../Assets/Styles';
+import {colors, errorStyle} from '../Assets/Styles';
+import AppText from './text';
 
 const {steelGray, black, lightSkyBlue} = colors;
 
 const CustomInput = forwardRef(
   (
     {
+      label,
       placeholder,
+      placeholderTextColor,
       inputStyle,
       inputMode,
       value,
@@ -30,44 +30,51 @@ const CustomInput = forwardRef(
       onPressOut,
       inputContainerStyle,
       hidePasswordHandler,
-      editable,
+      editable = true,
       rightIcon,
       onRightIconPress,
+      maxLength,
+      onPress,
+      pointerEvents,
     },
-    ref,
+    ref
   ) => (
-    <View style={[styles.container, inputContainerStyle]}>
-      <TextInput
-        ref={ref}
-        placeholder={placeholder}
-        placeholderTextColor={steelGray}
-        value={value}
-        onChange={onChange}
-        onPressIn={onPressIn}
-        onPressOut={onPressOut}
-        // textAlign={'left'}
-        numberOfLines={1}
-        multiline={false}
-        onChangeText={onChangeText?.(valueName)}
-        onBlur={onBlur?.(valueName)}
-        secureTextEntry={secureTextEntry}
-        style={[styles.input, inputStyle, {color: black}]}
-        inputMode={inputMode}
-        enterKeyHint={enterKeyHint || 'next'}
-        onSubmitEditing={onSubmitEditing}
-        keyboardType={keyboardType}
-        editable={editable}
-      />
-      {rightIcon && (
-        <TouchableOpacity
-          style={styles.rightIconContainer}
-          onPress={onRightIconPress}
-          activeOpacity={0.7}>
-          {rightIcon}
-        </TouchableOpacity>
-      )}
+    <View>
+      {label && <AppText style={styles.label}>{label}</AppText>}
+      <Pressable onPress={onPress} style={[styles.container, inputContainerStyle]}>
+        <TextInput
+          ref={ref}
+          placeholder={placeholder}
+          placeholderTextColor={placeholderTextColor || steelGray}
+          value={value}
+          onChange={onChange}
+          onPressIn={onPressIn}
+          onPressOut={onPressOut}
+          // textAlign={'left'}
+          numberOfLines={1}
+          multiline={false}
+          onChangeText={onChangeText?.(valueName)}
+          onBlur={onBlur?.(valueName)}
+          secureTextEntry={secureTextEntry}
+          style={[styles.input, inputStyle, {color: black, opacity: !editable ? 0.6 : 1}]}
+          inputMode={inputMode}
+          enterKeyHint={enterKeyHint || 'next'}
+          onSubmitEditing={onSubmitEditing}
+          keyboardType={keyboardType}
+          editable={editable}
+          maxLength={maxLength}
+          pointerEvents={pointerEvents}
+        />
+
+        {rightIcon && (
+          <TouchableOpacity style={styles.rightIconContainer} onPress={onRightIconPress} activeOpacity={0.7}>
+            {rightIcon}
+          </TouchableOpacity>
+        )}
+      </Pressable>
+      {touched && error && <AppText style={[errorStyle.errorsTextStyle, styles.error]}>{error}</AppText>}
     </View>
-  ),
+  )
 );
 
 const styles = StyleSheet.create({
@@ -92,6 +99,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: wp('2%'),
   },
+  label: {marginBottom: 8},
+  error: {marginTop: 3},
 });
 
 export default CustomInput;

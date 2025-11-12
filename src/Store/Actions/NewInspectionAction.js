@@ -1,6 +1,7 @@
 import {ai_Mileage_Extraction, extractLicensePlateAI, getInspectionDetails} from '../../services/inspection';
 import {uploadInProgressMediaToStore} from '../../Utils';
 import {Types} from '../Types';
+import {showToast} from './UIActions';
 
 const {
   UPDATE_VEHICLE_IMAGE,
@@ -120,13 +121,12 @@ export const setLicensePlateNumber = image_url => async dispatch => {
   try {
     const response = await extractLicensePlateAI(image_url);
     const {plateNumber = null} = response?.data || {};
-
+    console.log('plateNumber from action:', plateNumber);
     dispatch({
       type: LICENSE_PLATE_NUMBER,
       payload: plateNumber,
     });
   } catch (error) {
-    console.error('Setting license plate error:', error);
     throw error;
   }
 };
@@ -166,7 +166,6 @@ export const getMileage =
       dispatch(setMileage(mileage));
     } catch (error) {
       dispatch(setMileage(''));
-      console.error('Setting extraction odometer error:', error);
       throw error;
     }
   };

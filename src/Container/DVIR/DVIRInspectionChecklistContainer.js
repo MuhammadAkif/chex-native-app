@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {IMAGES} from '../../Assets/Images';
-import {INSPECTION, S3_BUCKET_BASEURL} from '../../Constants';
+import {INSPECTION, S3_BUCKET_BASEURL, VEHICLE_TYPES} from '../../Constants';
 import {ROUTES} from '../../Navigation/ROUTES';
 import {DVIRInspectionChecklistScreen} from '../../Screens';
 import {
@@ -23,12 +23,10 @@ import {
   isNotEmpty,
   LicensePlateDetails,
 } from '../../Utils';
-import {useFocusEffect, useNavigationState} from '@react-navigation/native';
-import {BackHandler} from 'react-native';
 
 const frameConfigMap = {
   exterior_front: {
-    details: ExteriorFrontDetails,
+    details: ExteriorFrontDetails(VEHICLE_TYPES.TRUCK),
     source: IMAGES.truck_exterior_front,
     index: 0,
   },
@@ -43,17 +41,17 @@ const frameConfigMap = {
     index: 0,
   },
   rear_right_corner: {
-    details: ExteriorRearRightCornerDetails,
+    details: ExteriorRearRightCornerDetails(VEHICLE_TYPES.TRUCK),
     source: IMAGES.truck_exterior_rear_right,
     index: 1,
   },
   rear_left_corner: {
-    details: ExteriorRearLeftCornerDetails,
+    details: ExteriorRearLeftCornerDetails(VEHICLE_TYPES.TRUCK),
     source: IMAGES.truck_exterior_rear_left,
     index: 0,
   },
   exterior_rear: {
-    details: ExteriorRearDetails,
+    details: ExteriorRearDetails(VEHICLE_TYPES.TRUCK),
     source: IMAGES.truck_exterior_rear_back,
     index: 0,
   },
@@ -221,14 +219,14 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         textColor: '#666666',
       },
     }),
-    [],
+    []
   );
 
   const updateChecklistAPIWithCardIndex = useCallback(
     (cardIndex, data) => {
       updateChecklist(selectedInspectionID, checklistData?.[cardIndex]?.checkId, data);
     },
-    [updateChecklist, selectedInspectionID, checklistData],
+    [updateChecklist, selectedInspectionID, checklistData]
   );
 
   const handleChecklistStatusChange = useCallback(
@@ -243,7 +241,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         checkStatus: option,
       });
     },
-    [updateChecklistAPIWithCardIndex],
+    [updateChecklistAPIWithCardIndex]
   );
 
   const handleAddComment = useCallback(index => {
@@ -270,7 +268,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       setAddCommentModalVisible(false);
       setCurrentItemIndex(null);
     },
-    [currentItemIndex],
+    [currentItemIndex]
   );
 
   const handleChecklistOpenCamera = useCallback(
@@ -293,9 +291,10 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         inspectionId: selectedInspectionID,
         returnTo: ROUTES.DVIR_INSPECTION_CHECKLIST,
         returnToParams: {checklistCardIndex: index},
+        prevScreen: ROUTES.DVIR_INSPECTION_CHECKLIST,
       });
     },
-    [navigation, checklistData],
+    [navigation, checklistData]
   );
 
   const handleCloseAddCommentModal = useCallback(() => {
@@ -326,7 +325,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         return newData;
       });
     },
-    [removeChecklistImageVideoAPI, selectedInspectionID],
+    [removeChecklistImageVideoAPI, selectedInspectionID]
   );
 
   // Handler to update tire image
@@ -339,7 +338,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         subCategory: tireId,
         afterFileUploadNavigationParams: {tireId},
       },
-      0,
+      0
     );
   };
 
@@ -381,6 +380,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       type: key,
       modalDetails: modalDetails,
       inspectionId: selectedInspectionID,
+      prevScreen: ROUTES.DVIR_INSPECTION_CHECKLIST,
     });
   };
 
@@ -417,8 +417,8 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     if (type === 'capture_frames') {
       setCaptureFrames(prevFrames =>
         prevFrames.map(frame =>
-          frame.id === itemId ? {...frame, frames: frame.frames.map(f => (f.id === frameId ? {...f, image: null, fileId: null} : f))} : frame,
-        ),
+          frame.id === itemId ? {...frame, frames: frame.frames.map(f => (f.id === frameId ? {...f, image: null, fileId: null} : f))} : frame
+        )
       );
     } else if (type === 'tires') {
       // DELETION FOR TIRES
@@ -543,13 +543,13 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     }
   }, [selectedInspectionID, tireInspectionData, captureFrames]);
 
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        navigation.setParams({hasNewFetch: undefined});
-      };
-    }, []),
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     return () => {
+  //       navigation.setParams({hasNewFetch: undefined});
+  //     };
+  //   }, [])
+  // );
 
   // CHECKLIST Camera result handler
   useEffect(() => {
@@ -564,8 +564,8 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
                   ...item,
                   url: [...(item.url || []), capturedImageUri],
                 }
-              : item,
-          ),
+              : item
+          )
         );
 
         updateChecklistAPIWithCardIndex(checklistCardIndex, {
@@ -615,11 +615,6 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   }, [route?.params?.afterFileUploadImageUrl]);
 
   useEffect(() => {
-    if (!selectedInspectionID) return;
-    if (!route?.params?.hasNewFetch) return;
-    // Reset all local states to initial values
-    resetState();
-
     const fetchData = async () => {
       try {
         await Promise.all([getChecklistsData(), getInspectionData()]);
@@ -628,8 +623,8 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
       }
     };
 
-    fetchData();
-  }, [selectedInspectionID, route?.params?.hasNewFetch]);
+    if (selectedInspectionID) fetchData();
+  }, [selectedInspectionID]);
 
   const validateFramesTiresCheclist = () => {
     // 1. Validate captureFrames: all frames must have a non-null image
@@ -653,31 +648,31 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   };
 
   // Custom back handler
-  const customGoBack = useCallback(() => {
-    const navState = navigation.getState();
-    const routes = navState.history;
+  // const customGoBack = useCallback(() => {
+  //   const navState = navigation.getState();
+  //   const routes = navState.history;
 
-    // Get previousOne and previousTwo
-    const previousOne = routes[routes.length - 2];
+  //   // Get previousOne and previousTwo
+  //   const previousOne = routes[routes.length - 2];
 
-    if (previousOne && previousOne.key.includes(ROUTES.NEW_INSPECTION)) {
-      navigation.navigate(ROUTES.INSPECTION_SELECTION);
-    } else if (navigation.canGoBack()) {
-      navigation.goBack();
-    } else {
-      // Optionally exit app or do nothing
-    }
-    return true; // Prevent default
-  }, [navigation]);
+  //   if (previousOne && previousOne.key.includes(ROUTES.NEW_INSPECTION)) {
+  //     navigation.navigate(ROUTES.INSPECTION_SELECTION);
+  //   } else if (navigation.canGoBack()) {
+  //     navigation.goBack();
+  //   } else {
+  //     // Optionally exit app or do nothing
+  //   }
+  //   return true; // Prevent default
+  // }, [navigation]);
 
-  // Handle hardware back
-  useFocusEffect(
-    useCallback(() => {
-      const onBackPress = () => customGoBack();
-      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
-      return () => subscription.remove();
-    }, [customGoBack]),
-  );
+  // // Handle hardware back
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const onBackPress = () => customGoBack();
+  //     const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+  //     return () => subscription.remove();
+  //   }, [customGoBack])
+  // );
 
   // Pass customGoBack to header or use it in UI as needed
 
