@@ -68,6 +68,18 @@ export const OdometerDetails = {
   groupType: INSPECTION.carVerificiationItems,
   buttonText: 'Capture Now',
 };
+
+export const VinDetails = {
+  key: 'vin',
+  title: 'VIN',
+  type: '1',
+  source: '',
+  category: 'CarVerification',
+  subCategory: 'vin',
+  groupType: 'truck',
+  instructionalText: 'Please wait a while the VIN is being uploaded',
+  buttonText: 'Capture Now',
+};
 //___________________________Exterior______________________________
 export const ExteriorFrontDetails = vehicleType => ({
   key: 'exteriorFront',

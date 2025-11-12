@@ -55,4 +55,6 @@ export const styles = StyleSheet.create({
     zIndex: 10,
   },
   dropdownContainer: {flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: '5%'},
+  clearFormButton: {alignSelf: 'center', marginTop: hp(3)},
+  clearFormButtonText: {color: colors.royalBlue, fontSize: wp(3.5), fontWeight: '600'},
 });
