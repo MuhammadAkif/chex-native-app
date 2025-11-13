@@ -55,6 +55,6 @@ export const styles = StyleSheet.create({
     zIndex: 10,
   },
   dropdownContainer: {flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: '5%'},
-  clearFormButton: {alignSelf: 'center', marginTop: hp(3)},
-  clearFormButtonText: {color: colors.royalBlue, fontSize: wp(3.5), fontWeight: '600'},
+  clearFormButton: {marginTop: hp(1), borderWidth: 1, paddingHorizontal:hp(1.5), paddingVertical: hp(.7), borderRadius: wp('5%'), borderColor: colors.blueGray, alignSelf:'flex-end'},
+  clearFormButtonText: {color: colors.black, fontSize: wp(3.5), fontWeight: '500'},
 });

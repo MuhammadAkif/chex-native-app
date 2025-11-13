@@ -31,7 +31,7 @@ const validate = (values, hasInspectionType, OCRsCapturedImages) => {
 
   if (OCRsCapturedImages?.numberPlate?.uri && !values?.licensePlateNumber?.trim()) {
     errors.licensePlateNumber = 'Reading undetected. Please input license plate number manually';
-  } else if (!OCRsCapturedImages?.numberPlate?.uri && values?.licensePlateNumber?.trim()) {
+  } else if (!OCRsCapturedImages?.numberPlate?.uri && !values?.licensePlateNumber?.trim()) {
     errors.licensePlateNumber = 'License plate number is required';
   }
 
@@ -308,21 +308,13 @@ const VehicleInformation = props => {
     OCRsCapturedImagesRef.current = getOCRsCapturedImagesInitialState();
   }, []);
 
-  const isClearFormDisabled = useMemo(() => {
+  const isClearFormDisabled = () => {
     const {numberPlate, mileage, vin} = OCRsCapturedImagesRef?.current || {};
 
     const isAnyImagePresent = numberPlate?.uri || mileage?.uri || vin?.uri;
 
     return isLoading || vinLoading || mileageLoading || isFetchingVehicleInfo || !isAnyImagePresent;
-  }, [
-    isLoading,
-    vinLoading,
-    mileageLoading,
-    isFetchingVehicleInfo,
-    OCRsCapturedImagesRef?.current?.numberPlate?.uri,
-    OCRsCapturedImagesRef?.current?.mileage?.uri,
-    OCRsCapturedImagesRef?.current?.vin?.uri,
-  ]);
+  }
 
   return (
     <View style={styles.blueContainer}>
@@ -722,16 +714,15 @@ const VehicleInformation = props => {
                               )}
                             </View>
                           )}
+                            <TouchableOpacity
+                              disabled={isClearFormDisabled()}
+                              style={[styles.clearFormButton, {opacity: isClearFormDisabled() ? 0.5 : 1}]}
+                              onPress={() => handlePressClearForm(setFieldValue, setFieldTouched, setFieldError)}>
+                            <AppText style={styles.clearFormButtonText}>Clear all</AppText>
+                          </TouchableOpacity>
                         </View>
                       </View>
                       <PrimaryGradientButton onPress={handleSubmit} text="Next" buttonStyle={styles.nextButton} />
-
-                      <TouchableOpacity
-                        disabled={isClearFormDisabled}
-                        style={[styles.clearFormButton, {opacity: isClearFormDisabled ? 0.5 : 1}]}
-                        onPress={() => handlePressClearForm(setFieldValue, setFieldTouched, setFieldError)}>
-                        <AppText style={styles.clearFormButtonText}>Clear Form</AppText>
-                      </TouchableOpacity>
                     </>
                   );
                 }}
