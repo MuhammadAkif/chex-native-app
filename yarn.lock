@@ -212,6 +212,11 @@
   resolved "https://registry.yarnpkg.com/@babel/helper-validator-identifier/-/helper-validator-identifier-7.27.1.tgz#a7054dcc145a967dd4dc8fee845a57c1316c9df8"
   integrity sha512-D2hP9eA+Sqx1kBZgzxZh0y1trbuU+JoDkiEwqhQ36nodYqJwyEIhPSdMNd7lOm/4io72luTPWH20Yda0xOuUow==
 
+"@babel/helper-validator-identifier@^7.28.5":
+  version "7.28.5"
+  resolved "https://registry.yarnpkg.com/@babel/helper-validator-identifier/-/helper-validator-identifier-7.28.5.tgz#010b6938fab7cb7df74aa2bbc06aa503b8fe5fb4"
+  integrity sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==
+
 "@babel/helper-validator-option@^7.27.1":
   version "7.27.1"
   resolved "https://registry.yarnpkg.com/@babel/helper-validator-option/-/helper-validator-option-7.27.1.tgz#fa52f5b1e7db1ab049445b421c4471303897702f"
@@ -243,6 +248,13 @@
     chalk "^2.4.2"
     js-tokens "^4.0.0"
     picocolors "^1.0.0"
+
+"@babel/parser@^7.0.0":
+  version "7.28.5"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.28.5.tgz#0b0225ee90362f030efd644e8034c99468893b08"
+  integrity sha512-KKBU1VGYR7ORr3At5HAtUQ+TV3SzRCXmA/8OdDZiLDBIZxVyzXuztPjfLd3BV1PRAQGCMWWSHYhL0F8d5uHBDQ==
+  dependencies:
+    "@babel/types" "^7.28.5"
 
 "@babel/parser@^7.1.0", "@babel/parser@^7.14.7", "@babel/parser@^7.20.7", "@babel/parser@^7.23.9", "@babel/parser@^7.24.7", "@babel/parser@^7.25.3", "@babel/parser@^7.27.2", "@babel/parser@^7.28.0":
   version "7.28.0"
@@ -1113,6 +1125,14 @@
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.27.1"
 
+"@babel/types@^7.28.5":
+  version "7.28.5"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.28.5.tgz#10fc405f60897c35f07e85493c932c7b5ca0592b"
+  integrity sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==
+  dependencies:
+    "@babel/helper-string-parser" "^7.27.1"
+    "@babel/helper-validator-identifier" "^7.28.5"
+
 "@bam.tech/react-native-image-resizer@^3.0.11":
   version "3.0.11"
   resolved "https://registry.yarnpkg.com/@bam.tech/react-native-image-resizer/-/react-native-image-resizer-3.0.11.tgz#b9dc0f155b1293fe6d04944e45b6e3252ca2dea3"
@@ -1208,6 +1228,27 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@expo/sdk-runtime-versions/-/sdk-runtime-versions-1.0.0.tgz#d7ebd21b19f1c6b0395e50d78da4416941c57f7c"
   integrity sha512-Doz2bfiPndXYFPMRwPyGa1k5QaKDVpY806UJj570epIiMzWaYyCtobasyfC++qfIXVb5Ocy7r3tP9d62hAQ7IQ==
+
+"@fullstory/babel-plugin-annotate-react@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@fullstory/babel-plugin-annotate-react/-/babel-plugin-annotate-react-2.3.2.tgz#d3eba64408e656a9c6df1ffb584efce3c84370e3"
+  integrity sha512-s6TAsAivWcP32fNOAwmEW6LdjE+gjCOlf4ILrqMdVS8EDJeHf51s1tO+teQkY3XiOY4QziYu0eR9TeoRfyqOQw==
+
+"@fullstory/babel-plugin-react-native@^1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@fullstory/babel-plugin-react-native/-/babel-plugin-react-native-1.5.2.tgz#30924d8ece8b5d69e9001dab109ecdc8de97df9f"
+  integrity sha512-T/4BjS4ToSV07Xd90gUTKyg9+RaQPtz28VXJ7vDWaorE5UTNaMzgU8LtCgCCsQFGBkxhe4HFZbRglPNBITohXQ==
+  dependencies:
+    "@babel/parser" "^7.0.0"
+    "@babel/types" "^7.0.0"
+
+"@fullstory/react-native@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@fullstory/react-native/-/react-native-1.8.0.tgz#126d967584f916ea166dfffe690044d93cc27370"
+  integrity sha512-nzzd0+B/C7HLqCFsAwSnvWxS9mQ75Kw8129Br86iIb/M190q0gTMvjEwvA/fM5eLJHu1pKfFLXwb3AU0aHjGqw==
+  dependencies:
+    "@fullstory/babel-plugin-annotate-react" "^2.3.2"
+    "@fullstory/babel-plugin-react-native" "^1.5.2"
 
 "@hapi/hoek@^9.0.0", "@hapi/hoek@^9.3.0":
   version "9.3.0"

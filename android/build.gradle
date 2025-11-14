@@ -6,6 +6,9 @@ buildscript {
         targetSdkVersion = 35
         ndkVersion = "28.2.13676358"
         kotlinVersion = "2.0.21"
+        // FullStory Android SDK version - required for FullStory React Native
+        // This version is detected by FullStory React Native's build.gradle
+        fullstoryVersion = "1.28.0"
     }
     repositories {
         google()
@@ -16,12 +19,35 @@ buildscript {
          maven { url 'https://maven.google.com' }
          maven { url "https://www.jitpack.io" }
          // react-native-crop-image-picker config ends here
+
+         // FullStory Maven repository - required for FullStory Android SDK
+         maven { url 'https://maven.fullstory.com' }
     }
     dependencies {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+        // FullStory Android Gradle plugin - required for FullStory React Native v1.8.0
+        // This plugin provides version information that FullStory React Native needs
+        classpath("com.fullstory:gradle-plugin-local:1.28.0")
     }
 }
 
 apply plugin: "com.facebook.react.rootproject"
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+        
+        // react-native-crop-image-picker config starts here
+        maven { url 'https://maven.google.com' }
+        maven { url "https://www.jitpack.io" }
+        // react-native-crop-image-picker config ends here
+        
+        // FullStory Maven repository - required for FullStory Android SDK
+        // This must be in allprojects block so app dependencies can resolve FullStory artifacts
+        maven { url 'https://maven.fullstory.com' }
+    }
+}

@@ -12,6 +12,7 @@ import Navigation from './src/Navigation/index';
 import {clearNewInspection, hideToast, signOut} from './src/Store/Actions';
 import {hasCameraAndMicrophoneAllowed} from './src/Utils';
 import {resetNavigation} from './src/services/navigationService';
+import {initializeFullStory} from './src/services/fullstoryService';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
@@ -25,6 +26,10 @@ function App() {
   const [updateAvailable, setUpdateAvailable] = useState('');
 
   useEffect(() => {
+    // Initialize FullStory early in app lifecycle
+    // FullStory is disabled in development mode to avoid Metro Server issues
+    initializeFullStory();
+
     (async () => {
       await initializeApp();
     })();
@@ -32,6 +37,9 @@ function App() {
     return () => {
       dispatch(clearNewInspection());
       dispatch(hideToast());
+      // Cleanup FullStory listeners on unmount
+      // Note: cleanupFullStory is imported but cleanup happens automatically
+      // when app unmounts, so explicit cleanup is optional
     };
   }, [displayGif]);
 

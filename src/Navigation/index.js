@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useSelector} from 'react-redux';
@@ -18,6 +18,7 @@ import {
 
 import {ROUTES, STACKS} from './ROUTES';
 import {navigationRef} from '../services/navigationService';
+import {trackScreenView} from '../services/fullstoryService';
 import BottomTab from './bottomTab';
 import {AuthStack} from './stacks';
 
@@ -30,9 +31,46 @@ const RootNavigation = () => {
   const token = useSelector(state => state?.auth?.user?.token);
   const initialRouteName = token ? ROUTES.TABS : STACKS.AUTH_STACK;
   const screenOptions = {headerShown: false, gestureEnabled: false};
+  const routeNameRef = useRef(null);
+
+  /**
+   * Track screen views in FullStory when navigation state changes
+   */
+  const handleNavigationStateChange = () => {
+    const previousRouteName = routeNameRef.current;
+    const currentRoute = navigationRef.getCurrentRoute();
+
+    if (currentRoute && currentRoute.name !== previousRouteName) {
+      // Track the screen view in FullStory
+      trackScreenView(currentRoute.name, {
+        routeName: currentRoute.name,
+        params: currentRoute.params ? Object.keys(currentRoute.params) : [],
+      });
+
+      routeNameRef.current = currentRoute.name;
+    }
+  };
+
+  /**
+   * Initialize screen tracking when navigation is ready
+   */
+  const handleNavigationReady = () => {
+    const currentRoute = navigationRef.getCurrentRoute();
+    if (currentRoute) {
+      routeNameRef.current = currentRoute.name;
+      // Track initial screen
+      trackScreenView(currentRoute.name, {
+        routeName: currentRoute.name,
+        isInitialRoute: true,
+      });
+    }
+  };
 
   return (
-    <NavigationContainer ref={navigationRef}>
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={handleNavigationReady}
+      onStateChange={handleNavigationStateChange}>
       <Stack.Navigator initialRouteName={initialRouteName} screenOptions={screenOptions}>
         {/* AUTH STACK */}
         <Stack.Screen name={STACKS.AUTH_STACK} component={AuthStack} />

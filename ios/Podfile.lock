@@ -6,6 +6,29 @@ PODS:
   - fast_float (6.1.4)
   - FBLazyVector (0.78.0)
   - fmt (11.0.2)
+  - FullStory (1.65.1)
+  - fullstory_react-native (1.8.0):
+    - DoubleConversion
+    - FullStory (~> 1.14)
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - glog (0.3.5)
   - hermes-engine (0.78.0):
     - hermes-engine/Pre-built (= 0.78.0)
@@ -2165,6 +2188,7 @@ DEPENDENCIES:
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
+  - "fullstory_react-native (from `../node_modules/@fullstory/react-native`)"
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
@@ -2249,6 +2273,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - FullStory
     - libwebp
     - React-Codegen
     - SDWebImage
@@ -2269,6 +2294,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   fmt:
     :podspec: "../node_modules/react-native/third-party-podspecs/fmt.podspec"
+  fullstory_react-native:
+    :path: "../node_modules/@fullstory/react-native"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   hermes-engine:
@@ -2436,6 +2463,8 @@ SPEC CHECKSUMS:
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
   FBLazyVector: 6fe148afcef2e3213e484758e3459609d40d57f5
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
+  FullStory: a1e10b677610211a04c4c5d2ca568ffccc0ea90b
+  fullstory_react-native: 6e6bef3a875a88acdf7ded116debf5ec57bcc900
   glog: eb93e2f488219332457c3c4eafd2738ddc7e80b8
   hermes-engine: b417d2b2aee3b89b58e63e23a51e02be91dc876d
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8

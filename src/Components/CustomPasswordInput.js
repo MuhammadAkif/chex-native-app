@@ -38,7 +38,7 @@ const CustomPasswordInput = forwardRef(
   ) => {
     const ICON_COMPONENT = Password_Icon[isPasswordHidden];
     return (
-      <View style={[styles.container, inputContainerStyle]}>
+      <View style={[styles.container, inputContainerStyle]} fsClass="fs-mask">
         <TextInput
           ref={ref}
           placeholder={placeholder}
