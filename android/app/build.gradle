@@ -1,6 +1,19 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+apply plugin: 'fullstory'
+
+// FullStory configuration
+// See: https://help.fullstory.com/hc/en-us/articles/360040596093-Getting-Started-with-Android-Data-Capture
+fullstory {
+    org "10TCF2"
+    // Enable FullStory in debug builds for testing
+    enabledVariants = ["debug", "release"]
+    // Explicitly enable recording on start (default is true, but being explicit)
+    recordOnStart = true
+}
+
+
 // apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
 
 /**

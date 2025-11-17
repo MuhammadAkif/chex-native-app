@@ -13,6 +13,7 @@ import {useSelector} from 'react-redux';
 import {getUserFullName} from '../../../Utils/helpers';
 import {useFocusEffect} from '@react-navigation/native';
 import {ANDROID, exitAppInfo, HARDWARE_BACK_PRESS} from '../../../Constants';
+import FullstoryAPI from '@fullstory/react-native';
 
 const {
   title,
@@ -93,7 +94,19 @@ const Home = ({navigation}) => {
     BackHandler.exitApp();
   }
 
-  const getHomeData = () => {
+  const getHomeData = async () => {
+    // Test FullStory synchronously to see immediate results
+    console.log('🔍 [FullStory Debug] Testing FullStory availability...');
+    try {
+      const sessionId = await FullstoryAPI.getCurrentSession();
+      console.log('🔍 [FullStory Debug] Current session ID:', sessionId);
+
+      const sessionURL = await FullstoryAPI.getCurrentSessionURL();
+      console.log('🔍 [FullStory Debug] Current session URL:', sessionURL);
+    } catch (error) {
+      console.error('🔍 [FullStory Debug] Error getting session:', error);
+    }
+
     getUserInspectionStatsAPI();
     getRegisteredVehiclesAPI();
     getRecentInspectionsAPI();

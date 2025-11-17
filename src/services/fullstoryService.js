@@ -22,10 +22,14 @@ import {AppState, Platform} from 'react-native';
 // Get this from your FullStory dashboard: https://app.fullstory.com
 const FULLSTORY_ORG_ID = process.env.FULLSTORY_ORG_ID || '';
 
-// Enable FullStory only in production builds
-// This avoids Metro Server compatibility issues during development
-// NOTE: FullStory will still initialize natively, but JS-side features are disabled in dev
-const IS_FULLSTORY_ENABLED = !__DEV__;
+// Enable FullStory in debug mode for testing
+// Set to false to disable FullStory in development (helps avoid Metro Server compatibility issues)
+// Set to true to enable FullStory in debug mode for testing
+const ENABLE_FULLSTORY_IN_DEBUG = true;
+
+// Enable FullStory based on environment
+// FullStory will initialize natively regardless, but JS-side features follow this flag
+const IS_FULLSTORY_ENABLED = ENABLE_FULLSTORY_IN_DEBUG || !__DEV__;
 
 // Track AppState listener for cleanup
 let appStateSubscription = null;
@@ -46,9 +50,14 @@ let appStateSubscription = null;
  * - iOS: Set via Info.plist or native code
  */
 export const initializeFullStory = () => {
+  console.log('[FullStory] initializeFullStory() called');
+  console.log('[FullStory] IS_FULLSTORY_ENABLED:', IS_FULLSTORY_ENABLED);
+  console.log('[FullStory] __DEV__:', __DEV__);
+  console.log('[FullStory] FullStory module available:', !!FullStory);
+
   if (!IS_FULLSTORY_ENABLED) {
     if (__DEV__) {
-      console.log('[FullStory] Disabled in development mode');
+      console.log('[FullStory] Disabled in development mode (set ENABLE_FULLSTORY_IN_DEBUG=true to enable)');
     }
     return;
   }
@@ -56,21 +65,34 @@ export const initializeFullStory = () => {
   try {
     // FullStory starts automatically - no need to call start()
     // The org ID is configured natively (Android/iOS)
-    console.log('[FullStory] Initialized (auto-starts on app launch)');
+    const mode = __DEV__ ? 'DEBUG' : 'PRODUCTION';
+    console.log(`[FullStory] Initialized in ${mode} mode (auto-starts on app launch)`);
+    console.log('[FullStory] FullStory methods available:', {
+      onReady: typeof FullStory.onReady,
+      getCurrentSessionURL: typeof FullStory.getCurrentSessionURL,
+      getCurrentSession: typeof FullStory.getCurrentSession,
+      restart: typeof FullStory.restart,
+    });
 
     // Set up AppState listener for background/foreground handling
     setupAppStateListener();
 
     // On Android, explicitly restart to ensure proper session recording
     // This addresses a known issue where Android sessions may lack interaction data
+    // Also helps ensure FullStory starts if Gradle plugin didn't auto-start it
     if (Platform.OS === 'android') {
-      setTimeout(() => {
+      try {
+        console.log('[FullStory] Calling restart() to ensure FullStory starts...');
         FullStory.restart();
         console.log('[FullStory] Android restart completed');
-      }, 1000);
+        // Try to check if FullStory is actually running after restart
+      } catch (restartError) {
+        console.error('[FullStory] Android restart error:', restartError);
+      }
     }
   } catch (error) {
     console.error('[FullStory] Initialization error:', error);
+    console.error('[FullStory] Error stack:', error.stack);
   }
 };
 

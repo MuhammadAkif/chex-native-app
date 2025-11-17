@@ -8,7 +8,8 @@ buildscript {
         kotlinVersion = "2.0.21"
         // FullStory Android SDK version - required for FullStory React Native
         // This version is detected by FullStory React Native's build.gradle
-        fullstoryVersion = "1.28.0"
+        // Updated to 1.65.1 to support Android API 35
+        fullstoryVersion = "1.65.1"
     }
     repositories {
         google()
@@ -21,7 +22,7 @@ buildscript {
          // react-native-crop-image-picker config ends here
 
          // FullStory Maven repository - required for FullStory Android SDK
-         maven { url 'https://maven.fullstory.com' }
+         maven { url "https://maven.fullstory.com" } 
     }
     dependencies {
         classpath("com.android.tools.build:gradle")
@@ -29,7 +30,9 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
         // FullStory Android Gradle plugin - required for FullStory React Native v1.8.0
         // This plugin provides version information that FullStory React Native needs
-        classpath("com.fullstory:gradle-plugin-local:1.28.0")
+        // The React Native module looks for 'gradle-plugin-local-' in the classpath
+        // Version should match or be compatible with the SDK version (1.65.1)
+        classpath("com.fullstory:gradle-plugin-local:1.65.1")
     }
 }
 
