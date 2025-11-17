@@ -51,9 +51,6 @@ let appStateSubscription = null;
  */
 export const initializeFullStory = () => {
   console.log('[FullStory] initializeFullStory() called');
-  console.log('[FullStory] IS_FULLSTORY_ENABLED:', IS_FULLSTORY_ENABLED);
-  console.log('[FullStory] __DEV__:', __DEV__);
-  console.log('[FullStory] FullStory module available:', !!FullStory);
 
   if (!IS_FULLSTORY_ENABLED) {
     if (__DEV__) {
@@ -67,13 +64,6 @@ export const initializeFullStory = () => {
     // The org ID is configured natively (Android/iOS)
     const mode = __DEV__ ? 'DEBUG' : 'PRODUCTION';
     console.log(`[FullStory] Initialized in ${mode} mode (auto-starts on app launch)`);
-    console.log('[FullStory] FullStory methods available:', {
-      onReady: typeof FullStory.onReady,
-      getCurrentSessionURL: typeof FullStory.getCurrentSessionURL,
-      getCurrentSession: typeof FullStory.getCurrentSession,
-      restart: typeof FullStory.restart,
-    });
-
     // Set up AppState listener for background/foreground handling
     setupAppStateListener();
 
