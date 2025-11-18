@@ -12,10 +12,14 @@ import Navigation from './src/Navigation/index';
 import {clearNewInspection, hideToast, signOut} from './src/Store/Actions';
 import {hasCameraAndMicrophoneAllowed} from './src/Utils';
 import {resetNavigation} from './src/services/navigationService';
+import Smartlook from 'react-native-smartlook-analytics';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
 const {SIGN_IN} = ROUTES;
+
+Smartlook.instance.preferences.setProjectKey('55e59aabc6d01548b92f9b48c6794cee4d4eb3b0');
+Smartlook.instance.start();
 
 function App() {
   const dispatch = useDispatch();
