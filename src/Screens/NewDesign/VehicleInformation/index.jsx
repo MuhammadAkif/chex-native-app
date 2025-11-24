@@ -314,7 +314,7 @@ const VehicleInformation = props => {
     const isAnyImagePresent = numberPlate?.uri || mileage?.uri || vin?.uri;
 
     return isLoading || vinLoading || mileageLoading || isFetchingVehicleInfo || !isAnyImagePresent;
-  }
+  };
 
   return (
     <View style={styles.blueContainer}>
@@ -714,10 +714,10 @@ const VehicleInformation = props => {
                               )}
                             </View>
                           )}
-                            <TouchableOpacity
-                              disabled={isClearFormDisabled()}
-                              style={[styles.clearFormButton, {opacity: isClearFormDisabled() ? 0.5 : 1}]}
-                              onPress={() => handlePressClearForm(setFieldValue, setFieldTouched, setFieldError)}>
+                          <TouchableOpacity
+                            disabled={isClearFormDisabled()}
+                            style={[styles.clearFormButton, {opacity: isClearFormDisabled() ? 0.5 : 1}]}
+                            onPress={() => handlePressClearForm(setFieldValue, setFieldTouched, setFieldError)}>
                             <AppText style={styles.clearFormButtonText}>Clear all</AppText>
                           </TouchableOpacity>
                         </View>

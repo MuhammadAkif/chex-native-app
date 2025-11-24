@@ -23,7 +23,6 @@ import Comment from './CommentBox/Comment';
 import CommentBox from './CommentBox/CommentBox';
 import CommentButton from './CommentButton';
 import CompletedInspectionBackgroundImage from './CompletedInspectionBackgroundImage';
-import CustomDrawerContent from './CustomDrawerContent';
 import CustomInput from './CustomInput';
 import CustomPasswordInput from './CustomPasswordInput';
 import Custom_Image from './Custom_Image';
@@ -108,7 +107,6 @@ export {
   CommentButton,
   CompletedInspectionBackgroundImage,
   ConfirmVehicleDetailModal,
-  CustomDrawerContent,
   CustomInput,
   CustomPasswordInput,
   Custom_Image,

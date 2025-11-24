@@ -47,7 +47,7 @@ const {white} = colors;
 const defaultOrientation = 'portrait';
 const {container, headerContainer} = PreviewStyles;
 
-const {NEW_INSPECTION, INSPECTION_SELECTION} = ROUTES;
+const {NEW_INSPECTION} = ROUTES;
 const isUploadFailedInitialState = {visible: false, title: '', message: ''};
 
 const CameraContainer = ({route, navigation}) => {
@@ -326,7 +326,7 @@ const CameraContainer = ({route, navigation}) => {
 
   const handleExitPress = () => {
     resetAllStates();
-    navigation.popTo(ROUTES.HOME, {screen: INSPECTION_SELECTION});
+    navigation.popTo(TABS.HOME, {screen: ROUTES.VEHICLE_INFORMATION});
   };
 
   const handleOnRightIconPress = () => setOrientation(prevState => switchOrientation[prevState]);

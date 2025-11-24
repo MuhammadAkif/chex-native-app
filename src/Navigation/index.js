@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useSelector} from 'react-redux';
@@ -20,19 +20,35 @@ import {ROUTES, STACKS} from './ROUTES';
 import {navigationRef} from '../services/navigationService';
 import BottomTab from './bottomTab';
 import {AuthStack} from './stacks';
+import smartlookService from '../services/smartlookService';
 
 const Stack = createNativeStackNavigator();
-
+let lastTrackedScreen = null;
 // ----------------------
 // ROOT NAVIGATION
 // ----------------------
 const RootNavigation = () => {
-  const token = useSelector(state => state?.auth?.user?.token);
+  const {data: userData, token} = useSelector(state => state?.auth?.user);
   const initialRouteName = token ? ROUTES.TABS : STACKS.AUTH_STACK;
   const screenOptions = {headerShown: false, gestureEnabled: false};
 
+  useEffect(() => {
+    if (token && userData) {
+      smartlookService.identifyUser(userData.id?.toString(), userData?.email, userData?.username);
+    }
+  }, [token, userData]);
+
+  // NAVIGATION TRACKING
+  const trackNavigation = () => {
+    const routeName = navigationRef.getCurrentRoute()?.name;
+    if (routeName && routeName !== lastTrackedScreen) {
+      lastTrackedScreen = routeName;
+      smartlookService.trackScreen(routeName);
+    }
+  };
+
   return (
-    <NavigationContainer ref={navigationRef}>
+    <NavigationContainer ref={navigationRef} onReady={trackNavigation} onStateChange={trackNavigation}>
       <Stack.Navigator initialRouteName={initialRouteName} screenOptions={screenOptions}>
         {/* AUTH STACK */}
         <Stack.Screen name={STACKS.AUTH_STACK} component={AuthStack} />
