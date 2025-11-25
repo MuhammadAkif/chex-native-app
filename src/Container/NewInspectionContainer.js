@@ -704,7 +704,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       ActiveExteriorItemsExpandedCard={ActiveExteriorItemsExpandedCard}
       vehicle_Type={shouldAnnotate}
       ActiveInteriorItemsExpandedCard={ActiveInteriorItemsExpandedCard}
-      coordinates={mediaModalDetails?.coordinates || []}
+      coordinates={mediaModalDetails?.coordinates?.coordinateArray || []}
       displayInstructions={vehicle_Type === 'new'}
       imageDimensions={imageDimensions}
       companyId={companyId}
