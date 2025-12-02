@@ -105,7 +105,7 @@ const InspectionReviewedContainer = ({navigation}) => {
     if (statusCode === 401) {
       handle_Session_Expired(statusCode, dispatch);
     }
-    console.log('error of inspection in progress => ', error.response.data);
+    console.log('error of inspection in detail => ', error.response.data);
   }
   const onNewInspectionPress = async () => {
     await handleNewInspectionPress(dispatch, setIsNewInspectionLoading, data?.companyId, navigation, resetAllStates);
