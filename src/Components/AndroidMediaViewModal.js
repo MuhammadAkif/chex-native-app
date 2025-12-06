@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, Modal, TouchableOpacity, StatusBar, ActivityIndicator} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, Modal, TouchableOpacity, StatusBar, ActivityIndicator, Image} from 'react-native';
 import Video from 'react-native-video';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
@@ -12,6 +12,8 @@ const {white, cobaltBlueDark} = colors;
 const AndroidMediaViewModal = ({source, handleVisible, title, isVideo, coordinates = []}) => {
   // const [isFullScreen, setIsFullScreen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [imgSize, setImgSize] = useState({width: 0, height: 0});
+  const [imageReady, setImageReady] = useState(false);
   // const toggleIcon = {
   //   true: Expand,
   //   false: Collapse,
@@ -22,6 +24,32 @@ const AndroidMediaViewModal = ({source, handleVisible, title, isVideo, coordinat
   // };
   // const activeVideoHeight = toggle_Height[isFullScreen];
   // const ActiveIcon = toggleIcon[isFullScreen];
+
+  useEffect(() => {
+    Image.getSize(source, (originalW, originalH) => {
+      const maxWidth = wp('80%');
+      const maxHeight = hp('50%');
+
+      let finalWidth = maxWidth;
+      let finalHeight = (originalH / originalW) * maxWidth;
+
+      // If height exceeds max height, scale by height instead
+      if (finalHeight > maxHeight) {
+        finalHeight = maxHeight;
+        finalWidth = (originalW / originalH) * maxHeight;
+      }
+
+      setImgSize({
+        width: finalWidth,
+        height: finalHeight,
+      });
+    });
+  }, [source]);
+
+  const handleImageLayout = () => {
+    // image has width/height applied and is rendered correctly
+    setImageReady(true);
+  };
 
   return (
     <Modal statusBarTranslucent animationType="slide" transparent={true} visible={true} onRequestClose={handleVisible} style={styles.modalContainer}>
@@ -52,9 +80,14 @@ const AndroidMediaViewModal = ({source, handleVisible, title, isVideo, coordinat
               />
             </View>
           ) : (
-            <View style={styles.imageContainer}>
-              <Custom_Image source={{uri: source}} imageStyle={styles.image} />
-              {coordinates.length > 0 &&
+            <View style={[styles.imageContainer, {width: imgSize.width, height: imgSize.height}]}>
+              <Custom_Image
+                onLayout={handleImageLayout}
+                source={{uri: source}}
+                imageStyle={[styles.image, {width: imgSize.width, height: imgSize.height}]}
+              />
+              {imageReady &&
+                coordinates.length > 0 &&
                 coordinates.map((marker, index) => <RenderIcons key={marker.id} marker={marker} index={index} disabled={true} />)}
             </View>
           )}
@@ -111,6 +144,7 @@ const styles = StyleSheet.create({
     fontSize: hp('3%'),
     fontWeight: '600',
     color: white,
+    marginBottom: wp(10),
   },
   expandIconContainer: {
     position: 'absolute',

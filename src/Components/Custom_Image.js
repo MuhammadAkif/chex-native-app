@@ -11,7 +11,7 @@ const loadingProgressInitialState = {
   display: true,
 };
 
-const Custom_Image = ({source, onProgress = fallBack, onLoadEnd = fallBack, loadingContainerStyle = {}, imageStyle = {}}) => {
+const Custom_Image = ({source, onProgress = fallBack, onLoadEnd = fallBack, onLayout, loadingContainerStyle = {}, imageStyle = {}}) => {
   const [loadingProgress, setLoadingProgress] = useState(loadingProgressInitialState);
   const zIndex = progressZIndex[loadingProgress.progress === 1];
 
@@ -38,11 +38,11 @@ const Custom_Image = ({source, onProgress = fallBack, onLoadEnd = fallBack, load
   return (
     <Image
       source={source}
-      resizeMode="stretch"
+      resizeMode="contain"
       style={[styles.image, imageStyle]}
       // onProgress={on_Progress}
       // onLoadEnd={on_LoadEnd}
-    ></Image>
+      onLayout={onLayout}></Image>
   );
 };
 

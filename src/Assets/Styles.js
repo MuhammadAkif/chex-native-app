@@ -206,7 +206,9 @@ export const PreviewStyles = StyleSheet.create({
   },
   videoContainer: {
     flex: 1,
-    width: wp('90%'),
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
   },
   headerContainer: {
     width: wp('100%'),

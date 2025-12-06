@@ -371,6 +371,7 @@ const CameraContainer = ({route, navigation}) => {
           handleRetryPress={handleRetryPress}
           handleNextPress={handleNextPress}
           isImageURL={isImageURL}
+          orientation={isImageFile?.orientation}
         />
       ) : (
         <View style={container}>

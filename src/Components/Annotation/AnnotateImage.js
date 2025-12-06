@@ -11,6 +11,8 @@ import {
   Keyboard,
   Platform,
   KeyboardAvoidingView,
+  Image,
+  ScrollView,
 } from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
@@ -22,6 +24,7 @@ import {ANNOTATE_IMAGE, AnnotationAlertMessage, DAMAGE_TYPE, Platforms} from '..
 import {generateRandomString, isNotEmpty, mergeData} from '../../Utils';
 import {showToast} from '../../Store/Actions';
 import {resizeInnerBox} from '../../Utils/helpers';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 
 const {OS} = Platform;
 const {IOS} = Platforms;
@@ -57,9 +60,31 @@ const AnnotateImage = ({
   const [damageNotes, setDamageNotes] = useState(''); // Shared notes
   const [selectedMarkerId, setSelectedMarkerId] = useState(null);
   const [canSubmit, setCanSubmit] = useState(false);
+  const [imgSize, setImgSize] = useState({width: 0, height: 0});
 
   const active_Opacity = shouldActiveOpacity[canSubmit];
   const isButtonActive = activeButtonColor[canSubmit];
+
+  useEffect(() => {
+    Image.getSize(source, (originalW, originalH) => {
+      const maxWidth = wp('80%');
+      const maxHeight = hp('50%');
+
+      let finalWidth = maxWidth;
+      let finalHeight = (originalH / originalW) * maxWidth;
+
+      // If height exceeds max height, scale by height instead
+      if (finalHeight > maxHeight) {
+        finalHeight = maxHeight;
+        finalWidth = (originalW / originalH) * maxHeight;
+      }
+
+      setImgSize({
+        width: finalWidth,
+        height: finalHeight,
+      });
+    });
+  }, [source]);
 
   useEffect(() => {
     const status = isButtonDisabled();
@@ -102,8 +127,8 @@ const AnnotateImage = ({
       y,
       android_x: locationX - wp('5%'),
       android_y: locationY - wp('5%'),
-      mobileHeight: hp('25%'),
-      mobileWidth: wp('80%'),
+      mobileHeight: imgSize.height,
+      mobileWidth: imgSize.width,
       originalHeight: height,
       originalWidth: width,
     };
@@ -152,23 +177,41 @@ const AnnotateImage = ({
       <TouchableOpacity activeOpacity={1} style={styles.centeredViewContainer} onPress={closeKeyboard}>
         <KeyboardAvoidingView behavior={'padding'}>
           <View style={styles.centeredView}>
-            <View
-              style={[
-                styles.header,
-                {
-                  flex: instructionalSubHeadingText ? 1.5 : 1,
-                  flexGrow: isExterior ? 2 : 1,
-                },
-              ]}>
-              <Text style={[styles.titleText, {bottom: isFullScreen ? hp('3%') : null}]}>
-                {title}
-                <Mandatory style={styles.titleText} />
-              </Text>
-              <TouchableOpacity onPress={onImagePress} activeOpacity={1} disabled={isLoading}>
-                <FastImage source={{uri: source}} priority={'high'} resizeMode={'stretch'} style={[styles.image, {height: hp('25%')}]} />
-                {damageDetails?.length > 0 &&
-                  damageDetails.map((marker, index) => {
-                    return (
+            <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1, paddingVertical: 15, gap: wp(5)}}>
+              <View
+                style={[
+                  styles.header,
+                  {
+                    flex: instructionalSubHeadingText ? 1.5 : 1,
+                    flexGrow: isExterior ? 2 : 1,
+                  },
+                ]}>
+                <Text style={[styles.titleText, {bottom: isFullScreen ? hp('3%') : null}]}>
+                  {title}
+                  <Mandatory style={styles.titleText} />
+                </Text>
+                <TouchableOpacity
+                  onPress={onImagePress}
+                  activeOpacity={1}
+                  disabled={isLoading}
+                  style={{
+                    width: imgSize.width,
+                    height: imgSize.height,
+                  }}>
+                  <FastImage
+                    source={{uri: source}}
+                    resizeMode="contain"
+                    style={{
+                      width: imgSize.width,
+                      height: imgSize.height,
+                      borderRadius: 10,
+                      borderWidth: 1,
+                    }}
+                  />
+                  {/* <FastImage source={{uri: source}} priority={'high'} resizeMode={'stretch'} style={[styles.image, {height: hp('25%')}]} /> */}
+
+                  {damageDetails?.length > 0 &&
+                    damageDetails.map((marker, index) => (
                       <RenderIcons
                         key={marker.id}
                         marker={marker}
@@ -176,56 +219,57 @@ const AnnotateImage = ({
                         selectedMarkerId={selectedMarkerId}
                         onCrossPressed={() => removeMarker(marker.id)}
                       />
-                    );
-                  })}
-              </TouchableOpacity>
-            </View>
-            <View style={styles.body}>
-              <View style={[styles.box, {height: hp('9%'), width: '90%'}]}>
-                <Text style={styles.subHeadingText}>
-                  Identify Damage Severity Level
-                  <Mandatory style={styles.subHeadingText} />
-                </Text>
-                <FlatList
-                  data={DAMAGE_TYPE}
-                  renderItem={({item}) => (
-                    <RenderDamageTypes item={item} selectedDamage={damageType} handleDamageDetails={(key, value) => setDamageType(value)} />
-                  )}
-                  keyExtractor={item => item}
-                  horizontal={true}
-                />
+                    ))}
+                </TouchableOpacity>
               </View>
-              <View style={styles.box}>
-                <Text style={styles.subHeadingText}>Add Notes</Text>
-                <View style={styles.statusDescriptionContainer}>
-                  <TextInput
-                    style={[styles.text, OS === IOS && styles.iOSStyle]}
-                    placeholder={notes}
-                    multiline={true}
-                    placeholderTextColor={gray}
-                    value={damageNotes}
-                    onChangeText={text => setDamageNotes(text)}
+
+              <View style={styles.body}>
+                <View style={[styles.box, {height: hp('9%'), width: '90%'}]}>
+                  <Text style={styles.subHeadingText}>
+                    Identify Damage Severity Level
+                    <Mandatory style={styles.subHeadingText} />
+                  </Text>
+                  <FlatList
+                    data={DAMAGE_TYPE}
+                    renderItem={({item}) => (
+                      <RenderDamageTypes item={item} selectedDamage={damageType} handleDamageDetails={(key, value) => setDamageType(value)} />
+                    )}
+                    keyExtractor={item => item}
+                    horizontal={true}
                   />
                 </View>
+                <View style={styles.box}>
+                  <Text style={styles.subHeadingText}>Add Notes</Text>
+                  <View style={styles.statusDescriptionContainer}>
+                    <TextInput
+                      style={[styles.text, OS === IOS && styles.iOSStyle]}
+                      placeholder={notes}
+                      multiline={true}
+                      placeholderTextColor={gray}
+                      value={damageNotes}
+                      onChangeText={text => setDamageNotes(text)}
+                    />
+                  </View>
+                </View>
               </View>
-            </View>
-            <View style={styles.footerContainer}>
-              <PrimaryGradientButton
-                text={annotateButtonText}
-                buttonStyle={styles.submitButton}
-                onPress={handleSubmission}
-                disabled={isLoading}
-                colors={isButtonActive}
-                activeOpacity={active_Opacity}
-              />
-              <SecondaryButton
-                text={cancelButtonText}
-                buttonStyle={styles.cancelButton}
-                textStyle={styles.cancelButtonText}
-                onPress={handleCancelPress}
-                disabled={isLoading}
-              />
-            </View>
+              <View style={styles.footerContainer}>
+                <PrimaryGradientButton
+                  text={annotateButtonText}
+                  buttonStyle={styles.submitButton}
+                  onPress={handleSubmission}
+                  disabled={isLoading}
+                  colors={isButtonActive}
+                  activeOpacity={active_Opacity}
+                />
+                <SecondaryButton
+                  text={cancelButtonText}
+                  buttonStyle={styles.cancelButton}
+                  textStyle={styles.cancelButtonText}
+                  onPress={handleCancelPress}
+                  disabled={isLoading}
+                />
+              </View>
+            </KeyboardAwareScrollView>
           </View>
         </KeyboardAvoidingView>
       </TouchableOpacity>
@@ -244,16 +288,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: cobaltBlueMedium,
-    paddingTop: hp('7%'),
+    // paddingTop: hp('7%'),
   },
   centeredView: {
-    height: hp('80%'),
     width: wp('90%'),
+    height: hp('80%'),
     borderRadius: hp('1%'),
     backgroundColor: white,
   },
   header: {
-    flex: 1,
+    // flex: 1,
     width: wp('90%'),
     justifyContent: 'space-evenly',
     alignItems: 'center',
@@ -262,6 +306,7 @@ const styles = StyleSheet.create({
     fontSize: hp('3%'),
     fontWeight: '600',
     color: royalBlue,
+    marginBottom: 10,
   },
   subHeadingContainer: {
     alignItems: 'center',
@@ -270,7 +315,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
   },
   body: {
-    flex: 2,
+    // flex: 2,
     width: wp('90%'),
     alignItems: 'center',
     rowGap: hp('2%'),
