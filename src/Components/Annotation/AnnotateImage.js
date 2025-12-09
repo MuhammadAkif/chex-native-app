@@ -11,8 +11,6 @@ import {
   Keyboard,
   Platform,
   KeyboardAvoidingView,
-  Image,
-  ScrollView,
 } from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
@@ -25,6 +23,7 @@ import {generateRandomString, isNotEmpty, mergeData} from '../../Utils';
 import {showToast} from '../../Store/Actions';
 import {resizeInnerBox} from '../../Utils/helpers';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
+import {useResponsiveImageSize} from '../../hooks';
 
 const {OS} = Platform;
 const {IOS} = Platforms;
@@ -37,6 +36,9 @@ let shouldActiveOpacity = {
   true: 0,
   false: 1,
 };
+
+const WEB_MARKER_WIDTH = 20;
+const WEB_MARKER_HEIGHT = 20;
 
 const AnnotateImage = ({
   modalVisible = false,
@@ -60,31 +62,10 @@ const AnnotateImage = ({
   const [damageNotes, setDamageNotes] = useState(''); // Shared notes
   const [selectedMarkerId, setSelectedMarkerId] = useState(null);
   const [canSubmit, setCanSubmit] = useState(false);
-  const [imgSize, setImgSize] = useState({width: 0, height: 0});
+  const imgSize = useResponsiveImageSize(source);
 
   const active_Opacity = shouldActiveOpacity[canSubmit];
   const isButtonActive = activeButtonColor[canSubmit];
-
-  useEffect(() => {
-    Image.getSize(source, (originalW, originalH) => {
-      const maxWidth = wp('80%');
-      const maxHeight = hp('50%');
-
-      let finalWidth = maxWidth;
-      let finalHeight = (originalH / originalW) * maxWidth;
-
-      // If height exceeds max height, scale by height instead
-      if (finalHeight > maxHeight) {
-        finalHeight = maxHeight;
-        finalWidth = (originalW / originalH) * maxHeight;
-      }
-
-      setImgSize({
-        width: finalWidth,
-        height: finalHeight,
-      });
-    });
-  }, [source]);
 
   useEffect(() => {
     const status = isButtonDisabled();
@@ -104,8 +85,8 @@ const AnnotateImage = ({
     const newMarker = {
       ...coordinates,
       id,
-      width: 10,
-      height: 10,
+      width: WEB_MARKER_WIDTH,
+      height: WEB_MARKER_HEIGHT,
       accuracyMatrix: {
         tp: 1,
         fp: 0,
@@ -121,10 +102,10 @@ const AnnotateImage = ({
   const onImagePress = event => {
     const {locationX, locationY} = event.nativeEvent;
     const {height, width} = imageDimensions;
-    const {x, y} = resizeInnerBox(height, width, wp('80%'), hp('25%'), locationX, locationY);
+    const {x, y} = resizeInnerBox(imgSize.width, imgSize.height, locationX, locationY);
     const coordinates = {
-      x,
-      y,
+      x: x - WEB_MARKER_WIDTH / 2,
+      y: y - WEB_MARKER_HEIGHT / 2,
       android_x: locationX - wp('5%'),
       android_y: locationY - wp('5%'),
       mobileHeight: imgSize.height,

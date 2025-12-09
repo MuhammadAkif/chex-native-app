@@ -18,7 +18,7 @@ const RenderInspectionDetail = ({item, handleDisplayMedia, categoryCount}) => {
   let {completedUrl: source} = checkAndCompleteUrl(processedUrl || url);
   return (
     <TouchableOpacity disabled={!isNotEmpty(source)} style={styles.container} onPress={() => handleDisplayMedia(item)}>
-      <Custom_Image source={{uri: source}} />
+      <Custom_Image resizeMode={'cover'} source={{uri: source}} />
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );

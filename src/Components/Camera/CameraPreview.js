@@ -1,44 +1,31 @@
 import React from 'react';
-import {StatusBar, View} from 'react-native';
+import {StatusBar, StyleSheet, View} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
+
 import {colors, PreviewStyles} from '../../Assets/Styles';
 import {PreviewFooter} from '../index';
 import {BackArrow} from '../../Assets/Icons';
 
 const {white, cobaltBlueLight} = colors;
+const {recordingPreviewContainer, headerContainer, videoContainer} = PreviewStyles;
 
-const CameraPreview = ({isImageURL, orientation, handleNavigationBackPress, handleRetryPress, handleNextPress}) => {
-  const isLandscape = orientation?.includes('landscape');
-
+const CameraPreview = ({isImageURL, handleNavigationBackPress, handleRetryPress, handleNextPress}) => {
   return (
-    <View style={PreviewStyles.recordingPreviewContainer}>
-      {/* Header */}
-      <View style={PreviewStyles.headerContainer}>
+    <View style={recordingPreviewContainer}>
+      <View style={headerContainer}>
         <BackArrow height={hp('8%')} width={wp('8%')} color={white} onPress={handleNavigationBackPress} />
       </View>
-
-      {/* Image Container (NO ROTATION HERE) */}
-      <View
-        style={{
-          ...PreviewStyles.videoContainer,
-          width: isLandscape ? hp('80%') : wp('90%'), // swap sizes
-          height: isLandscape ? wp('90%') : hp('80%'), // swap sizes
-        }}>
+      <View style={videoContainer}>
         <FastImage
           source={{uri: isImageURL}}
-          resizeMode="contain"
-          style={{
-            width: '100%',
-            height: '100%',
-            transform: isLandscape ? [{rotate: '90deg'}] : [],
-          }}
+          priority={'normal'}
+          resizeMode={'contain'}
+          style={[StyleSheet.absoluteFillObject, {borderRadius: 10}]}
         />
       </View>
-
-      {/* Footer */}
       <PreviewFooter onRetryPress={handleRetryPress} onNextPress={handleNextPress} />
-      <StatusBar backgroundColor={cobaltBlueLight} barStyle="light-content" translucent />
+      <StatusBar backgroundColor={cobaltBlueLight} barStyle="light-content" translucent={true} />
     </View>
   );
 };

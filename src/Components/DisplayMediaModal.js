@@ -1,16 +1,24 @@
-import React, {useState} from 'react';
-import {Modal, StyleSheet, View, Text, TouchableOpacity, StatusBar, ActivityIndicator} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Modal, StyleSheet, View, Text, TouchableOpacity, StatusBar, ActivityIndicator, Image} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import Video from 'react-native-video';
 
 import {Cross} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {Custom_Image, RenderIcons} from './index';
+import {useResponsiveImageSize} from '../hooks';
 
 const {cobaltBlueDark, white} = colors;
 
 const DisplayMediaModal = ({handleVisible, source, title, isVideo, coordinates = []}) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [imageReady, setImageReady] = useState(false);
+  const imgSize = useResponsiveImageSize(source);
+
+  const handleImageLayout = () => {
+    setImageReady(true);
+  };
+
   return (
     <Modal statusBarTranslucent animationType="slide" transparent={true} visible={true} onRequestClose={handleVisible} style={styles.container}>
       <View style={styles.centeredView}>
@@ -34,9 +42,14 @@ const DisplayMediaModal = ({handleVisible, source, title, isVideo, coordinates =
               />
             </View>
           ) : (
-            <View style={styles.imageContainer}>
-              <Custom_Image source={{uri: source}} imageStyle={styles.image} />
-              {coordinates.length > 0 &&
+            <View style={[styles.imageContainer, {width: imgSize.width, height: imgSize.height}]}>
+              <Custom_Image
+                onLayout={handleImageLayout}
+                source={{uri: source}}
+                imageStyle={[styles.image, {width: imgSize.width, height: imgSize.height}]}
+              />
+              {imageReady &&
+                coordinates.length > 0 &&
                 coordinates.map((marker, index) => <RenderIcons key={marker.id} marker={marker} index={index} disabled={true} />)}
             </View>
           )}
@@ -68,6 +81,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: hp('3%'),
     fontWeight: '600',
+    marginBottom: wp(10),
   },
   image: {
     height: hp('25%'),

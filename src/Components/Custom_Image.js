@@ -11,7 +11,15 @@ const loadingProgressInitialState = {
   display: true,
 };
 
-const Custom_Image = ({source, onProgress = fallBack, onLoadEnd = fallBack, onLayout, loadingContainerStyle = {}, imageStyle = {}}) => {
+const Custom_Image = ({
+  source,
+  onProgress = fallBack,
+  onLoadEnd = fallBack,
+  onLayout,
+  loadingContainerStyle = {},
+  imageStyle = {},
+  ...otherProps
+}) => {
   const [loadingProgress, setLoadingProgress] = useState(loadingProgressInitialState);
   const zIndex = progressZIndex[loadingProgress.progress === 1];
 
@@ -42,7 +50,9 @@ const Custom_Image = ({source, onProgress = fallBack, onLoadEnd = fallBack, onLa
       style={[styles.image, imageStyle]}
       // onProgress={on_Progress}
       // onLoadEnd={on_LoadEnd}
-      onLayout={onLayout}></Image>
+      onLayout={onLayout}
+      {...otherProps}
+    />
   );
 };
 
