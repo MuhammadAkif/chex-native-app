@@ -1,50 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet, Modal, TouchableOpacity, StatusBar, ActivityIndicator, Image} from 'react-native';
 import Video from 'react-native-video';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
-import {Cross, Expand, Collapse} from '../Assets/Icons';
+import {Cross} from '../Assets/Icons';
 import {colors} from '../Assets/Styles';
 import {Custom_Image, RenderIcons} from './index';
+import {useResponsiveImageSize} from '../hooks';
 
 const {white, cobaltBlueDark} = colors;
 
 const AndroidMediaViewModal = ({source, handleVisible, title, isVideo, coordinates = []}) => {
-  // const [isFullScreen, setIsFullScreen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [imgSize, setImgSize] = useState({width: 0, height: 0});
   const [imageReady, setImageReady] = useState(false);
-  // const toggleIcon = {
-  //   true: Expand,
-  //   false: Collapse,
-  // };
-  // const toggle_Height = {
-  //   true: hp('50%'),
-  //   false: hp('25%'),
-  // };
-  // const activeVideoHeight = toggle_Height[isFullScreen];
-  // const ActiveIcon = toggleIcon[isFullScreen];
-
-  useEffect(() => {
-    Image.getSize(source, (originalW, originalH) => {
-      const maxWidth = wp('80%');
-      const maxHeight = hp('50%');
-
-      let finalWidth = maxWidth;
-      let finalHeight = (originalH / originalW) * maxWidth;
-
-      // If height exceeds max height, scale by height instead
-      if (finalHeight > maxHeight) {
-        finalHeight = maxHeight;
-        finalWidth = (originalW / originalH) * maxHeight;
-      }
-
-      setImgSize({
-        width: finalWidth,
-        height: finalHeight,
-      });
-    });
-  }, [source]);
+  const imgSize = useResponsiveImageSize(source);
 
   const handleImageLayout = () => {
     // image has width/height applied and is rendered correctly

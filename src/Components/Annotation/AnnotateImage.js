@@ -1,21 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Modal,
-  StyleSheet,
-  View,
-  Text,
-  StatusBar,
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-  Keyboard,
-  Platform,
-  KeyboardAvoidingView,
-} from 'react-native';
+import {Modal, StyleSheet, View, Text, StatusBar, FlatList, TextInput, TouchableOpacity, Keyboard, Platform} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import {useDispatch} from 'react-redux';
-
 import {colors} from '../../Assets/Styles';
 import {PrimaryGradientButton, RenderDamageTypes, RenderIcons, SecondaryButton, Toast, Mandatory} from '../index';
 import {ANNOTATE_IMAGE, AnnotationAlertMessage, DAMAGE_TYPE, Platforms} from '../../Constants';
@@ -28,10 +15,12 @@ import {useResponsiveImageSize} from '../../hooks';
 const {OS} = Platform;
 const {IOS} = Platforms;
 const {white, gray, royalBlue, lightGray, black, cobaltBlueMedium} = colors;
+
 const activeButtonColor = {
   true: ['#FF7A00', '#F90'],
   false: [gray, gray],
 };
+
 let shouldActiveOpacity = {
   true: 0,
   false: 1,
@@ -155,105 +144,104 @@ const AnnotateImage = ({
       visible={modalVisible}
       onRequestClose={handleVisible}
       style={styles.container}>
-      <TouchableOpacity activeOpacity={1} style={styles.centeredViewContainer} onPress={closeKeyboard}>
-        <KeyboardAvoidingView behavior={'padding'}>
+      <View style={styles.centeredViewContainer} onPress={closeKeyboard}>
+        <KeyboardAwareScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{flexGrow: 1}}>
           <View style={styles.centeredView}>
-            <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1, paddingVertical: 15, gap: wp(5)}}>
-              <View
-                style={[
-                  styles.header,
-                  {
-                    flex: instructionalSubHeadingText ? 1.5 : 1,
-                    flexGrow: isExterior ? 2 : 1,
-                  },
-                ]}>
-                <Text style={[styles.titleText, {bottom: isFullScreen ? hp('3%') : null}]}>
-                  {title}
-                  <Mandatory style={styles.titleText} />
-                </Text>
-                <TouchableOpacity
-                  onPress={onImagePress}
-                  activeOpacity={1}
-                  disabled={isLoading}
+            <View
+              style={[
+                styles.header,
+                {
+                  flex: instructionalSubHeadingText ? 1.5 : 1,
+                  flexGrow: isExterior ? 2 : 1,
+                },
+              ]}>
+              <Text style={[styles.titleText, {bottom: isFullScreen ? hp('3%') : null}]}>
+                {title}
+                <Mandatory style={styles.titleText} />
+              </Text>
+              <TouchableOpacity
+                onPress={onImagePress}
+                activeOpacity={1}
+                disabled={isLoading}
+                style={{
+                  width: imgSize.width,
+                  height: imgSize.height,
+                }}>
+                <FastImage
+                  source={{uri: source}}
+                  resizeMode="contain"
                   style={{
                     width: imgSize.width,
                     height: imgSize.height,
-                  }}>
-                  <FastImage
-                    source={{uri: source}}
-                    resizeMode="contain"
-                    style={{
-                      width: imgSize.width,
-                      height: imgSize.height,
-                      borderRadius: 10,
-                      borderWidth: 1,
-                    }}
-                  />
-                  {/* <FastImage source={{uri: source}} priority={'high'} resizeMode={'stretch'} style={[styles.image, {height: hp('25%')}]} /> */}
+                    borderRadius: 10,
+                    borderWidth: 1,
+                  }}
+                />
+                {/* <FastImage source={{uri: source}} priority={'high'} resizeMode={'stretch'} style={[styles.image, {height: hp('25%')}]} /> */}
 
-                  {damageDetails?.length > 0 &&
-                    damageDetails.map((marker, index) => (
-                      <RenderIcons
-                        key={marker.id}
-                        marker={marker}
-                        handleExclamationMarkPress={() => handleExclamationMarkPress(index)}
-                        selectedMarkerId={selectedMarkerId}
-                        onCrossPressed={() => removeMarker(marker.id)}
-                      />
-                    ))}
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.body}>
-                <View style={[styles.box, {height: hp('9%'), width: '90%'}]}>
-                  <Text style={styles.subHeadingText}>
-                    Identify Damage Severity Level
-                    <Mandatory style={styles.subHeadingText} />
-                  </Text>
-                  <FlatList
-                    data={DAMAGE_TYPE}
-                    renderItem={({item}) => (
-                      <RenderDamageTypes item={item} selectedDamage={damageType} handleDamageDetails={(key, value) => setDamageType(value)} />
-                    )}
-                    keyExtractor={item => item}
-                    horizontal={true}
-                  />
-                </View>
-                <View style={styles.box}>
-                  <Text style={styles.subHeadingText}>Add Notes</Text>
-                  <View style={styles.statusDescriptionContainer}>
-                    <TextInput
-                      style={[styles.text, OS === IOS && styles.iOSStyle]}
-                      placeholder={notes}
-                      multiline={true}
-                      placeholderTextColor={gray}
-                      value={damageNotes}
-                      onChangeText={text => setDamageNotes(text)}
+                {damageDetails?.length > 0 &&
+                  damageDetails.map((marker, index) => (
+                    <RenderIcons
+                      key={marker.id}
+                      marker={marker}
+                      handleExclamationMarkPress={() => handleExclamationMarkPress(index)}
+                      selectedMarkerId={selectedMarkerId}
+                      onCrossPressed={() => removeMarker(marker.id)}
                     />
-                  </View>
+                  ))}
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.body}>
+              <View style={[styles.box, {height: hp('9%'), width: '90%'}]}>
+                <Text style={styles.subHeadingText}>
+                  Identify Damage Severity Level
+                  <Mandatory style={styles.subHeadingText} />
+                </Text>
+                <FlatList
+                  data={DAMAGE_TYPE}
+                  renderItem={({item}) => (
+                    <RenderDamageTypes item={item} selectedDamage={damageType} handleDamageDetails={(key, value) => setDamageType(value)} />
+                  )}
+                  keyExtractor={item => item}
+                  horizontal={true}
+                />
+              </View>
+              <View style={styles.box}>
+                <Text style={styles.subHeadingText}>Add Notes</Text>
+                <View style={styles.statusDescriptionContainer}>
+                  <TextInput
+                    style={[styles.text, OS === IOS && styles.iOSStyle]}
+                    placeholder={notes}
+                    multiline={true}
+                    placeholderTextColor={gray}
+                    value={damageNotes}
+                    onChangeText={text => setDamageNotes(text)}
+                  />
                 </View>
               </View>
-              <View style={styles.footerContainer}>
-                <PrimaryGradientButton
-                  text={annotateButtonText}
-                  buttonStyle={styles.submitButton}
-                  onPress={handleSubmission}
-                  disabled={isLoading}
-                  colors={isButtonActive}
-                  activeOpacity={active_Opacity}
-                />
-                <SecondaryButton
-                  text={cancelButtonText}
-                  buttonStyle={styles.cancelButton}
-                  textStyle={styles.cancelButtonText}
-                  onPress={handleCancelPress}
-                  disabled={isLoading}
-                />
-              </View>
-            </KeyboardAwareScrollView>
+            </View>
+            <View style={styles.footerContainer}>
+              <PrimaryGradientButton
+                text={annotateButtonText}
+                buttonStyle={styles.submitButton}
+                onPress={handleSubmission}
+                disabled={isLoading}
+                colors={isButtonActive}
+                activeOpacity={active_Opacity}
+              />
+              <SecondaryButton
+                text={cancelButtonText}
+                buttonStyle={styles.cancelButton}
+                textStyle={styles.cancelButtonText}
+                onPress={handleCancelPress}
+                disabled={isLoading}
+              />
+            </View>
           </View>
-        </KeyboardAvoidingView>
-      </TouchableOpacity>
+        </KeyboardAwareScrollView>
+        {/* </KeyboardAvoidingView> */}
+      </View>
       <StatusBar backgroundColor={cobaltBlueMedium} barStyle="light-content" translucent={true} />
       <Toast isModal={true} />
     </Modal>
@@ -269,16 +257,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: cobaltBlueMedium,
-    // paddingTop: hp('7%'),
+    paddingVertical: hp('7%'),
   },
   centeredView: {
     width: wp('90%'),
-    height: hp('80%'),
+
+    flex: 1,
     borderRadius: hp('1%'),
     backgroundColor: white,
+    paddingVertical: '5%',
+    gap: wp(5),
   },
   header: {
-    // flex: 1,
+    flex: 1,
     width: wp('90%'),
     justifyContent: 'space-evenly',
     alignItems: 'center',
