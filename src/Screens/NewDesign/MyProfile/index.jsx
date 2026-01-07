@@ -15,6 +15,7 @@ import api from '../../../services/api';
 import {API_ENDPOINTS} from '../../../Constants';
 import {useFocusEffect} from '@react-navigation/native';
 import {Types} from '../../../Store/Types';
+import smartlookService from '../../../services/smartlookService';
 
 const validate = values => {
   const errors = {};
@@ -65,6 +66,7 @@ const MyProfile = ({navigation}) => {
     navigation.replace(STACKS.AUTH_STACK);
 
     setTimeout(() => {
+      smartlookService.resetUser();
       dispatch(signOut());
     }, 100);
   };

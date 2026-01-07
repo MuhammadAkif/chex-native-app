@@ -13,12 +13,12 @@ const {width} = Dimensions.get(WINDOW);
 const {black} = colors;
 
 const RenderInspectionDetail = ({item, handleDisplayMedia, categoryCount}) => {
-  const {category, url} = item;
+  const {category, url, processedUrl} = item;
   let title = formatTitle(category);
-  let {completedUrl: source} = checkAndCompleteUrl(url);
+  let {completedUrl: source} = checkAndCompleteUrl(processedUrl || url);
   return (
     <TouchableOpacity disabled={!isNotEmpty(source)} style={styles.container} onPress={() => handleDisplayMedia(item)}>
-      <Custom_Image source={{uri: source}} />
+      <Custom_Image resizeMode={'cover'} source={{uri: source}} />
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );

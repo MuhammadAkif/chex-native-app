@@ -793,7 +793,7 @@ function onGet_Inspection_DetailsFail(error, dispatch) {
   if (statusCode === 401) {
     handle_Session_Expired(statusCode, dispatch);
   }
-  console.log('error of inspection in progress => ', error.response.data);
+  console.log('error onGet_Inspection_DetailsFail => ', error.response.data);
 }
 export const getAnnotationStatus = (files = [], id = '') => {
   if (!isNotEmpty(files) || !isNotEmpty(id)) {

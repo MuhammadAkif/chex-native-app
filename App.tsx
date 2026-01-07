@@ -12,6 +12,7 @@ import Navigation from './src/Navigation/index';
 import {clearNewInspection, hideToast, signOut} from './src/Store/Actions';
 import {hasCameraAndMicrophoneAllowed} from './src/Utils';
 import {resetNavigation} from './src/services/navigationService';
+import smartlookService from './src/services/smartlookService';
 
 const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
 const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
@@ -23,6 +24,10 @@ function App() {
   const {sessionExpired} = useSelector(state => state?.auth);
   const [displayGif, setDisplayGif] = useState(true);
   const [updateAvailable, setUpdateAvailable] = useState('');
+
+  useEffect(() => {
+    smartlookService.init(process.env.SMARTLOOK_PROJECT_ID || '');
+  }, []);
 
   useEffect(() => {
     (async () => {

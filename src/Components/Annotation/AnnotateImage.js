@@ -1,39 +1,33 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Modal,
-  StyleSheet,
-  View,
-  Text,
-  StatusBar,
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-  Keyboard,
-  Platform,
-  KeyboardAvoidingView,
-} from 'react-native';
+import {Modal, StyleSheet, View, Text, StatusBar, FlatList, TextInput, TouchableOpacity, Keyboard, Platform} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import {useDispatch} from 'react-redux';
-
 import {colors} from '../../Assets/Styles';
 import {PrimaryGradientButton, RenderDamageTypes, RenderIcons, SecondaryButton, Toast, Mandatory} from '../index';
 import {ANNOTATE_IMAGE, AnnotationAlertMessage, DAMAGE_TYPE, Platforms} from '../../Constants';
 import {generateRandomString, isNotEmpty, mergeData} from '../../Utils';
 import {showToast} from '../../Store/Actions';
 import {resizeInnerBox} from '../../Utils/helpers';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
+import {useResponsiveImageSize} from '../../hooks';
 
 const {OS} = Platform;
 const {IOS} = Platforms;
 const {white, gray, royalBlue, lightGray, black, cobaltBlueMedium} = colors;
+
 const activeButtonColor = {
   true: ['#FF7A00', '#F90'],
   false: [gray, gray],
 };
+
 let shouldActiveOpacity = {
   true: 0,
   false: 1,
 };
+
+const WEB_MARKER_WIDTH = 20;
+const WEB_MARKER_HEIGHT = 20;
 
 const AnnotateImage = ({
   modalVisible = false,
@@ -57,6 +51,7 @@ const AnnotateImage = ({
   const [damageNotes, setDamageNotes] = useState(''); // Shared notes
   const [selectedMarkerId, setSelectedMarkerId] = useState(null);
   const [canSubmit, setCanSubmit] = useState(false);
+  const imgSize = useResponsiveImageSize(source);
 
   const active_Opacity = shouldActiveOpacity[canSubmit];
   const isButtonActive = activeButtonColor[canSubmit];
@@ -79,8 +74,8 @@ const AnnotateImage = ({
     const newMarker = {
       ...coordinates,
       id,
-      width: 10,
-      height: 10,
+      width: WEB_MARKER_WIDTH,
+      height: WEB_MARKER_HEIGHT,
       accuracyMatrix: {
         tp: 1,
         fp: 0,
@@ -96,14 +91,14 @@ const AnnotateImage = ({
   const onImagePress = event => {
     const {locationX, locationY} = event.nativeEvent;
     const {height, width} = imageDimensions;
-    const {x, y} = resizeInnerBox(height, width, wp('80%'), hp('25%'), locationX, locationY);
+    const {x, y} = resizeInnerBox(imgSize.width, imgSize.height, locationX, locationY);
     const coordinates = {
-      x,
-      y,
+      x: x - WEB_MARKER_WIDTH / 2,
+      y: y - WEB_MARKER_HEIGHT / 2,
       android_x: locationX - wp('5%'),
       android_y: locationY - wp('5%'),
-      mobileHeight: hp('25%'),
-      mobileWidth: wp('80%'),
+      mobileHeight: imgSize.height,
+      mobileWidth: imgSize.width,
       originalHeight: height,
       originalWidth: width,
     };
@@ -149,8 +144,8 @@ const AnnotateImage = ({
       visible={modalVisible}
       onRequestClose={handleVisible}
       style={styles.container}>
-      <TouchableOpacity activeOpacity={1} style={styles.centeredViewContainer} onPress={closeKeyboard}>
-        <KeyboardAvoidingView behavior={'padding'}>
+      <View style={styles.centeredViewContainer} onPress={closeKeyboard}>
+        <KeyboardAwareScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{flexGrow: 1}}>
           <View style={styles.centeredView}>
             <View
               style={[
@@ -164,22 +159,39 @@ const AnnotateImage = ({
                 {title}
                 <Mandatory style={styles.titleText} />
               </Text>
-              <TouchableOpacity onPress={onImagePress} activeOpacity={1} disabled={isLoading}>
-                <FastImage source={{uri: source}} priority={'high'} resizeMode={'stretch'} style={[styles.image, {height: hp('25%')}]} />
+              <TouchableOpacity
+                onPress={onImagePress}
+                activeOpacity={1}
+                disabled={isLoading}
+                style={{
+                  width: imgSize.width,
+                  height: imgSize.height,
+                }}>
+                <FastImage
+                  source={{uri: source}}
+                  resizeMode="contain"
+                  style={{
+                    width: imgSize.width,
+                    height: imgSize.height,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                  }}
+                />
+                {/* <FastImage source={{uri: source}} priority={'high'} resizeMode={'stretch'} style={[styles.image, {height: hp('25%')}]} /> */}
+
                 {damageDetails?.length > 0 &&
-                  damageDetails.map((marker, index) => {
-                    return (
-                      <RenderIcons
-                        key={marker.id}
-                        marker={marker}
-                        handleExclamationMarkPress={() => handleExclamationMarkPress(index)}
-                        selectedMarkerId={selectedMarkerId}
-                        onCrossPressed={() => removeMarker(marker.id)}
-                      />
-                    );
-                  })}
+                  damageDetails.map((marker, index) => (
+                    <RenderIcons
+                      key={marker.id}
+                      marker={marker}
+                      handleExclamationMarkPress={() => handleExclamationMarkPress(index)}
+                      selectedMarkerId={selectedMarkerId}
+                      onCrossPressed={() => removeMarker(marker.id)}
+                    />
+                  ))}
               </TouchableOpacity>
             </View>
+
             <View style={styles.body}>
               <View style={[styles.box, {height: hp('9%'), width: '90%'}]}>
                 <Text style={styles.subHeadingText}>
@@ -227,8 +239,9 @@ const AnnotateImage = ({
               />
             </View>
           </View>
-        </KeyboardAvoidingView>
-      </TouchableOpacity>
+        </KeyboardAwareScrollView>
+        {/* </KeyboardAvoidingView> */}
+      </View>
       <StatusBar backgroundColor={cobaltBlueMedium} barStyle="light-content" translucent={true} />
       <Toast isModal={true} />
     </Modal>
@@ -244,13 +257,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: cobaltBlueMedium,
-    paddingTop: hp('7%'),
+    paddingVertical: hp('7%'),
   },
   centeredView: {
-    height: hp('80%'),
     width: wp('90%'),
+
+    flex: 1,
     borderRadius: hp('1%'),
     backgroundColor: white,
+    paddingVertical: '5%',
+    gap: wp(5),
   },
   header: {
     flex: 1,
@@ -262,6 +278,7 @@ const styles = StyleSheet.create({
     fontSize: hp('3%'),
     fontWeight: '600',
     color: royalBlue,
+    marginBottom: 10,
   },
   subHeadingContainer: {
     alignItems: 'center',
@@ -270,7 +287,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
   },
   body: {
-    flex: 2,
+    // flex: 2,
     width: wp('90%'),
     alignItems: 'center',
     rowGap: hp('2%'),

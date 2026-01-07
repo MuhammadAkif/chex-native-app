@@ -261,8 +261,8 @@ const calculateImageDimensions = (imageWidth, image_Height, maxWidth = 800, maxH
  * @param {number} initialY The initial y-coordinate of the inner box.
  * @returns {{x: number, y: number}} An object containing the new x and y coordinates of the inner box.
  */
-export function resizeInnerBox(outerWidth, outerHeight, initialWidth, initialHeight, initialX, initialY) {
-  const {width, height} = calculateImageDimensions(outerWidth, outerHeight);
+export function resizeInnerBox(initialWidth, initialHeight, initialX, initialY) {
+  const {width, height} = calculateImageDimensions(initialWidth, initialHeight);
   const xPercent = (initialX / initialWidth) * 100;
   const yPercent = (initialY / initialHeight) * 100;
 

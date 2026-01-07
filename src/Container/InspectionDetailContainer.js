@@ -47,7 +47,7 @@ const InspectionDetailContainer = ({navigation, route}) => {
       'video/mp4': true,
       '.mp4': true,
     };
-    let {completedUrl: source} = checkAndCompleteUrl(item?.url);
+    let {completedUrl: source} = checkAndCompleteUrl(item?.processedUrl || item?.url);
     const isVideo = checkVideo[item?.extension] || false;
     setModalDetails({
       source,

@@ -59,7 +59,7 @@ const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllParts: false,
 };
 
-const {INSPECTION_SELECTION, INSPECTION_IN_PROGRESS, VIDEO, CAMERA, COMPLETED_INSPECTION} = ROUTES;
+const {INSPECTION_IN_PROGRESS, VIDEO, CAMERA, COMPLETED_INSPECTION} = ROUTES;
 const {OS} = Platform;
 const annotationModalInitialState = {
   title: '',
@@ -159,7 +159,7 @@ const NewInspectionContainer = ({route, navigation}) => {
 
     if (route.params) {
       const {isLicensePlate, isOdometer, displayAnnotation, fileId, annotationDetails, is_Exterior, routeName} = route.params;
-      if (routeName !== INSPECTION_SELECTION) {
+      if (routeName !== ROUTES.VEHICLE_INFORMATION) {
         setTimeout(() => {
           setIsLicenseModalVisible(isLicensePlate || false);
           isOdometer && dispatch(setMileageVisible(true));
