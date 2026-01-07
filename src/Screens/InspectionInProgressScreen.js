@@ -1,14 +1,15 @@
 import React from 'react';
-import {View, Text, StyleSheet, FlatList} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import { useTranslation } from 'react-i18next';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
-import {DiscardInspectionModal, LogoHeader, PrimaryStartInspectionButton, RenderInspectionInProgress} from '../Components';
-import {colors, NewInspectionStyles, ShadowEffect} from '../Assets/Styles';
-import {ROUTES} from '../Navigation/ROUTES';
-import {handleHomePress} from '../Utils';
+import { DiscardInspectionModal, LogoHeader, PrimaryStartInspectionButton, RenderInspectionInProgress } from '../Components';
+import { colors, NewInspectionStyles, ShadowEffect } from '../Assets/Styles';
+import { ROUTES } from '../Navigation/ROUTES';
+import { handleHomePress } from '../Utils';
 
-const {black, white, royalBlue} = colors;
-const {container, bodyContainer, bodyHeaderContainer, bodyHeaderTitleText, innerBody} = NewInspectionStyles;
+const { black, white, royalBlue } = colors;
+const { container, bodyContainer, bodyHeaderContainer, bodyHeaderTitleText, innerBody } = NewInspectionStyles;
 
 const InspectionInProgressScreen = ({
   data,
@@ -23,52 +24,56 @@ const InspectionInProgressScreen = ({
   isDiscardInspectionModalVisible,
   fetchInspectionInProgress,
   onNewInspectionPress,
-}) => (
-  <View style={container}>
-    {isDiscardInspectionModalVisible && (
-      <DiscardInspectionModal onYesPress={onYesPress} onNoPress={onNoPress} description={'Are You Sure Want To Discard Your Inspection?'} />
-    )}
-    <LogoHeader showRight={false} />
-    <View style={bodyContainer}>
-      <View style={styles.bodyHeaderContainer}>
-        <Text style={styles.bodyHeaderTitleText}>Inspections in Progress</Text>
-      </View>
-      <View style={{...bodyHeaderContainer, ...styles.bodyHeaderBorderRadius}}>
-        <Text style={{...bodyHeaderTitleText, ...styles.headerHeaderTextTitle}}>
-          Please select inspection below to continue. Once you submit, we will review and issue certificate
-        </Text>
-      </View>
-      <View style={innerBody}>
-        <FlatList
-          data={data}
-          onRefresh={fetchInspectionInProgress}
-          refreshing={isLoading && inspectionID === null}
-          renderItem={({item}) => (
-            <RenderInspectionInProgress
-              item={item}
-              styles={styles}
-              handleContinuePress={handleContinuePress}
-              onCrossPress={onCrossPress}
-              isLoading={isLoading || isNewInspectionLoading}
-              inspectionID={inspectionID}
-            />
-          )}
-          ListEmptyComponent={
-            <View style={styles.emptyDataContainer}>
-              {isLoading ? <Text style={styles.emptyDataText}>Loading...</Text> : <Text style={styles.emptyDataText}>No Inspection in progress</Text>}
-            </View>
-          }
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <View style={container}>
+      {isDiscardInspectionModalVisible && (
+        <DiscardInspectionModal onYesPress={onYesPress} onNoPress={onNoPress} description={t('inspectionInProgress.discardConfirmation')} />
+      )}
+      <LogoHeader showRight={false} />
+      <View style={bodyContainer}>
+        <View style={styles.bodyHeaderContainer}>
+          <Text style={styles.bodyHeaderTitleText}>{t('inspectionInProgress.title')}</Text>
+        </View>
+        <View style={{ ...bodyHeaderContainer, ...styles.bodyHeaderBorderRadius }}>
+          <Text style={{ ...bodyHeaderTitleText, ...styles.headerHeaderTextTitle }}>
+            {t('inspectionInProgress.subtitle')}
+          </Text>
+        </View>
+        <View style={innerBody}>
+          <FlatList
+            data={data}
+            onRefresh={fetchInspectionInProgress}
+            refreshing={isLoading && inspectionID === null}
+            renderItem={({ item }) => (
+              <RenderInspectionInProgress
+                item={item}
+                styles={styles}
+                handleContinuePress={handleContinuePress}
+                onCrossPress={onCrossPress}
+                isLoading={isLoading || isNewInspectionLoading}
+                inspectionID={inspectionID}
+              />
+            )}
+            ListEmptyComponent={
+              <View style={styles.emptyDataContainer}>
+                {isLoading ? <Text style={styles.emptyDataText}>{t('common.loading')}</Text> : <Text style={styles.emptyDataText}>{t('inspectionInProgress.noInspection')}</Text>}
+              </View>
+            }
+          />
+        </View>
+        <PrimaryStartInspectionButton
+          isLoading={isNewInspectionLoading}
+          buttonPress={onNewInspectionPress}
+          textPress={() => handleHomePress(navigation)}
+          disabled={isNewInspectionLoading}
         />
       </View>
-      <PrimaryStartInspectionButton
-        isLoading={isNewInspectionLoading}
-        buttonPress={onNewInspectionPress}
-        textPress={() => handleHomePress(navigation)}
-        disabled={isNewInspectionLoading}
-      />
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   bodyHeaderContainer: {

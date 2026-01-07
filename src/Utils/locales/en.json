@@ -1,0 +1,60 @@
+{
+    "common": {
+        "signIn": "Sign In",
+        "email": "Email",
+        "submit": "Submit",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "reset": "Reset",
+        "loading": "Loading...",
+        "home": "Home",
+        "yes": "Yes",
+        "no": "No",
+        "licensePlateNo": "License Plate no.",
+        "dateCreated": "Date Created",
+        "continue": "Continue"
+    },
+    "welcome": {
+        "title": "Welcome to",
+        "subtitle": "Virtual Inspections"
+    },
+    "signIn": {
+        "title": "Sign in",
+        "namePlaceholder": "John Doe",
+        "forgotPassword": "Forgot Password"
+    },
+    "forgotPassword": {
+        "title": "Forgot Password",
+        "subtitle": "Type Email for password reset",
+        "knowPassword": "Know Your Password?",
+        "loginLink": "Login"
+    },
+    "resetPassword": {
+        "title": "Reset Password",
+        "subtitle": "Please check your email for unique pin and type below",
+        "verificationCodePlaceholder": "Verification Code"
+    },
+    "home": {
+        "greeting": "Hi, {{name}}",
+        "subtitle": "Let's check your vehicle today",
+        "stats": {
+            "totalVehicles": "Total\nVehicles",
+            "inProgressInspections": "In Progress\nInspections",
+            "submittedInspections": "Submitted\nInspections",
+            "totalInspections": "Total\nInspections"
+        },
+        "myRegisteredVehicles": "My Registered Vehicles",
+        "recentInspections": "Recent Inspections",
+        "noRegisteredVehicle": "No Registered Vehicle",
+        "noRecentInspection": "No Recent Inspection"
+    },
+    "inspectionInProgress": {
+        "title": "Inspections in Progress",
+        "subtitle": "Please select inspection below to continue. Once you submit, we will review and issue certificate",
+        "discardConfirmation": "Are You Sure Want To Discard Your Inspection?",
+        "noInspection": "No Inspection in progress",
+        "startInspection": "+ Start Inspection",
+        "orGoBackTo": "Or Go back to",
+        "page": "page"
+    }
+}

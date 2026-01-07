@@ -1,13 +1,11 @@
 import React from 'react';
-import {View, Text, Platform, TouchableOpacity} from 'react-native';
-import {BackgroundImageView, PrimaryGradientButton, InputFieldRequiredError, SignInLogo} from '../../Components';
+import { useTranslation } from 'react-i18next';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { BackgroundImageView, PrimaryGradientButton, InputFieldRequiredError, SignInLogo } from '../../Components';
 import CustomInput from '../../Components/CustomInput';
 import CustomPasswordInput from '../../Components/CustomPasswordInput';
-import {Platforms, PROJECT_NAME} from '../../Constants';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
-
-const {OS} = Platform;
-const {ANDROID, IOS} = Platforms;
+import { PROJECT_NAME } from '../../Constants';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 const SignInScreen = ({
   values,
@@ -26,17 +24,19 @@ const SignInScreen = ({
   hidePassword,
   handleForgetPassword,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <BackgroundImageView>
-      <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}} style={styles.container} keyboardShouldPersistTaps="always">
+      <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }} style={styles.container} keyboardShouldPersistTaps="always">
         <View style={[styles.headerContainer]}>
           <SignInLogo
             titleText={PROJECT_NAME.CHEX}
             dotTitleText={PROJECT_NAME.AI}
-            subtitleText={'Virtual Inspections'}
+            subtitleText={t('welcome.subtitle')}
             containerStyle={styles.logoContainer}
           />
-          <Text style={styles.registerTitleText}>Sign in</Text>
+          <Text style={styles.registerTitleText}>{t('signIn.title')}</Text>
         </View>
         <View style={styles.bodyContainer}>
           <View style={styles.inputAndErrorTextContainer}>
@@ -46,7 +46,7 @@ const SignInScreen = ({
               onChangeText={handleChange}
               onBlur={handleBlur}
               valueName={'name'}
-              placeholder={'John Doe'}
+              placeholder={t('signIn.namePlaceholder')}
               onSubmitEditing={handlePasswordFocus}
               maxLength={100}
             />
@@ -72,11 +72,11 @@ const SignInScreen = ({
           </View>
 
           <TouchableOpacity onPress={handleForgetPassword} style={styles.forgetPasswordContainer}>
-            <Text style={styles.forgotPasswordText}>Forgot Password</Text>
+            <Text style={styles.forgotPasswordText}>{t('signIn.forgotPassword')}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.footerContainer}>
-          <PrimaryGradientButton buttonStyle={styles.registerButtonText} text={'Sign In'} onPress={handleSubmit} disabled={isSubmitting} />
+          <PrimaryGradientButton buttonStyle={styles.registerButtonText} text={t('common.signIn')} onPress={handleSubmit} disabled={isSubmitting} />
         </View>
       </KeyboardAwareScrollView>
     </BackgroundImageView>

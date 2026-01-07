@@ -1,30 +1,35 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import { useTranslation } from 'react-i18next';
+import { View, Text, StyleSheet } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import LinearGradient from 'react-native-linear-gradient';
 
-import {BackgroundImageView, PrimaryGradientButton, SignInLogo} from '../Components';
-import {colors} from '../Assets/Styles';
+import { BackgroundImageView, PrimaryGradientButton, SignInLogo } from '../Components';
+import { colors } from '../Assets/Styles';
 
-const {cobaltBlue} = colors;
+const { cobaltBlue } = colors;
 
-const WelcomeScreen = ({handleSignInPress}) => (
-  <BackgroundImageView>
-    <View style={styles.container}>
-      <LinearGradient colors={['#1876CC', 'transparent']} start={{x: 0, y: 0}} end={{x: 0, y: 1}} locations={[0, 0.6]} style={styles.headerGradient}>
-        <View style={styles.headerEmptyView} />
-        <View style={styles.headerContainer}>
-          <Text style={styles.welcomeText}>Welcome to</Text>
-          <SignInLogo titleText={'CHEX'} dotTitleText={'.AI'} subtitleText={'Virtual Inspections'} />
+const WelcomeScreen = ({ handleSignInPress }) => {
+  const { t } = useTranslation();
+
+  return (
+    <BackgroundImageView>
+      <View style={styles.container}>
+        <LinearGradient colors={['#1876CC', 'transparent']} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} locations={[0, 0.6]} style={styles.headerGradient}>
+          <View style={styles.headerEmptyView} />
+          <View style={styles.headerContainer}>
+            <Text style={styles.welcomeText}>{t('welcome.title')}</Text>
+            <SignInLogo titleText={'CHEX'} dotTitleText={'.AI'} subtitleText={t('welcome.subtitle')} />
+          </View>
+        </LinearGradient>
+        <View style={styles.bodyContainer}>
+          <PrimaryGradientButton text={t('common.signIn')} onPress={handleSignInPress} />
         </View>
-      </LinearGradient>
-      <View style={styles.bodyContainer}>
-        <PrimaryGradientButton text={'Sign In'} onPress={handleSignInPress} />
+        <View style={styles.emptyView} />
       </View>
-      <View style={styles.emptyView} />
-    </View>
-  </BackgroundImageView>
-);
+    </BackgroundImageView>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

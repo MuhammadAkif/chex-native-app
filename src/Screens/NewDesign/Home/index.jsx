@@ -1,26 +1,28 @@
-import {View, StatusBar, ScrollView, Image, FlatList, RefreshControl, ActivityIndicator, BackHandler, Platform} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
-import {styles} from './styles';
+import { View, StatusBar, ScrollView, Image, FlatList, RefreshControl, ActivityIndicator, BackHandler, Platform } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { styles } from './styles';
 import AppText from '../../../Components/text';
-import {AlertPopup, CardWrapper, IconWrapper, InspectionCard, LogoHeader, VehicleCard} from '../../../Components';
-import {colors} from '../../../Assets/Styles';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {BellWhiteIcon, BlueTruckStatIcon, InProgressStatIcon, SubmittedStatIcon, TotalStatIcon} from '../../../Assets/Icons';
-import {IMAGES} from '../../../Assets/Images';
-import {ROUTES, TABS} from '../../../Navigation/ROUTES';
-import {getUserInspectionStats, getRegisteredVehicles, getRecentInspections} from '../../../services/inspection';
-import {useSelector} from 'react-redux';
-import {getUserFullName} from '../../../Utils/helpers';
-import {useFocusEffect} from '@react-navigation/native';
-import {ANDROID, exitAppInfo, HARDWARE_BACK_PRESS} from '../../../Constants';
+import { AlertPopup, CardWrapper, InspectionCard, LogoHeader, VehicleCard } from '../../../Components';
+import { colors } from '../../../Assets/Styles';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { BlueTruckStatIcon, InProgressStatIcon, SubmittedStatIcon, TotalStatIcon } from '../../../Assets/Icons';
+import { IMAGES } from '../../../Assets/Images';
+import { ROUTES, TABS } from '../../../Navigation/ROUTES';
+import { getUserInspectionStats, getRegisteredVehicles, getRecentInspections } from '../../../services/inspection';
+import { useSelector } from 'react-redux';
+import { getUserFullName } from '../../../Utils/helpers';
+import { useFocusEffect } from '@react-navigation/native';
+import { ANDROID, exitAppInfo, HARDWARE_BACK_PRESS } from '../../../Constants';
 
 const {
   title,
   message,
-  button: {yes, cancel},
+  button: { yes, cancel },
 } = exitAppInfo;
 
-const Home = ({navigation}) => {
+const Home = ({ navigation }) => {
+  const { t } = useTranslation();
   const authState = useSelector(state => state?.auth);
   const user = authState?.user?.data;
   const [userInspectionStats, setUserInspectionStats] = useState({
@@ -41,8 +43,8 @@ const Home = ({navigation}) => {
     const response = await getUserInspectionStats();
     setIsStatsLoading(false);
 
-    const {totalVehicles = 0, inProgressInspections = 0, submittedInspections = 0, totalInspections = 0} = response?.data || {};
-    setUserInspectionStats({totalVehicles, inProgressInspections, submittedInspections, totalInspections});
+    const { totalVehicles = 0, inProgressInspections = 0, submittedInspections = 0, totalInspections = 0 } = response?.data || {};
+    setUserInspectionStats({ totalVehicles, inProgressInspections, submittedInspections, totalInspections });
   };
 
   const getRegisteredVehiclesAPI = async () => {
@@ -50,7 +52,7 @@ const Home = ({navigation}) => {
     const response = await getRegisteredVehicles();
     setIsVehicleRegisterLoading(false);
 
-    const {vehicles = []} = response?.data || {};
+    const { vehicles = [] } = response?.data || {};
     setVehiclesData(vehicles);
   };
 
@@ -115,20 +117,13 @@ const Home = ({navigation}) => {
         style={styles.container}>
         {/* BLUE HEADER */}
         <View style={styles.blueHeaderContainer}>
-          <LogoHeader
-            showLeft={false}
-            // rightIcon={
-            //   <IconWrapper>
-            //     <BellWhiteIcon />
-            //   </IconWrapper>
-            // }
-          />
+          <LogoHeader showLeft={false} />
 
           <View style={styles.usernameContainer}>
             <AppText color={colors.white} fontSize={wp(6)} style={styles.username}>
-              Hi, {getUserFullName(user?.name, user?.lastName)}
+              {t('home.greeting', { name: getUserFullName(user?.name, user?.lastName) })}
             </AppText>
-            <AppText color={colors.white}>Let's check your vehicle today</AppText>
+            <AppText color={colors.white}>{t('home.subtitle')}</AppText>
           </View>
 
           <Image source={IMAGES.VanOutline} style={styles.vanoutlineContainer} />
@@ -137,32 +132,32 @@ const Home = ({navigation}) => {
         {/* WHITE CONTAINER */}
         <View style={styles.whiteContainerContent}>
           <View style={styles.statsContainer}>
-            <StatBox title={'Total\nVehicles'} icon={BlueTruckStatIcon} count={isStatsLoading ? '...' : userInspectionStats.totalVehicles} id={0} />
+            <StatBox title={t('home.stats.totalVehicles')} icon={BlueTruckStatIcon} count={isStatsLoading ? '...' : userInspectionStats.totalVehicles} id={0} />
             <StatBox
-              title={'In Progress\nInspections'}
+              title={t('home.stats.inProgressInspections')}
               icon={InProgressStatIcon}
               count={isStatsLoading ? '...' : userInspectionStats.inProgressInspections}
               id={1}
               onPress={handlePressStatCard}
             />
             <StatBox
-              title={'Submitted\nInspections'}
+              title={t('home.stats.submittedInspections')}
               icon={SubmittedStatIcon}
               count={isStatsLoading ? '...' : userInspectionStats.submittedInspections}
               id={2}
               onPress={handlePressStatCard}
             />
-            <StatBox title={'Total\nInspections'} icon={TotalStatIcon} count={isStatsLoading ? '...' : userInspectionStats.totalInspections} id={3} />
+            <StatBox title={t('home.stats.totalInspections')} icon={TotalStatIcon} count={isStatsLoading ? '...' : userInspectionStats.totalInspections} id={3} />
           </View>
 
           <View style={styles.withHeadingContentContainer}>
             <View style={styles.sectionWrapper}>
-              <AppText style={styles.headingText}>My Registered Vehicles</AppText>
+              <AppText style={styles.headingText}>{t('home.myRegisteredVehicles')}</AppText>
               <RegisteredVehicles data={vehiclesData} isLoading={isVehicleRegisterLoading} />
             </View>
 
             <View style={styles.sectionWrapper}>
-              <AppText style={styles.headingText}>Recent Inspections</AppText>
+              <AppText style={styles.headingText}>{t('home.recentInspections')}</AppText>
               <RecentInspections data={recentInspections} isLoading={isRecentInspectionLoading} />
             </View>
           </View>
@@ -182,7 +177,7 @@ const Home = ({navigation}) => {
   );
 };
 
-const StatBox = ({count = 0, icon: Icon, title, id, onPress}) => {
+const StatBox = ({ count = 0, icon: Icon, title, id, onPress }) => {
   return (
     <CardWrapper onPress={() => onPress?.(id)} style={styles.statBoxContainer}>
       <View style={styles.numberAndIcon}>
@@ -198,7 +193,9 @@ const StatBox = ({count = 0, icon: Icon, title, id, onPress}) => {
   );
 };
 
-const RegisteredVehicles = ({data, isLoading}) => {
+const RegisteredVehicles = ({ data, isLoading }) => {
+  const { t } = useTranslation();
+
   return (
     <FlatList
       horizontal
@@ -207,19 +204,21 @@ const RegisteredVehicles = ({data, isLoading}) => {
       contentContainerStyle={styles.vehicleContentList}
       showsHorizontalScrollIndicator={false}
       keyExtractor={(item, index) => index.toString()}
-      renderItem={({item, index}) => <VehicleCard item={item} />}
+      renderItem={({ item, index }) => <VehicleCard item={item} />}
       ListEmptyComponent={
         isLoading ? (
           <ActivityIndicator style={styles.registerVehicleLoader} size={'small'} color={colors.royalBlue} />
         ) : (
-          <AppText style={styles.noRegisterText}>No Registered Vehicle</AppText>
+          <AppText style={styles.noRegisterText}>{t('home.noRegisteredVehicle')}</AppText>
         )
       }
     />
   );
 };
 
-const RecentInspections = ({data, isLoading}) => {
+const RecentInspections = ({ data, isLoading }) => {
+  const { t } = useTranslation();
+
   return (
     <FlatList
       horizontal
@@ -228,12 +227,12 @@ const RecentInspections = ({data, isLoading}) => {
       contentContainerStyle={styles.vehicleContentList}
       showsHorizontalScrollIndicator={false}
       keyExtractor={(item, index) => index.toString()}
-      renderItem={({item, index}) => <InspectionCard item={item} />}
+      renderItem={({ item, index }) => <InspectionCard item={item} />}
       ListEmptyComponent={
         isLoading ? (
           <ActivityIndicator style={styles.registerVehicleLoader} size={'small'} color={colors.royalBlue} />
         ) : (
-          <AppText style={styles.noRegisterText}>No Recent Inspection</AppText>
+          <AppText style={styles.noRegisterText}>{t('home.noRecentInspection')}</AppText>
         )
       }
     />

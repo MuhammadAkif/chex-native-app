@@ -1,38 +1,43 @@
 import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { Text, View, StyleSheet } from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-import {colors} from '../Assets/Styles';
-import {PrimaryGradientButton} from './index';
+import { colors } from '../Assets/Styles';
+import { PrimaryGradientButton } from './index';
 
-const {royalBlue} = colors;
+const { royalBlue } = colors;
 
 const PrimaryStartInspectionButton = ({
   buttonPress,
   textPress,
   disabled,
   isLoading,
-}) => (
-  <View style={styles.footer}>
-    <PrimaryGradientButton
-      onPress={buttonPress}
-      disabled={isLoading || disabled}
-      text={'+ Start Inspection'}
-      buttonStyle={styles.buttonContainer}
-    />
-    <Text style={styles.footerText} disabled={isLoading}>
-      Or Go back to
-      <Text style={styles.homeText} onPress={textPress} disabled={isLoading}>
-        {' '}
-        Home{' '}
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <View style={styles.footer}>
+      <PrimaryGradientButton
+        onPress={buttonPress}
+        disabled={isLoading || disabled}
+        text={t('inspectionInProgress.startInspection')}
+        buttonStyle={styles.buttonContainer}
+      />
+      <Text style={styles.footerText} disabled={isLoading}>
+        {t('inspectionInProgress.orGoBackTo')}
+        <Text style={styles.homeText} onPress={textPress} disabled={isLoading}>
+          {' '}
+          {t('common.home')}{' '}
+        </Text>
+        {t('inspectionInProgress.page')}
       </Text>
-      page
-    </Text>
-  </View>
-);
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   buttonContainer: {
