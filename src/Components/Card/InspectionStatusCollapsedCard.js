@@ -28,13 +28,36 @@ const ActiveColor = {
   false: lightSteelBlue,
 };
 
-const InspectionStatusCollapsedCard = ({textOne, textTwo, onPress, isActive, labelOne, labelTwo, isReviewed}) => {
+import {useTranslation} from 'react-i18next';
+
+const InspectionStatusCollapsedCard = ({
+  textOne,
+  textTwo,
+  onPress,
+  isActive,
+  labelOne,
+  labelTwo,
+  isReviewed,
+}) => {
+  const {t} = useTranslation();
   const ArrowComponent = Arrow[isActive];
   const isNotInPreview = !IS_IN_REVIEW[isReviewed];
   const iconHeight = hp('4%');
   const iconWidth = wp('4%');
+  
+  // Helper to get translation key from status string
+  // 'Ready For Review' -> 'ready_for_review'
+  // 'In Review' -> 'in_review'
+  // 'Reviewed' -> 'reviewed'
+  const getStatusTranslationKey = (status) => {
+      return status.toLowerCase().replace(/ /g, '_');
+  };
+
   return (
-    <TouchableOpacity style={styles.collapsedCardContainer} disabled={IS_IN_REVIEW[isReviewed]} onPress={onPress}>
+    <TouchableOpacity
+      style={styles.collapsedCardContainer}
+      disabled={IS_IN_REVIEW[isReviewed]}
+      onPress={onPress}>
       <View
         style={[
           styles.statusContainer,
@@ -42,7 +65,9 @@ const InspectionStatusCollapsedCard = ({textOne, textTwo, onPress, isActive, lab
             backgroundColor: STATUS_BACKGROUND_COLOR[isReviewed],
           },
         ]}>
-        <Text style={styles.statusText}>{isReviewed}</Text>
+        <Text style={styles.statusText}>
+          {t(`statuses.${getStatusTranslationKey(isReviewed)}`)}
+        </Text>
       </View>
       <View style={styles.collapsedCardContentContainer}>
         <View style={styles.trackingIdAndDateContainer}>
@@ -63,7 +88,13 @@ const InspectionStatusCollapsedCard = ({textOne, textTwo, onPress, isActive, lab
               borderWidth: isNotInPreview ? 3 : 0,
             },
           ]}>
-          {isNotInPreview && <ArrowComponent height={iconHeight} width={iconWidth} color={ActiveColor[isActive]} />}
+          {isNotInPreview && (
+            <ArrowComponent
+              height={iconHeight}
+              width={iconWidth}
+              color={ActiveColor[isActive]}
+            />
+          )}
         </View>
       </View>
     </TouchableOpacity>

@@ -1,4 +1,5 @@
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {ActivityIndicator, KeyboardAvoidingView, ScrollView, StyleSheet, View} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {CameraBorderedIcon} from '../../Assets/Icons';
@@ -22,8 +23,10 @@ const DVIRVehicleInfoScreen = ({
   onPressVINCamera,
   vinLoading,
   isFormSubmitLoading,
-}) => (
-  <View style={container}>
+}) => {
+  const {t} = useTranslation();
+  return (
+    <View style={container}>
     <View style={bodyContainer}>
       <KeyboardAwareScrollView
         bottomOffset={20}
@@ -32,7 +35,7 @@ const DVIRVehicleInfoScreen = ({
         style={styles.scrollStyle}>
         <View style={styles.innerBody}>
           {/* Driver Name */}
-          <AppText style={styles.inputLabel}>Driver Name</AppText>
+          <AppText style={styles.inputLabel}>{t('vehicleInfo.driverNameLabel')}</AppText>
           <CustomInput
             placeholder=""
             value={values.driverName}
@@ -45,7 +48,7 @@ const DVIRVehicleInfoScreen = ({
           />
           {touched.driverName && errors.driverName && <AppText style={errorStyle.errorsTextStyle}>{errors.driverName}</AppText>}
           {/* Date */}
-          <AppText style={styles.inputLabel}>Date</AppText>
+          <AppText style={styles.inputLabel}>{t('vehicleInfo.dateLabel')}</AppText>
           <CustomInput
             placeholder=""
             value={values.date}
@@ -57,7 +60,9 @@ const DVIRVehicleInfoScreen = ({
           />
           {touched.date && errors.date && <AppText style={errorStyle.errorsTextStyle}>{errors.date}</AppText>}
           {/* Truck ID/License Plate */}
-          <AppText style={styles.inputLabel}>Truck ID/License Plate</AppText>
+          <AppText style={styles.inputLabel}>
+            {t('vehicleInfo.licensePlateLabel')}
+          </AppText>
           <CustomInput
             placeholder=""
             value={values.licensePlateNumber}
@@ -72,7 +77,7 @@ const DVIRVehicleInfoScreen = ({
             <AppText style={errorStyle.errorsTextStyle}>{errors.licensePlateNumber}</AppText>
           )}
           {/* Mileage */}
-          <AppText style={styles.inputLabel}>Mileage</AppText>
+          <AppText style={styles.inputLabel}>{t('vehicleInfo.mileageLabel')}</AppText>
           <CustomInput
             placeholder=""
             value={values.mileage}
@@ -86,7 +91,7 @@ const DVIRVehicleInfoScreen = ({
           />
           {touched.mileage && errors.mileage && <AppText style={errorStyle.errorsTextStyle}>{errors.mileage}</AppText>}
           {/* VIN */}
-          <AppText style={styles.inputLabel}>VIN</AppText>
+          <AppText style={styles.inputLabel}>{t('vehicleInfo.vinLabel')}</AppText>
           <CustomInput
             placeholder=""
             value={values.vin}
@@ -127,13 +132,14 @@ const DVIRVehicleInfoScreen = ({
         <PrimaryGradientButton
           onPress={handleSubmit}
           disabled={isFormSubmitLoading || isSubmitting}
-          text={'Next'}
+          text={t('vehicleInfo.next')}
           buttonStyle={styles.buttonContainer}
         />
       </KeyboardAwareScrollView>
     </View>
   </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   innerBody: {flex: 1},

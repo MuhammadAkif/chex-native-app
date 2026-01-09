@@ -11,9 +11,11 @@ import {colors} from '../Assets/Styles';
 
 const {royalBlue} = colors;
 
+import {useTranslation} from 'react-i18next';
+
 const ButtonFooter = ({
-  yesText = 'Yes',
-  noText = 'No',
+  yesText,
+  noText,
   onYesPress = fallBack,
   onNoPress = fallBack,
   isLoading = false,
@@ -23,17 +25,18 @@ const ButtonFooter = ({
   noButtonStyle = {},
   noButtonTextStyle = {},
 }) => {
+  const {t} = useTranslation();
   return (
     <View style={{...styles.footerContainer, ...containerStyle}}>
       <PrimaryGradientButton
-        text={yesText}
+        text={yesText || t('common.yes')}
         buttonStyle={{...styles.yesButton, ...yesButtonStyle}}
         onPress={onYesPress}
         disabled={isLoading}
         colors={yesButtonColor}
       />
       <SecondaryButton
-        text={noText}
+        text={noText || t('common.no')}
         buttonStyle={{...styles.noButton, ...noButtonStyle}}
         textStyle={{...styles.noButtonText, ...noButtonTextStyle}}
         onPress={onNoPress}

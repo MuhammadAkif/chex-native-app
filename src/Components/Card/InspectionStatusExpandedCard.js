@@ -16,35 +16,44 @@ import {Car} from '../../Assets/Icons';
 
 const {royalBlue, white, gray} = colors;
 
+import {useTranslation} from 'react-i18next';
+
 const InspectionStatusExpandedCard = ({
   inspectionID,
   inspectionDetailsPress,
   isLoading,
   isActivity,
   finalStatus,
-}) => (
-  <View style={styles.container}>
-    <TouchableOpacity style={styles.detailsContainer}>
-      <Car height={hp('5%')} width={wp('5%')} color={royalBlue} />
-      <Text style={styles.detailsText}>
-        {finalStatus ? 'No Damage Detected' : 'Damage Detected'}
-      </Text>
-    </TouchableOpacity>
-    <TouchableOpacity
-      style={styles.detailsContainer}
-      disabled={isLoading}
-      onPress={() => inspectionDetailsPress(inspectionID)}>
-      <Car height={hp('5%')} width={wp('5%')} color={royalBlue} />
-      {isLoading && isActivity ? (
-        <View style={styles.activityContainer}>
-          <ActivityIndicator size={'small'} />
-        </View>
-      ) : (
-        <Text style={styles.detailsText}>Inspection Details</Text>
-      )}
-    </TouchableOpacity>
-  </View>
-);
+}) => {
+  const {t} = useTranslation();
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.detailsContainer}>
+        <Car height={hp('5%')} width={wp('5%')} color={royalBlue} />
+        <Text style={styles.detailsText}>
+          {finalStatus
+            ? t('inspectionCard.noDamageDetected')
+            : t('inspectionCard.damageDetected')}
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.detailsContainer}
+        disabled={isLoading}
+        onPress={() => inspectionDetailsPress(inspectionID)}>
+        <Car height={hp('5%')} width={wp('5%')} color={royalBlue} />
+        {isLoading && isActivity ? (
+          <View style={styles.activityContainer}>
+            <ActivityIndicator size={'small'} />
+          </View>
+        ) : (
+          <Text style={styles.detailsText}>
+            {t('inspectionCard.inspectionDetails')}
+          </Text>
+        )}
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

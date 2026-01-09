@@ -14,6 +14,8 @@ const switchCheck = {
   false: silverGray,
 };
 
+import {useTranslation} from 'react-i18next';
+
 const RenderStatuses = ({
   item,
   index,
@@ -21,7 +23,8 @@ const RenderStatuses = ({
   containerStyle = {},
   labelTextStyle = {},
 }) => {
-  const {name, count, selected, id} = item;
+  const {t} = useTranslation();
+  const {name, count, selected, id, key} = item;
   const ActiveCheck = switchCheck[selected];
   const on_Press = () => onPress(item, index);
   return (
@@ -29,7 +32,9 @@ const RenderStatuses = ({
       onPress={on_Press}
       style={{...styles.container, ...containerStyle}}>
       <View style={styles.textsContainer}>
-        <Text style={{...styles.labelText, ...labelTextStyle}}>{name}</Text>
+        <Text style={{...styles.labelText, ...labelTextStyle}}>
+          {name || t(`statuses.${key}`)}
+        </Text>
         <View style={styles.counterContainer}>
           <Text style={styles.counterText}>{count}</Text>
         </View>

@@ -1,4 +1,5 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {useTranslation} from 'react-i18next';
 import {ROUTES, STACKS} from './ROUTES';
 import {stackScreenOptions} from './navigationOptions';
 import {
@@ -19,10 +20,11 @@ import AppText from '../Components/text';
 const Stack = createNativeStackNavigator();
 
 const MyTripsScreen = () => {
+  const {t} = useTranslation();
   return (
     <SafeAreaView style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <StatusBar backgroundColor={colors.black} translucent barStyle={'dark-content'} />
-      <AppText fontSize={18}>{'Coming Soon!'}</AppText>
+      <AppText fontSize={18}>{t('common.comingSoon')}</AppText>
     </SafeAreaView>
   );
 };

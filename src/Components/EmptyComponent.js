@@ -5,9 +5,15 @@ import React from 'react';
 
 const {gray} = colors;
 
-const EmptyComponent = ({text = 'No Inspections available', style = {}}) => (
-  <Text style={{...styles.noDataText, ...style}}>{text}</Text>
-);
+import {useTranslation} from 'react-i18next';
+const EmptyComponent = ({text, style = {}}) => {
+  const {t} = useTranslation();
+  return (
+    <Text style={{...styles.noDataText, ...style}}>
+      {text || t('inspectionReviewed.noData')}
+    </Text>
+  );
+};
 
 const styles = StyleSheet.create({
   noDataText: {

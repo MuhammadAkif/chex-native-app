@@ -1,5 +1,6 @@
 import {View, StatusBar, ScrollView, Image, Pressable, ActivityIndicator, TouchableWithoutFeedback, TouchableOpacity} from 'react-native';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {styles} from './styles';
 import {CardWrapper, CustomInput, DiscardInspectionModal, LoadingIndicator, LogoHeader, PrimaryGradientButton} from '../../../Components';
 import AppText from '../../../Components/text';
@@ -26,31 +27,31 @@ import {useRoute} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import {Types} from '../../../Store/Types';
 
-const validate = (values, hasInspectionType, OCRsCapturedImages) => {
+const validate = (values, hasInspectionType, OCRsCapturedImages, t) => {
   const errors = {};
 
   if (OCRsCapturedImages?.numberPlate?.uri && !values?.licensePlateNumber?.trim()) {
-    errors.licensePlateNumber = 'Reading undetected. Please input license plate number manually';
+    errors.licensePlateNumber = t('vehicleInfo.errors.licensePlateUndetected');
   } else if (!OCRsCapturedImages?.numberPlate?.uri && !values?.licensePlateNumber?.trim()) {
-    errors.licensePlateNumber = 'License plate number is required';
+    errors.licensePlateNumber = t('vehicleInfo.errors.licensePlateRequired');
   }
 
   if (OCRsCapturedImages?.mileage?.uri && !values?.mileage?.trim()) {
-    errors.mileage = 'Reading undetected. Please input mileage manually';
+    errors.mileage = t('vehicleInfo.errors.mileageUndetected');
   } else if (!OCRsCapturedImages?.mileage?.uri && !values?.mileage?.trim()) {
-    errors.mileage = 'Mileage is required';
+    errors.mileage = t('vehicleInfo.errors.mileageRequired');
   }
 
   if (OCRsCapturedImages?.vin?.uri && !values?.vin?.trim()) {
-    errors.vin = 'Reading undetected. Please input VIN manually';
+    errors.vin = t('vehicleInfo.errors.vinUndetected');
   } else if (!OCRsCapturedImages?.vin?.uri && !values?.vin?.trim()) {
-    errors.vin = 'VIN is required';
+    errors.vin = t('vehicleInfo.errors.vinRequired');
   } else if (values?.vin?.length < 17) {
-    errors.vin = 'VIN must be 17 characters long';
+    errors.vin = t('vehicleInfo.errors.vinLength');
   }
 
   if (values.vehicleType === VEHICLE_TYPES.TRUCK && hasInspectionType && !values.inspectionType?.trim?.()) {
-    errors.inspectionType = 'Inspection Type is required';
+    errors.inspectionType = t('vehicleInfo.errors.inspectionTypeRequired');
   }
 
   return errors;
@@ -75,6 +76,7 @@ const currentDate = new Date().toISOString();
 const OCRsCapturedImagesInitialState = {mileage: {uri: '', extension: ''}, numberPlate: {uri: '', extension: ''}, vin: {uri: '', extension: ''}};
 
 const VehicleInformation = props => {
+  const {t} = useTranslation();
   const {navigation} = props;
   const authState = useSelector(state => state?.auth);
   const dispatch = useDispatch();
@@ -339,20 +341,20 @@ const VehicleInformation = props => {
               style={styles.container}>
               <View style={styles.infoContainer}>
                 <AppText fontSize={wp(4.5)} fontWeight={'600'}>
-                  Vehicle Information
+                  {t('vehicleInfo.title')}
                 </AppText>
                 <AppText fontSize={wp(3)} color={colors.steelGray}>
-                  Please provide the vehicle information below to begin your inspection. All fields are required to ensure accurate compliance.
+                  {t('vehicleInfo.subtitle')}
                 </AppText>
               </View>
 
               <Formik
                 initialValues={initialData}
                 validate={values => {
-                  const errors = validate(values, hasInspectionType, OCRsCapturedImagesRef?.current);
+                  const errors = validate(values, hasInspectionType, OCRsCapturedImagesRef?.current, t);
 
                   if (showVehicleType && !values.vehicleType) {
-                    errors.vehicleType = 'Please select a vehicle type';
+                    errors.vehicleType = t('vehicleInfo.errors.vehicleTypeRequired');
                   }
 
                   return errors;
@@ -388,7 +390,7 @@ const VehicleInformation = props => {
 
                       const mileageNotDetected = () => {
                         dispatch(setMileage(''));
-                        setFieldError('mileage', 'Reading undetected. Please input mileage manually');
+                        setFieldError('mileage', t('vehicleInfo.errors.mileageUndetected'));
                         setFieldTouched('mileage', true, false);
                         resetCaptureImageParams();
                         setTimeout(() => mileageInputRef.current?.focus(), 200);
@@ -430,7 +432,7 @@ const VehicleInformation = props => {
                       const licensePlateNotDetected = () => {
                         setIsFetchingVehicleInfo(false);
                         dispatch({type: Types.LICENSE_PLATE_NUMBER, payload: null});
-                        setFieldError('licensePlateNumber', 'Reading undetected. Please input license plate number manually');
+                        setFieldError('licensePlateNumber', t('vehicleInfo.errors.licensePlateUndetected'));
                         setFieldTouched('licensePlateNumber', true, false);
                         resetCaptureImageParams();
                         setTimeout(() => licensePlateInputRef.current?.focus(), 200);
@@ -471,7 +473,7 @@ const VehicleInformation = props => {
 
                       const vinNotDetected = () => {
                         setFieldValue('vin', '', false);
-                        setFieldError('vin', 'Reading undetected. Please input VIN manually');
+                        setFieldError('vin', t('vehicleInfo.errors.vinUndetected'));
                         setFieldTouched('vin', true, false);
                         resetCaptureImageParams();
                         setTimeout(() => vinInputRef.current?.focus(), 200);
@@ -579,8 +581,8 @@ const VehicleInformation = props => {
                             rightIcon={isFetchingVehicleInfo ? <ActivityIndicator size="small" color={colors.royalBlue} /> : <CameraOutlineIcon />}
                             onRightIconPress={handlePressNumberPlateCameraIcon}
                             inputStyle={styles.input}
-                            placeholder="Enter Truck ID/License Plate"
-                            label="Truck ID/License Plate"
+                            placeholder={t('vehicleInfo.licensePlatePlaceholder')}
+                            label={t('vehicleInfo.licensePlateLabel')}
                             value={values.licensePlateNumber}
                             onChangeText={handleLicensePlateChangeFactory}
                             onBlur={handleBlur}
@@ -595,7 +597,7 @@ const VehicleInformation = props => {
                         {/* VEHICLE TYPES */}
                         {showVehicleType && (
                           <View>
-                            <AppText style={styles.vehicleTypeText}>Vehicle Type</AppText>
+                            <AppText style={styles.vehicleTypeText}>{t('vehicleInfo.vehicleTypeLabel')}</AppText>
                             <ScrollView
                               nestedScrollEnabled
                               showsHorizontalScrollIndicator={false}
@@ -624,7 +626,7 @@ const VehicleInformation = props => {
 
                                   <View style={styles.vehicleItemName}>
                                     <AppText fontWeight={'700'} color={values.vehicleType == v.id ? colors.white : colors.steelGray}>
-                                      {v.name}
+                                      {t(`vehicleInfo.vehicleTypes.${v.name.toLowerCase()}`)}
                                     </AppText>
                                   </View>
                                 </Pressable>
@@ -646,8 +648,8 @@ const VehicleInformation = props => {
                             placeholderTextColor={'#BDBDBD'}
                             rightIcon={mileageLoading ? <ActivityIndicator size="small" color={colors.royalBlue} /> : <CameraOutlineIcon />}
                             inputStyle={styles.input}
-                            placeholder="Enter Mileage"
-                            label="Mileage"
+                            placeholder={t('vehicleInfo.mileagePlaceholder')}
+                            label={t('vehicleInfo.mileageLabel')}
                             value={values.mileage}
                             onChangeText={handleChange}
                             onBlur={handleBlur}
@@ -667,8 +669,8 @@ const VehicleInformation = props => {
                             onRightIconPress={handlePressVinCameraIcon}
                             placeholderTextColor={'#BDBDBD'}
                             inputStyle={styles.input}
-                            placeholder="Enter VIN"
-                            label="VIN"
+                            placeholder={t('vehicleInfo.vinPlaceholder')}
+                            label={t('vehicleInfo.vinLabel')}
                             value={values.vin}
                             onChangeText={handleChange}
                             onBlur={handleBlur}
@@ -681,12 +683,14 @@ const VehicleInformation = props => {
                           {/* INSPECTION TYPE DROPDOWN */}
                           {hasInspectionType && values.vehicleType === VEHICLE_TYPES.TRUCK && (
                             <View>
-                              <AppText style={{marginBottom: 6}}>Inspection Type</AppText>
+                              <AppText style={{marginBottom: 6}}>{t('vehicleInfo.inspectionTypeLabel')}</AppText>
                               <Pressable
                                 onPress={() => setIsInspectionTypeOpen(prev => !prev)}
                                 style={[styles.inputContainer, styles.dropdownContainer]}>
                                 <AppText style={{...styles.input, color: values.inspectionType ? colors.black : '#BDBDBD'}}>
-                                  {values.inspectionType || 'Inspection Type'}
+                                  {values.inspectionType
+                                    ? t(`vehicleInfo.inspectionTypes.${values.inspectionType.toLowerCase()}`)
+                                    : t('vehicleInfo.inspectionTypePlaceholder')}
                                 </AppText>
                                 <ChevronIcon />
                               </Pressable>
@@ -706,7 +710,7 @@ const VehicleInformation = props => {
                                           padding: 12,
                                           backgroundColor: values.inspectionType === option ? '#F0F6FF' : '#fff',
                                         }}>
-                                        <AppText style={{color: colors.black}}>{option}</AppText>
+                                        <AppText style={{color: colors.black}}>{t(`vehicleInfo.inspectionTypes.${option.toLowerCase()}`)}</AppText>
                                       </Pressable>
                                     ))}
                                   </View>
@@ -722,11 +726,11 @@ const VehicleInformation = props => {
                             disabled={isClearFormDisabled()}
                             style={[styles.clearFormButton, {opacity: isClearFormDisabled() ? 0.5 : 1}]}
                             onPress={() => handlePressClearForm(setFieldValue, setFieldTouched, setFieldError)}>
-                            <AppText style={styles.clearFormButtonText}>Clear all</AppText>
+                            <AppText style={styles.clearFormButtonText}>{t('vehicleInfo.clearAll')}</AppText>
                           </TouchableOpacity>
                         </View>
                       </View>
-                      <PrimaryGradientButton onPress={handleSubmit} text="Next" buttonStyle={styles.nextButton} />
+                      <PrimaryGradientButton onPress={handleSubmit} text={t('vehicleInfo.next')} buttonStyle={styles.nextButton} />
                     </>
                   );
                 }}

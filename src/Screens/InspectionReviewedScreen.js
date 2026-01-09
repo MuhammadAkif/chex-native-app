@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
+import {useTranslation} from 'react-i18next';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {circleBorderRadius, colors, NewInspectionStyles} from '../Assets/Styles';
@@ -29,8 +36,10 @@ const InspectionReviewedScreen = ({
   setInspections,
   setFilter,
   inspections,
-}) => (
-  <View style={container}>
+}) => {
+  const {t} = useTranslation();
+  return (
+    <View style={container}>
     <LogoHeader
       showLeft={false}
       // rightIcon={
@@ -41,10 +50,14 @@ const InspectionReviewedScreen = ({
     />
     <View style={[bodyContainer, {marginTop: wp(5)}]}>
       <View style={styles.bodyHeaderContainer}>
-        <Text style={styles.bodyHeaderTitleText}>Inspection Reviewed</Text>
+        <Text style={styles.bodyHeaderTitleText}>
+          {t('inspectionReviewed.title')}
+        </Text>
         <TouchableOpacity style={styles.filterContainer} onPress={onFilterPress}>
           <Filter height={hp('2%')} width={wp('5%')} />
-          <Text style={{...styles.homeText, ...styles.filterText}}>Filter</Text>
+          <Text style={{...styles.homeText, ...styles.filterText}}>
+            {t('inspectionReviewed.filter')}
+          </Text>
         </TouchableOpacity>
       </View>
       <View style={innerBody}>
@@ -88,7 +101,8 @@ const InspectionReviewedScreen = ({
       filterResetKey={filterResetKey}
     />
   </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   bodyHeaderContainer: {

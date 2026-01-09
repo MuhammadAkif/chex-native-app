@@ -4,6 +4,8 @@ import {Landscape, Portrait} from '../Assets/Icons';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
+import i18n from './i18n';
+
 var relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 dayjs.extend(customParseFormat);
@@ -29,8 +31,8 @@ export const instructionsContainerTop = {
   false: null,
 };
 export const INSPECTION_STATUS = {
-  true: 'No Damage Detected',
-  false: 'Damage Detected',
+  true: i18n.t('inspectionCard.noDamageDetected'),
+  false: i18n.t('inspectionCard.damageDetected'),
 };
 export const progressZIndex = {
   true: -1,

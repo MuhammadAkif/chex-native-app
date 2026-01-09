@@ -1,5 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
+import {useTranslation} from 'react-i18next';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {useSelector} from 'react-redux';
 
@@ -11,18 +18,25 @@ import EmptyComponent from './EmptyComponent';
 
 const {gray} = colors;
 const statusesInitialState = [
-  {id: 1, name: 'Reviewed', count: 0, selected: true, key: 'reviewed'},
-  {id: 2, name: 'In Review', count: 0, selected: true, key: 'in_review'},
+  {id: 1, count: 0, selected: true, key: 'reviewed'},
+  {id: 2, count: 0, selected: true, key: 'in_review'},
   {
     id: 3,
-    name: 'Ready For Review',
     count: 0,
     selected: true,
     key: 'ready_for_review',
   },
 ];
 
-const Filter_RBSheet = ({filter, setFilter, inspections, setInspections, navigation, filterResetKey}) => {
+const Filter_RBSheet = ({
+  filter,
+  setFilter,
+  inspections,
+  setInspections,
+  navigation,
+  filterResetKey,
+}) => {
+  const {t} = useTranslation();
   const {inspectionReviewed} = useSelector(state => state?.inspectionReviewed);
   const rbSheetRef = useRef(null);
   const [statuses, setStatuses] = useState(statusesInitialState);
@@ -111,7 +125,7 @@ const Filter_RBSheet = ({filter, setFilter, inspections, setInspections, navigat
     <Custom_RBSheet ref={rbSheetRef} useNativeDriver={false} height={hp('40%')} closeOnPressBack={false} closeOnPressMask={false}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Filter</Text>
+          <Text style={styles.title}>{t('filter.title')}</Text>
           <TouchableOpacity onPress={handleCrossPress}>
             <Cross height={hp('6%')} width={wp('6%')} color={gray} />
           </TouchableOpacity>
@@ -121,13 +135,15 @@ const Filter_RBSheet = ({filter, setFilter, inspections, setInspections, navigat
             data={statuses}
             renderItem={({item, index}) => <RenderStatuses item={item} index={index} onPress={handleStatusPress} />}
             keyExtractor={item => item.id.toString()}
-            ListEmptyComponent={<EmptyComponent text={'No statuses available'} />}
+            ListEmptyComponent={
+              <EmptyComponent text={t('filter.noStatuses')} />
+            }
           />
         </View>
         <View style={styles.footer}>
           <ButtonFooter
-            yesText={'Apply'}
-            noText={'Clear'}
+            yesText={t('filter.apply')}
+            noText={t('filter.clear')}
             onYesPress={handleApplyPress}
             onNoPress={handleClearPress}
             yesButtonStyle={{borderRadius: hp('3%')}}

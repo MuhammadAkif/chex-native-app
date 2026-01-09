@@ -1,4 +1,5 @@
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import {View, StyleSheet, FlatList, Platform, Text, ScrollView} from 'react-native';
 
 import {colors, NewInspectionStyles} from '../Assets/Styles';
@@ -26,8 +27,10 @@ const InspectionDetailScreen = ({
   iconColor,
   ICON_COMPONENT,
   isPassed,
-}) => (
-  <View style={container}>
+}) => {
+  const {t} = useTranslation();
+  return (
+    <View style={container}>
     <LogoHeader />
 
     {isModalVisible && (
@@ -41,15 +44,23 @@ const InspectionDetailScreen = ({
     )}
     <View style={{...bodyContainer, paddingHorizontal: '5%'}}>
       <View style={styles.headerContainer}>
-        <Text style={{...styles.headerText, ...styles.textColor}}>Inspection Details</Text>
+        <Text style={{...styles.headerText, ...styles.textColor}}>
+          {t('inspectionDetail.title')}
+        </Text>
         <View style={styles.finalStatusContainer}>
-          <Text style={{...styles.text, ...styles.textColor, width: wp('30%')}}>Final Status</Text>
+          <Text style={{...styles.text, ...styles.textColor, width: wp('30%')}}>
+            {t('inspectionDetail.finalStatus')}
+          </Text>
           <ICON_COMPONENT height={hp('3%')} width={wp('8%')} color={iconColor} />
           <Text style={{...styles.text, ...styles.statusText, ...styles.textColor}}>{INSPECTION_STATUS[isPassed]}</Text>
         </View>
         <View style={styles.statusDescriptionContainer}>
           <ScrollView>
-            <Text style={{...styles.text, ...styles.textColor}}>{remarks}</Text>
+            <Text style={{...styles.text, ...styles.textColor}}>
+              {remarks === 'No Remarks'
+                ? t('inspectionDetail.noRemarks')
+                : remarks}
+            </Text>
           </ScrollView>
         </View>
       </View>
@@ -61,9 +72,10 @@ const InspectionDetailScreen = ({
           keyExtractor={item => item?.id}
         />
       </View>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 const styles = StyleSheet.create({
   bodyContainer: {
     flex: 2,

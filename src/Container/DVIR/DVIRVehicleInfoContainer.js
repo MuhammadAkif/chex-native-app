@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import {Formik} from 'formik';
 import React, {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {Alert} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import {useDispatch, useSelector} from 'react-redux';
@@ -11,32 +12,30 @@ import {createInspection, extractVinAI} from '../../services/inspection';
 import {numberPlateSelected} from '../../Store/Actions';
 import {getUserFullName} from '../../Utils/helpers';
 
-const validate = values => {
+const validate = (values, t) => {
   const errors = {};
   if (!values.driverName.trim()) {
-    errors.driverName = 'Driver name is required';
+    errors.driverName = t('vehicleInfo.errors.driverNameRequired');
   }
   if (!values.date) {
-    errors.date = 'Date is required';
+    errors.date = t('vehicleInfo.errors.dateRequired');
   }
   if (!values.licensePlateNumber.trim()) {
-    errors.licensePlateNumber = 'Truck ID/License Plate is required';
+    errors.licensePlateNumber = t('vehicleInfo.errors.licensePlateRequired');
   }
   if (!values.mileage.trim()) {
-    errors.mileage = 'Mileage is required';
+    errors.mileage = t('vehicleInfo.errors.mileageRequired');
   } else if (isNaN(values.mileage) || Number(values.mileage) < 0) {
-    errors.mileage = 'Mileage must be a positive number';
+    errors.mileage = t('vehicleInfo.errors.mileagePositive');
   }
   if (!values.vin.trim()) {
-    errors.vin = 'VIN is required';
+    errors.vin = t('vehicleInfo.errors.vinRequired');
   }
-  // if (!values.technician.trim()) {
-  //   errors.technician = 'Technician is required';
-  // }
   return errors;
 };
 
 const DVIRVehicleInfoContainer = ({navigation, route}) => {
+  const {t} = useTranslation();
   const [showDateModel, setShowDateModel] = useState(false);
   const [dateForPicker, setDateForPicker] = useState(new Date());
   const [vinLoading, setVinLoading] = useState(false);
@@ -64,7 +63,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
 
   const handleVINCameraPress = () => {
     const details = {
-      title: 'Please take a photo \n of the VIN',
+      title: t('vehicleInfo.camera.takePhotoVin'),
       type: '1',
       uri: '',
       source: '',
@@ -72,7 +71,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
       category: 'CarVerification',
       subCategory: 'vin',
       groupType: 'truck',
-      instructionalText: 'Please wait a while the VIN is being uploaded',
+      instructionalText: t('vehicleInfo.camera.waitVinUpload'),
     };
     navigation.navigate(ROUTES.CAMERA, {
       modalDetails: details,
@@ -141,7 +140,10 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
   };
 
   return (
-    <Formik initialValues={initialStates} validate={validate} onSubmit={handleSubmitForm}>
+    <Formik
+      initialValues={initialStates}
+      validate={values => validate(values, t)}
+      onSubmit={handleSubmitForm}>
       {({values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue, isSubmitting}) => {
         // If coming back from camera with vinImageUri, extract VIN
         useEffect(() => {

@@ -12,7 +12,8 @@
         "no": "No",
         "licensePlateNo": "License Plate no.",
         "dateCreated": "Date Created",
-        "continue": "Continue"
+        "continue": "Continue",
+        "comingSoon": "Coming Soon!"
     },
     "welcome": {
         "title": "Welcome to",
@@ -56,5 +57,106 @@
         "startInspection": "+ Start Inspection",
         "orGoBackTo": "Or Go back to",
         "page": "page"
+    },
+    "inspectionReviewed": {
+        "title": "Inspection Reviewed",
+        "filter": "Filter",
+        "noData": "No Inspections available"
+    },
+    "filter": {
+        "title": "Filter",
+        "apply": "Apply",
+        "clear": "Clear",
+        "noStatuses": "No statuses available"
+    },
+    "statuses": {
+        "reviewed": "Reviewed",
+        "in_review": "In Review",
+        "ready_for_review": "Ready For Review"
+    },
+    "inspectionCard": {
+        "licensePlate": "License Plate",
+        "dateCreated": "Date Created",
+        "damageDetected": "Damage Detected",
+        "noDamageDetected": "No Damage Detected",
+        "inspectionDetails": "Inspection Details"
+    },
+    "inspectionDetail": {
+        "title": "Inspection Details",
+        "finalStatus": "Final Status",
+        "noRemarks": "No Remarks"
+    },
+    "tabs": {
+        "home": "Home",
+        "reports": "Reports",
+        "inspection": "Inspection",
+        "myTrips": "My Trips",
+        "profile": "Profile"
+    },
+    "vehicleInfo": {
+        "title": "Vehicle Information",
+        "subtitle": "Please provide the vehicle information below to begin your inspection. All fields are required to ensure accurate compliance.",
+        "licensePlateLabel": "Truck ID/License Plate",
+        "licensePlatePlaceholder": "Enter Truck ID/License Plate",
+        "mileageLabel": "Mileage",
+        "mileagePlaceholder": "Enter Mileage",
+        "vinLabel": "VIN",
+        "vinPlaceholder": "Enter VIN",
+        "driverNameLabel": "Driver Name",
+        "dateLabel": "Date",
+        "vehicleTypeLabel": "Vehicle Type",
+        "inspectionTypeLabel": "Inspection Type",
+        "inspectionTypePlaceholder": "Inspection Type",
+        "clearAll": "Clear all",
+        "next": "Next",
+        "errors": {
+            "licensePlateUndetected": "Reading undetected. Please input license plate number manually",
+            "licensePlateRequired": "License plate number is required",
+            "mileageUndetected": "Reading undetected. Please input mileage manually",
+            "mileageRequired": "Mileage is required",
+            "mileagePositive": "Mileage must be a positive number",
+            "vinUndetected": "Reading undetected. Please input VIN manually",
+            "vinRequired": "VIN is required",
+            "vinLength": "VIN must be 17 characters long",
+            "inspectionTypeRequired": "Inspection Type is required",
+            "vehicleTypeRequired": "Please select a vehicle type",
+            "driverNameRequired": "Driver name is required",
+            "dateRequired": "Date is required"
+        },
+        "vehicleTypes": {
+            "van": "VAN",
+            "truck": "TRUCK",
+            "sedan": "SEDAN",
+            "other": "OTHER"
+        },
+        "inspectionTypes": {
+            "regular": "Regular",
+            "dvir": "DVIR"
+        },
+        "camera": {
+            "takePhotoVin": "Please take a photo \n of the VIN",
+            "waitVinUpload": "Please wait a while the VIN is being uploaded"
+        }
+    },
+    "profile": {
+        "title": "User Profile",
+        "firstNameLabel": "First Name",
+        "firstNamePlaceholder": "Enter First Name",
+        "lastNameLabel": "Last Name",
+        "lastNamePlaceholder": "Enter Last Name",
+        "emailLabel": "Email",
+        "emailPlaceholder": "Enter Email",
+        "phoneLabel": "Phone",
+        "phonePlaceholder": "Enter Phone",
+        "updateProfileButton": "Update Profile",
+        "profileUpdatedToast": "Profile Updated",
+        "errors": {
+            "firstNameRequired": "First name is required",
+            "lastNameRequired": "Last name is required",
+            "emailRequired": "Email is required",
+            "invalidEmail": "Invalid email format",
+            "phoneRequired": "Phone number is required",
+            "phoneDigits": "Phone number must be between 10–15 digits"
+        }
     }
 }

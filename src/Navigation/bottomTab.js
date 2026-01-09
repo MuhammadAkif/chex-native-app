@@ -1,4 +1,5 @@
 import React, {useCallback} from 'react';
+import {useTranslation} from 'react-i18next';
 import {View, StyleSheet, Pressable} from 'react-native';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -21,6 +22,7 @@ const ICON_MAP = {
 const getIconColor = isFocused => (isFocused ? colors.oceanBlue : colors.slateGray);
 
 const BottomTab = () => {
+  const {t} = useTranslation();
   return (
     <Tab.Navigator
       tabBar={props => <CustomTabBar {...props} />}
@@ -28,11 +30,31 @@ const BottomTab = () => {
         headerShown: false,
         tabBarHideOnKeyboard: true,
       }}>
-      <Tab.Screen name={TABS.HOME} component={HomeTabStack} options={{tabBarLabel: 'Home'}} />
-      <Tab.Screen name={TABS.REPORTS} component={ReportTabStack} options={{tabBarLabel: 'Reports'}} />
-      <Tab.Screen name={TABS.INSPECTION} component={InspectionTabStack} options={{tabBarLabel: 'Inspection'}} />
-      <Tab.Screen name={TABS.MY_TRIPS} component={MyTripsTabStack} options={{tabBarLabel: 'My Trips'}} />
-      <Tab.Screen name={TABS.PROFILE} component={ProfileTabStack} options={{tabBarLabel: 'Profile'}} />
+      <Tab.Screen
+        name={TABS.HOME}
+        component={HomeTabStack}
+        options={{tabBarLabel: t('tabs.home')}}
+      />
+      <Tab.Screen
+        name={TABS.REPORTS}
+        component={ReportTabStack}
+        options={{tabBarLabel: t('tabs.reports')}}
+      />
+      <Tab.Screen
+        name={TABS.INSPECTION}
+        component={InspectionTabStack}
+        options={{tabBarLabel: t('tabs.inspection')}}
+      />
+      <Tab.Screen
+        name={TABS.MY_TRIPS}
+        component={MyTripsTabStack}
+        options={{tabBarLabel: t('tabs.myTrips')}}
+      />
+      <Tab.Screen
+        name={TABS.PROFILE}
+        component={ProfileTabStack}
+        options={{tabBarLabel: t('tabs.profile')}}
+      />
     </Tab.Navigator>
   );
 };
