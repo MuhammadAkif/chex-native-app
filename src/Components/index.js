@@ -83,6 +83,7 @@ import Sub_Heading from './Sub_Heading';
 import Toast from './Toast';
 import VehicleCard from './VehicleCard';
 import WarningModal from './WarningModal';
+import InspectionTourVideoModal from './InspectionTourVideoModal';
 export {
   PhoneInput,
   IconWrapper,
@@ -167,4 +168,5 @@ export {
   Toast,
   VideoPicker,
   WarningModal,
+  InspectionTourVideoModal,
 };

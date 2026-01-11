@@ -1,7 +1,16 @@
 import {View, StatusBar, ScrollView, Image, Pressable, ActivityIndicator, TouchableWithoutFeedback, TouchableOpacity} from 'react-native';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {styles} from './styles';
-import {CardWrapper, CustomInput, DiscardInspectionModal, LoadingIndicator, LogoHeader, PrimaryGradientButton} from '../../../Components';
+import {
+  CaptureImageModal,
+  CardWrapper,
+  CustomInput,
+  DiscardInspectionModal,
+  InspectionTourVideoModal,
+  LoadingIndicator,
+  LogoHeader,
+  PrimaryGradientButton,
+} from '../../../Components';
 import AppText from '../../../Components/text';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {colors} from '../../../Assets/Styles';
@@ -99,6 +108,8 @@ const VehicleInformation = props => {
   const [isInspectionInProgressModalVisible, setIsInspectionInProgressModalVisible] = useState(false);
   const [errorModalDetail, setErrorModalDetail] = useState({title: '', message: '', inspectionId: ''});
   const [isLoading, setIsLoading] = useState(false);
+  const [showTourVideoModal, setShowTourVideoModal] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState(null);
   const [vinLoading, setVinLoading] = useState(false);
   const [mileageLoading, setMileageLoading] = useState(false);
   const [isInspectionTypeOpen, setIsInspectionTypeOpen] = useState(false);
@@ -107,6 +118,16 @@ const VehicleInformation = props => {
   const latestRequestIdRef = useRef(0);
   const responseCacheRef = useRef(new Map()); // plate -> {vehicleType, vin}
   const inspectionTypeOptions = useMemo(() => ['Regular', 'DVIR'], []);
+
+  // INFO MODALS
+  const modalDetailsInitialState = {
+    ...LicensePlateDetails,
+    isVideo: false,
+  };
+  const [modalDetails, setModalDetails] = useState(modalDetailsInitialState);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const [pendingCameraParams, setPendingCameraParams] = useState(null);
 
   // Dimensions used to calculate scroll offset (keep in sync with styles.js)
   const VEHICLE_ITEM_WIDTH = wp(38);
@@ -208,14 +229,13 @@ const VehicleInformation = props => {
         OCRsCapturedImagesRef.current = getOCRsCapturedImagesInitialState();
         resetForm();
 
-        // NAVIGATE
-        const timeout = isIOS ? 500 : 100;
+        // PREPARE NAVIGATION - Show tour video first
         const nextRoute = data?.hasCheckList ? ROUTES.DVIR_INSPECTION_CHECKLIST : ROUTES.NEW_INSPECTION;
         const routeName = data?.hasCheckList ? ROUTES.DVIR_INSPECTION_CHECKLIST : ROUTES.VEHICLE_INFORMATION;
 
-        setTimeout(() => {
-          navigation.navigate(nextRoute, {routeName});
-        }, timeout);
+        // Store navigation details and show tour video modal
+        setPendingNavigation({route: nextRoute, params: {routeName}});
+        setShowTourVideoModal(true);
       })
       .catch(error => {
         setIsLoading(false);
@@ -264,6 +284,18 @@ const VehicleInformation = props => {
     setErrorModalDetail({message: '', title: '', inspectionId: '', resetForm: null, vehicleKind: null});
   };
 
+  const handleTourVideoComplete = useCallback(() => {
+    setShowTourVideoModal(false);
+    // Proceed with stored navigation
+    if (pendingNavigation) {
+      const timeout = isIOS ? 500 : 100;
+      setTimeout(() => {
+        navigation.navigate(pendingNavigation.route, pendingNavigation.params);
+        setPendingNavigation(null);
+      }, timeout);
+    }
+  }, [navigation, pendingNavigation]);
+
   const handleCameraNavigation = (details, returnParams) => {
     navigation.navigate(ROUTES.CAMERA, {
       modalDetails: {
@@ -278,9 +310,23 @@ const VehicleInformation = props => {
   };
 
   // 🎯 CAMERA CAPTURE HANDLERS
-  const handlePressMileageCameraIcon = () => handleCameraNavigation(OdometerDetails, {isMileageCapture: true});
-  const handlePressVinCameraIcon = () => handleCameraNavigation(VinDetails, {isVinCapture: true});
-  const handlePressNumberPlateCameraIcon = () => handleCameraNavigation(LicensePlateDetails, {isLicensePlateCapture: true});
+  const handlePressMileageCameraIcon = () => {
+    setModalDetails(OdometerDetails);
+    setPendingCameraParams({isMileageCapture: true});
+    setModalVisible(true);
+  };
+
+  const handlePressVinCameraIcon = () => {
+    setModalDetails(VinDetails);
+    setPendingCameraParams({isVinCapture: true});
+    setModalVisible(true);
+  };
+
+  const handlePressNumberPlateCameraIcon = () => {
+    setModalDetails(LicensePlateDetails);
+    setPendingCameraParams({isLicensePlateCapture: true});
+    setModalVisible(true);
+  };
 
   const handleNoPressOfAlreadyInProgressModal = () => {
     setIsInspectionInProgressModalVisible(false);
@@ -314,6 +360,14 @@ const VehicleInformation = props => {
     const isAnyImagePresent = numberPlate?.uri || mileage?.uri || vin?.uri;
 
     return isLoading || vinLoading || mileageLoading || isFetchingVehicleInfo || !isAnyImagePresent;
+  };
+
+  const handleModalCaptureNowPress = () => {
+    setModalVisible(false);
+    if (pendingCameraParams) {
+      handleCameraNavigation(modalDetails, pendingCameraParams);
+      setPendingCameraParams(null);
+    }
   };
 
   return (
@@ -743,6 +797,32 @@ const VehicleInformation = props => {
           />
         </View>
       )}
+
+      {modalVisible && (
+        <View>
+          <CaptureImageModal
+            modalVisible={modalVisible}
+            handleVisible={() => setModalVisible(false)}
+            source={modalDetails.source}
+            instructionalText={modalDetails.instructionalText}
+            buttonText={modalDetails.buttonText}
+            title={modalDetails.title}
+            isVideo={false}
+            instructionalSubHeadingText={modalDetails.instructionalSubHeadingText}
+            instructionalSubHeadingText_1={''}
+            instructionalSubHeadingText_2={''}
+            modalKey={modalDetails.key}
+            handleCaptureImage={handleModalCaptureNowPress}
+            isCarVerification={true}
+            isExterior={true}
+          />
+        </View>
+      )}
+
+      {/* TOUR VIDEO MODAL */}
+      <View>
+        <InspectionTourVideoModal visible={showTourVideoModal} onComplete={handleTourVideoComplete} />
+      </View>
 
       <LoadingIndicator isLoading={isLoading} />
     </View>

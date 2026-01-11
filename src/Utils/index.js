@@ -73,7 +73,7 @@ export const VinDetails = {
   key: 'vin',
   title: 'VIN',
   type: '1',
-  source: '',
+  source: {uri: 'https://images.theconversation.com/files/590959/original/file-20240429-16-9td5gz.png?ixlib=rb-4.1.0&q=45&auto=format&w=1000&fit=clip'},
   category: 'CarVerification',
   subCategory: 'vin',
   groupType: 'truck',
