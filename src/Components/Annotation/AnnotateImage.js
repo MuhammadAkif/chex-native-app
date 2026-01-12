@@ -1,20 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {Modal, StyleSheet, View, Text, StatusBar, FlatList, TextInput, TouchableOpacity, Keyboard, Platform} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import React, { useEffect, useState } from 'react';
+import { Modal, StyleSheet, View, Text, StatusBar, FlatList, TextInput, TouchableOpacity, Keyboard, Platform } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
-import {useDispatch} from 'react-redux';
-import {colors} from '../../Assets/Styles';
-import {PrimaryGradientButton, RenderDamageTypes, RenderIcons, SecondaryButton, Toast, Mandatory} from '../index';
-import {ANNOTATE_IMAGE, AnnotationAlertMessage, DAMAGE_TYPE, Platforms} from '../../Constants';
-import {generateRandomString, isNotEmpty, mergeData} from '../../Utils';
-import {showToast} from '../../Store/Actions';
-import {resizeInnerBox} from '../../Utils/helpers';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
-import {useResponsiveImageSize} from '../../hooks';
+import { useDispatch } from 'react-redux';
+import { colors } from '../../Assets/Styles';
+import { PrimaryGradientButton, RenderDamageTypes, RenderIcons, SecondaryButton, Toast, Mandatory } from '../index';
+import { ANNOTATE_IMAGE, AnnotationAlertMessage, DAMAGE_TYPE, Platforms } from '../../Constants';
+import { generateRandomString, isNotEmpty, mergeData } from '../../Utils';
+import { showToast } from '../../Store/Actions';
+import { resizeInnerBox } from '../../Utils/helpers';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { useResponsiveImageSize } from '../../hooks';
 
-const {OS} = Platform;
-const {IOS} = Platforms;
-const {white, gray, royalBlue, lightGray, black, cobaltBlueMedium} = colors;
+const { OS } = Platform;
+const { IOS } = Platforms;
+const { white, gray, royalBlue, lightGray, black, cobaltBlueMedium } = colors;
 
 const activeButtonColor = {
   true: ['#FF7A00', '#F90'],
@@ -44,6 +45,7 @@ const AnnotateImage = ({
   isLoading = false,
   imageDimensions,
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [damageDetails, setDamageDetails] = useState([]); // Only coordinates now
@@ -89,9 +91,9 @@ const AnnotateImage = ({
     setSelectedMarkerId(newMarker.id);
   };
   const onImagePress = event => {
-    const {locationX, locationY} = event.nativeEvent;
-    const {height, width} = imageDimensions;
-    const {x, y} = resizeInnerBox(imgSize.width, imgSize.height, locationX, locationY);
+    const { locationX, locationY } = event.nativeEvent;
+    const { height, width } = imageDimensions;
+    const { x, y } = resizeInnerBox(imgSize.width, imgSize.height, locationX, locationY);
     const coordinates = {
       x: x - WEB_MARKER_WIDTH / 2,
       y: y - WEB_MARKER_HEIGHT / 2,
@@ -111,7 +113,7 @@ const AnnotateImage = ({
   };
   const handleSubmission = () => {
     if (!canSubmit) {
-      dispatch(showToast(AnnotationAlertMessage, 'warning'));
+      dispatch(showToast(t('annotation.alertMessage'), 'warning'));
       return;
     }
     const label = damageType;
@@ -145,7 +147,7 @@ const AnnotateImage = ({
       onRequestClose={handleVisible}
       style={styles.container}>
       <View style={styles.centeredViewContainer} onPress={closeKeyboard}>
-        <KeyboardAwareScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{flexGrow: 1}}>
+        <KeyboardAwareScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
           <View style={styles.centeredView}>
             <View
               style={[
@@ -155,8 +157,8 @@ const AnnotateImage = ({
                   flexGrow: isExterior ? 2 : 1,
                 },
               ]}>
-              <Text style={[styles.titleText, {bottom: isFullScreen ? hp('3%') : null}]}>
-                {title}
+              <Text style={[styles.titleText, { bottom: isFullScreen ? hp('3%') : null }]}>
+                {title === ANNOTATE_IMAGE.title ? t('annotation.title') : title}
                 <Mandatory style={styles.titleText} />
               </Text>
               <TouchableOpacity
@@ -168,7 +170,7 @@ const AnnotateImage = ({
                   height: imgSize.height,
                 }}>
                 <FastImage
-                  source={{uri: source}}
+                  source={{ uri: source }}
                   resizeMode="contain"
                   style={{
                     width: imgSize.width,
@@ -193,14 +195,14 @@ const AnnotateImage = ({
             </View>
 
             <View style={styles.body}>
-              <View style={[styles.box, {height: hp('9%'), width: '90%'}]}>
+              <View style={[styles.box, { height: hp('9%'), width: '90%' }]}>
                 <Text style={styles.subHeadingText}>
-                  Identify Damage Severity Level
+                  {t('annotation.severityLevel')}
                   <Mandatory style={styles.subHeadingText} />
                 </Text>
                 <FlatList
                   data={DAMAGE_TYPE}
-                  renderItem={({item}) => (
+                  renderItem={({ item }) => (
                     <RenderDamageTypes item={item} selectedDamage={damageType} handleDamageDetails={(key, value) => setDamageType(value)} />
                   )}
                   keyExtractor={item => item}
@@ -208,11 +210,11 @@ const AnnotateImage = ({
                 />
               </View>
               <View style={styles.box}>
-                <Text style={styles.subHeadingText}>Add Notes</Text>
+                <Text style={styles.subHeadingText}>{t('annotation.addNotes')}</Text>
                 <View style={styles.statusDescriptionContainer}>
                   <TextInput
                     style={[styles.text, OS === IOS && styles.iOSStyle]}
-                    placeholder={notes}
+                    placeholder={notes === 'Add your notes here' ? t('annotation.notesPlaceholder') : notes}
                     multiline={true}
                     placeholderTextColor={gray}
                     value={damageNotes}
@@ -223,7 +225,7 @@ const AnnotateImage = ({
             </View>
             <View style={styles.footerContainer}>
               <PrimaryGradientButton
-                text={annotateButtonText}
+                text={annotateButtonText === ANNOTATE_IMAGE.annotateText ? t('annotation.submit') : annotateButtonText}
                 buttonStyle={styles.submitButton}
                 onPress={handleSubmission}
                 disabled={isLoading}
@@ -231,7 +233,7 @@ const AnnotateImage = ({
                 activeOpacity={active_Opacity}
               />
               <SecondaryButton
-                text={cancelButtonText}
+                text={cancelButtonText === ANNOTATE_IMAGE.cancelText ? t('annotation.cancel') : cancelButtonText}
                 buttonStyle={styles.cancelButton}
                 textStyle={styles.cancelButtonText}
                 onPress={handleCancelPress}

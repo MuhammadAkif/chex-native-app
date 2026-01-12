@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   View,
   Text,
@@ -10,15 +11,15 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import {colors, ShadowEffect} from '../../Assets/Styles';
-import {DownArrow, UpArrow, Check} from '../../Assets/Icons';
-import {Platforms} from '../../Constants';
+import { colors, ShadowEffect } from '../../Assets/Styles';
+import { DownArrow, UpArrow, Check } from '../../Assets/Icons';
+import { Platforms } from '../../Constants';
 
-const {WINDOW} = Platforms;
+const { WINDOW } = Platforms;
 
-const {height, width} = Dimensions.get(WINDOW);
+const { height, width } = Dimensions.get(WINDOW);
 const {
   tealGreen,
   icyBlue,
@@ -59,7 +60,8 @@ const CollapsedCard = ({
   disabled = false,
   displayInstructions = false,
 }) => {
-  const {vehicle_Type} = useSelector(state => state.newInspection);
+  const { t } = useTranslation();
+  const { vehicle_Type } = useSelector(state => state.newInspection);
   const disabled_Color = {
     true: gray,
     false: royalBlue,
@@ -95,19 +97,18 @@ const CollapsedCard = ({
           style={[
             styles.titleText,
             styles.titleTextColor,
-            {color: activeColor},
+            { color: activeColor },
           ]}>
           {text}
           {displayInstructions && vehicle_Type && (
             <Text style={styles.instructions}>
               {'\n'}
-              For each sub-category upload up to 3 images{'\n'}(1 required, 2
-              optional)
+              {t('collapsedCard.uploadInstructions')}
             </Text>
           )}
         </Text>
         <View
-          style={[styles.iconContainer, {borderColor: ActiveColor[isActive]}]}>
+          style={[styles.iconContainer, { borderColor: ActiveColor[isActive] }]}>
           <ArrowComponent
             height={hp('4%')}
             width={wp('4%')}

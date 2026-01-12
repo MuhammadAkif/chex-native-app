@@ -1,26 +1,33 @@
 import React from 'react';
-import {Text, TouchableOpacity, StyleSheet} from 'react-native';
+import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-import {colors} from '../Assets/Styles';
+import { colors } from '../Assets/Styles';
 
-const {gray, cobaltBlueTwo} = colors;
+const { gray, cobaltBlueTwo } = colors;
 
 const CommentButton = ({
   onPress,
-  text = '+ Add Comment',
-  optionalMessage = '(Optional)',
-}) => (
-  <TouchableOpacity onPress={onPress} style={styles.container}>
-    <Text style={styles.text}>
-      {text}
-      <Text style={styles.optional}> {optionalMessage}</Text>
-    </Text>
-  </TouchableOpacity>
-);
+  text,
+  optionalMessage,
+}) => {
+  const { t } = useTranslation();
+  const defaultText = text || t('commentButton.text');
+  const defaultOptionalMessage = optionalMessage || t('commentButton.optional');
+
+  return (
+    <TouchableOpacity onPress={onPress} style={styles.container}>
+      <Text style={styles.text}>
+        {defaultText}
+        <Text style={styles.optional}> {defaultOptionalMessage}</Text>
+      </Text>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

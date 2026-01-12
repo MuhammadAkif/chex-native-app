@@ -1,22 +1,18 @@
 import React from 'react';
-import {View, Text, Modal, StyleSheet} from 'react-native';
+import { View, Text, Modal, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 
-import {PrimaryGradientButton, SecondaryButton} from '../index';
-import {modalStyle} from '../../Assets/Styles';
-import {EXPIRY_INSPECTION} from '../../Constants';
-import {IMAGES} from '../../Assets/Images';
+import { PrimaryGradientButton, SecondaryButton } from '../index';
+import { modalStyle } from '../../Assets/Styles';
+import { EXPIRY_INSPECTION } from '../../Constants';
+import { IMAGES } from '../../Assets/Images';
 
-const {
-  description: description_,
-  confirmButton,
-  cancelButton,
-} = EXPIRY_INSPECTION;
-const {expiry_Inspection} = IMAGES;
+const { expiry_Inspection } = IMAGES;
 const {
   modalOuterContainer,
   container,
@@ -31,9 +27,9 @@ const {
 } = modalStyle;
 
 const ExpiredInspectionModal = ({
-  description = description_,
-  confirmButtonText = confirmButton,
-  cancelButtonText = cancelButton,
+  description,
+  confirmButtonText,
+  cancelButtonText,
   onConfirmPress,
   onCancelPress,
   cancelTextStyle,
@@ -41,47 +37,54 @@ const ExpiredInspectionModal = ({
   dualButton = true,
   visible = true,
   isLoading = false,
-}) => (
-  <Modal
-    animationType="slide"
-    transparent={true}
-    visible={visible}
-    // onRequestClose={onCancelPress}
-    style={modalOuterContainer}>
-    <View style={container}>
-      <View style={modalContainer}>
-        <Text style={header} />
-        <FastImage
-          source={expiry_Inspection}
-          priority={'normal'}
-          resizeMode={'stretch'}
-          style={styles.image}
-        />
-        <Text style={body} textTransform={'uppercase'}>
-          {description}
-        </Text>
-        <View style={footer}>
-          <PrimaryGradientButton
-            disabled={isLoading}
-            text={confirmButtonText}
-            buttonStyle={{...button, width: wp('40%')}}
-            textStyle={yesText}
-            onPress={onConfirmPress}
+}) => {
+  const { t } = useTranslation();
+  const defaultDescription = description || t('expiryInspection.description');
+  const defaultConfirmButtonText = confirmButtonText || t('expiryInspection.confirmButton');
+  const defaultCancelButtonText = cancelButtonText || t('expiryInspection.cancelButton');
+
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      // onRequestClose={onCancelPress}
+      style={modalOuterContainer}>
+      <View style={container}>
+        <View style={modalContainer}>
+          <Text style={header} />
+          <FastImage
+            source={expiry_Inspection}
+            priority={'normal'}
+            resizeMode={'stretch'}
+            style={styles.image}
           />
-          {dualButton && (
-            <SecondaryButton
+          <Text style={body} textTransform={'uppercase'}>
+            {defaultDescription}
+          </Text>
+          <View style={footer}>
+            <PrimaryGradientButton
               disabled={isLoading}
-              text={cancelButtonText}
-              buttonStyle={[button, noButton, cancelButtonStyle]}
-              onPress={onCancelPress}
-              textStyle={[noTextStyle, cancelTextStyle]}
+              text={defaultConfirmButtonText}
+              buttonStyle={{ ...button, width: wp('40%') }}
+              textStyle={yesText}
+              onPress={onConfirmPress}
             />
-          )}
+            {dualButton && (
+              <SecondaryButton
+                disabled={isLoading}
+                text={defaultCancelButtonText}
+                buttonStyle={[button, noButton, cancelButtonStyle]}
+                onPress={onCancelPress}
+                textStyle={[noTextStyle, cancelTextStyle]}
+              />
+            )}
+          </View>
         </View>
       </View>
-    </View>
-  </Modal>
-);
+    </Modal>
+  );
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -1,27 +1,32 @@
 import React from 'react';
-import {View, StyleSheet, Platform} from 'react-native';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import { useTranslation } from 'react-i18next';
+import { View, StyleSheet, Platform } from 'react-native';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
-import {PrimaryGradientButton, SecondaryButton} from '../index';
-import {Platforms} from '../../Constants';
+import { PrimaryGradientButton, SecondaryButton } from '../index';
+import { Platforms } from '../../Constants';
 
-const {OS} = Platform;
-const {IOS} = Platforms;
+const { OS } = Platform;
+const { IOS } = Platforms;
 
-const PreviewFooter = ({onRetryPress, onNextPress}) => (
-  <View style={styles.container}>
-    <SecondaryButton
-      text={'Retry'}
-      buttonStyle={[styles.button, styles.retryButton]}
-      onPress={onRetryPress}
-    />
-    <PrimaryGradientButton
-      text={'Next'}
-      buttonStyle={styles.button}
-      onPress={onNextPress}
-    />
-  </View>
-);
+const PreviewFooter = ({ onRetryPress, onNextPress }) => {
+  const { t } = useTranslation();
+
+  return (
+    <View style={styles.container}>
+      <SecondaryButton
+        text={t('common.retry')}
+        buttonStyle={[styles.button, styles.retryButton]}
+        onPress={onRetryPress}
+      />
+      <PrimaryGradientButton
+        text={t('common.next')}
+        buttonStyle={styles.button}
+        onPress={onNextPress}
+      />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

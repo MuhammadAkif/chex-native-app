@@ -13,7 +13,10 @@
         "licensePlateNo": "License Plate no.",
         "dateCreated": "Date Created",
         "continue": "Continue",
-        "comingSoon": "Coming Soon!"
+        "retry": "Retry",
+        "next": "Next",
+        "comingSoon": "Coming Soon!",
+        "ok": "Ok"
     },
     "welcome": {
         "title": "Welcome to",
@@ -158,5 +161,124 @@
             "phoneRequired": "Phone number is required",
             "phoneDigits": "Phone number must be between 10–15 digits"
         }
+    },
+    "annotation": {
+        "title": "Exterior Front",
+        "description": "To annotate an image of a vehicle's, you can click directly on the area of interest within the image. Upon clicking, a damage icon will appear at the selected spot, allowing you to visually mark and highlight the specific location of any damage.",
+        "instruction": "Do you want to Annotate\n",
+        "annotate": "Annotate",
+        "skip": "Skip",
+        "submit": "Submit",
+        "cancel": "Cancel",
+        "severityLevel": "Identify Damage Severity Level",
+        "addNotes": "Add Notes",
+        "notesPlaceholder": "Add your notes here",
+        "damageType": {
+            "minor": "Minor",
+            "major": "Major",
+            "severe": "Severe"
+        },
+        "alertMessage": "Please highlight the damage and select a severity level to proceed. Both are required.",
+        "uploading": "Uploading",
+        "finalizingUpload": "Finalizing Upload",
+        "imageQuestion": "image?"
+    },
+    "interiorItems": {
+        "captureImage": "Capture Image",
+        "captureNow": "Capture Now",
+        "driverSide": {
+            "title": "Interior Driver Side",
+            "instruction": "Please take a photo of the interior of the vehicle with left driver side door open with clear view of the following items:",
+            "details": {
+                "seatBelt": "Driver seat belt buckled",
+                "rearview": "Interior rearview mirror",
+                "brakePads": "Brake pads"
+            }
+        },
+        "passengerSide": {
+            "title": "Interior Passenger Side",
+            "instruction": "Please take a photo of the interior of the vehicle with right passenger side door open with clear view of the following interior items:",
+            "details": {
+                "seatBelt": "Passenger seat belt buckled"
+            }
+        }
+    },
+    "carVerification": {
+        "licensePlate": {
+            "title": "License Plate",
+            "instruction": "Please take a photo of the License plate on the vehicle",
+            "captureNow": "Capture Now"
+        },
+        "odometer": {
+            "title": "Odometer",
+            "instruction": "Please take a photo of the odometer clearly showing the mileage on the vehicle",
+            "captureNow": "Capture Now"
+        },
+        "uploadImage": "Upload Image"
+    },
+    "collapsedCard": {
+        "uploadInstructions": "For each sub-category upload up to 3 images\n(1 required, 2 optional)"
+    },
+    "exteriorItems": {
+        "captureImage": "Capture Image",
+        "captureNow": "Capture Now",
+        "front": {
+            "title": "Exterior Front",
+            "instruction": "Please upload a photo clearly showing the front of the vehicle"
+        },
+        "rear": {
+            "title": "Exterior Rear",
+            "instruction": "Please upload a photo clearly showing the rear of the vehicle "
+        },
+        "frontLeftCorner": {
+            "title": "Front Left Corner",
+            "instruction": "Please take a photo from the front left corner of the vehicle clearly capturing the left headlight, driver door and roof on the exterior left side of the vehicle"
+        },
+        "frontRightCorner": {
+            "title": "Front Right Corner",
+            "instruction": "Please take a photo from the front right corner of the vehicle clearly capturing the right headlight, passenger door and roof on the exterior right side of the vehicle"
+        },
+        "rearLeftCorner": {
+            "title": "Rear Left Corner",
+            "instruction": "Please take a photo from the rear left corner of the vehicle clearly capturing the left tail light, rear door and roof on the exterior left side of the vehicle"
+        },
+        "rearRightCorner": {
+            "title": "Rear Right Corner",
+            "instruction": "Please take a photo from the rear right corner of the vehicle clearly capturing the right tail light, rear door and roof on the exterior right side of the vehicle"
+        },
+        "insideCargoRoof": {
+            "title": "Inside Cargo Roof",
+            "instruction": "Please upload a photo clearly showing the inside cargo roof of the vehicle"
+        }
+    },
+    "tiresItems": {
+        "captureImage": "Capture Image",
+        "captureNow": "Capture Now",
+        "instruction": "Please place a penny on the tire thread and take a photo capturing following items:",
+        "subHeading": "Place Lincoln’s heads on the penny upside down and facing the camera",
+        "leftFront": "Left Front Tire",
+        "leftRear": "Left Rear Tire",
+        "rightFront": "Right Front Tire",
+        "rightRear": "Right Rear Tire"
+    },
+    "commentBox": {
+        "title": "Add a Comment",
+        "description": "Please provide your comments or feedback below",
+        "placeHolder": "Type your comment or feedback here"
+    },
+    "commentButton": {
+        "text": "+ Add Comment",
+        "optional": "(Optional)"
+    },
+    "confirmVehicleDetail": {
+        "title": "Vehicle Detail",
+        "description": "System was unable to detect the license plate number. Please type the license plate number below:",
+        "buttonText": "Confirm",
+        "placeHolder": "Enter License Plate Number"
+    },
+    "expiryInspection": {
+        "description": "The Inspection Has Expired. Please Start A New Inspection.",
+        "confirmButton": "New Inspection",
+        "cancelButton": "Exit"
     }
 }

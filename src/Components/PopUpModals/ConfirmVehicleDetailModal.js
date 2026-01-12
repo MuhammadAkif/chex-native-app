@@ -1,23 +1,25 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, Modal, StyleSheet, TextInput, Keyboard, TouchableOpacity, Platform} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Modal, StyleSheet, TextInput, Keyboard, TouchableOpacity, Platform } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
-import {PrimaryGradientButton} from '../index';
-import {circleBorderRadius, colors, modalStyle} from '../../Assets/Styles';
-import {removeAlphabets} from '../../Utils/helpers';
-import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
+import { PrimaryGradientButton } from '../index';
+import { circleBorderRadius, colors, modalStyle } from '../../Assets/Styles';
+import { removeAlphabets } from '../../Utils/helpers';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 
-const {red, gray, orange, black} = colors;
-const {modalOuterContainer, container, modalContainer, header, body, footer, button, yesText} = modalStyle;
+const { red, gray, orange, black } = colors;
+const { modalOuterContainer, container, modalContainer, header, body, footer, button, yesText } = modalStyle;
+
+import { useTranslation } from 'react-i18next';
 
 const ConfirmVehicleDetailModal = ({
   visible = true,
-  title = 'Vehicle Detail',
-  description = 'System was unable to detect the license plate number. Please type the license plate number below:',
+  title,
+  description,
   onConfirmPress,
   onCrossPress,
-  buttonText = 'Confirm',
-  placeHolder = 'Enter License Plate Number',
+  buttonText,
+  placeHolder,
   numberPlateText = '',
   isLoading = false,
   textLimit = 20,
@@ -25,6 +27,12 @@ const ConfirmVehicleDetailModal = ({
   inputMode,
   errorMessage = '',
 }) => {
+  const { t } = useTranslation();
+  const defaultTitle = title || t('confirmVehicleDetail.title');
+  const defaultDescription = description || t('confirmVehicleDetail.description');
+  const defaultButtonText = buttonText || t('confirmVehicleDetail.buttonText');
+  const defaultPlaceHolder = placeHolder || t('confirmVehicleDetail.placeHolder');
+
   const [numberPlate, setNumberPlate] = useState(numberPlateText);
   const text_Limit = numberPlate.length + '/' + textLimit;
 
@@ -53,15 +61,15 @@ const ConfirmVehicleDetailModal = ({
 
   return (
     <Modal animationType="slide" statusBarTranslucent transparent={true} visible={visible} style={modalOuterContainer}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{flex: 1}}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
         <TouchableOpacity style={container} activeOpacity={1} onPress={onTouchDismissKeyboard}>
           <View style={modalContainer}>
             <Text style={header}>{title}</Text>
-            {numberPlateText?.length === 0 && <Text style={[body, {color: red}]}>{description}</Text>}
-            {errorMessage && <Text style={[body, {color: red}]}>{errorMessage}</Text>}
+            {numberPlateText?.length === 0 && <Text style={[body, { color: red }]}>{description}</Text>}
+            {errorMessage && <Text style={[body, { color: red }]}>{errorMessage}</Text>}
             <TextInput
               value={numberPlate}
-              placeholder={placeHolder}
+              placeholder={defaultPlaceHolder}
               placeholderTextColor={gray}
               style={styles.numberPlateInput}
               enterKeyHint={'done'}
@@ -75,7 +83,7 @@ const ConfirmVehicleDetailModal = ({
             <Text style={styles.textLimit}>{text_Limit}</Text>
             <View style={footer}>
               <PrimaryGradientButton
-                text={buttonText}
+                text={defaultButtonText}
                 disabled={isLoading}
                 buttonStyle={button}
                 textStyle={yesText}

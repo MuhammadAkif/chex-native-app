@@ -1,25 +1,32 @@
-import React, {useState, useCallback, useEffect} from 'react';
-import {Keyboard, Modal, Platform, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, { useState, useCallback, useEffect } from 'react';
+import { Keyboard, Modal, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import InputField from './InputField';
 import TextLimit from './TextLimit';
-import {modalStyle} from '../../Assets/Styles';
-import {FooterButtons} from '../index';
-import {fallBack} from '../../Utils';
-import {KeyboardAvoidingView} from 'react-native-keyboard-controller';
+import { modalStyle } from '../../Assets/Styles';
+import { FooterButtons } from '../index';
+import { fallBack } from '../../Utils';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 
-const {modalOuterContainer, header, body, modalContainer} = modalStyle;
+const { modalOuterContainer, header, body, modalContainer } = modalStyle;
+
+import { useTranslation } from 'react-i18next';
 
 const CommentBox = ({
-  title = 'Add a Comment',
-  description = 'Please provide your comments or feedback below',
+  title,
+  description,
   onSubmit = fallBack,
   onCancel = fallBack,
-  placeHolder = 'Type your comment or feedback here',
+  placeHolder,
   feedback = '',
   isLoading = false,
   textLimit = 500,
   visible = true,
 }) => {
+  const { t } = useTranslation();
+  const defaultTitle = title || t('commentBox.title');
+  const defaultDescription = description || t('commentBox.description');
+  const defaultPlaceHolder = placeHolder || t('commentBox.placeHolder');
+
   const [input, setInput] = useState(feedback);
 
   useEffect(() => {
@@ -45,17 +52,17 @@ const CommentBox = ({
 
   return (
     <Modal animationType="slide" statusBarTranslucent transparent={true} onRequestClose={onCancel} visible={visible} onPress={onPressModal}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{flex: 1}}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
         <View style={styles.backdrop}>
-          <ScrollView contentContainerStyle={{flexGrow: 1, justifyContent: 'center', alignItems: 'center'}} keyboardShouldPersistTaps="handled">
+          <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }} keyboardShouldPersistTaps="handled">
             <View style={modalContainer}>
-              <Text style={header}>{title}</Text>
-              <Text style={[body, styles.subHeading]}>{description}</Text>
+              <Text style={header}>{defaultTitle}</Text>
+              <Text style={[body, styles.subHeading]}>{defaultDescription}</Text>
 
               <InputField
                 value={input}
                 onChange={setInput}
-                placeholder={placeHolder}
+                placeholder={defaultPlaceHolder}
                 maxLength={textLimit}
                 editable={!isLoading}
                 onSubmitEditing={handleConfirm}

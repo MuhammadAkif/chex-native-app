@@ -1,19 +1,20 @@
-import React, {useState} from 'react';
-import {Modal, StyleSheet, View, Text, TouchableOpacity, StatusBar, Platform} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import React, { useState } from 'react';
+import { Modal, StyleSheet, View, Text, TouchableOpacity, StatusBar, Platform } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 import * as Progress from 'react-native-progress';
-import {Cross, Exclamation, Expand, Info} from '../../Assets/Icons';
-import {colors} from '../../Assets/Styles';
-import {PrimaryGradientButton} from '../index';
+import { Cross, Exclamation, Expand, Info } from '../../Assets/Icons';
+import { colors } from '../../Assets/Styles';
+import { PrimaryGradientButton } from '../index';
 import Collapse from '../../Assets/Icons/Collapse';
-import {ANNOTATE_IMAGE_DETAILS, Platforms} from '../../Constants';
+import { ANNOTATE_IMAGE_DETAILS, Platforms } from '../../Constants';
 
-const {OS} = Platform;
-const {ANDROID} = Platforms;
-const {title: Title, annotateText, description, skipText, instruction, source: imagePath} = ANNOTATE_IMAGE_DETAILS;
-const {white, orangePeel, royalBlue, cobaltBlueDark} = colors;
+const { OS } = Platform;
+const { ANDROID } = Platforms;
+const { title: Title, annotateText, description, skipText, instruction, source: imagePath } = ANNOTATE_IMAGE_DETAILS;
+const { white, orangePeel, royalBlue, cobaltBlueDark } = colors;
 
 const AnnotateImageModal = ({
   modalVisible,
@@ -32,7 +33,15 @@ const AnnotateImageModal = ({
   handleAnnotatePress,
   handleSkipPress,
 }) => {
+  const { t } = useTranslation();
   const [isFullScreen, setIsFullScreen] = useState(false);
+
+  const resolvedTitle = title === Title ? t('annotation.title') : title;
+  const resolvedInstructionalText = instructionalText === description ? t('annotation.description') : instructionalText;
+  const resolvedInstructionalSubHeadingText =
+    instructionalSubHeadingText === instruction ? t('annotation.instruction') : instructionalSubHeadingText;
+  const resolvedAnnotateButtonText = annotateButtonText === annotateText ? t('annotation.annotate') : annotateButtonText;
+  const resolvedSkipButtonText = skipButtonText === skipText ? t('annotation.skip') : skipButtonText;
   let height = hp('5%');
   let width = wp('5%');
   const imageHeight = {
@@ -61,7 +70,7 @@ const AnnotateImageModal = ({
               flexGrow: isExterior ? 2 : 1,
             },
           ]}>
-          <Text style={[styles.titleText, styles.textColor, {bottom: isFullScreen ? hp('3%') : null}]}>{title}</Text>
+          <Text style={[styles.titleText, styles.textColor, { bottom: isFullScreen ? hp('3%') : null }]}>{resolvedTitle}</Text>
           {isVideo ? (
             <>
               {OS === ANDROID ? (
@@ -80,7 +89,7 @@ const AnnotateImageModal = ({
                     source={source}
                     autoplay={true}
                     fullScreenOnLongPress={true}
-                    style={{height: isFullScreen ? hp('50%') : hp('25%'), width: wp('90%')}}
+                    style={{ height: isFullScreen ? hp('50%') : hp('25%'), width: wp('90%') }}
                   />
                 </View>
               ) : (
@@ -93,15 +102,15 @@ const AnnotateImageModal = ({
                 source={source}
                 priority={'normal'}
                 resizeMode={'stretch'}
-                style={[styles.image, {height: imageHeight[isCarVerification]}]}
+                style={[styles.image, { height: imageHeight[isCarVerification] }]}
               />
               <Exclamation style={styles.damageIcon} height={hp('3%')} width={wp('6%')} />
             </View>
           )}
           <View style={styles.instructionsAndSubHeadingContainer}>
-            <View style={[styles.instructionsContainer, {top: isFullScreen ? hp('25%') : null}]}>
+            <View style={[styles.instructionsContainer, { top: isFullScreen ? hp('25%') : null }]}>
               <Info height={hp('4%')} width={wp('7%')} color={white} />
-              <Text style={[styles.instructionsText, styles.textColor]}>{instructionalText}</Text>
+              <Text style={[styles.instructionsText, styles.textColor]}>{resolvedInstructionalText}</Text>
             </View>
             {instructionalSubHeadingText && (
               <View style={styles.subHeadingContainer}>
@@ -114,9 +123,9 @@ const AnnotateImageModal = ({
                       fontSize: hp('2%'),
                     },
                   ]}>
-                  {instructionalSubHeadingText}
-                  <Text style={styles.bold}>{title} </Text>
-                  image?
+                  {resolvedInstructionalSubHeadingText}
+                  <Text style={styles.bold}>{resolvedTitle} </Text>
+                  {t('annotation.imageQuestion')}
                 </Text>
               </View>
             )}
@@ -143,14 +152,16 @@ const AnnotateImageModal = ({
               progress={normalizedProgressValue}
               showsText
               formatText={() => `${progress}%`}
-              textStyle={{fontWeight: 'bold', color: colors.white}}
+              textStyle={{ fontWeight: 'bold', color: colors.white }}
             />
-            <Text style={[styles.textColor, styles.loadingText]}>{progress === 100 ? 'Finalizing Upload' : 'Uploading'}</Text>
+            <Text style={[styles.textColor, styles.loadingText]}>
+              {progress === 100 ? t('annotation.finalizingUpload') : t('annotation.uploading')}
+            </Text>
           </View>
         ) : (
           <View style={styles.footerContainer}>
-            <PrimaryGradientButton text={annotateButtonText} onPress={handleAnnotatePress} />
-            <PrimaryGradientButton text={skipButtonText} colors={[royalBlue, royalBlue]} onPress={handleSkipPress} />
+            <PrimaryGradientButton text={resolvedAnnotateButtonText} onPress={handleAnnotatePress} />
+            <PrimaryGradientButton text={resolvedSkipButtonText} colors={[royalBlue, royalBlue]} onPress={handleSkipPress} />
           </View>
         )}
         <View style={styles.footerView} />

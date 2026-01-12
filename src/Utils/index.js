@@ -1,17 +1,18 @@
-import {Alert, Platform} from 'react-native';
-import {Camera} from 'react-native-vision-camera';
+import { Alert, Platform } from 'react-native';
+import { Camera } from 'react-native-vision-camera';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import * as yup from 'yup';
 
-import {IMAGES} from '../Assets/Images';
-import {customSortOrder, darkImageError, INSPECTION, INSPECTION_SUBCATEGORY, S3_BUCKET_BASEURL, uploadFailed, VEHICLE_TYPES} from '../Constants';
-import {ROUTES, TABS} from '../Navigation/ROUTES';
-import {getInspectionDetails, isImageDarkWithAI, s3SignedUrl, uploadFileToDatabase} from '../services/inspection';
-import {store} from '../Store';
-import {batchUpdateVehicleImages, numberPlateSelected, sessionExpired, setCompanyId} from '../Store/Actions';
-import {setFileDetails, setVehicleTypeModalVisible} from '../Store/Actions/NewInspectionAction';
-import {checkAndCompleteUrl} from './helpers';
+import { IMAGES } from '../Assets/Images';
+import { customSortOrder, darkImageError, INSPECTION, INSPECTION_SUBCATEGORY, S3_BUCKET_BASEURL, uploadFailed, VEHICLE_TYPES } from '../Constants';
+import { ROUTES, TABS } from '../Navigation/ROUTES';
+import { getInspectionDetails, isImageDarkWithAI, s3SignedUrl, uploadFileToDatabase } from '../services/inspection';
+import { store } from '../Store';
+import { batchUpdateVehicleImages, numberPlateSelected, sessionExpired, setCompanyId } from '../Store/Actions';
+import { setFileDetails, setVehicleTypeModalVisible } from '../Store/Actions/NewInspectionAction';
+import { checkAndCompleteUrl } from './helpers';
 import imageResizer from '@bam.tech/react-native-image-resizer';
+import i18n from './i18n';
 
 // Validation Schema
 export const validationSchema = yup.object().shape({
@@ -47,26 +48,26 @@ export const resetPasswordSchema = yup.object().shape({
 //____________________________Car Verification_________________________
 export const LicensePlateDetails = {
   key: 'licensePlate',
-  title: 'License Plate',
+  title: i18n.t('carVerification.licensePlate.title'),
   source: IMAGES.license_Plate,
-  instructionalText: 'Please take a photo of the License plate on the vehicle',
+  instructionalText: i18n.t('carVerification.licensePlate.instruction'),
   instructionalSubHeadingText: '',
   category: 'CarVerification',
   subCategory: 'license_plate_number',
   groupType: INSPECTION.carVerificiationItems,
-  buttonText: 'Capture Now',
+  buttonText: i18n.t('carVerification.licensePlate.captureNow'),
 };
 export const OdometerDetails = {
   key: 'odometer',
-  title: 'Odometer',
+  title: i18n.t('carVerification.odometer.title'),
   source: IMAGES.odometer,
-  instructionalText: 'Please take a photo of the odometer clearly showing the mileage  on the vehicle',
+  instructionalText: i18n.t('carVerification.odometer.instruction'),
   // instructionalSubHeadingText: 'Vehicle mileage',
   instructionalSubHeadingText: '',
   category: 'CarVerification',
   subCategory: 'odometer',
   groupType: INSPECTION.carVerificiationItems,
-  buttonText: 'Capture Now',
+  buttonText: i18n.t('carVerification.odometer.captureNow'),
 };
 
 export const VinDetails = {
@@ -83,16 +84,16 @@ export const VinDetails = {
 //___________________________Exterior______________________________
 export const ExteriorFrontDetails = vehicleType => ({
   key: 'exteriorFront',
-  title: 'Exterior Front',
+  title: i18n.t('exteriorItems.front.title'),
   source:
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_front
       : vehicleType === VEHICLE_TYPES.TRUCK
-      ? IMAGES.truck_exterior_front
-      : IMAGES.exterior_Front,
-  instructionalText: 'Please upload a photo clearly showing the front of the vehicle',
+        ? IMAGES.truck_exterior_front
+        : IMAGES.exterior_Front,
+  instructionalText: i18n.t('exteriorItems.front.instruction'),
   instructionalSubHeadingText: '',
-  buttonText: 'Capture Now',
+  buttonText: i18n.t('exteriorItems.captureNow'),
   category: 'Exterior',
   subCategory: 'exterior_front',
   groupType: INSPECTION.exteriorItems,
@@ -101,16 +102,16 @@ export const ExteriorFrontDetails = vehicleType => ({
 
 export const ExteriorRearDetails = vehicleType => ({
   key: 'exteriorRear',
-  title: 'Exterior Rear',
+  title: i18n.t('exteriorItems.rear.title'),
   source:
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_rear
       : vehicleType === VEHICLE_TYPES.TRUCK
-      ? IMAGES.truck_exterior_rear_back
-      : IMAGES.exterior_Rear,
-  instructionalText: 'Please upload a photo clearly showing the rear of the vehicle ',
+        ? IMAGES.truck_exterior_rear_back
+        : IMAGES.exterior_Rear,
+  instructionalText: i18n.t('exteriorItems.rear.instruction'),
   instructionalSubHeadingText: '',
-  buttonText: 'Capture Now',
+  buttonText: i18n.t('exteriorItems.captureNow'),
   category: 'Exterior',
   subCategory: 'exterior_rear',
   groupType: INSPECTION.exteriorItems,
@@ -145,17 +146,16 @@ export const ExteriorRightDetails = {
 
 export const ExteriorFrontLeftCornerDetails = vehicleType => ({
   key: 'exteriorFrontLeftCorner',
-  title: 'Front Left Corner',
+  title: i18n.t('exteriorItems.frontLeftCorner.title'),
   source:
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_front_Left
       : vehicleType === VEHICLE_TYPES.TRUCK
-      ? IMAGES.truck_exterior_front_Left
-      : IMAGES.front_Left_Corner,
-  instructionalText:
-    'Please take a photo from the front left corner of the vehicle clearly capturing the left headlight, driver door and roof on the exterior left side of the vehicle',
+        ? IMAGES.truck_exterior_front_Left
+        : IMAGES.front_Left_Corner,
+  instructionalText: i18n.t('exteriorItems.frontLeftCorner.instruction'),
   instructionalSubHeadingText: '',
-  buttonText: 'Capture Now',
+  buttonText: i18n.t('exteriorItems.captureNow'),
   category: 'Exterior',
   subCategory: 'front_left_corner',
   groupType: INSPECTION.exteriorItems,
@@ -164,17 +164,16 @@ export const ExteriorFrontLeftCornerDetails = vehicleType => ({
 
 export const ExteriorFrontRightCornerDetails = vehicleType => ({
   key: 'exteriorFrontRightCorner',
-  title: 'Front Right Corner',
+  title: i18n.t('exteriorItems.frontRightCorner.title'),
   source:
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_front_Right
       : vehicleType === VEHICLE_TYPES.TRUCK
-      ? IMAGES.truck_exterior_front_right
-      : IMAGES.front_Right_Corner,
-  instructionalText:
-    'Please take a photo from the front right corner of the vehicle clearly capturing the right headlight, passenger door and roof on the exterior right side of the vehicle',
+        ? IMAGES.truck_exterior_front_right
+        : IMAGES.front_Right_Corner,
+  instructionalText: i18n.t('exteriorItems.frontRightCorner.instruction'),
   instructionalSubHeadingText: '',
-  buttonText: 'Capture Now',
+  buttonText: i18n.t('exteriorItems.captureNow'),
   category: 'Exterior',
   subCategory: 'front_right_corner',
   groupType: INSPECTION.exteriorItems,
@@ -183,17 +182,16 @@ export const ExteriorFrontRightCornerDetails = vehicleType => ({
 
 export const ExteriorRearLeftCornerDetails = vehicleType => ({
   key: 'exteriorRearLeftCorner',
-  title: 'Rear Left Corner',
+  title: i18n.t('exteriorItems.rearLeftCorner.title'),
   source:
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_rear_left
       : vehicleType === VEHICLE_TYPES.TRUCK
-      ? IMAGES.truck_exterior_rear_left
-      : IMAGES.rear_Left_Corner,
-  instructionalText:
-    'Please take a photo from the rear left corner of the vehicle clearly capturing the left tail light, rear door and roof on the exterior left side of the vehicle',
+        ? IMAGES.truck_exterior_rear_left
+        : IMAGES.rear_Left_Corner,
+  instructionalText: i18n.t('exteriorItems.rearLeftCorner.instruction'),
   instructionalSubHeadingText: '',
-  buttonText: 'Capture Now',
+  buttonText: i18n.t('exteriorItems.captureNow'),
   category: 'Exterior',
   subCategory: 'rear_left_corner',
   groupType: INSPECTION.exteriorItems,
@@ -202,17 +200,16 @@ export const ExteriorRearLeftCornerDetails = vehicleType => ({
 
 export const ExteriorRearRightCornerDetails = vehicleType => ({
   key: 'exteriorRearRightCorner',
-  title: 'Rear Right Corner',
+  title: i18n.t('exteriorItems.rearRightCorner.title'),
   source:
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_rear_right
       : vehicleType === VEHICLE_TYPES.TRUCK
-      ? IMAGES.truck_exterior_rear_right
-      : IMAGES.rear_Right_Corner,
-  instructionalText:
-    'Please take a photo from the rear right corner of the vehicle clearly capturing the right tail light, rear door and roof on the exterior right side of the vehicle',
+        ? IMAGES.truck_exterior_rear_right
+        : IMAGES.rear_Right_Corner,
+  instructionalText: i18n.t('exteriorItems.rearRightCorner.instruction'),
   instructionalSubHeadingText: '',
-  buttonText: 'Capture Now',
+  buttonText: i18n.t('exteriorItems.captureNow'),
   category: 'Exterior',
   subCategory: 'rear_right_corner',
   groupType: INSPECTION.exteriorItems,
@@ -221,11 +218,11 @@ export const ExteriorRearRightCornerDetails = vehicleType => ({
 
 export const ExteriorInsideCargoRoofDetails = vehicleType => ({
   key: 'exteriorInsideCargoRoof',
-  title: 'Inside Cargo Roof',
+  title: i18n.t('exteriorItems.insideCargoRoof.title'),
   source: VEHICLE_TYPES.TRUCK === vehicleType ? IMAGES.truck_interior_back : IMAGES.inside_Cargo_Roof,
-  instructionalText: 'Please upload a photo clearly showing the inside cargo roof of the vehicle',
+  instructionalText: i18n.t('exteriorItems.insideCargoRoof.instruction'),
   instructionalSubHeadingText: '',
-  buttonText: 'Capture Now',
+  buttonText: i18n.t('exteriorItems.captureNow'),
   category: 'Exterior',
   subCategory: 'inside_cargo_roof',
   groupType: INSPECTION.exteriorItems,
@@ -234,12 +231,11 @@ export const ExteriorInsideCargoRoofDetails = vehicleType => ({
 //___________________________Interior______________________________
 export const InteriorPassengerSide = {
   key: 'passengerSide',
-  title: 'Interior Passenger Side',
+  title: i18n.t('interiorItems.passengerSide.title'),
   source: IMAGES.interior_passenger_side,
-  instructionalText:
-    'Please take a photo of the interior of the vehicle with right passenger side door open with clear view of the following interior items:',
-  instructionalSubHeadingText: 'Passenger seat belt buckled',
-  buttonText: 'Capture Now',
+  instructionalText: i18n.t('interiorItems.passengerSide.instruction'),
+  instructionalSubHeadingText: i18n.t('interiorItems.passengerSide.details.seatBelt'),
+  buttonText: i18n.t('interiorItems.captureNow'),
   category: 'Interior',
   subCategory: 'interior_passenger_side',
   groupType: INSPECTION.interiorItems,
@@ -247,13 +243,13 @@ export const InteriorPassengerSide = {
 };
 export const InteriorDriverSide = {
   key: 'driverSide',
-  title: 'Interior Driver Side',
+  title: i18n.t('interiorItems.driverSide.title'),
   source: IMAGES.interior_driver_side,
-  instructionalText: 'Please take a photo of the interior of the vehicle with left driver side door open with clear view of the following items:',
-  instructionalSubHeadingText: 'Driver seat belt buckled',
-  instructionalSubHeadingText_1: 'Interior rearview mirror',
-  instructionalSubHeadingText_2: 'Brake pads',
-  buttonText: 'Capture Now',
+  instructionalText: i18n.t('interiorItems.driverSide.instruction'),
+  instructionalSubHeadingText: i18n.t('interiorItems.driverSide.details.seatBelt'),
+  instructionalSubHeadingText_1: i18n.t('interiorItems.driverSide.details.rearview'),
+  instructionalSubHeadingText_2: i18n.t('interiorItems.driverSide.details.brakePads'),
+  buttonText: i18n.t('interiorItems.captureNow'),
   category: 'Interior',
   subCategory: 'interior_driver_side',
   groupType: INSPECTION.interiorItems,
@@ -262,11 +258,11 @@ export const InteriorDriverSide = {
 //____________________________Tires_____________________________
 export const LeftFrontTireDetails = {
   key: 'leftFrontTire',
-  title: 'Left Front Tire',
+  title: i18n.t('tiresItems.leftFront'),
   source: IMAGES.tire,
-  instructionalText: 'Please place a penny on the tire thread and take a photo capturing following items:',
-  instructionalSubHeadingText: 'Place Lincoln’s heads on the penny upside down and facing the camera',
-  buttonText: 'Capture Now',
+  instructionalText: i18n.t('tiresItems.instruction'),
+  instructionalSubHeadingText: i18n.t('tiresItems.subHeading'),
+  buttonText: i18n.t('tiresItems.captureNow'),
   category: 'Tires',
   subCategory: 'left_front_tire',
   groupType: INSPECTION.tires,
@@ -274,11 +270,11 @@ export const LeftFrontTireDetails = {
 };
 export const LeftRearTireDetails = {
   key: 'leftRearTire',
-  title: 'Left Rear Tire',
+  title: i18n.t('tiresItems.leftRear'),
   source: IMAGES.tire,
-  instructionalText: 'Please place a penny on the tire thread and take a photo capturing following items:',
-  instructionalSubHeadingText: 'Place Lincoln’s heads on the penny upside down and facing the camera',
-  buttonText: 'Capture Now',
+  instructionalText: i18n.t('tiresItems.instruction'),
+  instructionalSubHeadingText: i18n.t('tiresItems.subHeading'),
+  buttonText: i18n.t('tiresItems.captureNow'),
   category: 'Tires',
   subCategory: 'left_rear_tire',
   groupType: INSPECTION.tires,
@@ -286,11 +282,11 @@ export const LeftRearTireDetails = {
 };
 export const RightFrontTireDetails = {
   key: 'rightFrontTire',
-  title: 'Right Front Tire',
+  title: i18n.t('tiresItems.rightFront'),
   source: IMAGES.tire,
-  instructionalText: 'Please place a penny on the tire thread and take a photo capturing following items:',
-  instructionalSubHeadingText: 'Place Lincoln’s heads on the penny upside down and facing the camera',
-  buttonText: 'Capture Now',
+  instructionalText: i18n.t('tiresItems.instruction'),
+  instructionalSubHeadingText: i18n.t('tiresItems.subHeading'),
+  buttonText: i18n.t('tiresItems.captureNow'),
   category: 'Tires',
   subCategory: 'right_front_tire',
   groupType: INSPECTION.tires,
@@ -298,11 +294,11 @@ export const RightFrontTireDetails = {
 };
 export const RightRearTireDetails = {
   key: 'rightRearTire',
-  title: 'Right Rear Tire',
+  title: i18n.t('tiresItems.rightRear'),
   source: IMAGES.tire,
-  instructionalText: 'Please place a penny on the tire thread and take a photo capturing following items:',
-  instructionalSubHeadingText: 'Place Lincoln’s heads on the penny upside down and facing the camera',
-  buttonText: 'Capture Now',
+  instructionalText: i18n.t('tiresItems.instruction'),
+  instructionalSubHeadingText: i18n.t('tiresItems.subHeading'),
+  buttonText: i18n.t('tiresItems.captureNow'),
   category: 'Tires',
   subCategory: 'right_rear_tire',
   groupType: INSPECTION.tires,
@@ -321,7 +317,7 @@ export const hasCameraAndMicrophoneAllowed = async () => {
   }
 };
 export function error_Handler(callback = null, title = uploadFailed.title, message = uploadFailed.message) {
-  Alert.alert(title || uploadFailed.title, message || uploadFailed.message, [{text: 'Retry', onPress: callback}]);
+  Alert.alert(title || uploadFailed.title, message || uploadFailed.message, [{ text: 'Retry', onPress: callback }]);
 }
 export const getSignedUrl = async (
   token,
@@ -348,14 +344,14 @@ export const getSignedUrl = async (
 };
 async function onGetSignedUrlSuccess(res, path, mime, setProgress, handleResponse, handleError, dispatch, category) {
   try {
-    const {url, key} = res.data;
+    const { url, key } = res.data;
 
     await uploadToS3(url, key, path, mime, setProgress, handleResponse, handleError, dispatch, category);
   } catch (error) {
     throw error;
   }
 }
-function onGetSignedUrlFail(error, handleError, dispatch) {}
+function onGetSignedUrlFail(error, handleError, dispatch) { }
 
 export const uploadToS3 = async (preSignedUrl, key, path, mime, setProgress, handleResponse, handleError, _, category) => {
   try {
@@ -374,7 +370,7 @@ export const uploadToS3 = async (preSignedUrl, key, path, mime, setProgress, han
 
     const headers = {
       'Content-Type': mime,
-      ...(size ? {'Content-Length': String(size)} : {}),
+      ...(size ? { 'Content-Length': String(size) } : {}),
     };
 
     const task = ReactNativeBlobUtil.fetch('PUT', preSignedUrl, headers, ReactNativeBlobUtil.wrap(path));
@@ -383,7 +379,7 @@ export const uploadToS3 = async (preSignedUrl, key, path, mime, setProgress, han
     setProgress(0);
 
     // Progress listener
-    task.uploadProgress({interval: 100}, (written, totalFromCb) => {
+    task.uploadProgress({ interval: 100 }, (written, totalFromCb) => {
       const total = totalFromCb && totalFromCb > 0 ? totalFromCb : size;
       if (total > 0) {
         const pct = Math.min(99, Math.round((written * 100) / total));
@@ -410,7 +406,7 @@ async function onUploadToS3Success(handleResponse, key, handleError, category, m
   try {
     if (!SKIP_NIGHT_IMAGE_LIST.includes(category) && mime !== 'video/mp4') {
       const {
-        data: {status = false},
+        data: { status = false },
       } = await isImageDarkWithAI(image_url);
 
       if (!status) {
@@ -434,7 +430,7 @@ export const uploadFile = async (callback, body, inspectionId, token, handleErro
   }
 };
 function onUploadFileSuccess(res, callback) {
-  const {id = null} = res?.data || {};
+  const { id = null } = res?.data || {};
   callback(id);
 }
 
@@ -494,7 +490,7 @@ export const updateFiles = (files = []) => {
   for (let i = 0; i < files.length; i++) {
     const variant = files[i].llamaCost || '';
     let name = files[i].category + variant;
-    const data = {...files[i], name: name};
+    const data = { ...files[i], name: name };
     files_Updated.push(data);
   }
   return files_Updated;
@@ -563,8 +559,8 @@ export const sortInspection_Reviewed_Items = list => {
 export function uploadInProgressMediaToStore(files, dispatch) {
   // Batch all updates into a single dispatch
   const updates = files.map(file => {
-    const {url, groupType, id, category, llamaCost: variant} = file;
-    const {completedUrl: imageURL} = checkAndCompleteUrl(url);
+    const { url, groupType, id, category, llamaCost: variant } = file;
+    const { completedUrl: imageURL } = checkAndCompleteUrl(url);
 
     let categoryKey = category;
     if (parseInt(variant)) {
@@ -599,13 +595,13 @@ export const generateRandomString = () => {
 
 export const handleNewInspectionPress = (dispatch, setIsLoading, companyId, navigation, resetAllStates) => {
   // dispatch(setVehicleTypeModalVisible(true));
-  navigation.navigate(ROUTES.TABS, {screen: TABS.INSPECTION});
+  navigation.navigate(ROUTES.TABS, { screen: TABS.INSPECTION });
   dispatch(setCompanyId(companyId));
   // No API call here anymore
 };
 
 export function onNewInspectionPressSuccess(response, dispatch, navigate, resetAllStates) {
-  const {id = null} = response?.data || {};
+  const { id = null } = response?.data || {};
 
   dispatch(numberPlateSelected(id));
 
@@ -620,7 +616,7 @@ export function onNewInspectionPressSuccess(response, dispatch, navigate, resetA
 }
 
 export function onNewInspectionPressFail(err, dispatch) {
-  const {statusCode = null} = err?.response?.data || {};
+  const { statusCode = null } = err?.response?.data || {};
   if (statusCode === 401) {
     handle_Session_Expired(statusCode, dispatch);
   }
@@ -631,7 +627,7 @@ export function handle_Session_Expired(statusCode = null, dispatch) {
   }
 }
 export const EXTRACT_INSPECTION_ITEM_ID = key => {
-  const {carVerificiationItems: carVerification, exteriorItems: exterior, interiorItems: interior, tires} = store.getState().newInspection;
+  const { carVerificiationItems: carVerification, exteriorItems: exterior, interiorItems: interior, tires } = store.getState().newInspection;
   const {
     exteriorLeftID,
     exteriorLeft_1ID,
@@ -661,9 +657,9 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
     exteriorInsideCargoRoof_1ID,
     exteriorInsideCargoRoof_2ID,
   } = exterior;
-  const {driverSideID, driverSide_1ID, driverSide_2ID, passengerSideID, passengerSide_1ID, passengerSide_2ID} = interior;
-  const {licensePlateID, odometerID} = carVerification;
-  const {leftFrontTireID, leftRearTireID, rightFrontTireID, rightRearTireID} = tires;
+  const { driverSideID, driverSide_1ID, driverSide_2ID, passengerSideID, passengerSide_1ID, passengerSide_2ID } = interior;
+  const { licensePlateID, odometerID } = carVerification;
+  const { leftFrontTireID, leftRearTireID, rightFrontTireID, rightRearTireID } = tires;
   const GET_EXTERIOR_ITEM = {
     licensePlate: licensePlateID,
     odometer: odometerID,
@@ -725,7 +721,7 @@ export const haveOneValue = (object = {}) => {
   return extractValues.some(even);
 };
 export const checkExterior = () => {
-  const {exteriorItems: exterior} = store.getState().newInspection;
+  const { exteriorItems: exterior } = store.getState().newInspection;
   const {
     exteriorLeftID,
     exteriorRightID,
@@ -744,7 +740,7 @@ export const checkExterior = () => {
   return isNotEmpty(exteriorFrontID) && isNotEmpty(exteriorRearID) && isNotEmpty(exteriorInsideCargoRoofID) && leftCheck && rightCheck;
 };
 export const FILTER_IMAGES = (arr = [], toFilter = 'before') => {
-  const {carVerificiationItems, exteriorItems, interiorItems, tires} = INSPECTION;
+  const { carVerificiationItems, exteriorItems, interiorItems, tires } = INSPECTION;
   if (!Array.isArray(arr)) {
     return;
   }
@@ -752,7 +748,7 @@ export const FILTER_IMAGES = (arr = [], toFilter = 'before') => {
     return arr.filter(item => item?.pictureTag === toFilter);
   } else {
     return arr.filter(item => {
-      const {groupType, pictureTag} = item;
+      const { groupType, pictureTag } = item;
       if (groupType === carVerificiationItems || groupType === tires) {
         return item;
       } else if ((groupType === exteriorItems || groupType === interiorItems) && pictureTag === toFilter) {
@@ -785,11 +781,11 @@ export const get_Inspection_Details = async (dispatch, inspectionId) => {
     .catch(error => onGet_Inspection_DetailsFail(error, dispatch));
 };
 function onGet_Inspection_DetailsSuccess(res, dispatch) {
-  const {files = {}} = res?.data || {};
+  const { files = {} } = res?.data || {};
   dispatch(setFileDetails(files));
 }
 function onGet_Inspection_DetailsFail(error, dispatch) {
-  const {statusCode = null} = error?.response?.data || {};
+  const { statusCode = null } = error?.response?.data || {};
   if (statusCode === 401) {
     handle_Session_Expired(statusCode, dispatch);
   }
@@ -832,7 +828,7 @@ export function assignNumber(arr = [], length = 0) {
     }
   }
 }
-export const fallBack = () => {};
+export const fallBack = () => { };
 export const mergeData = (list = [], label = '') => {
   if (list?.length < 1 || !Array.isArray(list)) {
     console.log('Empty Array or invalid array');
@@ -849,7 +845,7 @@ export const mergeData = (list = [], label = '') => {
   return newList;
 };
 export function checkRelevantType(type) {
-  const {interiorItems, exteriorItems} = INSPECTION;
+  const { interiorItems, exteriorItems } = INSPECTION;
   const relevantGroupTypes = [interiorItems, exteriorItems];
   return relevantGroupTypes.includes(type) || false;
 }
@@ -896,7 +892,7 @@ export async function fixImageOrientation(uri) {
       0, // auto-rotation handled internally
       undefined,
       false, // remove EXIF orientation
-      {mode: 'contain', onlyScaleDown: true}
+      { mode: 'contain', onlyScaleDown: true }
     );
 
     return result.uri;

@@ -1,9 +1,10 @@
 import React from 'react';
-import {View} from 'react-native';
+import { View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
-import {useSelector} from 'react-redux';
-import {ExpandedCardStyles, expandedCardStyles} from '../../Assets/Styles';
-import {hasInteriorAndRoofTopCompany} from '../../Constants';
+import { useSelector } from 'react-redux';
+import { ExpandedCardStyles, expandedCardStyles } from '../../Assets/Styles';
+import { hasInteriorAndRoofTopCompany } from '../../Constants';
 import {
   ExteriorFrontDetails,
   ExteriorFrontLeftCornerDetails,
@@ -13,10 +14,10 @@ import {
   ExteriorRearLeftCornerDetails,
   ExteriorRearRightCornerDetails,
 } from '../../Utils';
-import {ImagesPickerContainer} from '../index';
+import { ImagesPickerContainer } from '../index';
 
-const {expandedCardContainer} = expandedCardStyles;
-const {container} = ExpandedCardStyles;
+const { expandedCardContainer } = expandedCardStyles;
+const { container } = ExpandedCardStyles;
 
 const ExteriorItemsExpandedCard = ({
   handleItemPickerPress,
@@ -24,18 +25,21 @@ const ExteriorItemsExpandedCard = ({
   handleCrossPress,
   isLoading,
   handleMediaModalDetailsPress,
-  pickerText = 'Capture Image',
+  pickerText,
   skipLeft = false,
   skipLeftCorners = false,
   skipRight = false,
   skipRightCorners = false,
 }) => {
+  const { t } = useTranslation();
+  const defaultPickerText = pickerText || t('exteriorItems.captureImage');
+
   const {
     user: {
-      data: {companyId},
+      data: { companyId },
     },
   } = useSelector(state => state?.auth);
-  const {selectedVehicleKind} = useSelector(state => state?.newInspection);
+  const { selectedVehicleKind } = useSelector(state => state?.newInspection);
 
   return (
     <View
@@ -46,7 +50,7 @@ const ExteriorItemsExpandedCard = ({
       }}>
       <ImagesPickerContainer
         ExteriorDetails={ExteriorFrontDetails(selectedVehicleKind)}
-        pickerText={pickerText}
+        pickerText={defaultPickerText}
         imageURL={exteriorItems?.exteriorFront}
         imageURLOne={exteriorItems?.exteriorFront_1}
         imageURLTwo={exteriorItems?.exteriorFront_2}
@@ -61,7 +65,7 @@ const ExteriorItemsExpandedCard = ({
       />
       <ImagesPickerContainer
         ExteriorDetails={ExteriorRearDetails(selectedVehicleKind)}
-        pickerText={pickerText}
+        pickerText={defaultPickerText}
         imageURL={exteriorItems?.exteriorRear}
         imageURLOne={exteriorItems?.exteriorRear_1}
         imageURLTwo={exteriorItems?.exteriorRear_2}
@@ -77,7 +81,7 @@ const ExteriorItemsExpandedCard = ({
       {!skipLeftCorners && (
         <ImagesPickerContainer
           ExteriorDetails={ExteriorFrontLeftCornerDetails(selectedVehicleKind)}
-          pickerText={pickerText}
+          pickerText={defaultPickerText}
           imageURL={exteriorItems?.exteriorFrontLeftCorner}
           imageURLOne={exteriorItems?.exteriorFrontLeftCorner_1}
           imageURLTwo={exteriorItems?.exteriorFrontLeftCorner_2}
@@ -94,7 +98,7 @@ const ExteriorItemsExpandedCard = ({
       {!skipRightCorners && (
         <ImagesPickerContainer
           ExteriorDetails={ExteriorFrontRightCornerDetails(selectedVehicleKind)}
-          pickerText={pickerText}
+          pickerText={defaultPickerText}
           imageURL={exteriorItems?.exteriorFrontRightCorner}
           imageURLOne={exteriorItems?.exteriorFrontRightCorner_1}
           imageURLTwo={exteriorItems?.exteriorFrontRightCorner_2}
@@ -111,7 +115,7 @@ const ExteriorItemsExpandedCard = ({
       {!skipLeftCorners && (
         <ImagesPickerContainer
           ExteriorDetails={ExteriorRearLeftCornerDetails(selectedVehicleKind)}
-          pickerText={pickerText}
+          pickerText={defaultPickerText}
           imageURL={exteriorItems?.exteriorRearLeftCorner}
           imageURLOne={exteriorItems?.exteriorRearLeftCorner_1}
           imageURLTwo={exteriorItems?.exteriorRearLeftCorner_2}
@@ -128,7 +132,7 @@ const ExteriorItemsExpandedCard = ({
       {!skipRightCorners && (
         <ImagesPickerContainer
           ExteriorDetails={ExteriorRearRightCornerDetails(selectedVehicleKind)}
-          pickerText={pickerText}
+          pickerText={defaultPickerText}
           imageURL={exteriorItems?.exteriorRearRightCorner}
           imageURLOne={exteriorItems?.exteriorRearRightCorner_1}
           imageURLTwo={exteriorItems?.exteriorRearRightCorner_2}
@@ -145,7 +149,7 @@ const ExteriorItemsExpandedCard = ({
       {!hasInteriorAndRoofTopCompany(companyId) && (
         <ImagesPickerContainer
           ExteriorDetails={ExteriorInsideCargoRoofDetails(selectedVehicleKind)}
-          pickerText={pickerText}
+          pickerText={defaultPickerText}
           imageURL={exteriorItems?.exteriorInsideCargoRoof}
           imageURLOne={exteriorItems?.exteriorInsideCargoRoof_1}
           imageURLTwo={exteriorItems?.exteriorInsideCargoRoof_2}

@@ -1,11 +1,10 @@
 import React from 'react';
-import {View} from 'react-native';
-
-import {ExpandedCardStyles, expandedCardStyles} from '../../../Assets/Styles';
-import {InteriorDriverSide, InteriorPassengerSide} from '../../../Utils';
-import {ImagesPickerContainer} from '../../index';
-const {expandedCardContainer} = expandedCardStyles;
-const {container} = ExpandedCardStyles;
+import { View } from 'react-native';
+import { ExpandedCardStyles, expandedCardStyles } from '../../../Assets/Styles';
+import { InteriorDriverSide, InteriorPassengerSide } from '../../../Utils';
+import { ImagesPickerContainer } from '../../index';
+const { expandedCardContainer } = expandedCardStyles;
+const { container } = ExpandedCardStyles;
 const containerStyle = {
   ...expandedCardContainer,
   ...container,

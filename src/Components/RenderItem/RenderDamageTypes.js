@@ -1,13 +1,13 @@
-import React from 'react';
-import {Text, StyleSheet, TouchableOpacity} from 'react-native';
+import { Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-import {colors} from '../../Assets/Styles';
+import { colors } from '../../Assets/Styles';
 
-const {red, lightGray, white, steelGray} = colors;
+const { red, lightGray, white, steelGray } = colors;
 const activeColor = {
   true: red,
   false: lightGray,
@@ -27,6 +27,7 @@ const RenderDamageTypes = ({
   handleDamageDetails,
   disabled,
 }) => {
+  const { t } = useTranslation();
   const isActive = selectedDamage === item;
   const activeTypeColor = activeColor[isActive];
   const activeTextColor = activeTextTypeColor[isActive];
@@ -40,9 +41,9 @@ const RenderDamageTypes = ({
   return (
     <TouchableOpacity
       disabled={disabled}
-      style={{...styles.container, backgroundColor: activeTypeColor}}
+      style={{ ...styles.container, backgroundColor: activeTypeColor }}
       onPress={() => handleDamageDetails('type', item)}>
-      <Text style={style}>{item}</Text>
+      <Text style={style}>{t(`annotation.damageType.${item.toLowerCase()}`)}</Text>
     </TouchableOpacity>
   );
 };
