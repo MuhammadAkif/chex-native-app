@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -17,15 +18,15 @@ import {
   expandedCardStyles,
   ItemPickerStyles,
 } from '../../Assets/Styles';
-import {Camera, CrossFilled, Damage_Vehicle} from '../../Assets/Icons';
-import {Platforms} from '../../Constants';
-import {Custom_Image} from '../index';
+import { Camera, CrossFilled, Damage_Vehicle } from '../../Assets/Icons';
+import { Platforms } from '../../Constants';
+import { Custom_Image } from '../index';
 
-const {WINDOW} = Platforms;
+const { WINDOW } = Platforms;
 const iconHeight = hp('5%');
 const iconWidth = wp('5%');
-const {height, width} = Dimensions.get(WINDOW);
-const {orangePeel, blueGray} = colors;
+const { height, width } = Dimensions.get(WINDOW);
+const { orangePeel, blueGray } = colors;
 const {
   uploadImageAndTextContainer,
   crossContainer,
@@ -34,7 +35,7 @@ const {
   uploadImageText,
   textColor,
 } = expandedCardStyles;
-const {container} = ItemPickerStyles;
+const { container } = ItemPickerStyles;
 
 const ImagePicker_New = ({
   onPress,
@@ -46,56 +47,61 @@ const ImagePicker_New = ({
   handleMediaModalDetailsPress,
   isAnnotated,
   displayImage = true,
-}) => (
-  <View style={uploadImageAndTextContainer}>
-    {imageURL && displayImage ? (
-      <TouchableOpacity
-        style={{...container, ...styles.size}}
-        disabled={isLoading}
-        onPress={handleMediaModalDetailsPress}>
-        <TouchableOpacity style={crossContainer} onPress={onClearPress}>
-          <CrossFilled
-            height={hp('2.5%')}
-            width={wp('7%')}
-            color={orangePeel}
+}) => {
+  const { t } = useTranslation();
+  const defaultPickerText = pickerText || t('common.captureImage');
+
+  return (
+    <View style={uploadImageAndTextContainer}>
+      {imageURL && displayImage ? (
+        <TouchableOpacity
+          style={{ ...container, ...styles.size }}
+          disabled={isLoading}
+          onPress={handleMediaModalDetailsPress}>
+          <TouchableOpacity style={crossContainer} onPress={onClearPress}>
+            <CrossFilled
+              height={hp('2.5%')}
+              width={wp('7%')}
+              color={orangePeel}
+            />
+          </TouchableOpacity>
+          <FastImage
+            source={{ uri: imageURL }}
+            priority={'normal'}
+            resizeMode={'stretch'}
+            style={[StyleSheet.absoluteFill, { borderRadius: wp('4%') }]}
           />
-        </TouchableOpacity>
-        <FastImage
-          source={{uri: imageURL}}
-          priority={'normal'}
-          resizeMode={'stretch'}
-          style={[StyleSheet.absoluteFill, {borderRadius: wp('4%')}]}
-        />
-        {/*<Custom_Image
+          {/*<Custom_Image
           source={{uri: imageURL}}
           imageStyle={{height: '100%', width: '100%', borderRadius: wp('5%')}}
         />*/}
-        {isAnnotated && <Damage_Vehicle style={styles.icon} />}
-      </TouchableOpacity>
-    ) : (
-      <TouchableOpacity
-        style={{...uploadImageContainer, ...styles.size}}
-        onPress={onPress}>
-        <View
-          style={{
-            ...cameraIconContainer,
-            height: width * 0.12,
-            width: width * 0.12,
-          }}>
-          <Camera height={iconHeight} width={iconWidth} color={blueGray} />
-        </View>
-        <Text
-          style={{
-            ...uploadImageText,
-            ...textColor,
-            fontSize: hp('1.35%'),
-          }}>
-          {pickerText}
-        </Text>
-      </TouchableOpacity>
-    )}
-  </View>
-);
+          {isAnnotated && <Damage_Vehicle style={styles.icon} />}
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={{ ...uploadImageContainer, ...styles.size }}
+          onPress={onPress}>
+          <View
+            style={{
+              ...cameraIconContainer,
+              height: width * 0.12,
+              width: width * 0.12,
+            }}>
+            <Camera height={iconHeight} width={iconWidth} color={blueGray} />
+          </View>
+          <Text
+            style={{
+              ...uploadImageText,
+              ...textColor,
+              fontSize: hp('1.35%'),
+            }}>
+            {defaultPickerText}
+          </Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   icon: {

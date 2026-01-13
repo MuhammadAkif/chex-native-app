@@ -9,7 +9,6 @@ import FastImage from 'react-native-fast-image';
 
 import { PrimaryGradientButton, SecondaryButton } from '../index';
 import { modalStyle } from '../../Assets/Styles';
-import { EXPIRY_INSPECTION } from '../../Constants';
 import { IMAGES } from '../../Assets/Images';
 
 const { expiry_Inspection } = IMAGES;

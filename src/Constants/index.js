@@ -1,5 +1,6 @@
-import {Platform} from 'react-native';
-import {IMAGES} from '../Assets/Images';
+import { Platform } from 'react-native';
+import { IMAGES } from '../Assets/Images';
+import i18n from '../Utils/i18n';
 
 // Vehicle Types Constants
 export const VEHICLE_TYPES = {
@@ -73,11 +74,6 @@ export const Platforms = {
 export const HARDWARE_BACK_PRESS = 'hardwareBackPress';
 export const ANDROID = 'android';
 
-export const EXPIRY_INSPECTION = {
-  description: 'The Inspection Has Expired. Please Start A New Inspection.',
-  confirmButton: 'New Inspection',
-  cancelButton: 'Exit',
-};
 export const INSPECTION = {
   carVerificiationItems: 'carVerificiationItems',
   interiorItems: 'interiorItems',
@@ -161,14 +157,14 @@ export const INSPECTION_TITLE = {
   right_rear_tire: 'Right Rear Tire',
 };
 export const UPDATE_APP = {
-  TITLE: 'Version Update',
-  MESSAGE: 'A new version of the app is available. Please update to continue using the app.',
-  BUTTON: 'UPDATE',
+  TITLE: i18n.t('appUpdate.title'),
+  MESSAGE: i18n.t('appUpdate.message'),
+  BUTTON: i18n.t('appUpdate.button'),
 };
 export const SESSION_EXPIRED = {
-  TITLE: 'Session Expired',
-  MESSAGE: 'Your session has expired. Please log in again to continue.',
-  BUTTON: 'OK',
+  TITLE: i18n.t('session.expired.title'),
+  MESSAGE: i18n.t('session.expired.message'),
+  BUTTON: i18n.t('session.expired.button'),
 };
 
 export const ANNOTATE_IMAGE_DETAILS = {
@@ -222,10 +218,10 @@ export const SWITCH_CAMERA = {
   true: 'front',
   false: 'back',
 };
-export const AnnotationAlertMessage = 'Please highlight the damage and select a severity level to proceed. Both are required.';
+
 export const Delete_Messages = {
-  success: 'Deleted Successfully.',
-  failed: 'Failed to delete. Please try again.',
+  success: i18n.t('delete.success'),
+  failed: i18n.t('delete.failed'),
 };
 export const customSortOrder = {
   groupType: ['carVerificiationItems', 'interiorItems', 'exteriorItems', 'tires'],
@@ -281,20 +277,19 @@ export const customSortOrder = {
   tires: ['left_front_tire', 'left_rear_tire', 'right_front_tire', 'right_rear_tire'],
 };
 export const darkImageError = {
-  title: 'Image Quality Issue',
-  message: 'The uploaded image appears too dark. Please try uploading a clearer image with better lighting.',
+  title: i18n.t('errors.darkImageError.title'),
+  message: i18n.t('errors.darkImageError.message'),
 };
 export const uploadFailed = {
-  title: 'Upload Failed',
-  message:
-    'Please check your internet connection and try again. If issues persist, reduce file size or switch networks. Contact support if needed. Apologies for any inconvenience.',
+  title: i18n.t('errors.uploadFailed.title'),
+  message: i18n.t('errors.uploadFailed.message'),
 };
 export const exitAppInfo = {
-  title: 'Hold on!',
-  message: 'Are you sure you want to exit app?',
+  title: i18n.t('exitApp.title'),
+  message: i18n.t('exitApp.message'),
   button: {
-    yes: 'Yes',
-    cancel: 'Cancel',
+    yes: i18n.t('exitApp.button.yes'),
+    cancel: i18n.t('exitApp.button.cancel'),
   },
 };
 

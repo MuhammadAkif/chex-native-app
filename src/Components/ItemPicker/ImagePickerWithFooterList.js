@@ -1,26 +1,30 @@
 import React from 'react';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {FlatList, StyleSheet, View} from 'react-native';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
-import {ExpandedCardStyles} from '../../Assets/Styles';
+import { ExpandedCardStyles } from '../../Assets/Styles';
 import ItemPickerLabel from './ItemPickerLabel';
-import {Image_Type} from '../../Constants';
-import {RenderImagePicker, ImagePicker_New} from '../index';
+import { Image_Type } from '../../Constants';
+import { RenderImagePicker, ImagePicker_New } from '../index';
 
-const ItemSeparatorComponent = () => <View style={{width: wp('3%')}} />;
-const {itemPickerOuterContainer} = ExpandedCardStyles;
+const ItemSeparatorComponent = () => <View style={{ width: wp('3%') }} />;
+const { itemPickerOuterContainer } = ExpandedCardStyles;
 
 const ImagePickerWithFooterList = ({
   categoryDetails,
   exteriorItems,
-  pickerText = 'Capture Image',
+  pickerText,
   isLoading = false,
   handleMediaModalDetailsPress,
   handleItemPickerPress,
   handleCrossPress,
   isAnnotated = false,
 }) => {
-  const {title, groupType, key} = categoryDetails;
+  const { t } = useTranslation();
+  const defaultPickerText = pickerText || t('common.captureImage');
+  const { title, groupType, key } = categoryDetails;
+
   return (
     <View style={itemPickerOuterContainer}>
       <ItemPickerLabel label={title} />
@@ -33,22 +37,19 @@ const ImagePickerWithFooterList = ({
           ListFooterComponent={
             <ImagePicker_New
               text={title}
-              pickerText={pickerText}
+              pickerText={defaultPickerText}
               imageURL={exteriorItems?.exteriorFront}
               isLoading={isLoading}
               onPress={() => handleItemPickerPress(categoryDetails)}
               onClearPress={() => handleCrossPress(groupType, key)}
               handleMediaModalDetailsPress={() =>
-                handleMediaModalDetailsPress(
-                  title,
-                  exteriorItems?.exteriorFront,
-                )
+                handleMediaModalDetailsPress(title, exteriorItems?.exteriorFront)
               }
               displayImage={false}
             />
           }
           ListFooterComponentStyle={styles.footerStyle}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <RenderImagePicker item={item} isAnnotated={isAnnotated} />
           )}
         />

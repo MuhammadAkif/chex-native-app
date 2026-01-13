@@ -1,33 +1,42 @@
 import React from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-import {colors, ExpandedCardStyles} from '../../Assets/Styles';
+import { colors, ExpandedCardStyles } from '../../Assets/Styles';
 
-const {black, orangePeel} = colors;
-const {itemPickerContainer} = ExpandedCardStyles;
+const { black, orangePeel } = colors;
+const { itemPickerContainer } = ExpandedCardStyles;
 
 const ItemPickerLabel = ({
-  label = 'Exterior Front',
-  addNoteText = 'Add Image',
+  label,
+  addNoteText,
   labelVisible = false,
   onAddNotePress,
-}) => (
-  <View style={[itemPickerContainer, styles.container]}>
-    <Text style={[styles.label, styles.fontSize]}>{label}</Text>
-    {labelVisible && (
-      <TouchableOpacity
-        onPress={onAddNotePress}
-        accessibilityLabel={'This is label'}
-        style={styles.addNoteContainer}>
-        <Text style={[styles.note, styles.labelSize]}>+ {addNoteText}</Text>
-      </TouchableOpacity>
-    )}
-  </View>
-);
+}) => {
+  const { t } = useTranslation();
+  const defaultLabel = label || t('exteriorItems.front.title'); // Default fallback
+  const defaultAddNoteText = addNoteText || t('common.addImage');
+
+  return (
+    <View style={[itemPickerContainer, styles.container]}>
+      <Text style={[styles.label, styles.fontSize]}>{defaultLabel}</Text>
+      {labelVisible && (
+        <TouchableOpacity
+          onPress={onAddNotePress}
+          accessibilityLabel={'This is label'}
+          style={styles.addNoteContainer}>
+          <Text style={[styles.note, styles.labelSize]}>
+            + {defaultAddNoteText}
+          </Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+};
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'space-between',

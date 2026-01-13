@@ -1,21 +1,20 @@
-import {useIsFocused} from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 
-import React, {useEffect, useRef, useState} from 'react';
-import {AppState, BackHandler, Platform, StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { AppState, BackHandler, Platform, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import ImagePicker from 'react-native-image-crop-picker';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {Camera, useCameraDevice, useCameraFormat} from 'react-native-vision-camera';
-import {useDispatch, useSelector} from 'react-redux';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { Camera, useCameraDevice, useCameraFormat } from 'react-native-vision-camera';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {BackArrow} from '../Assets/Icons';
-import {getVehicleFrames} from '../Assets/Images';
-import {colors, PreviewStyles} from '../Assets/Styles';
-import {CameraFooter, CameraPreview, CaptureImageModal, DiscardInspectionModal} from '../Components';
+import { BackArrow } from '../Assets/Icons';
+import { getVehicleFrames } from '../Assets/Images';
+import { colors, PreviewStyles } from '../Assets/Styles';
+import { CameraFooter, CameraPreview, CaptureImageModal, DiscardInspectionModal } from '../Components';
 import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
 import {
   darkImageError,
-  EXPIRY_INSPECTION,
   HARDWARE_BACK_PRESS,
   INSPECTION,
   IS_BACK_CAMERA,
@@ -26,8 +25,8 @@ import {
   VEHICLE_TYPES,
   VEHICLE_TYPES_WITH_FRAMES,
 } from '../Constants';
-import {ROUTES, TABS} from '../Navigation/ROUTES';
-import {clearInspectionImages, getMileage, setImageDimensions, setLicensePlateNumber, updateVehicleImage} from '../Store/Actions';
+import { ROUTES, TABS } from '../Navigation/ROUTES';
+import { clearInspectionImages, getMileage, setImageDimensions, setLicensePlateNumber, updateVehicleImage } from '../Store/Actions';
 import {
   checkRelevantType,
   exteriorVariant,
@@ -41,22 +40,24 @@ import {
   newInspectionUploadError,
   uploadFile,
 } from '../Utils';
-import {navigateBackWithParams, styleMapping, switchFrameIcon, switchOrientation} from '../Utils/helpers';
+import { navigateBackWithParams, styleMapping, switchFrameIcon, switchOrientation } from '../Utils/helpers';
+import { useTranslation } from 'react-i18next';
 
-const {white} = colors;
+const { white } = colors;
 const defaultOrientation = 'portrait';
-const {container, headerContainer} = PreviewStyles;
+const { container, headerContainer } = PreviewStyles;
 
-const {NEW_INSPECTION} = ROUTES;
-const isUploadFailedInitialState = {visible: false, title: '', message: ''};
+const { NEW_INSPECTION } = ROUTES;
+const isUploadFailedInitialState = { visible: false, title: '', message: '' };
 
-const CameraContainer = ({route, navigation}) => {
+const CameraContainer = ({ route, navigation }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
-  const {goBack, canGoBack} = navigation;
+  const { goBack, canGoBack } = navigation;
   const {
-    user: {token, data},
+    user: { token, data },
   } = useSelector(state => state?.auth);
-  const {vehicle_Type, variant, selectedVehicleKind, selectedInspectionID} = useSelector(state => state.newInspection);
+  const { vehicle_Type, variant, selectedVehicleKind, selectedInspectionID } = useSelector(state => state.newInspection);
   const isFocused = useIsFocused();
   const cameraRef = useRef();
   const appState = useRef(AppState.currentState);
@@ -71,11 +72,11 @@ const CameraContainer = ({route, navigation}) => {
   const [isExpiryInspectionVisible, setIsExpiryInspectionVisible] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isUploadFailed, setIsUploadFailed] = useState(isUploadFailedInitialState);
-  const {type, modalDetails, inspectionId} = route.params;
-  const format = useCameraFormat(device, [{videoResolution: {width: 1280, height: 720}, photoResolution: {width: 1280, height: 720}}, {fps: 60}]);
+  const { type, modalDetails, inspectionId } = route.params;
+  const format = useCameraFormat(device, [{ videoResolution: { width: 1280, height: 720 }, photoResolution: { width: 1280, height: 720 } }, { fps: 60 }]);
   const [isLoading, setIsLoading] = useState(false);
   const [orientation, setOrientation] = useState(defaultOrientation);
-  const {category, subCategory, instructionalText, source, title, isVideo, groupType, afterFileUploadNavigationParams} = modalDetails;
+  const { category, subCategory, instructionalText, source, title, isVideo, groupType, afterFileUploadNavigationParams } = modalDetails;
   const frameStyles = {
     portrait: {
       ...styles.portraitFrame,
@@ -130,7 +131,7 @@ const CameraContainer = ({route, navigation}) => {
       return true;
     } else if (route?.params?.returnTo) {
       if (route?.params?.returnTo === ROUTES.DVIR_INSPECTION_CHECKLIST) navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST);
-      else navigation.popTo(ROUTES.TABS, {name: route.params.returnTo});
+      else navigation.popTo(ROUTES.TABS, { name: route.params.returnTo });
       return true;
     } else if (route?.params?.prevScreen === ROUTES.DVIR_INSPECTION_CHECKLIST && selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
       navigation.goBack();
@@ -180,7 +181,7 @@ const CameraContainer = ({route, navigation}) => {
       hasAdded: vehicle_Type,
     };
     if (haveType) {
-      body = {...body, variant: variant};
+      body = { ...body, variant: variant };
     }
     const image_url = `${S3_BUCKET_BASEURL}${key}`;
     // if (category === 'CarVerification' && type === 'licensePlate') {
@@ -205,7 +206,7 @@ const CameraContainer = ({route, navigation}) => {
       };
 
       if (targetScreen == ROUTES.VEHICLE_INFORMATION) {
-        navigation.popTo(ROUTES.TABS, {screen: TABS.INSPECTION, params: {screen: ROUTES.VEHICLE_INFORMATION, params: navParams}});
+        navigation.popTo(ROUTES.TABS, { screen: TABS.INSPECTION, params: { screen: ROUTES.VEHICLE_INFORMATION, params: navParams } });
       } else if (targetScreen == ROUTES.DVIR_INSPECTION_CHECKLIST) {
         navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST, navParams);
       }
@@ -222,16 +223,16 @@ const CameraContainer = ({route, navigation}) => {
   };
 
   function onUploadFailed(error) {
-    const {statusCode = null} = error?.response?.data || {};
-    const {message} = error;
-    const {title = uploadFailed.title, message: msg = uploadFailed.message} = newInspectionUploadError(statusCode || '');
-    let body = {visible: true, title, message: msg};
+    const { statusCode = null } = error?.response?.data || {};
+    const { message } = error;
+    const { title = uploadFailed.title, message: msg = uploadFailed.message } = newInspectionUploadError(statusCode || '');
+    let body = { visible: true, title, message: msg };
     const isDarkImage = message === darkImageError.message;
     const message_ = isDarkImage ? message : uploadFailed.message;
     setIsModalVisible(false);
 
     if (isDarkImage) {
-      body = {...body, message: message_};
+      body = { ...body, message: message_ };
       setIsUploadFailed(body);
     } else if (statusCode === 401) {
       handle_Session_Expired(statusCode, dispatch);
@@ -248,7 +249,7 @@ const CameraContainer = ({route, navigation}) => {
     const isOdometer = category === 'CarVerification' && type === 'odometer';
     const types = ['Interior', 'Exterior'];
     const haveType = types.includes(category);
-    const annotationDetails = {uri: isImageURL};
+    const annotationDetails = { uri: isImageURL };
     let type_ = type;
     if (haveType) {
       type_ = exteriorVariant(type_, variant);
@@ -265,7 +266,7 @@ const CameraContainer = ({route, navigation}) => {
     };
 
     if (route?.params?.prevScreen === ROUTES.DVIR_INSPECTION_CHECKLIST && selectedVehicleKind === VEHICLE_TYPES.TRUCK) {
-      navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST, {afterFileUploadImageUrl: image_url, fileId: imageID, ...afterFileUploadNavigationParams});
+      navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST, { afterFileUploadImageUrl: image_url, fileId: imageID, ...afterFileUploadNavigationParams });
     } else {
       navigation.popTo(NEW_INSPECTION, params);
     }
@@ -326,7 +327,7 @@ const CameraContainer = ({route, navigation}) => {
 
   const handleExitPress = () => {
     resetAllStates();
-    navigation.popTo(TABS.HOME, {screen: ROUTES.VEHICLE_INFORMATION});
+    navigation.popTo(TABS.HOME, { screen: ROUTES.VEHICLE_INFORMATION });
   };
 
   const handleOnRightIconPress = () => setOrientation(prevState => switchOrientation[prevState]);
@@ -339,7 +340,7 @@ const CameraContainer = ({route, navigation}) => {
       // includeBase64: true,
     })
       .then(image => {
-        const {sourceURL, path} = image;
+        const { sourceURL, path } = image;
         setIsImageFile(image);
         setIsImageURL(sourceURL || path);
       })
@@ -356,13 +357,13 @@ const CameraContainer = ({route, navigation}) => {
           isLoading={true}
           isVideo={isVideo}
           instructionalText={instructionalText}
-          source={source ? source : {uri: isImageURL}}
+          source={source ? source : { uri: isImageURL }}
           title={title}
           progress={progress}
           handleNavigationBackPress={handleNavigationBackPress}
           isExterior={checkRelevantType(groupType)}
           isCarVerification={groupType === INSPECTION.carVerificiationItems}
-          // handleVisible={handleVisible}
+        // handleVisible={handleVisible}
         />
       )}
       {isImageURL ? (
@@ -376,7 +377,7 @@ const CameraContainer = ({route, navigation}) => {
       ) : (
         <View style={container}>
           {isImageURL ? (
-            <FastImage priority={'normal'} resizeMode={'stretch'} style={[StyleSheet.absoluteFill, {borderRadius: 25}]} source={{uri: isImageURL}} />
+            <FastImage priority={'normal'} resizeMode={'stretch'} style={[StyleSheet.absoluteFill, { borderRadius: 25 }]} source={{ uri: isImageURL }} />
           ) : (
             selectedCamera && (
               <>
@@ -399,7 +400,7 @@ const CameraContainer = ({route, navigation}) => {
               </>
             )
           )}
-          <View style={{...headerContainer, zIndex: 19}}>
+          <View style={{ ...headerContainer, zIndex: 19 }}>
             <TouchableOpacity onPress={handleNavigationBackPress}>
               <BackArrow height={hp('8%')} width={wp('8%')} color={white} />
             </TouchableOpacity>
@@ -421,7 +422,7 @@ const CameraContainer = ({route, navigation}) => {
           onCancelPress={handleExitPress}
           visible={true}
           isLoading={isLoading}
-          confirmButtonText={EXPIRY_INSPECTION.confirmButton}
+          confirmButtonText={t('expiryInspection.confirmButton')}
         />
       )}
       {isUploadFailed.visible && (
@@ -429,7 +430,7 @@ const CameraContainer = ({route, navigation}) => {
           onYesPress={onRetryPress}
           title={isUploadFailed.title}
           description={isUploadFailed.message}
-          yesButtonText={'Retry'}
+          yesButtonText={t('common.retry')}
           dualButton={false}
           onNoPress={undefined}
           noButtonText={undefined}
@@ -450,7 +451,7 @@ const styles = StyleSheet.create({
   },
   landscapeFrame: {
     height: hp('30%'),
-    transform: [{scale: 1.5}, {rotate: '-90deg'}],
+    transform: [{ scale: 1.5 }, { rotate: '-90deg' }],
   },
   portraitFrame: {
     width: wp('95%'),

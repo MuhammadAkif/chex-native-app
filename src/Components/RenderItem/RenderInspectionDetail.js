@@ -1,24 +1,30 @@
 import React from 'react';
-import {Text, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import { Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
-import {circleBorderRadius, colors} from '../../Assets/Styles';
-import {Platforms, S3_BUCKET_BASEURL} from '../../Constants';
-import {isNotEmpty} from '../../Utils';
-import {checkAndCompleteUrl, formatTitle} from '../../Utils/helpers';
-import {Custom_Image} from '../index';
+import { circleBorderRadius, colors } from '../../Assets/Styles';
+import { Platforms, S3_BUCKET_BASEURL } from '../../Constants';
+import { isNotEmpty } from '../../Utils';
+import { checkAndCompleteUrl, formatTitle } from '../../Utils/helpers';
+import { Custom_Image } from '../index';
 
-const {WINDOW} = Platforms;
-const {width} = Dimensions.get(WINDOW);
-const {black} = colors;
+import { useTranslation } from 'react-i18next';
 
-const RenderInspectionDetail = ({item, handleDisplayMedia, categoryCount}) => {
-  const {category, url, processedUrl} = item;
-  let title = formatTitle(category);
-  let {completedUrl: source} = checkAndCompleteUrl(processedUrl || url);
+const { WINDOW } = Platforms;
+const { width } = Dimensions.get(WINDOW);
+const { black } = colors;
+
+const RenderInspectionDetail = ({ item, handleDisplayMedia, categoryCount }) => {
+  const { t } = useTranslation();
+  const { category, url, processedUrl } = item;
+  let title = t(`categories.${category}`, formatTitle(category));
+  let { completedUrl: source } = checkAndCompleteUrl(processedUrl || url);
   return (
-    <TouchableOpacity disabled={!isNotEmpty(source)} style={styles.container} onPress={() => handleDisplayMedia(item)}>
-      <Custom_Image resizeMode={'cover'} source={{uri: source}} />
+    <TouchableOpacity
+      disabled={!isNotEmpty(source)}
+      style={styles.container}
+      onPress={() => handleDisplayMedia(item)}>
+      <Custom_Image resizeMode={'cover'} source={{ uri: source }} />
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );

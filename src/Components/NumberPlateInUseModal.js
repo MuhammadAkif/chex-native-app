@@ -1,8 +1,10 @@
 import React from 'react';
-import {View, Text, Modal} from 'react-native';
+import { View, Text, Modal } from 'react-native';
 
-import {modalStyle} from '../Assets/Styles';
-import {PrimaryGradientButton} from './index';
+import { modalStyle } from '../Assets/Styles';
+import { PrimaryGradientButton } from './index';
+
+import { useTranslation } from 'react-i18next';
 
 const {
   modalOuterContainer,
@@ -15,30 +17,32 @@ const {
   yesText,
 } = modalStyle;
 
-const NumberPlateInUseModal = ({onOkPress}) => (
-  <Modal
-    animationType="slide"
-    transparent={true}
-    visible={true}
-    style={modalOuterContainer}>
-    <View style={container}>
-      <View style={modalContainer}>
-        <Text style={header} />
-        <Text style={body}>
-          The currently selected license plate is under inspection by another
-          user. Please select a different vehicle.
-        </Text>
-        <View style={footer}>
-          <PrimaryGradientButton
-            text={'OK'}
-            buttonStyle={button}
-            textStyle={yesText}
-            onPress={onOkPress}
-          />
+const NumberPlateInUseModal = ({ onOkPress }) => {
+  const { t } = useTranslation();
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={true}
+      style={modalOuterContainer}>
+      <View style={container}>
+        <View style={modalContainer}>
+          <Text style={header} />
+          <Text style={body}>
+            {t('errors.licensePlateInUse')}
+          </Text>
+          <View style={footer}>
+            <PrimaryGradientButton
+              text={t('common.ok')}
+              buttonStyle={button}
+              textStyle={yesText}
+              onPress={onOkPress}
+            />
+          </View>
         </View>
       </View>
-    </View>
-  </Modal>
-);
+    </Modal>
+  );
+};
 
 export default NumberPlateInUseModal;

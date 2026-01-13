@@ -120,11 +120,11 @@ export const ExteriorRearDetails = vehicleType => ({
 
 export const ExteriorLeftDetails = {
   key: 'exteriorLeft',
-  title: 'Exterior Left',
+  title: i18n.t('exteriorItems.left.title'),
   source: IMAGES.exterior_Left,
-  instructionalText: 'Please take a photo clearly capturing the entire exterior left side of the vehicle',
+  instructionalText: i18n.t('exteriorItems.left.instruction'),
   instructionalSubHeadingText: '',
-  buttonText: 'Capture Now',
+  buttonText: i18n.t('exteriorItems.captureNow'),
   category: 'Exterior',
   subCategory: 'exterior_left',
   groupType: INSPECTION.exteriorItems,
@@ -133,11 +133,11 @@ export const ExteriorLeftDetails = {
 
 export const ExteriorRightDetails = {
   key: 'exteriorRight',
-  title: 'Exterior Right',
+  title: i18n.t('exteriorItems.right.title'),
   source: IMAGES.exterior_Right,
-  instructionalText: 'Please take a photo clearly capturing the entire exterior right side of the vehicle',
+  instructionalText: i18n.t('exteriorItems.right.instruction'),
   instructionalSubHeadingText: '',
-  buttonText: 'Capture Now',
+  buttonText: i18n.t('exteriorItems.captureNow'),
   category: 'Exterior',
   subCategory: 'exterior_right',
   groupType: INSPECTION.exteriorItems,
@@ -455,17 +455,16 @@ export const handleHomePress = navigation => navigation?.navigate?.(ROUTES.TABS)
 export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
   const errors = {
     409: {
-      title: 'Duplicate Image Detected',
-      message:
-        'An image/video for this category was uploaded previously and already exists in our database. please refresh your page to see the previously uploaded image.',
+      title: i18n.t('errors.duplicateImage.title'),
+      message: i18n.t('errors.duplicateImage.message'),
     },
     403: {
-      title: '',
-      message: 'The inspection has expired. Please start a new Inspection.',
+      title: i18n.t('errors.inspectionExpired.title'),
+      message: i18n.t('errors.inspectionExpired.message'),
     },
     noStatusCode: {
-      title: 'Upload Failed',
-      message: 'Please try again in a few minutes',
+      title: i18n.t('errors.uploadFailed.title'),
+      message: i18n.t('errors.uploadFailed.message'),
     },
   };
   return errors[statusCode] || errors.noStatusCode;

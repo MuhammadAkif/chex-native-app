@@ -1,9 +1,9 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {IMAGES} from '../../Assets/Images';
-import {INSPECTION, S3_BUCKET_BASEURL, VEHICLE_TYPES} from '../../Constants';
-import {ROUTES} from '../../Navigation/ROUTES';
-import {DVIRInspectionChecklistScreen} from '../../Screens';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { IMAGES } from '../../Assets/Images';
+import { INSPECTION, S3_BUCKET_BASEURL, VEHICLE_TYPES } from '../../Constants';
+import { ROUTES } from '../../Navigation/ROUTES';
+import { DVIRInspectionChecklistScreen } from '../../Screens';
 import {
   deleteImageFromDatabase,
   getChecklists,
@@ -12,7 +12,7 @@ import {
   removeChecklistImageVideo as removeChecklistImageVideoAPI,
   updateChecklist,
 } from '../../services/inspection';
-import {categoryVariant, setRequired} from '../../Store/Actions';
+import { categoryVariant, setRequired } from '../../Store/Actions';
 import {
   ExteriorFrontDetails,
   ExteriorLeftDetails,
@@ -23,6 +23,7 @@ import {
   isNotEmpty,
   LicensePlateDetails,
 } from '../../Utils';
+import i18n from '../../Utils/i18n';
 
 const frameConfigMap = {
   exterior_front: {
@@ -63,10 +64,10 @@ const frameConfigMap = {
 
     details: {
       key: 'frontInterior',
-      title: 'Front Interior',
-      instructionalText: 'Please take a photo with clear view dashboard',
-      instructionalSubHeadingText: 'Front Interior',
-      buttonText: 'Capture Now',
+      title: i18n.t('dvir.frontInterior'),
+      instructionalText: i18n.t('dvir.dashBoardView'),
+      instructionalSubHeadingText: i18n.t('dvir.frontInterior'),
+      buttonText: i18n.t('exteriorItems.captureNow'),
       category: 'Interior',
       subCategory: 'front_interior',
       groupType: INSPECTION.interiorItems,
@@ -79,10 +80,10 @@ const frameConfigMap = {
 
     details: {
       key: 'rearInterior',
-      title: 'Rear Interior',
-      instructionalText: 'Please take a photo with clear view of the rear interior',
-      instructionalSubHeadingText: 'Rear Interior',
-      buttonText: 'Capture Now',
+      title: i18n.t('dvir.rearInterior'),
+      instructionalText: i18n.t('dvir.rearInteriorView'),
+      instructionalSubHeadingText: i18n.t('dvir.rearInterior'),
+      buttonText: i18n.t('exteriorItems.captureNow'),
       category: 'Interior',
       subCategory: 'rear_interior',
       groupType: INSPECTION.interiorItems,
@@ -95,10 +96,10 @@ const frameConfigMap = {
 
     details: {
       key: 'tire',
-      title: 'Tire',
-      instructionalText: 'Please take a photo with clear view of the tire',
+      title: i18n.t('dvir.tire'),
+      instructionalText: i18n.t('dvir.tireView'),
       instructionalSubHeadingText: '',
-      buttonText: 'Capture Now',
+      buttonText: i18n.t('exteriorItems.captureNow'),
       category: 'Tire',
       subCategory: '', // Dynamically
       groupType: INSPECTION.tires,
@@ -111,50 +112,50 @@ const frameConfigMap = {
 const getInitialCaptureFrames = () => [
   {
     id: 'exterior_front',
-    title: 'Exterior Front',
+    title: i18n.t('dvir.exteriorFront'),
     frames: [
-      {id: 'exterior_right', icon: IMAGES.truckRight, image: null},
-      {id: 'exterior_left', icon: IMAGES.truckLeft, image: null},
-      {id: 'exterior_front', icon: IMAGES.truckFront, image: null},
+      { id: 'exterior_right', icon: IMAGES.truckRight, image: null },
+      { id: 'exterior_left', icon: IMAGES.truckLeft, image: null },
+      { id: 'exterior_front', icon: IMAGES.truckFront, image: null },
     ],
   },
   {
     id: 'exterior_rear',
-    title: 'Exterior Rear',
+    title: i18n.t('dvir.exteriorRear'),
     frames: [
-      {id: 'rear_right_corner', icon: IMAGES.truckRearRight, image: null},
-      {id: 'rear_left_corner', icon: IMAGES.truckRearLeft, image: null},
-      {id: 'exterior_rear', icon: IMAGES.truckBack, image: null},
+      { id: 'rear_right_corner', icon: IMAGES.truckRearRight, image: null },
+      { id: 'rear_left_corner', icon: IMAGES.truckRearLeft, image: null },
+      { id: 'exterior_rear', icon: IMAGES.truckBack, image: null },
     ],
   },
   {
     id: 'interior_front',
-    title: 'Full Front Interior (dash, steering wheel, Seat)',
-    frames: [{id: 'front_interior', icon: IMAGES.truckInterior, image: null}],
+    title: i18n.t('dvir.interiorFrontTitle'),
+    frames: [{ id: 'front_interior', icon: IMAGES.truckInterior, image: null }],
   },
   {
     id: 'interior_rear',
-    title: 'Rear Interior (back seats, floor) / Truck Bed',
-    frames: [{id: 'rear_interior', icon: IMAGES.truckInterior, image: null}],
+    title: i18n.t('dvir.interiorRearTitle'),
+    frames: [{ id: 'rear_interior', icon: IMAGES.truckInterior, image: null }],
   },
 ];
 
 const getInitialTireInspectionData = () => [
-  {id: 'tdrf', title: 'Tread Depth RF (TDRF)', image: null, icon: 'vehicleTire'},
-  {id: 'tdrr', title: 'Tread Depth RR (TDRR)', image: null, icon: 'vehicleTire'},
-  {id: 'tdlf', title: 'Tread Depth LF (TDLF)', image: null, icon: 'vehicleTire'},
-  {id: 'tdlr', title: 'Tread Depth LR (TDLR)', image: null, icon: 'vehicleTire'},
-  {id: 'tdspare', title: 'Tread Depth Spare (TDSPARE)', image: null, icon: 'vehicleTDS'},
+  { id: 'tdrf', title: i18n.t('dvir.tdrf'), image: null, icon: 'vehicleTire' },
+  { id: 'tdrr', title: i18n.t('dvir.tdrr'), image: null, icon: 'vehicleTire' },
+  { id: 'tdlf', title: i18n.t('dvir.tdlf'), image: null, icon: 'vehicleTire' },
+  { id: 'tdlr', title: i18n.t('dvir.tdlr'), image: null, icon: 'vehicleTire' },
+  { id: 'tdspare', title: i18n.t('dvir.tdspare'), image: null, icon: 'vehicleTDS' },
   {
     id: 'brake_components',
-    title: 'Brake Components (photo of drums/rotors/lines)',
+    title: i18n.t('dvir.brakeComponents'),
     image: null,
     icon: 'vehicleBrakeComponent',
   },
 ];
 
-const DVIRInspectionChecklistContainer = ({navigation, route}) => {
-  const {selectedInspectionID} = useSelector(state => state.newInspection);
+const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
+  const { selectedInspectionID } = useSelector(state => state.newInspection);
 
   // State for checklist items
   const [commentModalVisible, setAddCommentModalVisible] = useState(false);
@@ -273,15 +274,18 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
 
   const handleChecklistOpenCamera = useCallback(
     (index, isVideo) => {
-      if (checklistData?.[index]?.url?.length == 5) return alert('You can add a maximum of 5 media files');
+      if (checklistData?.[index]?.url?.length == 5)
+        return alert(i18n.t('dvir.maxMediaError'));
 
       const details = {
-        title: isVideo ? 'Upload Video' : 'Upload Image',
+        title: isVideo ? i18n.t('dvir.uploadVideo') : i18n.t('dvir.uploadImage'),
         type: '1',
         uri: '',
         source: '',
         fileId: '',
-        instructionalText: `Please wait a while the ${isVideo ? 'video' : 'image'} is being uploaded`,
+        instructionalText: i18n.t('dvir.uploadingMedia', {
+          media: isVideo ? i18n.t('common.video') : i18n.t('common.image'),
+        }),
       };
 
       dispatch(setRequired(false));
@@ -290,7 +294,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         modalDetails: details,
         inspectionId: selectedInspectionID,
         returnTo: ROUTES.DVIR_INSPECTION_CHECKLIST,
-        returnToParams: {checklistCardIndex: index},
+        returnToParams: { checklistCardIndex: index },
         prevScreen: ROUTES.DVIR_INSPECTION_CHECKLIST,
       });
     },
@@ -336,7 +340,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
         ...frameConfigMap.tire.details,
         title,
         subCategory: tireId,
-        afterFileUploadNavigationParams: {tireId},
+        afterFileUploadNavigationParams: { tireId },
       },
       0
     );
@@ -347,7 +351,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     displayAnnotationPopUp && setDisplayAnnotationPopUp(false);
     dispatch(categoryVariant(variant));
     if (haveType) {
-      const {key} = details;
+      const { key } = details;
       const isRequired = isNotEmpty(requiredFields[key]);
       toggleFieldRequired(!isRequired);
     } else {
@@ -395,7 +399,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
 
   const handleCaptureFrame = (captureFrameId, frameId) => {
     const config = frameConfigMap[frameId];
-    handleFramePickerPress({...config.details, source: config.source, afterFileUploadNavigationParams: {captureFrameId, frameId}}, config.index);
+    handleFramePickerPress({ ...config.details, source: config.source, afterFileUploadNavigationParams: { captureFrameId, frameId } }, config.index);
   };
 
   const handleSubmit = async () => {
@@ -417,12 +421,12 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
     if (type === 'capture_frames') {
       setCaptureFrames(prevFrames =>
         prevFrames.map(frame =>
-          frame.id === itemId ? {...frame, frames: frame.frames.map(f => (f.id === frameId ? {...f, image: null, fileId: null} : f))} : frame
+          frame.id === itemId ? { ...frame, frames: frame.frames.map(f => (f.id === frameId ? { ...f, image: null, fileId: null } : f)) } : frame
         )
       );
     } else if (type === 'tires') {
       // DELETION FOR TIRES
-      setTireInspectionData(prevTires => prevTires.map(tire => (tire.id === itemId ? {...tire, image: null, fileId: null} : tire)));
+      setTireInspectionData(prevTires => prevTires.map(tire => (tire.id === itemId ? { ...tire, image: null, fileId: null } : tire)));
     }
 
     // API TO DELETE FROM DATABASE
@@ -555,15 +559,15 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
   useEffect(() => {
     if (route?.params?.capturedImageUri) {
       if (route?.params?.checklistCardIndex !== undefined) {
-        const {checklistCardIndex, capturedImageUri, capturedImageMime, localPath} = route.params;
+        const { checklistCardIndex, capturedImageUri, capturedImageMime, localPath } = route.params;
 
         setChecklistData(prevData =>
           prevData.map((item, idx) =>
             idx === checklistCardIndex
               ? {
-                  ...item,
-                  url: [...(item.url || []), capturedImageUri],
-                }
+                ...item,
+                url: [...(item.url || []), capturedImageUri],
+              }
               : item
           )
         );
@@ -584,7 +588,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
 
   useEffect(() => {
     if (route?.params?.afterFileUploadImageUrl) {
-      const {captureFrameId, frameId, afterFileUploadImageUrl, tireId, fileId} = route.params;
+      const { captureFrameId, frameId, afterFileUploadImageUrl, tireId, fileId } = route.params;
 
       // CAPTURE FRAMES
       if (captureFrameId && frameId) {
@@ -592,7 +596,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
           if (item.id === captureFrameId) {
             return {
               ...item,
-              frames: item.frames.map(frame => (frame.id === frameId ? {...frame, image: afterFileUploadImageUrl, fileId} : frame)),
+              frames: item.frames.map(frame => (frame.id === frameId ? { ...frame, image: afterFileUploadImageUrl, fileId } : frame)),
             };
           }
           return item;
@@ -602,7 +606,7 @@ const DVIRInspectionChecklistContainer = ({navigation, route}) => {
 
         // TIRES
       } else if (tireId) {
-        setTireInspectionData(prevData => prevData.map(tire => (tire.id === tireId ? {...tire, image: afterFileUploadImageUrl, fileId} : tire)));
+        setTireInspectionData(prevData => prevData.map(tire => (tire.id === tireId ? { ...tire, image: afterFileUploadImageUrl, fileId } : tire)));
       }
 
       navigation.setParams({

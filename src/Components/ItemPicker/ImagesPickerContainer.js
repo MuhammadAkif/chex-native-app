@@ -1,14 +1,18 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
-import {ImagePicker_New, ItemPickerLabel} from '../index';
-import {colors, ExpandedCardStyles} from '../../Assets/Styles';
-import {getAnnotationStatus, isNotEmpty} from '../../Utils';
+import { ImagePicker_New, ItemPickerLabel } from '../index';
+import { colors, ExpandedCardStyles } from '../../Assets/Styles';
+import { getAnnotationStatus, isNotEmpty } from '../../Utils';
 
-const {white} = colors;
-const {container} = ExpandedCardStyles;
+const { white } = colors;
+const { container } = ExpandedCardStyles;
 
 const ImagesPickerContainer = ({
   ExteriorDetails,
@@ -25,6 +29,9 @@ const ImagesPickerContainer = ({
   handleMediaModalDetailsPress,
   borderBottomWidth = 1,
 }) => {
+  const { t } = useTranslation();
+  const defaultPickerText = pickerText || t('common.captureImage');
+
   const [visibleTiles, setVisibleTiles] = useState({
     zero: true,
     one: false,
@@ -36,11 +43,11 @@ const ImagesPickerContainer = ({
     imageURLOne: false,
     imageURLTwo: false,
   });
-  const {fileDetails, exteriorItems} = useSelector(state => state.newInspection);
-  let {title, groupType, key} = ExteriorDetails;
+  const { fileDetails, exteriorItems } = useSelector(state => state.newInspection);
+  let { title, groupType, key } = ExteriorDetails;
   const displayLabel = imageURL || imageURLOne || imageURLTwo;
   const labelVisible = hideAddLAbel ? !hideAddLAbel : isNotEmpty(displayLabel);
-  const {zero, one, two} = visibleTiles;
+  const { zero, one, two } = visibleTiles;
   const displayImage = imageURL || zero;
   const displayImageOne = imageURLOne || one;
   const displayImageTwo = imageURLTwo || two;
@@ -60,62 +67,87 @@ const ImagesPickerContainer = ({
 
   const onAddImagePress = () => {
     if (!zero) {
-      setVisibleTiles(prevState => ({...prevState, zero: true}));
+      setVisibleTiles(prevState => ({ ...prevState, zero: true }));
     } else if (!one) {
-      setVisibleTiles(prevState => ({...prevState, one: true}));
+      setVisibleTiles(prevState => ({ ...prevState, one: true }));
     } else if (!two) {
-      setVisibleTiles(prevState => ({...prevState, two: true}));
+      setVisibleTiles(prevState => ({ ...prevState, two: true }));
     } else {
     }
   };
   function updateTiles() {
     if (imageURL && !zero) {
-      setVisibleTiles(prevState => ({...prevState, zero: true}));
+      setVisibleTiles(prevState => ({ ...prevState, zero: true }));
     }
     if (imageURLOne && !one) {
-      setVisibleTiles(prevState => ({...prevState, one: true}));
+      setVisibleTiles(prevState => ({ ...prevState, one: true }));
     }
     if (imageURLTwo && !two) {
-      setVisibleTiles(prevState => ({...prevState, two: true}));
+      setVisibleTiles(prevState => ({ ...prevState, two: true }));
     }
   }
   return (
     <View style={styles.OuterContainer}>
-      <ItemPickerLabel label={title} labelVisible={labelVisible} onAddNotePress={onAddImagePress} />
-      <View style={[styles.container, styles.singleTileContainer, {borderBottomWidth}]}>
+      <ItemPickerLabel
+        label={title}
+        labelVisible={labelVisible}
+        onAddNotePress={onAddImagePress}
+      />
+      <View
+        style={[
+          styles.container,
+          styles.singleTileContainer,
+          { borderBottomWidth },
+        ]}>
         {displayImage && (
           <ImagePicker_New
             text={title}
-            pickerText={pickerText}
+            pickerText={defaultPickerText}
             imageURL={imageURL}
             isLoading={isLoading}
             onPress={() => handleItemPickerPress(ExteriorDetails)}
             onClearPress={() => handleCrossPress(groupType, key)}
-            handleMediaModalDetailsPress={() => handleMediaModalDetailsPress(title, imageURL, false, imageURL_ID)}
+            handleMediaModalDetailsPress={() =>
+              handleMediaModalDetailsPress(title, imageURL, false, imageURL_ID)
+            }
             isAnnotated={annotations.imageURL}
           />
         )}
         {displayImageOne && (
           <ImagePicker_New
             text={title}
-            pickerText={pickerText}
+            pickerText={defaultPickerText}
             imageURL={imageURLOne}
             isLoading={isLoading}
             onPress={() => handleItemPickerPress(ExteriorDetails, 1)}
             onClearPress={() => handleCrossPress(groupType, key, 1)}
-            handleMediaModalDetailsPress={() => handleMediaModalDetailsPress(title, imageURLOne, false, imageURLOne_ID)}
+            handleMediaModalDetailsPress={() =>
+              handleMediaModalDetailsPress(
+                title,
+                imageURLOne,
+                false,
+                imageURLOne_ID,
+              )
+            }
             isAnnotated={annotations.imageURLOne}
           />
         )}
         {displayImageTwo && (
           <ImagePicker_New
             text={title}
-            pickerText={pickerText}
+            pickerText={defaultPickerText}
             imageURL={imageURLTwo}
             isLoading={isLoading}
             onPress={() => handleItemPickerPress(ExteriorDetails, 2)}
             onClearPress={() => handleCrossPress(groupType, key, 2)}
-            handleMediaModalDetailsPress={() => handleMediaModalDetailsPress(title, imageURLTwo, false, imageURLTwo_ID)}
+            handleMediaModalDetailsPress={() =>
+              handleMediaModalDetailsPress(
+                title,
+                imageURLTwo,
+                false,
+                imageURLTwo_ID,
+              )
+            }
             isAnnotated={annotations.imageURLTwo}
           />
         )}

@@ -1,33 +1,37 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-import {PrimaryGradientButton} from './index';
-import {colors} from '../Assets/Styles';
+import { PrimaryGradientButton } from './index';
+import { colors } from '../Assets/Styles';
 
-const {white, red} = colors;
+import { useTranslation } from 'react-i18next';
 
-const WarningModal = ({onPress}) => (
-  <View style={styles.container}>
-    <View style={styles.modalContainer}>
-      <Text style={styles.header}>Discrepancy Detected</Text>
-      <Text style={styles.body}>
-        Mismatch in License Plate Number detected. Please retake the photo of
-        the license plate of the vehicle selected
-      </Text>
-      <View style={styles.footer}>
-        <PrimaryGradientButton
-          text={'OK'}
-          buttonStyle={styles.button}
-          onPress={onPress}
-        />
+const { white, red } = colors;
+
+const WarningModal = ({ onPress }) => {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.container}>
+      <View style={styles.modalContainer}>
+        <Text style={styles.header}>{t('errors.licensePlateMismatch.title')}</Text>
+        <Text style={styles.body}>
+          {t('errors.licensePlateMismatch.message')}
+        </Text>
+        <View style={styles.footer}>
+          <PrimaryGradientButton
+            text={t('common.ok')}
+            buttonStyle={styles.button}
+            onPress={onPress}
+          />
+        </View>
       </View>
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

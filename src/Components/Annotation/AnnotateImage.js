@@ -6,7 +6,7 @@ import FastImage from 'react-native-fast-image';
 import { useDispatch } from 'react-redux';
 import { colors } from '../../Assets/Styles';
 import { PrimaryGradientButton, RenderDamageTypes, RenderIcons, SecondaryButton, Toast, Mandatory } from '../index';
-import { ANNOTATE_IMAGE, AnnotationAlertMessage, DAMAGE_TYPE, Platforms } from '../../Constants';
+import { ANNOTATE_IMAGE, DAMAGE_TYPE, Platforms } from '../../Constants';
 import { generateRandomString, isNotEmpty, mergeData } from '../../Utils';
 import { showToast } from '../../Store/Actions';
 import { resizeInnerBox } from '../../Utils/helpers';

@@ -1,15 +1,16 @@
-import React, {useCallback, useMemo} from 'react';
-import {StyleSheet, Text, View, Modal} from 'react-native';
-import {modalStyle} from '../Assets/Styles';
-import {VEHICLE_TYPES, VEHICLE_TYPE_DISPLAY_NAMES} from '../Constants';
+import React, { useCallback, useMemo } from 'react';
+import { StyleSheet, Text, View, Modal } from 'react-native';
+import { modalStyle } from '../Assets/Styles';
+import { VEHICLE_TYPES, VEHICLE_TYPE_DISPLAY_NAMES } from '../Constants';
 import VehicleTypeButton from './VehicleTypeButton';
-import PrimaryGradientButton from './PrimaryGradientButton';
+import { useTranslation } from 'react-i18next';
 
-const {modalOuterContainer, container, modalContainer, header, body, button, yesText} = modalStyle;
+const { container, modalContainer, header, body, button, yesText } = modalStyle;
 
-const buttonSpacing = {marginVertical: 6};
+const buttonSpacing = { marginVertical: 6 };
 
-const VehicleTypeModal = ({visible, onSelect, loadingState}) => {
+const VehicleTypeModal = ({ visible, onSelect, loadingState }) => {
+  const { t } = useTranslation();
   const isAnyButtonLoading = loadingState.isLoading;
   const currentLoadingVehicleType = loadingState.vehicleType;
 
@@ -18,29 +19,37 @@ const VehicleTypeModal = ({visible, onSelect, loadingState}) => {
     () => [
       {
         type: VEHICLE_TYPES.VAN,
-        displayName: VEHICLE_TYPE_DISPLAY_NAMES[VEHICLE_TYPES.VAN],
+        displayName: t(`vehicleInfo.vehicleTypes.${VEHICLE_TYPES.VAN}`, {
+          defaultValue: VEHICLE_TYPE_DISPLAY_NAMES[VEHICLE_TYPES.VAN],
+        }),
       },
       {
         type: VEHICLE_TYPES.SEDAN,
-        displayName: VEHICLE_TYPE_DISPLAY_NAMES[VEHICLE_TYPES.SEDAN],
+        displayName: t(`vehicleInfo.vehicleTypes.${VEHICLE_TYPES.SEDAN}`, {
+          defaultValue: VEHICLE_TYPE_DISPLAY_NAMES[VEHICLE_TYPES.SEDAN],
+        }),
       },
       {
         type: VEHICLE_TYPES.TRUCK,
-        displayName: VEHICLE_TYPE_DISPLAY_NAMES[VEHICLE_TYPES.TRUCK],
+        displayName: t(`vehicleInfo.vehicleTypes.${VEHICLE_TYPES.TRUCK}`, {
+          defaultValue: VEHICLE_TYPE_DISPLAY_NAMES[VEHICLE_TYPES.TRUCK],
+        }),
       },
       {
         type: VEHICLE_TYPES.OTHER,
-        displayName: VEHICLE_TYPE_DISPLAY_NAMES[VEHICLE_TYPES.OTHER],
+        displayName: t(`vehicleInfo.vehicleTypes.${VEHICLE_TYPES.OTHER}`, {
+          defaultValue: VEHICLE_TYPE_DISPLAY_NAMES[VEHICLE_TYPES.OTHER],
+        }),
       },
     ],
-    [],
+    [t],
   );
 
   // Memoize event handlers to prevent unnecessary re-renders
   const handleButtonPress = useCallback(
-    vehicleType => {
+    displayName => {
       if (!isAnyButtonLoading) {
-        onSelect(vehicleType);
+        onSelect(displayName);
       }
     },
     [isAnyButtonLoading, onSelect],
@@ -57,10 +66,10 @@ const VehicleTypeModal = ({visible, onSelect, loadingState}) => {
     <Modal animationType="slide" statusBarTranslucent={true} transparent={true} visible={visible}>
       <View style={container}>
         <View style={modalContainer}>
-          <Text style={header}>Select Vehicle Type</Text>
-          <Text style={body}>Please choose the type of vehicle for this inspection.</Text>
+          <Text style={header}>{t('vehicleTypeModal.title')}</Text>
+          <Text style={body}>{t('vehicleTypeModal.description')}</Text>
           <View style={styles.buttonContainer}>
-            {buttonData.map(({type, displayName}) => (
+            {buttonData.map(({ type, displayName }) => (
               <VehicleTypeButton
                 key={type}
                 text={displayName}
@@ -84,7 +93,7 @@ const styles = StyleSheet.create({
     width: '80%',
     paddingVertical: 10,
   },
-  buttonStyle: {width: '100%', alignSelf: 'center'},
+  buttonStyle: { width: '100%', alignSelf: 'center' },
 });
 
 export default VehicleTypeModal;

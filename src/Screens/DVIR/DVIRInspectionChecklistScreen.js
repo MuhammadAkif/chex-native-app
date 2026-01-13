@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Image,
@@ -15,12 +16,12 @@ import {
   View,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {CameraBorderedIcon, CircledChevron, CrossCircledIcon, MovieIcon, VideoBorderedIcon} from '../../Assets/Icons';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { CameraBorderedIcon, CircledChevron, CrossCircledIcon, MovieIcon, VideoBorderedIcon } from '../../Assets/Icons';
 import CommentBorderedIcon from '../../Assets/Icons/CommentBorderedIcon';
 import CrossBlue from '../../Assets/Icons/CrossBlue';
-import {IMAGES} from '../../Assets/Images';
-import {colors, NewInspectionStyles} from '../../Assets/Styles';
+import { IMAGES } from '../../Assets/Images';
+import { colors, NewInspectionStyles } from '../../Assets/Styles';
 import {
   AndroidMediaViewModal,
   CaptureImageModal,
@@ -33,9 +34,9 @@ import {
 } from '../../Components';
 import AppText from '../../Components/text';
 
-const {container, bodyContainer, headerContainer, headerTitleText} = NewInspectionStyles;
+const { container, bodyContainer, headerContainer, headerTitleText } = NewInspectionStyles;
 
-const {OS} = Platform;
+const { OS } = Platform;
 const mediaViewModals = {
   ios: DisplayMediaModal,
   android: AndroidMediaViewModal,
@@ -43,15 +44,18 @@ const mediaViewModals = {
 const ActiveMediaViewModal = mediaViewModals[OS];
 
 // Move StatusButton outside so it is available to InspectionItem
-const StatusButton = React.memo(({title, isSelected, onPress, type, buttonStyles}) => {
+const StatusButton = React.memo(({ title, isSelected, onPress, type, buttonStyles }) => {
+  const { t } = useTranslation();
   const buttonStyle = isSelected ? buttonStyles?.[type] : buttonStyles?.default;
 
   return (
     <TouchableOpacity
-      style={[styles.statusButton, {backgroundColor: buttonStyle?.backgroundColor}]}
+      style={[styles.statusButton, { backgroundColor: buttonStyle?.backgroundColor }]}
       onPress={() => onPress(type)}
       activeOpacity={0.7}>
-      <AppText style={[styles.statusText, {color: buttonStyle?.textColor}]}>{title}</AppText>
+      <AppText style={[styles.statusText, { color: buttonStyle?.textColor }]}>
+        {t(`dvir.status.${title.toLowerCase()}`)}
+      </AppText>
     </TouchableOpacity>
   );
 });
@@ -114,7 +118,7 @@ const ChecklistItem = React.memo(
                   </TouchableOpacity>
                 ) : (
                   <TouchableOpacity activeOpacity={0.7} onPress={() => onMediaPress(item, 'checklist', imgIdx)} style={styles.itemImageContainer}>
-                    <Image source={{uri: img}} style={styles.itemImage} resizeMode="cover" />
+                    <Image source={{ uri: img }} style={styles.itemImage} resizeMode="cover" />
                   </TouchableOpacity>
                 )}
 
@@ -137,7 +141,8 @@ const ChecklistItem = React.memo(
 );
 
 // Move CommentModal outside the main component
-const CommentModal = React.memo(({visible, onClose, onSave, initialValue = '', modalImage}) => {
+const CommentModal = React.memo(({ visible, onClose, onSave, initialValue = '', modalImage }) => {
+  const { t } = useTranslation();
   const [text, setText] = React.useState(initialValue);
 
   React.useEffect(() => {
@@ -160,11 +165,11 @@ const CommentModal = React.memo(({visible, onClose, onSave, initialValue = '', m
         <ScrollView contentContainerStyle={styles.modalOverlay} keyboardShouldPersistTaps="handled" bounces={false}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.modalContent}>
-              {modalImage && <Image source={{uri: modalImage}} style={styles.modalImage} resizeMode="cover" />}
-              <AppText style={styles.modalTitle}>Comments</AppText>
+              {modalImage && <Image source={{ uri: modalImage }} style={styles.modalImage} resizeMode="cover" />}
+              <AppText style={styles.modalTitle}>{t('dvir.comments')}</AppText>
               <TextInput
                 style={styles.commentInput}
-                placeholder="Add your comments here"
+                placeholder={t('dvir.addComments')}
                 value={text}
                 onChangeText={setText}
                 multiline={true}
@@ -174,7 +179,7 @@ const CommentModal = React.memo(({visible, onClose, onSave, initialValue = '', m
                 placeholderTextColor={colors.steelGray}
               />
               <FooterButtons
-                containerStyle={{width: '100%', gap: 15, paddingHorizontal: 0}}
+                containerStyle={{ width: '100%', gap: 15, paddingHorizontal: 0 }}
                 disabledConfirm={initialValue === text}
                 onSubmit={handleSave}
                 onCancel={handleClose}
@@ -247,23 +252,24 @@ const DVIRInspectionChecklistScreen = ({
   onRemoveFrameImage,
   initialCommentText,
 }) => {
+  const { t } = useTranslation();
   // Prepare sections for SectionList
   const sections = [
     {
       key: 'checklist',
-      title: 'Check List Items',
+      title: t('dvir.checklist'),
       data: [null], // single item, will render the checklist section
     },
     {
       key: 'tires',
-      title: 'Tires',
+      title: t('dvir.tires'),
       data: [null], // single item, will render the tires section
     },
   ];
 
-  const renderSectionHeader = ({section}) => null; // No UI change
+  const renderSectionHeader = ({ section }) => null; // No UI change
 
-  const renderItem = ({section}) => {
+  const renderItem = ({ section }) => {
     if (section.key === 'checklist') {
       return (
         <View style={styles.secondBodyContainer}>
@@ -271,7 +277,7 @@ const DVIRInspectionChecklistScreen = ({
             <View style={styles.headerLeft}>
               <AppText style={styles.headerLeftText}>1</AppText>
             </View>
-            <AppText style={styles.headerTitle}>Check List Items</AppText>
+            <AppText style={styles.headerTitle}>{t('dvir.checklist')}</AppText>
             <View style={styles.headerRight}>
               <TouchableOpacity activeOpacity={0.7} onPress={toggleChecklistSection} style={!showChecklistSection && styles.rotateChevron}>
                 {checklistLoading ? (
@@ -304,7 +310,7 @@ const DVIRInspectionChecklistScreen = ({
                 ))}
               </View>
 
-              <View style={{marginTop: hp(4)}}>
+              <View style={{ marginTop: hp(4) }}>
                 <View
                   style={[
                     styles.header,
@@ -314,12 +320,14 @@ const DVIRInspectionChecklistScreen = ({
                       paddingTop: 0,
                     },
                   ]}>
-                  <AppText style={styles.headerTitle}>Capture Frames</AppText>
+                  <AppText style={styles.headerTitle}>
+                    {t('dvir.captureFrames')}
+                  </AppText>
                 </View>
 
                 <View style={styles.cardItems}>
                   {captureFrames.map(item => (
-                    <View style={[styles.itemContainer, {gap: wp(5)}]} key={item.id}>
+                    <View style={[styles.itemContainer, { gap: wp(5) }]} key={item.id}>
                       <AppText style={styles.captureFrameTitle}>{item?.title}</AppText>
 
                       <View style={styles.captureFrameRow}>
@@ -332,7 +340,7 @@ const DVIRInspectionChecklistScreen = ({
                               frame?.image ? handleMediaModalDetailsPress(frame, 'capture_frame', 0) : onPressCaptureFrame(item?.id, frame?.id)
                             }>
                             <FastImage
-                              source={frame?.image ? {uri: frame.image} : frame.icon}
+                              source={frame?.image ? { uri: frame.image } : frame.icon}
                               style={frame?.image ? styles.captureImageStyleWithImage : styles.captureImageStyle}
                               resizeMode={frame?.image ? 'cover' : 'contain'}
                             />
@@ -345,8 +353,14 @@ const DVIRInspectionChecklistScreen = ({
                               </TouchableOpacity>
                             ) : (
                               <>
-                                <AppText style={styles.captureImageText}>Capture image</AppText>
-                                <CameraBorderedIcon width={wp(6)} height={wp(6)} style={styles.captureImageBoxIcon} />
+                                <AppText style={styles.captureImageText}>
+                                  {t('dvir.captureImage')}
+                                </AppText>
+                                <CameraBorderedIcon
+                                  width={wp(6)}
+                                  height={wp(6)}
+                                  style={styles.captureImageBoxIcon}
+                                />
                               </>
                             )}
                           </TouchableOpacity>
@@ -368,7 +382,7 @@ const DVIRInspectionChecklistScreen = ({
             <View style={styles.headerLeft}>
               <AppText style={styles.headerLeftText}>2</AppText>
             </View>
-            <AppText style={styles.headerTitle}>Tires</AppText>
+            <AppText style={styles.headerTitle}>{t('dvir.tires')}</AppText>
             <View style={styles.headerRight}>
               <TouchableOpacity activeOpacity={0.7} onPress={toggleTiresSection} style={!showTiresSection && styles.rotateChevron}>
                 <CircledChevron width={wp('6%')} height={wp('6%')} stroke={showTiresSection ? colors.orangePeel : colors.gray} />
@@ -395,9 +409,9 @@ const DVIRInspectionChecklistScreen = ({
                   } else if (tire.id === 'tdrf') {
                     positionStyle = styles.frontRightPosition;
                   } else if (tire.id === 'tdlr') {
-                    positionStyle = [styles.rearLeftPosition, {flexDirection: 'column-reverse'}];
+                    positionStyle = [styles.rearLeftPosition, { flexDirection: 'column-reverse' }];
                   } else if (tire.id === 'tdrr') {
-                    positionStyle = [styles.rearRightPosition, {flexDirection: 'column-reverse'}];
+                    positionStyle = [styles.rearRightPosition, { flexDirection: 'column-reverse' }];
                   }
                   return (
                     <View style={[styles.tirePositionContainer, positionStyle]} key={tire.id}>
@@ -409,7 +423,7 @@ const DVIRInspectionChecklistScreen = ({
                         }>
                         <View style={[styles.tireIconContainer, tire?.image && styles.tireImageContainer]}>
                           <FastImage
-                            source={tire?.image ? {uri: tire.image} : IMAGES[tire.icon]}
+                            source={tire?.image ? { uri: tire.image } : IMAGES[tire.icon]}
                             style={tire.image ? styles.tireImage : styles.tireIcon}
                             resizeMode={tire?.image ? 'cover' : 'contain'}
                           />
@@ -424,7 +438,9 @@ const DVIRInspectionChecklistScreen = ({
                         ) : (
                           <>
                             <CameraBorderedIcon width={wp(4)} height={wp(4)} style={styles.cameraIcon} />
-                            <AppText style={styles.tireCaptureText}>Capture image</AppText>
+                            <AppText style={styles.tireCaptureText}>
+                              {t('dvir.captureImage')}
+                            </AppText>
                           </>
                         )}
                       </TouchableOpacity>
@@ -444,7 +460,7 @@ const DVIRInspectionChecklistScreen = ({
                       onPress={tire?.image ? () => handleMediaModalDetailsPress?.(tire, 'tire', 0) : () => onPressTireImage?.(tire.id, tire?.title)}>
                       <View style={[styles.tireIconContainer, tire?.image && styles.tireImageContainer]}>
                         <FastImage
-                          source={tire?.image ? {uri: tire.image} : IMAGES[tire.icon]}
+                          source={tire?.image ? { uri: tire.image } : IMAGES[tire.icon]}
                           style={tire.image ? styles.tireImage : styles.tireIcon}
                           resizeMode={tire?.image ? 'cover' : 'contain'}
                         />
@@ -459,7 +475,9 @@ const DVIRInspectionChecklistScreen = ({
                       ) : (
                         <>
                           <CameraBorderedIcon width={wp(4)} height={wp(4)} style={styles.cameraIcon} />
-                          <AppText style={styles.tireCaptureText}>Capture image</AppText>
+                          <AppText style={styles.tireCaptureText}>
+                            {t('dvir.captureImage')}
+                          </AppText>
                         </>
                       )}
                     </TouchableOpacity>
@@ -476,11 +494,13 @@ const DVIRInspectionChecklistScreen = ({
   };
 
   return (
-    <View style={container}>
+    <View style={container} >
       <LogoHeader />
       <LoadingIndicator isLoading={isLoading} />
       <View style={headerContainer}>
-        <AppText style={headerTitleText}>Please complete inspection items within each category below</AppText>
+        <AppText style={headerTitleText}>
+          {t('newInspection.header')}
+        </AppText>
       </View>
       <View style={bodyContainer}>
         <SectionList
@@ -488,10 +508,16 @@ const DVIRInspectionChecklistScreen = ({
           keyExtractor={(_, index) => `${index}`}
           renderSectionHeader={renderSectionHeader}
           renderItem={renderItem}
-          contentContainerStyle={{flexGrow: 1}}
+          contentContainerStyle={{ flexGrow: 1 }}
           showsVerticalScrollIndicator={false}
         />
-        {hasSubmitButtonShow && <PrimaryGradientButton onPress={onPressSubmit} text={'Submit'} buttonStyle={styles.buttonContainer} />}
+        {hasSubmitButtonShow && (
+          <PrimaryGradientButton
+            onPress={onPressSubmit}
+            text={t('common.submit')}
+            buttonStyle={styles.buttonContainer}
+          />
+        )}
       </View>
 
       <CommentModal
@@ -521,16 +547,18 @@ const DVIRInspectionChecklistScreen = ({
         />
       )}
 
-      {mediaModalVisible && (
-        <ActiveMediaViewModal
-          title={mediaModalDetails?.title}
-          isVideo={mediaModalDetails?.isVideo}
-          source={mediaModalDetails?.source}
-          coordinates={[]}
-          handleVisible={handleMediaModalDetailsCrossPress}
-        />
-      )}
-    </View>
+      {
+        mediaModalVisible && (
+          <ActiveMediaViewModal
+            title={mediaModalDetails?.title}
+            isVideo={mediaModalDetails?.isVideo}
+            source={mediaModalDetails?.source}
+            coordinates={[]}
+            handleVisible={handleMediaModalDetailsCrossPress}
+          />
+        )
+      }
+    </View >
   );
 };
 
@@ -593,7 +621,7 @@ const styles = StyleSheet.create({
   headerRight: {
     flexDirection: 'row',
   },
-  headerLeftText: {fontWeight: '500', fontSize: wp(4), color: colors.royalBlue},
+  headerLeftText: { fontWeight: '500', fontSize: wp(4), color: colors.royalBlue },
   scrollView: {
     flex: 1,
   },
@@ -651,7 +679,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     elevation: 1,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 1,
   },
@@ -760,7 +788,7 @@ const styles = StyleSheet.create({
     maxHeight: hp(70),
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
@@ -797,7 +825,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     elevation: 2,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
   },
@@ -812,7 +840,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     flexDirection: 'row-reverse',
   },
-  cardItems: {gap: wp(2.5)},
+  cardItems: { gap: wp(2.5) },
   // TIRES
   tiresContainer: {
     paddingHorizontal: wp(4),
@@ -961,8 +989,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: wp(3),
   },
-  rotateChevron: {transform: [{rotate: '180deg'}]},
-  loadingContainer: {alignSelf: 'center'},
+  rotateChevron: { transform: [{ rotate: '180deg' }] },
+  loadingContainer: { alignSelf: 'center' },
 });
 
 export default DVIRInspectionChecklistScreen;

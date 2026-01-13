@@ -1,13 +1,15 @@
 import React from 'react';
-import {Text, StyleSheet} from 'react-native';
+import { Text, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
-const RenderLicensePlateNumberHeader = () => (
-  <Text style={styles.bodyHeader}>New Inspection</Text>
-);
+const RenderLicensePlateNumberHeader = () => {
+  const { t } = useTranslation();
+  return <Text style={styles.bodyHeader}>{t('newInspection.title')}</Text>;
+};
 
 const styles = StyleSheet.create({
   itemContainer: {

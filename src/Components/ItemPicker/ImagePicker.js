@@ -1,5 +1,6 @@
 import React from 'react';
-import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
+import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -11,12 +12,12 @@ import {
   expandedCardStyles,
   ItemPickerStyles,
 } from '../../Assets/Styles';
-import {Camera, CrossFilled} from '../../Assets/Icons';
-import {Custom_Image} from '../index';
+import { Camera, CrossFilled } from '../../Assets/Icons';
+import { Custom_Image } from '../index';
 
 const height = hp('7%');
 const width = wp('7%');
-const {gray, paleBlue, royalBlue, orangePeel, blueGray} = colors;
+const { gray, paleBlue, royalBlue, orangePeel, blueGray } = colors;
 const {
   uploadImageAndTextContainer,
   crossContainer,
@@ -27,7 +28,7 @@ const {
   pickerTextSize,
   uploadImageTitleText,
 } = expandedCardStyles;
-const {container} = ItemPickerStyles;
+const { container } = ItemPickerStyles;
 
 const ImagePicker = ({
   onPress,
@@ -38,6 +39,9 @@ const ImagePicker = ({
   isLoading,
   handleMediaModalDetailsPress,
 }) => {
+  const { t } = useTranslation();
+  const defaultPickerText = pickerText || t('common.captureImage');
+
   const active_Colors = {
     true: gray,
     false: '#D1E3F7',
@@ -68,10 +72,10 @@ const ImagePicker = ({
             />
           </TouchableOpacity>
           <FastImage
-            source={{uri: imageURL}}
+            source={{ uri: imageURL }}
             priority={'normal'}
             resizeMode={'stretch'}
-            style={[StyleSheet.absoluteFill, {borderRadius: 3}]}
+            style={[StyleSheet.absoluteFill, { borderRadius: 3 }]}
           />
           {/*<Custom_Image
             source={{uri: imageURL}}
@@ -80,13 +84,13 @@ const ImagePicker = ({
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
-          style={[uploadImageContainer, {borderColor: activeColor}]}
+          style={[uploadImageContainer, { borderColor: activeColor }]}
           disabled={isLoading}
           onPress={onPress}>
           <View
             style={[
               cameraIconContainer,
-              {backgroundColor: activeBackgroundColor},
+              { backgroundColor: activeBackgroundColor },
             ]}>
             <Camera height={height} width={width} color={blueGray} />
           </View>
@@ -95,9 +99,9 @@ const ImagePicker = ({
               uploadImageText,
               textColor,
               pickerTextSize,
-              {color: activeTextColor},
+              { color: activeTextColor },
             ]}>
-            {pickerText}
+            {defaultPickerText}
           </Text>
         </TouchableOpacity>
       )}

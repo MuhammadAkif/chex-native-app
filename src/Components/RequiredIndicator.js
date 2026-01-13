@@ -1,23 +1,18 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import { colors } from '../Assets/Styles';
+import { useTranslation } from 'react-i18next';
 
-import {colors} from '../Assets/Styles';
+const { white, orangePeel, brightGreen } = colors;
 
-const {white, orangePeel, brightGreen} = colors;
-
-// Constants for status labels
-const LABELS = {
-  REQUIRED: 'Required',
-  OPTIONAL: 'Optional',
-};
-
-const RequiredIndicator = ({required = false, text = null}) => {
+const RequiredIndicator = ({ required = false, text = null }) => {
+  const { t } = useTranslation();
   // Determine the label text and background color based on the 'required' prop
-  const labelText = required ? LABELS.REQUIRED : LABELS.OPTIONAL;
+  const labelText = required ? t('common.required') : t('common.optional');
   const backgroundColor = required ? orangePeel : brightGreen;
 
   // If required is null, return null to render nothing
@@ -26,7 +21,7 @@ const RequiredIndicator = ({required = false, text = null}) => {
   }
 
   return (
-    <View style={[styles.label, {backgroundColor}]}>
+    <View style={[styles.label, { backgroundColor }]}>
       <Text style={styles.text}>{text || labelText}</Text>
     </View>
   );

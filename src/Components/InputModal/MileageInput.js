@@ -1,5 +1,6 @@
-import React, {memo, useCallback} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { memo, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 import InputModal from './InputModal';
 import {
@@ -7,12 +8,13 @@ import {
   setMileage,
   setMileageMessage,
 } from '../../Store/Actions';
-import {updateMileageInDB} from '../../services/inspection';
-import {removeAlphabets} from '../../Utils/helpers';
+import { updateMileageInDB } from '../../services/inspection';
+import { removeAlphabets } from '../../Utils/helpers';
 
 const MileageInput = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
-  let {selectedInspectionID, mileageMessage} = useSelector(
+  let { selectedInspectionID, mileageMessage } = useSelector(
     state => state.newInspection,
   );
 
@@ -42,11 +44,11 @@ const MileageInput = () => {
 
   function onSubmitFailed(error = {}) {
     try {
-      const {status = null} = error || {};
-      let message = 'Current reading can not be less than previous reading';
+      const { status = null } = error || {};
+      let message = t('mileageInput.errors.lessThanPrevious');
 
       if (status !== 400) {
-        message = 'Something Went Wrong, Please try again.';
+        message = t('common.somethingWentWrong');
       }
       dispatch(setMileageMessage(message));
     } catch (error) {
@@ -58,13 +60,11 @@ const MileageInput = () => {
     <InputModal
       visibleKey="mileage"
       valueKey="mileage"
-      title="MileageInput"
-      description={
-        'System was unable to detect the mileage. Please type the mileage below:'
-      }
+      title={t('mileageInput.title')}
+      description={t('mileageInput.description')}
       actionCreator={setMileageVisible}
       callback={onSubmit}
-      placeHolder={'Enter Mileage'}
+      placeHolder={t('mileageInput.placeHolder')}
       keyboardType={'decimal-pad'}
       inputMode={'decimal'}
       errorMessage={mileageMessage}

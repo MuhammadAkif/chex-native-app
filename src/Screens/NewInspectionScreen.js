@@ -1,9 +1,9 @@
 import React from 'react';
-import {Platform, ScrollView, Text, TouchableOpacity, View} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import { Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
-import {BackArrow} from '../Assets/Icons';
-import {colors, NewInspectionStyles} from '../Assets/Styles';
+import { BackArrow } from '../Assets/Icons';
+import { colors, NewInspectionStyles } from '../Assets/Styles';
 import {
   AndroidMediaViewModal,
   CaptureImageModal,
@@ -22,18 +22,20 @@ import {
 import AnnotateImage from '../Components/Annotation/AnnotateImage';
 import AnnotateImageModal from '../Components/Annotation/AnnotateImageModal';
 import LoadingIndicator from '../Components/LoadingIndicator';
-import {hasInteriorAndRoofTopCompany} from '../Constants';
+import { hasInteriorAndRoofTopCompany } from '../Constants';
+import { useTranslation } from 'react-i18next';
 
-const {OS} = Platform;
+const { OS } = Platform;
 const mediaViewModals = {
   ios: DisplayMediaModal,
   android: AndroidMediaViewModal,
 };
 const ActiveMediaViewModal = mediaViewModals[OS];
-const {black, orange, white} = colors;
-const {container, headerContainer, headerTitleText, backIconContainer, bodyContainer, innerBody, scrollViewContainer} = NewInspectionStyles;
+const { black, orange, white } = colors;
+const { container, headerContainer, headerTitleText, backIconContainer, bodyContainer, innerBody, scrollViewContainer } = NewInspectionStyles;
 
 const NewInspectionScreen = props => {
+  const { t } = useTranslation();
   const {
     selectedOption,
     modalVisible,
@@ -110,9 +112,9 @@ const NewInspectionScreen = props => {
         <DiscardInspectionModal
           onNoPress={onNoPress}
           onYesPress={onYesPress}
-          description={'Are you sure you want to delete this inspection item?'}
-          noButtonText={{color: black}}
-          noButtonStyle={{borderColor: orange}}
+          description={t('newInspection.discardItem')}
+          noButtonText={{ color: black }}
+          noButtonStyle={{ borderColor: orange }}
         />
       )}
       {/* {isInspectionInProgressModalVisible && (
@@ -121,7 +123,12 @@ const NewInspectionScreen = props => {
         </View>
       )} */}
       {inUseErrorTitle && (
-        <DiscardInspectionModal yesButtonText={'Ok'} onYesPress={handleBackPress} description={inUseErrorTitle} dualButton={false} />
+        <DiscardInspectionModal
+          yesButtonText={t('common.ok')}
+          onYesPress={handleBackPress}
+          description={inUseErrorTitle}
+          dualButton={false}
+        />
       )}
       <MileageInput />
       {isLicenseModalVisible && (
@@ -157,12 +164,14 @@ const NewInspectionScreen = props => {
 
       <LogoHeader />
       <View style={headerContainer}>
-        <Text style={headerTitleText}>Please complete inspection items within each category below</Text>
+        <Text style={headerTitleText}>{t('newInspection.header')}</Text>
       </View>
 
       <View style={bodyContainer}>
         <View style={innerBody}>
-          <ScrollView contentContainerStyle={scrollViewContainer} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            contentContainerStyle={scrollViewContainer}
+            showsVerticalScrollIndicator={false}>
             {modalVisible && (
               <CaptureImageModal
                 modalVisible={modalVisible}
@@ -173,8 +182,12 @@ const NewInspectionScreen = props => {
                 title={title}
                 isVideo={isVideo}
                 instructionalSubHeadingText={instructionalSubHeadingText || ''}
-                instructionalSubHeadingText_1={instructionalSubHeadingText_1 || ''}
-                instructionalSubHeadingText_2={instructionalSubHeadingText_2 || ''}
+                instructionalSubHeadingText_1={
+                  instructionalSubHeadingText_1 || ''
+                }
+                instructionalSubHeadingText_2={
+                  instructionalSubHeadingText_2 || ''
+                }
                 modalKey={modalKey}
                 handleCaptureImage={handleCaptureNowPress}
                 isCarVerification={isCarVerification}
@@ -210,13 +223,13 @@ const NewInspectionScreen = props => {
             {!hasInteriorAndRoofTopCompany(companyId) && (
               <>
                 <CollapsedCard
-                  text={'Interior items'}
+                  text={t('newInspection.interiorItems')}
                   index={1}
                   displayInstructions={displayInstructions}
                   isActive={selectedOption?.isInterior}
                   isBothItemsAvailable={isAllInteriorImagesAvailable}
                   onPress={() => handleCardExpansion('isInterior')}
-                  // disabled={!isLicensePlateUploaded}
+                // disabled={!isLicensePlateUploaded}
                 />
                 {selectedOption?.isInterior && (
                   <ActiveInteriorItemsExpandedCard
@@ -230,13 +243,13 @@ const NewInspectionScreen = props => {
               </>
             )}
             <CollapsedCard
-              text={'Exterior items'}
+              text={t('newInspection.exteriorItems')}
               displayInstructions={displayInstructions}
               index={hasInteriorAndRoofTopCompany(companyId) ? 1 : 2}
               isActive={selectedOption?.isExterior}
               isBothItemsAvailable={isAllExteriorImagesAvailable}
               onPress={() => handleCardExpansion('isExterior')}
-              // disabled={!isLicensePlateUploaded}
+            // disabled={!isLicensePlateUploaded}
             />
             {selectedOption?.isExterior && (
               <ActiveExteriorItemsExpandedCard
@@ -255,12 +268,12 @@ const NewInspectionScreen = props => {
             {displayTires && (
               <>
                 <CollapsedCard
-                  text={'Tires'}
+                  text={t('newInspection.tires')}
                   index={hasInteriorAndRoofTopCompany(companyId) ? 2 : 3}
                   isActive={selectedOption?.isTires}
                   isBothItemsAvailable={isBothTiresImagesAvailable}
                   onPress={() => handleCardExpansion('isTires')}
-                  // disabled={!isLicensePlateUploaded}
+                // disabled={!isLicensePlateUploaded}
                 />
                 {selectedOption?.isTires && (
                   <TiresItemsExpandedCard

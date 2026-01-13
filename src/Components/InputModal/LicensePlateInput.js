@@ -1,19 +1,21 @@
-import React, {memo, useCallback} from 'react';
+import React, { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import InputModal from './InputModal';
-import {setPlateNumberVisible} from '../../Store/Actions';
+import { setPlateNumberVisible } from '../../Store/Actions';
 
 const LicensePlateInput = () => {
-  const onSubmit = useCallback(async licensePlate => {}, []);
+  const { t } = useTranslation();
+  const onSubmit = useCallback(async licensePlate => { }, []);
 
   return (
     <InputModal
       visibleKey="plateNumber"
       valueKey="plateNumber"
-      title="Vehicle Detail"
-      description="System was unable to detect the license plate number. Please type the license plate number below:"
+      title={t('confirmVehicleDetail.title')}
+      description={t('confirmVehicleDetail.description')}
       actionCreator={setPlateNumberVisible}
-      // callback={onSubmit}
+    // callback={onSubmit}
     />
   );
 };

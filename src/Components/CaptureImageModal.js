@@ -1,24 +1,26 @@
-import React, {useState, useMemo} from 'react';
-import {Modal, StyleSheet, View, Text, TouchableOpacity, StatusBar, Platform} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import React, { useState, useMemo } from 'react';
+import { Modal, StyleSheet, View, Text, TouchableOpacity, StatusBar, Platform } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import * as Progress from 'react-native-progress';
-import {Cross, Expand, Info} from '../Assets/Icons';
-import {colors} from '../Assets/Styles';
-import {PrimaryGradientButton, RequiredIndicator, Sub_Heading} from './index';
+import { Cross, Expand, Info } from '../Assets/Icons';
+import { colors } from '../Assets/Styles';
+import { PrimaryGradientButton, RequiredIndicator, Sub_Heading } from './index';
 import Collapse from '../Assets/Icons/Collapse';
-import {Platforms} from '../Constants';
-import {headerFlex, headerFlexGrow, headerTextBottom, imageHeight, instructionsContainerTop} from '../Utils/helpers';
+import { Platforms } from '../Constants';
+import { headerFlex, headerFlexGrow, headerTextBottom, imageHeight, instructionsContainerTop } from '../Utils/helpers';
 
-const {OS} = Platform;
-const {ANDROID} = Platforms;
+import { useTranslation } from 'react-i18next';
+
+const { OS } = Platform;
+const { ANDROID } = Platforms;
 const Accordion = {
   true: Expand,
   false: Collapse,
 };
-const {blueGray, orangePeel, cobaltBlueDark, white} = colors;
+const { blueGray, orangePeel, cobaltBlueDark, white } = colors;
 
 const CaptureImageModal = ({
   modalVisible,
@@ -39,7 +41,8 @@ const CaptureImageModal = ({
   isExterior = true,
   labelRequired = null,
 }) => {
-  const {fileRequired = null} = useSelector(state => state.newInspection);
+  const { t } = useTranslation();
+  const { fileRequired = null } = useSelector(state => state.newInspection);
   const [isFullScreen, setIsFullScreen] = useState(false);
 
   const height = hp('5%');
@@ -81,7 +84,7 @@ const CaptureImageModal = ({
           ]}>
           <View style={styles.headerLabels}>
             <RequiredIndicator required={labelRequired || fileRequired} />
-            <Text style={[styles.titleText, styles.textColor, {bottom: calculatedStyles.headerTextBottom}]}>{title}</Text>
+            <Text style={[styles.titleText, styles.textColor, { bottom: calculatedStyles.headerTextBottom }]}>{title}</Text>
           </View>
           {isVideo ? (
             <>
@@ -103,10 +106,10 @@ const CaptureImageModal = ({
               )}
             </>
           ) : (
-            <FastImage source={source} priority={'normal'} resizeMode={'cover'} style={[styles.image, {height: calculatedStyles.imageHeight}]} />
+            <FastImage source={source} priority={'normal'} resizeMode={'cover'} style={[styles.image, { height: calculatedStyles.imageHeight }]} />
           )}
           <View style={styles.instructionsAndSubHeadingContainer}>
-            <View style={[styles.instructionsContainer, {top: calculatedStyles.instructionsContainerTop}]}>
+            <View style={[styles.instructionsContainer, { top: calculatedStyles.instructionsContainerTop }]}>
               <Info height={hp('4%')} width={wp('7%')} color={white} />
               <Text style={[styles.instructionsText, styles.textColor]}>{instructionalText}</Text>
             </View>
@@ -136,9 +139,9 @@ const CaptureImageModal = ({
               progress={normalizedProgressValue}
               showsText
               formatText={() => `${progress}%`}
-              textStyle={{fontWeight: 'bold', color: colors.white}}
+              textStyle={{ fontWeight: 'bold', color: colors.white }}
             />
-            <Text style={[styles.textColor, styles.loadingText]}>{progress === 100 ? 'Finalizing Upload' : 'Uploading'}</Text>
+            <Text style={[styles.textColor, styles.loadingText]}>{progress === 100 ? t('annotation.finalizingUpload') : t('annotation.uploading')}</Text>
           </View>
         ) : (
           <View style={styles.body}>

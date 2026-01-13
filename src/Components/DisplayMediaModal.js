@@ -1,19 +1,24 @@
-import React, {useEffect, useState} from 'react';
-import {Modal, StyleSheet, View, Text, TouchableOpacity, StatusBar, ActivityIndicator, Image} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import React, { useEffect, useState } from 'react';
+import { Modal, StyleSheet, View, Text, TouchableOpacity, StatusBar, ActivityIndicator, Image } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Video from 'react-native-video';
 
-import {Cross} from '../Assets/Icons';
-import {colors} from '../Assets/Styles';
-import {Custom_Image, RenderIcons} from './index';
-import {useResponsiveImageSize} from '../hooks';
+import { Cross } from '../Assets/Icons';
+import { colors } from '../Assets/Styles';
+import { Custom_Image, RenderIcons } from './index';
+import { useResponsiveImageSize } from '../hooks';
 
-const {cobaltBlueDark, white} = colors;
+import { useTranslation } from 'react-i18next';
 
-const DisplayMediaModal = ({handleVisible, source, title, isVideo, coordinates = []}) => {
+const { cobaltBlueDark, white } = colors;
+
+const DisplayMediaModal = ({ handleVisible, source, title, isVideo, coordinates = [] }) => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [imageReady, setImageReady] = useState(false);
   const imgSize = useResponsiveImageSize(source);
+
+  const displayTitle = title || (isVideo ? t('common.video') : t('common.image'));
 
   const handleImageLayout = () => {
     setImageReady(true);
@@ -26,27 +31,27 @@ const DisplayMediaModal = ({handleVisible, source, title, isVideo, coordinates =
           <Cross height={hp('8%')} width={wp('10%')} color={white} />
         </TouchableOpacity>
         <View style={styles.header}>
-          <Text style={[styles.titleText, styles.textColor]}>{title}</Text>
+          <Text style={[styles.titleText, styles.textColor]}>{displayTitle}</Text>
           {isVideo ? (
             <View style={styles.videoContainer}>
               <ActivityIndicator color={colors.royalBlue} size={'large'} animating={isLoading} style={styles.loader} />
               <Video
-                source={{uri: source}}
+                source={{ uri: source }}
                 autoplay
                 onLoadStart={() => setIsLoading(true)}
                 onLoad={() => setIsLoading(false)}
-                style={{width: '100%', height: '100%'}}
+                style={{ width: '100%', height: '100%' }}
                 controls
                 resizeMode="contain"
-                controlsStyles={{hideForward: true, hideNext: true, hidePrevious: true, hideRewind: true, hidePlayPause: true}}
+                controlsStyles={{ hideForward: true, hideNext: true, hidePrevious: true, hideRewind: true, hidePlayPause: true }}
               />
             </View>
           ) : (
-            <View style={[styles.imageContainer, {width: imgSize.width, height: imgSize.height}]}>
+            <View style={[styles.imageContainer, { width: imgSize.width, height: imgSize.height }]}>
               <Custom_Image
                 onLayout={handleImageLayout}
-                source={{uri: source}}
-                imageStyle={[styles.image, {width: imgSize.width, height: imgSize.height}]}
+                source={{ uri: source }}
+                imageStyle={[styles.image, { width: imgSize.width, height: imgSize.height }]}
               />
               {imageReady &&
                 coordinates.length > 0 &&
@@ -114,7 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
   },
-  loader: {position: 'absolute', alignSelf: 'center'},
+  loader: { position: 'absolute', alignSelf: 'center' },
 });
 
 export default DisplayMediaModal;

@@ -1,5 +1,6 @@
 import React from 'react';
-import {Text, TouchableOpacity, View, StyleSheet, Platform} from 'react-native';
+import { Text, TouchableOpacity, View, StyleSheet, Platform } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -11,14 +12,14 @@ import {
   expandedCardStyles,
   ItemPickerStyles,
 } from '../../Assets/Styles';
-import {CrossFilled, Play} from '../../Assets/Icons';
-import {Platforms} from '../../Constants';
+import { CrossFilled, Play } from '../../Assets/Icons';
+import { Platforms } from '../../Constants';
 
-const {OS} = Platform;
-const {ANDROID} = Platforms;
+const { OS } = Platform;
+const { ANDROID } = Platforms;
 const height = hp('5%');
 const width = wp('5%');
-const {orangePeel, blueGray} = colors;
+const { orangePeel, blueGray } = colors;
 const {
   uploadImageAndTextContainer,
   crossContainer,
@@ -28,7 +29,7 @@ const {
   pickerTextSize,
   uploadImageText,
 } = expandedCardStyles;
-const {container} = ItemPickerStyles;
+const { container } = ItemPickerStyles;
 
 const VideoPicker = ({
   onPress,
@@ -38,50 +39,55 @@ const VideoPicker = ({
   onClearPress,
   isLoading,
   handleMediaModalDetailsPress,
-}) => (
-  <View style={uploadImageAndTextContainer}>
-    {videoURL ? (
-      <TouchableOpacity
-        style={container}
-        disabled={isLoading}
-        onPress={handleMediaModalDetailsPress}>
-        <TouchableOpacity style={crossContainer} onPress={onClearPress}>
-          <CrossFilled
-            height={hp('2.5%')}
-            width={wp('5%')}
-            color={orangePeel}
+}) => {
+  const { t } = useTranslation();
+  const defaultPickerText = pickerText || t('common.captureVideo');
+
+  return (
+    <View style={uploadImageAndTextContainer}>
+      {videoURL ? (
+        <TouchableOpacity
+          style={container}
+          disabled={isLoading}
+          onPress={handleMediaModalDetailsPress}>
+          <TouchableOpacity style={crossContainer} onPress={onClearPress}>
+            <CrossFilled
+              height={hp('2.5%')}
+              width={wp('5%')}
+              color={orangePeel}
+            />
+          </TouchableOpacity>
+          <Video
+            source={{ uri: videoURL }}
+            controls={false}
+            repeat={false}
+            resizeMode={'contain'}
+            paused={OS !== ANDROID}
+            playInBackground={false}
+            style={StyleSheet.absoluteFill}
+            muted={true}
+          />
+          <Play
+            height={hp('4%')}
+            width={wp('4%')}
+            color={'rgba(255, 255, 255, 0.7)'}
           />
         </TouchableOpacity>
-        <Video
-          source={{uri: videoURL}}
-          controls={false}
-          repeat={false}
-          resizeMode={'contain'}
-          paused={OS !== ANDROID}
-          playInBackground={false}
-          style={StyleSheet.absoluteFill}
-          muted={true}
-        />
-        <Play
-          height={hp('4%')}
-          width={wp('4%')}
-          color={'rgba(255, 255, 255, 0.7)'}
-        />
-      </TouchableOpacity>
-    ) : (
-      <TouchableOpacity style={uploadImageContainer} onPress={onPress}>
-        <View style={cameraIconContainer}>
-          <View style={{left: '4%'}}>
-            <Play height={height} width={width} color={blueGray} />
+      ) : (
+        <TouchableOpacity style={uploadImageContainer} onPress={onPress}>
+          <View style={cameraIconContainer}>
+            <View style={{ left: '4%' }}>
+              <Play height={height} width={width} color={blueGray} />
+            </View>
           </View>
-        </View>
-        <Text style={[uploadImageText, textColor, pickerTextSize]}>
-          {pickerText}
-        </Text>
-      </TouchableOpacity>
-    )}
-    <Text style={uploadImageText}>{text}</Text>
-  </View>
-);
+          <Text style={[uploadImageText, textColor, pickerTextSize]}>
+            {defaultPickerText}
+          </Text>
+        </TouchableOpacity>
+      )}
+      <Text style={uploadImageText}>{text}</Text>
+    </View>
+  );
+};
 
 export default VideoPicker;

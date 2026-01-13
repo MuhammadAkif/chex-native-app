@@ -1,16 +1,18 @@
-import React, {useCallback} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import React, { useCallback } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
-import {PrimaryGradientButton, SecondaryButton} from './index';
-import {colors, modalStyle} from '../Assets/Styles';
+import { PrimaryGradientButton, SecondaryButton } from './index';
+import { colors, modalStyle } from '../Assets/Styles';
 
-const {footer: container_, button: buttonStyles, yesText: textStyle} = modalStyle;
-const {royalBlue} = colors;
+import { useTranslation } from 'react-i18next';
+
+const { footer: container_, button: buttonStyles, yesText: textStyle } = modalStyle;
+const { royalBlue } = colors;
 
 const FooterButtons = ({
   containerStyle,
-  confirmText = 'Submit',
+  confirmText,
   isLoading = false,
   confirmButtonStyle = {},
   cancelButtonStyle = {},
@@ -18,16 +20,20 @@ const FooterButtons = ({
   cancelTextStyle = {},
   onSubmit,
   onCancel,
-  cancelText = 'Cancel',
+  cancelText,
   disabledConfirm = false,
 }) => {
+  const { t } = useTranslation();
   const handleSubmit = useCallback(onSubmit, [onSubmit]);
   const handleCancel = useCallback(onCancel, [onCancel]);
+
+  const displayConfirmText = confirmText || t('common.submit');
+  const displayCancelText = cancelText || t('common.cancel');
 
   return (
     <View style={[container_, styles.container, containerStyle]}>
       <PrimaryGradientButton
-        text={confirmText}
+        text={displayConfirmText}
         disabled={isLoading}
         buttonStyle={[buttonStyles, styles.buttons, confirmButtonStyle]}
         textStyle={[textStyle, confirmTextStyle]}
@@ -35,7 +41,7 @@ const FooterButtons = ({
         buttonDisabled={disabledConfirm}
       />
       <SecondaryButton
-        text={cancelText}
+        text={displayCancelText}
         disabled={isLoading}
         buttonStyle={[styles.cancelButton, styles.buttons, cancelButtonStyle]}
         textStyle={[styles.cancelButtonText, cancelTextStyle]}

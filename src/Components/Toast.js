@@ -1,17 +1,18 @@
-import React, {useEffect} from 'react';
-import {Text, View, TouchableOpacity, StyleSheet, StatusBar, Platform} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useEffect } from 'react';
+import { Text, View, TouchableOpacity, StyleSheet, StatusBar, Platform } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { useDispatch, useSelector } from 'react-redux';
+import { XMark, Check, Cross, Exclamation } from '../Assets/Icons';
+import { colors } from '../Assets/Styles';
+import { hideToast } from '../Store/Actions';
+import { Platforms } from '../Constants';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import {XMark, Check, Cross, Exclamation} from '../Assets/Icons';
-import {colors} from '../Assets/Styles';
-import {hideToast} from '../Store/Actions';
-import {Platforms} from '../Constants';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
-const {OS} = Platform;
-const {ANDROID, IOS} = Platforms;
-const {red, gray, white, black, brightGreen} = colors;
+const { OS } = Platform;
+const { ANDROID, IOS } = Platforms;
+const { red, gray, white, black, brightGreen } = colors;
 const Toast_Icons = {
   error: Cross,
   warning: Exclamation,
@@ -24,9 +25,10 @@ const Background_Color = {
 };
 
 const Toast = props => {
-  const {isModal = false} = props;
+  const { t } = useTranslation();
+  const { isModal = false } = props;
   const {
-    toast: {visible, message, type},
+    toast: { visible, message, type },
   } = useSelector(state => state.ui);
   const dispatch = useDispatch();
   const insets = useSafeAreaInsets();
@@ -55,11 +57,11 @@ const Toast = props => {
   return (
     <View style={containerStyle}>
       <View style={styles.messageTextContainer}>
-        <View style={{...styles.iconContainer, backgroundColor: BACKGROUND_COLOR}}>
+        <View style={{ ...styles.iconContainer, backgroundColor: BACKGROUND_COLOR }}>
           <ICON_COMPONENT height={hp('3%')} width={wp('5%')} color={white} />
         </View>
-        <Text style={styles.messageText}>{message || 'Message'}</Text>
-        <TouchableOpacity style={{...styles.iconContainer, ...styles.crossIconContainer}} onPress={onCrossPress}>
+        <Text style={styles.messageText}>{message || t('common.message')}</Text>
+        <TouchableOpacity style={{ ...styles.iconContainer, ...styles.crossIconContainer }} onPress={onCrossPress}>
           <XMark height={hp('3%')} width={wp('5%')} color={gray} />
         </TouchableOpacity>
       </View>
@@ -107,127 +109,3 @@ const styles = StyleSheet.create({
 });
 
 export default Toast;
-
-/*import React, {useEffect, useState} from 'react';
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {
-  heightPercentageToDP as hp,
-  widthPercentageToDP as wp,
-} from 'react-native-responsive-screen';
-
-import {XMark, Check, Cross} from '../Assets/Icons';
-import {colors} from '../Assets/Styles';
-import {fallBack} from '../Utils';
-
-const {red, gray, white, black, brightGreen} = colors;
-const Toast_Icons = {
-  true: Cross,
-  false: Check,
-};
-const Background_Color = {
-  true: red,
-  false: brightGreen,
-};
-const Container_Top = {
-  true: hp('5%'),
-  false: null,
-};
-
-const Toast = ({
-  message,
-  onCrossPress,
-  isError = false,
-  isForgetPassword = false,
-  icon = Toast_Icons[isError],
-  iconContainerStyle = {},
-  isVisible = false,
-}) => {
-  const [visible, setVisible] = useState(isVisible);
-  console.log({visible, isVisible, isForgetPassword});
-  useEffect(() => {
-    let timeoutID = setTimeout(() => {
-      visible && setVisible(false);
-      isVisible && onCrossPress();
-    }, 5000);
-
-    return () => {
-      clearTimeout(timeoutID);
-    };
-  }, [isVisible, visible]);
-  useEffect(() => {
-    setVisible(isVisible);
-  }, [isVisible]);
-  if (!visible) {
-    return;
-  }
-  const ICON_COMPONENT = icon;
-  const BACKGROUND_COLOR = Background_Color[isError];
-  console.log(
-    'Container_Top[isForgetPassword] ',
-    Container_Top[isForgetPassword],
-  );
-  return (
-    <View style={[styles.centeredView, {top: Container_Top[isForgetPassword]}]}>
-      <View style={styles.messageTextContainer}>
-        <View
-          style={[
-            styles.iconContainer,
-            {backgroundColor: BACKGROUND_COLOR},
-            iconContainerStyle,
-          ]}>
-          <ICON_COMPONENT height={hp('3%')} width={wp('5%')} color={white} />
-        </View>
-        <Text style={styles.messageText}>{message}</Text>
-        <TouchableOpacity
-          style={[styles.iconContainer, {backgroundColor: 'transparent'}]}
-          onPress={onCrossPress}>
-          <XMark height={hp('3%')} width={wp('5%')} color={gray} />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  centeredView: {
-    position: 'absolute',
-    alignItems: 'center',
-    zIndex: 1,
-    right: wp('10%'),
-  },
-  tickContainer: {
-    height: '4%',
-    backgroundColor: 'red',
-    width: '10%',
-  },
-  messageTextContainer: {
-    flexDirection: 'row',
-    width: wp('80%'),
-    backgroundColor: white,
-    justifyContent: 'space-between',
-  },
-  messageText: {
-    paddingVertical: 8,
-    paddingLeft: hp('1%'),
-    width: wp('60%'),
-    color: black,
-  },
-  iconContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: brightGreen,
-    paddingHorizontal: wp('2%'),
-  },
-});
-
-export default Toast;
-*/

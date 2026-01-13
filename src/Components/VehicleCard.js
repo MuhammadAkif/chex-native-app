@@ -1,14 +1,17 @@
-import {View, StyleSheet, Image} from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import React from 'react';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import AppText from './text';
-import {colors} from '../Assets/Styles';
+import { colors } from '../Assets/Styles';
 import CardWrapper from './Card/CardWrapper';
-import {IMAGES} from '../Assets/Images';
+import { IMAGES } from '../Assets/Images';
 import dayjs from 'dayjs';
-import {STATUSES, VEHICLE_IMAGES} from '../Constants';
+import { VEHICLE_IMAGES } from '../Constants';
 
-const VehicleCard = ({item}) => {
+import { useTranslation } from 'react-i18next';
+
+const VehicleCard = ({ item }) => {
+  const { t } = useTranslation();
   return (
     <CardWrapper style={styles.container}>
       <Image source={VEHICLE_IMAGES[item?.vehicleType] || IMAGES.Van} style={styles.image} />
@@ -20,7 +23,7 @@ const VehicleCard = ({item}) => {
         <AppText fontWeight={'500'}>{item?.companyName}</AppText>
         <View style={styles.statusContainer}>
           <AppText fontWeight={'700'} fontSize={wp(3.2)} color={colors.white}>
-            {STATUSES[item?.inspectionStatus] || item?.inspectionStatus}
+            {t(`statuses.${item?.inspectionStatus?.toLowerCase()}`, item?.inspectionStatus)}
           </AppText>
         </View>
         {item?.reviewedDate && (
@@ -43,8 +46,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: wp(3),
   },
-  image: {width: '35%', height: '100%', resizeMode: 'contain'},
-  contentContainer: {flex: 1},
+  image: { width: '35%', height: '100%', resizeMode: 'contain' },
+  contentContainer: { flex: 1 },
   statusContainer: {
     alignSelf: 'flex-start',
     backgroundColor: colors.tealGreen,
