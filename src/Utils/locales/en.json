@@ -1,462 +1,477 @@
 {
-    "common": {
-        "signIn": "Sign In",
-        "email": "Email",
-        "submit": "Submit",
-        "password": "Password",
-        "confirmPassword": "Confirm Password",
-        "reset": "Reset",
-        "loading": "Loading...",
-        "home": "Home",
-        "yes": "Yes",
-        "no": "No",
-        "licensePlateNo": "License Plate no.",
-        "dateCreated": "Date Created",
-        "continue": "Continue",
-        "retry": "Retry",
-        "next": "Next",
-        "comingSoon": "Coming Soon!",
-        "ok": "Ok",
-        "somethingWentWrong": "Something went wrong, Please try again.",
-        "addImage": "Add Image",
-        "captureImage": "Capture Image",
-        "captureVideo": "Capture Video",
-        "image": "image",
-        "cancel": "Cancel",
-        "required": "Required",
-        "optional": "Optional",
-        "message": "Message"
+  "common": {
+    "signIn": "Sign In",
+    "email": "Email",
+    "submit": "Submit",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "reset": "Reset",
+    "loading": "Loading...",
+    "home": "Home",
+    "yes": "Yes",
+    "no": "No",
+    "licensePlateNo": "License Plate no.",
+    "dateCreated": "Date Created",
+    "continue": "Continue",
+    "retry": "Retry",
+    "next": "Next",
+    "comingSoon": "Coming Soon!",
+    "ok": "Ok",
+    "somethingWentWrong": "Something went wrong, Please try again.",
+    "addImage": "Add Image",
+    "captureImage": "Capture Image",
+    "captureVideo": "Capture Video",
+    "image": "image",
+    "cancel": "Cancel",
+    "required": "Required",
+    "optional": "Optional",
+    "message": "Message"
+  },
+  "welcome": {
+    "title": "Welcome to",
+    "subtitle": "Virtual Inspections"
+  },
+  "signIn": {
+    "title": "Sign in",
+    "namePlaceholder": "John Doe",
+    "forgotPassword": "Forgot Password"
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "subtitle": "Type Email for password reset",
+    "knowPassword": "Know Your Password?",
+    "loginLink": "Login"
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "subtitle": "Please check your email for unique pin and type below",
+    "verificationCodePlaceholder": "Verification Code"
+  },
+  "home": {
+    "greeting": "Hi, {{name}}",
+    "subtitle": "Let's check your vehicle today",
+    "stats": {
+      "totalVehicles": "Total\nVehicles",
+      "inProgressInspections": "In Progress\nInspections",
+      "submittedInspections": "Submitted\nInspections",
+      "totalInspections": "Total\nInspections"
     },
-    "welcome": {
-        "title": "Welcome to",
-        "subtitle": "Virtual Inspections"
+    "myRegisteredVehicles": "My Registered Vehicles",
+    "recentInspections": "Recent Inspections",
+    "noRegisteredVehicle": "No Registered Vehicle",
+    "noRecentInspection": "No Recent Inspection"
+  },
+  "inspectionInProgress": {
+    "title": "Inspections in Progress",
+    "subtitle": "Please select inspection below to continue. Once you submit, we will review and issue certificate",
+    "discardConfirmation": "Are You Sure Want To Discard Your Inspection?",
+    "noInspection": "No Inspection in progress",
+    "startInspection": "+ Start Inspection",
+    "orGoBackTo": "Or Go back to",
+    "page": "page"
+  },
+  "inspectionReviewed": {
+    "title": "Inspection Reviewed",
+    "filter": "Filter",
+    "noData": "No Inspections available"
+  },
+  "filter": {
+    "title": "Filter",
+    "apply": "Apply",
+    "clear": "Clear",
+    "noStatuses": "No statuses available"
+  },
+  "statuses": {
+    "reviewed": "Reviewed",
+    "in_review": "In Review",
+    "ready_for_review": "Ready For Review",
+    "in_progress": "In Progress"
+  },
+  "results": {
+    "pending": "Pending",
+    "pass": "Passed",
+    "fail": "Failed"
+  },
+  "inspectionCard": {
+    "licensePlate": "License Plate",
+    "dateCreated": "Date Created",
+    "damageDetected": "Damage Detected",
+    "noDamageDetected": "No Damage Detected",
+    "inspectionDetails": "Inspection Details",
+    "idLabel": "ID",
+    "byLabel": "By"
+  },
+  "inspectionDetail": {
+    "title": "Inspection Details",
+    "finalStatus": "Final Status",
+    "noRemarks": "No Remarks"
+  },
+  "tabs": {
+    "home": "Home",
+    "reports": "Reports",
+    "inspection": "Inspection",
+    "myTrips": "My Trips",
+    "profile": "Profile"
+  },
+  "newInspection": {
+    "title": "New Inspection",
+    "header": "Please complete inspection items within each category below",
+    "discardItem": "Are you sure you want to delete this inspection item?",
+    "interiorItems": "Interior items",
+    "exteriorItems": "Exterior items",
+    "tires": "Tires"
+  },
+  "errors": {
+    "duplicateImage": {
+      "title": "Duplicate Image Detected",
+      "message": "An image/video for this category was uploaded previously and already exists in our database. please refresh your page to see the previously uploaded image."
     },
-    "signIn": {
-        "title": "Sign in",
-        "namePlaceholder": "John Doe",
-        "forgotPassword": "Forgot Password"
+    "inspectionExpired": {
+      "title": "",
+      "message": "The inspection has expired. Please start a new Inspection."
     },
-    "forgotPassword": {
-        "title": "Forgot Password",
-        "subtitle": "Type Email for password reset",
-        "knowPassword": "Know Your Password?",
-        "loginLink": "Login"
+    "uploadFailed": {
+      "title": "Upload Failed",
+      "message": "Please check your internet connection and try again. If issues persist, reduce file size or switch networks. Contact support if needed. Apologies for any inconvenience."
     },
-    "resetPassword": {
-        "title": "Reset Password",
-        "subtitle": "Please check your email for unique pin and type below",
-        "verificationCodePlaceholder": "Verification Code"
+    "licensePlateInUse": "The currently selected license plate is under inspection by another user. Please select a different vehicle.",
+    "licensePlateMismatch": {
+      "title": "Discrepancy Detected",
+      "message": "Mismatch in License Plate Number detected. Please retake the photo of the license plate of the vehicle selected"
     },
-    "home": {
-        "greeting": "Hi, {{name}}",
-        "subtitle": "Let's check your vehicle today",
-        "stats": {
-            "totalVehicles": "Total\nVehicles",
-            "inProgressInspections": "In Progress\nInspections",
-            "submittedInspections": "Submitted\nInspections",
-            "totalInspections": "Total\nInspections"
-        },
-        "myRegisteredVehicles": "My Registered Vehicles",
-        "recentInspections": "Recent Inspections",
-        "noRegisteredVehicle": "No Registered Vehicle",
-        "noRecentInspection": "No Recent Inspection"
-    },
-    "inspectionInProgress": {
-        "title": "Inspections in Progress",
-        "subtitle": "Please select inspection below to continue. Once you submit, we will review and issue certificate",
-        "discardConfirmation": "Are You Sure Want To Discard Your Inspection?",
-        "noInspection": "No Inspection in progress",
-        "startInspection": "+ Start Inspection",
-        "orGoBackTo": "Or Go back to",
-        "page": "page"
-    },
-    "inspectionReviewed": {
-        "title": "Inspection Reviewed",
-        "filter": "Filter",
-        "noData": "No Inspections available"
-    },
-    "filter": {
-        "title": "Filter",
-        "apply": "Apply",
-        "clear": "Clear",
-        "noStatuses": "No statuses available"
-    },
-    "statuses": {
-        "reviewed": "Reviewed",
-        "in_review": "In Review",
-        "ready_for_review": "Ready For Review",
-        "in_progress": "In Progress"
-    },
-    "results": {
-        "pending": "Pending",
-        "pass": "Passed",
-        "fail": "Failed"
-    },
-    "inspectionCard": {
-        "licensePlate": "License Plate",
-        "dateCreated": "Date Created",
-        "damageDetected": "Damage Detected",
-        "noDamageDetected": "No Damage Detected",
-        "inspectionDetails": "Inspection Details",
-        "idLabel": "ID",
-        "byLabel": "By"
-    },
-    "inspectionDetail": {
-        "title": "Inspection Details",
-        "finalStatus": "Final Status",
-        "noRemarks": "No Remarks"
-    },
-    "tabs": {
-        "home": "Home",
-        "reports": "Reports",
-        "inspection": "Inspection",
-        "myTrips": "My Trips",
-        "profile": "Profile"
-    },
-    "newInspection": {
-        "title": "New Inspection",
-        "header": "Please complete inspection items within each category below",
-        "discardItem": "Are you sure you want to delete this inspection item?",
-        "interiorItems": "Interior items",
-        "exteriorItems": "Exterior items",
-        "tires": "Tires"
-    },
-    "errors": {
-        "duplicateImage": {
-            "title": "Duplicate Image Detected",
-            "message": "An image/video for this category was uploaded previously and already exists in our database. please refresh your page to see the previously uploaded image."
-        },
-        "inspectionExpired": {
-            "title": "",
-            "message": "The inspection has expired. Please start a new Inspection."
-        },
-        "uploadFailed": {
-            "title": "Upload Failed",
-            "message": "Please check your internet connection and try again. If issues persist, reduce file size or switch networks. Contact support if needed. Apologies for any inconvenience."
-        },
-        "licensePlateInUse": "The currently selected license plate is under inspection by another user. Please select a different vehicle.",
-        "licensePlateMismatch": {
-            "title": "Discrepancy Detected",
-            "message": "Mismatch in License Plate Number detected. Please retake the photo of the license plate of the vehicle selected"
-        },
-        "darkImageError": {
-            "title": "Image Quality Issue",
-            "message": "The uploaded image appears too dark. Please try uploading a clearer image with better lighting."
-        }
-    },
-    "annotateImageDetails": {
-        "title": "Exterior Front",
-        "description": "To annotate an image of a vehicle's, you can click directly on the area of interest within the image. Upon clicking, a damage icon will appear at the selected spot, allowing you to visually mark and highlight the specific location of any damage.",
-        "instruction": "Do you want to Annotate\n",
-        "annotateText": "Annotate",
-        "skipText": "Skip"
-    },
-    "annotateImage": {
-        "title": "Exterior Front",
-        "description": "To annotate an image of a vehicle's front, you can click directly on the area of interest within the image. Upon clicking, a damage icon will appear at the selected spot, allowing you to visually mark and highlight the specific location of any damage.",
-        "instruction": "Do you want to Annotate\n",
-        "annotateText": "Submit",
-        "cancelText": "Cancel"
-    },
-    "damageTypes": {
-        "minor": "Minor",
-        "major": "Major",
-        "severe": "Severe"
-    },
-    "drawer": {
-        "home": "HOME",
-        "thingsYouWillRequire": "Things you will require",
-        "logout": "Logout",
-        "dvirc": "DVIRC"
-    },
-    "session": {
-        "expired": {
-            "title": "Session Expired",
-            "message": "Your session has expired. Please log in again to continue.",
-            "button": "OK"
-        }
-    },
-    "appUpdate": {
-        "title": "Version Update",
-        "message": "A new version of the app is available. Please update to continue using the app.",
-        "button": "UPDATE"
-    },
-    "exitApp": {
-        "title": "Hold on!",
-        "message": "Are you sure you want to exit app?",
-        "button": {
-            "yes": "Yes",
-            "cancel": "Cancel"
-        }
-    },
-    "delete": {
-        "success": "Deleted Successfully.",
-        "failed": "Failed to delete. Please try again."
-    },
-    "dvir": {
-        "checklist": "Check List Items",
-        "tires": "Tires",
-        "captureFrames": "Capture Frames",
-        "comments": "Comments",
-        "addComments": "Add your comments here",
-        "captureImage": "Capture image",
-        "exteriorFront": "Exterior Front",
-        "exteriorRear": "Exterior Rear",
-        "interiorFrontTitle": "Full Front Interior (dash, steering wheel, Seat)",
-        "interiorRearTitle": "Rear Interior (back seats, floor) / Truck Bed",
-        "frontInterior": "Front Interior",
-        "rearInterior": "Rear Interior",
-        "tire": "Tire",
-        "dashBoardView": "Please take a photo with clear view dashboard",
-        "rearInteriorView": "Please take a photo with clear view of the rear interior",
-        "tireView": "Please take a photo with clear view of the tire",
-        "maxMediaError": "You can add a maximum of 5 media files",
-        "uploadVideo": "Upload Video",
-        "uploadImage": "Upload Image",
-        "uploadingMedia": "Please wait a while the {{media}} is being uploaded",
-        "tdrf": "Tread Depth RF (TDRF)",
-        "tdrr": "Tread Depth RR (TDRR)",
-        "tdlf": "Tread Depth LF (TDLF)",
-        "tdlr": "Tread Depth LR (TDLR)",
-        "tdspare": "Tread Depth Spare (TDSPARE)",
-        "brakeComponents": "Brake Components (photo of drums/rotors/lines)",
-        "status": {
-            "good": "Good",
-            "repair": "Repair",
-            "replace": "Replace"
-        }
-    },
-    "vehicleInfo": {
-        "title": "Vehicle Information",
-        "subtitle": "Please provide the vehicle information below to begin your inspection. All fields are required to ensure accurate compliance.",
-        "licensePlateLabel": "Truck ID/License Plate",
-        "licensePlatePlaceholder": "Enter Truck ID/License Plate",
-        "mileageLabel": "Mileage",
-        "mileagePlaceholder": "Enter Mileage",
-        "vinLabel": "VIN",
-        "vinPlaceholder": "Enter VIN",
-        "driverNameLabel": "Driver Name",
-        "dateLabel": "Date",
-        "vehicleTypeLabel": "Vehicle Type",
-        "inspectionTypeLabel": "Inspection Type",
-        "inspectionTypePlaceholder": "Inspection Type",
-        "clearAll": "Clear all",
-        "next": "Next",
-        "errors": {
-            "licensePlateUndetected": "Reading undetected. Please input license plate number manually",
-            "licensePlateRequired": "License plate number is required",
-            "mileageUndetected": "Reading undetected. Please input mileage manually",
-            "mileageRequired": "Mileage is required",
-            "mileagePositive": "Mileage must be a positive number",
-            "vinUndetected": "Reading undetected. Please input VIN manually",
-            "vinRequired": "VIN is required",
-            "vinLength": "VIN must be 17 characters long",
-            "inspectionTypeRequired": "Inspection Type is required",
-            "vehicleTypeRequired": "Please select a vehicle type",
-            "driverNameRequired": "Driver name is required",
-            "dateRequired": "Date is required"
-        },
-        "vehicleTypes": {
-            "van": "VAN",
-            "truck": "TRUCK",
-            "sedan": "SEDAN",
-            "other": "OTHER"
-        },
-        "inspectionTypes": {
-            "regular": "Regular",
-            "dvir": "DVIR"
-        },
-        "camera": {
-            "takePhotoVin": "Please take a photo \n of the VIN",
-            "waitVinUpload": "Please wait a while the VIN is being uploaded"
-        }
-    },
-    "vehicleTypeModal": {
-        "title": "Select Vehicle Type",
-        "description": "Please choose the type of vehicle for this inspection."
-    },
-    "profile": {
-        "title": "User Profile",
-        "firstNameLabel": "First Name",
-        "firstNamePlaceholder": "Enter First Name",
-        "lastNameLabel": "Last Name",
-        "lastNamePlaceholder": "Enter Last Name",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Enter Email",
-        "phoneLabel": "Phone",
-        "phonePlaceholder": "Enter Phone",
-        "updateProfileButton": "Update Profile",
-        "profileUpdatedToast": "Profile Updated",
-        "errors": {
-            "firstNameRequired": "First name is required",
-            "lastNameRequired": "Last name is required",
-            "emailRequired": "Email is required",
-            "invalidEmail": "Invalid email format",
-            "phoneRequired": "Phone number is required",
-            "phoneDigits": "Phone number must be between 10–15 digits"
-        }
-    },
-    "annotation": {
-        "title": "Exterior Front",
-        "description": "To annotate an image of a vehicle's, you can click directly on the area of interest within the image. Upon clicking, a damage icon will appear at the selected spot, allowing you to visually mark and highlight the specific location of any damage.",
-        "instruction": "Do you want to Annotate\n",
-        "annotate": "Annotate",
-        "skip": "Skip",
-        "submit": "Submit",
-        "cancel": "Cancel",
-        "severityLevel": "Identify Damage Severity Level",
-        "addNotes": "Add Notes",
-        "notesPlaceholder": "Add your notes here",
-        "damageType": {
-            "minor": "Minor",
-            "major": "Major",
-            "severe": "Severe"
-        },
-        "alertMessage": "Please highlight the damage and select a severity level to proceed. Both are required.",
-        "uploading": "Uploading",
-        "finalizingUpload": "Finalizing Upload",
-        "imageQuestion": "image?"
-    },
-    "interiorItems": {
-        "captureImage": "Capture Image",
-        "captureNow": "Capture Now",
-        "driverSide": {
-            "title": "Interior Driver Side",
-            "instruction": "Please take a photo of the interior of the vehicle with left driver side door open with clear view of the following items:",
-            "details": {
-                "seatBelt": "Driver seat belt buckled",
-                "rearview": "Interior rearview mirror",
-                "brakePads": "Brake pads"
-            }
-        },
-        "passengerSide": {
-            "title": "Interior Passenger Side",
-            "instruction": "Please take a photo of the interior of the vehicle with right passenger side door open with clear view of the following interior items:",
-            "details": {
-                "seatBelt": "Passenger seat belt buckled"
-            }
-        }
-    },
-    "carVerification": {
-        "licensePlate": {
-            "title": "License Plate",
-            "instruction": "Please take a photo of the License plate on the vehicle",
-            "captureNow": "Capture Now"
-        },
-        "odometer": {
-            "title": "Odometer",
-            "instruction": "Please take a photo of the odometer clearly showing the mileage on the vehicle",
-            "captureNow": "Capture Now"
-        },
-        "uploadImage": "Upload Image"
-    },
-    "collapsedCard": {
-        "uploadInstructions": "For each sub-category upload up to 3 images\n(1 required, 2 optional)"
-    },
-    "exteriorItems": {
-        "captureImage": "Capture Image",
-        "captureNow": "Capture Now",
-        "front": {
-            "title": "Exterior Front",
-            "instruction": "Please upload a photo clearly showing the front of the vehicle"
-        },
-        "rear": {
-            "title": "Exterior Rear",
-            "instruction": "Please upload a photo clearly showing the rear of the vehicle "
-        },
-        "left": {
-            "title": "Exterior Left",
-            "instruction": "Please take a photo clearly capturing the entire exterior left side of the vehicle"
-        },
-        "right": {
-            "title": "Exterior Right",
-            "instruction": "Please take a photo clearly capturing the entire exterior right side of the vehicle"
-        },
-        "frontLeftCorner": {
-            "title": "Front Left Corner",
-            "instruction": "Please take a photo from the front left corner of the vehicle clearly capturing the left headlight, driver door and roof on the exterior left side of the vehicle"
-        },
-        "frontRightCorner": {
-            "title": "Front Right Corner",
-            "instruction": "Please take a photo from the front right corner of the vehicle clearly capturing the right headlight, passenger door and roof on the exterior right side of the vehicle"
-        },
-        "rearLeftCorner": {
-            "title": "Rear Left Corner",
-            "instruction": "Please take a photo from the rear left corner of the vehicle clearly capturing the left tail light, rear door and roof on the exterior left side of the vehicle"
-        },
-        "rearRightCorner": {
-            "title": "Rear Right Corner",
-            "instruction": "Please take a photo from the rear right corner of the vehicle clearly capturing the right tail light, rear door and roof on the exterior right side of the vehicle"
-        },
-        "insideCargoRoof": {
-            "title": "Inside Cargo Roof",
-            "instruction": "Please upload a photo clearly showing the inside cargo roof of the vehicle"
-        }
-    },
-    "tiresItems": {
-        "captureImage": "Capture Image",
-        "captureNow": "Capture Now",
-        "instruction": "Please place a penny on the tire thread and take a photo capturing following items:",
-        "subHeading": "Place Lincoln’s heads on the penny upside down and facing the camera",
-        "leftFront": "Left Front Tire",
-        "leftRear": "Left Rear Tire",
-        "rightFront": "Right Front Tire",
-        "rightRear": "Right Rear Tire"
-    },
-    "commentBox": {
-        "title": "Add a Comment",
-        "description": "Please provide your comments or feedback below",
-        "placeHolder": "Type your comment or feedback here"
-    },
-    "commentButton": {
-        "text": "+ Add Comment",
-        "optional": "(Optional)"
-    },
-    "confirmVehicleDetail": {
-        "title": "Vehicle Detail",
-        "description": "System was unable to detect the license plate number. Please type the license plate number below:",
-        "buttonText": "Confirm",
-        "placeHolder": "Enter License Plate Number"
-    },
-    "expiryInspection": {
-        "description": "The Inspection Has Expired. Please Start A New Inspection.",
-        "confirmButton": "New Inspection",
-        "cancelButton": "Exit"
-    },
-    "mileageInput": {
-        "title": "Mileage Input",
-        "description": "System was unable to detect the mileage. Please type the mileage below:",
-        "placeHolder": "Enter Mileage",
-        "errors": {
-            "lessThanPrevious": "Current reading can not be less than previous reading"
-        }
-    },
-    "categories": {
-        "exterior_front": "Exterior Front",
-        "exterior_rear": "Exterior Rear",
-        "exterior_left": "Exterior Left",
-        "exterior_right": "Exterior Right",
-        "front_left_corner": "Front Left Corner",
-        "front_right_corner": "Front Right Corner",
-        "rear_left_corner": "Rear Left Corner",
-        "rear_right_corner": "Rear Right Corner",
-        "inside_cargo_roof": "Inside Cargo Roof",
-        "interior_driver_side": "Interior Driver Side",
-        "interior_passenger_side": "Interior Passenger Side",
-        "license_plate_number": "License Plate Number",
-        "odometer": "Odometer",
-        "left_front_tire": "Left Front Tire",
-        "left_rear_tire": "Left Rear Tire",
-        "right_front_tire": "Right Front Tire",
-        "right_rear_tire": "Right Rear Tire",
-        "front_interior": "Front Interior",
-        "rear_interior": "Rear Interior",
-        "tire": "Tire",
-        "tdrf": "Tread Depth RF (TDRF)",
-        "tdrr": "Tread Depth RR (TDRR)",
-        "tdlf": "Tread Depth LF (TDLF)",
-        "tdlr": "Tread Depth LR (TDLR)",
-        "tdspare": "Tread Depth Spare (TDSPARE)",
-        "brake_components": "Brake Components"
+    "darkImageError": {
+      "title": "Image Quality Issue",
+      "message": "The uploaded image appears too dark. Please try uploading a clearer image with better lighting."
     }
+  },
+  "annotateImageDetails": {
+    "title": "Exterior Front",
+    "description": "To annotate an image of a vehicle's, you can click directly on the area of interest within the image. Upon clicking, a damage icon will appear at the selected spot, allowing you to visually mark and highlight the specific location of any damage.",
+    "instruction": "Do you want to Annotate\n",
+    "annotateText": "Annotate",
+    "skipText": "Skip"
+  },
+  "annotateImage": {
+    "title": "Exterior Front",
+    "description": "To annotate an image of a vehicle's front, you can click directly on the area of interest within the image. Upon clicking, a damage icon will appear at the selected spot, allowing you to visually mark and highlight the specific location of any damage.",
+    "instruction": "Do you want to Annotate\n",
+    "annotateText": "Submit",
+    "cancelText": "Cancel"
+  },
+  "damageTypes": {
+    "minor": "Minor",
+    "major": "Major",
+    "severe": "Severe"
+  },
+  "drawer": {
+    "home": "HOME",
+    "thingsYouWillRequire": "Things you will require",
+    "logout": "Logout",
+    "dvirc": "DVIRC"
+  },
+  "session": {
+    "expired": {
+      "title": "Session Expired",
+      "message": "Your session has expired. Please log in again to continue.",
+      "button": "OK"
+    }
+  },
+  "appUpdate": {
+    "title": "Version Update",
+    "message": "A new version of the app is available. Please update to continue using the app.",
+    "button": "UPDATE"
+  },
+  "exitApp": {
+    "title": "Hold on!",
+    "message": "Are you sure you want to exit app?",
+    "button": {
+      "yes": "Yes",
+      "cancel": "Cancel"
+    }
+  },
+  "delete": {
+    "success": "Deleted Successfully.",
+    "failed": "Failed to delete. Please try again."
+  },
+  "dvir": {
+    "checklist": "Check List Items",
+    "tires": "Tires",
+    "captureFrames": "Capture Frames",
+    "comments": "Comments",
+    "addComments": "Add your comments here",
+    "captureImage": "Capture image",
+    "exteriorFront": "Exterior Front",
+    "exteriorRear": "Exterior Rear",
+    "interiorFrontTitle": "Full Front Interior (dash, steering wheel, Seat)",
+    "interiorRearTitle": "Rear Interior (back seats, floor) / Truck Bed",
+    "frontInterior": "Front Interior",
+    "rearInterior": "Rear Interior",
+    "tire": "Tire",
+    "dashBoardView": "Please take a photo with clear view dashboard",
+    "rearInteriorView": "Please take a photo with clear view of the rear interior",
+    "tireView": "Please take a photo with clear view of the tire",
+    "maxMediaError": "You can add a maximum of 5 media files",
+    "uploadVideo": "Upload Video",
+    "uploadImage": "Upload Image",
+    "uploadingMedia": "Please wait a while the {{media}} is being uploaded",
+    "tdrf": "Tread Depth RF (TDRF)",
+    "tdrr": "Tread Depth RR (TDRR)",
+    "tdlf": "Tread Depth LF (TDLF)",
+    "tdlr": "Tread Depth LR (TDLR)",
+    "tdspare": "Tread Depth Spare (TDSPARE)",
+    "brakeComponents": "Brake Components (photo of drums/rotors/lines)",
+    "status": {
+      "good": "Good",
+      "repair": "Repair",
+      "replace": "Replace"
+    }
+  },
+  "vehicleInfo": {
+    "title": "Vehicle Information",
+    "subtitle": "Please provide the vehicle information below to begin your inspection. All fields are required to ensure accurate compliance.",
+    "licensePlateLabel": "Truck ID/License Plate",
+    "licensePlatePlaceholder": "Enter Truck ID/License Plate",
+    "mileageLabel": "Mileage",
+    "mileagePlaceholder": "Enter Mileage",
+    "vinLabel": "VIN",
+    "vinPlaceholder": "Enter VIN",
+    "driverNameLabel": "Driver Name",
+    "dateLabel": "Date",
+    "vehicleTypeLabel": "Vehicle Type",
+    "inspectionTypeLabel": "Inspection Type",
+    "inspectionTypePlaceholder": "Inspection Type",
+    "clearAll": "Clear all",
+    "next": "Next",
+    "errors": {
+      "licensePlateUndetected": "Reading undetected. Please input license plate number manually",
+      "licensePlateRequired": "License plate number is required",
+      "mileageUndetected": "Reading undetected. Please input mileage manually",
+      "mileageRequired": "Mileage is required",
+      "mileagePositive": "Mileage must be a positive number",
+      "vinUndetected": "Reading undetected. Please input VIN manually",
+      "vinRequired": "VIN is required",
+      "vinLength": "VIN must be 17 characters long",
+      "inspectionTypeRequired": "Inspection Type is required",
+      "vehicleTypeRequired": "Please select a vehicle type",
+      "driverNameRequired": "Driver name is required",
+      "dateRequired": "Date is required"
+    },
+    "vehicleTypes": {
+      "van": "VAN",
+      "truck": "TRUCK",
+      "sedan": "SEDAN",
+      "other": "OTHER"
+    },
+    "inspectionTypes": {
+      "regular": "Regular",
+      "dvir": "DVIR"
+    },
+    "camera": {
+      "takePhotoVin": "Please take a photo \n of the VIN",
+      "waitVinUpload": "Please wait a while the VIN is being uploaded"
+    }
+  },
+  "vehicleTypeModal": {
+    "title": "Select Vehicle Type",
+    "description": "Please choose the type of vehicle for this inspection."
+  },
+  "profile": {
+    "title": "User Profile",
+    "firstNameLabel": "First Name",
+    "firstNamePlaceholder": "Enter First Name",
+    "lastNameLabel": "Last Name",
+    "lastNamePlaceholder": "Enter Last Name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter Email",
+    "phoneLabel": "Phone",
+    "phonePlaceholder": "Enter Phone",
+    "languageLabel": "Language",
+    "languagePlaceholder": "Select Language",
+    "updateProfileButton": "Update Profile",
+    "profileUpdatedToast": "Profile Updated",
+    "languageChangedToast": "Language changed successfully",
+    "errors": {
+      "firstNameRequired": "First name is required",
+      "lastNameRequired": "Last name is required",
+      "emailRequired": "Email is required",
+      "invalidEmail": "Invalid email format",
+      "phoneRequired": "Phone number is required",
+      "phoneDigits": "Phone number must be between 10–15 digits"
+    }
+  },
+  "languages": {
+    "en": "English",
+    "ro": "Romanian",
+    "pl": "Polish",
+    "bg": "Bulgarian",
+    "tr": "Turkish"
+  },
+  "annotation": {
+    "title": "Exterior Front",
+    "description": "To annotate an image of a vehicle's, you can click directly on the area of interest within the image. Upon clicking, a damage icon will appear at the selected spot, allowing you to visually mark and highlight the specific location of any damage.",
+    "instruction": "Do you want to Annotate\n",
+    "annotate": "Annotate",
+    "skip": "Skip",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "severityLevel": "Identify Damage Severity Level",
+    "addNotes": "Add Notes",
+    "notesPlaceholder": "Add your notes here",
+    "damageType": {
+      "minor": "Minor",
+      "major": "Major",
+      "severe": "Severe"
+    },
+    "alertMessage": "Please highlight the damage and select a severity level to proceed. Both are required.",
+    "uploading": "Uploading",
+    "finalizingUpload": "Finalizing Upload",
+    "imageQuestion": "image?"
+  },
+  "interiorItems": {
+    "captureImage": "Capture Image",
+    "captureNow": "Capture Now",
+    "driverSide": {
+      "title": "Interior Driver Side",
+      "instruction": "Please take a photo of the interior of the vehicle with left driver side door open with clear view of the following items:",
+      "details": {
+        "seatBelt": "Driver seat belt buckled",
+        "rearview": "Interior rearview mirror",
+        "brakePads": "Brake pads"
+      }
+    },
+    "passengerSide": {
+      "title": "Interior Passenger Side",
+      "instruction": "Please take a photo of the interior of the vehicle with right passenger side door open with clear view of the following interior items:",
+      "details": {
+        "seatBelt": "Passenger seat belt buckled"
+      }
+    }
+  },
+  "carVerification": {
+    "licensePlate": {
+      "title": "License Plate",
+      "instruction": "Please take a photo of the License plate on the vehicle",
+      "captureNow": "Capture Now"
+    },
+    "odometer": {
+      "title": "Odometer",
+      "instruction": "Please take a photo of the odometer clearly showing the mileage on the vehicle",
+      "captureNow": "Capture Now"
+    },
+    "uploadImage": "Upload Image"
+  },
+  "collapsedCard": {
+    "uploadInstructions": "For each sub-category upload up to 3 images\n(1 required, 2 optional)"
+  },
+  "exteriorItems": {
+    "captureImage": "Capture Image",
+    "captureNow": "Capture Now",
+    "front": {
+      "title": "Exterior Front",
+      "instruction": "Please upload a photo clearly showing the front of the vehicle"
+    },
+    "rear": {
+      "title": "Exterior Rear",
+      "instruction": "Please upload a photo clearly showing the rear of the vehicle "
+    },
+    "left": {
+      "title": "Exterior Left",
+      "instruction": "Please take a photo clearly capturing the entire exterior left side of the vehicle"
+    },
+    "right": {
+      "title": "Exterior Right",
+      "instruction": "Please take a photo clearly capturing the entire exterior right side of the vehicle"
+    },
+    "frontLeftCorner": {
+      "title": "Front Left Corner",
+      "instruction": "Please take a photo from the front left corner of the vehicle clearly capturing the left headlight, driver door and roof on the exterior left side of the vehicle"
+    },
+    "frontRightCorner": {
+      "title": "Front Right Corner",
+      "instruction": "Please take a photo from the front right corner of the vehicle clearly capturing the right headlight, passenger door and roof on the exterior right side of the vehicle"
+    },
+    "rearLeftCorner": {
+      "title": "Rear Left Corner",
+      "instruction": "Please take a photo from the rear left corner of the vehicle clearly capturing the left tail light, rear door and roof on the exterior left side of the vehicle"
+    },
+    "rearRightCorner": {
+      "title": "Rear Right Corner",
+      "instruction": "Please take a photo from the rear right corner of the vehicle clearly capturing the right tail light, rear door and roof on the exterior right side of the vehicle"
+    },
+    "insideCargoRoof": {
+      "title": "Inside Cargo Roof",
+      "instruction": "Please upload a photo clearly showing the inside cargo roof of the vehicle"
+    }
+  },
+  "tiresItems": {
+    "captureImage": "Capture Image",
+    "captureNow": "Capture Now",
+    "instruction": "Please place a penny on the tire thread and take a photo capturing following items:",
+    "subHeading": "Place Lincoln’s heads on the penny upside down and facing the camera",
+    "leftFront": "Left Front Tire",
+    "leftRear": "Left Rear Tire",
+    "rightFront": "Right Front Tire",
+    "rightRear": "Right Rear Tire"
+  },
+  "commentBox": {
+    "title": "Add a Comment",
+    "description": "Please provide your comments or feedback below",
+    "placeHolder": "Type your comment or feedback here"
+  },
+  "commentButton": {
+    "text": "+ Add Comment",
+    "optional": "(Optional)"
+  },
+  "confirmVehicleDetail": {
+    "title": "Vehicle Detail",
+    "description": "System was unable to detect the license plate number. Please type the license plate number below:",
+    "buttonText": "Confirm",
+    "placeHolder": "Enter License Plate Number"
+  },
+  "expiryInspection": {
+    "description": "The Inspection Has Expired. Please Start A New Inspection.",
+    "confirmButton": "New Inspection",
+    "cancelButton": "Exit"
+  },
+  "mileageInput": {
+    "title": "Mileage Input",
+    "description": "System was unable to detect the mileage. Please type the mileage below:",
+    "placeHolder": "Enter Mileage",
+    "errors": {
+      "lessThanPrevious": "Current reading can not be less than previous reading"
+    }
+  },
+  "categories": {
+    "exterior_front": "Exterior Front",
+    "exterior_rear": "Exterior Rear",
+    "exterior_left": "Exterior Left",
+    "exterior_right": "Exterior Right",
+    "front_left_corner": "Front Left Corner",
+    "front_right_corner": "Front Right Corner",
+    "rear_left_corner": "Rear Left Corner",
+    "rear_right_corner": "Rear Right Corner",
+    "inside_cargo_roof": "Inside Cargo Roof",
+    "interior_driver_side": "Interior Driver Side",
+    "interior_passenger_side": "Interior Passenger Side",
+    "license_plate_number": "License Plate Number",
+    "odometer": "Odometer",
+    "left_front_tire": "Left Front Tire",
+    "left_rear_tire": "Left Rear Tire",
+    "right_front_tire": "Right Front Tire",
+    "right_rear_tire": "Right Rear Tire",
+    "front_interior": "Front Interior",
+    "rear_interior": "Rear Interior",
+    "tire": "Tire",
+    "tdrf": "Tread Depth RF (TDRF)",
+    "tdrr": "Tread Depth RR (TDRR)",
+    "tdlf": "Tread Depth LF (TDLF)",
+    "tdlr": "Tread Depth LR (TDLR)",
+    "tdspare": "Tread Depth Spare (TDSPARE)",
+    "brake_components": "Brake Components"
+  },
+  "completedInspection": {
+    "thankYou": "Thank you for using",
+    "message": "You may now exit our app. Our representatives will reach out to you if we need any further help",
+    "homeButton": "Home"
+  }
 }

@@ -4,7 +4,7 @@ import {Landscape, Portrait} from '../Assets/Icons';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
-import i18n from './i18n';
+import i18n from 'i18next';
 
 var relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);

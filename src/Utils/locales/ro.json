@@ -1,0 +1,477 @@
+{
+  "common": {
+    "signIn": "Autentificare",
+    "email": "Email",
+    "submit": "Trimite",
+    "password": "Parolă",
+    "confirmPassword": "Confirmă parola",
+    "reset": "Resetează",
+    "loading": "Se încarcă...",
+    "home": "Acasă",
+    "yes": "Da",
+    "no": "Nu",
+    "licensePlateNo": "Nr. înmatriculare",
+    "dateCreated": "Data creării",
+    "continue": "Continuă",
+    "retry": "Reîncearcă",
+    "next": "Următorul",
+    "comingSoon": "În curând!",
+    "ok": "Ok",
+    "somethingWentWrong": "Ceva nu a mers bine. Te rugăm să încerci din nou.",
+    "addImage": "Adaugă imagine",
+    "captureImage": "Capturează imagine",
+    "captureVideo": "Capturează video",
+    "image": "imagine",
+    "cancel": "Anulează",
+    "required": "Obligatoriu",
+    "optional": "Opțional",
+    "message": "Mesaj"
+  },
+  "welcome": {
+    "title": "Bun venit la",
+    "subtitle": "Inspecții Virtuale"
+  },
+  "signIn": {
+    "title": "Autentificare",
+    "namePlaceholder": "Ion Popescu",
+    "forgotPassword": "Ai uitat parola?"
+  },
+  "forgotPassword": {
+    "title": "Ai uitat parola",
+    "subtitle": "Introdu adresa de email pentru resetarea parolei",
+    "knowPassword": "Îți știi parola?",
+    "loginLink": "Logare"
+  },
+  "resetPassword": {
+    "title": "Resetare parolă",
+    "subtitle": "Te rugăm să verifici emailul pentru codul unic și să îl introduci mai jos",
+    "verificationCodePlaceholder": "Cod de verificare"
+  },
+  "home": {
+    "greeting": "Salut, {{name}}",
+    "subtitle": "Hai să verificăm vehiculul tău astăzi",
+    "stats": {
+      "totalVehicles": "Total\nVehicule",
+      "inProgressInspections": "Inspecții\nÎn Curs",
+      "submittedInspections": "Inspecții\nTrimise",
+      "totalInspections": "Total\nInspecții"
+    },
+    "myRegisteredVehicles": "Vehiculele mele înregistrate",
+    "recentInspections": "Inspecții recente",
+    "noRegisteredVehicle": "Niciun vehicul înregistrat",
+    "noRecentInspection": "Nicio inspecție recentă"
+  },
+  "inspectionInProgress": {
+    "title": "Inspecții în curs",
+    "subtitle": "Selectează o inspecție de mai jos pentru a continua. După trimitere, o vom revizui și vom emite certificatul",
+    "discardConfirmation": "Ești sigur că vrei să renunți la inspecție?",
+    "noInspection": "Nicio inspecție în curs",
+    "startInspection": "+ Începe inspecție",
+    "orGoBackTo": "Sau întoarce-te la",
+    "page": "pagină"
+  },
+  "inspectionReviewed": {
+    "title": "Inspecție Revizuită",
+    "filter": "Filtru",
+    "noData": "Nicio inspecție disponibilă"
+  },
+  "filter": {
+    "title": "Filtru",
+    "apply": "Aplică",
+    "clear": "Șterge",
+    "noStatuses": "Niciun status disponibil"
+  },
+  "statuses": {
+    "reviewed": "Revizuit",
+    "in_review": "În revizuire",
+    "ready_for_review": "Gata de revizuire",
+    "in_progress": "În curs"
+  },
+  "results": {
+    "pending": "În așteptare",
+    "pass": "Admis",
+    "fail": "Respins"
+  },
+  "inspectionCard": {
+    "licensePlate": "Nr. înmatriculare",
+    "dateCreated": "Data creării",
+    "damageDetected": "Daune detectate",
+    "noDamageDetected": "Fără daune detectate",
+    "inspectionDetails": "Detalii inspecție",
+    "idLabel": "ID",
+    "byLabel": "De"
+  },
+  "inspectionDetail": {
+    "title": "Detalii inspecție",
+    "finalStatus": "Status final",
+    "noRemarks": "Fără observații"
+  },
+  "tabs": {
+    "home": "Acasă",
+    "reports": "Rapoarte",
+    "inspection": "Inspecție",
+    "myTrips": "Călătoriile mele",
+    "profile": "Profil"
+  },
+  "newInspection": {
+    "title": "Inspecție nouă",
+    "header": "Te rugăm să completezi elementele de inspecție din fiecare categorie de mai jos",
+    "discardItem": "Ești sigur că vrei să ștergi acest element de inspecție?",
+    "interiorItems": "Elemente interior",
+    "exteriorItems": "Elemente exterior",
+    "tires": "Anvelope"
+  },
+  "errors": {
+    "duplicateImage": {
+      "title": "Imagine duplicată detectată",
+      "message": "O imagine/video pentru această categorie a fost încărcată anterior și există deja în baza noastră de date. Te rugăm să reîmprospătezi pagina pentru a vedea imaginea încărcată anterior."
+    },
+    "inspectionExpired": {
+      "title": "",
+      "message": "Inspecția a expirat. Te rugăm să începi o nouă inspecție."
+    },
+    "uploadFailed": {
+      "title": "Încărcare eșuată",
+      "message": "Te rugăm să verifici conexiunea la internet și să încerci din nou. Dacă problema persistă, redu dimensiunea fișierului sau schimbă rețeaua. Contactează suportul dacă este necesar. Ne cerem scuze pentru neplăceri."
+    },
+    "licensePlateInUse": "Numărul de înmatriculare selectat este în curs de inspecție de către un alt utilizator. Te rugăm să selectezi un alt vehicul.",
+    "licensePlateMismatch": {
+      "title": "Discrepanță detectată",
+      "message": "S-a detectat o nepotrivire la numărul de înmatriculare. Te rugăm să refaci fotografia numărului de înmatriculare al vehiculului selectat"
+    },
+    "darkImageError": {
+      "title": "Problemă calitate imagine",
+      "message": "Imaginea încărcată pare prea întunecată. Te rugăm să încerci să încarci o imagine mai clară, cu o iluminare mai bună."
+    }
+  },
+  "annotateImageDetails": {
+    "title": "Exterior Față",
+    "description": "Pentru a adnota o imagine a vehiculului, poți da click direct pe zona de interes din imagine. La click, o pictogramă de daună va apărea în locul selectat, permițându-ți să marchezi și să evidențiezi vizual locația specifică a oricărei daune.",
+    "instruction": "Dorești să adnotezi?\n",
+    "annotateText": "Adnotează",
+    "skipText": "Sari peste"
+  },
+  "annotateImage": {
+    "title": "Exterior Față",
+    "description": "Pentru a adnota o imagine a părții frontale a vehiculului, poți da click direct pe zona de interes din imagine. La click, o pictogramă de daună va apărea în locul selectat, permițându-ți să marchezi și să evidențiezi vizual locația specifică a oricărei daune.",
+    "instruction": "Dorești să adnotezi?\n",
+    "annotateText": "Trimite",
+    "cancelText": "Anulează"
+  },
+  "damageTypes": {
+    "minor": "Minoră",
+    "major": "Majoră",
+    "severe": "Severă"
+  },
+  "drawer": {
+    "home": "ACASĂ",
+    "thingsYouWillRequire": "Lucruri necesare",
+    "logout": "Deconectare",
+    "dvirc": "DVIRC"
+  },
+  "session": {
+    "expired": {
+      "title": "Sesiune expirată",
+      "message": "Sesiunea ta a expirat. Te rugăm să te autentifici din nou pentru a continua.",
+      "button": "OK"
+    }
+  },
+  "appUpdate": {
+    "title": "Actualizare versiune",
+    "message": "O nouă versiune a aplicației este disponibilă. Te rugăm să actualizezi pentru a continua utilizarea aplicației.",
+    "button": "ACTUALIZEAZĂ"
+  },
+  "exitApp": {
+    "title": "Așteaptă!",
+    "message": "Ești sigur că vrei să ieși din aplicație?",
+    "button": {
+      "yes": "Da",
+      "cancel": "Anulează"
+    }
+  },
+  "delete": {
+    "success": "Șters cu succes.",
+    "failed": "Ștergerea a eșuat. Te rugăm să încerci din nou."
+  },
+  "dvir": {
+    "checklist": "Elemente listă de verificare",
+    "tires": "Anvelope",
+    "captureFrames": "Cadre capturate",
+    "comments": "Comentarii",
+    "addComments": "Adaugă comentariile tale aici",
+    "captureImage": "Capturează imagine",
+    "exteriorFront": "Exterior Față",
+    "exteriorRear": "Exterior Spate",
+    "interiorFrontTitle": "Interior Față Complet (bord, volan, scaun)",
+    "interiorRearTitle": "Interior Spate (banchetă, podea) / Benă camion",
+    "frontInterior": "Interior Față",
+    "rearInterior": "Interior Spate",
+    "tire": "Anvelopă",
+    "dashBoardView": "Te rugăm să faci o poză cu o vedere clară a bordului",
+    "rearInteriorView": "Te rugăm să faci o poză cu o vedere clară a interiorului din spate",
+    "tireView": "Te rugăm să faci o poză cu o vedere clară a anvelopei",
+    "maxMediaError": "Poți adăuga maximum 5 fișiere media",
+    "uploadVideo": "Încarcă video",
+    "uploadImage": "Încarcă imagine",
+    "uploadingMedia": "Te rugăm să aștepți cât timp {{media}} se încarcă",
+    "tdrf": "Adâncime Profil DF (TDRF)",
+    "tdrr": "Adâncime Profil DS (TDRR)",
+    "tdlf": "Adâncime Profil SF (TDLF)",
+    "tdlr": "Adâncime Profil SS (TDLR)",
+    "tdspare": "Adâncime Profil Rezervă (TDSPARE)",
+    "brakeComponents": "Componente frânare (foto tamburi/rotoare/conducte)",
+    "status": {
+      "good": "Bun",
+      "repair": "Reparație",
+      "replace": "Înlocuire"
+    }
+  },
+  "vehicleInfo": {
+    "title": "Informații vehicul",
+    "subtitle": "Te rugăm să furnizezi informațiile despre vehicul de mai jos pentru a începe inspecția. Toate câmpurile sunt obligatorii pentru a asigura conformitatea exactă.",
+    "licensePlateLabel": "ID Camion/Nr. Înmatriculare",
+    "licensePlatePlaceholder": "Introdu ID Camion/Nr. Înmatriculare",
+    "mileageLabel": "Kilometraj",
+    "mileagePlaceholder": "Introdu kilometraj",
+    "vinLabel": "VIN",
+    "vinPlaceholder": "Introdu VIN",
+    "driverNameLabel": "Nume șofer",
+    "dateLabel": "Data",
+    "vehicleTypeLabel": "Tip vehicul",
+    "inspectionTypeLabel": "Tip inspecție",
+    "inspectionTypePlaceholder": "Tip inspecție",
+    "clearAll": "Șterge tot",
+    "next": "Următorul",
+    "errors": {
+      "licensePlateUndetected": "Citire nedetectată. Te rugăm să introduci manual numărul de înmatriculare",
+      "licensePlateRequired": "Numărul de înmatriculare este obligatoriu",
+      "mileageUndetected": "Citire nedetectată. Te rugăm să introduci manual kilometrajul",
+      "mileageRequired": "Kilometrajul este obligatoriu",
+      "mileagePositive": "Kilometrajul trebuie să fie un număr pozitiv",
+      "vinUndetected": "Citire nedetectată. Te rugăm să introduci manual VIN-ul",
+      "vinRequired": "VIN-ul este obligatoriu",
+      "vinLength": "VIN-ul trebuie să aibă 17 caractere",
+      "inspectionTypeRequired": "Tipul de inspecție este obligatoriu",
+      "vehicleTypeRequired": "Te rugăm să selectezi un tip de vehicul",
+      "driverNameRequired": "Numele șoferului este obligatoriu",
+      "dateRequired": "Data este obligatorie"
+    },
+    "vehicleTypes": {
+      "van": "DUBĂ",
+      "truck": "CAMION",
+      "sedan": "SEDAN",
+      "other": "ALTUL"
+    },
+    "inspectionTypes": {
+      "regular": "Regulată",
+      "dvir": "DVIR"
+    },
+    "camera": {
+      "takePhotoVin": "Te rugăm să faci o poză \n a seriei de șasiu (VIN)",
+      "waitVinUpload": "Te rugăm să aștepți cât timp VIN-ul se încarcă"
+    }
+  },
+  "vehicleTypeModal": {
+    "title": "Selectează tip vehicul",
+    "description": "Te rugăm să alegi tipul de vehicul pentru această inspecție."
+  },
+  "profile": {
+    "title": "Profil utilizator",
+    "firstNameLabel": "Prenume",
+    "firstNamePlaceholder": "Introdu prenume",
+    "lastNameLabel": "Nume de familie",
+    "lastNamePlaceholder": "Introdu nume de familie",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Introdu email",
+    "phoneLabel": "Telefon",
+    "phonePlaceholder": "Introdu telefon",
+    "languageLabel": "Limbă",
+    "languagePlaceholder": "Selectează limba",
+    "updateProfileButton": "Actualizează profil",
+    "profileUpdatedToast": "Profil actualizat",
+    "languageChangedToast": "Limba a fost schimbată cu succes",
+    "errors": {
+      "firstNameRequired": "Prenumele este obligatoriu",
+      "lastNameRequired": "Numele de familie este obligatoriu",
+      "emailRequired": "Emailul este obligatoriu",
+      "invalidEmail": "Format email invalid",
+      "phoneRequired": "Numărul de telefon este obligatoriu",
+      "phoneDigits": "Numărul de telefon trebuie să aibă între 10–15 cifre"
+    }
+  },
+  "languages": {
+    "en": "Engleză",
+    "ro": "Română",
+    "pl": "Poloneză",
+    "bg": "Bulgară",
+    "tr": "Turcă"
+  },
+  "annotation": {
+    "title": "Exterior Față",
+    "description": "Pentru a adnota o imagine a vehiculului, poți da click direct pe zona de interes din imagine. La click, o pictogramă de daună va apărea în locul selectat, permițându-ți să marchezi și să evidențiezi vizual locația specifică a oricărei daune.",
+    "instruction": "Dorești să adnotezi?\n",
+    "annotate": "Adnotează",
+    "skip": "Sari peste",
+    "submit": "Trimite",
+    "cancel": "Anulează",
+    "severityLevel": "Identifică nivelul de severitate al daunei",
+    "addNotes": "Adaugă notițe",
+    "notesPlaceholder": "Adaugă notițele tale aici",
+    "damageType": {
+      "minor": "Minoră",
+      "major": "Majoră",
+      "severe": "Severă"
+    },
+    "alertMessage": "Te rugăm să evidențiezi dauna și să selectezi un nivel de severitate pentru a continua. Ambele sunt obligatorii.",
+    "uploading": "Se încarcă",
+    "finalizingUpload": "Se finalizează încărcarea",
+    "imageQuestion": "imagine?"
+  },
+  "interiorItems": {
+    "captureImage": "Capturează imagine",
+    "captureNow": "Capturează acum",
+    "driverSide": {
+      "title": "Interior Partea Șoferului",
+      "instruction": "Te rugăm să faci o poză a interiorului vehiculului cu ușa stângă a șoferului deschisă, cu o vedere clară a următoarelor elemente:",
+      "details": {
+        "seatBelt": "Centură șofer cuplată",
+        "rearview": "Oglindă retrovizoare interioară",
+        "brakePads": "Pedală de frână"
+      }
+    },
+    "passengerSide": {
+      "title": "Interior Partea Pasagerului",
+      "instruction": "Te rugăm să faci o poză a interiorului vehiculului cu ușa dreaptă a pasagerului deschisă, cu o vedere clară a următoarelor elemente interioare:",
+      "details": {
+        "seatBelt": "Centură pasager cuplată"
+      }
+    }
+  },
+  "carVerification": {
+    "licensePlate": {
+      "title": "Număr de înmatriculare",
+      "instruction": "Te rugăm să faci o poză a numărului de înmatriculare de pe vehicul",
+      "captureNow": "Capturează acum"
+    },
+    "odometer": {
+      "title": "Odometru (Kilometraj)",
+      "instruction": "Te rugăm să faci o poză a odometrului care arată clar kilometrajul vehiculului",
+      "captureNow": "Capturează acum"
+    },
+    "uploadImage": "Încarcă imagine"
+  },
+  "collapsedCard": {
+    "uploadInstructions": "Pentru fiecare sub-categorie încarcă până la 3 imagini\n(1 obligatorie, 2 opționale)"
+  },
+  "exteriorItems": {
+    "captureImage": "Capturează imagine",
+    "captureNow": "Capturează acum",
+    "front": {
+      "title": "Exterior Față",
+      "instruction": "Te rugăm să încarci o poză care arată clar partea din față a vehiculului"
+    },
+    "rear": {
+      "title": "Exterior Spate",
+      "instruction": "Te rugăm să încarci o poză care arată clar partea din spate a vehiculului"
+    },
+    "left": {
+      "title": "Exterior Stânga",
+      "instruction": "Te rugăm să faci o poză capturând clar întreaga parte exterioară stângă a vehiculului"
+    },
+    "right": {
+      "title": "Exterior Dreapta",
+      "instruction": "Te rugăm să faci o poză capturând clar întreaga parte exterioară dreaptă a vehiculului"
+    },
+    "frontLeftCorner": {
+      "title": "Colț Față Stânga",
+      "instruction": "Te rugăm să faci o poză din colțul stânga față al vehiculului, capturând clar farul stâng, ușa șoferului și plafonul pe partea stângă exterioară a vehiculului"
+    },
+    "frontRightCorner": {
+      "title": "Colț Față Dreapta",
+      "instruction": "Te rugăm să faci o poză din colțul dreapta față al vehiculului, capturând clar farul drept, ușa pasagerului și plafonul pe partea dreaptă exterioară a vehiculului"
+    },
+    "rearLeftCorner": {
+      "title": "Colț Spate Stânga",
+      "instruction": "Te rugăm să faci o poză din colțul stânga spate al vehiculului, capturând clar stopul stâng, ușa din spate și plafonul pe partea stângă exterioară a vehiculului"
+    },
+    "rearRightCorner": {
+      "title": "Colț Spate Dreapta",
+      "instruction": "Te rugăm să faci o poză din colțul dreapta spate al vehiculului, capturând clar stopul drept, ușa din spate și plafonul pe partea dreaptă exterioară a vehiculului"
+    },
+    "insideCargoRoof": {
+      "title": "Plafon Interior Încărcătură",
+      "instruction": "Te rugăm să încarci o poză care arată clar plafonul interior al zonei de încărcare a vehiculului"
+    }
+  },
+  "tiresItems": {
+    "captureImage": "Capturează imagine",
+    "captureNow": "Capturează acum",
+    "instruction": "Te rugăm să pui o monedă în profilul anvelopei și să faci o poză capturând următoarele elemente:",
+    "subHeading": "Așezați capul lui Lincoln de pe monedă cu susul în jos și cu fața spre cameră",
+    "leftFront": "Anvelopă Stânga Față",
+    "leftRear": "Anvelopă Stânga Spate",
+    "rightFront": "Anvelopă Dreapta Față",
+    "rightRear": "Anvelopă Dreapta Spate"
+  },
+  "commentBox": {
+    "title": "Adaugă un comentariu",
+    "description": "Te rugăm să oferi comentariile sau feedback-ul tău mai jos",
+    "placeHolder": "Scrie comentariul sau feedback-ul tău aici"
+  },
+  "commentButton": {
+    "text": "+ Adaugă comentariu",
+    "optional": "(Opțional)"
+  },
+  "confirmVehicleDetail": {
+    "title": "Detalii vehicul",
+    "description": "Sistemul nu a putut detecta numărul de înmatriculare. Te rugăm să introduci numărul de înmatriculare mai jos:",
+    "buttonText": "Confirmă",
+    "placeHolder": "Introdu numărul de înmatriculare"
+  },
+  "expiryInspection": {
+    "description": "Inspecția a expirat. Te rugăm să începi o nouă inspecție.",
+    "confirmButton": "Inspecție nouă",
+    "cancelButton": "Ieșire"
+  },
+  "mileageInput": {
+    "title": "Introducere kilometraj",
+    "description": "Sistemul nu a putut detecta kilometrajul. Te rugăm să introduci kilometrajul mai jos:",
+    "placeHolder": "Introdu kilometraj",
+    "errors": {
+      "lessThanPrevious": "Citirea curentă nu poate fi mai mică decât citirea anterioară"
+    }
+  },
+  "categories": {
+    "exterior_front": "Exterior Față",
+    "exterior_rear": "Exterior Spate",
+    "exterior_left": "Exterior Stânga",
+    "exterior_right": "Exterior Dreapta",
+    "front_left_corner": "Colț Față Stânga",
+    "front_right_corner": "Colț Față Dreapta",
+    "rear_left_corner": "Colț Spate Stânga",
+    "rear_right_corner": "Colț Spate Dreapta",
+    "inside_cargo_roof": "Plafon Interior Încărcătură",
+    "interior_driver_side": "Interior Partea Șoferului",
+    "interior_passenger_side": "Interior Partea Pasagerului",
+    "license_plate_number": "Număr de Înmatriculare",
+    "odometer": "Odometru",
+    "left_front_tire": "Anvelopă Stânga Față",
+    "left_rear_tire": "Anvelopă Stânga Spate",
+    "right_front_tire": "Anvelopă Dreapta Față",
+    "right_rear_tire": "Anvelopă Dreapta Spate",
+    "front_interior": "Interior Față",
+    "rear_interior": "Interior Spate",
+    "tire": "Anvelopă",
+    "tdrf": "Adâncime Profil DF (TDRF)",
+    "tdrr": "Adâncime Profil DS (TDRR)",
+    "tdlf": "Adâncime Profil SF (TDLF)",
+    "tdlr": "Adâncime Profil SS (TDLR)",
+    "tdspare": "Adâncime Profil Rezervă (TDSPARE)",
+    "brake_components": "Componente Frânare"
+  },
+  "completedInspection": {
+    "thankYou": "Mulțumim că folosești",
+    "message": "Poți ieși acum din aplicația noastră. Reprezentanții noștri te vor contacta dacă avem nevoie de ajutor suplimentar",
+    "homeButton": "Acasă"
+  }
+}

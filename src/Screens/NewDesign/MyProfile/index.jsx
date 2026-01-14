@@ -1,11 +1,11 @@
-import {StatusBar, View} from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
+import {StatusBar, View, Pressable} from 'react-native';
+import React, {useCallback, useRef, useState, useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 import {styles} from './styles';
 import {CardWrapper, CustomInput, IconWrapper, LoadingIndicator, LogoHeader, PhoneInput, PrimaryGradientButton} from '../../../Components';
 import {useDispatch, useSelector} from 'react-redux';
 import {ROUTES, STACKS} from '../../../Navigation/ROUTES';
-import {Logout} from '../../../Assets/Icons';
+import {Logout, ChevronIcon} from '../../../Assets/Icons';
 import {colors} from '../../../Assets/Styles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 import AppText from '../../../Components/text';
@@ -17,6 +17,7 @@ import {API_ENDPOINTS} from '../../../Constants';
 import {useFocusEffect} from '@react-navigation/native';
 import {Types} from '../../../Store/Types';
 import smartlookService from '../../../services/smartlookService';
+import {changeLanguage} from '../../../Utils/i18n';
 
 const validate = (values, t) => {
   const errors = {};
@@ -46,10 +47,20 @@ const validate = (values, t) => {
   return errors;
 };
 
+const LANGUAGES = [
+  {code: 'en', name: 'English'},
+  {code: 'ro', name: 'Romanian'},
+  {code: 'pl', name: 'Polish'},
+  {code: 'bg', name: 'Bulgarian'},
+  {code: 'tr', name: 'Turkish'},
+];
+
 const MyProfile = ({navigation}) => {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
   const userState = useSelector(state => state?.auth?.user?.data);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language || 'en');
   const initialData = {
     name: userState?.name,
     lastName: userState?.lastName,
@@ -106,6 +117,31 @@ const MyProfile = ({navigation}) => {
       setIsLoading(false);
       console.log('ERROR:', error);
     }
+  };
+
+  // Update current language when i18n language changes
+  useEffect(() => {
+    setCurrentLanguage(i18n.language || 'en');
+  }, [i18n.language]);
+
+  // Handle language change
+  const handleLanguageChange = async languageCode => {
+    try {
+      const success = await changeLanguage(languageCode);
+      if (success) {
+        setCurrentLanguage(languageCode);
+        setIsLanguageDropdownOpen(false);
+        dispatch(showToast(t('profile.languageChangedToast'), 'success'));
+      }
+    } catch (error) {
+      console.log('Error changing language:', error);
+    }
+  };
+
+  // Get current language display name
+  const getCurrentLanguageName = () => {
+    const language = LANGUAGES.find(lang => lang.code === currentLanguage);
+    return language ? t(`languages.${language.code}`) : t('languages.en');
   };
 
   // On focus, if we previously left with dirty changes, reset to initial values
@@ -235,6 +271,32 @@ const MyProfile = ({navigation}) => {
                         error={errors.phone}
                         maxLength={50}
                       />
+
+                      {/* Language Selector */}
+                      <View style={styles.languageContainer}>
+                        <AppText style={styles.languageLabel}>{t('profile.languageLabel')}</AppText>
+                        <Pressable
+                          onPress={() => setIsLanguageDropdownOpen(prev => !prev)}
+                          style={[styles.inputContainer, styles.languageDropdownContainer]}>
+                          <AppText style={[styles.input, styles.languageText]}>{getCurrentLanguageName()}</AppText>
+                          <ChevronIcon />
+                        </Pressable>
+
+                        {isLanguageDropdownOpen && (
+                          <View style={styles.languageDropdownList}>
+                            {LANGUAGES.map(language => (
+                              <Pressable
+                                key={language.code}
+                                onPress={() => handleLanguageChange(language.code)}
+                                style={[styles.languageOption, currentLanguage === language.code && styles.languageOptionSelected]}>
+                                <AppText style={[styles.languageOptionText, currentLanguage === language.code && styles.languageOptionTextSelected]}>
+                                  {t(`languages.${language.code}`)}
+                                </AppText>
+                              </Pressable>
+                            ))}
+                          </View>
+                        )}
+                      </View>
                     </View>
                     <PrimaryGradientButton
                       onPress={handleSubmit}

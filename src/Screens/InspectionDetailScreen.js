@@ -29,49 +29,42 @@ const InspectionDetailScreen = ({
   isPassed,
 }) => {
   const {t} = useTranslation();
+
   return (
     <View style={container}>
-    <LogoHeader />
+      <LogoHeader />
 
-    {isModalVisible && (
-      <ActiveMediaViewModal
-        handleVisible={handleDisplayMediaCrossPress}
-        title={modalDetails?.title}
-        isVideo={modalDetails?.isVideo}
-        source={modalDetails?.source}
-        coordinates={modalDetails?.coordinates}
-      />
-    )}
-    <View style={{...bodyContainer, paddingHorizontal: '5%'}}>
-      <View style={styles.headerContainer}>
-        <Text style={{...styles.headerText, ...styles.textColor}}>
-          {t('inspectionDetail.title')}
-        </Text>
-        <View style={styles.finalStatusContainer}>
-          <Text style={{...styles.text, ...styles.textColor, width: wp('30%')}}>
-            {t('inspectionDetail.finalStatus')}
-          </Text>
-          <ICON_COMPONENT height={hp('3%')} width={wp('8%')} color={iconColor} />
-          <Text style={{...styles.text, ...styles.statusText, ...styles.textColor}}>{INSPECTION_STATUS[isPassed]}</Text>
-        </View>
-        <View style={styles.statusDescriptionContainer}>
-          <ScrollView>
-            <Text style={{...styles.text, ...styles.textColor}}>
-              {remarks === 'No Remarks'
-                ? t('inspectionDetail.noRemarks')
-                : remarks}
-            </Text>
-          </ScrollView>
-        </View>
-      </View>
-      <View style={styles.bodyContainer}>
-        <FlatList
-          data={detailsFiles}
-          numColumns={2}
-          renderItem={({item}) => <RenderInspectionDetail item={item} handleDisplayMedia={handleDisplayMedia} />}
-          keyExtractor={item => item?.id}
+      {isModalVisible && (
+        <ActiveMediaViewModal
+          handleVisible={handleDisplayMediaCrossPress}
+          title={modalDetails?.title}
+          isVideo={modalDetails?.isVideo}
+          source={modalDetails?.source}
+          coordinates={modalDetails?.coordinates}
         />
-      </View>
+      )}
+      <View style={{...bodyContainer, paddingHorizontal: '5%'}}>
+        <View style={styles.headerContainer}>
+          <Text style={{...styles.headerText, ...styles.textColor}}>{t('inspectionDetail.title')}</Text>
+          <View style={styles.finalStatusContainer}>
+            <Text style={{...styles.text, ...styles.textColor, width: wp('30%')}}>{t('inspectionDetail.finalStatus')}</Text>
+            <ICON_COMPONENT height={hp('3%')} width={wp('8%')} color={iconColor} />
+            <Text style={{...styles.text, ...styles.statusText, ...styles.textColor}}>{INSPECTION_STATUS[isPassed]}</Text>
+          </View>
+          <View style={styles.statusDescriptionContainer}>
+            <ScrollView>
+              <Text style={{...styles.text, ...styles.textColor}}>{remarks === 'No Remarks' ? t('inspectionDetail.noRemarks') : remarks}</Text>
+            </ScrollView>
+          </View>
+        </View>
+        <View style={styles.bodyContainer}>
+          <FlatList
+            data={detailsFiles}
+            numColumns={2}
+            renderItem={({item}) => <RenderInspectionDetail item={item} handleDisplayMedia={handleDisplayMedia} />}
+            keyExtractor={item => item?.id}
+          />
+        </View>
       </View>
     </View>
   );

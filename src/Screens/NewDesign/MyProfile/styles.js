@@ -33,4 +33,55 @@ export const styles = StyleSheet.create({
   },
   input: {fontSize: wp(3.5)},
   flex1: {flex: 1},
+  languageContainer: {
+    marginTop: hp(0.5),
+  },
+  languageLabel: {
+    fontSize: wp(3.5),
+    fontWeight: '500',
+    color: colors.black,
+    marginBottom: hp(0.8),
+  },
+  languageDropdownContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: wp(5),
+  },
+  languageText: {
+    color: colors.black,
+    fontSize: wp(3.5),
+  },
+  languageDropdownList: {
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: wp(2),
+    marginTop: hp(0.8),
+    overflow: 'hidden',
+    zIndex: 10,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  languageOption: {
+    paddingVertical: hp(1.5),
+    paddingHorizontal: wp(5),
+    backgroundColor: colors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F5F5',
+  },
+  languageOptionSelected: {
+    backgroundColor: '#F0F6FF',
+  },
+  languageOptionText: {
+    fontSize: wp(3.5),
+    color: colors.black,
+  },
+  languageOptionTextSelected: {
+    color: colors.royalBlue,
+    fontWeight: '600',
+  },
 });

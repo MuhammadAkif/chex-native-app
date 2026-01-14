@@ -1,18 +1,18 @@
-import { Alert, Platform } from 'react-native';
-import { Camera } from 'react-native-vision-camera';
+import {Alert, Platform} from 'react-native';
+import {Camera} from 'react-native-vision-camera';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import * as yup from 'yup';
 
-import { IMAGES } from '../Assets/Images';
-import { customSortOrder, darkImageError, INSPECTION, INSPECTION_SUBCATEGORY, S3_BUCKET_BASEURL, uploadFailed, VEHICLE_TYPES } from '../Constants';
-import { ROUTES, TABS } from '../Navigation/ROUTES';
-import { getInspectionDetails, isImageDarkWithAI, s3SignedUrl, uploadFileToDatabase } from '../services/inspection';
-import { store } from '../Store';
-import { batchUpdateVehicleImages, numberPlateSelected, sessionExpired, setCompanyId } from '../Store/Actions';
-import { setFileDetails, setVehicleTypeModalVisible } from '../Store/Actions/NewInspectionAction';
-import { checkAndCompleteUrl } from './helpers';
+import {IMAGES} from '../Assets/Images';
+import {customSortOrder, darkImageError, INSPECTION, INSPECTION_SUBCATEGORY, S3_BUCKET_BASEURL, uploadFailed, VEHICLE_TYPES} from '../Constants';
+import {ROUTES, TABS} from '../Navigation/ROUTES';
+import {getInspectionDetails, isImageDarkWithAI, s3SignedUrl, uploadFileToDatabase} from '../services/inspection';
+import {store} from '../Store';
+import {batchUpdateVehicleImages, numberPlateSelected, sessionExpired, setCompanyId} from '../Store/Actions';
+import {setFileDetails, setVehicleTypeModalVisible} from '../Store/Actions/NewInspectionAction';
+import {checkAndCompleteUrl} from './helpers';
 import imageResizer from '@bam.tech/react-native-image-resizer';
-import i18n from './i18n';
+import i18n from 'i18next';
 
 // Validation Schema
 export const validationSchema = yup.object().shape({
@@ -89,8 +89,8 @@ export const ExteriorFrontDetails = vehicleType => ({
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_front
       : vehicleType === VEHICLE_TYPES.TRUCK
-        ? IMAGES.truck_exterior_front
-        : IMAGES.exterior_Front,
+      ? IMAGES.truck_exterior_front
+      : IMAGES.exterior_Front,
   instructionalText: i18n.t('exteriorItems.front.instruction'),
   instructionalSubHeadingText: '',
   buttonText: i18n.t('exteriorItems.captureNow'),
@@ -107,8 +107,8 @@ export const ExteriorRearDetails = vehicleType => ({
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_rear
       : vehicleType === VEHICLE_TYPES.TRUCK
-        ? IMAGES.truck_exterior_rear_back
-        : IMAGES.exterior_Rear,
+      ? IMAGES.truck_exterior_rear_back
+      : IMAGES.exterior_Rear,
   instructionalText: i18n.t('exteriorItems.rear.instruction'),
   instructionalSubHeadingText: '',
   buttonText: i18n.t('exteriorItems.captureNow'),
@@ -151,8 +151,8 @@ export const ExteriorFrontLeftCornerDetails = vehicleType => ({
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_front_Left
       : vehicleType === VEHICLE_TYPES.TRUCK
-        ? IMAGES.truck_exterior_front_Left
-        : IMAGES.front_Left_Corner,
+      ? IMAGES.truck_exterior_front_Left
+      : IMAGES.front_Left_Corner,
   instructionalText: i18n.t('exteriorItems.frontLeftCorner.instruction'),
   instructionalSubHeadingText: '',
   buttonText: i18n.t('exteriorItems.captureNow'),
@@ -169,8 +169,8 @@ export const ExteriorFrontRightCornerDetails = vehicleType => ({
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_front_Right
       : vehicleType === VEHICLE_TYPES.TRUCK
-        ? IMAGES.truck_exterior_front_right
-        : IMAGES.front_Right_Corner,
+      ? IMAGES.truck_exterior_front_right
+      : IMAGES.front_Right_Corner,
   instructionalText: i18n.t('exteriorItems.frontRightCorner.instruction'),
   instructionalSubHeadingText: '',
   buttonText: i18n.t('exteriorItems.captureNow'),
@@ -187,8 +187,8 @@ export const ExteriorRearLeftCornerDetails = vehicleType => ({
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_rear_left
       : vehicleType === VEHICLE_TYPES.TRUCK
-        ? IMAGES.truck_exterior_rear_left
-        : IMAGES.rear_Left_Corner,
+      ? IMAGES.truck_exterior_rear_left
+      : IMAGES.rear_Left_Corner,
   instructionalText: i18n.t('exteriorItems.rearLeftCorner.instruction'),
   instructionalSubHeadingText: '',
   buttonText: i18n.t('exteriorItems.captureNow'),
@@ -205,8 +205,8 @@ export const ExteriorRearRightCornerDetails = vehicleType => ({
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_rear_right
       : vehicleType === VEHICLE_TYPES.TRUCK
-        ? IMAGES.truck_exterior_rear_right
-        : IMAGES.rear_Right_Corner,
+      ? IMAGES.truck_exterior_rear_right
+      : IMAGES.rear_Right_Corner,
   instructionalText: i18n.t('exteriorItems.rearRightCorner.instruction'),
   instructionalSubHeadingText: '',
   buttonText: i18n.t('exteriorItems.captureNow'),
@@ -317,7 +317,7 @@ export const hasCameraAndMicrophoneAllowed = async () => {
   }
 };
 export function error_Handler(callback = null, title = uploadFailed.title, message = uploadFailed.message) {
-  Alert.alert(title || uploadFailed.title, message || uploadFailed.message, [{ text: 'Retry', onPress: callback }]);
+  Alert.alert(title || uploadFailed.title, message || uploadFailed.message, [{text: 'Retry', onPress: callback}]);
 }
 export const getSignedUrl = async (
   token,
@@ -344,14 +344,14 @@ export const getSignedUrl = async (
 };
 async function onGetSignedUrlSuccess(res, path, mime, setProgress, handleResponse, handleError, dispatch, category) {
   try {
-    const { url, key } = res.data;
+    const {url, key} = res.data;
 
     await uploadToS3(url, key, path, mime, setProgress, handleResponse, handleError, dispatch, category);
   } catch (error) {
     throw error;
   }
 }
-function onGetSignedUrlFail(error, handleError, dispatch) { }
+function onGetSignedUrlFail(error, handleError, dispatch) {}
 
 export const uploadToS3 = async (preSignedUrl, key, path, mime, setProgress, handleResponse, handleError, _, category) => {
   try {
@@ -370,7 +370,7 @@ export const uploadToS3 = async (preSignedUrl, key, path, mime, setProgress, han
 
     const headers = {
       'Content-Type': mime,
-      ...(size ? { 'Content-Length': String(size) } : {}),
+      ...(size ? {'Content-Length': String(size)} : {}),
     };
 
     const task = ReactNativeBlobUtil.fetch('PUT', preSignedUrl, headers, ReactNativeBlobUtil.wrap(path));
@@ -379,7 +379,7 @@ export const uploadToS3 = async (preSignedUrl, key, path, mime, setProgress, han
     setProgress(0);
 
     // Progress listener
-    task.uploadProgress({ interval: 100 }, (written, totalFromCb) => {
+    task.uploadProgress({interval: 100}, (written, totalFromCb) => {
       const total = totalFromCb && totalFromCb > 0 ? totalFromCb : size;
       if (total > 0) {
         const pct = Math.min(99, Math.round((written * 100) / total));
@@ -406,7 +406,7 @@ async function onUploadToS3Success(handleResponse, key, handleError, category, m
   try {
     if (!SKIP_NIGHT_IMAGE_LIST.includes(category) && mime !== 'video/mp4') {
       const {
-        data: { status = false },
+        data: {status = false},
       } = await isImageDarkWithAI(image_url);
 
       if (!status) {
@@ -430,7 +430,7 @@ export const uploadFile = async (callback, body, inspectionId, token, handleErro
   }
 };
 function onUploadFileSuccess(res, callback) {
-  const { id = null } = res?.data || {};
+  const {id = null} = res?.data || {};
   callback(id);
 }
 
@@ -489,7 +489,7 @@ export const updateFiles = (files = []) => {
   for (let i = 0; i < files.length; i++) {
     const variant = files[i].llamaCost || '';
     let name = files[i].category + variant;
-    const data = { ...files[i], name: name };
+    const data = {...files[i], name: name};
     files_Updated.push(data);
   }
   return files_Updated;
@@ -558,8 +558,8 @@ export const sortInspection_Reviewed_Items = list => {
 export function uploadInProgressMediaToStore(files, dispatch) {
   // Batch all updates into a single dispatch
   const updates = files.map(file => {
-    const { url, groupType, id, category, llamaCost: variant } = file;
-    const { completedUrl: imageURL } = checkAndCompleteUrl(url);
+    const {url, groupType, id, category, llamaCost: variant} = file;
+    const {completedUrl: imageURL} = checkAndCompleteUrl(url);
 
     let categoryKey = category;
     if (parseInt(variant)) {
@@ -594,13 +594,13 @@ export const generateRandomString = () => {
 
 export const handleNewInspectionPress = (dispatch, setIsLoading, companyId, navigation, resetAllStates) => {
   // dispatch(setVehicleTypeModalVisible(true));
-  navigation.navigate(ROUTES.TABS, { screen: TABS.INSPECTION });
+  navigation.navigate(ROUTES.TABS, {screen: TABS.INSPECTION});
   dispatch(setCompanyId(companyId));
   // No API call here anymore
 };
 
 export function onNewInspectionPressSuccess(response, dispatch, navigate, resetAllStates) {
-  const { id = null } = response?.data || {};
+  const {id = null} = response?.data || {};
 
   dispatch(numberPlateSelected(id));
 
@@ -615,7 +615,7 @@ export function onNewInspectionPressSuccess(response, dispatch, navigate, resetA
 }
 
 export function onNewInspectionPressFail(err, dispatch) {
-  const { statusCode = null } = err?.response?.data || {};
+  const {statusCode = null} = err?.response?.data || {};
   if (statusCode === 401) {
     handle_Session_Expired(statusCode, dispatch);
   }
@@ -626,7 +626,7 @@ export function handle_Session_Expired(statusCode = null, dispatch) {
   }
 }
 export const EXTRACT_INSPECTION_ITEM_ID = key => {
-  const { carVerificiationItems: carVerification, exteriorItems: exterior, interiorItems: interior, tires } = store.getState().newInspection;
+  const {carVerificiationItems: carVerification, exteriorItems: exterior, interiorItems: interior, tires} = store.getState().newInspection;
   const {
     exteriorLeftID,
     exteriorLeft_1ID,
@@ -656,9 +656,9 @@ export const EXTRACT_INSPECTION_ITEM_ID = key => {
     exteriorInsideCargoRoof_1ID,
     exteriorInsideCargoRoof_2ID,
   } = exterior;
-  const { driverSideID, driverSide_1ID, driverSide_2ID, passengerSideID, passengerSide_1ID, passengerSide_2ID } = interior;
-  const { licensePlateID, odometerID } = carVerification;
-  const { leftFrontTireID, leftRearTireID, rightFrontTireID, rightRearTireID } = tires;
+  const {driverSideID, driverSide_1ID, driverSide_2ID, passengerSideID, passengerSide_1ID, passengerSide_2ID} = interior;
+  const {licensePlateID, odometerID} = carVerification;
+  const {leftFrontTireID, leftRearTireID, rightFrontTireID, rightRearTireID} = tires;
   const GET_EXTERIOR_ITEM = {
     licensePlate: licensePlateID,
     odometer: odometerID,
@@ -720,7 +720,7 @@ export const haveOneValue = (object = {}) => {
   return extractValues.some(even);
 };
 export const checkExterior = () => {
-  const { exteriorItems: exterior } = store.getState().newInspection;
+  const {exteriorItems: exterior} = store.getState().newInspection;
   const {
     exteriorLeftID,
     exteriorRightID,
@@ -739,7 +739,7 @@ export const checkExterior = () => {
   return isNotEmpty(exteriorFrontID) && isNotEmpty(exteriorRearID) && isNotEmpty(exteriorInsideCargoRoofID) && leftCheck && rightCheck;
 };
 export const FILTER_IMAGES = (arr = [], toFilter = 'before') => {
-  const { carVerificiationItems, exteriorItems, interiorItems, tires } = INSPECTION;
+  const {carVerificiationItems, exteriorItems, interiorItems, tires} = INSPECTION;
   if (!Array.isArray(arr)) {
     return;
   }
@@ -747,7 +747,7 @@ export const FILTER_IMAGES = (arr = [], toFilter = 'before') => {
     return arr.filter(item => item?.pictureTag === toFilter);
   } else {
     return arr.filter(item => {
-      const { groupType, pictureTag } = item;
+      const {groupType, pictureTag} = item;
       if (groupType === carVerificiationItems || groupType === tires) {
         return item;
       } else if ((groupType === exteriorItems || groupType === interiorItems) && pictureTag === toFilter) {
@@ -780,11 +780,11 @@ export const get_Inspection_Details = async (dispatch, inspectionId) => {
     .catch(error => onGet_Inspection_DetailsFail(error, dispatch));
 };
 function onGet_Inspection_DetailsSuccess(res, dispatch) {
-  const { files = {} } = res?.data || {};
+  const {files = {}} = res?.data || {};
   dispatch(setFileDetails(files));
 }
 function onGet_Inspection_DetailsFail(error, dispatch) {
-  const { statusCode = null } = error?.response?.data || {};
+  const {statusCode = null} = error?.response?.data || {};
   if (statusCode === 401) {
     handle_Session_Expired(statusCode, dispatch);
   }
@@ -827,7 +827,7 @@ export function assignNumber(arr = [], length = 0) {
     }
   }
 }
-export const fallBack = () => { };
+export const fallBack = () => {};
 export const mergeData = (list = [], label = '') => {
   if (list?.length < 1 || !Array.isArray(list)) {
     console.log('Empty Array or invalid array');
@@ -844,7 +844,7 @@ export const mergeData = (list = [], label = '') => {
   return newList;
 };
 export function checkRelevantType(type) {
-  const { interiorItems, exteriorItems } = INSPECTION;
+  const {interiorItems, exteriorItems} = INSPECTION;
   const relevantGroupTypes = [interiorItems, exteriorItems];
   return relevantGroupTypes.includes(type) || false;
 }
@@ -891,7 +891,7 @@ export async function fixImageOrientation(uri) {
       0, // auto-rotation handled internally
       undefined,
       false, // remove EXIF orientation
-      { mode: 'contain', onlyScaleDown: true }
+      {mode: 'contain', onlyScaleDown: true}
     );
 
     return result.uri;

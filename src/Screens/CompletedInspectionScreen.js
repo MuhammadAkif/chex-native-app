@@ -2,6 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {useTranslation} from 'react-i18next';
 import {CompletedInspectionBackgroundImage} from '../Components';
 import {colors} from '../Assets/Styles';
 import {PrimaryGradientButton} from '../Components';
@@ -10,24 +11,26 @@ import {PROJECT_NAME} from '../Constants';
 const {white, blueGray} = colors;
 const {CHEX_AI} = PROJECT_NAME;
 
-const CompletedInspectionScreen = ({onHomePress}) => (
-  <CompletedInspectionBackgroundImage>
-    <View style={styles.container}>
-      <LinearGradient colors={['transparent', '#001B51']} start={{x: 0, y: 0}} end={{x: 0, y: 1}} locations={[0, 0.7]} style={styles.body}>
-        <View style={{flex: 1}} />
-        <View style={styles.bodyFooterContainer}>
-          <Text style={{...styles.textColor, ...styles.titleText}}>Thank you for using</Text>
-          <Text style={{...styles.textColor, ...styles.subheadingText}}>{CHEX_AI}</Text>
-          <Text style={{...styles.textColor, ...styles.subTitleText}}>
-            You may now exit our app. Our representatives will reach out to you if we need any further help
-          </Text>
-          <PrimaryGradientButton buttonStyle={styles.button} text={'Home'} onPress={onHomePress} />
-          <View style={styles.bodyFooterEmptyView} />
-        </View>
-      </LinearGradient>
-    </View>
-  </CompletedInspectionBackgroundImage>
-);
+const CompletedInspectionScreen = ({onHomePress}) => {
+  const {t} = useTranslation();
+
+  return (
+    <CompletedInspectionBackgroundImage>
+      <View style={styles.container}>
+        <LinearGradient colors={['transparent', '#001B51']} start={{x: 0, y: 0}} end={{x: 0, y: 1}} locations={[0, 0.7]} style={styles.body}>
+          <View style={{flex: 1}} />
+          <View style={styles.bodyFooterContainer}>
+            <Text style={{...styles.textColor, ...styles.titleText}}>{t('completedInspection.thankYou')}</Text>
+            <Text style={{...styles.textColor, ...styles.subheadingText}}>{CHEX_AI}</Text>
+            <Text style={{...styles.textColor, ...styles.subTitleText}}>{t('completedInspection.message')}</Text>
+            <PrimaryGradientButton buttonStyle={styles.button} text={t('completedInspection.homeButton')} onPress={onHomePress} />
+            <View style={styles.bodyFooterEmptyView} />
+          </View>
+        </LinearGradient>
+      </View>
+    </CompletedInspectionBackgroundImage>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

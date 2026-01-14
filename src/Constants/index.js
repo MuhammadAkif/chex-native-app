@@ -1,6 +1,6 @@
-import { Platform } from 'react-native';
-import { IMAGES } from '../Assets/Images';
-import i18n from '../Utils/i18n';
+import {Platform} from 'react-native';
+import {IMAGES} from '../Assets/Images';
+import i18n from 'i18next';
 
 // Vehicle Types Constants
 export const VEHICLE_TYPES = {
