@@ -26,7 +26,12 @@ function App() {
   const [updateAvailable, setUpdateAvailable] = useState('');
 
   useEffect(() => {
-    smartlookService.init(process.env.SMARTLOOK_PROJECT_ID || '');
+    const projectKey = process.env.SMARTLOOK_PROJECT_ID || '';
+    if (!projectKey) {
+      console.warn('Smartlook: SMARTLOOK_PROJECT_ID environment variable is not set. Smartlook will not be initialized.');
+    }
+
+    smartlookService.init(projectKey);
   }, []);
 
   useEffect(() => {

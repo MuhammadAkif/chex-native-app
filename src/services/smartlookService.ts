@@ -9,6 +9,14 @@ class SmartlookService {
   init(projectKey: string) {
     if (!isEnabled || this.initialized) return;
 
+    // Validate project key before initialization
+    if (!projectKey || projectKey.trim() === '') {
+      console.error(
+        'Smartlook init error: Project key is missing or empty. Please ensure SMARTLOOK_PROJECT_ID is set in your environment variables.'
+      );
+      return;
+    }
+
     try {
       Smartlook.instance.preferences.setProjectKey(projectKey);
       Smartlook.instance.start();
@@ -25,7 +33,7 @@ class SmartlookService {
       this.eventQueue.forEach(fn => fn());
       this.eventQueue = [];
 
-      console.info('Smartlook started');
+      console.info('Smartlook started successfully with project key:', projectKey.substring(0, 8) + '...');
     } catch (e) {
       console.error('Smartlook init error:', e);
     }
