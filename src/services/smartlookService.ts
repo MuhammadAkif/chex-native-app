@@ -39,18 +39,6 @@ class SmartlookService {
     }
   }
 
-  private isTrackingEnabled(): boolean {
-    if (!isEnabled) {
-      // console.info('Smartlook tracking disabled');
-      return false;
-    }
-    if (!this.initialized) {
-      console.warn('Smartlook not initialized yet');
-      return false;
-    }
-    return true;
-  }
-
   private safeCall(fn: () => void, methodName: string) {
     try {
       fn();
@@ -61,9 +49,11 @@ class SmartlookService {
 
   trackScreen(screenName: string) {
     if (!screenName) return;
+    // Silently return if Smartlook is disabled (e.g., in dev mode)
+    if (!isEnabled) return;
 
     const call = () => Smartlook.instance.analytics.trackNavigationEnter(screenName);
-    if (!this.isTrackingEnabled()) {
+    if (!this.initialized) {
       this.eventQueue.push(call);
       return;
     }
@@ -72,9 +62,11 @@ class SmartlookService {
 
   trackEvent(eventName: string, properties?: Properties) {
     if (!eventName) return;
+    // Silently return if Smartlook is disabled (e.g., in dev mode)
+    if (!isEnabled) return;
 
     const call = () => Smartlook.instance.analytics.trackEvent(eventName, properties);
-    if (!this.isTrackingEnabled()) {
+    if (!this.initialized) {
       this.eventQueue.push(call);
       return;
     }
@@ -82,12 +74,15 @@ class SmartlookService {
   }
 
   identifyUser(id: string, email?: string, name?: string) {
+    // Silently return if Smartlook is disabled (e.g., in dev mode)
+    if (!isEnabled) return;
+
     const call = () => {
       Smartlook.instance.user.setIdentifier(id);
       if (email) Smartlook.instance.user.setEmail(email);
       if (name) Smartlook.instance.user.setName(name);
     };
-    if (!this.isTrackingEnabled()) {
+    if (!this.initialized) {
       console.warn('identifyUser called before Smartlook init');
       return;
     }
@@ -95,12 +90,15 @@ class SmartlookService {
   }
 
   resetUser() {
+    // Silently return if Smartlook is disabled (e.g., in dev mode)
+    if (!isEnabled) return;
+
     const call = () => {
       Smartlook.instance.user.openNewUser();
       Smartlook.instance.user.openNewSession();
       console.info('Smartlook user reset');
     };
-    if (!this.isTrackingEnabled()) return;
+    if (!this.initialized) return;
     this.safeCall(call, 'resetUser');
   }
 }

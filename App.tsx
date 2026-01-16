@@ -6,7 +6,7 @@ import BootSplash from 'react-native-bootsplash';
 import {useDispatch, useSelector} from 'react-redux';
 import {DiscardInspectionModal, Splash, Toast} from './src/Components';
 import AlertPopup from './src/Components/AlertPopup';
-import {SESSION_EXPIRED, UPDATE_APP} from './src/Constants';
+import {SESSION_EXPIRED, SMARTLOOK_PROJECT_ID, UPDATE_APP} from './src/Constants';
 import {ROUTES} from './src/Navigation/ROUTES';
 import Navigation from './src/Navigation/index';
 import {clearNewInspection, hideToast, signOut} from './src/Store/Actions';
@@ -26,12 +26,11 @@ function App() {
   const [updateAvailable, setUpdateAvailable] = useState('');
 
   useEffect(() => {
-    const projectKey = process.env.SMARTLOOK_PROJECT_ID || '';
-    if (!projectKey) {
+    if (SMARTLOOK_PROJECT_ID) {
+      smartlookService.init(SMARTLOOK_PROJECT_ID);
+    } else {
       console.warn('Smartlook: SMARTLOOK_PROJECT_ID environment variable is not set. Smartlook will not be initialized.');
     }
-
-    smartlookService.init(projectKey);
   }, []);
 
   useEffect(() => {

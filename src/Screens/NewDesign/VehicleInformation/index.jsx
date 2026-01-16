@@ -73,12 +73,6 @@ const VehicleTypes = [
 
 const currentDate = new Date().toISOString();
 const OCRsCapturedImagesInitialState = {mileage: {uri: '', extension: ''}, numberPlate: {uri: '', extension: ''}, vin: {uri: '', extension: ''}};
-// This function is used to get the initial state of the OCRs captured images
-const getOCRsCapturedImagesInitialState = () => ({
-  mileage: {uri: '', extension: ''},
-  numberPlate: {uri: '', extension: ''},
-  vin: {uri: '', extension: ''},
-});
 
 const VehicleInformation = props => {
   const {navigation} = props;
@@ -121,6 +115,15 @@ const VehicleInformation = props => {
     lastQueriedPlateRef.current = '';
     latestRequestIdRef.current = 0;
     responseCacheRef.current = new Map();
+  };
+
+  const resetOCRsCapturedImagesRef = () => {
+    OCRsCapturedImagesRef.current.mileage.uri = '';
+    OCRsCapturedImagesRef.current.mileage.extension = '';
+    OCRsCapturedImagesRef.current.vin.uri = '';
+    OCRsCapturedImagesRef.current.vin.extension = '';
+    OCRsCapturedImagesRef.current.numberPlate.uri = '';
+    OCRsCapturedImagesRef.current.numberPlate.extension = '';
   };
 
   const scrollToVehicleType = useCallback(
@@ -205,7 +208,7 @@ const VehicleInformation = props => {
         // RESET STATES
         setHasApiDetectedVehicleType(false);
         setShowVehicleType(false);
-        OCRsCapturedImagesRef.current = getOCRsCapturedImagesInitialState();
+        resetOCRsCapturedImagesRef();
         resetForm();
 
         // NAVIGATE
@@ -234,7 +237,7 @@ const VehicleInformation = props => {
           dispatch(setSelectedVehicleKind(vehicleKind));
           setTimeout(() => setIsInspectionInProgressModalVisible(true), 100);
           setErrorModalDetail({title: message, message: errorMessage, inspectionId, resetForm: resetForm, vehicleKind});
-          OCRsCapturedImagesRef.current = getOCRsCapturedImagesInitialState();
+          resetOCRsCapturedImagesRef();
         } else {
           dispatch(showToast(message, 'error'));
         }
@@ -251,6 +254,7 @@ const VehicleInformation = props => {
     dispatch(setCompanyId(companyId));
     dispatch(numberPlateSelected(errorModalDetail.inspectionId));
     errorModalDetail?.resetForm?.();
+
     setHasApiDetectedVehicleType(false);
     setShowVehicleType(false);
     resetRefCacheOfPlateNumber();
@@ -305,7 +309,7 @@ const VehicleInformation = props => {
     setShowVehicleType(false);
     setHasApiDetectedVehicleType(false);
     setIsFetchingVehicleInfo(false);
-    OCRsCapturedImagesRef.current = getOCRsCapturedImagesInitialState();
+    resetOCRsCapturedImagesRef();
   }, []);
 
   const isClearFormDisabled = () => {
