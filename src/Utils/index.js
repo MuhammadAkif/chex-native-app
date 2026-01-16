@@ -16,33 +16,52 @@ import i18n from 'i18next';
 
 // Validation Schema
 export const validationSchema = yup.object().shape({
-  firstName: yup.string().required('Field required'),
-  lastName: yup.string().required('Field required'),
+  firstName: yup.string().required(() => i18n.t('validation.fieldRequired')),
+  lastName: yup.string().required(() => i18n.t('validation.fieldRequired')),
   email: yup
     .string()
-    .email('Please enter a valid email')
-    .required('Please enter your email!')
-    .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Invalid email format'),
+    .email(() => i18n.t('validation.emailValid'))
+    .required(() => i18n.t('validation.emailRequired'))
+    .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, () => i18n.t('validation.emailInvalidFormat')),
   phoneNumber: yup
     .string()
-    .matches(/^[0-9]{11}$/, 'Please enter a valid phone number')
-    .required('Field required'),
-  password: yup.string().min(6, 'Password must be at least 8 characters').required('Please enter your password!'),
+    .matches(/^[0-9]{11}$/, () => i18n.t('validation.phoneNumberValid'))
+    .required(() => i18n.t('validation.phoneNumberRequired')),
+  password: yup
+    .string()
+    .min(6, () => i18n.t('validation.passwordMinLength8'))
+    .required(() => i18n.t('validation.passwordRequired')),
 });
 export const signInValidationSchema = yup.object().shape({
-  name: yup.string().required('Please enter your name!').min(2, 'Name must be at least 2 characters'),
-  password: yup.string().min(1, 'Password must be at least 1 characters').required('Please enter your password!'),
+  name: yup
+    .string()
+    .required(() => i18n.t('validation.firstNameRequired'))
+    .min(2, () => i18n.t('validation.nameMinLength')),
+  password: yup
+    .string()
+    .min(1, () => i18n.t('validation.passwordMinLength1'))
+    .required(() => i18n.t('validation.passwordRequired')),
 });
 export const forgetPasswordSchema = yup.object().shape({
-  email: yup.string().required('Please enter your email!').min(2, 'Email must be at least 2 characters').email('Invalid email address'),
+  email: yup
+    .string()
+    .required(() => i18n.t('validation.emailRequired'))
+    .min(2, () => i18n.t('validation.emailMinLength'))
+    .email(() => i18n.t('validation.emailInvalidAddress')),
 });
 export const resetPasswordSchema = yup.object().shape({
-  verificationCode: yup.string().min(6, 'Name must be at least 6 characters').required('Please enter your code!'),
-  password: yup.string().required('Please enter your new password!').min(6, 'Password must be at least 6 characters'),
+  verificationCode: yup
+    .string()
+    .min(6, () => i18n.t('validation.verificationCodeMinLength'))
+    .required(() => i18n.t('validation.verificationCodeRequired')),
+  password: yup
+    .string()
+    .required(() => i18n.t('validation.newPasswordRequired'))
+    .min(6, () => i18n.t('validation.passwordMinLength')),
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref('password'), null], 'Passwords must match')
-    .required('Please re-enter your new password!'),
+    .oneOf([yup.ref('password'), null], () => i18n.t('validation.passwordsMustMatch'))
+    .required(() => i18n.t('validation.confirmPasswordRequired')),
 });
 //New Inspection Objects starts here
 //____________________________Car Verification_________________________
@@ -72,14 +91,14 @@ export const OdometerDetails = {
 
 export const VinDetails = {
   key: 'vin',
-  title: 'VIN',
+  title: i18n.t('carVerification.vin.title'),
   type: '1',
   source: '',
   category: 'CarVerification',
   subCategory: 'vin',
   groupType: 'truck',
-  instructionalText: 'Please wait a while the VIN is being uploaded',
-  buttonText: 'Capture Now',
+  instructionalText: i18n.t('carVerification.vin.instruction'),
+  buttonText: i18n.t('carVerification.vin.captureNow'),
 };
 //___________________________Exterior______________________________
 export const ExteriorFrontDetails = vehicleType => ({

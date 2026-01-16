@@ -27,6 +27,27 @@
     "optional": "Opțional",
     "message": "Mesaj"
   },
+  "validation": {
+    "fieldRequired": "Câmp obligatoriu",
+    "firstNameRequired": "Te rugăm să introduci numele!",
+    "nameMinLength": "Numele trebuie să aibă cel puțin 2 caractere",
+    "emailRequired": "Te rugăm să introduci emailul!",
+    "emailValid": "Te rugăm să introduci un email valid",
+    "emailInvalidFormat": "Format email invalid",
+    "phoneNumberRequired": "Câmp obligatoriu",
+    "phoneNumberValid": "Te rugăm să introduci un număr de telefon valid",
+    "passwordRequired": "Te rugăm să introduci parola!",
+    "passwordMinLength": "Parola trebuie să aibă cel puțin 6 caractere",
+    "passwordMinLength8": "Parola trebuie să aibă cel puțin 8 caractere",
+    "passwordMinLength1": "Parola trebuie să aibă cel puțin 1 caracter",
+    "verificationCodeRequired": "Te rugăm să introduci codul!",
+    "verificationCodeMinLength": "Codul trebuie să aibă cel puțin 6 caractere",
+    "newPasswordRequired": "Te rugăm să introduci noua parolă!",
+    "confirmPasswordRequired": "Te rugăm să reintroduci noua parolă!",
+    "passwordsMustMatch": "Parolele trebuie să se potrivească",
+    "emailMinLength": "Emailul trebuie să aibă cel puțin 2 caractere",
+    "emailInvalidAddress": "Adresă de email invalidă"
+  },
   "welcome": {
     "title": "Bun venit la",
     "subtitle": "Inspecții Virtuale"
@@ -34,18 +55,30 @@
   "signIn": {
     "title": "Autentificare",
     "namePlaceholder": "Ion Popescu",
-    "forgotPassword": "Ai uitat parola?"
+    "forgotPassword": "Ai uitat parola?",
+    "errors": {
+      "loginFailed": "Autentificare eșuată",
+      "wrongPassword": "Parolă greșită. Te rugăm să încerci din nou."
+    }
   },
   "forgotPassword": {
     "title": "Ai uitat parola",
     "subtitle": "Introdu adresa de email pentru resetarea parolei",
     "knowPassword": "Îți știi parola?",
-    "loginLink": "Logare"
+    "loginLink": "Logare",
+    "verificationCodeSent": "Codul de verificare a fost trimis la contul tău",
+    "errors": {
+      "emailNotFound": "Email-ul nu a fost găsit"
+    }
   },
   "resetPassword": {
     "title": "Resetare parolă",
     "subtitle": "Te rugăm să verifici emailul pentru codul unic și să îl introduci mai jos",
-    "verificationCodePlaceholder": "Cod de verificare"
+    "verificationCodePlaceholder": "Cod de verificare",
+    "successMessage": "Parola ta a fost schimbată cu succes",
+    "errors": {
+      "failedToReset": "Resetarea parolei a eșuat"
+    }
   },
   "home": {
     "greeting": "Salut, {{name}}",
@@ -356,6 +389,11 @@
     "odometer": {
       "title": "Odometru (Kilometraj)",
       "instruction": "Te rugăm să faci o poză a odometrului care arată clar kilometrajul vehiculului",
+      "captureNow": "Capturează acum"
+    },
+    "vin": {
+      "title": "VIN",
+      "instruction": "Te rugăm să aștepți cât timp VIN-ul se încarcă",
       "captureNow": "Capturează acum"
     },
     "uploadImage": "Încarcă imagine"

@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {BackHandler, Keyboard, Platform, StyleSheet} from 'react-native';
 import {Formik} from 'formik';
+import {useTranslation} from 'react-i18next';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {useDispatch} from 'react-redux';
 import {resetPasswordSchema} from '../../Utils';
@@ -17,6 +18,7 @@ const {WELCOME, FORGET_PASSWORD, SIGN_IN} = ROUTES;
 const {gray, white, cobaltBlueLight} = colors;
 
 const ResetPasswordContainer = ({navigation, route}) => {
+  const {t} = useTranslation();
   const dispatch = useDispatch();
   const {canGoBack, goBack, navigate} = navigation;
   const email = route?.params?.email;
@@ -84,13 +86,13 @@ const ResetPasswordContainer = ({navigation, route}) => {
   function onResetPasswordSuccess(response, resetForm) {
     resetForm();
     navigate(SIGN_IN, {
-      toastMessage: 'Your password has been changed successfully',
+      toastMessage: t('resetPassword.successMessage'),
       passwordChanged: true,
     });
   }
   function onResetPasswordFail(err) {
-    const {errors = 'Failed to reset password'} = err?.response?.data;
-    const message = errors || 'Something went wrong, Please try again.';
+    const {errors} = err?.response?.data;
+    const message = errors || t('resetPassword.errors.failedToReset') || t('common.somethingWentWrong');
     dispatch(showToast(message, 'error'));
   }
   const handleKnowYourPassword = () => navigate(SIGN_IN);

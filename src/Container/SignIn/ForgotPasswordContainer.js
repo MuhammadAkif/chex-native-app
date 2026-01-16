@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {BackHandler, Keyboard, Platform, StyleSheet} from 'react-native';
 import {Formik} from 'formik';
+import {useTranslation} from 'react-i18next';
 import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {useDispatch} from 'react-redux';
 import {ForgotPasswordScreen} from '../../Screens';
@@ -17,6 +18,7 @@ const {cobaltBlueLight, gray, white} = colors;
 const {WELCOME, RESET_PASSWORD, SIGN_IN} = ROUTES;
 
 const ForgotPasswordContainer = ({navigation}) => {
+  const {t} = useTranslation();
   const dispatch = useDispatch();
   const {canGoBack, goBack, navigate} = navigation;
   const emailRef = useRef();
@@ -62,15 +64,14 @@ const ForgotPasswordContainer = ({navigation}) => {
       .finally(() => setIsSubmitting(false));
   };
   function onVerificationCodeSendSuccess(response, resetForm, email) {
-    const toastMessage = 'Verification code has been sent to your account';
     resetForm();
-    dispatch(showToast(toastMessage, 'success'));
+    dispatch(showToast(t('forgotPassword.verificationCodeSent'), 'success'));
     navigate(RESET_PASSWORD, {
       email: email,
     });
   }
   function onVerificationCodeSendFail(response) {
-    dispatch(showToast('Email not found', 'error'));
+    dispatch(showToast(t('forgotPassword.errors.emailNotFound'), 'error'));
   }
   const handleKnowYourPassword = () => navigate(SIGN_IN);
   const handleOnPress = () => Keyboard.dismiss();
@@ -118,6 +119,7 @@ const styles = StyleSheet.create({
   registerTitleText: {
     fontSize: hp('2.5%'),
     color: gray,
+    textAlign: 'center',
   },
   bodyContainer: {
     flex: 0.9,
