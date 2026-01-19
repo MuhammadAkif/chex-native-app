@@ -38,7 +38,7 @@ export const EXTRACT_NUMBER_PLATE_WITH_AI = process.env.EXTRACT_NUMBER_PLATE_URL
 export const nightImageCheckAI = process.env.NIGHT_IMAGE_CHECK;
 export const MILEAGE_EXTRACTION = process.env.MILEAGE_EXTRACT;
 export const AI_API_TOKEN = process.env.AI_API_TOKEN;
-export const SMARTLOOK_PROJECT_ID = process.env.SMARTLOOK_PROJECT_ID;
+export const SMARTLOOK_PROJECT_ID = '77967539d73859f97a4f9cc54d00dac3b6f00deb'
 
 // API endpoints
 export const API_ENDPOINTS = {

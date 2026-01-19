@@ -1,27 +1,27 @@
-import React, {useEffect, useState} from 'react';
-import {Linking, View} from 'react-native';
-import {checkVersion} from 'react-native-check-version';
+import React, { useEffect, useState } from 'react';
+import { Linking, View } from 'react-native';
+import { checkVersion } from 'react-native-check-version';
 import 'react-native-devsettings';
 import BootSplash from 'react-native-bootsplash';
-import {useDispatch, useSelector} from 'react-redux';
-import {DiscardInspectionModal, Splash, Toast} from './src/Components';
+import { useDispatch, useSelector } from 'react-redux';
+import { DiscardInspectionModal, Splash, Toast } from './src/Components';
 import AlertPopup from './src/Components/AlertPopup';
-import {SESSION_EXPIRED, SMARTLOOK_PROJECT_ID, UPDATE_APP} from './src/Constants';
-import {ROUTES} from './src/Navigation/ROUTES';
+import { SESSION_EXPIRED, SMARTLOOK_PROJECT_ID, UPDATE_APP } from './src/Constants';
+import { ROUTES } from './src/Navigation/ROUTES';
 import Navigation from './src/Navigation/index';
-import {clearNewInspection, hideToast, signOut} from './src/Store/Actions';
-import {hasCameraAndMicrophoneAllowed} from './src/Utils';
-import {resetNavigation} from './src/services/navigationService';
+import { clearNewInspection, hideToast, signOut } from './src/Store/Actions';
+import { hasCameraAndMicrophoneAllowed } from './src/Utils';
+import { resetNavigation } from './src/services/navigationService';
 import smartlookService from './src/services/smartlookService';
 
-const {TITLE, MESSAGE, BUTTON} = UPDATE_APP;
-const {TITLE: title, MESSAGE: message, BUTTON: button} = SESSION_EXPIRED;
-const {SIGN_IN} = ROUTES;
+const { TITLE, MESSAGE, BUTTON } = UPDATE_APP;
+const { TITLE: title, MESSAGE: message, BUTTON: button } = SESSION_EXPIRED;
+const { SIGN_IN } = ROUTES;
 
 function App() {
   const dispatch = useDispatch();
   // @ts-ignore
-  const {sessionExpired} = useSelector(state => state?.auth);
+  const { sessionExpired } = useSelector(state => state?.auth);
   const [displayGif, setDisplayGif] = useState(true);
   const [updateAvailable, setUpdateAvailable] = useState('');
 
@@ -46,7 +46,7 @@ function App() {
 
   async function initializeApp() {
     await versionCheck();
-    await BootSplash.hide({fade: true});
+    await BootSplash.hide({ fade: true });
 
     if (displayGif) {
       const timeoutId = setTimeout(() => setDisplayGif(false), 3500);
