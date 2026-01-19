@@ -1,13 +1,13 @@
 import React from 'react';
-import {useTranslation} from 'react-i18next';
-import {View, StyleSheet, Pressable, Platform} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { useTranslation } from 'react-i18next';
+import { View, StyleSheet, Pressable, Platform } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AppText from '../Components/text';
-import {GradientCircleTabIcon, HomeTabIcon, ProfileTabIcon, ReportTabIcon, TripTabIcon} from '../Assets/Icons';
-import {colors} from '../Assets/Styles';
-import {TABS} from './ROUTES';
-import {HomeTabStack, InspectionTabStack, MyTripsTabStack, ProfileTabStack, ReportTabStack} from './stacks';
+import { GradientCircleTabIcon, HomeTabIcon, ProfileTabIcon, ReportTabIcon, TripTabIcon } from '../Assets/Icons';
+import { colors } from '../Assets/Styles';
+import { TABS } from './ROUTES';
+import { HomeTabStack, InspectionTabStack, MyTripsTabStack, ProfileTabStack, ReportTabStack } from './stacks';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,11 +21,11 @@ const ICON_MAP = {
 
 const getIconColor = isFocused => (isFocused ? colors.oceanBlue : colors.slateGray);
 
-const CustomTabBar = ({state, descriptors, navigation}) => {
+const CustomTabBar = ({ state, descriptors, navigation }) => {
   return (
     <View style={styles.container}>
       {state.routes.map((route, index) => {
-        const {options} = descriptors[route.key];
+        const { options } = descriptors[route.key];
         const label = options.tabBarLabel ?? options.title ?? route.name;
         const isFocused = state.index === index;
 
@@ -66,7 +66,7 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
         const IconComponent = ICON_MAP[route.name];
 
         return (
-          <Pressable key={route.key} onPress={onPress} style={styles.tabItem} accessibilityRole="button" accessibilityState={{selected: isFocused}}>
+          <Pressable key={route.key} onPress={onPress} style={styles.tabItem} accessibilityRole="button" accessibilityState={{ selected: isFocused }}>
             {/* Top Indicator Line */}
             {isFocused && <View style={styles.activeIndicator} />}
 
@@ -85,7 +85,7 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
 };
 
 const BottomTab = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <Tab.Navigator
@@ -94,11 +94,11 @@ const BottomTab = () => {
         headerShown: false,
         tabBarHideOnKeyboard: true, // Hides tab bar when keyboard opens
       }}>
-      <Tab.Screen name={TABS.HOME} component={HomeTabStack} options={{tabBarLabel: t('tabs.home')}} />
-      <Tab.Screen name={TABS.REPORTS} component={ReportTabStack} options={{tabBarLabel: t('tabs.reports')}} />
-      <Tab.Screen name={TABS.INSPECTION} component={InspectionTabStack} options={{tabBarLabel: t('tabs.inspection')}} />
-      <Tab.Screen name={TABS.MY_TRIPS} component={MyTripsTabStack} options={{tabBarLabel: t('tabs.myTrips')}} />
-      <Tab.Screen name={TABS.PROFILE} component={ProfileTabStack} options={{tabBarLabel: t('tabs.profile')}} />
+      <Tab.Screen name={TABS.HOME} component={HomeTabStack} options={{ tabBarLabel: t('tabs.home') }} />
+      <Tab.Screen name={TABS.REPORTS} component={ReportTabStack} options={{ tabBarLabel: t('tabs.reports') }} />
+      <Tab.Screen name={TABS.INSPECTION} component={InspectionTabStack} options={{ tabBarLabel: t('tabs.inspection') }} />
+      <Tab.Screen name={TABS.MY_TRIPS} component={MyTripsTabStack} options={{ tabBarLabel: t('tabs.myTrips') }} />
+      <Tab.Screen name={TABS.PROFILE} component={ProfileTabStack} options={{ tabBarLabel: t('tabs.profile') }} />
     </Tab.Navigator>
   );
 };
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     // Shadow Styling
     elevation: 10,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: -2},
+    shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     borderTopWidth: Platform.OS === 'android' ? 0 : 0.5,
@@ -150,12 +150,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
 
     // Shadow for the button circle
-    shadowColor: colors.oceanBlue,
-    shadowOffset: {width: 0, height: 4},
+    shadowColor: colors.black,
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 0,
-    backgroundColor: colors.white, // Ensure background behind icon if needed
+    backgroundColor: 'transparent', // Ensure background behind icon if needed
     borderRadius: wp(100), // Make it perfectly round
   },
 
