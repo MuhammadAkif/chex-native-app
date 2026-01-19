@@ -1,13 +1,14 @@
-import {View, StyleSheet, Platform, Pressable} from 'react-native';
+import { View, StyleSheet, Platform, Pressable } from 'react-native';
 import React from 'react';
-import {colors} from '../../Assets/Styles';
-import {Platforms} from '../../Constants';
+import { colors } from '../../Assets/Styles';
+import { Platforms } from '../../Constants';
 
-const CardWrapper = ({children, style, onPress}) => {
+const CardWrapper = ({ children, style, onPress }) => {
+  const Container = onPress ? Pressable : View;
   return (
-    <Pressable onPress={onPress} style={[styles.cardContainer, style]}>
+    <Container onPress={onPress} style={[styles.cardContainer, style]}>
       {children}
-    </Pressable>
+    </Container>
   );
 };
 
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     borderWidth: Platform.OS === Platforms.ANDROID ? 0.5 : undefined,
     borderColor: colors.gray,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
     borderRadius: 20,

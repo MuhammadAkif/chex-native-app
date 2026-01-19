@@ -1,16 +1,16 @@
 import i18n from 'i18next';
-import {initReactI18next} from 'react-i18next';
+import { initReactI18next } from 'react-i18next';
 import * as Localization from 'react-native-localize';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LANGUAGE_STORAGE_KEY = '@app_language';
 
 const resources = {
-  en: {translation: require('./locales/en.json')},
-  ro: {translation: require('./locales/ro.json')},
-  //   pl: {translation: require('./locales/pl.json')},
-  //   bg: {translation: require('./locales/bg.json')},
-  //   tr: {translation: require('./locales/tr.json')},
+  en: { translation: require('./locales/en.json') },
+  ro: { translation: require('./locales/ro.json') },
+  pl: { translation: require('./locales/pl.json') },
+  bg: { translation: require('./locales/bg.json') },
+  tr: { translation: require('./locales/tr.json') },
 };
 
 // Initialize i18n synchronously with default language
@@ -18,7 +18,7 @@ i18n.use(initReactI18next).init({
   resources,
   lng: 'en', // Default to English
   fallbackLng: 'en',
-  interpolation: {escapeValue: false},
+  interpolation: { escapeValue: false },
 });
 
 // Get saved language or detect device language and update i18n

@@ -1,26 +1,28 @@
-import React, {useEffect, useState} from 'react';
-import {BackHandler} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { BackHandler } from 'react-native';
 
-import {InspectionDetailScreen} from '../Screens';
-import {HARDWARE_BACK_PRESS} from '../Constants';
-import {CrossFilled, Tick} from '../Assets/Icons';
-import {colors} from '../Assets/Styles';
-import {checkAndCompleteUrl, formatTitle} from '../Utils/helpers';
+import { InspectionDetailScreen } from '../Screens';
+import { HARDWARE_BACK_PRESS } from '../Constants';
+import { CrossFilled, Tick } from '../Assets/Icons';
+import { colors } from '../Assets/Styles';
+import { checkAndCompleteUrl, formatTitle } from '../Utils/helpers';
+import { useTranslation } from 'react-i18next';
 
 const STATUS_ICON = {
   true: Tick,
   false: CrossFilled,
 };
-const {deepGreen, red} = colors;
+const { deepGreen, red } = colors;
 
-const InspectionDetailContainer = ({navigation, route}) => {
-  const {canGoBack, goBack} = navigation;
+const InspectionDetailContainer = ({ navigation, route }) => {
+  const { canGoBack, goBack } = navigation;
+  const { t } = useTranslation();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalDetails, setModalDetails] = useState({});
   let detailsFiles = [];
   if (route?.params) {
-    let {files, finalStatus, remarks} = route.params;
-    detailsFiles = {files: files, finalStatus: finalStatus, remarks: remarks};
+    let { files, finalStatus, remarks } = route.params;
+    detailsFiles = { files: files, finalStatus: finalStatus, remarks: remarks };
   }
   const isPassed = detailsFiles?.finalStatus && detailsFiles?.finalStatus.toLowerCase() === 'pass';
   const ICON_COLOR = {
@@ -42,12 +44,12 @@ const InspectionDetailContainer = ({navigation, route}) => {
     return false;
   }
   const handleDisplayMedia = item => {
-    let title = formatTitle(item?.category);
+    let title = t(`inspectionTitles.${item?.category}`);
     const checkVideo = {
       'video/mp4': true,
       '.mp4': true,
     };
-    let {completedUrl: source} = checkAndCompleteUrl(item?.processedUrl || item?.url);
+    let { completedUrl: source } = checkAndCompleteUrl(item?.processedUrl || item?.url);
     const isVideo = checkVideo[item?.extension] || false;
     setModalDetails({
       source,

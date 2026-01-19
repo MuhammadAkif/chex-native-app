@@ -1,13 +1,13 @@
-import {StyleSheet} from 'react-native';
-import {colors, expandedCardStyles} from '../../../Assets/Styles';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import { StyleSheet } from 'react-native';
+import { colors, expandedCardStyles } from '../../../Assets/Styles';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
 const CARD_PADDING = wp(4);
 
 export const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: colors.royalBlue},
-  scrollContentContainer: {flexGrow: 1, paddingBottom: hp(3), paddingHorizontal: CARD_PADDING},
-  scrollContainer: {flex: 1},
+  container: { flex: 1, backgroundColor: colors.royalBlue },
+  scrollContentContainer: { flexGrow: 1, paddingBottom: hp(3), paddingHorizontal: CARD_PADDING },
+  scrollContainer: { flex: 1 },
   whiteContainerContent: {
     top: -hp(8),
     backgroundColor: colors.white,
@@ -18,11 +18,11 @@ export const styles = StyleSheet.create({
     gap: 15,
     flex: 1,
   },
-  infoContainer: {gap: 7},
-  cardWrapper: {flex: 1, backgroundColor: colors.white},
-  blueHeaderContainer: {backgroundColor: colors.royalBlue, height: hp(22)},
-  inputsContainer: {gap: 15, marginTop: '5%', flex: 1},
-  nextButton: {height: hp(5), width: '80%', alignSelf: 'center', marginTop: hp(3)},
+  infoContainer: { gap: 7 },
+  cardWrapper: { flex: 1, backgroundColor: colors.white },
+  blueHeaderContainer: { backgroundColor: colors.royalBlue, height: hp(22) },
+  inputsContainer: { gap: 15, marginTop: '5%' },
+  nextButton: { height: hp(5), width: '80%', alignSelf: 'center', marginTop: hp(3) },
   inputContainer: {
     height: hp('5%'),
     width: '100%',
@@ -31,8 +31,8 @@ export const styles = StyleSheet.create({
     borderRadius: 100,
     borderColor: expandedCardStyles.uploadImageContainer.borderColor,
   },
-  input: {fontSize: wp(3.5)},
-  flex1: {flex: 1},
+  input: { fontSize: wp(3.5) },
+  flex1: { flex: 1 },
   languageContainer: {
     marginTop: hp(0.5),
   },
@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
     zIndex: 10,
     elevation: 3,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },

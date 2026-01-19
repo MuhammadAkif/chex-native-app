@@ -1,23 +1,23 @@
-import {StatusBar, View, Pressable} from 'react-native';
-import React, {useCallback, useRef, useState, useEffect} from 'react';
-import {useTranslation} from 'react-i18next';
-import {styles} from './styles';
-import {CardWrapper, CustomInput, IconWrapper, LoadingIndicator, LogoHeader, PhoneInput, PrimaryGradientButton} from '../../../Components';
-import {useDispatch, useSelector} from 'react-redux';
-import {ROUTES, STACKS} from '../../../Navigation/ROUTES';
-import {Logout, ChevronIcon} from '../../../Assets/Icons';
-import {colors} from '../../../Assets/Styles';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
+import { StatusBar, View, Pressable, Keyboard } from 'react-native';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { styles } from './styles';
+import { CardWrapper, CustomInput, IconWrapper, LoadingIndicator, LogoHeader, PhoneInput, PrimaryGradientButton } from '../../../Components';
+import { useDispatch, useSelector } from 'react-redux';
+import { ROUTES, STACKS } from '../../../Navigation/ROUTES';
+import { Logout, ChevronIcon } from '../../../Assets/Icons';
+import { colors } from '../../../Assets/Styles';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import AppText from '../../../Components/text';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {Formik} from 'formik';
-import {showToast, signOut} from '../../../Store/Actions';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { Formik } from 'formik';
+import { showToast, signOut } from '../../../Store/Actions';
 import api from '../../../services/api';
-import {API_ENDPOINTS} from '../../../Constants';
-import {useFocusEffect} from '@react-navigation/native';
-import {Types} from '../../../Store/Types';
+import { API_ENDPOINTS } from '../../../Constants';
+import { useFocusEffect } from '@react-navigation/native';
+import { Types } from '../../../Store/Types';
 import smartlookService from '../../../services/smartlookService';
-import {changeLanguage} from '../../../Utils/i18n';
+import { changeLanguage } from '../../../Utils/i18n';
 
 const validate = (values, t) => {
   const errors = {};
@@ -48,15 +48,15 @@ const validate = (values, t) => {
 };
 
 const LANGUAGES = [
-  {code: 'en', name: 'English'},
-  {code: 'ro', name: 'Romanian'},
-  {code: 'pl', name: 'Polish'},
-  {code: 'bg', name: 'Bulgarian'},
-  {code: 'tr', name: 'Turkish'},
+  { code: 'en', name: 'English' },
+  { code: 'ro', name: 'Romanian' },
+  { code: 'pl', name: 'Polish' },
+  { code: 'bg', name: 'Bulgarian' },
+  { code: 'tr', name: 'Turkish' },
 ];
 
-const MyProfile = ({navigation}) => {
-  const {t, i18n} = useTranslation();
+const MyProfile = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
   const userState = useSelector(state => state?.auth?.user?.data);
   const [isLoading, setIsLoading] = useState(false);
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
@@ -73,7 +73,7 @@ const MyProfile = ({navigation}) => {
   // Track whether user left the screen with unsaved (dirty) form changes
   const wasDirtyRef = useRef(false);
   // Keep latest Formik helpers available to focus/blur effects
-  const formikHelpersRef = useRef({resetForm: null, dirty: false});
+  const formikHelpersRef = useRef({ resetForm: null, dirty: false });
 
   const handleLogout = () => {
     navigation.replace(STACKS.AUTH_STACK);
@@ -84,8 +84,9 @@ const MyProfile = ({navigation}) => {
     }, 100);
   };
 
-  const handleSubmitForm = (values, {setSubmitting, resetForm}) => {
+  const handleSubmitForm = (values, { setSubmitting, resetForm }) => {
     setSubmitting(false);
+    Keyboard.dismiss()
 
     updateProfileAPI(values);
   };
@@ -100,7 +101,7 @@ const MyProfile = ({navigation}) => {
       const token = response?.data?.token;
       if (response?.status === 200 && user && token) {
         dispatch(showToast(t('profile.profileUpdatedToast'), 'success'));
-        dispatch({type: Types.UPDATE_USER, payload: {data: user, token}});
+        dispatch({ type: Types.UPDATE_USER, payload: { data: user, token } });
         // Reinitialize Formik with latest saved values from API
         const updatedInitialData = {
           name: user?.name,
@@ -109,7 +110,7 @@ const MyProfile = ({navigation}) => {
           phone: user?.phone?.replace(/\D/g, '').slice(-10),
         };
         if (formikHelpersRef.current?.resetForm) {
-          formikHelpersRef.current.resetForm({values: updatedInitialData});
+          formikHelpersRef.current.resetForm({ values: updatedInitialData });
           wasDirtyRef.current = false;
         }
       }
@@ -148,7 +149,7 @@ const MyProfile = ({navigation}) => {
   useFocusEffect(
     useCallback(() => {
       if (wasDirtyRef.current && formikHelpersRef.current?.resetForm && !isLoading) {
-        formikHelpersRef.current.resetForm({values: initialData});
+        formikHelpersRef.current.resetForm({ values: initialData });
         wasDirtyRef.current = false;
       }
 
@@ -177,7 +178,7 @@ const MyProfile = ({navigation}) => {
       <View style={styles.cardWrapper}>
         <CardWrapper style={styles.whiteContainerContent}>
           <KeyboardAwareScrollView
-            nestedScrollEnabled
+            keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollContentContainer}
             style={styles.scrollContainer}>
@@ -204,7 +205,7 @@ const MyProfile = ({navigation}) => {
                 dirty,
               }) => {
                 // Keep helpers fresh for focus/blur effects
-                formikHelpersRef.current = {resetForm, dirty};
+                formikHelpersRef.current = { resetForm, dirty };
                 return (
                   <>
                     <View style={styles.inputsContainer}>
