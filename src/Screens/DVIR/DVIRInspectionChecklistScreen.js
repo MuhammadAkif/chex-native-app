@@ -22,6 +22,7 @@ import CommentBorderedIcon from '../../Assets/Icons/CommentBorderedIcon';
 import CrossBlue from '../../Assets/Icons/CrossBlue';
 import { IMAGES } from '../../Assets/Images';
 import { colors, NewInspectionStyles } from '../../Assets/Styles';
+import { DVIR_CHECKLIST_MAPPING } from '../../Constants'; // Import mapping
 import {
   AndroidMediaViewModal,
   CaptureImageModal,
@@ -30,7 +31,6 @@ import {
   LoadingIndicator,
   LogoHeader,
   PrimaryGradientButton,
-  VideoPicker,
 } from '../../Components';
 import AppText from '../../Components/text';
 
@@ -75,10 +75,14 @@ const ChecklistItem = React.memo(
     buttonStyles,
     onMediaPress,
   }) => {
+    const { t } = useTranslation();
+    const translationKey = DVIR_CHECKLIST_MAPPING[item.checkId];
+    const displayName = translationKey ? t(translationKey) : item?.name;
+
     return (
       <View style={styles.itemContainer}>
         <View style={styles.itemHeader}>
-          <AppText style={styles.itemTitle}>{item?.name}</AppText>
+          <AppText style={styles.itemTitle}>{displayName}</AppText>
 
           <View style={styles.iconContainer}>
             <TouchableOpacity onPress={() => onComment(index)} activeOpacity={0.7}>
@@ -277,7 +281,7 @@ const DVIRInspectionChecklistScreen = ({
             <View style={styles.headerLeft}>
               <AppText style={styles.headerLeftText}>1</AppText>
             </View>
-            <AppText style={styles.headerTitle}>{t('dvir.checklist')}</AppText>
+            <AppText style={styles.headerTitle}>{t('dvir.checklistTitle')}</AppText>
             <View style={styles.headerRight}>
               <TouchableOpacity activeOpacity={0.7} onPress={toggleChecklistSection} style={!showChecklistSection && styles.rotateChevron}>
                 {checklistLoading ? (

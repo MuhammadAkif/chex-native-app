@@ -195,7 +195,7 @@ const AnnotateImage = ({
             </View>
 
             <View style={styles.body}>
-              <View style={[styles.box, { height: hp('9%'), width: '90%' }]}>
+              <View style={[styles.box, { justifyContent: 'center', alignItems: 'center' }]}>
                 <Text style={styles.subHeadingText}>
                   {t('annotation.severityLevel')}
                   <Mandatory style={styles.subHeadingText} />
@@ -281,6 +281,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: royalBlue,
     marginBottom: 10,
+    textAlign: 'center',
   },
   subHeadingContainer: {
     alignItems: 'center',

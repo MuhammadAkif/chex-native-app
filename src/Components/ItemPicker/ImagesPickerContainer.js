@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {useSelector} from 'react-redux';
-import {useTranslation} from 'react-i18next';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
-import {ImagePicker_New, ItemPickerLabel} from '../index';
-import {colors, ExpandedCardStyles} from '../../Assets/Styles';
-import {getAnnotationStatus, isNotEmpty} from '../../Utils';
+import { ImagePicker_New, ItemPickerLabel } from '../index';
+import { colors, ExpandedCardStyles } from '../../Assets/Styles';
+import { getAnnotationStatus, isNotEmpty } from '../../Utils';
 
-const {white} = colors;
-const {container} = ExpandedCardStyles;
+const { white } = colors;
+const { container } = ExpandedCardStyles;
 
 const ImagesPickerContainer = ({
   ExteriorDetails,
@@ -26,7 +26,7 @@ const ImagesPickerContainer = ({
   handleMediaModalDetailsPress,
   borderBottomWidth = 1,
 }) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const defaultPickerText = pickerText || t('common.captureImage');
 
   const [visibleTiles, setVisibleTiles] = useState({
@@ -40,11 +40,11 @@ const ImagesPickerContainer = ({
     imageURLOne: false,
     imageURLTwo: false,
   });
-  const {fileDetails, exteriorItems} = useSelector(state => state.newInspection);
-  let {title, groupType, key} = ExteriorDetails;
+  const { fileDetails, exteriorItems } = useSelector(state => state.newInspection);
+  let { title, groupType, key } = ExteriorDetails;
   const displayLabel = imageURL || imageURLOne || imageURLTwo;
   const labelVisible = hideAddLAbel ? !hideAddLAbel : isNotEmpty(displayLabel);
-  const {zero, one, two} = visibleTiles;
+  const { zero, one, two } = visibleTiles;
   const displayImage = imageURL || zero;
   const displayImageOne = imageURLOne || one;
   const displayImageTwo = imageURLTwo || two;
@@ -64,29 +64,29 @@ const ImagesPickerContainer = ({
 
   const onAddImagePress = () => {
     if (!zero) {
-      setVisibleTiles(prevState => ({...prevState, zero: true}));
+      setVisibleTiles(prevState => ({ ...prevState, zero: true }));
     } else if (!one) {
-      setVisibleTiles(prevState => ({...prevState, one: true}));
+      setVisibleTiles(prevState => ({ ...prevState, one: true }));
     } else if (!two) {
-      setVisibleTiles(prevState => ({...prevState, two: true}));
+      setVisibleTiles(prevState => ({ ...prevState, two: true }));
     } else {
     }
   };
   function updateTiles() {
     if (imageURL && !zero) {
-      setVisibleTiles(prevState => ({...prevState, zero: true}));
+      setVisibleTiles(prevState => ({ ...prevState, zero: true }));
     }
     if (imageURLOne && !one) {
-      setVisibleTiles(prevState => ({...prevState, one: true}));
+      setVisibleTiles(prevState => ({ ...prevState, one: true }));
     }
     if (imageURLTwo && !two) {
-      setVisibleTiles(prevState => ({...prevState, two: true}));
+      setVisibleTiles(prevState => ({ ...prevState, two: true }));
     }
   }
   return (
     <View style={styles.OuterContainer}>
       <ItemPickerLabel label={title} labelVisible={labelVisible} onAddNotePress={onAddImagePress} />
-      <View style={[styles.container, styles.singleTileContainer, {borderBottomWidth}]}>
+      <View style={[styles.container, styles.singleTileContainer, { borderBottomWidth }]}>
         {displayImage && (
           <ImagePicker_New
             text={title}

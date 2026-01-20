@@ -1,5 +1,5 @@
 import React from 'react';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   View,
   Text,
@@ -7,17 +7,15 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
-
-import {circleBorderRadius, colors, NewInspectionStyles} from '../Assets/Styles';
-import {HeaderBackground, HeaderTitle, IconWrapper, LogoHeader, PrimaryStartInspectionButton, RenderInspectionReviewed} from '../Components';
-import {handleHomePress} from '../Utils';
-import {BellWhiteIcon, Filter, HamburgerIcon} from '../Assets/Icons';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { circleBorderRadius, colors, NewInspectionStyles } from '../Assets/Styles';
+import { LogoHeader, RenderInspectionReviewed } from '../Components';
+import { Filter } from '../Assets/Icons';
 import Filter_RBSheet from '../Components/Filter_RBSheet';
 import EmptyComponent from '../Components/EmptyComponent';
 
-const {black, royalBlue, gray, white, orange} = colors;
-const {container, bodyContainer, innerBody} = NewInspectionStyles;
+const { black, royalBlue, gray, white, orange } = colors;
+const { container, bodyContainer, innerBody } = NewInspectionStyles;
 
 const InspectionReviewedScreen = ({
   handleIsExpanded,
@@ -37,70 +35,63 @@ const InspectionReviewedScreen = ({
   setFilter,
   inspections,
 }) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   return (
     <View style={container}>
-    <LogoHeader
-      showLeft={false}
-      // rightIcon={
-      //   <IconWrapper>
-      //     <BellWhiteIcon />
-      //   </IconWrapper>
-      // }
-    />
-    <View style={[bodyContainer, {marginTop: wp(5)}]}>
-      <View style={styles.bodyHeaderContainer}>
-        <Text style={styles.bodyHeaderTitleText}>
-          {t('inspectionReviewed.title')}
-        </Text>
-        <TouchableOpacity style={styles.filterContainer} onPress={onFilterPress}>
-          <Filter height={hp('2%')} width={wp('5%')} />
-          <Text style={{...styles.homeText, ...styles.filterText}}>
-            {t('inspectionReviewed.filter')}
+      <LogoHeader showLeft={false} />
+      <View style={[bodyContainer, { marginTop: wp(5) }]}>
+        <View style={styles.bodyHeaderContainer}>
+          <Text style={styles.bodyHeaderTitleText}>
+            {t('inspectionReviewed.title')}
           </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={innerBody}>
-        <FlatList
-          data={data}
-          renderItem={({item}) => (
-            <RenderInspectionReviewed
-              item={item}
-              isExpanded={isExpanded}
-              handleIsExpanded={handleIsExpanded}
-              inspectionDetailsPress={inspectionDetailsPress}
-              isLoading={isLoading || isNewInspectionLoading}
-              selectedInspectionID={selectedInspectionID}
-            />
-          )}
-          onRefresh={() => {
-            if (selectedInspectionID === null) {
-              fetchInspectionInProgress();
-            } else {
-              return true;
-            }
-          }}
-          refreshing={isLoading && selectedInspectionID === null}
-          keyExtractor={item => item?.id}
-          ListEmptyComponent={EmptyComponent}
-        />
-      </View>
-      {/* <PrimaryStartInspectionButton
+          <TouchableOpacity style={styles.filterContainer} onPress={onFilterPress}>
+            <Filter height={hp('2%')} width={wp('5%')} />
+            <Text style={{ ...styles.homeText, ...styles.filterText }}>
+              {t('inspectionReviewed.filter')}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View style={innerBody}>
+          <FlatList
+            data={data}
+            renderItem={({ item }) => (
+              <RenderInspectionReviewed
+                item={item}
+                isExpanded={isExpanded}
+                handleIsExpanded={handleIsExpanded}
+                inspectionDetailsPress={inspectionDetailsPress}
+                isLoading={isLoading || isNewInspectionLoading}
+                selectedInspectionID={selectedInspectionID}
+              />
+            )}
+            onRefresh={() => {
+              if (selectedInspectionID === null) {
+                fetchInspectionInProgress();
+              } else {
+                return true;
+              }
+            }}
+            refreshing={isLoading && selectedInspectionID === null}
+            keyExtractor={item => item?.id}
+            ListEmptyComponent={EmptyComponent}
+          />
+        </View>
+        {/* <PrimaryStartInspectionButton
         buttonPress={onNewInspectionPress}
         textPress={() => handleHomePress(navigation)}
         isLoading={isNewInspectionLoading}
         disabled={isNewInspectionLoading}
       /> */}
+      </View>
+      <Filter_RBSheet
+        filter={filter}
+        setFilter={setFilter}
+        inspections={inspections}
+        setInspections={setInspections}
+        navigation={navigation}
+        filterResetKey={filterResetKey}
+      />
     </View>
-    <Filter_RBSheet
-      filter={filter}
-      setFilter={setFilter}
-      inspections={inspections}
-      setInspections={setInspections}
-      navigation={navigation}
-      filterResetKey={filterResetKey}
-    />
-  </View>
   );
 };
 
@@ -114,11 +105,13 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     marginBottom: '3%',
+    gap: 5
   },
   bodyHeaderTitleText: {
     fontSize: hp('2.5%'),
     fontWeight: 'bold',
     color: black,
+    flex: 1
   },
   buttonContainer: {
     height: hp('6%'),
@@ -148,6 +141,7 @@ const styles = StyleSheet.create({
     columnGap: hp('1%'),
     paddingHorizontal: wp('5%'),
     borderRadius: circleBorderRadius,
+    height: 32
   },
   filterText: {
     color: white,

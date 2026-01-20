@@ -175,7 +175,10 @@
         "darkImageError": {
             "title": "Problem z jakością obrazu",
             "message": "Przesłany obraz wydaje się zbyt ciemny. Spróbuj przesłać wyraźniejszy obraz z lepszym oświetleniem."
-        }
+        },
+        "imageAlreadyDeleted": "Bu resim zaten silinmiş.",
+        "genericError": "Bir hata oluştu",
+        "alreadyInProgress": "Już w toku"
     },
     "annotateImageDetails": {
         "title": "Zewnątrz Przód",
@@ -227,7 +230,7 @@
         "failed": "Nie udało się usunąć. Spróbuj ponownie."
     },
     "dvir": {
-        "checklist": "Lista kontrolna",
+        "checklistTitle": "Lista kontrolna",
         "tires": "Opony",
         "captureFrames": "Przechwyć klatki",
         "comments": "Komentarze",
@@ -257,6 +260,15 @@
             "good": "Dobry",
             "repair": "Naprawa",
             "replace": "Wymiana"
+        },
+        "checklist": {
+            "headLights": "Reflektory / Kierunkowskazy / Światła awaryjne / Lampy zewnętrzne / Pióra wycieraczek",
+            "engineBay": "Komora silnika (Szeroki kadr)",
+            "oilDipstick": "Bagnet oleju (Zdjęcie pokazujące poziom/przejrzystość oleju)",
+            "underBodyLeak": "Sprawdzenie wycieków podwozia (Zdjęcie pod silnikiem)",
+            "radioNavigation": "Radio / Ekran nawigacji (Włączony)",
+            "jackTools": "Podnośnik i narzędzia (Podnośnik, Klucz, Zestaw narzędzi)",
+            "tailLights": "Światła tylne / Kierunkowskazy / Światła stopu / Światła awaryjne / Lampy zewnętrzne"
         }
     },
     "vehicleInfo": {

@@ -1,21 +1,21 @@
 import React from 'react';
-import {Text, TouchableOpacity, View, StyleSheet, Dimensions} from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import { Text, TouchableOpacity, View, StyleSheet, Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
 
-import {colors, expandedCardStyles, ItemPickerStyles} from '../../Assets/Styles';
-import {Camera, CrossFilled, Damage_Vehicle} from '../../Assets/Icons';
-import {Platforms} from '../../Constants';
-import {Custom_Image} from '../index';
+import { colors, expandedCardStyles, ItemPickerStyles } from '../../Assets/Styles';
+import { Camera, CrossFilled, Damage_Vehicle } from '../../Assets/Icons';
+import { Platforms } from '../../Constants';
+import { Custom_Image } from '../index';
 
-const {WINDOW} = Platforms;
+const { WINDOW } = Platforms;
 const iconHeight = hp('5%');
 const iconWidth = wp('5%');
-const {height, width} = Dimensions.get(WINDOW);
-const {orangePeel, blueGray} = colors;
-const {uploadImageAndTextContainer, crossContainer, uploadImageContainer, cameraIconContainer, uploadImageText, textColor} = expandedCardStyles;
-const {container} = ItemPickerStyles;
+const { height, width } = Dimensions.get(WINDOW);
+const { orangePeel, blueGray } = colors;
+const { uploadImageAndTextContainer, crossContainer, uploadImageContainer, cameraIconContainer, uploadImageText, textColor } = expandedCardStyles;
+const { container } = ItemPickerStyles;
 
 const ImagePicker_New = ({
   onPress,
@@ -28,21 +28,21 @@ const ImagePicker_New = ({
   isAnnotated,
   displayImage = true,
 }) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const defaultPickerText = pickerText || t('common.captureImage');
 
   return (
     <View style={uploadImageAndTextContainer}>
       {imageURL && displayImage ? (
-        <TouchableOpacity style={{...container, ...styles.size}} disabled={isLoading} onPress={handleMediaModalDetailsPress}>
+        <TouchableOpacity style={{ ...container, ...styles.size }} disabled={isLoading} onPress={handleMediaModalDetailsPress}>
           <TouchableOpacity style={crossContainer} onPress={onClearPress}>
             <CrossFilled height={hp('2.5%')} width={wp('7%')} color={orangePeel} />
           </TouchableOpacity>
           <FastImage
-            source={{uri: imageURL}}
+            source={{ uri: imageURL }}
             priority={'normal'}
             resizeMode={'stretch'}
-            style={[StyleSheet.absoluteFill, {borderRadius: wp('4%')}]}
+            style={[StyleSheet.absoluteFill, { borderRadius: wp('4%') }]}
           />
           {/*<Custom_Image
           source={{uri: imageURL}}
@@ -51,7 +51,7 @@ const ImagePicker_New = ({
           {isAnnotated && <Damage_Vehicle style={styles.icon} />}
         </TouchableOpacity>
       ) : (
-        <TouchableOpacity style={{...uploadImageContainer, ...styles.size}} onPress={onPress}>
+        <TouchableOpacity style={{ ...uploadImageContainer, ...styles.size }} onPress={onPress}>
           <View
             style={{
               ...cameraIconContainer,
@@ -66,6 +66,7 @@ const ImagePicker_New = ({
               ...textColor,
               fontSize: hp('1.35%'),
               textAlign: 'center',
+              paddingHorizontal: wp('1%'),
             }}>
             {defaultPickerText}
           </Text>

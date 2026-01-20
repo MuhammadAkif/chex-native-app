@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: hp('3%'),
     fontWeight: '600',
+    textAlign: "center"
   },
   instructionsContainer: {
     width: wp('90%'),

@@ -1,15 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {BackHandler, Platform} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { BackHandler, Platform } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   ExteriorItemsExpandedCard,
   ExteriorItemsExpandedCard_Old,
   InteriorItemsAnnotationExpandedCard,
   InteriorItemsExpandedCard,
 } from '../Components';
-import {Delete_Messages, HARDWARE_BACK_PRESS, hasInteriorAndRoofTopCompany, INSPECTION, VEHICLE_TYPES} from '../Constants';
-import {ROUTES} from '../Navigation/ROUTES';
-import {NewInspectionScreen} from '../Screens';
+import { Delete_Messages, HARDWARE_BACK_PRESS, hasInteriorAndRoofTopCompany, INSPECTION, VEHICLE_TYPES } from '../Constants';
+import { ROUTES } from '../Navigation/ROUTES';
+import { NewInspectionScreen } from '../Screens';
 import {
   clearTires,
   deleteImageFromDatabase,
@@ -48,7 +49,7 @@ import {
   isObjectEmpty,
   LicensePlateDetails,
 } from '../Utils';
-import {useIsFocused, usePreventRemove} from '@react-navigation/native';
+import { useIsFocused, usePreventRemove } from '@react-navigation/native';
 import AppText from '../Components/text';
 
 const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
@@ -59,8 +60,8 @@ const IS_ALL_VEHICLE_PARTS_INITIAL_STATE = {
   isAllParts: false,
 };
 
-const {INSPECTION_IN_PROGRESS, VIDEO, CAMERA, COMPLETED_INSPECTION} = ROUTES;
-const {OS} = Platform;
+const { INSPECTION_IN_PROGRESS, VIDEO, CAMERA, COMPLETED_INSPECTION } = ROUTES;
+const { OS } = Platform;
 const annotationModalInitialState = {
   title: '',
   type: '',
@@ -88,9 +89,10 @@ const delay = {
   android: 0,
 };
 
-const NewInspectionContainer = ({route, navigation}) => {
+const NewInspectionContainer = ({ route, navigation }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
-  const {canGoBack, goBack, navigate} = navigation;
+  const { canGoBack, goBack, navigate } = navigation;
   let {
     carVerificiationItems,
     exteriorItems,
@@ -110,16 +112,16 @@ const NewInspectionContainer = ({route, navigation}) => {
     feedback,
     imageDimensions,
   } = useSelector(state => state.newInspection) || {};
-  const {user} = useSelector(state => state?.auth) || {};
+  const { user } = useSelector(state => state?.auth) || {};
   const isScreenFocused = useIsFocused();
-  const {companyId} = user?.data || {};
+  const { companyId } = user?.data || {};
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
   const [mediaModalDetails, setMediaModalDetails] = useState({});
   const [selectedOption, setSelectedOption] = useState(selectedOptionInitialState);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingIndicator, setLoadingIndicator] = useState(false);
-  const [deleteItem, setDeleteItem] = useState({category: null, key: null});
+  const [deleteItem, setDeleteItem] = useState({ category: null, key: null });
   const [isDiscardInspectionModalVisible, setIsDiscardInspectionModalVisible] = useState(false);
   const [isInspectionInProgressModalVisible, setIsInspectionInProgressModalVisible] = useState(false);
   const [isLicenseModalVisible, setIsLicenseModalVisible] = useState(false);
@@ -158,7 +160,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     handleIsAllVehicleParts();
 
     if (route.params) {
-      const {isLicensePlate, isOdometer, displayAnnotation, fileId, annotationDetails, is_Exterior, routeName} = route.params;
+      const { isLicensePlate, isOdometer, displayAnnotation, fileId, annotationDetails, is_Exterior, routeName } = route.params;
       if (routeName !== ROUTES.VEHICLE_INFORMATION) {
         setTimeout(() => {
           setIsLicenseModalVisible(isLicensePlate || false);
@@ -213,7 +215,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   }, [route?.params?.isInProgress, selectedInspectionID, isScreenFocused]);
 
   // // Cleanup ONLY on screen unmount
-  usePreventRemove(true, ({data}) => {
+  usePreventRemove(true, ({ data }) => {
     console.log('Inspection Redux CleanUp!');
     dispatch(clearNewInspection());
     dispatch(setRequired());
@@ -237,7 +239,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     setIsLoading(false);
     dispatch(clearNewInspection());
     setIsDiscardInspectionModalVisible(false);
-    setDeleteItem({category: null, key: null});
+    setDeleteItem({ category: null, key: null });
     setIsDiscardInspectionModalVisible(false);
     setIsAllVehicleParts(IS_ALL_VEHICLE_PARTS_INITIAL_STATE);
     setInUseErrorTitle('');
@@ -294,7 +296,7 @@ const NewInspectionContainer = ({route, navigation}) => {
       exteriorInsideCargoRoof_1,
       exteriorInsideCargoRoof_2,
     } = exteriorItems;
-    const {driverSide, driverSide_1, driverSide_2, passengerSide, passengerSide_1, passengerSide_2} = interiorItems;
+    const { driverSide, driverSide_1, driverSide_2, passengerSide, passengerSide_1, passengerSide_2 } = interiorItems;
     //Annotation or without annotation
     const interior__ = {
       driverSide: driverSide || driverSide_1 || driverSide_2,
@@ -348,7 +350,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     // navigate(previousRoute);
   };
   function updateRequiredFields(interiorFields, exteriorFields) {
-    setRequiredFields({...interiorFields, ...exteriorFields});
+    setRequiredFields({ ...interiorFields, ...exteriorFields });
   }
   //Collapsed Cards Functions starts here
   const handleCardExpansion = key => {
@@ -365,7 +367,7 @@ const NewInspectionContainer = ({route, navigation}) => {
 
     // SHOULD DISPLAY REQUIRED TAG ON INFO MODAL
     if (haveType) {
-      const {key} = details;
+      const { key } = details;
       const isRequired = isNotEmpty(requiredFields[key]);
       toggleFieldRequired(!isRequired);
     } else {
@@ -441,14 +443,14 @@ const NewInspectionContainer = ({route, navigation}) => {
     navigation.replace(COMPLETED_INSPECTION);
   }
   function onGetLocationFail(error) {
-    const {statusCode = null} = error?.response?.data;
+    const { statusCode = null } = error?.response?.data;
     setIsLoading(false);
     if (statusCode === 401) {
       handle_Session_Expired(statusCode, dispatch);
     }
   }
   function onSubmitPressFail(error) {
-    const {statusCode = null} = error?.response?.data;
+    const { statusCode = null } = error?.response?.data;
     console.log('Completed Inspection error :', error);
     if (statusCode === 401) {
       handle_Session_Expired(statusCode, dispatch);
@@ -457,11 +459,11 @@ const NewInspectionContainer = ({route, navigation}) => {
   const handleOnCrossPress = (category, key, variant = 0) => {
     dispatch(categoryVariant(variant));
     setIsDiscardInspectionModalVisible(true);
-    setDeleteItem({category: category, key: key});
+    setDeleteItem({ category: category, key: key });
   };
   const handleYesPress = async () => {
-    const {key, category} = deleteItem;
-    const {interiorItems: interior, exteriorItems: exterior} = INSPECTION;
+    const { key, category } = deleteItem;
+    const { interiorItems: interior, exteriorItems: exterior } = INSPECTION;
     const types = [interior, exterior];
     const haveType = types.includes(category);
     let key_ = key;
@@ -480,7 +482,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     dispatch(removeVehicleImage(category, key_));
   }
   function onImageDeleteFail(e, category, key_) {
-    const {success, failed} = Delete_Messages;
+    const { success, failed } = Delete_Messages;
     const message = {
       types: {
         true: 'success',
@@ -494,7 +496,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     console.log('error deleting image => ', e);
     const statusCode = e?.response?.data?.statusCode;
     const alreadyRemoved = statusCode === 404;
-    const activeMessage = message.messages[alreadyRemoved] || 'This image has already been deleted.';
+    const activeMessage = message.messages[alreadyRemoved] || t('errors.imageAlreadyDeleted');
     const activeType = message.types[alreadyRemoved] || 'error';
     if (statusCode === 401) {
       handle_Session_Expired(statusCode, dispatch);
@@ -507,7 +509,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   }
   const handleNoPress = () => {
     setIsDiscardInspectionModalVisible(false);
-    setDeleteItem({category: null, key: null});
+    setDeleteItem({ category: null, key: null });
   };
   const handleConfirmModalVisible = () => setIsLicenseModalVisible(prevState => !prevState);
   const handleConfirmVehicleDetail = async numberPlate => {
@@ -533,8 +535,8 @@ const NewInspectionContainer = ({route, navigation}) => {
       statusCode = null,
       hasAdded = 'existing',
       inspectionId = null,
-      errorMessage = 'An error occurred',
-      message = 'An error occurred',
+      errorMessage = t('errors.genericError'),
+      message = t('errors.genericError'),
     } = e?.response?.data || {};
 
     if (statusCode === 409) {
@@ -559,7 +561,7 @@ const NewInspectionContainer = ({route, navigation}) => {
     vehicleTireStatusToRender(selectedInspectionID).then();
   }
   function onInProgressInspectionFail(error) {
-    const {statusCode = null} = error?.response?.data || {};
+    const { statusCode = null } = error?.response?.data || {};
     setLoadingIndicator(false);
     setIsLoading(false);
     if (statusCode === 401) {
@@ -580,7 +582,7 @@ const NewInspectionContainer = ({route, navigation}) => {
   }
   function onVehicleTireStatusToRenderSuccess(res) {
     const {
-      data: {displayTire},
+      data: { displayTire },
     } = res;
     setDisplayTires(displayTire);
     setLoadingIndicator(!displayTire);
@@ -626,8 +628,8 @@ const NewInspectionContainer = ({route, navigation}) => {
     await get_Inspection_Details(dispatch, selectedInspectionID);
   }
   function onAnnotationSubmitFail(error, callback) {
-    const {statusCode = null} = error?.response?.data;
-    console.log({error});
+    const { statusCode = null } = error?.response?.data;
+    console.log({ error });
     callback();
     if (statusCode === 401) {
       handle_Session_Expired(statusCode, dispatch);

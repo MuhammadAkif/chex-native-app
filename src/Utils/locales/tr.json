@@ -175,7 +175,10 @@
         "darkImageError": {
             "title": "Görüntü Kalitesi Sorunu",
             "message": "Yüklenen resim çok karanlık görünüyor. Lütfen daha iyi aydınlatmaya sahip daha net bir resim yüklemeyi deneyin."
-        }
+        },
+        "imageAlreadyDeleted": "Bu resim zaten silinmiş.",
+        "genericError": "Bir hata oluştu",
+        "alreadyInProgress": "Zaten Devam Eden"
     },
     "annotateImageDetails": {
         "title": "Dış Ön",
@@ -227,7 +230,7 @@
         "failed": "Silme başarısız. Lütfen tekrar deneyin."
     },
     "dvir": {
-        "checklist": "Kontrol Listesi Öğeleri",
+        "checklistTitle": "Kontrol Listesi Öğeleri",
         "tires": "Lastikler",
         "captureFrames": "Kareleri Yakala",
         "comments": "Yorumlar",
@@ -257,6 +260,15 @@
             "good": "İyi",
             "repair": "Onarım",
             "replace": "Değiştir"
+        },
+        "checklist": {
+            "headLights": "Farlar / Sinyaller / Dörtlüler / Dış Lambalar / Silecek Süpürgeleri",
+            "engineBay": "Motor Bölmesi (Geniş Çekim)",
+            "oilDipstick": "Yağ Çubuğu (Yağ Seviyesini/Berraklığını Gösteren Fotoğraf)",
+            "underBodyLeak": "Alt Gövde Sızıntı Kontrolü (Motor Altı Fotoğrafı)",
+            "radioNavigation": "Radyo / Navigasyon Ekranı (Açık)",
+            "jackTools": "Kriko ve Aletler (Kriko, Anahtar, Alet Çantası)",
+            "tailLights": "Arka Lambalar / Sinyaller / Fren Lambaları / Dörtlüler / Dış Lambalar"
         }
     },
     "vehicleInfo": {

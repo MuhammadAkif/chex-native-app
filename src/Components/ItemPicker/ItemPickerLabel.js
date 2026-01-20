@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: '600',
     color: black,
+    flex: 1
   },
   note: {
     fontWeight: '600',

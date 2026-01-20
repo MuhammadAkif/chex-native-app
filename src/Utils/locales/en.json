@@ -175,7 +175,10 @@
     "darkImageError": {
       "title": "Image Quality Issue",
       "message": "The uploaded image appears too dark. Please try uploading a clearer image with better lighting."
-    }
+    },
+    "imageAlreadyDeleted": "This image has already been deleted.",
+    "genericError": "An error occurred",
+    "alreadyInProgress": "Already In Progress"
   },
   "annotateImageDetails": {
     "title": "Exterior Front",
@@ -227,7 +230,7 @@
     "failed": "Failed to delete. Please try again."
   },
   "dvir": {
-    "checklist": "Check List Items",
+    "checklistTitle": "Check List Items",
     "tires": "Tires",
     "captureFrames": "Capture Frames",
     "comments": "Comments",
@@ -257,6 +260,15 @@
       "good": "Good",
       "repair": "Repair",
       "replace": "Replace"
+    },
+    "checklist": {
+      "headLights": "Head Lights / Turn Signals / Hazard Warning Lights / Exterior Lamps / Wiper Blades",
+      "engineBay": "Engine Bay (Wide Shot)",
+      "oilDipstick": "Oil Dipstick (Photo Showing Oil Level/ Clarity)",
+      "underBodyLeak": "Under-Body Leak Check (Photo Beneath Engine)",
+      "radioNavigation": "Radio / Navigation Screen (Powered On)",
+      "jackTools": "Jack & Tools (Jack, Wrench, Tool Kit)",
+      "tailLights": "Tail Lights / Turn Signals / Brake Lights / Hazard Warning Lights / Exterior Lamps"
     }
   },
   "vehicleInfo": {

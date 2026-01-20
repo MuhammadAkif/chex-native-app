@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     fontSize: hp('3%'),
     fontWeight: '600',
     marginBottom: wp(10),
+    textAlign: 'center',
   },
   image: {
     height: hp('25%'),

@@ -1,11 +1,11 @@
 import React from 'react';
-import {View} from 'react-native';
-import {ExpandedCardStyles, expandedCardStyles} from '../../../Assets/Styles';
-import {InteriorDriverSide, InteriorPassengerSide} from '../../../Utils';
-import {ImagesPickerContainer} from '../../index';
-import {useTranslation} from 'react-i18next';
-const {expandedCardContainer} = expandedCardStyles;
-const {container} = ExpandedCardStyles;
+import { View } from 'react-native';
+import { ExpandedCardStyles, expandedCardStyles } from '../../../Assets/Styles';
+import { InteriorDriverSide, InteriorPassengerSide } from '../../../Utils';
+import { ImagesPickerContainer } from '../../index';
+import { useTranslation } from 'react-i18next';
+const { expandedCardContainer } = expandedCardStyles;
+const { container } = ExpandedCardStyles;
 const containerStyle = {
   ...expandedCardContainer,
   ...container,
@@ -20,7 +20,7 @@ const InteriorItemsAnnotationExpandedCard = ({
   handleMediaModalDetailsPress,
   pickerText,
 }) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const defaultPickerText = pickerText || t('common.captureImage');
   return (
     <View style={containerStyle}>

@@ -175,7 +175,10 @@
     "darkImageError": {
       "title": "Problemă calitate imagine",
       "message": "Imaginea încărcată pare prea întunecată. Te rugăm să încerci să încarci o imagine mai clară, cu o iluminare mai bună."
-    }
+    },
+    "imageAlreadyDeleted": "Bu resim zaten silinmiş.",
+    "genericError": "Bir hata oluştu",
+    "alreadyInProgress": "Deja în curs"
   },
   "annotateImageDetails": {
     "title": "Exterior Față",
@@ -227,7 +230,7 @@
     "failed": "Ștergerea a eșuat. Te rugăm să încerci din nou."
   },
   "dvir": {
-    "checklist": "Elemente listă de verificare",
+    "checklistTitle": "Elemente listă de verificare",
     "tires": "Anvelope",
     "captureFrames": "Cadre capturate",
     "comments": "Comentarii",
@@ -257,6 +260,15 @@
       "good": "Bun",
       "repair": "Reparație",
       "replace": "Înlocuire"
+    },
+    "checklist": {
+      "headLights": "Faruri / Semnalizatoare / Lumini de avarie / Lămpi exterioare / Ștergătoare",
+      "engineBay": "Compartiment motor (Cadru larg)",
+      "oilDipstick": "Joja de ulei (Fotografie arătând nivelul/claritatea uleiului)",
+      "underBodyLeak": "Verificare scurgeri sub caroserie (Fotografie sub motor)",
+      "radioNavigation": "Radio / Ecran navigație (Pornit)",
+      "jackTools": "Cric și unelte (Cric, Cheie, Trusă de scule)",
+      "tailLights": "Lumini spate / Semnalizatoare / Lumini de frână / Lumini de avarie / Lămpi exterioare"
     }
   },
   "vehicleInfo": {

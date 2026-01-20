@@ -1,19 +1,19 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
-import {circleBorderRadius, colors, ShadowEffect} from '../../Assets/Styles';
-import {DownArrow, UpArrow} from '../../Assets/Icons';
-import {Platforms} from '../../Constants';
+import { circleBorderRadius, colors, ShadowEffect } from '../../Assets/Styles';
+import { DownArrow, UpArrow } from '../../Assets/Icons';
+import { Platforms } from '../../Constants';
 
-const {WINDOW} = Platforms;
-const {width} = Dimensions.get(WINDOW);
+const { WINDOW } = Platforms;
+const { width } = Dimensions.get(WINDOW);
 const IS_IN_REVIEW = {
   'In Review': true,
   'Ready For Review': true,
   Reviewed: false,
 };
-const {orangePeel, skyBlue, deepGreen, lightSteelBlue, white, royalBlue, black} = colors;
+const { orangePeel, skyBlue, deepGreen, lightSteelBlue, white, royalBlue, black } = colors;
 const STATUS_BACKGROUND_COLOR = {
   'Ready For Review': orangePeel,
   'In Review': skyBlue,
@@ -28,7 +28,7 @@ const ActiveColor = {
   false: lightSteelBlue,
 };
 
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 const InspectionStatusCollapsedCard = ({
   textOne,
@@ -39,18 +39,18 @@ const InspectionStatusCollapsedCard = ({
   labelTwo,
   isReviewed,
 }) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const ArrowComponent = Arrow[isActive];
   const isNotInPreview = !IS_IN_REVIEW[isReviewed];
   const iconHeight = hp('4%');
   const iconWidth = wp('4%');
-  
+
   // Helper to get translation key from status string
   // 'Ready For Review' -> 'ready_for_review'
   // 'In Review' -> 'in_review'
   // 'Reviewed' -> 'reviewed'
   const getStatusTranslationKey = (status) => {
-      return status.toLowerCase().replace(/ /g, '_');
+    return status.toLowerCase().replace(/ /g, '_');
   };
 
   return (
@@ -103,21 +103,22 @@ const InspectionStatusCollapsedCard = ({
 
 const styles = StyleSheet.create({
   collapsedCardContainer: {
-    height: hp('12%'),
+    // Removed fixed height to allow growth
     width: wp('90%'),
     justifyContent: 'center',
     borderRadius: 5,
     backgroundColor: white,
     marginTop: 10,
+    paddingVertical: hp('2%'), // Added padding vertical
     ...ShadowEffect,
   },
   collapsedCardContentContainer: {
-    width: wp('90%'),
+    width: '100%', // Use full width of parent
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
-    paddingVertical: '2%',
-    marginTop: '2%',
+    justifyContent: 'space-between', // Changed to space-between for better distribution
+    paddingHorizontal: wp('3%'), // Added horizontal padding
+    marginTop: hp('2%'), // Push down content to avoid status overlap if needed
   },
   titleText: {
     fontSize: hp('2%'),
@@ -131,27 +132,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderColor: orangePeel,
+    marginLeft: 10, // Add some margin from text containers
   },
   trackingIdAndDateContainer: {
-    width: wp('70%'),
+    flex: 1, // Allow text container to take available space
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between', // Distribute columns evenly
+    marginRight: 10, // Space between text area and icon
   },
   trackingIDContainer: {
     alignItems: 'center',
-    paddingHorizontal: 20,
+    flex: 1, // Allow each column to take equal width
+    paddingHorizontal: 5, // Reduce padding to fit content better
   },
   labelText: {
     color: royalBlue,
     fontSize: hp('1.8%'),
     fontWeight: '700',
     paddingVertical: '3%',
+    textAlign: 'center', // Center align text
   },
   labelDescription: {
     fontSize: hp('1.5%'),
     paddingBottom: '3%',
     fontWeight: '600',
     color: black,
+    textAlign: 'center', // Center align text
   },
   statusContainer: {
     position: 'absolute',
@@ -161,6 +167,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 5,
     right: 0,
     top: 0,
+    zIndex: 1, // Ensure status is above other content
   },
   statusText: {
     color: white,

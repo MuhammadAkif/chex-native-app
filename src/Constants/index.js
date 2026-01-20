@@ -170,22 +170,20 @@ export const SESSION_EXPIRED = {
 };
 
 export const ANNOTATE_IMAGE_DETAILS = {
-  title: 'Exterior Front',
+  title: i18n.t('annotateImageDetails.title'),
   source: IMAGES.front_Left_Corner,
-  description:
-    "To annotate an image of a vehicle's, you can click directly on the area of interest within the image. Upon clicking, a damage icon will appear at the selected spot, allowing you to visually mark and highlight the specific location of any damage.",
-  instruction: 'Do you want to Annotate\n',
-  annotateText: 'Annotate',
-  skipText: 'Skip',
+  description: i18n.t('annotateImageDetails.description'),
+  instruction: i18n.t('annotateImageDetails.instruction'),
+  annotateText: i18n.t('annotateImageDetails.annotateText'),
+  skipText: i18n.t('annotateImageDetails.skipText'),
 };
 export const ANNOTATE_IMAGE = {
-  title: 'Exterior Front',
+  title: i18n.t('annotateImage.title'),
   source: IMAGES.front_Left_Corner,
-  description:
-    "To annotate an image of a vehicle's front, you can click directly on the area of interest within the image. Upon clicking, a damage icon will appear at the selected spot, allowing you to visually mark and highlight the specific location of any damage.",
-  instruction: 'Do you want to Annotate\n',
-  annotateText: 'Submit',
-  cancelText: 'Cancel',
+  description: i18n.t('annotateImage.description'),
+  instruction: i18n.t('annotateImage.instruction'),
+  annotateText: i18n.t('annotateImage.annotateText'),
+  cancelText: i18n.t('annotateImage.cancelText'),
 };
 
 export const DAMAGE_TYPE = ['Minor', 'Major', 'Severe'];
@@ -316,3 +314,13 @@ export const INSPECTION_RESULTS = {
 };
 
 export const isIOS = Platform.OS == Platforms.IOS;
+
+export const DVIR_CHECKLIST_MAPPING = {
+  58: 'dvir.checklist.headLights',
+  59: 'dvir.checklist.engineBay',
+  60: 'dvir.checklist.oilDipstick',
+  61: 'dvir.checklist.underBodyLeak',
+  62: 'dvir.checklist.radioNavigation',
+  63: 'dvir.checklist.jackTools',
+  64: 'dvir.checklist.tailLights',
+};

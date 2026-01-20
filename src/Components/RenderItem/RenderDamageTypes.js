@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
     borderRadius: hp('10%'),
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: hp('0.5%'),
   },
   text: {
     fontSize: hp('2.0%'),

@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: white,
     marginBottom: wp(10),
+    textAlign: 'center',
   },
   expandIconContainer: {
     position: 'absolute',

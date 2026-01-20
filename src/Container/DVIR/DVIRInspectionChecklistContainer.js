@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES } from '../../Assets/Images';
-import { INSPECTION, S3_BUCKET_BASEURL, VEHICLE_TYPES } from '../../Constants';
+import { DVIR_CHECKLIST_MAPPING, INSPECTION, S3_BUCKET_BASEURL, VEHICLE_TYPES } from '../../Constants';
 import { ROUTES } from '../../Navigation/ROUTES';
 import { DVIRInspectionChecklistScreen } from '../../Screens';
 import {
@@ -24,6 +24,7 @@ import {
   LicensePlateDetails,
 } from '../../Utils';
 import i18n from '../../Utils/i18n';
+import { useTranslation } from 'react-i18next';
 
 const frameConfigMap = {
   exterior_front: {
@@ -156,7 +157,7 @@ const getInitialTireInspectionData = () => [
 
 const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
   const { selectedInspectionID } = useSelector(state => state.newInspection);
-
+  const { t } = useTranslation();
   // State for checklist items
   const [commentModalVisible, setAddCommentModalVisible] = useState(false);
   const [currentItemIndex, setCurrentItemIndex] = useState(null);
@@ -437,8 +438,10 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
 
   const handleMediaModalDetailsPress = (item, type, checkMediaIdx) => {
     if (type == 'checklist') {
+      const translationKey = DVIR_CHECKLIST_MAPPING[item?.checkId];
+      const displayName = translationKey ? t(translationKey) : item?.name;
       setMediaModalDetails({
-        title: item?.name,
+        title: displayName,
         source: item?.url?.[checkMediaIdx],
         isVideo: item?.fileType == 'video',
         coordinates: [],
@@ -486,7 +489,6 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
     setChecklistLoading(true);
     const response = await getChecklists(selectedInspectionID);
     setChecklistLoading(false);
-
     if (response.status == 200 && response?.data?.length > 0) {
       setChecklistData(response.data);
       setShowChecklistSection(true);

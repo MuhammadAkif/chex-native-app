@@ -24,7 +24,7 @@ const DiscardInspectionModal = ({
     <Modal statusBarTranslucent animationType="slide" transparent={true} visible={true} onRequestClose={onNoPress} style={modalOuterContainer}>
       <View style={container}>
         <View style={modalContainer}>
-          {title && <Text style={header}>{title}</Text>}
+          {title && <Text style={{ ...header, textAlign: 'center' }}>{title}</Text>}
           <Text style={body}>{description}</Text>
           <View style={footer}>
             <PrimaryGradientButton text={yesTextValue} buttonStyle={button} textStyle={yesText} onPress={onYesPress} />
