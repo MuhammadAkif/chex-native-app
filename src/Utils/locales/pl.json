@@ -302,7 +302,7 @@
             "dateRequired": "Data jest wymagana"
         },
         "vehicleTypes": {
-            "van": "VAN",
+            "van": "PRÓŻNY",
             "truck": "CIĘŻARÓWKA",
             "sedan": "SEDAN",
             "other": "INNY"

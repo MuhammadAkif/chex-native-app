@@ -67,52 +67,52 @@ export const resetPasswordSchema = yup.object().shape({
 //____________________________Car Verification_________________________
 export const LicensePlateDetails = {
   key: 'licensePlate',
-  title: i18n.t('carVerification.licensePlate.title'),
+  get title() { return i18n.t('carVerification.licensePlate.title'); },
   source: IMAGES.license_Plate,
-  instructionalText: i18n.t('carVerification.licensePlate.instruction'),
+  get instructionalText() { return i18n.t('carVerification.licensePlate.instruction'); },
   instructionalSubHeadingText: '',
   category: 'CarVerification',
   subCategory: 'license_plate_number',
   groupType: INSPECTION.carVerificiationItems,
-  buttonText: i18n.t('carVerification.licensePlate.captureNow'),
+  get buttonText() { return i18n.t('carVerification.licensePlate.captureNow'); },
 };
 export const OdometerDetails = {
   key: 'odometer',
-  title: i18n.t('carVerification.odometer.title'),
+  get title() { return i18n.t('carVerification.odometer.title'); },
   source: IMAGES.odometer,
-  instructionalText: i18n.t('carVerification.odometer.instruction'),
+  get instructionalText() { return i18n.t('carVerification.odometer.instruction'); },
   // instructionalSubHeadingText: 'Vehicle mileage',
   instructionalSubHeadingText: '',
   category: 'CarVerification',
   subCategory: 'odometer',
   groupType: INSPECTION.carVerificiationItems,
-  buttonText: i18n.t('carVerification.odometer.captureNow'),
+  get buttonText() { return i18n.t('carVerification.odometer.captureNow'); },
 };
 
 export const VinDetails = {
   key: 'vin',
-  title: i18n.t('carVerification.vin.title'),
+  get title() { return i18n.t('carVerification.vin.title'); },
   type: '1',
   source: '',
   category: 'CarVerification',
   subCategory: 'vin',
   groupType: 'truck',
-  instructionalText: i18n.t('carVerification.vin.instruction'),
-  buttonText: i18n.t('carVerification.vin.captureNow'),
+  get instructionalText() { return i18n.t('carVerification.vin.instruction'); },
+  get buttonText() { return i18n.t('carVerification.vin.captureNow'); },
 };
 //___________________________Exterior______________________________
 export const ExteriorFrontDetails = vehicleType => ({
   key: 'exteriorFront',
-  title: i18n.t('exteriorItems.front.title'),
+  get title() { return i18n.t('exteriorItems.front.title'); },
   source:
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_front
       : vehicleType === VEHICLE_TYPES.TRUCK
         ? IMAGES.truck_exterior_front
         : IMAGES.exterior_Front,
-  instructionalText: i18n.t('exteriorItems.front.instruction'),
+  get instructionalText() { return i18n.t('exteriorItems.front.instruction'); },
   instructionalSubHeadingText: '',
-  buttonText: i18n.t('exteriorItems.captureNow'),
+  get buttonText() { return i18n.t('exteriorItems.captureNow'); },
   category: 'Exterior',
   subCategory: 'exterior_front',
   groupType: INSPECTION.exteriorItems,
@@ -121,16 +121,16 @@ export const ExteriorFrontDetails = vehicleType => ({
 
 export const ExteriorRearDetails = vehicleType => ({
   key: 'exteriorRear',
-  title: i18n.t('exteriorItems.rear.title'),
+  get title() { return i18n.t('exteriorItems.rear.title'); },
   source:
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_rear
       : vehicleType === VEHICLE_TYPES.TRUCK
         ? IMAGES.truck_exterior_rear_back
         : IMAGES.exterior_Rear,
-  instructionalText: i18n.t('exteriorItems.rear.instruction'),
+  get instructionalText() { return i18n.t('exteriorItems.rear.instruction'); },
   instructionalSubHeadingText: '',
-  buttonText: i18n.t('exteriorItems.captureNow'),
+  get buttonText() { return i18n.t('exteriorItems.captureNow'); },
   category: 'Exterior',
   subCategory: 'exterior_rear',
   groupType: INSPECTION.exteriorItems,
@@ -139,11 +139,11 @@ export const ExteriorRearDetails = vehicleType => ({
 
 export const ExteriorLeftDetails = {
   key: 'exteriorLeft',
-  title: i18n.t('exteriorItems.left.title'),
+  get title() { return i18n.t('exteriorItems.left.title'); },
   source: IMAGES.exterior_Left,
-  instructionalText: i18n.t('exteriorItems.left.instruction'),
+  get instructionalText() { return i18n.t('exteriorItems.left.instruction'); },
   instructionalSubHeadingText: '',
-  buttonText: i18n.t('exteriorItems.captureNow'),
+  get buttonText() { return i18n.t('exteriorItems.captureNow'); },
   category: 'Exterior',
   subCategory: 'exterior_left',
   groupType: INSPECTION.exteriorItems,
@@ -152,11 +152,11 @@ export const ExteriorLeftDetails = {
 
 export const ExteriorRightDetails = {
   key: 'exteriorRight',
-  title: i18n.t('exteriorItems.right.title'),
+  get title() { return i18n.t('exteriorItems.right.title'); },
   source: IMAGES.exterior_Right,
-  instructionalText: i18n.t('exteriorItems.right.instruction'),
+  get instructionalText() { return i18n.t('exteriorItems.right.instruction'); },
   instructionalSubHeadingText: '',
-  buttonText: i18n.t('exteriorItems.captureNow'),
+  get buttonText() { return i18n.t('exteriorItems.captureNow'); },
   category: 'Exterior',
   subCategory: 'exterior_right',
   groupType: INSPECTION.exteriorItems,
@@ -165,16 +165,16 @@ export const ExteriorRightDetails = {
 
 export const ExteriorFrontLeftCornerDetails = vehicleType => ({
   key: 'exteriorFrontLeftCorner',
-  title: i18n.t('exteriorItems.frontLeftCorner.title'),
+  get title() { return i18n.t('exteriorItems.frontLeftCorner.title'); },
   source:
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_front_Left
       : vehicleType === VEHICLE_TYPES.TRUCK
         ? IMAGES.truck_exterior_front_Left
         : IMAGES.front_Left_Corner,
-  instructionalText: i18n.t('exteriorItems.frontLeftCorner.instruction'),
+  get instructionalText() { return i18n.t('exteriorItems.frontLeftCorner.instruction'); },
   instructionalSubHeadingText: '',
-  buttonText: i18n.t('exteriorItems.captureNow'),
+  get buttonText() { return i18n.t('exteriorItems.captureNow'); },
   category: 'Exterior',
   subCategory: 'front_left_corner',
   groupType: INSPECTION.exteriorItems,
@@ -183,16 +183,16 @@ export const ExteriorFrontLeftCornerDetails = vehicleType => ({
 
 export const ExteriorFrontRightCornerDetails = vehicleType => ({
   key: 'exteriorFrontRightCorner',
-  title: i18n.t('exteriorItems.frontRightCorner.title'),
+  get title() { return i18n.t('exteriorItems.frontRightCorner.title'); },
   source:
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_front_Right
       : vehicleType === VEHICLE_TYPES.TRUCK
         ? IMAGES.truck_exterior_front_right
         : IMAGES.front_Right_Corner,
-  instructionalText: i18n.t('exteriorItems.frontRightCorner.instruction'),
+  get instructionalText() { return i18n.t('exteriorItems.frontRightCorner.instruction'); },
   instructionalSubHeadingText: '',
-  buttonText: i18n.t('exteriorItems.captureNow'),
+  get buttonText() { return i18n.t('exteriorItems.captureNow'); },
   category: 'Exterior',
   subCategory: 'front_right_corner',
   groupType: INSPECTION.exteriorItems,
@@ -201,16 +201,16 @@ export const ExteriorFrontRightCornerDetails = vehicleType => ({
 
 export const ExteriorRearLeftCornerDetails = vehicleType => ({
   key: 'exteriorRearLeftCorner',
-  title: i18n.t('exteriorItems.rearLeftCorner.title'),
+  get title() { return i18n.t('exteriorItems.rearLeftCorner.title'); },
   source:
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_rear_left
       : vehicleType === VEHICLE_TYPES.TRUCK
         ? IMAGES.truck_exterior_rear_left
         : IMAGES.rear_Left_Corner,
-  instructionalText: i18n.t('exteriorItems.rearLeftCorner.instruction'),
+  get instructionalText() { return i18n.t('exteriorItems.rearLeftCorner.instruction'); },
   instructionalSubHeadingText: '',
-  buttonText: i18n.t('exteriorItems.captureNow'),
+  get buttonText() { return i18n.t('exteriorItems.captureNow'); },
   category: 'Exterior',
   subCategory: 'rear_left_corner',
   groupType: INSPECTION.exteriorItems,
@@ -219,16 +219,16 @@ export const ExteriorRearLeftCornerDetails = vehicleType => ({
 
 export const ExteriorRearRightCornerDetails = vehicleType => ({
   key: 'exteriorRearRightCorner',
-  title: i18n.t('exteriorItems.rearRightCorner.title'),
+  get title() { return i18n.t('exteriorItems.rearRightCorner.title'); },
   source:
     vehicleType === VEHICLE_TYPES.SEDAN
       ? IMAGES.sedan_exterior_rear_right
       : vehicleType === VEHICLE_TYPES.TRUCK
         ? IMAGES.truck_exterior_rear_right
         : IMAGES.rear_Right_Corner,
-  instructionalText: i18n.t('exteriorItems.rearRightCorner.instruction'),
+  get instructionalText() { return i18n.t('exteriorItems.rearRightCorner.instruction'); },
   instructionalSubHeadingText: '',
-  buttonText: i18n.t('exteriorItems.captureNow'),
+  get buttonText() { return i18n.t('exteriorItems.captureNow'); },
   category: 'Exterior',
   subCategory: 'rear_right_corner',
   groupType: INSPECTION.exteriorItems,
@@ -237,11 +237,11 @@ export const ExteriorRearRightCornerDetails = vehicleType => ({
 
 export const ExteriorInsideCargoRoofDetails = vehicleType => ({
   key: 'exteriorInsideCargoRoof',
-  title: i18n.t('exteriorItems.insideCargoRoof.title'),
+  get title() { return i18n.t('exteriorItems.insideCargoRoof.title'); },
   source: VEHICLE_TYPES.TRUCK === vehicleType ? IMAGES.truck_interior_back : IMAGES.inside_Cargo_Roof,
-  instructionalText: i18n.t('exteriorItems.insideCargoRoof.instruction'),
+  get instructionalText() { return i18n.t('exteriorItems.insideCargoRoof.instruction'); },
   instructionalSubHeadingText: '',
-  buttonText: i18n.t('exteriorItems.captureNow'),
+  get buttonText() { return i18n.t('exteriorItems.captureNow'); },
   category: 'Exterior',
   subCategory: 'inside_cargo_roof',
   groupType: INSPECTION.exteriorItems,
@@ -250,11 +250,11 @@ export const ExteriorInsideCargoRoofDetails = vehicleType => ({
 //___________________________Interior______________________________
 export const InteriorPassengerSide = {
   key: 'passengerSide',
-  title: i18n.t('interiorItems.passengerSide.title'),
+  get title() { return i18n.t('interiorItems.passengerSide.title'); },
   source: IMAGES.interior_passenger_side,
-  instructionalText: i18n.t('interiorItems.passengerSide.instruction'),
-  instructionalSubHeadingText: i18n.t('interiorItems.passengerSide.details.seatBelt'),
-  buttonText: i18n.t('interiorItems.captureNow'),
+  get instructionalText() { return i18n.t('interiorItems.passengerSide.instruction'); },
+  get instructionalSubHeadingText() { return i18n.t('interiorItems.passengerSide.details.seatBelt'); },
+  get buttonText() { return i18n.t('interiorItems.captureNow'); },
   category: 'Interior',
   subCategory: 'interior_passenger_side',
   groupType: INSPECTION.interiorItems,
@@ -262,13 +262,13 @@ export const InteriorPassengerSide = {
 };
 export const InteriorDriverSide = {
   key: 'driverSide',
-  title: i18n.t('interiorItems.driverSide.title'),
+  get title() { return i18n.t('interiorItems.driverSide.title'); },
   source: IMAGES.interior_driver_side,
-  instructionalText: i18n.t('interiorItems.driverSide.instruction'),
-  instructionalSubHeadingText: i18n.t('interiorItems.driverSide.details.seatBelt'),
-  instructionalSubHeadingText_1: i18n.t('interiorItems.driverSide.details.rearview'),
-  instructionalSubHeadingText_2: i18n.t('interiorItems.driverSide.details.brakePads'),
-  buttonText: i18n.t('interiorItems.captureNow'),
+  get instructionalText() { return i18n.t('interiorItems.driverSide.instruction'); },
+  get instructionalSubHeadingText() { return i18n.t('interiorItems.driverSide.details.seatBelt'); },
+  get instructionalSubHeadingText_1() { return i18n.t('interiorItems.driverSide.details.rearview'); },
+  get instructionalSubHeadingText_2() { return i18n.t('interiorItems.driverSide.details.brakePads'); },
+  get buttonText() { return i18n.t('interiorItems.captureNow'); },
   category: 'Interior',
   subCategory: 'interior_driver_side',
   groupType: INSPECTION.interiorItems,
@@ -277,11 +277,11 @@ export const InteriorDriverSide = {
 //____________________________Tires_____________________________
 export const LeftFrontTireDetails = {
   key: 'leftFrontTire',
-  title: i18n.t('tiresItems.leftFront'),
+  get title() { return i18n.t('tiresItems.leftFront'); },
   source: IMAGES.tire,
-  instructionalText: i18n.t('tiresItems.instruction'),
-  instructionalSubHeadingText: i18n.t('tiresItems.subHeading'),
-  buttonText: i18n.t('tiresItems.captureNow'),
+  get instructionalText() { return i18n.t('tiresItems.instruction'); },
+  get instructionalSubHeadingText() { return i18n.t('tiresItems.subHeading'); },
+  get buttonText() { return i18n.t('tiresItems.captureNow'); },
   category: 'Tires',
   subCategory: 'left_front_tire',
   groupType: INSPECTION.tires,
@@ -289,11 +289,11 @@ export const LeftFrontTireDetails = {
 };
 export const LeftRearTireDetails = {
   key: 'leftRearTire',
-  title: i18n.t('tiresItems.leftRear'),
+  get title() { return i18n.t('tiresItems.leftRear'); },
   source: IMAGES.tire,
-  instructionalText: i18n.t('tiresItems.instruction'),
-  instructionalSubHeadingText: i18n.t('tiresItems.subHeading'),
-  buttonText: i18n.t('tiresItems.captureNow'),
+  get instructionalText() { return i18n.t('tiresItems.instruction'); },
+  get instructionalSubHeadingText() { return i18n.t('tiresItems.subHeading'); },
+  get buttonText() { return i18n.t('tiresItems.captureNow'); },
   category: 'Tires',
   subCategory: 'left_rear_tire',
   groupType: INSPECTION.tires,
@@ -301,11 +301,11 @@ export const LeftRearTireDetails = {
 };
 export const RightFrontTireDetails = {
   key: 'rightFrontTire',
-  title: i18n.t('tiresItems.rightFront'),
+  get title() { return i18n.t('tiresItems.rightFront'); },
   source: IMAGES.tire,
-  instructionalText: i18n.t('tiresItems.instruction'),
-  instructionalSubHeadingText: i18n.t('tiresItems.subHeading'),
-  buttonText: i18n.t('tiresItems.captureNow'),
+  get instructionalText() { return i18n.t('tiresItems.instruction'); },
+  get instructionalSubHeadingText() { return i18n.t('tiresItems.subHeading'); },
+  get buttonText() { return i18n.t('tiresItems.captureNow'); },
   category: 'Tires',
   subCategory: 'right_front_tire',
   groupType: INSPECTION.tires,
@@ -313,11 +313,11 @@ export const RightFrontTireDetails = {
 };
 export const RightRearTireDetails = {
   key: 'rightRearTire',
-  title: i18n.t('tiresItems.rightRear'),
+  get title() { return i18n.t('tiresItems.rightRear'); },
   source: IMAGES.tire,
-  instructionalText: i18n.t('tiresItems.instruction'),
-  instructionalSubHeadingText: i18n.t('tiresItems.subHeading'),
-  buttonText: i18n.t('tiresItems.captureNow'),
+  get instructionalText() { return i18n.t('tiresItems.instruction'); },
+  get instructionalSubHeadingText() { return i18n.t('tiresItems.subHeading'); },
+  get buttonText() { return i18n.t('tiresItems.captureNow'); },
   category: 'Tires',
   subCategory: 'right_rear_tire',
   groupType: INSPECTION.tires,
@@ -474,16 +474,16 @@ export const handleHomePress = navigation => navigation?.navigate?.(ROUTES.TABS)
 export const newInspectionUploadError = (statusCode = 'noStatusCode') => {
   const errors = {
     409: {
-      title: i18n.t('errors.duplicateImage.title'),
-      message: i18n.t('errors.duplicateImage.message'),
+      get title() { return i18n.t('errors.duplicateImage.title'); },
+      get message() { return i18n.t('errors.duplicateImage.message'); },
     },
     403: {
-      title: i18n.t('errors.inspectionExpired.title'),
-      message: i18n.t('errors.inspectionExpired.message'),
+      get title() { return i18n.t('errors.inspectionExpired.title'); },
+      get message() { return i18n.t('errors.inspectionExpired.message'); },
     },
     noStatusCode: {
-      title: i18n.t('errors.uploadFailed.title'),
-      message: i18n.t('errors.uploadFailed.message'),
+      get title() { return i18n.t('errors.uploadFailed.title'); },
+      get message() { return i18n.t('errors.uploadFailed.message'); },
     },
   };
   return errors[statusCode] || errors.noStatusCode;

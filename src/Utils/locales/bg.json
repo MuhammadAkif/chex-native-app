@@ -302,7 +302,7 @@
             "dateRequired": "Датата е задължителна"
         },
         "vehicleTypes": {
-            "van": "ВАН",
+            "van": "СУЕТЕН",
             "truck": "КАМИОН",
             "sedan": "СЕДАН",
             "other": "ДРУГО"

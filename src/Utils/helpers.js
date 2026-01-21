@@ -30,9 +30,10 @@ export const instructionsContainerTop = {
   true: hp('25%'),
   false: null,
 };
+// Use getters to ensure translations are evaluated when accessed, not at module load
 export const INSPECTION_STATUS = {
-  true: i18n.t('inspectionCard.noDamageDetected'),
-  false: i18n.t('inspectionCard.damageDetected'),
+  get true() { return i18n.t('inspectionCard.noDamageDetected'); },
+  get false() { return i18n.t('inspectionCard.damageDetected'); },
 };
 export const progressZIndex = {
   true: -1,

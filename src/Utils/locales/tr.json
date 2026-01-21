@@ -302,7 +302,7 @@
             "dateRequired": "Tarih zorunludur"
         },
         "vehicleTypes": {
-            "van": "VAN",
+            "van": "BOŞUNA",
             "truck": "KAMYON",
             "sedan": "SEDAN",
             "other": "DİĞER"
