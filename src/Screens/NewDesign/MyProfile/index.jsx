@@ -132,7 +132,7 @@ const MyProfile = ({ navigation }) => {
       if (success) {
         setCurrentLanguage(languageCode);
         setIsLanguageDropdownOpen(false);
-        dispatch(showToast(t('profile.languageChangedToast'), 'success'));
+        dispatch(showToast(i18n.t('profile.languageChangedToast', { lng: languageCode }), 'success'));
       }
     } catch (error) {
       console.log('Error changing language:', error);
