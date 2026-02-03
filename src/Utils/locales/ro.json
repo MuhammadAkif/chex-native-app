@@ -227,7 +227,8 @@
   },
   "delete": {
     "success": "Șters cu succes.",
-    "failed": "Ștergerea a eșuat. Te rugăm să încerci din nou."
+    "failed": "Ștergerea a eșuat. Te rugăm să încerci din nou.",
+    "inspectionDeleted": "Inspecția a fost ștearsă!"
   },
   "dvir": {
     "checklistTitle": "Elemente listă de verificare",

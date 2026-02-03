@@ -227,7 +227,8 @@
   },
   "delete": {
     "success": "Deleted Successfully.",
-    "failed": "Failed to delete. Please try again."
+    "failed": "Failed to delete. Please try again.",
+    "inspectionDeleted": "Inspection has been deleted!"
   },
   "dvir": {
     "checklistTitle": "Check List Items",

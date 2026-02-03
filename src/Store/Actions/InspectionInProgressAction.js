@@ -2,6 +2,7 @@ import {fetchAllInspections, removeInspection} from '../../services/inspection';
 import {Types} from '../Types';
 import {store} from '../index';
 import {showToast} from './UIActions';
+import i18n from 'i18next';
 
 const {GET_INSPECTION_IN_PROGRESS, REMOVE_INSPECTION, CLEAR_INSPECTION_IN_PROGRESS} = Types;
 
@@ -30,7 +31,7 @@ export const deleteInspection = inspectionId => async dispatch => {
       type: REMOVE_INSPECTION,
       payload: updatedInspections || [],
     });
-    dispatch(showToast('Inspection has been deleted!', 'success'));
+    dispatch(showToast(i18n.t('delete.inspectionDeleted'), 'success'));
   } catch (error) {
     console.error('Inspection remove error: ', error.response.data);
     throw error;

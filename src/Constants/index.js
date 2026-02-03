@@ -31,7 +31,7 @@ const ENV_TYPE_URL = {
 
 const version = '1';
 export const API_VERSION_PATH = '/api/v' + version + '/';
-export const API_BASE_URL = ENV_TYPE_URL.staging;
+export const API_BASE_URL = ENV_TYPE_URL.production;
 export const generateApiUrl = path => API_BASE_URL + API_VERSION_PATH + path;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
 export const EXTRACT_NUMBER_PLATE_WITH_AI = process.env.EXTRACT_NUMBER_PLATE_URL;
@@ -123,68 +123,170 @@ export const INSPECTION_SUBCATEGORY = {
 };
 // Use getters to ensure translations are evaluated when accessed, not at module load
 export const INSPECTION_TITLE = {
-  get license_plate_number() { return i18n.t('inspectionTitles.license_plate_number'); },
-  get odometer() { return i18n.t('inspectionTitles.odometer'); },
-  get exterior_front() { return i18n.t('inspectionTitles.exterior_front'); },
-  get exterior_front_1() { return i18n.t('inspectionTitles.exterior_front_1'); },
-  get exterior_front_2() { return i18n.t('inspectionTitles.exterior_front_2'); },
-  get exterior_rear() { return i18n.t('inspectionTitles.exterior_rear'); },
-  get exterior_rear_1() { return i18n.t('inspectionTitles.exterior_rear_1'); },
-  get exterior_rear_2() { return i18n.t('inspectionTitles.exterior_rear_2'); },
-  get exterior_left() { return i18n.t('inspectionTitles.exterior_left'); },
-  get exterior_left_1() { return i18n.t('inspectionTitles.exterior_left_1'); },
-  get exterior_left_2() { return i18n.t('inspectionTitles.exterior_left_2'); },
-  get exterior_right() { return i18n.t('inspectionTitles.exterior_right'); },
-  get exterior_right_1() { return i18n.t('inspectionTitles.exterior_right_1'); },
-  get exterior_right_2() { return i18n.t('inspectionTitles.exterior_right_2'); },
-  get front_left_corner() { return i18n.t('inspectionTitles.front_left_corner'); },
-  get front_left_corner_1() { return i18n.t('inspectionTitles.front_left_corner_1'); },
-  get front_left_corner_2() { return i18n.t('inspectionTitles.front_left_corner_2'); },
-  get front_right_corner() { return i18n.t('inspectionTitles.front_right_corner'); },
-  get front_right_corner_1() { return i18n.t('inspectionTitles.front_right_corner_1'); },
-  get front_right_corner_2() { return i18n.t('inspectionTitles.front_right_corner_2'); },
-  get rear_left_corner() { return i18n.t('inspectionTitles.rear_left_corner'); },
-  get rear_left_corner_1() { return i18n.t('inspectionTitles.rear_left_corner_1'); },
-  get rear_left_corner_2() { return i18n.t('inspectionTitles.rear_left_corner_2'); },
-  get rear_right_corner() { return i18n.t('inspectionTitles.rear_right_corner'); },
-  get rear_right_corner_1() { return i18n.t('inspectionTitles.rear_right_corner_1'); },
-  get rear_right_corner_2() { return i18n.t('inspectionTitles.rear_right_corner_2'); },
-  get inside_cargo_roof() { return i18n.t('inspectionTitles.inside_cargo_roof'); },
-  get inside_cargo_roof_1() { return i18n.t('inspectionTitles.inside_cargo_roof_1'); },
-  get inside_cargo_roof_2() { return i18n.t('inspectionTitles.inside_cargo_roof_2'); },
-  get left_front_tire() { return i18n.t('inspectionTitles.left_front_tire'); },
-  get left_rear_tire() { return i18n.t('inspectionTitles.left_rear_tire'); },
-  get right_front_tire() { return i18n.t('inspectionTitles.right_front_tire'); },
-  get right_rear_tire() { return i18n.t('inspectionTitles.right_rear_tire'); },
-  get interior_passenger_side() { return i18n.t('inspectionTitles.interior_passenger_side'); },
-  get interior_driver_side() { return i18n.t('inspectionTitles.interior_driver_side'); },
+  get license_plate_number() {
+    return i18n.t('inspectionTitles.license_plate_number');
+  },
+  get odometer() {
+    return i18n.t('inspectionTitles.odometer');
+  },
+  get exterior_front() {
+    return i18n.t('inspectionTitles.exterior_front');
+  },
+  get exterior_front_1() {
+    return i18n.t('inspectionTitles.exterior_front_1');
+  },
+  get exterior_front_2() {
+    return i18n.t('inspectionTitles.exterior_front_2');
+  },
+  get exterior_rear() {
+    return i18n.t('inspectionTitles.exterior_rear');
+  },
+  get exterior_rear_1() {
+    return i18n.t('inspectionTitles.exterior_rear_1');
+  },
+  get exterior_rear_2() {
+    return i18n.t('inspectionTitles.exterior_rear_2');
+  },
+  get exterior_left() {
+    return i18n.t('inspectionTitles.exterior_left');
+  },
+  get exterior_left_1() {
+    return i18n.t('inspectionTitles.exterior_left_1');
+  },
+  get exterior_left_2() {
+    return i18n.t('inspectionTitles.exterior_left_2');
+  },
+  get exterior_right() {
+    return i18n.t('inspectionTitles.exterior_right');
+  },
+  get exterior_right_1() {
+    return i18n.t('inspectionTitles.exterior_right_1');
+  },
+  get exterior_right_2() {
+    return i18n.t('inspectionTitles.exterior_right_2');
+  },
+  get front_left_corner() {
+    return i18n.t('inspectionTitles.front_left_corner');
+  },
+  get front_left_corner_1() {
+    return i18n.t('inspectionTitles.front_left_corner_1');
+  },
+  get front_left_corner_2() {
+    return i18n.t('inspectionTitles.front_left_corner_2');
+  },
+  get front_right_corner() {
+    return i18n.t('inspectionTitles.front_right_corner');
+  },
+  get front_right_corner_1() {
+    return i18n.t('inspectionTitles.front_right_corner_1');
+  },
+  get front_right_corner_2() {
+    return i18n.t('inspectionTitles.front_right_corner_2');
+  },
+  get rear_left_corner() {
+    return i18n.t('inspectionTitles.rear_left_corner');
+  },
+  get rear_left_corner_1() {
+    return i18n.t('inspectionTitles.rear_left_corner_1');
+  },
+  get rear_left_corner_2() {
+    return i18n.t('inspectionTitles.rear_left_corner_2');
+  },
+  get rear_right_corner() {
+    return i18n.t('inspectionTitles.rear_right_corner');
+  },
+  get rear_right_corner_1() {
+    return i18n.t('inspectionTitles.rear_right_corner_1');
+  },
+  get rear_right_corner_2() {
+    return i18n.t('inspectionTitles.rear_right_corner_2');
+  },
+  get inside_cargo_roof() {
+    return i18n.t('inspectionTitles.inside_cargo_roof');
+  },
+  get inside_cargo_roof_1() {
+    return i18n.t('inspectionTitles.inside_cargo_roof_1');
+  },
+  get inside_cargo_roof_2() {
+    return i18n.t('inspectionTitles.inside_cargo_roof_2');
+  },
+  get left_front_tire() {
+    return i18n.t('inspectionTitles.left_front_tire');
+  },
+  get left_rear_tire() {
+    return i18n.t('inspectionTitles.left_rear_tire');
+  },
+  get right_front_tire() {
+    return i18n.t('inspectionTitles.right_front_tire');
+  },
+  get right_rear_tire() {
+    return i18n.t('inspectionTitles.right_rear_tire');
+  },
+  get interior_passenger_side() {
+    return i18n.t('inspectionTitles.interior_passenger_side');
+  },
+  get interior_driver_side() {
+    return i18n.t('inspectionTitles.interior_driver_side');
+  },
 };
 export const UPDATE_APP = {
-  get TITLE() { return i18n.t('appUpdate.title'); },
-  get MESSAGE() { return i18n.t('appUpdate.message'); },
-  get BUTTON() { return i18n.t('appUpdate.button'); },
+  get TITLE() {
+    return i18n.t('appUpdate.title');
+  },
+  get MESSAGE() {
+    return i18n.t('appUpdate.message');
+  },
+  get BUTTON() {
+    return i18n.t('appUpdate.button');
+  },
 };
 export const SESSION_EXPIRED = {
-  get TITLE() { return i18n.t('session.expired.title'); },
-  get MESSAGE() { return i18n.t('session.expired.message'); },
-  get BUTTON() { return i18n.t('session.expired.button'); },
+  get TITLE() {
+    return i18n.t('session.expired.title');
+  },
+  get MESSAGE() {
+    return i18n.t('session.expired.message');
+  },
+  get BUTTON() {
+    return i18n.t('session.expired.button');
+  },
 };
 
 export const ANNOTATE_IMAGE_DETAILS = {
-  get title() { return i18n.t('annotateImageDetails.title'); },
+  get title() {
+    return i18n.t('annotateImageDetails.title');
+  },
   source: IMAGES.front_Left_Corner,
-  get description() { return i18n.t('annotateImageDetails.description'); },
-  get instruction() { return i18n.t('annotateImageDetails.instruction'); },
-  get annotateText() { return i18n.t('annotateImageDetails.annotateText'); },
-  get skipText() { return i18n.t('annotateImageDetails.skipText'); },
+  get description() {
+    return i18n.t('annotateImageDetails.description');
+  },
+  get instruction() {
+    return i18n.t('annotateImageDetails.instruction');
+  },
+  get annotateText() {
+    return i18n.t('annotateImageDetails.annotateText');
+  },
+  get skipText() {
+    return i18n.t('annotateImageDetails.skipText');
+  },
 };
 export const ANNOTATE_IMAGE = {
-  get title() { return i18n.t('annotateImage.title'); },
+  get title() {
+    return i18n.t('annotateImage.title');
+  },
   source: IMAGES.front_Left_Corner,
-  get description() { return i18n.t('annotateImage.description'); },
-  get instruction() { return i18n.t('annotateImage.instruction'); },
-  get annotateText() { return i18n.t('annotateImage.annotateText'); },
-  get cancelText() { return i18n.t('annotateImage.cancelText'); },
+  get description() {
+    return i18n.t('annotateImage.description');
+  },
+  get instruction() {
+    return i18n.t('annotateImage.instruction');
+  },
+  get annotateText() {
+    return i18n.t('annotateImage.annotateText');
+  },
+  get cancelText() {
+    return i18n.t('annotateImage.cancelText');
+  },
 };
 
 export const DAMAGE_TYPE = ['Minor', 'Major', 'Severe'];
@@ -221,8 +323,12 @@ export const SWITCH_CAMERA = {
 };
 
 export const Delete_Messages = {
-  get success() { return i18n.t('delete.success'); },
-  get failed() { return i18n.t('delete.failed'); },
+  get success() {
+    return i18n.t('delete.success');
+  },
+  get failed() {
+    return i18n.t('delete.failed');
+  },
 };
 export const customSortOrder = {
   groupType: ['carVerificiationItems', 'interiorItems', 'exteriorItems', 'tires'],
@@ -278,20 +384,36 @@ export const customSortOrder = {
   tires: ['left_front_tire', 'left_rear_tire', 'right_front_tire', 'right_rear_tire'],
 };
 export const darkImageError = {
-  get title() { return i18n.t('errors.darkImageError.title'); },
-  get message() { return i18n.t('errors.darkImageError.message'); },
+  get title() {
+    return i18n.t('errors.darkImageError.title');
+  },
+  get message() {
+    return i18n.t('errors.darkImageError.message');
+  },
 };
 export const uploadFailed = {
-  get title() { return i18n.t('errors.uploadFailed.title'); },
-  get message() { return i18n.t('errors.uploadFailed.message'); },
+  get title() {
+    return i18n.t('errors.uploadFailed.title');
+  },
+  get message() {
+    return i18n.t('errors.uploadFailed.message');
+  },
 };
 export const exitAppInfo = {
-  get title() { return i18n.t('exitApp.title'); },
-  get message() { return i18n.t('exitApp.message'); },
+  get title() {
+    return i18n.t('exitApp.title');
+  },
+  get message() {
+    return i18n.t('exitApp.message');
+  },
   get button() {
     return {
-      get yes() { return i18n.t('exitApp.button.yes'); },
-      get cancel() { return i18n.t('exitApp.button.cancel'); },
+      get yes() {
+        return i18n.t('exitApp.button.yes');
+      },
+      get cancel() {
+        return i18n.t('exitApp.button.cancel');
+      },
     };
   },
 };

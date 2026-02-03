@@ -1,564 +1,565 @@
 {
-    "common": {
-        "signIn": "Giriş Yap",
-        "email": "E-posta",
-        "submit": "Gönder",
-        "password": "Şifre",
-        "confirmPassword": "Şifreyi Onayla",
-        "reset": "Sıfırla",
-        "loading": "Yükleniyor...",
-        "home": "Ana Sayfa",
-        "yes": "Evet",
-        "no": "Hayır",
-        "licensePlateNo": "Plaka No",
-        "dateCreated": "Oluşturulma Tarihi",
-        "continue": "Devam Et",
-        "retry": "Yeniden Dene",
-        "next": "İleri",
-        "comingSoon": "Yakında!",
-        "ok": "Tamam",
-        "somethingWentWrong": "Bir şeyler yanlış gitti, lütfen tekrar deneyin.",
-        "addImage": "Resim Ekle",
-        "captureImage": "Fotoğraf Çek",
-        "captureVideo": "Video Çek",
-        "image": "resim",
-        "cancel": "İptal",
-        "required": "Zorunlu",
-        "optional": "İsteğe Bağlı",
-        "message": "Mesaj"
-    },
-    "validation": {
-        "fieldRequired": "Alan zorunludur",
-        "firstNameRequired": "Lütfen adınızı giriniz!",
-        "nameMinLength": "Ad en az 2 karakter olmalıdır",
-        "emailRequired": "Lütfen e-postanızı giriniz!",
-        "emailValid": "Lütfen geçerli bir e-posta giriniz",
-        "emailInvalidFormat": "Geçersiz e-posta formatı",
-        "phoneNumberRequired": "Alan zorunludur",
-        "phoneNumberValid": "Lütfen geçerli bir telefon numarası giriniz",
-        "passwordRequired": "Lütfen şifrenizi giriniz!",
-        "passwordMinLength": "Şifre en az 6 karakter olmalıdır",
-        "passwordMinLength8": "Şifre en az 8 karakter olmalıdır",
-        "passwordMinLength1": "Şifre en az 1 karakter olmalıdır",
-        "verificationCodeRequired": "Lütfen kodunuzu giriniz!",
-        "verificationCodeMinLength": "Kod en az 6 karakter olmalıdır",
-        "newPasswordRequired": "Lütfen yeni şifrenizi giriniz!",
-        "confirmPasswordRequired": "Lütfen yeni şifrenizi tekrar giriniz!",
-        "passwordsMustMatch": "Şifreler eşleşmelidir",
-        "emailMinLength": "E-posta en az 2 karakter olmalıdır",
-        "emailInvalidAddress": "Geçersiz e-posta adresi"
-    },
-    "welcome": {
-        "title": "Hoş Geldiniz",
-        "subtitle": "Sanal Denetimler"
-    },
-    "signIn": {
-        "title": "Giriş Yap",
-        "namePlaceholder": "John Doe",
-        "forgotPassword": "Şifremi Unuttum",
-        "errors": {
-            "loginFailed": "Giriş Başarısız",
-            "wrongPassword": "Yanlış şifre. Lütfen tekrar deneyin."
-        }
-    },
-    "forgotPassword": {
-        "title": "Şifremi Unuttum",
-        "subtitle": "Şifre sıfırlama için e-posta adresinizi yazın",
-        "knowPassword": "Şifrenizi Biliyor musunuz?",
-        "loginLink": "Giriş Yap",
-        "verificationCodeSent": "Doğrulama kodu hesabınıza gönderildi",
-        "errors": {
-            "emailNotFound": "E-posta bulunamadı"
-        }
-    },
-    "resetPassword": {
-        "title": "Şifreyi Sıfırla",
-        "subtitle": "Lütfen benzersiz PIN için e-postanızı kontrol edin ve aşağıya yazın",
-        "verificationCodePlaceholder": "Doğrulama Kodu",
-        "successMessage": "Şifreniz başarıyla değiştirildi",
-        "errors": {
-            "failedToReset": "Şifre sıfırlama başarısız"
-        }
-    },
-    "home": {
-        "greeting": "Merhaba, {{name}}",
-        "subtitle": "Bugün aracınızı kontrol edelim",
-        "stats": {
-            "totalVehicles": "Toplam\nAraçlar",
-            "inProgressInspections": "Devam Eden\nDenetimler",
-            "submittedInspections": "Gönderilen\nDenetimler",
-            "totalInspections": "Toplam\nDenetimler"
-        },
-        "myRegisteredVehicles": "Kayıtlı Araçlarım",
-        "recentInspections": "Son Denetimler",
-        "noRegisteredVehicle": "Kayıtlı Araç Yok",
-        "noRecentInspection": "Son Denetim Yok"
-    },
-    "inspectionInProgress": {
-        "title": "Devam Eden Denetimler",
-        "subtitle": "Devam etmek için lütfen aşağıdan denetimi seçin. Gönderdikten sonra inceleyip sertifika oluşturacağız",
-        "discardConfirmation": "Denetiminizi İptal Etmek İstediğinizden Emin Misiniz?",
-        "noInspection": "Devam eden denetim yok",
-        "startInspection": "+ Denetimi Başlat",
-        "orGoBackTo": "Veya geri dön",
-        "page": "sayfasına"
-    },
-    "inspectionReviewed": {
-        "title": "Denetim İncelendi",
-        "filter": "Filtrele",
-        "noData": "Mevcut denetim yok"
-    },
-    "filter": {
-        "title": "Filtrele",
-        "apply": "Uygula",
-        "clear": "Temizle",
-        "noStatuses": "Mevcut durum yok"
-    },
-    "statuses": {
-        "reviewed": "İncelendi",
-        "in_review": "İncelemede",
-        "ready_for_review": "İncelemeye Hazır",
-        "in_progress": "Devam Ediyor"
-    },
-    "results": {
-        "pending": "Beklemede",
-        "pass": "Geçti",
-        "fail": "Kaldı"
-    },
-    "inspectionCard": {
-        "licensePlate": "Plaka",
-        "dateCreated": "Oluşturulma Tarihi",
-        "damageDetected": "Hasar Tespit Edildi",
-        "noDamageDetected": "Hasar Tespit Edilmedi",
-        "inspectionDetails": "Denetim Detayları",
-        "idLabel": "ID",
-        "byLabel": "Yapan"
-    },
-    "inspectionDetail": {
-        "title": "Denetim Detayları",
-        "finalStatus": "Son Durum",
-        "noRemarks": "Açıklama Yok"
-    },
-    "tabs": {
-        "home": "Ana Sayfa",
-        "reports": "Raporlar",
-        "inspection": "Denetim",
-        "myTrips": "Gezilerim",
-        "profile": "Profil"
-    },
-    "newInspection": {
-        "title": "Yeni Denetim",
-        "header": "Lütfen aşağıdaki her kategorideki denetim öğelerini tamamlayın",
-        "discardItem": "Bu denetim öğesini silmek istediğinizden emin misiniz?",
-        "interiorItems": "İç öğeler",
-        "exteriorItems": "Dış öğeler",
-        "tires": "Lastikler"
-    },
+  "common": {
+    "signIn": "Giriş Yap",
+    "email": "E-posta",
+    "submit": "Gönder",
+    "password": "Şifre",
+    "confirmPassword": "Şifreyi Onayla",
+    "reset": "Sıfırla",
+    "loading": "Yükleniyor...",
+    "home": "Ana Sayfa",
+    "yes": "Evet",
+    "no": "Hayır",
+    "licensePlateNo": "Plaka No",
+    "dateCreated": "Oluşturulma Tarihi",
+    "continue": "Devam Et",
+    "retry": "Yeniden Dene",
+    "next": "İleri",
+    "comingSoon": "Yakında!",
+    "ok": "Tamam",
+    "somethingWentWrong": "Bir şeyler yanlış gitti, lütfen tekrar deneyin.",
+    "addImage": "Resim Ekle",
+    "captureImage": "Fotoğraf Çek",
+    "captureVideo": "Video Çek",
+    "image": "resim",
+    "cancel": "İptal",
+    "required": "Zorunlu",
+    "optional": "İsteğe Bağlı",
+    "message": "Mesaj"
+  },
+  "validation": {
+    "fieldRequired": "Alan zorunludur",
+    "firstNameRequired": "Lütfen adınızı giriniz!",
+    "nameMinLength": "Ad en az 2 karakter olmalıdır",
+    "emailRequired": "Lütfen e-postanızı giriniz!",
+    "emailValid": "Lütfen geçerli bir e-posta giriniz",
+    "emailInvalidFormat": "Geçersiz e-posta formatı",
+    "phoneNumberRequired": "Alan zorunludur",
+    "phoneNumberValid": "Lütfen geçerli bir telefon numarası giriniz",
+    "passwordRequired": "Lütfen şifrenizi giriniz!",
+    "passwordMinLength": "Şifre en az 6 karakter olmalıdır",
+    "passwordMinLength8": "Şifre en az 8 karakter olmalıdır",
+    "passwordMinLength1": "Şifre en az 1 karakter olmalıdır",
+    "verificationCodeRequired": "Lütfen kodunuzu giriniz!",
+    "verificationCodeMinLength": "Kod en az 6 karakter olmalıdır",
+    "newPasswordRequired": "Lütfen yeni şifrenizi giriniz!",
+    "confirmPasswordRequired": "Lütfen yeni şifrenizi tekrar giriniz!",
+    "passwordsMustMatch": "Şifreler eşleşmelidir",
+    "emailMinLength": "E-posta en az 2 karakter olmalıdır",
+    "emailInvalidAddress": "Geçersiz e-posta adresi"
+  },
+  "welcome": {
+    "title": "Hoş Geldiniz",
+    "subtitle": "Sanal Denetimler"
+  },
+  "signIn": {
+    "title": "Giriş Yap",
+    "namePlaceholder": "John Doe",
+    "forgotPassword": "Şifremi Unuttum",
     "errors": {
-        "duplicateImage": {
-            "title": "Mükerrer Resim Tespit Edildi",
-            "message": "Bu kategori için bir resim/video daha önce yüklendi ve veritabanımızda mevcut. Daha önce yüklenen resmi görmek için lütfen sayfayı yenileyin."
-        },
-        "inspectionExpired": {
-            "title": "",
-            "message": "Denetim süresi doldu. Lütfen yeni bir Denetim başlatın."
-        },
-        "uploadFailed": {
-            "title": "Yükleme Başarısız",
-            "message": "Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin. Sorun devam ederse dosya boyutunu küçültün veya ağı değiştirin. Gerekirse destekle iletişime geçin. Herhangi bir rahatsızlık için özür dileriz."
-        },
-        "licensePlateInUse": "Şu anda seçili olan plaka başka bir kullanıcı tarafından denetleniyor. Lütfen farklı bir araç seçin.",
-        "licensePlateMismatch": {
-            "title": "Uyumsuzluk Tespit Edildi",
-            "message": "Plaka Numarasında Uyumsuzluk tespit edildi. Lütfen seçilen aracın plakasının fotoğrafını tekrar çekin"
-        },
-        "darkImageError": {
-            "title": "Görüntü Kalitesi Sorunu",
-            "message": "Yüklenen resim çok karanlık görünüyor. Lütfen daha iyi aydınlatmaya sahip daha net bir resim yüklemeyi deneyin."
-        },
-        "imageAlreadyDeleted": "Bu resim zaten silinmiş.",
-        "genericError": "Bir hata oluştu",
-        "alreadyInProgress": "Zaten Devam Eden"
-    },
-    "annotateImageDetails": {
-        "title": "Dış Ön",
-        "description": "Bir aracın görüntüsüne not eklemek için doğrudan görüntü içindeki ilgili alana tıklayabilirsiniz. Tıkladığınızda, seçilen noktada bir hasar simgesi görünecek ve herhangi bir hasarın belirli konumunu görsel olarak işaretleyip vurgulamanıza olanak tanıyacaktır.",
-        "instruction": "Not eklemek istiyor musunuz?\n",
-        "annotateText": "Not Ekle",
-        "skipText": "Atla"
-    },
-    "annotateImage": {
-        "title": "Dış Ön",
-        "description": "Aracın ön görüntüsüne not eklemek için doğrudan görüntü içindeki ilgili alana tıklayabilirsiniz. Tıkladığınızda, seçilen noktada bir hasar simgesi görünecek ve herhangi bir hasarın belirli konumunu görsel olarak işaretleyip vurgulamanıza olanak tanıyacaktır.",
-        "instruction": "Not eklemek istiyor musunuz?\n",
-        "annotateText": "Gönder",
-        "cancelText": "İptal"
-    },
-    "damageTypes": {
-        "minor": "Hafif",
-        "major": "Orta",
-        "severe": "Ağır"
-    },
-    "drawer": {
-        "home": "ANA SAYFA",
-        "thingsYouWillRequire": "Gerekli Şeyler",
-        "logout": "Çıkış Yap",
-        "dvirc": "DVIRC"
-    },
-    "session": {
-        "expired": {
-            "title": "Oturum Süresi Doldu",
-            "message": "Oturum süreniz doldu. Devam etmek için lütfen tekrar giriş yapın.",
-            "button": "Tamam"
-        }
-    },
-    "appUpdate": {
-        "title": "Sürüm Güncellemesi",
-        "message": "Uygulamanın yeni bir sürümü mevcut. Uygulamayı kullanmaya devam etmek için lütfen güncelleyin.",
-        "button": "GÜNCELLE"
-    },
-    "exitApp": {
-        "title": "Bekle!",
-        "message": "Uygulamadan çıkmak istediğinizden emin misiniz?",
-        "button": {
-            "yes": "Evet",
-            "cancel": "İptal"
-        }
-    },
-    "delete": {
-        "success": "Başarıyla Silindi.",
-        "failed": "Silme başarısız. Lütfen tekrar deneyin."
-    },
-    "dvir": {
-        "checklistTitle": "Kontrol Listesi Öğeleri",
-        "tires": "Lastikler",
-        "captureFrames": "Kareleri Yakala",
-        "comments": "Yorumlar",
-        "addComments": "Yorumlarınızı buraya ekleyin",
-        "captureImage": "Fotoğraf çek",
-        "exteriorFront": "Dış Ön",
-        "exteriorRear": "Dış Arka",
-        "interiorFrontTitle": "Tam Ön İç (panel, direksiyon, koltuk)",
-        "interiorRearTitle": "Arka İç (arka koltuklar, zemin) / Kasa",
-        "frontInterior": "Ön İç",
-        "rearInterior": "Arka İç",
-        "tire": "Lastik",
-        "dashBoardView": "Lütfen kontrol panelinin net bir görüntüsünü içeren bir fotoğraf çekin",
-        "rearInteriorView": "Lütfen arka iç kısmın net bir görüntüsünü içeren bir fotoğraf çekin",
-        "tireView": "Lütfen lastiğin net bir görüntüsünü içeren bir fotoğraf çekin",
-        "maxMediaError": "En fazla 5 medya dosyası ekleyebilirsiniz",
-        "uploadVideo": "Video Yükle",
-        "uploadImage": "Resim Yükle",
-        "uploadingMedia": "Lütfen {{media}} yüklenene kadar bekleyin",
-        "tdrf": "Diş Derinliği ÖS (TDRF)",
-        "tdrr": "Diş Derinliği AS (TDRR)",
-        "tdlf": "Diş Derinliği ÖS (TDLF)",
-        "tdlr": "Diş Derinliği AS (TDLR)",
-        "tdspare": "Diş Derinliği Yedek (TDSPARE)",
-        "brakeComponents": "Fren Bileşenleri (tamburlar/rotorlar/hatlar fotoğrafı)",
-        "status": {
-            "good": "İyi",
-            "repair": "Onarım",
-            "replace": "Değiştir"
-        },
-        "checklist": {
-            "headLights": "Farlar / Sinyaller / Dörtlüler / Dış Lambalar / Silecek Süpürgeleri",
-            "engineBay": "Motor Bölmesi (Geniş Çekim)",
-            "oilDipstick": "Yağ Çubuğu (Yağ Seviyesini/Berraklığını Gösteren Fotoğraf)",
-            "underBodyLeak": "Alt Gövde Sızıntı Kontrolü (Motor Altı Fotoğrafı)",
-            "radioNavigation": "Radyo / Navigasyon Ekranı (Açık)",
-            "jackTools": "Kriko ve Aletler (Kriko, Anahtar, Alet Çantası)",
-            "tailLights": "Arka Lambalar / Sinyaller / Fren Lambaları / Dörtlüler / Dış Lambalar"
-        }
-    },
-    "vehicleInfo": {
-        "title": "Araç Bilgileri",
-        "subtitle": "Denetiminize başlamak için lütfen aşağıdaki araç bilgilerini sağlayın. Doğru uyumluluk sağlamak için tüm alanlar zorunludur.",
-        "licensePlateLabel": "Araç ID/Plaka",
-        "licensePlatePlaceholder": "Araç ID/Plaka Girin",
-        "mileageLabel": "Kilometre",
-        "mileagePlaceholder": "Kilometre Girin",
-        "vinLabel": "Şasi No (VIN)",
-        "vinPlaceholder": "VIN Girin",
-        "driverNameLabel": "Sürücü Adı",
-        "dateLabel": "Tarih",
-        "vehicleTypeLabel": "Araç Tipi",
-        "inspectionTypeLabel": "Denetim Tipi",
-        "inspectionTypePlaceholder": "Denetim Tipi",
-        "clearAll": "Hepsini temizle",
-        "next": "İleri",
-        "errors": {
-            "licensePlateUndetected": "Okuma yapılamadı. Lütfen plaka numarasını manuel olarak girin",
-            "licensePlateRequired": "Plaka numarası zorunludur",
-            "mileageUndetected": "Okuma yapılamadı. Lütfen kilometreyi manuel olarak girin",
-            "mileageRequired": "Kilometre zorunludur",
-            "mileagePositive": "Kilometre pozitif bir sayı olmalıdır",
-            "vinUndetected": "Okuma yapılamadı. Lütfen VIN'i manuel olarak girin",
-            "vinRequired": "VIN zorunludur",
-            "vinLength": "VIN 17 karakter uzunluğunda olmalıdır",
-            "inspectionTypeRequired": "Denetim Tipi zorunludur",
-            "vehicleTypeRequired": "Lütfen bir araç tipi seçin",
-            "driverNameRequired": "Sürücü adı zorunludur",
-            "dateRequired": "Tarih zorunludur"
-        },
-        "vehicleTypes": {
-            "van": "BOŞUNA",
-            "truck": "KAMYON",
-            "sedan": "SEDAN",
-            "other": "DİĞER"
-        },
-        "inspectionTypes": {
-            "regular": "Normal",
-            "dvir": "DVIR"
-        },
-        "camera": {
-            "takePhotoVin": "Lütfen VIN numarasının \n fotoğrafını çekin",
-            "waitVinUpload": "Lütfen VIN yüklenirken biraz bekleyin"
-        }
-    },
-    "vehicleTypeModal": {
-        "title": "Araç Tipini Seçin",
-        "description": "Lütfen bu denetim için araç tipini seçin."
-    },
-    "profile": {
-        "title": "Kullanıcı Profili",
-        "firstNameLabel": "Ad",
-        "firstNamePlaceholder": "Ad Girin",
-        "lastNameLabel": "Soyad",
-        "lastNamePlaceholder": "Soyad Girin",
-        "emailLabel": "E-posta",
-        "emailPlaceholder": "E-posta Girin",
-        "phoneLabel": "Telefon",
-        "phonePlaceholder": "Telefon Girin",
-        "languageLabel": "Dil",
-        "languagePlaceholder": "Dil Seçin",
-        "updateProfileButton": "Profili Güncelle",
-        "profileUpdatedToast": "Profil Güncellendi",
-        "languageChangedToast": "Dil başarıyla değiştirildi",
-        "errors": {
-            "firstNameRequired": "Ad zorunludur",
-            "lastNameRequired": "Soyad zorunludur",
-            "emailRequired": "E-posta zorunludur",
-            "invalidEmail": "Geçersiz e-posta formatı",
-            "phoneRequired": "Telefon numarası zorunludur",
-            "phoneDigits": "Telefon numarası 10–15 hane arasında olmalıdır"
-        }
-    },
-    "languages": {
-        "en": "İngilizce",
-        "ro": "Rumence",
-        "pl": "Lehçe",
-        "bg": "Bulgarca",
-        "tr": "Türkçe"
-    },
-    "annotation": {
-        "title": "Dış Ön",
-        "description": "Bir aracın görüntüsüne not eklemek için doğrudan görüntü içindeki ilgili alana tıklayabilirsiniz. Tıkladığınızda, seçilen noktada bir hasar simgesi görünecek ve herhangi bir hasarın belirli konumunu görsel olarak işaretleyip vurgulamanıza olanak tanıyacaktır.",
-        "instruction": "Not eklemek istiyor musunuz?\n",
-        "annotate": "Not Ekle",
-        "skip": "Atla",
-        "submit": "Gönder",
-        "cancel": "İptal",
-        "severityLevel": "Hasar Önem Düzeyini Belirleyin",
-        "addNotes": "Not Ekle",
-        "notesPlaceholder": "Notlarınızı buraya ekleyin",
-        "damageType": {
-            "minor": "Hafif",
-            "major": "Orta",
-            "severe": "Ağır"
-        },
-        "alertMessage": "Devam etmek için lütfen hasarı vurgulayın ve bir önem düzeyi seçin. Her ikisi de zorunludur.",
-        "uploading": "Yükleniyor",
-        "finalizingUpload": "Yükleme Tamamlanıyor",
-        "imageQuestion": "resim?"
-    },
-    "interiorItems": {
-        "captureImage": "Fotoğraf Çek",
-        "captureNow": "Şimdi Çek",
-        "driverSide": {
-            "title": "İç Sürücü Tarafı",
-            "instruction": "Lütfen aşağıdaki öğelerin net bir görüntüsünü içeren, sol sürücü tarafı kapısı açıkken aracın iç kısmının bir fotoğrafını çekin:",
-            "details": {
-                "seatBelt": "Sürücü emniyet kemeri takılı",
-                "rearview": "İç dikiz aynası",
-                "brakePads": "Fren balataları"
-            }
-        },
-        "passengerSide": {
-            "title": "İç Yolcu Tarafı",
-            "instruction": "Lütfen aşağıdaki iç öğelerin net bir görüntüsünü içeren, sağ yolcu tarafı kapısı açıkken aracın iç kısmının bir fotoğrafını çekin:",
-            "details": {
-                "seatBelt": "Yolcu emniyet kemeri takılı"
-            }
-        }
-    },
-    "carVerification": {
-        "licensePlate": {
-            "title": "Plaka",
-            "instruction": "Lütfen aracın üzerindeki Plakanın fotoğrafını çekin",
-            "captureNow": "Şimdi Çek"
-        },
-        "odometer": {
-            "title": "Kilometre Sayacı",
-            "instruction": "Lütfen aracın kilometresini net bir şekilde gösteren bir fotoğrafını çekin",
-            "captureNow": "Şimdi Çek"
-        },
-        "vin": {
-            "title": "Şasi No (VIN)",
-            "instruction": "Lütfen VIN yüklenene kadar biraz bekleyin",
-            "captureNow": "Şimdi Çek"
-        },
-        "uploadImage": "Resim Yükle"
-    },
-    "collapsedCard": {
-        "uploadInstructions": "Her alt kategori için en fazla 3 resim yükleyin\n(1 zorunlu, 2 isteğe bağlı)"
-    },
-    "exteriorItems": {
-        "captureImage": "Fotoğraf Çek",
-        "captureNow": "Şimdi Çek",
-        "front": {
-            "title": "Dış Ön",
-            "instruction": "Lütfen aracın önünü net bir şekilde gösteren bir fotoğraf yükleyin"
-        },
-        "rear": {
-            "title": "Dış Arka",
-            "instruction": "Lütfen aracın arkasını net bir şekilde gösteren bir fotoğraf yükleyin"
-        },
-        "left": {
-            "title": "Dış Sol",
-            "instruction": "Lütfen aracın tüm dış sol tarafını net bir şekilde gösteren bir fotoğraf çekin"
-        },
-        "right": {
-            "title": "Dış Sağ",
-            "instruction": "Lütfen aracın tüm dış sağ tarafını net bir şekilde gösteren bir fotoğraf çekin"
-        },
-        "frontLeftCorner": {
-            "title": "Ön Sol Köşe",
-            "instruction": "Lütfen aracın ön sol köşesinden, sol farı, sürücü kapısını ve tavanın sol dış tarafını net bir şekilde gösteren bir fotoğraf çekin"
-        },
-        "frontRightCorner": {
-            "title": "Ön Sağ Köşe",
-            "instruction": "Lütfen aracın ön sağ köşesinden, sağ farı, yolcu kapısını ve tavanın sağ dış tarafını net bir şekilde gösteren bir fotoğraf çekin"
-        },
-        "rearLeftCorner": {
-            "title": "Arka Sol Köşe",
-            "instruction": "Lütfen aracın arka sol köşesinden, sol stop lambasını, arka kapıyı ve tavanın sol dış tarafını net bir şekilde gösteren bir fotoğraf çekin"
-        },
-        "rearRightCorner": {
-            "title": "Arka Sağ Köşe",
-            "instruction": "Lütfen aracın arka sağ köşesinden, sağ stop lambasını, arka kapıyı ve tavanın sağ dış tarafını net bir şekilde gösteren bir fotoğraf çekin"
-        },
-        "insideCargoRoof": {
-            "title": "İç Tavan",
-            "instruction": "Lütfen aracın iç tavanını net bir şekilde gösteren bir fotoğraf yükleyin"
-        }
-    },
-    "tiresItems": {
-        "captureImage": "Fotoğraf Çek",
-        "captureNow": "Şimdi Çek",
-        "instruction": "Lütfen lastik dişinin üzerine bir bozuk para yerleştirin ve aşağıdaki öğeleri içeren bir fotoğraf çekin:",
-        "subHeading": "Bozuk parayı baş aşağı ve kameraya bakacak şekilde yerleştirin",
-        "leftFront": "Sol Ön Lastik",
-        "leftRear": "Sol Arka Lastik",
-        "rightFront": "Sağ Ön Lastik",
-        "rightRear": "Sağ Arka Lastik"
-    },
-    "commentBox": {
-        "title": "Yorum Ekle",
-        "description": "Lütfen yorumlarınızı veya geri bildirimlerinizi aşağıya yazın",
-        "placeHolder": "Yorumunuzu veya geri bildiriminizi buraya yazın"
-    },
-    "commentButton": {
-        "text": "+ Yorum Ekle",
-        "optional": "(İsteğe Bağlı)"
-    },
-    "confirmVehicleDetail": {
-        "title": "Araç Detayı",
-        "description": "Sistem plaka numarasını tespit edemedi. Lütfen plaka numarasını aşağıya yazın:",
-        "buttonText": "Onayla",
-        "placeHolder": "Plaka Numarasını Girin"
-    },
-    "expiryInspection": {
-        "description": "Denetim Süresi Doldu. Lütfen Yeni Bir Denetim Başlatın.",
-        "confirmButton": "Yeni Denetim",
-        "cancelButton": "Çıkış"
-    },
-    "mileageInput": {
-        "title": "Kilometre Girişi",
-        "description": "Sistem kilometreyi tespit edemedi. Lütfen kilometreyi aşağıya yazın:",
-        "placeHolder": "Kilometre Girin",
-        "errors": {
-            "lessThanPrevious": "Mevcut okuma önceki okumadan az olamaz"
-        }
-    },
-    "categories": {
-        "exterior_front": "Dış Ön",
-        "exterior_rear": "Dış Arka",
-        "exterior_left": "Dış Sol",
-        "exterior_right": "Dış Sağ",
-        "front_left_corner": "Ön Sol Köşe",
-        "front_right_corner": "Ön Sağ Köşe",
-        "rear_left_corner": "Arka Sol Köşe",
-        "rear_right_corner": "Arka Sağ Köşe",
-        "inside_cargo_roof": "İç Tavan",
-        "interior_driver_side": "İç Sürücü Tarafı",
-        "interior_passenger_side": "İç Yolcu Tarafı",
-        "license_plate_number": "Plaka Numarası",
-        "odometer": "Kilometre Sayacı",
-        "left_front_tire": "Sol Ön Lastik",
-        "left_rear_tire": "Sol Arka Lastik",
-        "right_front_tire": "Sağ Ön Lastik",
-        "right_rear_tire": "Sağ Arka Lastik",
-        "front_interior": "Ön İç",
-        "rear_interior": "Arka İç",
-        "tire": "Lastik",
-        "tdrf": "Diş Derinliği ÖS (TDRF)",
-        "tdrr": "Diş Derinliği AS (TDRR)",
-        "tdlf": "Diş Derinliği ÖS (TDLF)",
-        "tdlr": "Diş Derinliği AS (TDLR)",
-        "tdspare": "Diş Derinliği Yedek (TDSPARE)",
-        "brake_components": "Fren Bileşenleri"
-    },
-    "completedInspection": {
-        "thankYou": "Kullandığınız için teşekkür ederiz",
-        "message": "Uygulamamızdan şimdi çıkabilirsiniz. Daha fazla yardıma ihtiyacımız olursa temsilcilerimiz size ulaşacaktır",
-        "homeButton": "Ana Sayfa"
-    },
-    "inspectionTitles": {
-        "license_plate_number": "Plaka Numarası",
-        "odometer": "Kilometre Sayacı",
-        "exterior_front": "Dış Ön",
-        "exterior_front_1": "Dış Ön - 1",
-        "exterior_front_2": "Dış Ön - 2",
-        "exterior_rear": "Dış Arka",
-        "exterior_rear_1": "Dış Arka - 1",
-        "exterior_rear_2": "Dış Arka - 2",
-        "exterior_left": "Dış Sol",
-        "exterior_left_1": "Dış Sol - 1",
-        "exterior_left_2": "Dış Sol - 2",
-        "exterior_right": "Dış Sağ",
-        "exterior_right_1": "Dış Sağ - 1",
-        "exterior_right_2": "Dış Sağ - 2",
-        "front_left_corner": "Ön Sol Köşe",
-        "front_left_corner_1": "Ön Sol Köşe - 1",
-        "front_left_corner_2": "Ön Sol Köşe - 2",
-        "front_right_corner": "Ön Sağ Köşe",
-        "front_right_corner_1": "Ön Sağ Köşe - 1",
-        "front_right_corner_2": "Ön Sağ Köşe - 2",
-        "rear_left_corner": "Arka Sol Köşe",
-        "rear_left_corner_1": "Arka Sol Köşe - 1",
-        "rear_left_corner_2": "Arka Sol Köşe - 2",
-        "rear_right_corner": "Arka Sağ Köşe",
-        "rear_right_corner_1": "Arka Sağ Köşe - 1",
-        "rear_right_corner_2": "Arka Sağ Köşe - 2",
-        "inside_cargo_roof": "İç Tavan",
-        "inside_cargo_roof_1": "İç Tavan - 1",
-        "inside_cargo_roof_2": "İç Tavan - 2",
-        "left_front_tire": "Sol Ön Lastik",
-        "left_rear_tire": "Sol Arka Lastik",
-        "right_front_tire": "Sağ Ön Lastik",
-        "right_rear_tire": "Sağ Arka Lastik",
-        "interior_passenger_side": "İç Yolcu Tarafı",
-        "interior_driver_side": "İç Sürücü Tarafı"
+      "loginFailed": "Giriş Başarısız",
+      "wrongPassword": "Yanlış şifre. Lütfen tekrar deneyin."
     }
+  },
+  "forgotPassword": {
+    "title": "Şifremi Unuttum",
+    "subtitle": "Şifre sıfırlama için e-posta adresinizi yazın",
+    "knowPassword": "Şifrenizi Biliyor musunuz?",
+    "loginLink": "Giriş Yap",
+    "verificationCodeSent": "Doğrulama kodu hesabınıza gönderildi",
+    "errors": {
+      "emailNotFound": "E-posta bulunamadı"
+    }
+  },
+  "resetPassword": {
+    "title": "Şifreyi Sıfırla",
+    "subtitle": "Lütfen benzersiz PIN için e-postanızı kontrol edin ve aşağıya yazın",
+    "verificationCodePlaceholder": "Doğrulama Kodu",
+    "successMessage": "Şifreniz başarıyla değiştirildi",
+    "errors": {
+      "failedToReset": "Şifre sıfırlama başarısız"
+    }
+  },
+  "home": {
+    "greeting": "Merhaba, {{name}}",
+    "subtitle": "Bugün aracınızı kontrol edelim",
+    "stats": {
+      "totalVehicles": "Toplam\nAraçlar",
+      "inProgressInspections": "Devam Eden\nDenetimler",
+      "submittedInspections": "Gönderilen\nDenetimler",
+      "totalInspections": "Toplam\nDenetimler"
+    },
+    "myRegisteredVehicles": "Kayıtlı Araçlarım",
+    "recentInspections": "Son Denetimler",
+    "noRegisteredVehicle": "Kayıtlı Araç Yok",
+    "noRecentInspection": "Son Denetim Yok"
+  },
+  "inspectionInProgress": {
+    "title": "Devam Eden Denetimler",
+    "subtitle": "Devam etmek için lütfen aşağıdan denetimi seçin. Gönderdikten sonra inceleyip sertifika oluşturacağız",
+    "discardConfirmation": "Denetiminizi İptal Etmek İstediğinizden Emin Misiniz?",
+    "noInspection": "Devam eden denetim yok",
+    "startInspection": "+ Denetimi Başlat",
+    "orGoBackTo": "Veya geri dön",
+    "page": "sayfasına"
+  },
+  "inspectionReviewed": {
+    "title": "Denetim İncelendi",
+    "filter": "Filtrele",
+    "noData": "Mevcut denetim yok"
+  },
+  "filter": {
+    "title": "Filtrele",
+    "apply": "Uygula",
+    "clear": "Temizle",
+    "noStatuses": "Mevcut durum yok"
+  },
+  "statuses": {
+    "reviewed": "İncelendi",
+    "in_review": "İncelemede",
+    "ready_for_review": "İncelemeye Hazır",
+    "in_progress": "Devam Ediyor"
+  },
+  "results": {
+    "pending": "Beklemede",
+    "pass": "Geçti",
+    "fail": "Kaldı"
+  },
+  "inspectionCard": {
+    "licensePlate": "Plaka",
+    "dateCreated": "Oluşturulma Tarihi",
+    "damageDetected": "Hasar Tespit Edildi",
+    "noDamageDetected": "Hasar Tespit Edilmedi",
+    "inspectionDetails": "Denetim Detayları",
+    "idLabel": "ID",
+    "byLabel": "Yapan"
+  },
+  "inspectionDetail": {
+    "title": "Denetim Detayları",
+    "finalStatus": "Son Durum",
+    "noRemarks": "Açıklama Yok"
+  },
+  "tabs": {
+    "home": "Ana Sayfa",
+    "reports": "Raporlar",
+    "inspection": "Denetim",
+    "myTrips": "Gezilerim",
+    "profile": "Profil"
+  },
+  "newInspection": {
+    "title": "Yeni Denetim",
+    "header": "Lütfen aşağıdaki her kategorideki denetim öğelerini tamamlayın",
+    "discardItem": "Bu denetim öğesini silmek istediğinizden emin misiniz?",
+    "interiorItems": "İç öğeler",
+    "exteriorItems": "Dış öğeler",
+    "tires": "Lastikler"
+  },
+  "errors": {
+    "duplicateImage": {
+      "title": "Mükerrer Resim Tespit Edildi",
+      "message": "Bu kategori için bir resim/video daha önce yüklendi ve veritabanımızda mevcut. Daha önce yüklenen resmi görmek için lütfen sayfayı yenileyin."
+    },
+    "inspectionExpired": {
+      "title": "",
+      "message": "Denetim süresi doldu. Lütfen yeni bir Denetim başlatın."
+    },
+    "uploadFailed": {
+      "title": "Yükleme Başarısız",
+      "message": "Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin. Sorun devam ederse dosya boyutunu küçültün veya ağı değiştirin. Gerekirse destekle iletişime geçin. Herhangi bir rahatsızlık için özür dileriz."
+    },
+    "licensePlateInUse": "Şu anda seçili olan plaka başka bir kullanıcı tarafından denetleniyor. Lütfen farklı bir araç seçin.",
+    "licensePlateMismatch": {
+      "title": "Uyumsuzluk Tespit Edildi",
+      "message": "Plaka Numarasında Uyumsuzluk tespit edildi. Lütfen seçilen aracın plakasının fotoğrafını tekrar çekin"
+    },
+    "darkImageError": {
+      "title": "Görüntü Kalitesi Sorunu",
+      "message": "Yüklenen resim çok karanlık görünüyor. Lütfen daha iyi aydınlatmaya sahip daha net bir resim yüklemeyi deneyin."
+    },
+    "imageAlreadyDeleted": "Bu resim zaten silinmiş.",
+    "genericError": "Bir hata oluştu",
+    "alreadyInProgress": "Zaten Devam Eden"
+  },
+  "annotateImageDetails": {
+    "title": "Dış Ön",
+    "description": "Bir aracın görüntüsüne not eklemek için doğrudan görüntü içindeki ilgili alana tıklayabilirsiniz. Tıkladığınızda, seçilen noktada bir hasar simgesi görünecek ve herhangi bir hasarın belirli konumunu görsel olarak işaretleyip vurgulamanıza olanak tanıyacaktır.",
+    "instruction": "Not eklemek istiyor musunuz?\n",
+    "annotateText": "Not Ekle",
+    "skipText": "Atla"
+  },
+  "annotateImage": {
+    "title": "Dış Ön",
+    "description": "Aracın ön görüntüsüne not eklemek için doğrudan görüntü içindeki ilgili alana tıklayabilirsiniz. Tıkladığınızda, seçilen noktada bir hasar simgesi görünecek ve herhangi bir hasarın belirli konumunu görsel olarak işaretleyip vurgulamanıza olanak tanıyacaktır.",
+    "instruction": "Not eklemek istiyor musunuz?\n",
+    "annotateText": "Gönder",
+    "cancelText": "İptal"
+  },
+  "damageTypes": {
+    "minor": "Hafif",
+    "major": "Orta",
+    "severe": "Ağır"
+  },
+  "drawer": {
+    "home": "ANA SAYFA",
+    "thingsYouWillRequire": "Gerekli Şeyler",
+    "logout": "Çıkış Yap",
+    "dvirc": "DVIRC"
+  },
+  "session": {
+    "expired": {
+      "title": "Oturum Süresi Doldu",
+      "message": "Oturum süreniz doldu. Devam etmek için lütfen tekrar giriş yapın.",
+      "button": "Tamam"
+    }
+  },
+  "appUpdate": {
+    "title": "Sürüm Güncellemesi",
+    "message": "Uygulamanın yeni bir sürümü mevcut. Uygulamayı kullanmaya devam etmek için lütfen güncelleyin.",
+    "button": "GÜNCELLE"
+  },
+  "exitApp": {
+    "title": "Bekle!",
+    "message": "Uygulamadan çıkmak istediğinizden emin misiniz?",
+    "button": {
+      "yes": "Evet",
+      "cancel": "İptal"
+    }
+  },
+  "delete": {
+    "success": "Başarıyla Silindi.",
+    "failed": "Silme başarısız. Lütfen tekrar deneyin.",
+    "inspectionDeleted": "Denetim silindi!"
+  },
+  "dvir": {
+    "checklistTitle": "Kontrol Listesi Öğeleri",
+    "tires": "Lastikler",
+    "captureFrames": "Kareleri Yakala",
+    "comments": "Yorumlar",
+    "addComments": "Yorumlarınızı buraya ekleyin",
+    "captureImage": "Fotoğraf çek",
+    "exteriorFront": "Dış Ön",
+    "exteriorRear": "Dış Arka",
+    "interiorFrontTitle": "Tam Ön İç (panel, direksiyon, koltuk)",
+    "interiorRearTitle": "Arka İç (arka koltuklar, zemin) / Kasa",
+    "frontInterior": "Ön İç",
+    "rearInterior": "Arka İç",
+    "tire": "Lastik",
+    "dashBoardView": "Lütfen kontrol panelinin net bir görüntüsünü içeren bir fotoğraf çekin",
+    "rearInteriorView": "Lütfen arka iç kısmın net bir görüntüsünü içeren bir fotoğraf çekin",
+    "tireView": "Lütfen lastiğin net bir görüntüsünü içeren bir fotoğraf çekin",
+    "maxMediaError": "En fazla 5 medya dosyası ekleyebilirsiniz",
+    "uploadVideo": "Video Yükle",
+    "uploadImage": "Resim Yükle",
+    "uploadingMedia": "Lütfen {{media}} yüklenene kadar bekleyin",
+    "tdrf": "Diş Derinliği ÖS (TDRF)",
+    "tdrr": "Diş Derinliği AS (TDRR)",
+    "tdlf": "Diş Derinliği ÖS (TDLF)",
+    "tdlr": "Diş Derinliği AS (TDLR)",
+    "tdspare": "Diş Derinliği Yedek (TDSPARE)",
+    "brakeComponents": "Fren Bileşenleri (tamburlar/rotorlar/hatlar fotoğrafı)",
+    "status": {
+      "good": "İyi",
+      "repair": "Onarım",
+      "replace": "Değiştir"
+    },
+    "checklist": {
+      "headLights": "Farlar / Sinyaller / Dörtlüler / Dış Lambalar / Silecek Süpürgeleri",
+      "engineBay": "Motor Bölmesi (Geniş Çekim)",
+      "oilDipstick": "Yağ Çubuğu (Yağ Seviyesini/Berraklığını Gösteren Fotoğraf)",
+      "underBodyLeak": "Alt Gövde Sızıntı Kontrolü (Motor Altı Fotoğrafı)",
+      "radioNavigation": "Radyo / Navigasyon Ekranı (Açık)",
+      "jackTools": "Kriko ve Aletler (Kriko, Anahtar, Alet Çantası)",
+      "tailLights": "Arka Lambalar / Sinyaller / Fren Lambaları / Dörtlüler / Dış Lambalar"
+    }
+  },
+  "vehicleInfo": {
+    "title": "Araç Bilgileri",
+    "subtitle": "Denetiminize başlamak için lütfen aşağıdaki araç bilgilerini sağlayın. Doğru uyumluluk sağlamak için tüm alanlar zorunludur.",
+    "licensePlateLabel": "Araç ID/Plaka",
+    "licensePlatePlaceholder": "Araç ID/Plaka Girin",
+    "mileageLabel": "Kilometre",
+    "mileagePlaceholder": "Kilometre Girin",
+    "vinLabel": "Şasi No (VIN)",
+    "vinPlaceholder": "VIN Girin",
+    "driverNameLabel": "Sürücü Adı",
+    "dateLabel": "Tarih",
+    "vehicleTypeLabel": "Araç Tipi",
+    "inspectionTypeLabel": "Denetim Tipi",
+    "inspectionTypePlaceholder": "Denetim Tipi",
+    "clearAll": "Hepsini temizle",
+    "next": "İleri",
+    "errors": {
+      "licensePlateUndetected": "Okuma yapılamadı. Lütfen plaka numarasını manuel olarak girin",
+      "licensePlateRequired": "Plaka numarası zorunludur",
+      "mileageUndetected": "Okuma yapılamadı. Lütfen kilometreyi manuel olarak girin",
+      "mileageRequired": "Kilometre zorunludur",
+      "mileagePositive": "Kilometre pozitif bir sayı olmalıdır",
+      "vinUndetected": "Okuma yapılamadı. Lütfen VIN'i manuel olarak girin",
+      "vinRequired": "VIN zorunludur",
+      "vinLength": "VIN 17 karakter uzunluğunda olmalıdır",
+      "inspectionTypeRequired": "Denetim Tipi zorunludur",
+      "vehicleTypeRequired": "Lütfen bir araç tipi seçin",
+      "driverNameRequired": "Sürücü adı zorunludur",
+      "dateRequired": "Tarih zorunludur"
+    },
+    "vehicleTypes": {
+      "van": "BOŞUNA",
+      "truck": "KAMYON",
+      "sedan": "SEDAN",
+      "other": "DİĞER"
+    },
+    "inspectionTypes": {
+      "regular": "Normal",
+      "dvir": "DVIR"
+    },
+    "camera": {
+      "takePhotoVin": "Lütfen VIN numarasının \n fotoğrafını çekin",
+      "waitVinUpload": "Lütfen VIN yüklenirken biraz bekleyin"
+    }
+  },
+  "vehicleTypeModal": {
+    "title": "Araç Tipini Seçin",
+    "description": "Lütfen bu denetim için araç tipini seçin."
+  },
+  "profile": {
+    "title": "Kullanıcı Profili",
+    "firstNameLabel": "Ad",
+    "firstNamePlaceholder": "Ad Girin",
+    "lastNameLabel": "Soyad",
+    "lastNamePlaceholder": "Soyad Girin",
+    "emailLabel": "E-posta",
+    "emailPlaceholder": "E-posta Girin",
+    "phoneLabel": "Telefon",
+    "phonePlaceholder": "Telefon Girin",
+    "languageLabel": "Dil",
+    "languagePlaceholder": "Dil Seçin",
+    "updateProfileButton": "Profili Güncelle",
+    "profileUpdatedToast": "Profil Güncellendi",
+    "languageChangedToast": "Dil başarıyla değiştirildi",
+    "errors": {
+      "firstNameRequired": "Ad zorunludur",
+      "lastNameRequired": "Soyad zorunludur",
+      "emailRequired": "E-posta zorunludur",
+      "invalidEmail": "Geçersiz e-posta formatı",
+      "phoneRequired": "Telefon numarası zorunludur",
+      "phoneDigits": "Telefon numarası 10–15 hane arasında olmalıdır"
+    }
+  },
+  "languages": {
+    "en": "İngilizce",
+    "ro": "Rumence",
+    "pl": "Lehçe",
+    "bg": "Bulgarca",
+    "tr": "Türkçe"
+  },
+  "annotation": {
+    "title": "Dış Ön",
+    "description": "Bir aracın görüntüsüne not eklemek için doğrudan görüntü içindeki ilgili alana tıklayabilirsiniz. Tıkladığınızda, seçilen noktada bir hasar simgesi görünecek ve herhangi bir hasarın belirli konumunu görsel olarak işaretleyip vurgulamanıza olanak tanıyacaktır.",
+    "instruction": "Not eklemek istiyor musunuz?\n",
+    "annotate": "Not Ekle",
+    "skip": "Atla",
+    "submit": "Gönder",
+    "cancel": "İptal",
+    "severityLevel": "Hasar Önem Düzeyini Belirleyin",
+    "addNotes": "Not Ekle",
+    "notesPlaceholder": "Notlarınızı buraya ekleyin",
+    "damageType": {
+      "minor": "Hafif",
+      "major": "Orta",
+      "severe": "Ağır"
+    },
+    "alertMessage": "Devam etmek için lütfen hasarı vurgulayın ve bir önem düzeyi seçin. Her ikisi de zorunludur.",
+    "uploading": "Yükleniyor",
+    "finalizingUpload": "Yükleme Tamamlanıyor",
+    "imageQuestion": "resim?"
+  },
+  "interiorItems": {
+    "captureImage": "Fotoğraf Çek",
+    "captureNow": "Şimdi Çek",
+    "driverSide": {
+      "title": "İç Sürücü Tarafı",
+      "instruction": "Lütfen aşağıdaki öğelerin net bir görüntüsünü içeren, sol sürücü tarafı kapısı açıkken aracın iç kısmının bir fotoğrafını çekin:",
+      "details": {
+        "seatBelt": "Sürücü emniyet kemeri takılı",
+        "rearview": "İç dikiz aynası",
+        "brakePads": "Fren balataları"
+      }
+    },
+    "passengerSide": {
+      "title": "İç Yolcu Tarafı",
+      "instruction": "Lütfen aşağıdaki iç öğelerin net bir görüntüsünü içeren, sağ yolcu tarafı kapısı açıkken aracın iç kısmının bir fotoğrafını çekin:",
+      "details": {
+        "seatBelt": "Yolcu emniyet kemeri takılı"
+      }
+    }
+  },
+  "carVerification": {
+    "licensePlate": {
+      "title": "Plaka",
+      "instruction": "Lütfen aracın üzerindeki Plakanın fotoğrafını çekin",
+      "captureNow": "Şimdi Çek"
+    },
+    "odometer": {
+      "title": "Kilometre Sayacı",
+      "instruction": "Lütfen aracın kilometresini net bir şekilde gösteren bir fotoğrafını çekin",
+      "captureNow": "Şimdi Çek"
+    },
+    "vin": {
+      "title": "Şasi No (VIN)",
+      "instruction": "Lütfen VIN yüklenene kadar biraz bekleyin",
+      "captureNow": "Şimdi Çek"
+    },
+    "uploadImage": "Resim Yükle"
+  },
+  "collapsedCard": {
+    "uploadInstructions": "Her alt kategori için en fazla 3 resim yükleyin\n(1 zorunlu, 2 isteğe bağlı)"
+  },
+  "exteriorItems": {
+    "captureImage": "Fotoğraf Çek",
+    "captureNow": "Şimdi Çek",
+    "front": {
+      "title": "Dış Ön",
+      "instruction": "Lütfen aracın önünü net bir şekilde gösteren bir fotoğraf yükleyin"
+    },
+    "rear": {
+      "title": "Dış Arka",
+      "instruction": "Lütfen aracın arkasını net bir şekilde gösteren bir fotoğraf yükleyin"
+    },
+    "left": {
+      "title": "Dış Sol",
+      "instruction": "Lütfen aracın tüm dış sol tarafını net bir şekilde gösteren bir fotoğraf çekin"
+    },
+    "right": {
+      "title": "Dış Sağ",
+      "instruction": "Lütfen aracın tüm dış sağ tarafını net bir şekilde gösteren bir fotoğraf çekin"
+    },
+    "frontLeftCorner": {
+      "title": "Ön Sol Köşe",
+      "instruction": "Lütfen aracın ön sol köşesinden, sol farı, sürücü kapısını ve tavanın sol dış tarafını net bir şekilde gösteren bir fotoğraf çekin"
+    },
+    "frontRightCorner": {
+      "title": "Ön Sağ Köşe",
+      "instruction": "Lütfen aracın ön sağ köşesinden, sağ farı, yolcu kapısını ve tavanın sağ dış tarafını net bir şekilde gösteren bir fotoğraf çekin"
+    },
+    "rearLeftCorner": {
+      "title": "Arka Sol Köşe",
+      "instruction": "Lütfen aracın arka sol köşesinden, sol stop lambasını, arka kapıyı ve tavanın sol dış tarafını net bir şekilde gösteren bir fotoğraf çekin"
+    },
+    "rearRightCorner": {
+      "title": "Arka Sağ Köşe",
+      "instruction": "Lütfen aracın arka sağ köşesinden, sağ stop lambasını, arka kapıyı ve tavanın sağ dış tarafını net bir şekilde gösteren bir fotoğraf çekin"
+    },
+    "insideCargoRoof": {
+      "title": "İç Tavan",
+      "instruction": "Lütfen aracın iç tavanını net bir şekilde gösteren bir fotoğraf yükleyin"
+    }
+  },
+  "tiresItems": {
+    "captureImage": "Fotoğraf Çek",
+    "captureNow": "Şimdi Çek",
+    "instruction": "Lütfen lastik dişinin üzerine bir bozuk para yerleştirin ve aşağıdaki öğeleri içeren bir fotoğraf çekin:",
+    "subHeading": "Bozuk parayı baş aşağı ve kameraya bakacak şekilde yerleştirin",
+    "leftFront": "Sol Ön Lastik",
+    "leftRear": "Sol Arka Lastik",
+    "rightFront": "Sağ Ön Lastik",
+    "rightRear": "Sağ Arka Lastik"
+  },
+  "commentBox": {
+    "title": "Yorum Ekle",
+    "description": "Lütfen yorumlarınızı veya geri bildirimlerinizi aşağıya yazın",
+    "placeHolder": "Yorumunuzu veya geri bildiriminizi buraya yazın"
+  },
+  "commentButton": {
+    "text": "+ Yorum Ekle",
+    "optional": "(İsteğe Bağlı)"
+  },
+  "confirmVehicleDetail": {
+    "title": "Araç Detayı",
+    "description": "Sistem plaka numarasını tespit edemedi. Lütfen plaka numarasını aşağıya yazın:",
+    "buttonText": "Onayla",
+    "placeHolder": "Plaka Numarasını Girin"
+  },
+  "expiryInspection": {
+    "description": "Denetim Süresi Doldu. Lütfen Yeni Bir Denetim Başlatın.",
+    "confirmButton": "Yeni Denetim",
+    "cancelButton": "Çıkış"
+  },
+  "mileageInput": {
+    "title": "Kilometre Girişi",
+    "description": "Sistem kilometreyi tespit edemedi. Lütfen kilometreyi aşağıya yazın:",
+    "placeHolder": "Kilometre Girin",
+    "errors": {
+      "lessThanPrevious": "Mevcut okuma önceki okumadan az olamaz"
+    }
+  },
+  "categories": {
+    "exterior_front": "Dış Ön",
+    "exterior_rear": "Dış Arka",
+    "exterior_left": "Dış Sol",
+    "exterior_right": "Dış Sağ",
+    "front_left_corner": "Ön Sol Köşe",
+    "front_right_corner": "Ön Sağ Köşe",
+    "rear_left_corner": "Arka Sol Köşe",
+    "rear_right_corner": "Arka Sağ Köşe",
+    "inside_cargo_roof": "İç Tavan",
+    "interior_driver_side": "İç Sürücü Tarafı",
+    "interior_passenger_side": "İç Yolcu Tarafı",
+    "license_plate_number": "Plaka Numarası",
+    "odometer": "Kilometre Sayacı",
+    "left_front_tire": "Sol Ön Lastik",
+    "left_rear_tire": "Sol Arka Lastik",
+    "right_front_tire": "Sağ Ön Lastik",
+    "right_rear_tire": "Sağ Arka Lastik",
+    "front_interior": "Ön İç",
+    "rear_interior": "Arka İç",
+    "tire": "Lastik",
+    "tdrf": "Diş Derinliği ÖS (TDRF)",
+    "tdrr": "Diş Derinliği AS (TDRR)",
+    "tdlf": "Diş Derinliği ÖS (TDLF)",
+    "tdlr": "Diş Derinliği AS (TDLR)",
+    "tdspare": "Diş Derinliği Yedek (TDSPARE)",
+    "brake_components": "Fren Bileşenleri"
+  },
+  "completedInspection": {
+    "thankYou": "Kullandığınız için teşekkür ederiz",
+    "message": "Uygulamamızdan şimdi çıkabilirsiniz. Daha fazla yardıma ihtiyacımız olursa temsilcilerimiz size ulaşacaktır",
+    "homeButton": "Ana Sayfa"
+  },
+  "inspectionTitles": {
+    "license_plate_number": "Plaka Numarası",
+    "odometer": "Kilometre Sayacı",
+    "exterior_front": "Dış Ön",
+    "exterior_front_1": "Dış Ön - 1",
+    "exterior_front_2": "Dış Ön - 2",
+    "exterior_rear": "Dış Arka",
+    "exterior_rear_1": "Dış Arka - 1",
+    "exterior_rear_2": "Dış Arka - 2",
+    "exterior_left": "Dış Sol",
+    "exterior_left_1": "Dış Sol - 1",
+    "exterior_left_2": "Dış Sol - 2",
+    "exterior_right": "Dış Sağ",
+    "exterior_right_1": "Dış Sağ - 1",
+    "exterior_right_2": "Dış Sağ - 2",
+    "front_left_corner": "Ön Sol Köşe",
+    "front_left_corner_1": "Ön Sol Köşe - 1",
+    "front_left_corner_2": "Ön Sol Köşe - 2",
+    "front_right_corner": "Ön Sağ Köşe",
+    "front_right_corner_1": "Ön Sağ Köşe - 1",
+    "front_right_corner_2": "Ön Sağ Köşe - 2",
+    "rear_left_corner": "Arka Sol Köşe",
+    "rear_left_corner_1": "Arka Sol Köşe - 1",
+    "rear_left_corner_2": "Arka Sol Köşe - 2",
+    "rear_right_corner": "Arka Sağ Köşe",
+    "rear_right_corner_1": "Arka Sağ Köşe - 1",
+    "rear_right_corner_2": "Arka Sağ Köşe - 2",
+    "inside_cargo_roof": "İç Tavan",
+    "inside_cargo_roof_1": "İç Tavan - 1",
+    "inside_cargo_roof_2": "İç Tavan - 2",
+    "left_front_tire": "Sol Ön Lastik",
+    "left_rear_tire": "Sol Arka Lastik",
+    "right_front_tire": "Sağ Ön Lastik",
+    "right_rear_tire": "Sağ Arka Lastik",
+    "interior_passenger_side": "İç Yolcu Tarafı",
+    "interior_driver_side": "İç Sürücü Tarafı"
+  }
 }

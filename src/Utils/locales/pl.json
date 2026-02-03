@@ -227,7 +227,8 @@
     },
     "delete": {
         "success": "Usunięto pomyślnie.",
-        "failed": "Nie udało się usunąć. Spróbuj ponownie."
+        "failed": "Nie udało się usunąć. Spróbuj ponownie.",
+        "inspectionDeleted": "Inspekcja została usunięta!"
     },
     "dvir": {
         "checklistTitle": "Lista kontrolna",
