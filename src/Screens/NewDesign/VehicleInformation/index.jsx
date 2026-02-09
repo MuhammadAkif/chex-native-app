@@ -96,6 +96,7 @@ const VehicleInformation = props => {
   const [errorModalDetail, setErrorModalDetail] = useState({ title: '', message: '', inspectionId: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [vinLoading, setVinLoading] = useState(false);
+  const [showVinInput, setShowVinInput] = useState(true)
   const [mileageLoading, setMileageLoading] = useState(false);
   const [isInspectionTypeOpen, setIsInspectionTypeOpen] = useState(false);
   const vehicleTypesScrollRef = useRef(null);
@@ -152,6 +153,7 @@ const VehicleInformation = props => {
       if (normalizedType && Object.values(VEHICLE_TYPES).includes(normalizedType)) {
         setFieldValue('vehicleType', normalizedType, false);
         setFieldValue('vin', apiVin, false);
+        setShowVinInput(false)
         setFieldError?.('vin', '');
         setFieldError?.('vehicleType', '');
         setHasApiDetectedVehicleType(true);
@@ -162,6 +164,7 @@ const VehicleInformation = props => {
         setHasApiDetectedVehicleType(false);
         setShowVehicleType(true);
         setFieldValue?.('vin', '', false);
+        setShowVinInput(true)
         setFieldValue?.('mileage', '', false);
         OCRsCapturedImagesRef.current.mileage.uri = '';
         OCRsCapturedImagesRef.current.vin.uri = '';
@@ -210,6 +213,7 @@ const VehicleInformation = props => {
         // RESET STATES
         setHasApiDetectedVehicleType(false);
         setShowVehicleType(false);
+        setShowVinInput(true)
         resetOCRsCapturedImagesRef();
         resetForm();
 
@@ -259,6 +263,7 @@ const VehicleInformation = props => {
 
     setHasApiDetectedVehicleType(false);
     setShowVehicleType(false);
+    setShowVinInput(true)
     resetRefCacheOfPlateNumber();
 
     const timeout = 500;
@@ -558,6 +563,7 @@ const VehicleInformation = props => {
                         debouncedFetchVehicleInfo.cancel?.();
                         latestRequestIdRef.current++;
                         setShowVehicleType(false);
+                        setShowVinInput(true)
                         setFieldValue('vehicleType', '', false);
                         setHasApiDetectedVehicleType(false);
                         setIsFetchingVehicleInfo(false);
@@ -573,8 +579,8 @@ const VehicleInformation = props => {
                       <View style={styles.vehicleTypeContainer}>
                         <View style={styles.inputsContainer}>
                           <CustomInput
-                            onPress={() => handlePressOCRInput('numberPlate', handlePressNumberPlateCameraIcon)}
-                            editable={!!OCRsCapturedImagesRef?.current?.numberPlate?.uri}
+                            // onPress={() => handlePressOCRInput('numberPlate', handlePressNumberPlateCameraIcon)}
+                            // editable={!!OCRsCapturedImagesRef?.current?.numberPlate?.uri}
                             ref={licensePlateInputRef}
                             inputContainerStyle={styles.inputContainer}
                             placeholderTextColor={'#BDBDBD'}
@@ -641,9 +647,9 @@ const VehicleInformation = props => {
                         {/* INPUTS */}
                         <View style={styles.inputsContainer}>
                           <CustomInput
-                            onPress={() => handlePressOCRInput('mileage', handlePressMileageCameraIcon)}
+                            // onPress={() => handlePressOCRInput('mileage', handlePressMileageCameraIcon)}
+                            // editable={!!OCRsCapturedImagesRef?.current?.mileage?.uri}
                             ref={mileageInputRef}
-                            editable={!!OCRsCapturedImagesRef?.current?.mileage?.uri}
                             inputContainerStyle={styles.inputContainer}
                             placeholderTextColor={'#BDBDBD'}
                             rightIcon={mileageLoading ? <ActivityIndicator size="small" color={colors.royalBlue} /> : <CameraOutlineIcon />}
@@ -662,24 +668,25 @@ const VehicleInformation = props => {
                             pointerEvents={!OCRsCapturedImagesRef?.current?.mileage?.uri ? 'none' : 'auto'}
                           />
 
-                          <CustomInput
-                            ref={vinInputRef}
-                            inputContainerStyle={styles.inputContainer}
-                            rightIcon={vinLoading ? <ActivityIndicator size="small" color={colors.royalBlue} /> : <CameraOutlineIcon />}
-                            onRightIconPress={handlePressVinCameraIcon}
-                            placeholderTextColor={'#BDBDBD'}
-                            inputStyle={styles.input}
-                            placeholder={t('vehicleInfo.vinPlaceholder')}
-                            label={t('vehicleInfo.vinLabel')}
-                            value={values.vin}
-                            onChangeText={handleChange}
-                            onBlur={handleBlur}
-                            valueName="vin"
-                            touched={touched.vin}
-                            error={errors.vin}
-                            maxLength={17}
-                          />
-
+                          {showVinInput && (
+                            <CustomInput
+                              ref={vinInputRef}
+                              inputContainerStyle={styles.inputContainer}
+                              rightIcon={vinLoading ? <ActivityIndicator size="small" color={colors.royalBlue} /> : <CameraOutlineIcon />}
+                              onRightIconPress={handlePressVinCameraIcon}
+                              placeholderTextColor={'#BDBDBD'}
+                              inputStyle={styles.input}
+                              placeholder={t('vehicleInfo.vinPlaceholder')}
+                              label={t('vehicleInfo.vinLabel')}
+                              value={values.vin}
+                              onChangeText={handleChange}
+                              onBlur={handleBlur}
+                              valueName="vin"
+                              touched={touched.vin}
+                              error={errors.vin}
+                              maxLength={17}
+                            />
+                          )}
                           {/* INSPECTION TYPE DROPDOWN */}
                           {hasInspectionType && values.vehicleType === VEHICLE_TYPES.TRUCK && (
                             <View>
