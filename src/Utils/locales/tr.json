@@ -20,6 +20,7 @@
     "somethingWentWrong": "Bir şeyler yanlış gitti, lütfen tekrar deneyin.",
     "addImage": "Resim Ekle",
     "captureImage": "Fotoğraf Çek",
+    "captureImageInstruction": "Çerçeveye hizalayın, ardından çekmek için düğmeye dokunun.",
     "captureVideo": "Video Çek",
     "image": "resim",
     "cancel": "İptal",

@@ -1,7 +1,7 @@
 import { useIsFocused } from '@react-navigation/native';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { AppState, BackHandler, Platform, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { AppState, BackHandler, Platform, StatusBar, StyleSheet, TouchableOpacity, View,Text } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import ImagePicker from 'react-native-image-crop-picker';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
@@ -57,9 +57,11 @@ const CameraContainer = ({ route, navigation }) => {
   const {
     user: { token, data },
   } = useSelector(state => state?.auth);
+  const inspectionScreen=route?.params?.returnToParams?.isLicensePlateCapture || route?.params?.returnToParams?.isMileageCapture || route?.params?.returnToParams?.isVinCapture || false
+  console.log('routerouteroute',inspectionScreen);
   const { vehicle_Type, variant, selectedVehicleKind, selectedInspectionID } = useSelector(state => state.newInspection);
   const isFocused = useIsFocused();
-  const cameraRef = useRef();
+  const cameraRef = useRef(null);
   const appState = useRef(AppState.currentState);
   const [selectedCamera, setSelectedCamera] = useState('back');
   const device = useCameraDevice(selectedCamera, {
@@ -130,8 +132,8 @@ const CameraContainer = ({ route, navigation }) => {
       handleRetryPress();
       return true;
     } else if (route?.params?.returnTo) {
-      if (route?.params?.returnTo === ROUTES.DVIR_INSPECTION_CHECKLIST) navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST);
-      else navigation.popTo(ROUTES.TABS, { name: route.params.returnTo });
+      if (route?.params?.returnTo === ROUTES.DVIR_INSPECTION_CHECKLIST) {navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST);}
+      else {navigation.popTo(ROUTES.TABS, { name: route.params.returnTo });}
       return true;
     } else if (route?.params?.prevScreen === ROUTES.DVIR_INSPECTION_CHECKLIST && selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
       navigation.goBack();
@@ -348,7 +350,7 @@ const CameraContainer = ({ route, navigation }) => {
   };
 
   let resizeMode = 'stretch';
-  if (orientation == 'landscape' || selectedVehicleKind == 'sedan') resizeMode = 'contain';
+  if (orientation == 'landscape' || selectedVehicleKind == 'sedan') {resizeMode = 'contain';}
 
   return (
     <>
@@ -380,31 +382,66 @@ const CameraContainer = ({ route, navigation }) => {
             <FastImage priority={'normal'} resizeMode={'stretch'} style={[StyleSheet.absoluteFill, { borderRadius: 25 }]} source={{ uri: isImageURL }} />
           ) : (
             selectedCamera && (
-              <>
-                {haveFrame && (
-                  <View style={styles.frameContainer}>
-                    <FastImage resizeMode={resizeMode} priority={'high'} style={activeFrameStyle} source={frameUri} />
+              inspectionScreen ? (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  {haveFrame && (
+                    <View style={styles.frameContainer}>
+                      <FastImage resizeMode={resizeMode} priority={'high'} style={activeFrameStyle} source={frameUri} />
+                    </View>
+                  )}
+                  <View style={styles.captureInstructionBox}>
+                    <Text style={styles.captureInstructionText} numberOfLines={2}>
+                      {t('common.captureImageInstruction')}
+                    </Text>
                   </View>
-                )}
-                <Camera
-                  ref={cameraRef}
-                  style={StyleSheet.absoluteFill}
-                  device={device}
-                  photo={true}
-                  audio={false}
-                  isActive={isFocused && appState.current === 'active'}
-                  enableZoomGesture={true}
-                  includeBase64={true}
-                  format={format}
-                />
-              </>
+                  <Camera
+                    ref={cameraRef}
+                    style={{ height: hp('25%'), width: wp('100%')}}
+                    device={device}
+                    photo={true}
+                    audio={false}
+                    isActive={isFocused && appState.current === 'active'}
+                    enableZoomGesture={true}
+                    includeBase64={true}
+                    format={format}
+                  />
+                </View>
+              ) : (
+                <>
+                  {haveFrame && (
+                    <View style={styles.frameContainer}>
+                      <FastImage resizeMode={resizeMode} priority={'high'} style={activeFrameStyle} source={frameUri} />
+                    </View>
+                  )}
+                  <Camera
+                    ref={cameraRef}
+                    style={StyleSheet.absoluteFill}
+                    device={device}
+                    photo={true}
+                    audio={false}
+                    isActive={isFocused && appState.current === 'active'}
+                    enableZoomGesture={true}
+                    includeBase64={true}
+                    format={format}
+                  />
+                </>
+              )
             )
           )}
-          <View style={{ ...headerContainer, zIndex: 19 }}>
+          <View
+            style={{
+              ...headerContainer,
+              zIndex: 19,
+              ...(inspectionScreen
+                ? { position: 'absolute', marginTop: '10%' }
+                : {}),
+            }}
+          >
             <TouchableOpacity onPress={handleNavigationBackPress}>
               <BackArrow height={hp('8%')} width={wp('8%')} color={white} />
             </TouchableOpacity>
           </View>
+
           <CameraFooter
             isCamera={true}
             handleSwitchCamera={handleSwitchCamera}
@@ -443,6 +480,19 @@ const CameraContainer = ({ route, navigation }) => {
   );
 };
 const styles = StyleSheet.create({
+  captureInstructionBox: {
+    paddingHorizontal: wp('4%'),
+    paddingVertical: hp('0.8%'),
+    marginBottom: hp('0.5%'),
+    alignSelf: 'center',
+    maxWidth: wp('90%'),
+  },
+  captureInstructionText: {
+    color: white,
+    fontSize: 12,
+    textAlign: 'center',
+    opacity: 0.95,
+  },
   frameContainer: {
     ...StyleSheet.absoluteFill,
     justifyContent: 'center',
