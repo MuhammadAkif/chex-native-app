@@ -2,7 +2,7 @@ import { View, StatusBar, ScrollView, Image, Pressable, ActivityIndicator, Touch
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { styles } from './styles';
-import { CardWrapper, CustomInput, DiscardInspectionModal, LoadingIndicator, LogoHeader, PrimaryGradientButton } from '../../../Components';
+import { CardWrapper, CustomInput, DiscardInspectionModal, ExistingVehicleDropDown, LoadingIndicator, LogoHeader, PrimaryGradientButton } from '../../../Components';
 import AppText from '../../../Components/text';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { colors } from '../../../Assets/Styles';
@@ -72,6 +72,18 @@ const VehicleTypes = [
   { id: VEHICLE_TYPES.OTHER, name: 'OTHER', image: IMAGES.other_vehicle },
 ];
 
+
+
+// const existingVehicles = [
+//   { vehicleType: 'Sedan', vin: '1HGCM82633A123456', existingVehicle: true },
+//   { vehicleType: 'SUV', vin: '1FTFW1ET4EFA12345', existingVehicle: false },
+//   { vehicleType: 'Truck', vin: '2GCEK19T1Y1234567', existingVehicle: true },
+//   { vehicleType: 'Motorcycle', vin: 'JH2RC4467RM123456', existingVehicle: false },
+//   { vehicleType: 'Van', vin: '3C6UR5CL1GG123456', existingVehicle: true },
+// ];
+
+
+
 const currentDate = new Date().toISOString();
 const OCRsCapturedImagesInitialState = { mileage: { uri: '', extension: '' }, numberPlate: { uri: '', extension: '' }, vin: { uri: '', extension: '' } };
 
@@ -99,11 +111,13 @@ const VehicleInformation = props => {
   const [showVinInput, setShowVinInput] = useState(true)
   const [mileageLoading, setMileageLoading] = useState(false);
   const [isInspectionTypeOpen, setIsInspectionTypeOpen] = useState(false);
+  const [showExistingVehicleDropdown, setShowExistingVehicleDropdown] = useState(false);
   const vehicleTypesScrollRef = useRef(null);
   const lastQueriedPlateRef = useRef('');
   const latestRequestIdRef = useRef(0);
   const responseCacheRef = useRef(new Map()); // plate -> {vehicleType, vin}
   const inspectionTypeOptions = useMemo(() => ['Regular', 'DVIR'], []);
+  const [existingVehicles, setExistingVehicles] = useState([]);
 
   // Dimensions used to calculate scroll offset (keep in sync with styles.js)
   const VEHICLE_ITEM_WIDTH = wp(38);
@@ -139,9 +153,9 @@ const VehicleInformation = props => {
     [VEHICLE_ITEM_GAP, VEHICLE_ITEM_WIDTH]
   );
 
-  // Helpers: normalize and validate plate
-  const normalizePlate = useCallback(text => (text || '').replace(/\s+/g, '').toUpperCase(), []);
-  const isValidPlate = useCallback(plate => /^[A-Z0-9-]{4,}$/.test(plate), []);
+  // Helpers: normalize (letters/numbers only, uppercase) and validate plate
+  const normalizePlate = useCallback(text => (text || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase(), []);
+  const isValidPlate = useCallback(plate => /^[A-Z0-9]{4,}$/.test(plate), []);
 
   // Apply vehicle info from API/cache into form and UI state
   const applyVehicleInfo = useCallback(
@@ -149,7 +163,6 @@ const VehicleInformation = props => {
       const apiVehicleType = data?.vehicleType ?? null;
       const apiVin = data?.vin || '';
       const normalizedType = typeof apiVehicleType === 'string' ? apiVehicleType.toLowerCase() : null;
-
       if (normalizedType && Object.values(VEHICLE_TYPES).includes(normalizedType)) {
         setFieldValue('vehicleType', normalizedType, false);
         setFieldValue('vin', apiVin, false);
@@ -316,6 +329,7 @@ const VehicleInformation = props => {
     setShowVehicleType(false);
     setHasApiDetectedVehicleType(false);
     setIsFetchingVehicleInfo(false);
+    setShowExistingVehicleDropdown(false);
     resetOCRsCapturedImagesRef();
   }, []);
 
@@ -453,10 +467,11 @@ const VehicleInformation = props => {
                         .then(response => {
                           const { plateNumber = null, status = false } = response?.data || {};
                           if (status === true && plateNumber) {
-                            setFieldValue('licensePlateNumber', plateNumber, false);
+                            const simpleValue = normalizePlate(plateNumber);
+                            setFieldValue('licensePlateNumber', simpleValue, false);
                             setFieldError('licensePlateNumber', undefined);
-                            fetchVehicleInfo(plateNumber);
-                            dispatch({ type: Types.LICENSE_PLATE_NUMBER, payload: plateNumber });
+                            fetchVehicleInfo(simpleValue);
+                            dispatch({ type: Types.LICENSE_PLATE_NUMBER, payload: simpleValue });
 
                             resetCaptureImageParams();
                           } else {
@@ -521,6 +536,7 @@ const VehicleInformation = props => {
                       if (cached) {
                         applyVehicleInfo(cached, setFieldValue, setFieldError);
                         lastQueriedPlateRef.current = normalizedPlate;
+                      
                         return;
                       }
 
@@ -531,21 +547,31 @@ const VehicleInformation = props => {
                       try {
                         const response = await getVehicleInformationAgainstLicenseId(normalizedPlate);
                         if (requestId !== latestRequestIdRef.current) return; // stale
-
                         const data = response?.data || {};
+                        console.log('data ////', data);
                         // Cache small number of recent results
                         if (responseCacheRef.current.size > 20) {
                           const firstKey = responseCacheRef.current.keys().next().value;
                           responseCacheRef.current.delete(firstKey);
                         }
                         responseCacheRef.current.set(normalizedPlate, data);
-                        applyVehicleInfo(data, setFieldValue, setFieldError);
+                        
+                        if(data?.similarPlates?.length > 0){
+                         
+                          setExistingVehicles(data?.similarPlates || []);
+                          setShowExistingVehicleDropdown(true);
+                        }else{
+                          applyVehicleInfo(data, setFieldValue, setFieldError);
+                          setShowExistingVehicleDropdown(false);
+                        }                                             
+
                       } catch (error) {
                         if (requestId !== latestRequestIdRef.current) return; // stale
                         setFieldValue('vehicleType', '', false);
                         setFieldValue('vin', '', false);
                         setHasApiDetectedVehicleType(false);
                         setShowVehicleType(true);
+                        setShowExistingVehicleDropdown(false);
                       } finally {
                         if (requestId === latestRequestIdRef.current) setIsFetchingVehicleInfo(false);
                       }
@@ -557,16 +583,17 @@ const VehicleInformation = props => {
 
                   const handleLicensePlateChangeFactory = useCallback(
                     name => text => {
-                      setFieldValue(name, text);
                       const normalizedPlate = normalizePlate(text);
+                      setFieldValue(name, normalizedPlate);
                       if (!isValidPlate(normalizedPlate)) {
                         debouncedFetchVehicleInfo.cancel?.();
                         latestRequestIdRef.current++;
                         setShowVehicleType(false);
-                        setShowVinInput(true)
+                        setShowVinInput(true);
                         setFieldValue('vehicleType', '', false);
                         setHasApiDetectedVehicleType(false);
                         setIsFetchingVehicleInfo(false);
+                        setShowExistingVehicleDropdown(false);
                         return;
                       }
                       debouncedFetchVehicleInfo(normalizedPlate);
@@ -598,6 +625,21 @@ const VehicleInformation = props => {
                             maxLength={16}
                             pointerEvents={!OCRsCapturedImagesRef?.current?.numberPlate?.uri ? 'none' : 'auto'}
                           />
+                          {showExistingVehicleDropdown && (
+                            <ExistingVehicleDropDown
+                              data={existingVehicles}
+                              onClose={() => setShowExistingVehicleDropdown(false)}
+                              onSelect={item => {
+                                const plateNumber = item?.licensePlateNumber ?? '';
+                                if (plateNumber) {
+                                  setFieldValue('licensePlateNumber', normalizePlate(plateNumber), false);
+                                  setFieldError('licensePlateNumber', undefined);
+                                }
+                                setShowExistingVehicleDropdown(false);
+                                applyVehicleInfo(item, setFieldValue, setFieldError);
+                              }}
+                            />
+                          )}
                         </View>
 
                         {/* VEHICLE TYPES */}

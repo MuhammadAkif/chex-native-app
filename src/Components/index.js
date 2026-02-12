@@ -30,6 +30,7 @@ import Custom_RBSheet from './Custom_RBSheet';
 import DisplayMediaModal from './DisplayMediaModal';
 import DrawerItemText from './DrawerItemText';
 import EmptyComponent from './EmptyComponent';
+import ExistingVehicleDropDown from './ExistingVehicleDropDown';
 import Filter_RBSheet from './Filter_RBSheet';
 import FocusAwareStatusBar from './FocusAwareStatusBar';
 import FooterButtons from './FooterButtons';
@@ -115,6 +116,7 @@ export {
   DisplayMediaModal,
   DrawerItemText,
   EmptyComponent,
+  ExistingVehicleDropDown,
   ExpiredInspectionModal,
   ExteriorItemsExpandedCard,
   ExteriorItemsExpandedCard_Old,
