@@ -95,6 +95,7 @@ const CameraContainer = ({ route, navigation }) => {
   const RightIcon = switchFrameIcon[orientation];
   const haveFrame = isNotEmpty(frameUri) && VEHICLE_TYPES_WITH_FRAMES.includes(selectedVehicleKind);
 
+  
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       appState.current = nextAppState;

@@ -1,16 +1,16 @@
-import {View, StatusBar, ScrollView, Image, Pressable, ActivityIndicator, TouchableWithoutFeedback, TouchableOpacity} from 'react-native';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {styles} from './styles';
-import {CardWrapper, CustomInput, DiscardInspectionModal, LoadingIndicator, LogoHeader, PrimaryGradientButton} from '../../../Components';
+import { View, StatusBar, ScrollView, Image, Pressable, ActivityIndicator, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { styles } from './styles';
+import { CardWrapper, CustomInput, DiscardInspectionModal, ExistingVehicleDropDown, LoadingIndicator, LogoHeader, PrimaryGradientButton } from '../../../Components';
 import AppText from '../../../Components/text';
-import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {colors} from '../../../Assets/Styles';
-import {IMAGES} from '../../../Assets/Images';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
-import {CameraOutlineIcon, ChevronIcon} from '../../../Assets/Icons';
-import {Formik} from 'formik';
-import {isIOS, VEHICLE_TYPES} from '../../../Constants';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { colors } from '../../../Assets/Styles';
+import { IMAGES } from '../../../Assets/Images';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { CameraOutlineIcon, ChevronIcon } from '../../../Assets/Icons';
+import { Formik } from 'formik';
+import { isIOS, VEHICLE_TYPES } from '../../../Constants';
 import {
   ai_Mileage_Extraction,
   createInspection,
@@ -19,13 +19,13 @@ import {
   getVehicleInformationAgainstLicenseId,
 } from '../../../services/inspection';
 import useDebounce from '../../../hooks/useDebounce';
-import {ROUTES} from '../../../Navigation/ROUTES';
-import {useDispatch, useSelector} from 'react-redux';
-import {numberPlateSelected, setCompanyId, setMileage, setSelectedVehicleKind, setVehicleType, showToast} from '../../../Store/Actions';
-import {LicensePlateDetails, OdometerDetails, VinDetails} from '../../../Utils';
-import {useRoute} from '@react-navigation/native';
+import { ROUTES } from '../../../Navigation/ROUTES';
+import { useDispatch, useSelector } from 'react-redux';
+import { numberPlateSelected, setCompanyId, setMileage, setSelectedVehicleKind, setVehicleType, showToast } from '../../../Store/Actions';
+import { LicensePlateDetails, OdometerDetails, VinDetails } from '../../../Utils';
+import { useRoute } from '@react-navigation/native';
 import dayjs from 'dayjs';
-import {Types} from '../../../Store/Types';
+import { Types } from '../../../Store/Types';
 
 const validate = (values, hasInspectionType, OCRsCapturedImages, t) => {
   const errors = {};
@@ -66,18 +66,30 @@ const initialData = {
 };
 
 const VehicleTypes = [
-  {id: VEHICLE_TYPES.VAN, name: 'VAN', image: IMAGES.Van},
-  {id: VEHICLE_TYPES.TRUCK, name: 'TRUCK', image: IMAGES.Truck},
-  {id: VEHICLE_TYPES.SEDAN, name: 'SEDAN', image: IMAGES.Sedan},
-  {id: VEHICLE_TYPES.OTHER, name: 'OTHER', image: IMAGES.other_vehicle},
+  { id: VEHICLE_TYPES.VAN, name: 'VAN', image: IMAGES.Van },
+  { id: VEHICLE_TYPES.TRUCK, name: 'TRUCK', image: IMAGES.Truck },
+  { id: VEHICLE_TYPES.SEDAN, name: 'SEDAN', image: IMAGES.Sedan },
+  { id: VEHICLE_TYPES.OTHER, name: 'OTHER', image: IMAGES.other_vehicle },
 ];
 
+
+
+// const existingVehicles = [
+//   { vehicleType: 'Sedan', vin: '1HGCM82633A123456', existingVehicle: true },
+//   { vehicleType: 'SUV', vin: '1FTFW1ET4EFA12345', existingVehicle: false },
+//   { vehicleType: 'Truck', vin: '2GCEK19T1Y1234567', existingVehicle: true },
+//   { vehicleType: 'Motorcycle', vin: 'JH2RC4467RM123456', existingVehicle: false },
+//   { vehicleType: 'Van', vin: '3C6UR5CL1GG123456', existingVehicle: true },
+// ];
+
+
+
 const currentDate = new Date().toISOString();
-const OCRsCapturedImagesInitialState = {mileage: {uri: '', extension: ''}, numberPlate: {uri: '', extension: ''}, vin: {uri: '', extension: ''}};
+const OCRsCapturedImagesInitialState = { mileage: { uri: '', extension: '' }, numberPlate: { uri: '', extension: '' }, vin: { uri: '', extension: '' } };
 
 const VehicleInformation = props => {
-  const {t} = useTranslation();
-  const {navigation} = props;
+  const { t } = useTranslation();
+  const { navigation } = props;
   const authState = useSelector(state => state?.auth);
   const dispatch = useDispatch();
   const route = useRoute();
@@ -93,17 +105,19 @@ const VehicleInformation = props => {
   const [hasApiDetectedVehicleType, setHasApiDetectedVehicleType] = useState(false);
   const [isFetchingVehicleInfo, setIsFetchingVehicleInfo] = useState(false);
   const [isInspectionInProgressModalVisible, setIsInspectionInProgressModalVisible] = useState(false);
-  const [errorModalDetail, setErrorModalDetail] = useState({title: '', message: '', inspectionId: ''});
+  const [errorModalDetail, setErrorModalDetail] = useState({ title: '', message: '', inspectionId: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [vinLoading, setVinLoading] = useState(false);
   const [showVinInput, setShowVinInput] = useState(true);
   const [mileageLoading, setMileageLoading] = useState(false);
   const [isInspectionTypeOpen, setIsInspectionTypeOpen] = useState(false);
+  const [showExistingVehicleDropdown, setShowExistingVehicleDropdown] = useState(false);
   const vehicleTypesScrollRef = useRef(null);
   const lastQueriedPlateRef = useRef('');
   const latestRequestIdRef = useRef(0);
   const responseCacheRef = useRef(new Map()); // plate -> {vehicleType, vin}
   const inspectionTypeOptions = useMemo(() => ['Regular', 'DVIR'], []);
+  const [existingVehicles, setExistingVehicles] = useState([]);
 
   // Dimensions used to calculate scroll offset (keep in sync with styles.js)
   const VEHICLE_ITEM_WIDTH = wp(38);
@@ -134,14 +148,14 @@ const VehicleInformation = props => {
       const index = VehicleTypes.findIndex(v => v.id === typeId);
       if (index < 0) return;
       const x = index * (VEHICLE_ITEM_WIDTH + VEHICLE_ITEM_GAP);
-      vehicleTypesScrollRef.current?.scrollTo({x, y: 0, animated: true});
+      vehicleTypesScrollRef.current?.scrollTo({ x, y: 0, animated: true });
     },
     [VEHICLE_ITEM_GAP, VEHICLE_ITEM_WIDTH]
   );
 
-  // Helpers: normalize and validate plate
-  const normalizePlate = useCallback(text => (text || '').replace(/\s+/g, '').toUpperCase(), []);
-  const isValidPlate = useCallback(plate => /^[A-Z0-9-]{4,}$/.test(plate), []);
+  // Helpers: normalize (letters/numbers only, uppercase) and validate plate
+  const normalizePlate = useCallback(text => (text || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase(), []);
+  const isValidPlate = useCallback(plate => /^[A-Z0-9]{4,}$/.test(plate), []);
 
   // Apply vehicle info from API/cache into form and UI state
   const applyVehicleInfo = useCallback(
@@ -149,7 +163,6 @@ const VehicleInformation = props => {
       const apiVehicleType = data?.vehicleType ?? null;
       const apiVin = data?.vin || '';
       const normalizedType = typeof apiVehicleType === 'string' ? apiVehicleType.toLowerCase() : null;
-
       if (normalizedType && Object.values(VEHICLE_TYPES).includes(normalizedType)) {
         setFieldValue('vehicleType', normalizedType, false);
         setFieldValue('vin', apiVin, false);
@@ -173,14 +186,14 @@ const VehicleInformation = props => {
     [scrollToVehicleType]
   );
 
-  const handleSubmitForm = (values, {setSubmitting, resetForm}) => {
-    const {numberPlate, mileage} = OCRsCapturedImagesRef.current;
+  const handleSubmitForm = (values, { setSubmitting, resetForm }) => {
+    const { numberPlate, mileage } = OCRsCapturedImagesRef.current;
     const dateImage = dayjs(currentDate).format('DD-M-YYYY');
     const vehicleType = values?.vehicleType;
 
     const data = {
       ...values,
-      ...(vehicleType === VEHICLE_TYPES.TRUCK && hasInspectionType && {hasCheckList: values.inspectionType === 'DVIR'}),
+      ...(vehicleType === VEHICLE_TYPES.TRUCK && hasInspectionType && { hasCheckList: values.inspectionType === 'DVIR' }),
       files: [
         {
           url: numberPlate?.uri,
@@ -223,7 +236,7 @@ const VehicleInformation = props => {
         const routeName = data?.hasCheckList ? ROUTES.DVIR_INSPECTION_CHECKLIST : ROUTES.VEHICLE_INFORMATION;
 
         setTimeout(() => {
-          navigation.navigate(nextRoute, {routeName});
+          navigation.navigate(nextRoute, { routeName });
         }, timeout);
       })
       .catch(error => {
@@ -242,7 +255,7 @@ const VehicleInformation = props => {
           dispatch(setVehicleType(vehicleType));
           dispatch(setSelectedVehicleKind(vehicleKind));
           setTimeout(() => setIsInspectionInProgressModalVisible(true), 100);
-          setErrorModalDetail({title: message, message: errorMessage, inspectionId, resetForm: resetForm, vehicleKind});
+          setErrorModalDetail({ title: message, message: errorMessage, inspectionId, resetForm: resetForm, vehicleKind });
           resetOCRsCapturedImagesRef();
         } else {
           dispatch(showToast(message, 'error'));
@@ -268,11 +281,11 @@ const VehicleInformation = props => {
 
     const timeout = 500;
     const nextRoute = errorModalDetail?.vehicleKind === VEHICLE_TYPES.TRUCK ? ROUTES.DVIR_INSPECTION_CHECKLIST : ROUTES.NEW_INSPECTION;
-    const params = errorModalDetail?.vehicleKind === VEHICLE_TYPES.TRUCK ? undefined : {isInProgress: true};
+    const params = errorModalDetail?.vehicleKind === VEHICLE_TYPES.TRUCK ? undefined : { isInProgress: true };
 
     setTimeout(() => navigation.navigate(nextRoute, params), timeout);
 
-    setErrorModalDetail({message: '', title: '', inspectionId: '', resetForm: null, vehicleKind: null});
+    setErrorModalDetail({ message: '', title: '', inspectionId: '', resetForm: null, vehicleKind: null });
   };
 
   const handleCameraNavigation = (details, returnParams) => {
@@ -289,13 +302,13 @@ const VehicleInformation = props => {
   };
 
   // 🎯 CAMERA CAPTURE HANDLERS
-  const handlePressMileageCameraIcon = () => handleCameraNavigation(OdometerDetails, {isMileageCapture: true});
-  const handlePressVinCameraIcon = () => handleCameraNavigation(VinDetails, {isVinCapture: true});
-  const handlePressNumberPlateCameraIcon = () => handleCameraNavigation(LicensePlateDetails, {isLicensePlateCapture: true});
+  const handlePressMileageCameraIcon = () => handleCameraNavigation(OdometerDetails, { isMileageCapture: true });
+  const handlePressVinCameraIcon = () => handleCameraNavigation(VinDetails, { isVinCapture: true });
+  const handlePressNumberPlateCameraIcon = () => handleCameraNavigation(LicensePlateDetails, { isLicensePlateCapture: true });
 
   const handleNoPressOfAlreadyInProgressModal = () => {
     setIsInspectionInProgressModalVisible(false);
-    setErrorModalDetail({title: '', message: '', inspectionId: ''});
+    setErrorModalDetail({ title: '', message: '', inspectionId: '' });
   };
 
   const handlePressOCRInput = (key, captureHandler) => {
@@ -316,11 +329,12 @@ const VehicleInformation = props => {
     setShowVehicleType(false);
     setHasApiDetectedVehicleType(false);
     setIsFetchingVehicleInfo(false);
+    setShowExistingVehicleDropdown(false);
     resetOCRsCapturedImagesRef();
   }, []);
 
   const isClearFormDisabled = () => {
-    const {numberPlate, mileage, vin} = OCRsCapturedImagesRef?.current || {};
+    const { numberPlate, mileage, vin } = OCRsCapturedImagesRef?.current || {};
 
     const isAnyImagePresent = numberPlate?.uri || mileage?.uri || vin?.uri;
 
@@ -380,7 +394,7 @@ const VehicleInformation = props => {
                   validateField,
                 }) => {
                   useEffect(() => {
-                    const {isMileageCapture, isLicensePlateCapture, isVinCapture, capturedImageUri, capturedImageMime} = route?.params || {};
+                    const { isMileageCapture, isLicensePlateCapture, isVinCapture, capturedImageUri, capturedImageMime } = route?.params || {};
 
                     const resetCaptureImageParams = () =>
                       navigation.setParams({
@@ -389,7 +403,7 @@ const VehicleInformation = props => {
                       });
 
                     if (isMileageCapture) {
-                      navigation.setParams({isMileageCapture: false});
+                      navigation.setParams({ isMileageCapture: false });
 
                       if (!capturedImageUri) return; // guard
 
@@ -409,7 +423,7 @@ const VehicleInformation = props => {
                       setMileageLoading(true);
                       ai_Mileage_Extraction(capturedImageUri)
                         .then(response => {
-                          const {mileage = '', status = false} = response?.data || {};
+                          const { mileage = '', status = false } = response?.data || {};
 
                           if (status === true && mileage) {
                             setFieldValue('mileage', mileage, false);
@@ -430,13 +444,13 @@ const VehicleInformation = props => {
                     }
 
                     if (isLicensePlateCapture) {
-                      navigation.setParams({isLicensePlateCapture: false});
+                      navigation.setParams({ isLicensePlateCapture: false });
 
                       if (!capturedImageUri) return; // guard
 
                       const licensePlateNotDetected = () => {
                         setIsFetchingVehicleInfo(false);
-                        dispatch({type: Types.LICENSE_PLATE_NUMBER, payload: null});
+                        dispatch({ type: Types.LICENSE_PLATE_NUMBER, payload: null });
                         setFieldError('licensePlateNumber', t('vehicleInfo.errors.licensePlateUndetected'));
                         setFieldTouched('licensePlateNumber', true, false);
                         resetCaptureImageParams();
@@ -451,12 +465,13 @@ const VehicleInformation = props => {
                       setIsFetchingVehicleInfo(true);
                       extractLicensePlateAI(capturedImageUri)
                         .then(response => {
-                          const {plateNumber = null, status = false} = response?.data || {};
+                          const { plateNumber = null, status = false } = response?.data || {};
                           if (status === true && plateNumber) {
-                            setFieldValue('licensePlateNumber', plateNumber, false);
+                            const simpleValue = normalizePlate(plateNumber);
+                            setFieldValue('licensePlateNumber', simpleValue, false);
                             setFieldError('licensePlateNumber', undefined);
-                            fetchVehicleInfo(plateNumber);
-                            dispatch({type: Types.LICENSE_PLATE_NUMBER, payload: plateNumber});
+                            fetchVehicleInfo(simpleValue);
+                            dispatch({ type: Types.LICENSE_PLATE_NUMBER, payload: simpleValue });
 
                             resetCaptureImageParams();
                           } else {
@@ -472,7 +487,7 @@ const VehicleInformation = props => {
                     }
 
                     if (isVinCapture) {
-                      navigation.setParams({isVinCapture: false});
+                      navigation.setParams({ isVinCapture: false });
 
                       if (!capturedImageUri) return; // guard
 
@@ -521,6 +536,7 @@ const VehicleInformation = props => {
                       if (cached) {
                         applyVehicleInfo(cached, setFieldValue, setFieldError);
                         lastQueriedPlateRef.current = normalizedPlate;
+
                         return;
                       }
 
@@ -531,21 +547,31 @@ const VehicleInformation = props => {
                       try {
                         const response = await getVehicleInformationAgainstLicenseId(normalizedPlate);
                         if (requestId !== latestRequestIdRef.current) return; // stale
-
                         const data = response?.data || {};
+                        console.log('data ////', data);
                         // Cache small number of recent results
                         if (responseCacheRef.current.size > 20) {
                           const firstKey = responseCacheRef.current.keys().next().value;
                           responseCacheRef.current.delete(firstKey);
                         }
                         responseCacheRef.current.set(normalizedPlate, data);
-                        applyVehicleInfo(data, setFieldValue, setFieldError);
+
+                        if (data?.similarPlates?.length > 0) {
+
+                          setExistingVehicles(data?.similarPlates || []);
+                          setShowExistingVehicleDropdown(true);
+                        } else {
+                          applyVehicleInfo(data, setFieldValue, setFieldError);
+                          setShowExistingVehicleDropdown(false);
+                        }
+
                       } catch (error) {
                         if (requestId !== latestRequestIdRef.current) return; // stale
                         setFieldValue('vehicleType', '', false);
                         setFieldValue('vin', '', false);
                         setHasApiDetectedVehicleType(false);
                         setShowVehicleType(true);
+                        setShowExistingVehicleDropdown(false);
                       } finally {
                         if (requestId === latestRequestIdRef.current) setIsFetchingVehicleInfo(false);
                       }
@@ -557,17 +583,17 @@ const VehicleInformation = props => {
 
                   const handleLicensePlateChangeFactory = useCallback(
                     name => text => {
-                      setFieldValue(name, text);
                       const normalizedPlate = normalizePlate(text);
+                      setFieldValue(name, normalizedPlate);
                       if (!isValidPlate(normalizedPlate)) {
                         debouncedFetchVehicleInfo.cancel?.();
                         latestRequestIdRef.current++;
                         setShowVehicleType(false);
                         setShowVinInput(true);
-                        setFieldValue('vin', '', false);
                         setFieldValue('vehicleType', '', false);
                         setHasApiDetectedVehicleType(false);
                         setIsFetchingVehicleInfo(false);
+                        setShowExistingVehicleDropdown(false);
                         return;
                       }
                       debouncedFetchVehicleInfo(normalizedPlate);
@@ -581,7 +607,7 @@ const VehicleInformation = props => {
                         <View style={styles.inputsContainer}>
                           <CustomInput
                             // onPress={() => handlePressOCRInput('numberPlate', handlePressNumberPlateCameraIcon)}
-                            // editable={!!OCRsCapturedImagesRef?.current?.numberPlate?.uri}
+                            editable={true}
                             ref={licensePlateInputRef}
                             inputContainerStyle={styles.inputContainer}
                             placeholderTextColor={'#BDBDBD'}
@@ -597,8 +623,23 @@ const VehicleInformation = props => {
                             touched={touched.licensePlateNumber}
                             error={errors.licensePlateNumber}
                             maxLength={16}
-                            pointerEvents={!OCRsCapturedImagesRef?.current?.numberPlate?.uri ? 'none' : 'auto'}
+                          // pointerEvents={!OCRsCapturedImagesRef?.current?.numberPlate?.uri ? 'none' : 'auto'}
                           />
+                          {showExistingVehicleDropdown && (
+                            <ExistingVehicleDropDown
+                              data={existingVehicles}
+                              onClose={() => setShowExistingVehicleDropdown(false)}
+                              onSelect={item => {
+                                const plateNumber = item?.licensePlateNumber ?? '';
+                                if (plateNumber) {
+                                  setFieldValue('licensePlateNumber', normalizePlate(plateNumber), false);
+                                  setFieldError('licensePlateNumber', undefined);
+                                }
+                                setShowExistingVehicleDropdown(false);
+                                applyVehicleInfo(item, setFieldValue, setFieldError);
+                              }}
+                            />
+                          )}
                         </View>
 
                         {/* VEHICLE TYPES */}
@@ -640,7 +681,7 @@ const VehicleInformation = props => {
                               ))}
                             </ScrollView>
                             {errors.vehicleType && (touched.vehicleType || submitCount > 0) && (
-                              <AppText style={[styles.vehicleTypeText, {color: colors.red, marginTop: 3}]}> {errors.vehicleType} </AppText>
+                              <AppText style={[styles.vehicleTypeText, { color: colors.red, marginTop: 3 }]}> {errors.vehicleType} </AppText>
                             )}
                           </View>
                         )}
@@ -666,7 +707,7 @@ const VehicleInformation = props => {
                             keyboardType="number-pad"
                             onRightIconPress={handlePressMileageCameraIcon}
                             maxLength={17}
-                            pointerEvents={!OCRsCapturedImagesRef?.current?.mileage?.uri ? 'none' : 'auto'}
+                          // pointerEvents={!OCRsCapturedImagesRef?.current?.mileage?.uri ? 'none' : 'auto'}
                           />
 
                           {showVinInput && (
@@ -691,11 +732,11 @@ const VehicleInformation = props => {
                           {/* INSPECTION TYPE DROPDOWN */}
                           {hasInspectionType && values.vehicleType === VEHICLE_TYPES.TRUCK && (
                             <View>
-                              <AppText style={{marginBottom: 6}}>{t('vehicleInfo.inspectionTypeLabel')}</AppText>
+                              <AppText style={{ marginBottom: 6 }}>{t('vehicleInfo.inspectionTypeLabel')}</AppText>
                               <Pressable
                                 onPress={() => setIsInspectionTypeOpen(prev => !prev)}
                                 style={[styles.inputContainer, styles.dropdownContainer]}>
-                                <AppText style={{...styles.input, color: values.inspectionType ? colors.black : '#BDBDBD'}}>
+                                <AppText style={{ ...styles.input, color: values.inspectionType ? colors.black : '#BDBDBD' }}>
                                   {values.inspectionType
                                     ? t(`vehicleInfo.inspectionTypes.${values.inspectionType.toLowerCase()}`)
                                     : t('vehicleInfo.inspectionTypePlaceholder')}
@@ -718,7 +759,7 @@ const VehicleInformation = props => {
                                           padding: 12,
                                           backgroundColor: values.inspectionType === option ? '#F0F6FF' : '#fff',
                                         }}>
-                                        <AppText style={{color: colors.black}}>{t(`vehicleInfo.inspectionTypes.${option.toLowerCase()}`)}</AppText>
+                                        <AppText style={{ color: colors.black }}>{t(`vehicleInfo.inspectionTypes.${option.toLowerCase()}`)}</AppText>
                                       </Pressable>
                                     ))}
                                   </View>
@@ -726,13 +767,13 @@ const VehicleInformation = props => {
                               )}
 
                               {errors.inspectionType && touched.inspectionType && (
-                                <AppText style={{color: colors.red, marginTop: 4}}>{errors.inspectionType}</AppText>
+                                <AppText style={{ color: colors.red, marginTop: 4 }}>{errors.inspectionType}</AppText>
                               )}
                             </View>
                           )}
                           <TouchableOpacity
                             disabled={isClearFormDisabled()}
-                            style={[styles.clearFormButton, {opacity: isClearFormDisabled() ? 0.5 : 1}]}
+                            style={[styles.clearFormButton, { opacity: isClearFormDisabled() ? 0.5 : 1 }]}
                             onPress={() => handlePressClearForm(setFieldValue, setFieldTouched, setFieldError)}>
                             <AppText style={styles.clearFormButtonText}>{t('vehicleInfo.clearAll')}</AppText>
                           </TouchableOpacity>
