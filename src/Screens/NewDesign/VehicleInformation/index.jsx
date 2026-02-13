@@ -607,7 +607,7 @@ const VehicleInformation = props => {
                         <View style={styles.inputsContainer}>
                           <CustomInput
                             // onPress={() => handlePressOCRInput('numberPlate', handlePressNumberPlateCameraIcon)}
-                            // editable={!!OCRsCapturedImagesRef?.current?.numberPlate?.uri}
+                           editable={true}
                             ref={licensePlateInputRef}
                             inputContainerStyle={styles.inputContainer}
                             placeholderTextColor={'#BDBDBD'}
@@ -623,7 +623,7 @@ const VehicleInformation = props => {
                             touched={touched.licensePlateNumber}
                             error={errors.licensePlateNumber}
                             maxLength={16}
-                            pointerEvents={!OCRsCapturedImagesRef?.current?.numberPlate?.uri ? 'none' : 'auto'}
+                            // pointerEvents={!OCRsCapturedImagesRef?.current?.numberPlate?.uri ? 'none' : 'auto'}
                           />
                           {showExistingVehicleDropdown && (
                             <ExistingVehicleDropDown
@@ -707,7 +707,7 @@ const VehicleInformation = props => {
                             keyboardType="number-pad"
                             onRightIconPress={handlePressMileageCameraIcon}
                             maxLength={17}
-                            pointerEvents={!OCRsCapturedImagesRef?.current?.mileage?.uri ? 'none' : 'auto'}
+                            // pointerEvents={!OCRsCapturedImagesRef?.current?.mileage?.uri ? 'none' : 'auto'}
                           />
 
                           {showVinInput && (
