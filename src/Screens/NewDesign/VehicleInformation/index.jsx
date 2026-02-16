@@ -1,4 +1,4 @@
-import { View, StatusBar, ScrollView, Image, Pressable, ActivityIndicator, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+import { View, StatusBar, ScrollView, Image, Pressable, ActivityIndicator, TouchableWithoutFeedback, TouchableOpacity, Keyboard } from 'react-native';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { styles } from './styles';
@@ -163,16 +163,15 @@ const VehicleInformation = props => {
     (data, setFieldValue, setFieldError) => {
       const apiVehicleType = data?.vehicleType ?? null;
       const apiVin = data?.vin || '';
+
       const hasVin = apiVin.length > 0;
-      setFieldValue('vin', hasVin ? apiVin : '', false);
-      setShowVinInput(!hasVin);
-      if (hasVin) setFieldError?.('vin', '');
+      setFieldValue('vin', hasVin ? apiVin : '', false);
+      setShowVinInput(!hasVin || apiVin.length < 17);
+      if (hasVin) setFieldError?.('vin', '');
+
       const normalizedType = typeof apiVehicleType === 'string' ? apiVehicleType.toLowerCase() : null;
       if (normalizedType && Object.values(VEHICLE_TYPES).includes(normalizedType)) {
         setFieldValue('vehicleType', normalizedType, false);
-        // setFieldValue('vin', apiVin, false);
-        // setShowVinInput(false);
-        // setFieldError?.('vin', '');
         setFieldError?.('vehicleType', '');
         setHasApiDetectedVehicleType(true);
         setShowVehicleType(true);
@@ -181,8 +180,6 @@ const VehicleInformation = props => {
         setFieldValue('vehicleType', '', false);
         setHasApiDetectedVehicleType(false);
         setShowVehicleType(true);
-        // setFieldValue?.('vin', '', false);
-        // setShowVinInput(true);
         setFieldValue?.('mileage', '', false);
         OCRsCapturedImagesRef.current.mileage.uri = '';
         OCRsCapturedImagesRef.current.vin.uri = '';
@@ -222,6 +219,7 @@ const VehicleInformation = props => {
     // API CALL TO CREATE INSPECTION
     createInspection(companyId, data)
       .then(response => {
+        Keyboard.dismiss();
         setIsLoading(false);
         dispatch(setCompanyId(companyId));
         dispatch(setVehicleType(response?.data?.hasAdded || 'existing'));
@@ -254,6 +252,8 @@ const VehicleInformation = props => {
           message = t('errors.alreadyInProgress'),
           vehicleType: vehicleKind,
         } = error?.response?.data || {};
+
+        Keyboard.dismiss();
 
         if (statusCode === 409) {
           const vehicleType = hasAdded || 'existing';
@@ -541,7 +541,7 @@ const VehicleInformation = props => {
                       const cached = responseCacheRef.current.get(normalizedPlate);
                       if (cached) {
                         applyVehicleInfo(cached, setFieldValue, setFieldError);
-                        lastQueriedPlateRef.current = normalizedPlate;                       
+                        lastQueriedPlateRef.current = normalizedPlate;
                         return;
                       }
 
