@@ -36,6 +36,7 @@ const CustomInput = forwardRef(
       maxLength,
       onPress,
       pointerEvents,
+      autoCapitalize,
     },
     ref
   ) => (
@@ -64,6 +65,7 @@ const CustomInput = forwardRef(
           editable={editable}
           maxLength={maxLength}
           pointerEvents={pointerEvents}
+          autoCapitalize={autoCapitalize}
         />
 
         {rightIcon && (

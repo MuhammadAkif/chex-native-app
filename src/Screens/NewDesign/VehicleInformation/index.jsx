@@ -116,6 +116,7 @@ const VehicleInformation = props => {
   const lastQueriedPlateRef = useRef('');
   const latestRequestIdRef = useRef(0);
   const responseCacheRef = useRef(new Map()); // plate -> {vehicleType, vin}
+  const lastSetLicensePlateRef = useRef('');
   const inspectionTypeOptions = useMemo(() => ['Regular', 'DVIR'], []);
   const [existingVehicles, setExistingVehicles] = useState([]);
 
@@ -162,12 +163,16 @@ const VehicleInformation = props => {
     (data, setFieldValue, setFieldError) => {
       const apiVehicleType = data?.vehicleType ?? null;
       const apiVin = data?.vin || '';
+      const hasVin = apiVin.length > 0;
+      setFieldValue('vin', hasVin ? apiVin : '', false);
+      setShowVinInput(!hasVin);
+      if (hasVin) setFieldError?.('vin', '');
       const normalizedType = typeof apiVehicleType === 'string' ? apiVehicleType.toLowerCase() : null;
       if (normalizedType && Object.values(VEHICLE_TYPES).includes(normalizedType)) {
         setFieldValue('vehicleType', normalizedType, false);
-        setFieldValue('vin', apiVin, false);
-        setShowVinInput(false);
-        setFieldError?.('vin', '');
+        // setFieldValue('vin', apiVin, false);
+        // setShowVinInput(false);
+        // setFieldError?.('vin', '');
         setFieldError?.('vehicleType', '');
         setHasApiDetectedVehicleType(true);
         setShowVehicleType(true);
@@ -176,8 +181,8 @@ const VehicleInformation = props => {
         setFieldValue('vehicleType', '', false);
         setHasApiDetectedVehicleType(false);
         setShowVehicleType(true);
-        setFieldValue?.('vin', '', false);
-        setShowVinInput(true);
+        // setFieldValue?.('vin', '', false);
+        // setShowVinInput(true);
         setFieldValue?.('mileage', '', false);
         OCRsCapturedImagesRef.current.mileage.uri = '';
         OCRsCapturedImagesRef.current.vin.uri = '';
@@ -535,8 +540,7 @@ const VehicleInformation = props => {
                       const cached = responseCacheRef.current.get(normalizedPlate);
                       if (cached) {
                         applyVehicleInfo(cached, setFieldValue, setFieldError);
-                        lastQueriedPlateRef.current = normalizedPlate;
-
+                        lastQueriedPlateRef.current = normalizedPlate;                       
                         return;
                       }
 
@@ -583,7 +587,11 @@ const VehicleInformation = props => {
 
                   const handleLicensePlateChangeFactory = useCallback(
                     name => text => {
+                      // Normalize on typing: native autoCapitalize handles uppercase, we filter special chars
                       const normalizedPlate = normalizePlate(text);
+                      // Skip if same as last set (prevents IME double-fire)
+                      if (normalizedPlate === lastSetLicensePlateRef.current) return;
+                      lastSetLicensePlateRef.current = normalizedPlate;
                       setFieldValue(name, normalizedPlate);
                       if (!isValidPlate(normalizedPlate)) {
                         debouncedFetchVehicleInfo.cancel?.();
@@ -591,6 +599,7 @@ const VehicleInformation = props => {
                         setShowVehicleType(false);
                         setShowVinInput(true);
                         setFieldValue('vehicleType', '', false);
+                        setFieldValue('vin', '', false);
                         setHasApiDetectedVehicleType(false);
                         setIsFetchingVehicleInfo(false);
                         setShowExistingVehicleDropdown(false);
@@ -623,6 +632,7 @@ const VehicleInformation = props => {
                             touched={touched.licensePlateNumber}
                             error={errors.licensePlateNumber}
                             maxLength={16}
+                            autoCapitalize="characters"
                           // pointerEvents={!OCRsCapturedImagesRef?.current?.numberPlate?.uri ? 'none' : 'auto'}
                           />
                           {showExistingVehicleDropdown && (
