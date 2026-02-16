@@ -189,6 +189,8 @@ const VehicleInformation = props => {
   );
 
   const handleSubmitForm = (values, { setSubmitting, resetForm }) => {
+    Keyboard.dismiss();
+
     const { numberPlate, mileage } = OCRsCapturedImagesRef.current;
     const dateImage = dayjs(currentDate).format('DD-M-YYYY');
     const vehicleType = values?.vehicleType;
@@ -219,7 +221,6 @@ const VehicleInformation = props => {
     // API CALL TO CREATE INSPECTION
     createInspection(companyId, data)
       .then(response => {
-        Keyboard.dismiss();
         setIsLoading(false);
         dispatch(setCompanyId(companyId));
         dispatch(setVehicleType(response?.data?.hasAdded || 'existing'));
@@ -252,8 +253,6 @@ const VehicleInformation = props => {
           message = t('errors.alreadyInProgress'),
           vehicleType: vehicleKind,
         } = error?.response?.data || {};
-
-        Keyboard.dismiss();
 
         if (statusCode === 409) {
           const vehicleType = hasAdded || 'existing';
