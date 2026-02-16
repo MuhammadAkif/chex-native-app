@@ -61,7 +61,8 @@ const ExistingVehicleDropDown = ({
             data={data}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
-            keyboardShouldPersistTaps="handled"
+            keyboardShouldPersistTaps="always"
+            keyboardDismissMode="none"
             nestedScrollEnabled
             style={styles.list}
             showsVerticalScrollIndicator={true}

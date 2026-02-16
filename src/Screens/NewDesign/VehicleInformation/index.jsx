@@ -360,6 +360,7 @@ const VehicleInformation = props => {
           <CardWrapper style={styles.whiteContainerContent}>
             <KeyboardAwareScrollView
               nestedScrollEnabled
+              keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.scrollContentContainer}
               style={styles.container}>
