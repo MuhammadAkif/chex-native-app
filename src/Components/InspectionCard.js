@@ -1,61 +1,55 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import React from 'react';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import AppText from './text';
 import { colors } from '../Assets/Styles';
-import GreenCheckIcon from '../Assets/Icons/NewDesign/GreenCheck';
 import CardWrapper from './Card/CardWrapper';
-import { INSPECTION_RESULTS, STATUSES } from '../Constants';
 
 import { useTranslation } from 'react-i18next';
 
-const InspectionCard = ({ item }) => {
+const InspectionCard = ({ item, onPress, isLoading = false }) => {
   const { t } = useTranslation();
-  let statusBGColor = colors.tealGreen;
-  if (INSPECTION_RESULTS[item?.status] == INSPECTION_RESULTS.pending) statusBGColor = colors.orange;
-
-  const displayStatus = t(`results.${item?.status}`, t(`statuses.${item?.status?.toLowerCase()}`, item?.status));
 
   return (
-    <CardWrapper style={styles.container}>
-      <View style={styles.contentContainer}>
-        <AppText fontSize={wp(3.8)} fontWeight={'800'}>
-          {item?.licensePlateNumber}
-        </AppText>
-        <AppText color={colors.steelGray}>
-          {t('inspectionCard.idLabel')}: {item?.inspectionCode}
-        </AppText>
-        <View style={styles.rowItem}>
-          <View style={[styles.statusContainer, { backgroundColor: statusBGColor }]}>
-            <AppText fontWeight={'700'} fontSize={wp(3.2)} color={colors.white}>
-              {displayStatus}
+    <CardWrapper style={styles.container} onPress={() => !isLoading && onPress?.(item)}>
+      {isLoading ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="small" color={colors.royalBlue} />
+        </View>
+      ) : (
+        <>
+          <View style={styles.contentContainer}>
+            <AppText fontSize={wp(3.8)} fontWeight={'800'}>
+              {item?.licensePlateNumber}
+            </AppText>
+            <AppText color={colors.steelGray}>
+              {t('inspectionCard.idLabel')}: {item?.inspectionCode}
             </AppText>
           </View>
-        </View>
-      </View>
 
-      {STATUSES[item?.status] == STATUSES.REVIEWED && <GreenCheckIcon style={styles.check} />}
-
-      <View style={styles.inspectionBy}>
-        {item?.userName && (
-          <AppText color={colors.steelGray} fontSize={wp(2.8)}>
-            {t('inspectionCard.byLabel')} {item?.userName}
-          </AppText>
-        )}
-        <AppText color={colors.steelGray} fontSize={wp(2.8)}>
-          {item?.timeAgo}
-        </AppText>
-      </View>
+          <View style={styles.inspectionBy}>
+            {item?.userName && (
+              <AppText color={colors.steelGray} fontSize={wp(2.8)}>
+                {t('inspectionCard.byLabel')} {item?.userName}
+              </AppText>
+            )}
+            <AppText color={colors.steelGray} fontSize={wp(2.8)}>
+              {item?.timeAgo}
+            </AppText>
+          </View>
+        </>
+      )}
     </CardWrapper>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: wp(55),
-    height: wp(32),
+    width: wp(45),
+    height: wp(25),
     padding: wp(3.5),
   },
+  loaderContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   rowItem: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   contentContainer: { gap: wp(1.3), flex: 1 },
   statusContainer: {

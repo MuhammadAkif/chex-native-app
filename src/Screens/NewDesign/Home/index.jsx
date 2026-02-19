@@ -1,29 +1,26 @@
-import {View, StatusBar, ScrollView, Image, FlatList, RefreshControl, ActivityIndicator, BackHandler, Platform} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {styles} from './styles';
+import { View, StatusBar, ScrollView, Image, FlatList, RefreshControl, ActivityIndicator, BackHandler, Platform } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { styles } from './styles';
 import AppText from '../../../Components/text';
-import {AlertPopup, CardWrapper, InspectionCard, LogoHeader, VehicleCard} from '../../../Components';
-import {colors} from '../../../Assets/Styles';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
-import {BlueTruckStatIcon, InProgressStatIcon, SubmittedStatIcon, TotalStatIcon} from '../../../Assets/Icons';
-import {IMAGES} from '../../../Assets/Images';
-import {ROUTES, TABS} from '../../../Navigation/ROUTES';
-import {getUserInspectionStats, getRegisteredVehicles, getRecentInspections} from '../../../services/inspection';
-import {useSelector} from 'react-redux';
-import {getUserFullName} from '../../../Utils/helpers';
-import {useFocusEffect} from '@react-navigation/native';
-import {ANDROID, exitAppInfo, HARDWARE_BACK_PRESS} from '../../../Constants';
+import { AlertPopup, CardWrapper, InspectionCard, LogoHeader, VehicleCard } from '../../../Components';
+import { colors } from '../../../Assets/Styles';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { BlueTruckStatIcon, DownArrow, InProgressStatIcon, SubmittedStatIcon, TotalStatIcon } from '../../../Assets/Icons';
+import { IMAGES } from '../../../Assets/Images';
+import { ROUTES, TABS } from '../../../Navigation/ROUTES';
+import { getUserInspectionStats, getRegisteredVehicles, getRecentInspections } from '../../../services/inspection';
+import { useSelector } from 'react-redux';
+import { getUserFullName } from '../../../Utils/helpers';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { ANDROID, exitAppInfo, HARDWARE_BACK_PRESS, INSPECTION_RESULTS } from '../../../Constants';
+import { useContinueInspection } from '../../../hooks';
 
-const {
-  title,
-  message,
-  button: {yes, cancel},
-} = exitAppInfo;
-
-const Home = ({navigation}) => {
-  const {t} = useTranslation();
+const Home = ({ navigation }) => {
+  const { t } = useTranslation();
   const authState = useSelector(state => state?.auth);
+  const isScreenFocused = useIsFocused()
+  const isFirstTimeLoad = useRef(true)
   const user = authState?.user?.data;
   const [userInspectionStats, setUserInspectionStats] = useState({
     totalVehicles: 0,
@@ -39,37 +36,41 @@ const Home = ({navigation}) => {
   const [showExitPopup, setShowExitPopup] = useState(false);
 
   const getUserInspectionStatsAPI = async () => {
-    setIsStatsLoading(true);
+    if (isFirstTimeLoad.current) setIsStatsLoading(true);
     const response = await getUserInspectionStats();
     setIsStatsLoading(false);
 
-    const {totalVehicles = 0, inProgressInspections = 0, submittedInspections = 0, totalInspections = 0} = response?.data || {};
-    setUserInspectionStats({totalVehicles, inProgressInspections, submittedInspections, totalInspections});
+    const { totalVehicles = 0, inProgressInspections = 0, submittedInspections = 0, totalInspections = 0 } = response?.data || {};
+    setUserInspectionStats({ totalVehicles, inProgressInspections, submittedInspections, totalInspections });
   };
 
   const getRegisteredVehiclesAPI = async () => {
-    setIsVehicleRegisterLoading(true);
+    if (isFirstTimeLoad.current) setIsVehicleRegisterLoading(true);
     const response = await getRegisteredVehicles();
     setIsVehicleRegisterLoading(false);
 
-    const {vehicles = []} = response?.data || {};
+    const { vehicles = [] } = response?.data || {};
     setVehiclesData(vehicles);
   };
 
   const getRecentInspectionsAPI = () => {
-    setIsRecentInspectionLoading(true);
+    if (isFirstTimeLoad.current) setIsRecentInspectionLoading(true);
     getRecentInspections()
       .then(response => {
         if (response.status === 200) {
           setRecentInspections(response?.data.inspections);
         }
       })
-      .finally(() => setIsRecentInspectionLoading(false));
+      .finally(() => {
+        setIsRecentInspectionLoading(false);
+      });
   };
 
   useEffect(() => {
-    getHomeData();
-  }, []);
+    if (isScreenFocused) {
+      getHomeData();
+    }
+  }, [isScreenFocused]);
 
   useFocusEffect(
     useCallback(() => {
@@ -99,6 +100,7 @@ const Home = ({navigation}) => {
     getUserInspectionStatsAPI();
     getRegisteredVehiclesAPI();
     getRecentInspectionsAPI();
+    isFirstTimeLoad.current = false;
   };
 
   const handlePressStatCard = id => {
@@ -121,7 +123,7 @@ const Home = ({navigation}) => {
 
           <View style={styles.usernameContainer}>
             <AppText color={colors.white} fontSize={wp(6)} style={styles.username}>
-              {t('home.greeting', {name: getUserFullName(user?.name, user?.lastName)})}
+              {t('home.greeting', { name: getUserFullName(user?.name, user?.lastName) })}
             </AppText>
             <AppText color={colors.white}>{t('home.subtitle')}</AppText>
           </View>
@@ -144,6 +146,7 @@ const Home = ({navigation}) => {
               count={isStatsLoading ? '...' : userInspectionStats.inProgressInspections}
               id={1}
               onPress={handlePressStatCard}
+              showArrow
             />
             <StatBox
               title={t('home.stats.submittedInspections')}
@@ -151,6 +154,7 @@ const Home = ({navigation}) => {
               count={isStatsLoading ? '...' : userInspectionStats.submittedInspections}
               id={2}
               onPress={handlePressStatCard}
+              showArrow
             />
             <StatBox
               title={t('home.stats.totalInspections')}
@@ -162,13 +166,13 @@ const Home = ({navigation}) => {
 
           <View style={styles.withHeadingContentContainer}>
             <View style={styles.sectionWrapper}>
-              <AppText style={styles.headingText}>{t('home.myRegisteredVehicles')}</AppText>
-              <RegisteredVehicles data={vehiclesData} isLoading={isVehicleRegisterLoading} />
+              <AppText style={styles.headingText}>{t('home.recentInspections')}</AppText>
+              <RecentInspections data={recentInspections} isLoading={isRecentInspectionLoading} />
             </View>
 
             <View style={styles.sectionWrapper}>
-              <AppText style={styles.headingText}>{t('home.recentInspections')}</AppText>
-              <RecentInspections data={recentInspections} isLoading={isRecentInspectionLoading} />
+              <AppText style={styles.headingText}>{t('home.myRegisteredVehicles')}</AppText>
+              <RegisteredVehicles data={vehiclesData} isLoading={isVehicleRegisterLoading} />
             </View>
           </View>
         </View>
@@ -187,7 +191,7 @@ const Home = ({navigation}) => {
   );
 };
 
-const StatBox = ({count = 0, icon: Icon, title, id, onPress}) => {
+const StatBox = ({ count = 0, icon: Icon, title, id, onPress, showArrow = false }) => {
   return (
     <CardWrapper onPress={() => onPress?.(id)} style={styles.statBoxContainer}>
       <View style={styles.numberAndIcon}>
@@ -199,12 +203,13 @@ const StatBox = ({count = 0, icon: Icon, title, id, onPress}) => {
       <AppText fontSize={wp(3.5)} color={colors.steelGray} style={styles.statText}>
         {title}
       </AppText>
+      {showArrow && <DownArrow style={{ transform: [{ rotate: '270deg' }], position: "absolute", right: wp(3), bottom: wp(3) }} color={colors.lightSteelBlue} height={wp(4.5)} width={wp(4.5)} />}
     </CardWrapper>
   );
 };
 
-const RegisteredVehicles = ({data, isLoading}) => {
-  const {t} = useTranslation();
+const RegisteredVehicles = ({ data, isLoading }) => {
+  const { t } = useTranslation();
 
   return (
     <FlatList
@@ -214,7 +219,7 @@ const RegisteredVehicles = ({data, isLoading}) => {
       contentContainerStyle={styles.vehicleContentList}
       showsHorizontalScrollIndicator={false}
       keyExtractor={(item, index) => index.toString()}
-      renderItem={({item, index}) => <VehicleCard item={item} />}
+      renderItem={({ item, index }) => <VehicleCard item={item} />}
       ListEmptyComponent={
         isLoading ? (
           <ActivityIndicator style={styles.registerVehicleLoader} size={'small'} color={colors.royalBlue} />
@@ -226,8 +231,22 @@ const RegisteredVehicles = ({data, isLoading}) => {
   );
 };
 
-const RecentInspections = ({data, isLoading}) => {
-  const {t} = useTranslation();
+const RecentInspections = ({ data, isLoading }) => {
+  const { t } = useTranslation();
+  const { handleContinuePress, isLoading: isContinueLoading, activeInspectionId } = useContinueInspection();
+
+  const handlePressInspectionCard = (item) => {
+    const inspectionId = item?.id
+    const itemStatus = INSPECTION_RESULTS[item?.status];
+
+    if (itemStatus === INSPECTION_RESULTS.pending) {
+      handleContinuePress(inspectionId);
+    } else if (itemStatus === INSPECTION_RESULTS.approved) {
+      // Future logic for approved
+    } else if (itemStatus === INSPECTION_RESULTS.rejected) {
+      // Future logic for rejected
+    }
+  };
 
   return (
     <FlatList
@@ -237,7 +256,13 @@ const RecentInspections = ({data, isLoading}) => {
       contentContainerStyle={styles.vehicleContentList}
       showsHorizontalScrollIndicator={false}
       keyExtractor={(item, index) => index.toString()}
-      renderItem={({item, index}) => <InspectionCard item={item} />}
+      renderItem={({ item, index }) => (
+        <InspectionCard
+          onPress={handlePressInspectionCard}
+          item={item}
+          isLoading={isContinueLoading && activeInspectionId === item.id}
+        />
+      )}
       ListEmptyComponent={
         isLoading ? (
           <ActivityIndicator style={styles.registerVehicleLoader} size={'small'} color={colors.royalBlue} />

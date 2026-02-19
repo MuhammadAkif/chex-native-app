@@ -1,34 +1,29 @@
-import {useFocusEffect} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
-import {BackHandler} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { BackHandler } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {HARDWARE_BACK_PRESS, VEHICLE_TYPES} from '../Constants';
-import {ROUTES} from '../Navigation/ROUTES';
-import {InspectionInProgressScreen} from '../Screens';
+import { HARDWARE_BACK_PRESS } from '../Constants';
+import { ROUTES } from '../Navigation/ROUTES';
+import { InspectionInProgressScreen } from '../Screens';
 import {
-  clearNewInspection,
   deleteInspection,
   fetchInspectionInProgress,
-  file_Details,
-  setSelectedVehicleKind,
-  setVehicleType,
   showToast,
 } from '../Store/Actions';
-import {handle_Session_Expired, handleNewInspectionPress} from '../Utils';
+import { handle_Session_Expired, handleNewInspectionPress } from '../Utils';
+import { useContinueInspection } from '../hooks';
 
-const {NEW_INSPECTION, INSPECTION_IN_PROGRESS} = ROUTES;
-
-const InspectionInProgressContainer = ({navigation}) => {
+const InspectionInProgressContainer = ({ navigation }) => {
   const dispatch = useDispatch();
-  const {canGoBack, goBack, navigate} = navigation;
+  const { canGoBack, goBack } = navigation;
   const {
-    user: {data},
+    user: { data },
   } = useSelector(state => state?.auth);
-  const {inspectionInProgress} = useSelector(state => state?.inspectionInProgress);
+  const { inspectionInProgress } = useSelector(state => state?.inspectionInProgress);
   const [isLoading, setIsLoading] = useState(false);
   const [isNewInspectionLoading, setIsNewInspectionLoading] = useState(false);
-  const [inspectionID, setInspectionID] = useState(null);
+  const { handleContinuePress: onContinuePress, isLoading: isContinueLoading, activeInspectionId } = useContinueInspection();
   const [deleteInspectionID, setDeleteInspectionID] = useState(null);
   const [isDiscardInspectionModalVisible, setIsDiscardInspectionModalVisible] = useState(false);
 
@@ -53,7 +48,6 @@ const InspectionInProgressContainer = ({navigation}) => {
   }
   function resetAllStates() {
     setIsLoading(false);
-    setInspectionID(null);
     setIsDiscardInspectionModalVisible(false);
     setDeleteInspectionID(null);
   }
@@ -62,43 +56,7 @@ const InspectionInProgressContainer = ({navigation}) => {
 
     return null;
   }
-  const handleContinuePress = async inspectionId => {
-    setIsLoading(true);
-    setInspectionID(inspectionId);
-    dispatch(file_Details(inspectionId))
-      .then(res => onContinuePressSuccess(res, inspectionId))
-      .catch(onContinuePressFail)
-      .finally(() => {
-        setInspectionID(null);
-        setIsLoading(false);
-      });
-  };
-  function onContinuePressSuccess(res, inspectionId) {
-    const {hasAdded = 'existing', vehicleType: vehicleKind, inspection} = res?.data || {};
-    const vehicleType = hasAdded || 'existing';
-
-    dispatch(setVehicleType(vehicleType));
-    dispatch(setSelectedVehicleKind(vehicleKind));
-    resetAllStates();
-
-    if (vehicleKind == VEHICLE_TYPES.TRUCK && inspection?.hasCheckList) {
-      navigate(ROUTES.DVIR_INSPECTION_CHECKLIST, {
-        routeName: ROUTES.DVIR_INSPECTION_CHECKLIST,
-      });
-    } else {
-      navigate(NEW_INSPECTION, {
-        routeName: INSPECTION_IN_PROGRESS,
-      });
-    }
-  }
-  function onContinuePressFail(error) {
-    const {statusCode = null} = error?.response?.data || {};
-    dispatch(clearNewInspection());
-    if (statusCode === 401) {
-      handle_Session_Expired(statusCode, dispatch);
-    }
-    console.log('error of inspection in progress => ', error.response.data);
-  }
+  const handleContinuePress = id => onContinuePress(id, resetAllStates);
   const onCrossPress = id => {
     setDeleteInspectionID(id);
     setIsDiscardInspectionModalVisible(true);
@@ -131,9 +89,9 @@ const InspectionInProgressContainer = ({navigation}) => {
       navigation={navigation}
       handleContinuePress={handleContinuePress}
       onCrossPress={onCrossPress}
-      isLoading={isLoading}
+      isLoading={isLoading || isContinueLoading}
       isNewInspectionLoading={isNewInspectionLoading}
-      inspectionID={inspectionID}
+      inspectionID={activeInspectionId}
       onYesPress={handleYesPress}
       onNoPress={handleNoPress}
       isDiscardInspectionModalVisible={isDiscardInspectionModalVisible}

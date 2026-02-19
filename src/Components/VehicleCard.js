@@ -21,16 +21,16 @@ const VehicleCard = ({ item }) => {
           {item?.licensePlateNumber}
         </AppText>
         <AppText fontWeight={'500'}>{item?.companyName}</AppText>
-        <View style={styles.statusContainer}>
+        {/* <View style={styles.statusContainer}>
           <AppText fontWeight={'700'} fontSize={wp(3.2)} color={colors.white}>
             {t(`statuses.${item?.inspectionStatus?.toLowerCase()}`, item?.inspectionStatus)}
           </AppText>
-        </View>
-        {item?.reviewedDate && (
+        </View> */}
+        {/* {item?.reviewedDate && (
           <AppText fontSize={wp(3)} fontWeight={'500'}>
             {dayjs(item?.reviewedDate).format('MMM D, YYYY')}
           </AppText>
-        )}
+        )} */}
       </View>
     </CardWrapper>
   );
@@ -38,8 +38,8 @@ const VehicleCard = ({ item }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: wp(80),
-    height: wp(35),
+    width: wp(60),
+    height: wp(25),
     justifyContent: 'center',
     padding: wp(3),
     flexDirection: 'row',
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     gap: wp(3),
   },
   image: { width: '35%', height: '100%', resizeMode: 'contain' },
-  contentContainer: { flex: 1 },
+  contentContainer: { flex: 1, gap: 5 },
   statusContainer: {
     alignSelf: 'flex-start',
     backgroundColor: colors.tealGreen,
