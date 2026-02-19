@@ -357,6 +357,8 @@ export const getSignedUrl = async (
     const response = await s3SignedUrl(mime, source, inspectionId, categoryName, variant, companyId);
     await onGetSignedUrlSuccess(response, path, mime, setProgress, handleResponse, handleError, dispatch, category);
   } catch (error) {
+    console.log('error', error);
+
     onGetSignedUrlFail(error, handleError, dispatch);
     throw error;
   }
@@ -364,7 +366,6 @@ export const getSignedUrl = async (
 async function onGetSignedUrlSuccess(res, path, mime, setProgress, handleResponse, handleError, dispatch, category) {
   try {
     const { url, key } = res.data;
-
     await uploadToS3(url, key, path, mime, setProgress, handleResponse, handleError, dispatch, category);
   } catch (error) {
     throw error;

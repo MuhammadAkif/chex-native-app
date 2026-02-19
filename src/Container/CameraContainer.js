@@ -1,7 +1,7 @@
 import { useIsFocused } from '@react-navigation/native';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { AppState, BackHandler, Platform, StatusBar, StyleSheet, TouchableOpacity, View,Text } from 'react-native';
+import { AppState, BackHandler, Platform, StatusBar, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import ImagePicker from 'react-native-image-crop-picker';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
@@ -42,6 +42,7 @@ import {
 } from '../Utils';
 import { navigateBackWithParams, styleMapping, switchFrameIcon, switchOrientation } from '../Utils/helpers';
 import { useTranslation } from 'react-i18next';
+import autoResizeAndCrop from '../Components/ItemPicker/AutoResizeAndCrop';
 
 const { white } = colors;
 const defaultOrientation = 'portrait';
@@ -58,7 +59,6 @@ const CameraContainer = ({ route, navigation }) => {
     user: { token, data },
   } = useSelector(state => state?.auth);
   const inspectionScreen = route?.params?.returnToParams?.isLicensePlateCapture || route?.params?.returnToParams?.isMileageCapture || route?.params?.returnToParams?.isVinCapture || false;
-  console.log('routerouteroute',inspectionScreen);
   const { vehicle_Type, variant, selectedVehicleKind, selectedInspectionID } = useSelector(state => state.newInspection);
   const isFocused = useIsFocused();
   const cameraRef = useRef(null);
@@ -132,8 +132,8 @@ const CameraContainer = ({ route, navigation }) => {
       handleRetryPress();
       return true;
     } else if (route?.params?.returnTo) {
-      if (route?.params?.returnTo === ROUTES.DVIR_INSPECTION_CHECKLIST) {navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST);}
-      else {navigation.popTo(ROUTES.TABS, { name: route.params.returnTo });}
+      if (route?.params?.returnTo === ROUTES.DVIR_INSPECTION_CHECKLIST) { navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST); }
+      else { navigation.popTo(ROUTES.TABS, { name: route.params.returnTo }); }
       return true;
     } else if (route?.params?.prevScreen === ROUTES.DVIR_INSPECTION_CHECKLIST && selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
       navigation.goBack();
@@ -154,16 +154,43 @@ const CameraContainer = ({ route, navigation }) => {
 
   const handleSwitchCamera = () => setIsBackCamera(!isBackCamera);
 
+  // const handleCaptureNowPress = async () => {
+  //   hasCameraAndMicrophoneAllowed().then();
+  //   if (cameraRef.current) {
+  //     let file = await cameraRef?.current?.takePhoto();
+  //     const filePath = `file://${file.path}`;
+  //     setIsImageFile(file);
+  //     dispatch(setImageDimensions(file));
+  //     setIsImageURL(filePath);
+  //   }
+  // };
   const handleCaptureNowPress = async () => {
-    hasCameraAndMicrophoneAllowed().then();
-    if (cameraRef.current) {
-      let file = await cameraRef?.current?.takePhoto();
-      const filePath = `file://${file.path}`;
-      setIsImageFile(file);
-      dispatch(setImageDimensions(file));
-      setIsImageURL(filePath);
+    try {
+      await hasCameraAndMicrophoneAllowed();
+
+      if (!cameraRef.current) return;
+
+      const photo = await cameraRef.current.takePhoto();
+
+      if (inspectionScreen) {
+        const cropped = await autoResizeAndCrop(photo);
+        console.log('cropped', cropped);
+
+        setIsImageFile(cropped);
+        dispatch(setImageDimensions(cropped));
+        setIsImageURL(cropped.uri);
+      } else {
+        const filePath = `file://${photo.path}`;
+        setIsImageFile(photo);
+        dispatch(setImageDimensions(photo));
+        setIsImageURL(filePath);
+      }
+
+    } catch (e) {
+      console.log('Capture error:', e);
     }
   };
+
 
   const handleRetryPress = () => {
     setIsImageURL('');
@@ -292,6 +319,7 @@ const CameraContainer = ({ route, navigation }) => {
     const mime = 'image/' + extension;
     setIsModalVisible(true);
     const normalizedPath = Platform.OS === 'ios' ? await fixImageOrientation(isImageFile.path) : isImageFile.path;
+    debugger;
     try {
       await getSignedUrl(
         token,
@@ -350,7 +378,7 @@ const CameraContainer = ({ route, navigation }) => {
   };
 
   let resizeMode = 'stretch';
-  if (orientation == 'landscape' || selectedVehicleKind == 'sedan') {resizeMode = 'contain';}
+  if (orientation == 'landscape' || selectedVehicleKind == 'sedan') { resizeMode = 'contain'; }
 
   return (
     <>
@@ -365,7 +393,7 @@ const CameraContainer = ({ route, navigation }) => {
           handleNavigationBackPress={handleNavigationBackPress}
           isExterior={checkRelevantType(groupType)}
           isCarVerification={groupType === INSPECTION.carVerificiationItems}
-          // handleVisible={handleVisible}
+        // handleVisible={handleVisible}
         />
       )}
       {isImageURL ? (
@@ -397,7 +425,7 @@ const CameraContainer = ({ route, navigation }) => {
                   </View>
                   <Camera
                     ref={cameraRef}
-                    style={{ height: hp('25%'), width: wp('100%')}}
+                    style={{ height: hp('25%'), width: wp('100%') }}
                     device={device}
                     photo={true}
                     audio={false}
