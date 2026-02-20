@@ -537,12 +537,12 @@ const VehicleInformation = props => {
                       if (!normalizedPlate || !isValidPlate(normalizedPlate)) return;
 
                       // Return cached result if available
-                      const cached = responseCacheRef.current.get(normalizedPlate);
-                      if (cached) {
-                        applyVehicleInfo(cached, setFieldValue, setFieldError);
-                        lastQueriedPlateRef.current = normalizedPlate;
-                        return;
-                      }
+                      // const cached = responseCacheRef.current.get(normalizedPlate);
+                      // if (cached) {
+                      //   applyVehicleInfo(cached, setFieldValue, setFieldError);
+                      //   lastQueriedPlateRef.current = normalizedPlate;
+                      //   return;
+                      // }
 
                       // Sequence guard to ignore stale responses
                       const requestId = ++latestRequestIdRef.current;
@@ -552,13 +552,12 @@ const VehicleInformation = props => {
                         const response = await getVehicleInformationAgainstLicenseId(normalizedPlate);
                         if (requestId !== latestRequestIdRef.current) return; // stale
                         const data = response?.data || {};
-                        console.log('data ////', data);
                         // Cache small number of recent results
-                        if (responseCacheRef.current.size > 20) {
-                          const firstKey = responseCacheRef.current.keys().next().value;
-                          responseCacheRef.current.delete(firstKey);
-                        }
-                        responseCacheRef.current.set(normalizedPlate, data);
+                        // if (responseCacheRef.current.size > 20) {
+                        //   const firstKey = responseCacheRef.current.keys().next().value;
+                        //   responseCacheRef.current.delete(firstKey);
+                        // }
+                        // responseCacheRef.current.set(normalizedPlate, data);
 
                         if (data?.similarPlates?.length > 0) {
 

@@ -319,7 +319,6 @@ const CameraContainer = ({ route, navigation }) => {
     const mime = 'image/' + extension;
     setIsModalVisible(true);
     const normalizedPath = Platform.OS === 'ios' ? await fixImageOrientation(isImageFile.path) : isImageFile.path;
-    debugger;
     try {
       await getSignedUrl(
         token,
