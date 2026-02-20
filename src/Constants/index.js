@@ -31,7 +31,7 @@ const ENV_TYPE_URL = {
 
 const version = '1';
 export const API_VERSION_PATH = '/api/v' + version + '/';
-export const API_BASE_URL = ENV_TYPE_URL.staging;
+export const API_BASE_URL = ENV_TYPE_URL.ngrok;
 
 export const generateApiUrl = path => API_BASE_URL + API_VERSION_PATH + path;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
@@ -433,10 +433,18 @@ export const VEHICLE_IMAGES = {
   [VEHICLE_TYPES.OTHER]: IMAGES.other_vehicle,
 };
 
-export const INSPECTION_RESULTS = {
+export const FINAL_INSPECTION_STATUS = {
   pending: 'Pending',
   pass: 'Passed',
   fail: 'Failed',
+};
+
+export const INSPECTION_STATUS_FOR_RECENT_INSPECTION = {
+  IN_PROGRESS: "IN_PROGRESS",
+  IN_PROCESS: 'IN_PROCESS',
+  READY_FOR_REVIEW: 'READY_FOR_REVIEW',
+  IN_REVIEW: 'IN_REVIEW',
+  REVIEWED: 'REVIEWED',
 };
 
 export const isIOS = Platform.OS == Platforms.IOS;

@@ -13,8 +13,8 @@ import { getUserInspectionStats, getRegisteredVehicles, getRecentInspections } f
 import { useSelector } from 'react-redux';
 import { getUserFullName } from '../../../Utils/helpers';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
-import { ANDROID, exitAppInfo, HARDWARE_BACK_PRESS, INSPECTION_RESULTS } from '../../../Constants';
-import { useContinueInspection } from '../../../hooks';
+import { ANDROID, exitAppInfo, HARDWARE_BACK_PRESS, FINAL_INSPECTION_STATUS, INSPECTION_STATUS_FOR_RECENT_INSPECTION } from '../../../Constants';
+import { useContinueInspection, useInspectionDetails } from '../../../hooks';
 
 const Home = ({ navigation }) => {
   const { t } = useTranslation();
@@ -234,17 +234,18 @@ const RegisteredVehicles = ({ data, isLoading }) => {
 const RecentInspections = ({ data, isLoading }) => {
   const { t } = useTranslation();
   const { handleContinuePress, isLoading: isContinueLoading, activeInspectionId } = useContinueInspection();
+  const { handleInspectionDetailsPress, isLoading: isDetailLoading, selectedInspectionId } = useInspectionDetails();
 
   const handlePressInspectionCard = (item) => {
-    const inspectionId = item?.id
-    const itemStatus = INSPECTION_RESULTS[item?.status];
+    if (isContinueLoading || isDetailLoading) return;
 
-    if (itemStatus === INSPECTION_RESULTS.pending) {
+    const inspectionId = item?.id;
+    const itemStatus = INSPECTION_STATUS_FOR_RECENT_INSPECTION[item?.status];
+
+    if (itemStatus === INSPECTION_STATUS_FOR_RECENT_INSPECTION.IN_PROGRESS) {
       handleContinuePress(inspectionId);
-    } else if (itemStatus === INSPECTION_RESULTS.approved) {
-      // Future logic for approved
-    } else if (itemStatus === INSPECTION_RESULTS.rejected) {
-      // Future logic for rejected
+    } else if (itemStatus === INSPECTION_STATUS_FOR_RECENT_INSPECTION.REVIEWED) {
+      handleInspectionDetailsPress(inspectionId);
     }
   };
 
@@ -260,7 +261,7 @@ const RecentInspections = ({ data, isLoading }) => {
         <InspectionCard
           onPress={handlePressInspectionCard}
           item={item}
-          isLoading={isContinueLoading && activeInspectionId === item.id}
+          isLoading={(isContinueLoading && activeInspectionId === item.id) || (isDetailLoading && selectedInspectionId === item.id)}
         />
       )}
       ListEmptyComponent={

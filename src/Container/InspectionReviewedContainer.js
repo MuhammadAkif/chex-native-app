@@ -1,28 +1,28 @@
-import {useFocusEffect} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
-import {BackHandler} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { BackHandler } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
-import {HARDWARE_BACK_PRESS} from '../Constants';
-import {ROUTES} from '../Navigation/ROUTES';
-import {InspectionReviewedScreen} from '../Screens';
-import {fetchInspectionReviewed} from '../Store/Actions';
-import {FILTER_IMAGES, handle_Session_Expired, handleNewInspectionPress, sortInspectionReviewedItems, updateFiles} from '../Utils';
-import {inspectionDetails} from '../services/inspection';
+import { HARDWARE_BACK_PRESS } from '../Constants';
+import { ROUTES } from '../Navigation/ROUTES';
+import { InspectionReviewedScreen } from '../Screens';
+import { fetchInspectionReviewed } from '../Store/Actions';
+import { handleNewInspectionPress } from '../Utils';
+import { useInspectionDetails } from '../hooks';
 
-const {INSPECTION_DETAIL} = ROUTES;
+const { INSPECTION_DETAIL } = ROUTES;
 
-const InspectionReviewedContainer = ({navigation}) => {
+const InspectionReviewedContainer = ({ navigation }) => {
   const dispatch = useDispatch();
-  const {canGoBack, goBack, navigate} = navigation;
+  const { canGoBack, goBack, navigate } = navigation;
   const {
-    user: {data},
+    user: { data },
   } = useSelector(state => state.auth);
-  const {inspectionReviewed} = useSelector(state => state?.inspectionReviewed);
+  const { inspectionReviewed } = useSelector(state => state?.inspectionReviewed);
   const [isExpanded, setIsExpanded] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isNewInspectionLoading, setIsNewInspectionLoading] = useState(false);
-  const [selectedInspectionID, setSelectedInspectionID] = useState(null);
+  const { handleInspectionDetailsPress, isLoading: isDetailLoading, selectedInspectionId } = useInspectionDetails();
   const [filter, setFilter] = useState(false);
   const [inspections, setInspections] = useState(inspectionReviewed || []);
   const [filterResetKey, setFilterResetKey] = useState(0);
@@ -56,7 +56,6 @@ const InspectionReviewedContainer = ({navigation}) => {
   function resetAllStates() {
     setIsLoading(false);
     setIsExpanded([]);
-    setSelectedInspectionID(null);
     setIsNewInspectionLoading(false);
     setInspections(inspectionReviewed);
     setFilter(false);
@@ -78,35 +77,7 @@ const InspectionReviewedContainer = ({navigation}) => {
       setIsExpanded([...isExpanded, id]);
     }
   };
-  const inspectionDetailsPress = async inspectionID => {
-    setIsLoading(true);
-    setSelectedInspectionID(inspectionID);
-
-    await inspectionDetails(inspectionID).then(onInspectionDetailsPressSuccess).catch(onInspectionDetailsPressFail);
-  };
-  function onInspectionDetailsPressSuccess(res) {
-    const {inspectionData = null, files = {}} = res?.data || {};
-    setIsLoading(false);
-    const {finalStatus, remarks} = inspectionData;
-    const beforeImages = FILTER_IMAGES(files, 'before');
-    const updatedBeforeImages = updateFiles(beforeImages);
-    let files_ = sortInspectionReviewedItems(updatedBeforeImages);
-    resetAllStates();
-
-    navigate(INSPECTION_DETAIL, {
-      files: files_,
-      finalStatus: finalStatus,
-      remarks: remarks,
-    });
-  }
-  function onInspectionDetailsPressFail(error) {
-    const {statusCode = null} = error?.response?.data || {};
-    setIsLoading(false);
-    if (statusCode === 401) {
-      handle_Session_Expired(statusCode, dispatch);
-    }
-    console.log('error of inspection in detail => ', error.response.data);
-  }
+  const inspectionDetailsPress = id => handleInspectionDetailsPress(id, resetAllStates);
   const onNewInspectionPress = async () => {
     await handleNewInspectionPress(dispatch, setIsNewInspectionLoading, data?.companyId, navigation, resetAllStates);
   };
@@ -122,10 +93,10 @@ const InspectionReviewedContainer = ({navigation}) => {
       navigation={navigation}
       data={inspections}
       inspectionDetailsPress={inspectionDetailsPress}
-      isLoading={isLoading}
+      isLoading={isLoading || isDetailLoading}
       isNewInspectionLoading={isNewInspectionLoading}
       fetchInspectionInProgress={fetchInspection}
-      selectedInspectionID={selectedInspectionID}
+      selectedInspectionID={selectedInspectionId}
       onNewInspectionPress={onNewInspectionPress}
       onFilterPress={onFilterPress}
       filter={filter}
