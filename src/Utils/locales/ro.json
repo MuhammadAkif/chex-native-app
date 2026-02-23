@@ -288,6 +288,9 @@
     "inspectionTypePlaceholder": "Tip inspecție",
     "clearAll": "Șterge tot",
     "next": "Următorul",
+    "startInspection": "Dorești să începi inspecția pentru acest vehicul?",
+    "Info": "Informații",
+    "confirmClear": "Dorești să ștergi datele vehiculului?",
     "errors": {
       "licensePlateUndetected": "Citire nedetectată. Te rugăm să introduci manual numărul de înmatriculare",
       "licensePlateRequired": "Numărul de înmatriculare este obligatoriu",

@@ -288,6 +288,9 @@
         "inspectionTypePlaceholder": "Typ inspekcji",
         "clearAll": "Wyczyść wszystko",
         "next": "Dalej",
+        "startInspection": "Chcesz rozpocząć inspekcję tego pojazdu?",
+        "Info": "Informacje",
+        "confirmClear": "Chcesz wyczyścić dane pojazdu?",
         "errors": {
             "licensePlateUndetected": "Odczyt niewykryty. Wpisz numer rejestracyjny ręcznie",
             "licensePlateRequired": "Numer rejestracyjny jest wymagany",

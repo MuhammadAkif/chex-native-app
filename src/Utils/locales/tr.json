@@ -288,6 +288,9 @@
     "inspectionTypePlaceholder": "Denetim Tipi",
     "clearAll": "Hepsini temizle",
     "next": "İleri",
+    "startInspection": "Bu araç için denetime başlamak istiyor musunuz?",
+    "Info": "Bilgi",
+    "confirmClear": "Araç verilerini temizlemek istiyor musunuz?",
     "errors": {
       "licensePlateUndetected": "Okuma yapılamadı. Lütfen plaka numarasını manuel olarak girin",
       "licensePlateRequired": "Plaka numarası zorunludur",

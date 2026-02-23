@@ -288,6 +288,9 @@
     "inspectionTypePlaceholder": "Inspection Type",
     "clearAll": "Clear all",
     "next": "Next",
+    "startInspection": "Do you want to start inspection against this vehicle?",
+    "Info": "Info",
+    "confirmClear": "Do you want to clear the vehicle data?",
     "errors": {
       "licensePlateUndetected": "Reading undetected. Please input license plate number manually",
       "licensePlateRequired": "License plate number is required",

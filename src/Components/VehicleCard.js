@@ -5,15 +5,11 @@ import AppText from './text';
 import { colors } from '../Assets/Styles';
 import CardWrapper from './Card/CardWrapper';
 import { IMAGES } from '../Assets/Images';
-import dayjs from 'dayjs';
 import { VEHICLE_IMAGES } from '../Constants';
 
-import { useTranslation } from 'react-i18next';
-
-const VehicleCard = ({ item }) => {
-  const { t } = useTranslation();
+const VehicleCard = ({ item, onPress }) => {
   return (
-    <CardWrapper style={styles.container}>
+    <CardWrapper onPress={onPress} style={styles.container}>
       <Image source={VEHICLE_IMAGES[item?.vehicleType] || IMAGES.Van} style={styles.image} />
 
       <View style={styles.contentContainer}>
@@ -21,16 +17,6 @@ const VehicleCard = ({ item }) => {
           {item?.licensePlateNumber}
         </AppText>
         <AppText fontWeight={'500'}>{item?.companyName}</AppText>
-        {/* <View style={styles.statusContainer}>
-          <AppText fontWeight={'700'} fontSize={wp(3.2)} color={colors.white}>
-            {t(`statuses.${item?.inspectionStatus?.toLowerCase()}`, item?.inspectionStatus)}
-          </AppText>
-        </View> */}
-        {/* {item?.reviewedDate && (
-          <AppText fontSize={wp(3)} fontWeight={'500'}>
-            {dayjs(item?.reviewedDate).format('MMM D, YYYY')}
-          </AppText>
-        )} */}
       </View>
     </CardWrapper>
   );

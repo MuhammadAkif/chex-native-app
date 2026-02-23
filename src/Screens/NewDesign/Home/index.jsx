@@ -9,11 +9,12 @@ import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { BlueTruckStatIcon, DownArrow, InProgressStatIcon, SubmittedStatIcon, TotalStatIcon } from '../../../Assets/Icons';
 import { IMAGES } from '../../../Assets/Images';
 import { ROUTES, TABS } from '../../../Navigation/ROUTES';
+import { useNavigation } from '@react-navigation/native';
 import { getUserInspectionStats, getRegisteredVehicles, getRecentInspections } from '../../../services/inspection';
 import { useSelector } from 'react-redux';
 import { getUserFullName } from '../../../Utils/helpers';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
-import { ANDROID, exitAppInfo, HARDWARE_BACK_PRESS, FINAL_INSPECTION_STATUS, INSPECTION_STATUS_FOR_RECENT_INSPECTION } from '../../../Constants';
+import { ANDROID, exitAppInfo, HARDWARE_BACK_PRESS, INSPECTION_STATUS_FOR_RECENT_INSPECTION } from '../../../Constants';
 import { useContinueInspection, useInspectionDetails } from '../../../hooks';
 
 const Home = ({ navigation }) => {
@@ -210,24 +211,66 @@ const StatBox = ({ count = 0, icon: Icon, title, id, onPress, showArrow = false 
 
 const RegisteredVehicles = ({ data, isLoading }) => {
   const { t } = useTranslation();
+  const navigation = useNavigation();
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
+
+  const handlePressCard = (item) => {
+    setSelectedVehicle(item);
+    setAlertVisible(true);
+  };
+
+  const handleConfirmInspection = () => {
+    setAlertVisible(false);
+    if (!selectedVehicle) return;
+
+    navigation.navigate(TABS.INSPECTION, {
+      screen: ROUTES.VEHICLE_INFORMATION, params: {
+        licensePlateNumber: selectedVehicle?.licensePlateNumber,
+        vehicleType: selectedVehicle?.vehicleType,
+        vin: selectedVehicle?.vin,
+        isFromRegisteredVehicle: true,
+      }
+    });
+    setSelectedVehicle(null);
+  };
+
+  const handleCancelInspection = () => {
+    setAlertVisible(false);
+    setSelectedVehicle(null);
+  };
 
   return (
-    <FlatList
-      horizontal
-      data={data}
-      style={styles.vehicleList}
-      contentContainerStyle={styles.vehicleContentList}
-      showsHorizontalScrollIndicator={false}
-      keyExtractor={(item, index) => index.toString()}
-      renderItem={({ item, index }) => <VehicleCard item={item} />}
-      ListEmptyComponent={
-        isLoading ? (
-          <ActivityIndicator style={styles.registerVehicleLoader} size={'small'} color={colors.royalBlue} />
-        ) : (
-          <AppText style={styles.noRegisterText}>{t('home.noRegisteredVehicle')}</AppText>
-        )
-      }
-    />
+    <>
+
+      <FlatList
+        horizontal
+        data={data}
+        style={styles.vehicleList}
+        contentContainerStyle={styles.vehicleContentList}
+        showsHorizontalScrollIndicator={false}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item, index }) => <VehicleCard onPress={() => handlePressCard(item)} item={item} />}
+        ListEmptyComponent={
+          isLoading ? (
+            <ActivityIndicator style={styles.registerVehicleLoader} size={'small'} color={colors.royalBlue} />
+          ) : (
+            <AppText style={styles.noRegisterText}>{t('home.noRegisteredVehicle')}</AppText>
+          )
+        }
+      />
+
+      <AlertPopup
+        visible={alertVisible}
+        title={t('vehicleInfo.Info') || 'Info'}
+        message={t('vehicleInfo.startInspection')}
+        yesButtonText={t('common.yes') || 'Yes'}
+        cancelButtonText={t('common.no') || 'No'}
+        onYesPress={handleConfirmInspection}
+        onCancelPress={handleCancelInspection}
+      />
+
+    </>
   );
 };
 
@@ -235,6 +278,9 @@ const RecentInspections = ({ data, isLoading }) => {
   const { t } = useTranslation();
   const { handleContinuePress, isLoading: isContinueLoading, activeInspectionId } = useContinueInspection();
   const { handleInspectionDetailsPress, isLoading: isDetailLoading, selectedInspectionId } = useInspectionDetails();
+
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
   const handlePressInspectionCard = (item) => {
     if (isContinueLoading || isDetailLoading) return;
@@ -246,32 +292,51 @@ const RecentInspections = ({ data, isLoading }) => {
       handleContinuePress(inspectionId);
     } else if (itemStatus === INSPECTION_STATUS_FOR_RECENT_INSPECTION.REVIEWED) {
       handleInspectionDetailsPress(inspectionId);
+    } else if (itemStatus === INSPECTION_STATUS_FOR_RECENT_INSPECTION.IN_REVIEW) {
+      setAlertMessage('Inspection are in under review');
+      setAlertVisible(true);
+    } else if (itemStatus === INSPECTION_STATUS_FOR_RECENT_INSPECTION.READY_FOR_REVIEW) {
+      setAlertMessage('Under Inspector Review');
+      setAlertVisible(true);
+    } else if (itemStatus === INSPECTION_STATUS_FOR_RECENT_INSPECTION.IN_PROCESS) {
+      setAlertMessage('Under AI review');
+      setAlertVisible(true);
     }
   };
 
   return (
-    <FlatList
-      horizontal
-      data={data}
-      style={styles.vehicleList}
-      contentContainerStyle={styles.vehicleContentList}
-      showsHorizontalScrollIndicator={false}
-      keyExtractor={(item, index) => index.toString()}
-      renderItem={({ item, index }) => (
-        <InspectionCard
-          onPress={handlePressInspectionCard}
-          item={item}
-          isLoading={(isContinueLoading && activeInspectionId === item.id) || (isDetailLoading && selectedInspectionId === item.id)}
-        />
-      )}
-      ListEmptyComponent={
-        isLoading ? (
-          <ActivityIndicator style={styles.registerVehicleLoader} size={'small'} color={colors.royalBlue} />
-        ) : (
-          <AppText style={styles.noRegisterText}>{t('home.noRecentInspection')}</AppText>
-        )
-      }
-    />
+    <>
+      <FlatList
+        horizontal
+        data={data}
+        style={styles.vehicleList}
+        contentContainerStyle={styles.vehicleContentList}
+        showsHorizontalScrollIndicator={false}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item, index }) => (
+          <InspectionCard
+            onPress={handlePressInspectionCard}
+            item={item}
+            isLoading={(isContinueLoading && activeInspectionId === item.id) || (isDetailLoading && selectedInspectionId === item.id)}
+          />
+        )}
+        ListEmptyComponent={
+          isLoading ? (
+            <ActivityIndicator style={styles.registerVehicleLoader} size={'small'} color={colors.royalBlue} />
+          ) : (
+            <AppText style={styles.noRegisterText}>{t('home.noRecentInspection')}</AppText>
+          )
+        }
+      />
+
+      <AlertPopup
+        visible={alertVisible}
+        title="Info"
+        message={alertMessage}
+        yesButtonText={t('common.ok') || 'OK'}
+        onYesPress={() => setAlertVisible(false)}
+      />
+    </>
   );
 };
 
