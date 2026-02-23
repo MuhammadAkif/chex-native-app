@@ -168,7 +168,7 @@ const CameraContainer = ({ route, navigation }) => {
     try {
       await hasCameraAndMicrophoneAllowed();
 
-      if (!cameraRef.current) return;
+      if (!cameraRef.current) { return; }
 
       const photo = await cameraRef.current.takePhoto();
 
@@ -319,6 +319,7 @@ const CameraContainer = ({ route, navigation }) => {
     const mime = 'image/' + extension;
     setIsModalVisible(true);
     const normalizedPath = Platform.OS === 'ios' ? await fixImageOrientation(isImageFile.path) : isImageFile.path;
+
     try {
       await getSignedUrl(
         token,
@@ -378,7 +379,6 @@ const CameraContainer = ({ route, navigation }) => {
 
   let resizeMode = 'stretch';
   if (orientation == 'landscape' || selectedVehicleKind == 'sedan') { resizeMode = 'contain'; }
-
   return (
     <>
       {isModalVisible && (
@@ -392,7 +392,8 @@ const CameraContainer = ({ route, navigation }) => {
           handleNavigationBackPress={handleNavigationBackPress}
           isExterior={checkRelevantType(groupType)}
           isCarVerification={groupType === INSPECTION.carVerificiationItems}
-        // handleVisible={handleVisible}
+          // handleVisible={handleVisible}
+          inspectionScreen={inspectionScreen}
         />
       )}
       {isImageURL ? (
@@ -422,17 +423,19 @@ const CameraContainer = ({ route, navigation }) => {
                       {t('common.captureImageInstruction')}
                     </Text>
                   </View>
-                  <Camera
-                    ref={cameraRef}
-                    style={{ height: hp('25%'), width: wp('100%') }}
-                    device={device}
-                    photo={true}
-                    audio={false}
-                    isActive={isFocused && appState.current === 'active'}
-                    enableZoomGesture={true}
-                    includeBase64={true}
-                    format={format}
-                  />
+                  <View style={{ height: hp('25%'), width: wp('100%'), overflow: 'hidden' }}>
+                    <Camera
+                      ref={cameraRef}
+                      style={StyleSheet.absoluteFill}
+                      device={device}
+                      photo={true}
+                      audio={false}
+                      isActive={isFocused && appState.current === 'active'}
+                      enableZoomGesture={true}
+                      includeBase64={true}
+                      format={format}
+                    />
+                  </View>
                 </View>
               ) : (
                 <>

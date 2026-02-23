@@ -40,6 +40,7 @@ const CaptureImageModal = ({
   isCarVerification = false,
   isExterior = true,
   labelRequired = null,
+  inspectionScreen = false,
 }) => {
   const { t } = useTranslation();
   const { fileRequired = null } = useSelector(state => state.newInspection);
@@ -105,7 +106,17 @@ const CaptureImageModal = ({
                 <Video source={source} controls={true} playInBackground={false} resizeMode={'contain'} style={styles.image} />
               )}
             </>
+          ) : inspectionScreen ? (
+            <FastImage
+              source={source}
+              resizeMode="cover"
+              style={{
+                width: wp('100%'),
+                height: hp('25%'),
+              }}
+            />
           ) : (
+
             <FastImage source={source} priority={'normal'} resizeMode={'cover'} style={[styles.image, { height: calculatedStyles.imageHeight }]} />
           )}
           <View style={styles.instructionsAndSubHeadingContainer}>

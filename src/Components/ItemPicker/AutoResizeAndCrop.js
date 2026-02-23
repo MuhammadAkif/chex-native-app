@@ -18,8 +18,10 @@ const autoCropToPreview = async (photo) => {
       orientation === 'portrait-upside-down' ||
       (!orientation && rawW > rawH);
 
-    const imgW = isPortrait ? rawH : rawW;
-    const imgH = isPortrait ? rawW : rawH;
+    // Some Android devices return pre-rotated dimensions (e.g. 720x1280) while others 
+    // return raw sensor dimensions (e.g. 1280x720). Safely determine exact visual width/height:
+    const imgW = isPortrait ? Math.min(rawW, rawH) : Math.max(rawW, rawH);
+    const imgH = isPortrait ? Math.max(rawW, rawH) : Math.min(rawW, rawH);
     const imgAspect = imgW / imgH;
 
     let cropX = 0;
