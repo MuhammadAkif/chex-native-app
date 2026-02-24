@@ -406,6 +406,11 @@ const VehicleInformation = props => {
 
     return isLoading || vinLoading || mileageLoading || isFetchingVehicleInfo || !isAnyImagePresent;
   };
+  const onCloseExistingVehicleDropDown = () => {
+    setShowExistingVehicleDropdown(false);
+    setShowVehicleType(true);
+  }
+
 
   return (
     <View style={styles.blueContainer}>
@@ -611,12 +616,12 @@ const VehicleInformation = props => {
                       if (!normalizedPlate || !isValidPlate(normalizedPlate)) return;
 
                       // Return cached result if available
-                      const cached = responseCacheRef.current.get(normalizedPlate);
-                      if (cached) {
-                        applyVehicleInfo(cached, setFieldValue, setFieldError);
-                        lastQueriedPlateRef.current = normalizedPlate;
-                        return;
-                      }
+                      // const cached = responseCacheRef.current.get(normalizedPlate);
+                      // if (cached) {
+                      //   applyVehicleInfo(cached, setFieldValue, setFieldError);
+                      //   lastQueriedPlateRef.current = normalizedPlate;
+                      //   return;
+                      // }
 
                       // Sequence guard to ignore stale responses
                       const requestId = ++latestRequestIdRef.current;
@@ -626,13 +631,12 @@ const VehicleInformation = props => {
                         const response = await getVehicleInformationAgainstLicenseId(normalizedPlate);
                         if (requestId !== latestRequestIdRef.current) return; // stale
                         const data = response?.data || {};
-
                         // Cache small number of recent results
-                        if (responseCacheRef.current.size > 20) {
-                          const firstKey = responseCacheRef.current.keys().next().value;
-                          responseCacheRef.current.delete(firstKey);
-                        }
-                        responseCacheRef.current.set(normalizedPlate, data);
+                        // if (responseCacheRef.current.size > 20) {
+                        //   const firstKey = responseCacheRef.current.keys().next().value;
+                        //   responseCacheRef.current.delete(firstKey);
+                        // }
+                        // responseCacheRef.current.set(normalizedPlate, data);
 
                         if (data?.similarPlates?.length > 0) {
 
@@ -712,7 +716,7 @@ const VehicleInformation = props => {
                           {showExistingVehicleDropdown && !isFromRegisteredVehicle && (
                             <ExistingVehicleDropDown
                               data={existingVehicles}
-                              onClose={() => setShowExistingVehicleDropdown(false)}
+                              onClose={() => onCloseExistingVehicleDropDown()}
                               onSelect={item => {
                                 const plateNumber = item?.licensePlateNumber ?? '';
                                 if (plateNumber) {

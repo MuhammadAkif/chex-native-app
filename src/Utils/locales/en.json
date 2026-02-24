@@ -20,6 +20,7 @@
     "somethingWentWrong": "Something went wrong, Please try again.",
     "addImage": "Add Image",
     "captureImage": "Capture Image",
+    "captureImageInstruction": "Center the target in the frame. Hold steady and tap the Button.",
     "captureVideo": "Capture Video",
     "image": "image",
     "cancel": "Cancel",
