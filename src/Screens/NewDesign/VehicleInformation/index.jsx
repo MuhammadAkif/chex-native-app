@@ -19,7 +19,7 @@ import {
   getVehicleInformationAgainstLicenseId,
 } from '../../../services/inspection';
 import useDebounce from '../../../hooks/useDebounce';
-import { ROUTES } from '../../../Navigation/ROUTES';
+import { ROUTES, TABS } from '../../../Navigation/ROUTES';
 import { useDispatch, useSelector } from 'react-redux';
 import { numberPlateSelected, setCompanyId, setMileage, setSelectedVehicleKind, setVehicleType, showToast } from '../../../Store/Actions';
 import { LicensePlateDetails, OdometerDetails, VinDetails } from '../../../Utils';
@@ -261,7 +261,7 @@ const VehicleInformation = props => {
         const routeName = data?.hasCheckList ? ROUTES.DVIR_INSPECTION_CHECKLIST : ROUTES.VEHICLE_INFORMATION;
 
         setTimeout(() => {
-          navigation.navigate(nextRoute, { routeName });
+          navigation.reset({ index: 2, routes: [{ name: ROUTES.TABS }, { name: ROUTES.INSPECTION_IN_PROGRESS }, { name: nextRoute, params: { routeName } }] });
         }, timeout);
       })
       .catch(error => {
@@ -310,7 +310,7 @@ const VehicleInformation = props => {
     const nextRoute = errorModalDetail?.vehicleKind === VEHICLE_TYPES.TRUCK ? ROUTES.DVIR_INSPECTION_CHECKLIST : ROUTES.NEW_INSPECTION;
     const params = errorModalDetail?.vehicleKind === VEHICLE_TYPES.TRUCK ? undefined : { isInProgress: true };
 
-    setTimeout(() => navigation.navigate(nextRoute, params), timeout);
+    setTimeout(() => navigation.reset({ index: 2, routes: [{ name: ROUTES.TABS }, { name: ROUTES.INSPECTION_IN_PROGRESS }, { name: nextRoute, params }] }), timeout);
 
     setErrorModalDetail({ message: '', title: '', inspectionId: '', resetForm: null, vehicleKind: null });
   };
@@ -359,6 +359,7 @@ const VehicleInformation = props => {
     setFieldTouched('mileage', true, false);
     setFieldTouched('vin', true, false);
     setShowVehicleType(false);
+    setShowVinInput(true)
     setHasApiDetectedVehicleType(false);
     setIsFetchingVehicleInfo(false);
     setShowExistingVehicleDropdown(false);
@@ -395,13 +396,13 @@ const VehicleInformation = props => {
     resetOCRsCapturedImagesRef();
   }, [navigation]);
 
-  const isClearFormDisabled = () => {
+  const isClearFormDisabled = (values) => {
     if (isFromRegisteredVehicle) {
       return isLoading || vinLoading || mileageLoading || isFetchingVehicleInfo;
     }
 
     const { numberPlate, mileage, vin } = OCRsCapturedImagesRef?.current || {};
-    const isAnyImagePresent = numberPlate?.uri || mileage?.uri || vin?.uri;
+    const isAnyImagePresent = values?.licensePlateNumber || values?.mileage || values?.vin || numberPlate?.uri || mileage?.uri || vin?.uri;
 
     return isLoading || vinLoading || mileageLoading || isFetchingVehicleInfo || !isAnyImagePresent;
   };
@@ -857,8 +858,8 @@ const VehicleInformation = props => {
                             </View>
                           )}
                           <TouchableOpacity
-                            disabled={isClearFormDisabled()}
-                            style={[styles.clearFormButton, { opacity: isClearFormDisabled() ? 0.5 : 1 }]}
+                            disabled={isClearFormDisabled(values)}
+                            style={[styles.clearFormButton, { opacity: isClearFormDisabled(values) ? 0.5 : 1 }]}
                             onPress={() => handlePressClearForm(setFieldValue, setFieldTouched, setFieldError)}>
                             <AppText style={styles.clearFormButtonText}>{t('vehicleInfo.clearAll')}</AppText>
                           </TouchableOpacity>

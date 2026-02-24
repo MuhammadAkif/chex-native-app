@@ -92,7 +92,8 @@
         "myRegisteredVehicles": "Моите регистрирани автомобили",
         "recentInspections": "Последни инспекции",
         "noRegisteredVehicle": "Няма регистрирани автомобили",
-        "noRecentInspection": "Няма последни инспекции"
+        "noRecentInspection": "Няма последни инспекции",
+        "inspectionUnderReview": "Тази инспекция в момента се преглежда."
     },
     "inspectionInProgress": {
         "title": "Инспекции в ход",

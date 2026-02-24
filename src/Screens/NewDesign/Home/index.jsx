@@ -51,7 +51,7 @@ const Home = ({ navigation }) => {
     setIsVehicleRegisterLoading(false);
 
     const { vehicles = [] } = response?.data || {};
-    setVehiclesData(vehicles);
+    setVehiclesData(vehicles.reverse());
   };
 
   const getRecentInspectionsAPI = () => {
@@ -292,14 +292,8 @@ const RecentInspections = ({ data, isLoading }) => {
       handleContinuePress(inspectionId);
     } else if (itemStatus === INSPECTION_STATUS_FOR_RECENT_INSPECTION.REVIEWED) {
       handleInspectionDetailsPress(inspectionId);
-    } else if (itemStatus === INSPECTION_STATUS_FOR_RECENT_INSPECTION.IN_REVIEW) {
-      setAlertMessage('Inspection are in under review');
-      setAlertVisible(true);
-    } else if (itemStatus === INSPECTION_STATUS_FOR_RECENT_INSPECTION.READY_FOR_REVIEW) {
-      setAlertMessage('Under Inspector Review');
-      setAlertVisible(true);
-    } else if (itemStatus === INSPECTION_STATUS_FOR_RECENT_INSPECTION.IN_PROCESS) {
-      setAlertMessage('Under AI review');
+    } else if (itemStatus === INSPECTION_STATUS_FOR_RECENT_INSPECTION.IN_REVIEW || itemStatus === INSPECTION_STATUS_FOR_RECENT_INSPECTION.READY_FOR_REVIEW || itemStatus === INSPECTION_STATUS_FOR_RECENT_INSPECTION.IN_PROCESS) {
+      setAlertMessage(t('home.inspectionUnderReview'));
       setAlertVisible(true);
     }
   };

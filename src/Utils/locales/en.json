@@ -92,7 +92,8 @@
     "myRegisteredVehicles": "My Registered Vehicles",
     "recentInspections": "Recent Inspections",
     "noRegisteredVehicle": "No Registered Vehicle",
-    "noRecentInspection": "No Recent Inspection"
+    "noRecentInspection": "No Recent Inspection",
+    "inspectionUnderReview": "This inspection is currently under review."
   },
   "inspectionInProgress": {
     "title": "Inspections in Progress",

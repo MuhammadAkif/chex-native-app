@@ -92,7 +92,8 @@
     "myRegisteredVehicles": "Kayıtlı Araçlarım",
     "recentInspections": "Son Denetimler",
     "noRegisteredVehicle": "Kayıtlı Araç Yok",
-    "noRecentInspection": "Son Denetim Yok"
+    "noRecentInspection": "Son Denetim Yok",
+    "inspectionUnderReview": "Bu denetim şu anda inceleniyor."
   },
   "inspectionInProgress": {
     "title": "Devam Eden Denetimler",

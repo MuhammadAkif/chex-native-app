@@ -92,7 +92,8 @@
     "myRegisteredVehicles": "Vehiculele mele înregistrate",
     "recentInspections": "Inspecții recente",
     "noRegisteredVehicle": "Niciun vehicul înregistrat",
-    "noRecentInspection": "Nicio inspecție recentă"
+    "noRecentInspection": "Nicio inspecție recentă",
+    "inspectionUnderReview": "Această inspecție este în curs de revizuire."
   },
   "inspectionInProgress": {
     "title": "Inspecții în curs",

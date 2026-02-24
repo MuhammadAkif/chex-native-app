@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {useSelector} from 'react-redux';
+import React, { useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useSelector } from 'react-redux';
 
 import {
   CameraContainer,
@@ -16,10 +16,10 @@ import {
   NewInspectionContainer,
 } from '../Container';
 
-import {ROUTES, STACKS} from './ROUTES';
-import {navigationRef} from '../services/navigationService';
+import { ROUTES, STACKS } from './ROUTES';
+import { navigationRef } from '../services/navigationService';
 import BottomTab from './bottomTab';
-import {AuthStack} from './stacks';
+import { AuthStack } from './stacks';
 import smartlookService from '../services/smartlookService';
 
 const Stack = createNativeStackNavigator();
@@ -28,9 +28,9 @@ let lastTrackedScreen = null;
 // ROOT NAVIGATION
 // ----------------------
 const RootNavigation = () => {
-  const {data: userData, token} = useSelector(state => state?.auth?.user);
+  const { data: userData, token } = useSelector(state => state?.auth?.user);
   const initialRouteName = token ? ROUTES.TABS : STACKS.AUTH_STACK;
-  const screenOptions = {headerShown: false, gestureEnabled: false};
+  const screenOptions = { headerShown: false, gestureEnabled: false };
 
   useEffect(() => {
     if (token && userData) {
