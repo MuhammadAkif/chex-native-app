@@ -344,6 +344,11 @@ const VehicleInformation = props => {
 
     return isLoading || vinLoading || mileageLoading || isFetchingVehicleInfo || !isAnyImagePresent;
   };
+  const onCloseExistingVehicleDropDown = () => {
+    setShowExistingVehicleDropdown(false);
+    setShowVehicleType(true);
+  }
+
 
   return (
     <View style={styles.blueContainer}>
@@ -637,7 +642,7 @@ const VehicleInformation = props => {
                           {showExistingVehicleDropdown && (
                             <ExistingVehicleDropDown
                               data={existingVehicles}
-                              onClose={() => setShowExistingVehicleDropdown(false)}
+                              onClose={() => onCloseExistingVehicleDropDown()}
                               onSelect={item => {
                                 const plateNumber = item?.licensePlateNumber ?? '';
                                 if (plateNumber) {
