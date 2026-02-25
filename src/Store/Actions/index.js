@@ -1,4 +1,4 @@
-import {sessionExpired, signIn, signOut} from './AuthAction';
+import { sessionExpired, signIn, signOut } from './AuthAction';
 import {
   clearInspectionInProgress,
   deleteInspection,
@@ -38,7 +38,9 @@ import {
   updateIsLicensePlateUploaded,
   updateVehicleImage,
 } from './NewInspectionAction';
-import {hideToast, setLoading, showToast} from './UIActions';
+import { hideToast, setLoading, showToast } from './UIActions';
+
+export * from './UploadActions';
 
 export {
   batchUpdateVehicleImages,

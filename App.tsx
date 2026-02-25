@@ -5,6 +5,7 @@ import 'react-native-devsettings';
 import BootSplash from 'react-native-bootsplash';
 import { useDispatch, useSelector } from 'react-redux';
 import { DiscardInspectionModal, Splash, Toast } from './src/Components';
+import GlobalUploaderUI from './src/Components/GlobalUploaderUI';
 import AlertPopup from './src/Components/AlertPopup';
 import { SESSION_EXPIRED, SMARTLOOK_PROJECT_ID, UPDATE_APP } from './src/Constants';
 import { ROUTES } from './src/Navigation/ROUTES';
@@ -82,6 +83,7 @@ function App() {
     <>
       <Navigation />
       <Toast />
+      <GlobalUploaderUI />
       <View>
         {updateAvailable && (
           <DiscardInspectionModal

@@ -26,7 +26,7 @@ import {
   VEHICLE_TYPES_WITH_FRAMES,
 } from '../Constants';
 import { ROUTES, TABS } from '../Navigation/ROUTES';
-import { clearInspectionImages, getMileage, setImageDimensions, setLicensePlateNumber, updateVehicleImage } from '../Store/Actions';
+import { clearInspectionImages, getMileage, setImageDimensions, setLicensePlateNumber, updateVehicleImage, initiateBackgroundUpload } from '../Store/Actions';
 import {
   checkRelevantType,
   exteriorVariant,
@@ -74,7 +74,7 @@ const CameraContainer = ({ route, navigation }) => {
   const [isExpiryInspectionVisible, setIsExpiryInspectionVisible] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isUploadFailed, setIsUploadFailed] = useState(isUploadFailedInitialState);
-  const { type, modalDetails, inspectionId } = route.params;
+  const { type, modalDetails, inspectionId, useBackgroundUpload } = route.params;
   const format = useCameraFormat(device, [{ videoResolution: { width: 1280, height: 720 }, photoResolution: { width: 1280, height: 720 } }, { fps: 60 }]);
   const [isLoading, setIsLoading] = useState(false);
   const [orientation, setOrientation] = useState(defaultOrientation);
@@ -317,8 +317,54 @@ const CameraContainer = ({ route, navigation }) => {
   const handleNextPress = async () => {
     let extension = isImageFile.path.split('.').pop() || 'jpeg';
     const mime = 'image/' + extension;
-    setIsModalVisible(true);
     const normalizedPath = Platform.OS === 'ios' ? await fixImageOrientation(isImageFile.path) : isImageFile.path;
+
+    if (useBackgroundUpload) {
+      const localUploadId = Math.random().toString(36).substring(2, 15);
+
+      const uploadParams = {
+        token,
+        mime,
+        normalizedPath,
+        inspectionId,
+        subCategory,
+        variant,
+        companyId: data?.companyId,
+        category,
+        groupType,
+        vehicle_Type,
+        haveType: checkRelevantType(groupType),
+        type,
+      };
+
+      dispatch(initiateBackgroundUpload({
+        id: localUploadId,
+        localUri: isImageURL,
+        uploadParams,
+      }));
+
+      // Immediately navigate back
+      if (route?.params?.returnTo) {
+        const targetScreen = route.params.returnTo;
+        const navParams = {
+          localUri: isImageURL, // Optimistic UI local URI
+          localUploadId,        // Redux reference ID
+          capturedImageMime: extension, // Retain existing parameters
+          ...route?.params?.returnToParams,
+        };
+
+        if (targetScreen == ROUTES.VEHICLE_INFORMATION) {
+          navigation.popTo(ROUTES.TABS, { screen: TABS.INSPECTION, params: { screen: ROUTES.VEHICLE_INFORMATION, params: navParams } });
+        } else if (targetScreen == ROUTES.DVIR_INSPECTION_CHECKLIST) {
+          navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST, navParams);
+        }
+      } else {
+        navigation.goBack();
+      }
+      return;
+    }
+
+    setIsModalVisible(true);
 
     try {
       await getSignedUrl(
