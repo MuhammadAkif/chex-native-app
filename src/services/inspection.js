@@ -1,6 +1,6 @@
 import axios from 'axios';
-import {AI_API_TOKEN, API_ENDPOINTS, EXTRACT_NUMBER_PLATE_WITH_AI, generateApiUrl, MILEAGE_EXTRACTION, nightImageCheckAI} from '../Constants';
-import {generateRandomString} from '../Utils';
+import { AI_API_TOKEN, API_ENDPOINTS, EXTRACT_NUMBER_PLATE_WITH_AI, generateApiUrl, MILEAGE_EXTRACTION, nightImageCheckAI } from '../Constants';
+import { generateRandomString } from '../Utils';
 import api from './api';
 
 const {
@@ -15,13 +15,14 @@ const {
   SUBMIT_INSPECTION,
   EXTRACT_VIN_WITH_AI,
   VEHICLE_INFO_AGAINSET_LICENSE_PLATE,
+  VEHICLE_INFO_AGAINSET_VIN,
   RECENT_INSPECTION,
   REGISTERED_VEHICLES,
   GET_USER_INSPECTION_STATS,
 } = API_ENDPOINTS;
 
 export const createInspection = async (companyId, data) => {
-  const body = {companyId, ...data};
+  const body = { companyId, ...data };
   try {
     return await api.post(CREATE_INSPECTION_URL, body);
   } catch (error) {
@@ -32,9 +33,18 @@ export const createInspection = async (companyId, data) => {
 
 export const getVehicleInformationAgainstLicenseId = async licensePlateNumber => {
   try {
-    return await api.post(VEHICLE_INFO_AGAINSET_LICENSE_PLATE, {licensePlateNumber});
+    return await api.post(VEHICLE_INFO_AGAINSET_LICENSE_PLATE, { licensePlateNumber });
   } catch (error) {
     console.error('getVehicleInformationAgainstLicenseId error:', error.response.data);
+    throw error;
+  }
+};
+export const getVehicleInformationAgainstVin = async vin => {
+  try {
+    debugger;
+    return await api.get(VEHICLE_INFO_AGAINSET_VIN, { vin });
+  } catch (error) {
+    console.error('getVehicleInformationAgainstVin error:', error.response.data);
     throw error;
   }
 };
@@ -115,7 +125,7 @@ export const vehicleTireStatus = async inspectionId => {
 };
 
 export const clearTires = async (fileIds = []) => {
-  const body = {fileId: fileIds};
+  const body = { fileId: fileIds };
 
   try {
     return await api.post(REMOVE_ALL_TIRES_URL, body);
@@ -126,7 +136,7 @@ export const clearTires = async (fileIds = []) => {
 };
 
 export const imageAnnotation = async (coordinateArray, inspectionId, fileId) => {
-  const body = {coordinateArray, inspectionId, fileId};
+  const body = { coordinateArray, inspectionId, fileId };
 
   try {
     return await api.post(ANNOTATION_URL, body);
@@ -161,7 +171,7 @@ export const fetchAllInspections = async status => {
 };
 
 export const extractLicensePlateAI = async image_url => {
-  const body = {image_url};
+  const body = { image_url };
   const headers = {
     api_token: AI_API_TOKEN,
   };
@@ -175,13 +185,13 @@ export const extractLicensePlateAI = async image_url => {
   }
 };
 
-export const extractVinAI = async image_url => {
+export const extractVinAI = async (image_url = null, vin = null) => {
   const headers = {
     api_token: AI_API_TOKEN,
   };
 
   try {
-    const endPoint = generateApiUrl(`vin?image_url=${image_url}`);
+    const endPoint = generateApiUrl(`vin?image_url=${image_url}&vin=${vin}`);
 
     return await api.get(endPoint, {
       headers: headers,
@@ -193,7 +203,7 @@ export const extractVinAI = async image_url => {
 };
 
 export const s3SignedUrl = async (type = '', source = '', inspectionId = '', categoryName = '', variant = '', companyId = '') => {
-  const data = {type, source, inspectionId, categoryName, variant, companyId};
+  const data = { type, source, inspectionId, categoryName, variant, companyId };
   // const data = {type};
 
   try {
@@ -253,7 +263,7 @@ export const location = async inspectionId => {
 export const inspectionSubmission = async (inspectionId = '', companyId = '', driverComment = null) => {
   const endPoint = generateApiUrl(`inspection/${inspectionId}`);
 
-  const body = {driverComment};
+  const body = { driverComment };
   try {
     return await api.patch(endPoint, body);
   } catch (error) {
@@ -312,8 +322,8 @@ export const inspectionSubmission = async (inspectionId = '', companyId = '', dr
 };*/
 
 export const isImageDarkWithAI = async image_url => {
-  const body = {image_url};
-  const config = {headers: {api_token: AI_API_TOKEN}};
+  const body = { image_url };
+  const config = { headers: { api_token: AI_API_TOKEN } };
   try {
     return await api.post(nightImageCheckAI, body, config);
   } catch (error) {
@@ -326,7 +336,7 @@ export const ai_Mileage_Extraction = async image_url => {
   const body = {
     image_url,
   };
-  const config = {headers: {api_token: AI_API_TOKEN}};
+  const config = { headers: { api_token: AI_API_TOKEN } };
 
   try {
     return await api.post(MILEAGE_EXTRACTION, body, config);
@@ -339,7 +349,7 @@ export const ai_Mileage_Extraction = async image_url => {
 export const updateMileageInDB = async (milage, inspectionId) => {
   const endPoint = generateApiUrl(`update/vehicle/milage/${inspectionId}`);
 
-  const body = {milage};
+  const body = { milage };
 
   try {
     return await api.put(endPoint, body);
@@ -362,7 +372,7 @@ export const getChecklists = async inspectionId => {
 
 export const updateChecklist = async (inspectionId, checkId, data) => {
   const endPoint = generateApiUrl('update/checklist');
-  const body = {inspectionId, checkId, ...data};
+  const body = { inspectionId, checkId, ...data };
 
   try {
     const response = await api.put(endPoint, body);
@@ -375,7 +385,7 @@ export const updateChecklist = async (inspectionId, checkId, data) => {
 
 export const removeChecklistImageVideo = async (inspectionId, checkId, data) => {
   const endPoint = generateApiUrl('checklist/image');
-  const body = {inspectionId, checkId, ...data};
+  const body = { inspectionId, checkId, ...data };
 
   try {
     return await api.patch(endPoint, body);

@@ -54,6 +54,7 @@ export const API_ENDPOINTS = {
   CREATE_INSPECTION_URL: generateApiUrl('create/inspection'),
   FETCH_IN_PROGRESS_URL: generateApiUrl('status/vehicle'),
   VEHICLE_INFO_AGAINSET_LICENSE_PLATE: generateApiUrl('inspections/vehicle-info'),
+  VEHICLE_INFO_AGAINSET_VIN: generateApiUrl('inspections/vehicle-info'),
   REGISTERED_VEHICLES: generateApiUrl('inspections/user-vehicles'),
   RECENT_INSPECTION: generateApiUrl('inspections/recent'),
   FORGET_PASSWORD_URL: generateApiUrl('auth/reset/email'),

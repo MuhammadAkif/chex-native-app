@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { styles } from './styles';
 import { CardWrapper, CustomInput, DiscardInspectionModal, ExistingVehicleDropDown, LoadingIndicator, LogoHeader, PrimaryGradientButton, AlertPopup } from '../../../Components';
+import MakeYearModelModal from '../../../Components/PopUpModals/MakeYearModelModal';
 import AppText from '../../../Components/text';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { colors } from '../../../Assets/Styles';
@@ -17,6 +18,7 @@ import {
   extractLicensePlateAI,
   extractVinAI,
   getVehicleInformationAgainstLicenseId,
+  getVehicleInformationAgainstVin,
 } from '../../../services/inspection';
 import useDebounce from '../../../hooks/useDebounce';
 import { ROUTES, TABS } from '../../../Navigation/ROUTES';
@@ -112,6 +114,14 @@ const VehicleInformation = props => {
   const lastSetLicensePlateRef = useRef('');
   const inspectionTypeOptions = useMemo(() => ['Regular', 'DVIR'], []);
   const [existingVehicles, setExistingVehicles] = useState([]);
+  const [isMakeYearModelModalVisible, setIsMakeYearModelModalVisible] = useState(false);
+  const [makeYearModelValue, setMakeYearModelValue] = useState({
+    status: false,
+    vin: '',
+    make: '',
+    model: '',
+    year: '',
+  });
 
   // Dimensions used to calculate scroll offset (keep in sync with styles.js)
   const VEHICLE_ITEM_WIDTH = wp(38);
@@ -234,6 +244,11 @@ const VehicleInformation = props => {
           dateImage,
         },
       ],
+
+      make: makeYearModelValue?.make || null,
+      model: makeYearModelValue?.model,
+      year: makeYearModelValue?.year,
+
     };
 
     setIsLoading(true);
@@ -252,6 +267,8 @@ const VehicleInformation = props => {
         setHasApiDetectedVehicleType(false);
         setShowVehicleType(false);
         setShowVinInput(true);
+        setMakeYearModelValue({ make: null, model: null, year: null });
+        setIsMakeYearModelModalVisible(false);
         resetOCRsCapturedImagesRef();
         resetForm();
 
@@ -592,6 +609,14 @@ const VehicleInformation = props => {
                       extractVinAI(capturedImageUri)
                         .then(response => {
                           if (response?.data?.status === true) {
+                            setMakeYearModelValue({
+                              status: response?.data?.status,
+                              vin_num: response?.data?.vin_num,
+                              make: response?.data?.make,
+                              model: response?.data?.model,
+                              year: response?.data?.year
+                            });
+                            setIsMakeYearModelModalVisible(true);
                             const vin_num = response?.data?.vin_num ?? '';
                             setFieldValue('vin', vin_num);
                             setFieldError('vin', undefined);
@@ -687,6 +712,50 @@ const VehicleInformation = props => {
                     },
                     [debouncedFetchVehicleInfo, isValidPlate, normalizePlate, setFieldValue]
                   );
+
+                  const fetchMakeYearModelInfo = async () => {
+                    try {
+                      setVinLoading(true);
+                      extractVinAI(capturedImageUri = null, values?.vin)
+                        .then(response => {
+
+                          if (response?.data) {
+                            setMakeYearModelValue({
+                              status: true,
+                              vin_num: response?.data?.vin_num,
+                              make: response?.data?.make,
+                              model: response?.data?.model,
+                              year: response?.data?.year
+                            });
+                            setIsMakeYearModelModalVisible(true);
+                            setFieldError('vin', undefined);
+                            setFieldTouched('vin', true, false);
+
+
+                          } else {
+                            vinNotDetected();
+                          }
+                        })
+                        .catch(error => {
+                          vinNotDetected();
+                        })
+                        .finally(() => {
+                          setVinLoading(false);
+                        });
+
+
+                    } catch (error) {
+                      console.log('error', error);
+                    }
+
+
+                  }
+                  useEffect(() => {
+                    if (values?.vin?.length === 17 && showVinInput) {
+                      fetchMakeYearModelInfo();
+                    }
+                  }, [values?.vin]);
+
 
                   return (
                     <>
@@ -890,6 +959,28 @@ const VehicleInformation = props => {
           />
         </View>
       )}
+      {
+        isMakeYearModelModalVisible && showVinInput && (
+          <MakeYearModelModal
+            visible={isMakeYearModelModalVisible}
+            defaultValues={{
+              vin: makeYearModelValue?.vin_num || makeYearModelValue?.vin || '',
+              make: makeYearModelValue?.make || '',
+              model: makeYearModelValue?.model || '',
+              year: makeYearModelValue?.year?.toString() || ''
+            }}
+            onClosePress={() => setIsMakeYearModelModalVisible(false)}
+            onConfirmPress={(values) => {
+              setMakeYearModelValue(values);
+              setIsMakeYearModelModalVisible(false);
+            }}
+            onEditPress={(values) => {
+              // Edit usually leaves the modal open to let the user keep typing but we can sync the values
+              setMakeYearModelValue(values);
+            }}
+          />
+        )
+      }
 
       {/* CONFIRM CLEAR PREFILL POPUP */}
       <View>
