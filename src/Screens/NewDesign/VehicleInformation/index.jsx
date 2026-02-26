@@ -341,7 +341,13 @@ const VehicleInformation = props => {
       },
       type: details.key || details.type,
       returnTo: ROUTES.VEHICLE_INFORMATION,
-      returnToParams: returnParams,
+      returnToParams: {
+        ...returnParams,
+        isFromRegisteredVehicle: route?.params?.isFromRegisteredVehicle,
+        licensePlateNumber: route?.params?.licensePlateNumber,
+        vehicleType: route?.params?.vehicleType,
+        vin: route?.params?.vin,
+      },
     });
   };
 
