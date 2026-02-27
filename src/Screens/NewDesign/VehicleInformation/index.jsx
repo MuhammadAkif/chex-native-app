@@ -213,20 +213,6 @@ const VehicleInformation = props => {
     Keyboard.dismiss();
 
     const { numberPlate, mileage } = OCRsCapturedImagesRef.current;
-
-    const plateUpload = numberPlate?.localUploadId ? activeUploads[numberPlate.localUploadId] : null;
-    const mileageUpload = mileage?.localUploadId ? activeUploads[mileage.localUploadId] : null;
-
-    if ((plateUpload && plateUpload.status === 'uploading') || (mileageUpload && mileageUpload.status === 'uploading')) {
-      dispatch(showToast(t('common.waitingForUploads') || 'Please wait for images to finish uploading', 'error'));
-      setSubmitting(false);
-      return;
-    }
-
-    // Replace the optimistic localUri with the final S3 remoteUrl before hitting our DB
-    const finalPlateUri = plateUpload?.remoteUrl || numberPlate?.uri;
-    const finalMileageUri = mileageUpload?.remoteUrl || mileage?.uri;
-
     const dateImage = dayjs(currentDate).format('DD-M-YYYY');
     const vehicleType = values?.vehicleType;
 
@@ -235,14 +221,14 @@ const VehicleInformation = props => {
       ...(vehicleType === VEHICLE_TYPES.TRUCK && hasInspectionType && { hasCheckList: values.inspectionType === 'DVIR' }),
       files: [
         {
-          url: finalPlateUri,
+          url: numberPlate?.uri,
           category: LicensePlateDetails.subCategory,
           extension: numberPlate?.extension,
           groupType: LicensePlateDetails.groupType,
           dateImage,
         },
         {
-          url: finalMileageUri,
+          url: mileage?.uri,
           category: OdometerDetails.subCategory,
           extension: mileage?.extension,
           groupType: OdometerDetails.groupType,
@@ -269,7 +255,6 @@ const VehicleInformation = props => {
         setShowVinInput(true);
         resetOCRsCapturedImagesRef();
         resetForm();
-
         // NAVIGATE
         const timeout = isIOS ? 500 : 100;
         const nextRoute = data?.hasCheckList ? ROUTES.DVIR_INSPECTION_CHECKLIST : ROUTES.NEW_INSPECTION;
@@ -339,7 +324,7 @@ const VehicleInformation = props => {
       },
       type: details.key || details.type,
       returnTo: ROUTES.VEHICLE_INFORMATION,
-      useBackgroundUpload: true,
+      useBackgroundUpload: false, // Forces blocking modal for OCR
       returnToParams: {
         ...returnParams,
         isFromRegisteredVehicle: route?.params?.isFromRegisteredVehicle,
@@ -500,15 +485,16 @@ const VehicleInformation = props => {
                   }, [showClearConfirmModal]);
 
                   useEffect(() => {
-                    const { isMileageCapture, isLicensePlateCapture, isVinCapture, capturedImageUri, capturedImageMime, localUri, localUploadId } = route?.params || {};
-                    const mediaUri = localUri || capturedImageUri;
+                    const { isMileageCapture, isLicensePlateCapture, isVinCapture, capturedImageUri, capturedImageMime, capturedImageS3Key } = route?.params || {};
+                    // Since OCR now uses regular blocking uploads, the URL we receive back is the remote S3 URL (capturedImageUri)
+                    // The S3 URL is what the AI endpoints expect.
+                    const mediaUri = capturedImageUri;
 
                     const resetCaptureImageParams = () =>
                       navigation.setParams({
                         capturedImageUri: undefined,
                         capturedImageMime: undefined,
-                        localUri: undefined,
-                        localUploadId: undefined,
+                        capturedImageS3Key: undefined,
                       });
 
                     if (isMileageCapture) {
@@ -527,7 +513,6 @@ const VehicleInformation = props => {
                       OCRsCapturedImagesRef.current.mileage = {
                         uri: mediaUri,
                         extension: capturedImageMime,
-                        localUploadId: localUploadId,
                       };
 
                       setMileageLoading(true);
@@ -570,11 +555,9 @@ const VehicleInformation = props => {
                       OCRsCapturedImagesRef.current.numberPlate = {
                         uri: mediaUri,
                         extension: capturedImageMime,
-                        localUploadId: localUploadId,
                       };
 
                       setIsFetchingVehicleInfo(true);
-                      console.log('MEDIA URI:', mediaUri)
                       extractLicensePlateAI(mediaUri)
                         .then(response => {
                           const { plateNumber = null, status = false } = response?.data || {};
@@ -584,7 +567,6 @@ const VehicleInformation = props => {
                             setFieldError('licensePlateNumber', undefined);
                             fetchVehicleInfo(simpleValue);
                             dispatch({ type: Types.LICENSE_PLATE_NUMBER, payload: simpleValue });
-
                             resetCaptureImageParams();
                           } else {
                             licensePlateNotDetected();
@@ -614,7 +596,6 @@ const VehicleInformation = props => {
                       OCRsCapturedImagesRef.current.vin = {
                         uri: mediaUri,
                         extension: capturedImageMime,
-                        localUploadId: localUploadId,
                       };
 
                       setVinLoading(true);
