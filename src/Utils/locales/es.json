@@ -1,0 +1,571 @@
+{
+  "common": {
+    "signIn": "Iniciar sesión",
+    "email": "Correo electrónico",
+    "submit": "Enviar",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "reset": "Restablecer",
+    "loading": "Cargando...",
+    "home": "Inicio",
+    "yes": "Sí",
+    "no": "No",
+    "licensePlateNo": "Matrícula",
+    "dateCreated": "Fecha de creación",
+    "continue": "Continuar",
+    "retry": "Reintentar",
+    "next": "Siguiente",
+    "comingSoon": "¡Próximamente!",
+    "ok": "Aceptar",
+    "somethingWentWrong": "Algo salió mal. Por favor, inténtelo de nuevo.",
+    "addImage": "Añadir imagen",
+    "captureImage": "Capturar imagen",
+    "captureImageInstruction": "Centre el objetivo en el marco. Manténgalo estable y pulse el botón.",
+    "captureVideo": "Capturar vídeo",
+    "image": "imagen",
+    "cancel": "Cancelar",
+    "required": "Obligatorio",
+    "optional": "Opcional",
+    "message": "Mensaje"
+  },
+  "validation": {
+    "fieldRequired": "Campo obligatorio",
+    "firstNameRequired": "¡Por favor, introduzca su nombre!",
+    "nameMinLength": "El nombre debe tener al menos 2 caracteres",
+    "emailRequired": "¡Por favor, introduzca su correo electrónico!",
+    "emailValid": "Por favor, introduzca un correo electrónico válido",
+    "emailInvalidFormat": "Formato de correo electrónico no válido",
+    "phoneNumberRequired": "Campo obligatorio",
+    "phoneNumberValid": "Por favor, introduzca un número de teléfono válido",
+    "passwordRequired": "¡Por favor, introduzca su contraseña!",
+    "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+    "passwordMinLength8": "La contraseña debe tener al menos 8 caracteres",
+    "passwordMinLength1": "La contraseña debe tener al menos 1 carácter",
+    "verificationCodeRequired": "¡Por favor, introduzca su código!",
+    "verificationCodeMinLength": "El nombre debe tener al menos 6 caracteres",
+    "newPasswordRequired": "¡Por favor, introduzca su nueva contraseña!",
+    "confirmPasswordRequired": "¡Por favor, vuelva a introducir su nueva contraseña!",
+    "passwordsMustMatch": "Las contraseñas deben coincidir",
+    "emailMinLength": "El correo debe tener al menos 2 caracteres",
+    "emailInvalidAddress": "Dirección de correo electrónico no válida"
+  },
+  "welcome": {
+    "title": "Bienvenido a",
+    "subtitle": "Inspecciones virtuales"
+  },
+  "signIn": {
+    "title": "Iniciar sesión",
+    "namePlaceholder": "Juan Pérez",
+    "forgotPassword": "¿Olvidó su contraseña?",
+    "errors": {
+      "loginFailed": "Error al iniciar sesión",
+      "wrongPassword": "Contraseña incorrecta. Por favor, inténtelo de nuevo."
+    }
+  },
+  "forgotPassword": {
+    "title": "¿Olvidó su contraseña?",
+    "subtitle": "Introduzca su correo para restablecer la contraseña",
+    "knowPassword": "¿Recuerda su contraseña?",
+    "loginLink": "Iniciar sesión",
+    "verificationCodeSent": "El código de verificación se ha enviado a su cuenta",
+    "errors": {
+      "emailNotFound": "Correo electrónico no encontrado"
+    }
+  },
+  "resetPassword": {
+    "title": "Restablecer contraseña",
+    "subtitle": "Compruebe su correo para el PIN único e introdúzcalo a continuación",
+    "verificationCodePlaceholder": "Código de verificación",
+    "successMessage": "Su contraseña se ha cambiado correctamente",
+    "errors": {
+      "failedToReset": "Error al restablecer la contraseña"
+    }
+  },
+  "home": {
+    "greeting": "Hola, {{name}}",
+    "subtitle": "Revisemos su vehículo hoy",
+    "stats": {
+      "totalVehicles": "Total\nvehículos",
+      "inProgressInspections": "Inspecciones\nen curso",
+      "submittedInspections": "Inspecciones\nenviadas",
+      "totalInspections": "Total\ninspecciones"
+    },
+    "myRegisteredVehicles": "Mis vehículos registrados",
+    "recentInspections": "Inspecciones recientes",
+    "noRegisteredVehicle": "No hay vehículos registrados",
+    "noRecentInspection": "No hay inspecciones recientes",
+    "inspectionUnderReview": "Esta inspección está siendo revisada."
+  },
+  "inspectionInProgress": {
+    "title": "Inspecciones en curso",
+    "subtitle": "Seleccione una inspección a continuación para continuar. Una vez enviada, la revisaremos y emitiremos el certificado",
+    "discardConfirmation": "¿Está seguro de que desea descartar su inspección?",
+    "noInspection": "No hay inspecciones en curso",
+    "startInspection": "+ Iniciar inspección",
+    "orGoBackTo": "O volver a la",
+    "page": "página"
+  },
+  "inspectionReviewed": {
+    "title": "Inspección revisada",
+    "filter": "Filtrar",
+    "noData": "No hay inspecciones disponibles"
+  },
+  "filter": {
+    "title": "Filtrar",
+    "apply": "Aplicar",
+    "clear": "Limpiar",
+    "noStatuses": "No hay estados disponibles"
+  },
+  "statuses": {
+    "reviewed": "Revisada",
+    "in_review": "En revisión",
+    "ready_for_review": "Lista para revisión",
+    "in_progress": "En curso"
+  },
+  "results": {
+    "pending": "Pendiente",
+    "pass": "Aprobado",
+    "fail": "No aprobado"
+  },
+  "inspectionCard": {
+    "licensePlate": "Matrícula",
+    "dateCreated": "Fecha de creación",
+    "damageDetected": "Daño detectado",
+    "noDamageDetected": "No se detectaron daños",
+    "inspectionDetails": "Detalles de la inspección",
+    "idLabel": "ID",
+    "byLabel": "Por"
+  },
+  "inspectionDetail": {
+    "title": "Detalles de la inspección",
+    "finalStatus": "Estado final",
+    "noRemarks": "Sin observaciones"
+  },
+  "tabs": {
+    "home": "Inicio",
+    "reports": "Informes",
+    "inspection": "Inspección",
+    "myTrips": "Mis viajes",
+    "profile": "Perfil"
+  },
+  "newInspection": {
+    "title": "Nueva inspección",
+    "header": "Complete los elementos de inspección de cada categoría a continuación",
+    "discardItem": "¿Está seguro de que desea eliminar este elemento de inspección?",
+    "interiorItems": "Elementos del interior",
+    "exteriorItems": "Elementos del exterior",
+    "tires": "Neumáticos"
+  },
+  "errors": {
+    "duplicateImage": {
+      "title": "Imagen duplicada detectada",
+      "message": "Ya se subió anteriormente una imagen o vídeo para esta categoría y existe en nuestra base de datos. Actualice la página para ver la imagen subida anteriormente."
+    },
+    "inspectionExpired": {
+      "title": "",
+      "message": "La inspección ha caducado. Por favor, inicie una nueva inspección."
+    },
+    "uploadFailed": {
+      "title": "Error al subir",
+      "message": "Compruebe su conexión a internet e inténtelo de nuevo. Si el problema persiste, reduzca el tamaño del archivo o cambie de red. Contacte con soporte si es necesario. Disculpe las molestias."
+    },
+    "licensePlateInUse": "La matrícula seleccionada está siendo inspeccionada por otro usuario. Por favor, seleccione un vehículo diferente.",
+    "licensePlateMismatch": {
+      "title": "Discrepancia detectada",
+      "message": "Se ha detectado una discrepancia en el número de matrícula. Por favor, vuelva a tomar la foto de la matrícula del vehículo seleccionado"
+    },
+    "darkImageError": {
+      "title": "Problema de calidad de imagen",
+      "message": "La imagen subida parece demasiado oscura. Por favor, intente subir una imagen más clara con mejor iluminación."
+    },
+    "imageAlreadyDeleted": "Esta imagen ya ha sido eliminada.",
+    "genericError": "Se ha producido un error",
+    "alreadyInProgress": "Ya en curso"
+  },
+  "annotateImageDetails": {
+    "title": "Exterior frontal",
+    "description": "Para anotar una imagen del vehículo, puede hacer clic directamente en la zona de interés. Al hacer clic, aparecerá un icono de daño en el punto seleccionado, permitiéndole marcar y resaltar visualmente la ubicación del daño.",
+    "instruction": "¿Desea anotar\n",
+    "annotateText": "Anotar",
+    "skipText": "Omitir"
+  },
+  "annotateImage": {
+    "title": "Exterior frontal",
+    "description": "Para anotar una imagen del frontal del vehículo, puede hacer clic directamente en la zona de interés. Al hacer clic, aparecerá un icono de daño en el punto seleccionado, permitiéndole marcar y resaltar visualmente la ubicación del daño.",
+    "instruction": "¿Desea anotar\n",
+    "annotateText": "Enviar",
+    "cancelText": "Cancelar"
+  },
+  "damageTypes": {
+    "minor": "Menor",
+    "major": "Mayor",
+    "severe": "Grave"
+  },
+  "drawer": {
+    "home": "INICIO",
+    "thingsYouWillRequire": "Cosas que necesitará",
+    "logout": "Cerrar sesión",
+    "dvirc": "DVIRC"
+  },
+  "session": {
+    "expired": {
+      "title": "Sesión expirada",
+      "message": "Su sesión ha expirado. Por favor, inicie sesión de nuevo para continuar.",
+      "button": "Aceptar"
+    }
+  },
+  "appUpdate": {
+    "title": "Actualización de versión",
+    "message": "Hay una nueva versión de la aplicación disponible. Por favor, actualice para seguir utilizándola.",
+    "button": "ACTUALIZAR"
+  },
+  "exitApp": {
+    "title": "¡Espere!",
+    "message": "¿Está seguro de que desea salir de la aplicación?",
+    "button": {
+      "yes": "Sí",
+      "cancel": "Cancelar"
+    }
+  },
+  "delete": {
+    "success": "Eliminado correctamente.",
+    "failed": "Error al eliminar. Por favor, inténtelo de nuevo.",
+    "inspectionDeleted": "¡La inspección ha sido eliminada!"
+  },
+  "dvir": {
+    "checklistTitle": "Elementos de la lista de comprobación",
+    "tires": "Neumáticos",
+    "captureFrames": "Capturar fotogramas",
+    "comments": "Comentarios",
+    "addComments": "Añada sus comentarios aquí",
+    "captureImage": "Capturar imagen",
+    "exteriorFront": "Exterior frontal",
+    "exteriorRear": "Exterior trasero",
+    "interiorFrontTitle": "Interior frontal completo (salpicadero, volante, asiento)",
+    "interiorRearTitle": "Interior trasero (asientos traseros, suelo) / Caja del camión",
+    "frontInterior": "Interior frontal",
+    "rearInterior": "Interior trasero",
+    "tire": "Neumático",
+    "dashBoardView": "Por favor, tome una foto con vista clara del salpicadero",
+    "rearInteriorView": "Por favor, tome una foto con vista clara del interior trasero",
+    "tireView": "Por favor, tome una foto con vista clara del neumático",
+    "maxMediaError": "Puede añadir un máximo de 5 archivos multimedia",
+    "uploadVideo": "Subir vídeo",
+    "uploadImage": "Subir imagen",
+    "uploadingMedia": "Espere mientras se sube {{media}}",
+    "tdrf": "Profundidad del dibujo RF (TDRF)",
+    "tdrr": "Profundidad del dibujo RR (TDRR)",
+    "tdlf": "Profundidad del dibujo LF (TDLF)",
+    "tdlr": "Profundidad del dibujo LR (TDLR)",
+    "tdspare": "Profundidad del dibujo de repuesto (TDSPARE)",
+    "brakeComponents": "Componentes de frenos (foto de tambores/discos/líneas)",
+    "status": {
+      "good": "Bueno",
+      "repair": "Reparar",
+      "replace": "Reemplazar"
+    },
+    "checklist": {
+      "headLights": "Faros / Intermitentes / Luces de emergencia / Luces exteriores / Escobillas",
+      "engineBay": "Compartimento del motor (vista amplia)",
+      "oilDipstick": "Varilla de aceite (foto mostrando nivel y claridad del aceite)",
+      "underBodyLeak": "Comprobación de fugas bajo el vehículo (foto bajo el motor)",
+      "radioNavigation": "Radio / Pantalla de navegación (encendida)",
+      "jackTools": "Gato y herramientas (gato, llave, kit de herramientas)",
+      "tailLights": "Luces traseras / Intermitentes / Luces de freno / Luces de emergencia / Luces exteriores"
+    }
+  },
+  "vehicleInfo": {
+    "title": "Información del vehículo",
+    "subtitle": "Proporcione la información del vehículo a continuación para comenzar su inspección. Todos los campos son obligatorios para garantizar el cumplimiento.",
+    "licensePlateLabel": "ID del camión / Matrícula",
+    "licensePlatePlaceholder": "Introduzca ID del camión / Matrícula",
+    "mileageLabel": "Kilometraje",
+    "mileagePlaceholder": "Introduzca el kilometraje",
+    "vinLabel": "VIN",
+    "vinPlaceholder": "Introduzca el VIN",
+    "driverNameLabel": "Nombre del conductor",
+    "dateLabel": "Fecha",
+    "vehicleTypeLabel": "Tipo de vehículo",
+    "inspectionTypeLabel": "Tipo de inspección",
+    "inspectionTypePlaceholder": "Tipo de inspección",
+    "clearAll": "Borrar todo",
+    "next": "Siguiente",
+    "startInspection": "¿Desea iniciar la inspección de este vehículo?",
+    "Info": "Información",
+    "confirmClear": "¿Desea borrar los datos del vehículo?",
+    "errors": {
+      "licensePlateUndetected": "Lectura no detectada. Por favor, introduzca la matrícula manualmente",
+      "licensePlateRequired": "El número de matrícula es obligatorio",
+      "mileageUndetected": "Lectura no detectada. Por favor, introduzca el kilometraje manualmente",
+      "mileageRequired": "El kilometraje es obligatorio",
+      "mileagePositive": "El kilometraje debe ser un número positivo",
+      "vinUndetected": "Lectura no detectada. Por favor, introduzca el VIN manualmente",
+      "vinRequired": "El VIN es obligatorio",
+      "vinLength": "El VIN debe tener 17 caracteres",
+      "inspectionTypeRequired": "El tipo de inspección es obligatorio",
+      "vehicleTypeRequired": "Por favor, seleccione un tipo de vehículo",
+      "driverNameRequired": "El nombre del conductor es obligatorio",
+      "dateRequired": "La fecha es obligatoria"
+    },
+    "vehicleTypes": {
+      "van": "FURGONETA",
+      "truck": "CAMIÓN",
+      "sedan": "TURISMO",
+      "other": "OTRO"
+    },
+    "inspectionTypes": {
+      "regular": "Regular",
+      "dvir": "DVIR"
+    },
+    "camera": {
+      "takePhotoVin": "Por favor, tome una foto\n del VIN",
+      "waitVinUpload": "Espere mientras se sube el VIN"
+    }
+  },
+  "vehicleTypeModal": {
+    "title": "Seleccionar tipo de vehículo",
+    "description": "Por favor, elija el tipo de vehículo para esta inspección."
+  },
+  "profile": {
+    "title": "Perfil de usuario",
+    "firstNameLabel": "Nombre",
+    "firstNamePlaceholder": "Introduzca el nombre",
+    "lastNameLabel": "Apellidos",
+    "lastNamePlaceholder": "Introduzca los apellidos",
+    "emailLabel": "Correo electrónico",
+    "emailPlaceholder": "Introduzca el correo electrónico",
+    "phoneLabel": "Teléfono",
+    "phonePlaceholder": "Introduzca el teléfono",
+    "languageLabel": "Idioma",
+    "languagePlaceholder": "Seleccionar idioma",
+    "updateProfileButton": "Actualizar perfil",
+    "profileUpdatedToast": "Perfil actualizado",
+    "languageChangedToast": "Idioma cambiado correctamente",
+    "errors": {
+      "firstNameRequired": "El nombre es obligatorio",
+      "lastNameRequired": "Los apellidos son obligatorios",
+      "emailRequired": "El correo electrónico es obligatorio",
+      "invalidEmail": "Formato de correo electrónico no válido",
+      "phoneRequired": "El número de teléfono es obligatorio",
+      "phoneDigits": "El número de teléfono debe tener entre 10 y 15 dígitos"
+    }
+  },
+  "languages": {
+    "en": "Inglés",
+    "ro": "Rumano",
+    "pl": "Polaco",
+    "bg": "Búlgaro",
+    "tr": "Turco",
+    "es": "Español"
+  },
+  "annotation": {
+    "title": "Exterior frontal",
+    "description": "Para anotar una imagen del vehículo, puede hacer clic directamente en la zona de interés. Al hacer clic, aparecerá un icono de daño en el punto seleccionado, permitiéndole marcar y resaltar visualmente la ubicación del daño.",
+    "instruction": "¿Desea anotar\n",
+    "annotate": "Anotar",
+    "skip": "Omitir",
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "severityLevel": "Identificar nivel de gravedad del daño",
+    "addNotes": "Añadir notas",
+    "notesPlaceholder": "Añada sus notas aquí",
+    "damageType": {
+      "minor": "Menor",
+      "major": "Mayor",
+      "severe": "Grave"
+    },
+    "alertMessage": "Por favor, resalte el daño y seleccione un nivel de gravedad para continuar. Ambos son obligatorios.",
+    "uploading": "Subiendo",
+    "finalizingUpload": "Finalizando subida",
+    "imageQuestion": "¿imagen?"
+  },
+  "interiorItems": {
+    "captureImage": "Capturar imagen",
+    "captureNow": "Capturar ahora",
+    "driverSide": {
+      "title": "Interior lado del conductor",
+      "instruction": "Por favor, tome una foto del interior del vehículo con la puerta izquierda del conductor abierta, con vista clara de los siguientes elementos:",
+      "details": {
+        "seatBelt": "Cinturón del asiento del conductor abrochado",
+        "rearview": "Espejo retrovisor interior",
+        "brakePads": "Pastillas de freno"
+      }
+    },
+    "passengerSide": {
+      "title": "Interior lado del pasajero",
+      "instruction": "Por favor, tome una foto del interior del vehículo con la puerta derecha del pasajero abierta, con vista clara de los siguientes elementos del interior:",
+      "details": {
+        "seatBelt": "Cinturón del asiento del pasajero abrochado"
+      }
+    }
+  },
+  "carVerification": {
+    "licensePlate": {
+      "title": "Matrícula",
+      "instruction": "Por favor, tome una foto de la matrícula del vehículo",
+      "captureNow": "Capturar ahora"
+    },
+    "odometer": {
+      "title": "Cuentakilómetros",
+      "instruction": "Por favor, tome una foto del cuentakilómetros mostrando claramente el kilometraje del vehículo",
+      "captureNow": "Capturar ahora"
+    },
+    "vin": {
+      "title": "VIN",
+      "instruction": "Espere mientras se sube el VIN",
+      "captureNow": "Capturar ahora"
+    },
+    "uploadImage": "Subir imagen"
+  },
+  "collapsedCard": {
+    "uploadInstructions": "Para cada subcategoría suba hasta 3 imágenes\n(1 obligatoria, 2 opcionales)"
+  },
+  "exteriorItems": {
+    "captureImage": "Capturar imagen",
+    "captureNow": "Capturar ahora",
+    "front": {
+      "title": "Exterior frontal",
+      "instruction": "Por favor, suba una foto que muestre claramente el frontal del vehículo"
+    },
+    "rear": {
+      "title": "Exterior trasero",
+      "instruction": "Por favor, suba una foto que muestre claramente la parte trasera del vehículo"
+    },
+    "left": {
+      "title": "Exterior izquierdo",
+      "instruction": "Por favor, tome una foto que capture claramente todo el lateral izquierdo exterior del vehículo"
+    },
+    "right": {
+      "title": "Exterior derecho",
+      "instruction": "Por favor, tome una foto que capture claramente todo el lateral derecho exterior del vehículo"
+    },
+    "frontLeftCorner": {
+      "title": "Esquina frontal izquierda",
+      "instruction": "Por favor, tome una foto desde la esquina frontal izquierda del vehículo capturando claramente el faro izquierdo, la puerta del conductor y el techo del lateral izquierdo exterior"
+    },
+    "frontRightCorner": {
+      "title": "Esquina frontal derecha",
+      "instruction": "Por favor, tome una foto desde la esquina frontal derecha del vehículo capturando claramente el faro derecho, la puerta del pasajero y el techo del lateral derecho exterior"
+    },
+    "rearLeftCorner": {
+      "title": "Esquina trasera izquierda",
+      "instruction": "Por favor, tome una foto desde la esquina trasera izquierda del vehículo capturando claramente la luz trasera izquierda, la puerta trasera y el techo del lateral izquierdo exterior"
+    },
+    "rearRightCorner": {
+      "title": "Esquina trasera derecha",
+      "instruction": "Por favor, tome una foto desde la esquina trasera derecha del vehículo capturando claramente la luz trasera derecha, la puerta trasera y el techo del lateral derecho exterior"
+    },
+    "insideCargoRoof": {
+      "title": "Techo interior de carga",
+      "instruction": "Por favor, suba una foto que muestre claramente el techo interior de carga del vehículo"
+    }
+  },
+  "tiresItems": {
+    "captureImage": "Capturar imagen",
+    "captureNow": "Capturar ahora",
+    "instruction": "Por favor, coloque una moneda en el dibujo del neumático y tome una foto capturando los siguientes elementos:",
+    "subHeading": "Coloque las cabezas de Lincoln en la moneda boca abajo y mirando a la cámara",
+    "leftFront": "Neumático delantero izquierdo",
+    "leftRear": "Neumático trasero izquierdo",
+    "rightFront": "Neumático delantero derecho",
+    "rightRear": "Neumático trasero derecho"
+  },
+  "commentBox": {
+    "title": "Añadir un comentario",
+    "description": "Por favor, proporcione sus comentarios o sugerencias a continuación",
+    "placeHolder": "Escriba su comentario o sugerencia aquí"
+  },
+  "commentButton": {
+    "text": "+ Añadir comentario",
+    "optional": "(Opcional)"
+  },
+  "confirmVehicleDetail": {
+    "title": "Detalles del vehículo",
+    "description": "El sistema no pudo detectar el número de matrícula. Por favor, escriba el número de matrícula a continuación:",
+    "buttonText": "Confirmar",
+    "placeHolder": "Introduzca el número de matrícula"
+  },
+  "expiryInspection": {
+    "description": "La inspección ha caducado. Por favor, inicie una nueva inspección.",
+    "confirmButton": "Nueva inspección",
+    "cancelButton": "Salir"
+  },
+  "mileageInput": {
+    "title": "Introducir kilometraje",
+    "description": "El sistema no pudo detectar el kilometraje. Por favor, escriba el kilometraje a continuación:",
+    "placeHolder": "Introduzca el kilometraje",
+    "errors": {
+      "lessThanPrevious": "La lectura actual no puede ser menor que la lectura anterior"
+    }
+  },
+  "categories": {
+    "exterior_front": "Exterior frontal",
+    "exterior_rear": "Exterior trasero",
+    "exterior_left": "Exterior izquierdo",
+    "exterior_right": "Exterior derecho",
+    "front_left_corner": "Esquina frontal izquierda",
+    "front_right_corner": "Esquina frontal derecha",
+    "rear_left_corner": "Esquina trasera izquierda",
+    "rear_right_corner": "Esquina trasera derecha",
+    "inside_cargo_roof": "Techo interior de carga",
+    "interior_driver_side": "Interior lado del conductor",
+    "interior_passenger_side": "Interior lado del pasajero",
+    "license_plate_number": "Número de matrícula",
+    "odometer": "Cuentakilómetros",
+    "left_front_tire": "Neumático delantero izquierdo",
+    "left_rear_tire": "Neumático trasero izquierdo",
+    "right_front_tire": "Neumático delantero derecho",
+    "right_rear_tire": "Neumático trasero derecho",
+    "front_interior": "Interior frontal",
+    "rear_interior": "Interior trasero",
+    "tire": "Neumático",
+    "tdrf": "Profundidad del dibujo RF (TDRF)",
+    "tdrr": "Profundidad del dibujo RR (TDRR)",
+    "tdlf": "Profundidad del dibujo LF (TDLF)",
+    "tdlr": "Profundidad del dibujo LR (TDLR)",
+    "tdspare": "Profundidad del dibujo de repuesto (TDSPARE)",
+    "brake_components": "Componentes de frenos"
+  },
+  "completedInspection": {
+    "thankYou": "Gracias por usar",
+    "message": "Ya puede salir de la aplicación. Nuestros representantes se pondrán en contacto con usted si necesitamos más ayuda",
+    "homeButton": "Inicio"
+  },
+  "inspectionTitles": {
+    "license_plate_number": "Número de matrícula",
+    "odometer": "Cuentakilómetros",
+    "exterior_front": "Exterior frontal",
+    "exterior_front_1": "Exterior frontal - 1",
+    "exterior_front_2": "Exterior frontal - 2",
+    "exterior_rear": "Exterior trasero",
+    "exterior_rear_1": "Exterior trasero - 1",
+    "exterior_rear_2": "Exterior trasero - 2",
+    "exterior_left": "Exterior izquierdo",
+    "exterior_left_1": "Exterior izquierdo - 1",
+    "exterior_left_2": "Exterior izquierdo - 2",
+    "exterior_right": "Exterior derecho",
+    "exterior_right_1": "Exterior derecho - 1",
+    "exterior_right_2": "Exterior derecho - 2",
+    "front_left_corner": "Esquina frontal izquierda",
+    "front_left_corner_1": "Esquina frontal izquierda - 1",
+    "front_left_corner_2": "Esquina frontal izquierda - 2",
+    "front_right_corner": "Esquina frontal derecha",
+    "front_right_corner_1": "Esquina frontal derecha - 1",
+    "front_right_corner_2": "Esquina frontal derecha - 2",
+    "rear_left_corner": "Esquina trasera izquierda",
+    "rear_left_corner_1": "Esquina trasera izquierda - 1",
+    "rear_left_corner_2": "Esquina trasera izquierda - 2",
+    "rear_right_corner": "Esquina trasera derecha",
+    "rear_right_corner_1": "Esquina trasera derecha - 1",
+    "rear_right_corner_2": "Esquina trasera derecha - 2",
+    "inside_cargo_roof": "Techo interior de carga",
+    "inside_cargo_roof_1": "Techo interior de carga - 1",
+    "inside_cargo_roof_2": "Techo interior de carga - 2",
+    "left_front_tire": "Neumático delantero izquierdo",
+    "left_rear_tire": "Neumático trasero izquierdo",
+    "right_front_tire": "Neumático delantero derecho",
+    "right_rear_tire": "Neumático trasero derecho",
+    "interior_passenger_side": "Interior lado del pasajero",
+    "interior_driver_side": "Interior lado del conductor"
+  }
+}

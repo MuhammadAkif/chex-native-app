@@ -11,6 +11,7 @@ const resources = {
   pl: { translation: require('./locales/pl.json') },
   bg: { translation: require('./locales/bg.json') },
   tr: { translation: require('./locales/tr.json') },
+  es: { translation: require('./locales/es.json') },
 };
 
 // Initialize i18n synchronously with default language

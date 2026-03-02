@@ -53,6 +53,7 @@ const LANGUAGES = [
   { code: 'pl', name: 'Polish' },
   { code: 'bg', name: 'Bulgarian' },
   { code: 'tr', name: 'Turkish' },
+  // { code: 'es',  name: 'Spanish'},
 ];
 
 const MyProfile = ({ navigation }) => {
