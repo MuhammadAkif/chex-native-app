@@ -174,7 +174,6 @@ const CameraContainer = ({ route, navigation }) => {
 
       if (inspectionScreen) {
         const cropped = await autoResizeAndCrop(photo);
-        console.log('cropped', cropped);
 
         setIsImageFile(cropped);
         dispatch(setImageDimensions(cropped));

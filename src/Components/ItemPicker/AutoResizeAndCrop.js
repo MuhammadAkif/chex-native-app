@@ -1,27 +1,76 @@
 import ImageEditor from '@react-native-community/image-editor';
-import { Platform } from 'react-native';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import {Platform} from 'react-native';
+import {heightPercentageToDP as hp, widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import ImageResizer from '@bam.tech/react-native-image-resizer';
 
-const autoCropToPreview = async (photo) => {
+const PREVIEW_ASPECT = wp('100%') / hp('25%');
+const NORMALIZE_MAX = 4096;
+
+const normalizeForIOS = async (path, rawW, rawH) => {
+  const maxDim = Math.max(rawW, rawH, NORMALIZE_MAX);
+  const result = await ImageResizer.createResizedImage(
+    path.startsWith('file://') ? path : `file://${path}`,
+    maxDim,
+    maxDim,
+    'JPEG',
+    100,
+    0,
+    undefined,
+    false,
+    {mode: 'contain', onlyScaleDown: true}
+  );
+  return result.path ?? result.uri?.replace?.(/^file:\/\//, '') ?? result.uri;
+};
+
+const cropWithImageResizer = async (path, targetWidth, targetHeight) => {
+  const uri = path.startsWith('file://') ? path : `file://${path}`;
+  const result = await ImageResizer.createResizedImage(uri, targetWidth, targetHeight, 'JPEG', 100, 0, undefined, false, {
+    mode: 'cover',
+    onlyScaleDown: true,
+  });
+  return {
+    uri: result.uri,
+    path: result.path ?? result.uri?.replace?.(/^file:\/\//, '') ?? result.uri,
+    width: result.width,
+    height: result.height,
+  };
+};
+
+const autoCropToPreview = async photo => {
   try {
-    const { width: rawW, height: rawH, path, orientation } = photo;
+    const {width: rawW, height: rawH, path, orientation} = photo;
 
-    const sourceUri =
-      Platform.OS === 'android' ? `file://${path}` : path;
+    if (Platform.OS === 'ios') {
+      // Step 1: Normalize (bake EXIF into pixels) - avoids wrong dimensions from orientation
+      const normalizedPath = await normalizeForIOS(path, rawW, rawH);
 
-    const previewW = wp('100%');
-    const previewH = hp('25%');
-    const previewAspect = previewW / previewH;
+      // Step 2: Use ImageResizer 'cover' - bypasses ImageEditor's iOS white-space issues.
+      // Target dimensions: preserve quality, match preview aspect ratio exactly.
+      const maxDim = Math.max(rawW, rawH);
+      const targetWidth = Math.round(maxDim);
+      const targetHeight = Math.round(maxDim / PREVIEW_ASPECT);
 
-    const isPortrait =
-      orientation === 'portrait' ||
-      orientation === 'portrait-upside-down' ||
-      (!orientation && rawW > rawH);
+      const result = await cropWithImageResizer(normalizedPath, targetWidth, targetHeight);
 
-    // Some Android devices return pre-rotated dimensions (e.g. 720x1280) while others 
-    // return raw sensor dimensions (e.g. 1280x720). Safely determine exact visual width/height:
+      const resolvedUri = result.uri?.startsWith('file://') ? result.uri : `file://${result.path}`;
+      const resolvedPath = result.path ?? result.uri?.replace?.(/^file:\/\//, '') ?? result.uri;
+
+      return {
+        uri: resolvedUri,
+        path: resolvedPath,
+        width: result.width,
+        height: result.height,
+      };
+    }
+
+    // Android: use ImageEditor (works correctly)
+    const sourceUri = `file://${path}`;
+
+    const isPortrait = orientation === 'portrait' || orientation === 'portrait-upside-down' || (!orientation && rawW > rawH);
     const imgW = isPortrait ? Math.min(rawW, rawH) : Math.max(rawW, rawH);
     const imgH = isPortrait ? Math.max(rawW, rawH) : Math.min(rawW, rawH);
+
+    const previewAspect = PREVIEW_ASPECT;
     const imgAspect = imgW / imgH;
 
     let cropX = 0;
@@ -33,7 +82,6 @@ const autoCropToPreview = async (photo) => {
       cropW = Math.round(imgH * previewAspect);
       cropX = Math.round((imgW - cropW) / 2);
     } else {
-      // Image taller than preview → crop top & bottom
       cropH = Math.round(imgW / previewAspect);
       cropY = Math.round((imgH - cropH) / 2);
     }
@@ -42,17 +90,14 @@ const autoCropToPreview = async (photo) => {
     cropH = Math.min(cropH, imgH - cropY);
 
     const cropData = {
-      offset: { x: cropX, y: cropY },
-      size: { width: cropW, height: cropH },
+      offset: {x: cropX, y: cropY},
+      size: {width: cropW, height: cropH},
     };
 
     const croppedUri = await ImageEditor.cropImage(sourceUri, cropData);
 
-    const resolvedUri =
-      typeof croppedUri === 'string' ? croppedUri : croppedUri?.uri;
-    const resolvedPath = resolvedUri?.startsWith('file://')
-      ? resolvedUri.replace('file://', '')
-      : resolvedUri;
+    const resolvedUri = typeof croppedUri === 'string' ? croppedUri : croppedUri?.uri;
+    const resolvedPath = resolvedUri?.startsWith('file://') ? resolvedUri.replace('file://', '') : resolvedUri;
 
     return {
       uri: resolvedUri,

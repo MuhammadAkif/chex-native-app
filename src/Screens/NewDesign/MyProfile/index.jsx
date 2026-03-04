@@ -53,7 +53,7 @@ const LANGUAGES = [
   { code: 'pl', name: 'Polish' },
   { code: 'bg', name: 'Bulgarian' },
   { code: 'tr', name: 'Turkish' },
-  // { code: 'es',  name: 'Spanish'},
+  { code: 'es',  name: 'Spanish'},
 ];
 
 const MyProfile = ({ navigation }) => {
@@ -87,7 +87,7 @@ const MyProfile = ({ navigation }) => {
 
   const handleSubmitForm = (values, { setSubmitting, resetForm }) => {
     setSubmitting(false);
-    Keyboard.dismiss()
+    Keyboard.dismiss();
 
     updateProfileAPI(values);
   };
