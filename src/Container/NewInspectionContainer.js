@@ -113,6 +113,11 @@ const NewInspectionContainer = ({ route, navigation }) => {
     imageDimensions,
   } = useSelector(state => state.newInspection) || {};
   const { user } = useSelector(state => state?.auth) || {};
+  const { inspectionFrequency } = useSelector(state => state.newInspection) || {};
+  const interiorItemsConfig = inspectionFrequency?.filter(item => item?.groupType === 'interiorItems') ?? [];
+  const exteriorItemsConfig = inspectionFrequency?.filter(item => item?.groupType === 'exteriorItems') ?? [];
+  const tiresItemsConfig = inspectionFrequency?.filter(item => item?.groupType === 'tires') ?? [];
+
   const isScreenFocused = useIsFocused();
   const { companyId } = user?.data || {};
   const [modalVisible, setModalVisible] = useState(false);
@@ -710,6 +715,9 @@ const NewInspectionContainer = ({ route, navigation }) => {
       displayInstructions={vehicle_Type === 'new'}
       imageDimensions={imageDimensions}
       companyId={companyId}
+      interiorItemsConfig={interiorItemsConfig}
+      exteriorItemsConfig={exteriorItemsConfig}
+      tiresItemsConfig={tiresItemsConfig}
     />
   );
 };

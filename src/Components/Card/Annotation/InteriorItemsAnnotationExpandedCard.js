@@ -19,40 +19,50 @@ const InteriorItemsAnnotationExpandedCard = ({
   isLoading,
   handleMediaModalDetailsPress,
   pickerText,
+  interiorItemsConfig = [],
 }) => {
+  const hasInteriorConfig = interiorItemsConfig.length > 0;
+  const hasDriverSide = !hasInteriorConfig || interiorItemsConfig.some(item => item?.categoryName === 'interior_driver_side');
+  const hasPassengerSide = !hasInteriorConfig || interiorItemsConfig.some(item => item?.categoryName === 'interior_passenger_side');
+
   const { t } = useTranslation();
   const defaultPickerText = pickerText || t('common.captureImage');
   return (
     <View style={containerStyle}>
-      <ImagesPickerContainer
-        ExteriorDetails={InteriorDriverSide}
-        pickerText={defaultPickerText}
-        imageURL={interiorItems?.driverSide}
-        imageURLOne={interiorItems?.driverSide_1}
-        imageURLTwo={interiorItems?.driverSide_2}
-        imageURL_ID={interiorItems?.driverSideID}
-        imageURLOne_ID={interiorItems?.driverSide_1ID}
-        imageURLTwo_ID={interiorItems?.driverSide_2ID}
-        isLoading={isLoading}
-        handleItemPickerPress={handleItemPickerPress}
-        handleCrossPress={handleCrossPress}
-        handleMediaModalDetailsPress={handleMediaModalDetailsPress}
-      />
-      <ImagesPickerContainer
-        ExteriorDetails={InteriorPassengerSide}
-        pickerText={defaultPickerText}
-        imageURL={interiorItems?.passengerSide}
-        imageURLOne={interiorItems?.passengerSide_1}
-        imageURLTwo={interiorItems?.passengerSide_2}
-        imageURL_ID={interiorItems?.passengerSideID}
-        imageURLOne_ID={interiorItems?.passengerSide_1ID}
-        imageURLTwo_ID={interiorItems?.passengerSide_2ID}
-        isLoading={isLoading}
-        handleItemPickerPress={handleItemPickerPress}
-        handleCrossPress={handleCrossPress}
-        handleMediaModalDetailsPress={handleMediaModalDetailsPress}
-        borderBottomWidth={0}
-      />
+      {hasDriverSide && (
+        <ImagesPickerContainer
+          ExteriorDetails={InteriorDriverSide}
+          pickerText={defaultPickerText}
+          imageURL={interiorItems?.driverSide}
+          imageURLOne={interiorItems?.driverSide_1}
+          imageURLTwo={interiorItems?.driverSide_2}
+          imageURL_ID={interiorItems?.driverSideID}
+          imageURLOne_ID={interiorItems?.driverSide_1ID}
+          imageURLTwo_ID={interiorItems?.driverSide_2ID}
+          isLoading={isLoading}
+          handleItemPickerPress={handleItemPickerPress}
+          handleCrossPress={handleCrossPress}
+          handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+          borderBottomWidth={hasPassengerSide ? 1 : 0}
+        />
+      )}
+      {hasPassengerSide && (
+        <ImagesPickerContainer
+          ExteriorDetails={InteriorPassengerSide}
+          pickerText={defaultPickerText}
+          imageURL={interiorItems?.passengerSide}
+          imageURLOne={interiorItems?.passengerSide_1}
+          imageURLTwo={interiorItems?.passengerSide_2}
+          imageURL_ID={interiorItems?.passengerSideID}
+          imageURLOne_ID={interiorItems?.passengerSide_1ID}
+          imageURLTwo_ID={interiorItems?.passengerSide_2ID}
+          isLoading={isLoading}
+          handleItemPickerPress={handleItemPickerPress}
+          handleCrossPress={handleCrossPress}
+          handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+          borderBottomWidth={0}
+        />
+      )}
     </View>
   );
 };

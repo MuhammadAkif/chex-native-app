@@ -31,6 +31,7 @@ const {
   SET_IMAGE_DIMENSIONS,
   SET_VEHICLE_TYPE_MODAL_VISIBLE,
   SET_SELECTED_VEHICLE_KIND,
+  SET_INSPECTION_FREQUENCY,
 } = Types;
 
 const itemsImagePayload = (item = '', group = '', uri = '', id = 0) => {
@@ -196,4 +197,8 @@ export const setVehicleTypeModalVisible = (visible = false) => ({
 export const setSelectedVehicleKind = kind => ({
   type: SET_SELECTED_VEHICLE_KIND,
   payload: kind,
+});
+export const setInspectionFrequency = frequency => ({
+  type: SET_INSPECTION_FREQUENCY,
+  payload: frequency,
 });

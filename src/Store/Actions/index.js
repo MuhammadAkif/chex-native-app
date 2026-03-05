@@ -37,6 +37,7 @@ import {
   skipRightCorners,
   updateIsLicensePlateUploaded,
   updateVehicleImage,
+  setInspectionFrequency,
 } from './NewInspectionAction';
 import {hideToast, setLoading, showToast} from './UIActions';
 
@@ -80,4 +81,5 @@ export {
   skipRightCorners,
   updateIsLicensePlateUploaded,
   updateVehicleImage,
+  setInspectionFrequency,
 };

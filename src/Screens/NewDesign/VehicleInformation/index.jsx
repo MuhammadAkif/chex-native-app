@@ -23,7 +23,7 @@ import {
 import useDebounce from '../../../hooks/useDebounce';
 import { ROUTES, TABS } from '../../../Navigation/ROUTES';
 import { useDispatch, useSelector } from 'react-redux';
-import { numberPlateSelected, setCompanyId, setMileage, setSelectedVehicleKind, setVehicleType, showToast } from '../../../Store/Actions';
+import { numberPlateSelected, setCompanyId, setMileage, setSelectedVehicleKind, setVehicleType, showToast,setInspectionFrequency } from '../../../Store/Actions';
 import { LicensePlateDetails, OdometerDetails, VinDetails } from '../../../Utils';
 import { useRoute } from '@react-navigation/native';
 import dayjs from 'dayjs';
@@ -76,6 +76,93 @@ const VehicleTypes = [
 
 const currentDate = new Date().toISOString();
 const OCRsCapturedImagesInitialState = { mileage: { uri: '', extension: '' }, numberPlate: { uri: '', extension: '' }, vin: { uri: '', extension: '' } };
+
+const configs =  [
+          {
+              "categoryId": 60,
+              "categoryName": "front_right_corner",
+              "groupType": "exteriorItems",
+              "companyConfigId": 19064
+          },
+          {
+              "categoryId": 61,
+              "categoryName": "rear_left_corner",
+              "groupType": "exteriorItems",
+              "companyConfigId": 19065
+          },
+          {
+              "categoryId": 62,
+              "categoryName": "exterior_rear",
+              "groupType": "exteriorItems",
+              "companyConfigId": 19066
+          },
+          {
+              "categoryId": 63,
+              "categoryName": "exterior_front",
+              "groupType": "exteriorItems",
+              "companyConfigId": 19067
+          },
+          {
+              "categoryId": 64,
+              "categoryName": "rear_interior",
+              "groupType": "interiorItems",
+              "companyConfigId": 19068
+          },
+          {
+              "categoryId": 65,
+              "categoryName": "front_interior",
+              "groupType": "interiorItems",
+              "companyConfigId": 19069
+          },
+          {
+              "categoryId": 66,
+              "categoryName": "exterior_left",
+              "groupType": "exteriorItems",
+              "companyConfigId": 19070
+          },
+          {
+              "categoryId": 67,
+              "categoryName": "exterior_right",
+              "groupType": "exteriorItems",
+              "companyConfigId": 19071
+          },
+          {
+              "categoryId": 68,
+              "categoryName": "brake_components",
+              "groupType": "tires",
+              "companyConfigId": 19072
+          },
+          {
+              "categoryId": 69,
+              "categoryName": "tdspare",
+              "groupType": "tires",
+              "companyConfigId": 19073
+          },
+          {
+              "categoryId": 70,
+              "categoryName": "tdrr",
+              "groupType": "tires",
+              "companyConfigId": 19074
+          },
+          {
+              "categoryId": 71,
+              "categoryName": "tdlr",
+              "groupType": "tires",
+              "companyConfigId": 19075
+          },
+          {
+              "categoryId": 72,
+              "categoryName": "tdrf",
+              "groupType": "tires",
+              "companyConfigId": 19076
+          },
+          {
+              "categoryId": 73,
+              "categoryName": "tdlf",
+              "groupType": "tires",
+              "companyConfigId": 19077
+          }
+      ]
 
 const VehicleInformation = props => {
   const { t } = useTranslation();
@@ -227,7 +314,12 @@ const VehicleInformation = props => {
 
     const data = {
       ...values,
-      ...(vehicleType === VEHICLE_TYPES.TRUCK && hasInspectionType && { hasCheckList: values.inspectionType === 'DVIR' }),
+      ...(vehicleType === VEHICLE_TYPES.TRUCK &&
+        hasInspectionType && {
+          hasCheckList: values.inspectionType === 'DVIR',
+          vehicleType:
+            values.inspectionType === 'DVIR' ? 'dvir-truck' : values.inspectionType === 'Regular' ? 'regular-truck' : values.vehicleType,
+        }),
       files: [
         {
           url: numberPlate?.uri,
@@ -261,6 +353,8 @@ const VehicleInformation = props => {
         dispatch(setVehicleType(response?.data?.hasAdded || 'existing'));
         dispatch(setSelectedVehicleKind(vehicleType));
         dispatch(numberPlateSelected(response?.data?.id));
+        debugger;
+        dispatch(setInspectionFrequency(response?.data?.configs));
 
         // RESET STATES
         resetIsFromRegisteredVehicleStates();

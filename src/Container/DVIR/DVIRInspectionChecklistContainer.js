@@ -155,8 +155,41 @@ const getInitialTireInspectionData = () => [
   },
 ];
 
+/**
+ * Returns capture frames filtered by inspectionFrequency.
+ * When inspectionFrequency is empty, returns full default frames.
+ * Only sections/frames whose frame.id exists in exteriorItems or interiorItems categoryName are included.
+ */
+const getFilteredCaptureFramesByInspectionFrequency = (inspectionFrequency, defaultFrames) => {
+  if (!inspectionFrequency?.length) return defaultFrames;
+  const exteriorIds = inspectionFrequency.filter(i => i?.groupType === 'exteriorItems').map(i => i.categoryName);
+  const interiorIds = inspectionFrequency.filter(i => i?.groupType === 'interiorItems').map(i => i.categoryName);
+  const allowedFrameIds = new Set([...exteriorIds, ...interiorIds]);
+  return defaultFrames
+    .map(section => ({
+      ...section,
+      frames: section.frames.filter(f => allowedFrameIds.has(f.id)),
+    }))
+    .filter(section => section.frames.length > 0);
+};
+
+/**
+ * Returns tire inspection data filtered by inspectionFrequency.
+ * When inspectionFrequency is empty, returns full default tires.
+ * Only tires whose id exists in tires group categoryName are included.
+ */
+const getFilteredTireDataByInspectionFrequency = (inspectionFrequency, defaultTires) => {
+  if (!inspectionFrequency?.length) return defaultTires;
+  const allowedTireIds = new Set(
+    inspectionFrequency.filter(i => i?.groupType === 'tires').map(i => i.categoryName)
+  );
+  return defaultTires.filter(t => allowedTireIds.has(t.id));
+};
+
 const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
   const { selectedInspectionID } = useSelector(state => state.newInspection);
+  const { inspectionFrequency } = useSelector(state => state.newInspection) || {};
+  console.log(inspectionFrequency,'inspectionFrequency');
   const { t } = useTranslation();
   // State for checklist items
   const [commentModalVisible, setAddCommentModalVisible] = useState(false);
@@ -170,6 +203,51 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
   const [captureFrames, setCaptureFrames] = useState(getInitialCaptureFrames());
 
   const [tireInspectionData, setTireInspectionData] = useState(getInitialTireInspectionData());
+
+  // Stable key for inspectionFrequency so effect only runs when configured categories actually change
+  const inspectionFrequencyKey = useMemo(
+    () =>
+      inspectionFrequency?.length
+        ? inspectionFrequency
+            .map(i => `${i.groupType}:${i.categoryName}`)
+            .sort()
+            .join(',')
+        : '',
+    [inspectionFrequency]
+  );
+
+  // Sync captureFrames and tireInspectionData with inspectionFrequency: only show frames/tires that exist in config.
+  // When inspectionFrequency is empty, show full default. Preserve existing images when applying filter.
+  useEffect(() => {
+    const defaultFrames = getInitialCaptureFrames();
+    const defaultTires = getInitialTireInspectionData();
+    const filteredFrames = getFilteredCaptureFramesByInspectionFrequency(inspectionFrequency, defaultFrames);
+    const filteredTires = getFilteredTireDataByInspectionFrequency(inspectionFrequency, defaultTires);
+
+    setCaptureFrames(prev => {
+      const prevSignature = prev.map(s => `${s.id}:${s.frames.map(f => f.id).join(',')}`).join('|');
+      const newSignature = filteredFrames.map(s => `${s.id}:${s.frames.map(f => f.id).join(',')}`).join('|');
+      if (prevSignature === newSignature) return prev;
+      return filteredFrames.map(section => ({
+        ...section,
+        frames: section.frames.map(frame => {
+          const prevSection = prev.find(s => s.id === section.id);
+          const prevFrame = prevSection?.frames?.find(f => f.id === frame.id);
+          return prevFrame ? { ...frame, image: prevFrame.image, fileId: prevFrame.fileId } : frame;
+        }),
+      }));
+    });
+
+    setTireInspectionData(prev => {
+      const filteredIds = filteredTires.map(t => t.id).join(',');
+      const prevIds = prev.map(t => t.id).join(',');
+      if (filteredIds === prevIds) return prev;
+      return filteredTires.map(tire => {
+        const prevTire = prev.find(p => p.id === tire.id);
+        return prevTire ? { ...tire, image: prevTire.image, fileId: prevTire.fileId } : tire;
+      });
+    });
+  }, [inspectionFrequencyKey]);
 
   // Section toggle state
   const [showChecklistSection, setShowChecklistSection] = useState(false);
@@ -467,6 +545,8 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
   };
 
   const resetState = useCallback(() => {
+    const defaultFrames = getInitialCaptureFrames();
+    const defaultTires = getInitialTireInspectionData();
     setAddCommentModalVisible(false);
     setCurrentItemIndex(null);
     setAdditionalComments('');
@@ -475,14 +555,14 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
     setMediaModalVisible(false);
     setMediaModalDetails({});
     setChecklistLoading(false);
-    setCaptureFrames(getInitialCaptureFrames());
-    setTireInspectionData(getInitialTireInspectionData());
+    setCaptureFrames(getFilteredCaptureFramesByInspectionFrequency(inspectionFrequency, defaultFrames));
+    setTireInspectionData(getFilteredTireDataByInspectionFrequency(inspectionFrequency, defaultTires));
     setModalDetails(modalDetailsInitialState);
     setDisplayAnnotationPopUp(false);
     setCaptureImageModalVisible(false);
     setRequiredFields({});
     setShowChecklistSection(false);
-  }, []);
+  }, [inspectionFrequency]);
 
   //API CALLS
   const getChecklistsData = useCallback(async () => {

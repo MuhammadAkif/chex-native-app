@@ -104,6 +104,9 @@ const NewInspectionScreen = props => {
     displayInstructions,
     imageDimensions,
     companyId,
+    interiorItemsConfig,
+    exteriorItemsConfig,
+    tiresItemsConfig,
   } = props;
 
   return (
@@ -220,7 +223,7 @@ const NewInspectionScreen = props => {
                 isLicensePlateUploaded={!isLicensePlateUploaded}
               />
             )} */}
-            {!hasInteriorAndRoofTopCompany(companyId) && (
+            {!hasInteriorAndRoofTopCompany(companyId) && interiorItemsConfig.length > 0 && (
               <>
                 <CollapsedCard
                   text={t('newInspection.interiorItems')}
@@ -238,10 +241,12 @@ const NewInspectionScreen = props => {
                     handleCrossPress={handleOnCrossPress}
                     isLoading={isLoading}
                     handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+                    interiorItemsConfig={interiorItemsConfig}
                   />
                 )}
               </>
             )}
+            {exteriorItemsConfig.length > 0 && (
             <CollapsedCard
               text={t('newInspection.exteriorItems')}
               displayInstructions={displayInstructions}
@@ -251,6 +256,7 @@ const NewInspectionScreen = props => {
               onPress={() => handleCardExpansion('isExterior')}
             // disabled={!isLicensePlateUploaded}
             />
+            )}
             {selectedOption?.isExterior && (
               <ActiveExteriorItemsExpandedCard
                 handleItemPickerPress={handleItemPickerPress}
@@ -263,9 +269,10 @@ const NewInspectionScreen = props => {
                 skipRightCorners={skipRightCorners}
                 handleMediaModalDetailsPress={handleMediaModalDetailsPress}
                 companyId={companyId}
+                exteriorItemsConfig={exteriorItemsConfig}
               />
             )}
-            {displayTires && (
+            {displayTires && tiresItemsConfig.length > 0 && (
               <>
                 <CollapsedCard
                   text={t('newInspection.tires')}
@@ -282,6 +289,7 @@ const NewInspectionScreen = props => {
                     handleCrossPress={handleOnCrossPress}
                     isLoading={isLoading}
                     handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+                    tiresItemsConfig={tiresItemsConfig}
                   />
                 )}
               </>

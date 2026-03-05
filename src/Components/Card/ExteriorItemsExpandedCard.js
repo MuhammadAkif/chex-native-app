@@ -19,6 +19,19 @@ import { ImagesPickerContainer } from '../index';
 const { expandedCardContainer } = expandedCardStyles;
 const { container } = ExpandedCardStyles;
 
+const EXTERIOR_CATEGORY_NAMES = {
+  FRONT: 'exterior_front',
+  REAR: 'exterior_rear',
+  FRONT_LEFT_CORNER: 'front_left_corner',
+  FRONT_RIGHT_CORNER: 'front_right_corner',
+  REAR_LEFT_CORNER: 'rear_left_corner',
+  REAR_RIGHT_CORNER: 'rear_right_corner',
+  INSIDE_CARGO_ROOF: 'inside_cargo_roof',
+};
+
+const hasCategory = (array, categoryName) =>
+  array.some(item => item?.categoryName === categoryName);
+
 const ExteriorItemsExpandedCard = ({
   handleItemPickerPress,
   exteriorItems,
@@ -30,6 +43,7 @@ const ExteriorItemsExpandedCard = ({
   skipLeftCorners = false,
   skipRight = false,
   skipRightCorners = false,
+  exteriorItemsConfig = [],
 }) => {
   const { t } = useTranslation();
   const defaultPickerText = pickerText || t('exteriorItems.captureImage');
@@ -41,6 +55,21 @@ const ExteriorItemsExpandedCard = ({
   } = useSelector(state => state?.auth);
   const { selectedVehicleKind } = useSelector(state => state?.newInspection);
 
+  const hasExteriorConfig = exteriorItemsConfig.length > 0;
+
+  const showFront = !hasExteriorConfig || hasCategory(exteriorItemsConfig, EXTERIOR_CATEGORY_NAMES.FRONT);
+  const showRear = !hasExteriorConfig || hasCategory(exteriorItemsConfig, EXTERIOR_CATEGORY_NAMES.REAR);
+  const showFrontLeftCorner = (!hasExteriorConfig || hasCategory(exteriorItemsConfig, EXTERIOR_CATEGORY_NAMES.FRONT_LEFT_CORNER)) && !skipLeftCorners;
+  const showFrontRightCorner = (!hasExteriorConfig || hasCategory(exteriorItemsConfig, EXTERIOR_CATEGORY_NAMES.FRONT_RIGHT_CORNER)) && !skipRightCorners;
+  const showRearLeftCorner = (!hasExteriorConfig || hasCategory(exteriorItemsConfig, EXTERIOR_CATEGORY_NAMES.REAR_LEFT_CORNER)) && !skipLeftCorners;
+  const showRearRightCorner = (!hasExteriorConfig || hasCategory(exteriorItemsConfig, EXTERIOR_CATEGORY_NAMES.REAR_RIGHT_CORNER)) && !skipRightCorners;
+  const showInsideCargoRoof = (!hasExteriorConfig || hasCategory(exteriorItemsConfig, EXTERIOR_CATEGORY_NAMES.INSIDE_CARGO_ROOF)) && !hasInteriorAndRoofTopCompany(companyId);
+
+  const visibleSections = [showFront, showRear, showFrontLeftCorner, showFrontRightCorner, showRearLeftCorner, showRearRightCorner, showInsideCargoRoof];
+  const lastVisibleIndex = visibleSections.reduce((last, visible, index) => (visible ? index : last), -1);
+
+  const isLastSection = index => index === lastVisibleIndex;
+
   return (
     <View
       style={{
@@ -48,37 +77,43 @@ const ExteriorItemsExpandedCard = ({
         ...container,
         paddingVertical: 0,
       }}>
-      <ImagesPickerContainer
-        ExteriorDetails={ExteriorFrontDetails(selectedVehicleKind)}
-        pickerText={defaultPickerText}
-        imageURL={exteriorItems?.exteriorFront}
-        imageURLOne={exteriorItems?.exteriorFront_1}
-        imageURLTwo={exteriorItems?.exteriorFront_2}
-        imageURL_ID={exteriorItems?.exteriorFrontID}
-        imageURLOne_ID={exteriorItems?.exteriorFront_1ID}
-        imageURLTwo_ID={exteriorItems?.exteriorFront_2ID}
-        isLoading={isLoading}
-        handleItemPickerPress={handleItemPickerPress}
-        handleCrossPress={handleCrossPress}
-        handleMediaModalDetailsPress={handleMediaModalDetailsPress}
-        exteriorItems={exteriorItems}
-      />
-      <ImagesPickerContainer
-        ExteriorDetails={ExteriorRearDetails(selectedVehicleKind)}
-        pickerText={defaultPickerText}
-        imageURL={exteriorItems?.exteriorRear}
-        imageURLOne={exteriorItems?.exteriorRear_1}
-        imageURLTwo={exteriorItems?.exteriorRear_2}
-        imageURL_ID={exteriorItems?.exteriorRearID}
-        imageURLOne_ID={exteriorItems?.exteriorRear_1ID}
-        imageURLTwo_ID={exteriorItems?.exteriorRear_2ID}
-        isLoading={isLoading}
-        handleItemPickerPress={handleItemPickerPress}
-        handleCrossPress={handleCrossPress}
-        handleMediaModalDetailsPress={handleMediaModalDetailsPress}
-        exteriorItems={exteriorItems}
-      />
-      {!skipLeftCorners && (
+      {showFront && (
+        <ImagesPickerContainer
+          ExteriorDetails={ExteriorFrontDetails(selectedVehicleKind)}
+          pickerText={defaultPickerText}
+          imageURL={exteriorItems?.exteriorFront}
+          imageURLOne={exteriorItems?.exteriorFront_1}
+          imageURLTwo={exteriorItems?.exteriorFront_2}
+          imageURL_ID={exteriorItems?.exteriorFrontID}
+          imageURLOne_ID={exteriorItems?.exteriorFront_1ID}
+          imageURLTwo_ID={exteriorItems?.exteriorFront_2ID}
+          isLoading={isLoading}
+          handleItemPickerPress={handleItemPickerPress}
+          handleCrossPress={handleCrossPress}
+          handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+          exteriorItems={exteriorItems}
+          borderBottomWidth={isLastSection(0) ? 0 : 1}
+        />
+      )}
+      {showRear && (
+        <ImagesPickerContainer
+          ExteriorDetails={ExteriorRearDetails(selectedVehicleKind)}
+          pickerText={defaultPickerText}
+          imageURL={exteriorItems?.exteriorRear}
+          imageURLOne={exteriorItems?.exteriorRear_1}
+          imageURLTwo={exteriorItems?.exteriorRear_2}
+          imageURL_ID={exteriorItems?.exteriorRearID}
+          imageURLOne_ID={exteriorItems?.exteriorRear_1ID}
+          imageURLTwo_ID={exteriorItems?.exteriorRear_2ID}
+          isLoading={isLoading}
+          handleItemPickerPress={handleItemPickerPress}
+          handleCrossPress={handleCrossPress}
+          handleMediaModalDetailsPress={handleMediaModalDetailsPress}
+          exteriorItems={exteriorItems}
+          borderBottomWidth={isLastSection(1) ? 0 : 1}
+        />
+      )}
+      {showFrontLeftCorner && (
         <ImagesPickerContainer
           ExteriorDetails={ExteriorFrontLeftCornerDetails(selectedVehicleKind)}
           pickerText={defaultPickerText}
@@ -93,9 +128,10 @@ const ExteriorItemsExpandedCard = ({
           handleCrossPress={handleCrossPress}
           handleMediaModalDetailsPress={handleMediaModalDetailsPress}
           exteriorItems={exteriorItems}
+          borderBottomWidth={isLastSection(2) ? 0 : 1}
         />
       )}
-      {!skipRightCorners && (
+      {showFrontRightCorner && (
         <ImagesPickerContainer
           ExteriorDetails={ExteriorFrontRightCornerDetails(selectedVehicleKind)}
           pickerText={defaultPickerText}
@@ -110,9 +146,10 @@ const ExteriorItemsExpandedCard = ({
           handleCrossPress={handleCrossPress}
           handleMediaModalDetailsPress={handleMediaModalDetailsPress}
           exteriorItems={exteriorItems}
+          borderBottomWidth={isLastSection(3) ? 0 : 1}
         />
       )}
-      {!skipLeftCorners && (
+      {showRearLeftCorner && (
         <ImagesPickerContainer
           ExteriorDetails={ExteriorRearLeftCornerDetails(selectedVehicleKind)}
           pickerText={defaultPickerText}
@@ -127,9 +164,10 @@ const ExteriorItemsExpandedCard = ({
           handleCrossPress={handleCrossPress}
           handleMediaModalDetailsPress={handleMediaModalDetailsPress}
           exteriorItems={exteriorItems}
+          borderBottomWidth={isLastSection(4) ? 0 : 1}
         />
       )}
-      {!skipRightCorners && (
+      {showRearRightCorner && (
         <ImagesPickerContainer
           ExteriorDetails={ExteriorRearRightCornerDetails(selectedVehicleKind)}
           pickerText={defaultPickerText}
@@ -144,9 +182,10 @@ const ExteriorItemsExpandedCard = ({
           handleCrossPress={handleCrossPress}
           handleMediaModalDetailsPress={handleMediaModalDetailsPress}
           exteriorItems={exteriorItems}
+          borderBottomWidth={isLastSection(5) ? 0 : 1}
         />
       )}
-      {!hasInteriorAndRoofTopCompany(companyId) && (
+      {showInsideCargoRoof && (
         <ImagesPickerContainer
           ExteriorDetails={ExteriorInsideCargoRoofDetails(selectedVehicleKind)}
           pickerText={defaultPickerText}
