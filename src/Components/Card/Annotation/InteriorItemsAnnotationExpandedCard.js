@@ -12,6 +12,26 @@ const containerStyle = {
   paddingVertical: 0,
 };
 
+/**
+ * Enriches details with categoryId and companyConfigId from config
+ * when a matching categoryName (config) === subCategory (details) exists.
+ * Safe when config is empty or no match — returns details unchanged.
+ */
+const enrichWithCategoryId = (details, config) => {
+  if (!config?.length || !details?.subCategory) {
+    return details;
+  }
+  const match = config.find(item => item?.categoryName === details.subCategory);
+  if (!match) {
+    return details;
+  }
+  return {
+    ...details,
+    categoryId: match.categoryId,
+    companyConfigId: match.companyConfigId,
+  };
+};
+
 const InteriorItemsAnnotationExpandedCard = ({
   handleItemPickerPress,
   interiorItems,
@@ -31,7 +51,7 @@ const InteriorItemsAnnotationExpandedCard = ({
     <View style={containerStyle}>
       {hasDriverSide && (
         <ImagesPickerContainer
-          ExteriorDetails={InteriorDriverSide}
+          ExteriorDetails={enrichWithCategoryId(InteriorDriverSide, interiorItemsConfig)}
           pickerText={defaultPickerText}
           imageURL={interiorItems?.driverSide}
           imageURLOne={interiorItems?.driverSide_1}
@@ -48,7 +68,7 @@ const InteriorItemsAnnotationExpandedCard = ({
       )}
       {hasPassengerSide && (
         <ImagesPickerContainer
-          ExteriorDetails={InteriorPassengerSide}
+          ExteriorDetails={enrichWithCategoryId(InteriorPassengerSide, interiorItemsConfig)}
           pickerText={defaultPickerText}
           imageURL={interiorItems?.passengerSide}
           imageURLOne={interiorItems?.passengerSide_1}

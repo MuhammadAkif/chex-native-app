@@ -353,7 +353,6 @@ const VehicleInformation = props => {
         dispatch(setVehicleType(response?.data?.hasAdded || 'existing'));
         dispatch(setSelectedVehicleKind(vehicleType));
         dispatch(numberPlateSelected(response?.data?.id));
-        debugger;
         dispatch(setInspectionFrequency(response?.data?.configs));
 
         // RESET STATES

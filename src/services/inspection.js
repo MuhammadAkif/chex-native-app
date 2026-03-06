@@ -41,7 +41,7 @@ export const getVehicleInformationAgainstLicenseId = async licensePlateNumber =>
 };
 export const getVehicleInformationAgainstVin = async vin => {
   try {
-    debugger;
+
     return await api.get(VEHICLE_INFO_AGAINSET_VIN, { vin });
   } catch (error) {
     console.error('getVehicleInformationAgainstVin error:', error.response.data);

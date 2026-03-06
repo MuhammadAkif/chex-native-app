@@ -161,7 +161,7 @@ const getInitialTireInspectionData = () => [
  * Only sections/frames whose frame.id exists in exteriorItems or interiorItems categoryName are included.
  */
 const getFilteredCaptureFramesByInspectionFrequency = (inspectionFrequency, defaultFrames) => {
-  if (!inspectionFrequency?.length) return defaultFrames;
+  if (!inspectionFrequency?.length) {return defaultFrames;}
   const exteriorIds = inspectionFrequency.filter(i => i?.groupType === 'exteriorItems').map(i => i.categoryName);
   const interiorIds = inspectionFrequency.filter(i => i?.groupType === 'interiorItems').map(i => i.categoryName);
   const allowedFrameIds = new Set([...exteriorIds, ...interiorIds]);
@@ -179,7 +179,7 @@ const getFilteredCaptureFramesByInspectionFrequency = (inspectionFrequency, defa
  * Only tires whose id exists in tires group categoryName are included.
  */
 const getFilteredTireDataByInspectionFrequency = (inspectionFrequency, defaultTires) => {
-  if (!inspectionFrequency?.length) return defaultTires;
+  if (!inspectionFrequency?.length) {return defaultTires;}
   const allowedTireIds = new Set(
     inspectionFrequency.filter(i => i?.groupType === 'tires').map(i => i.categoryName)
   );
@@ -189,7 +189,6 @@ const getFilteredTireDataByInspectionFrequency = (inspectionFrequency, defaultTi
 const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
   const { selectedInspectionID } = useSelector(state => state.newInspection);
   const { inspectionFrequency } = useSelector(state => state.newInspection) || {};
-  console.log(inspectionFrequency,'inspectionFrequency');
   const { t } = useTranslation();
   // State for checklist items
   const [commentModalVisible, setAddCommentModalVisible] = useState(false);
@@ -227,7 +226,7 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
     setCaptureFrames(prev => {
       const prevSignature = prev.map(s => `${s.id}:${s.frames.map(f => f.id).join(',')}`).join('|');
       const newSignature = filteredFrames.map(s => `${s.id}:${s.frames.map(f => f.id).join(',')}`).join('|');
-      if (prevSignature === newSignature) return prev;
+      if (prevSignature === newSignature) {return prev;}
       return filteredFrames.map(section => ({
         ...section,
         frames: section.frames.map(frame => {
@@ -241,7 +240,7 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
     setTireInspectionData(prev => {
       const filteredIds = filteredTires.map(t => t.id).join(',');
       const prevIds = prev.map(t => t.id).join(',');
-      if (filteredIds === prevIds) return prev;
+      if (filteredIds === prevIds) {return prev;}
       return filteredTires.map(tire => {
         const prevTire = prev.find(p => p.id === tire.id);
         return prevTire ? { ...tire, image: prevTire.image, fileId: prevTire.fileId } : tire;
@@ -354,7 +353,7 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
   const handleChecklistOpenCamera = useCallback(
     (index, isVideo) => {
       if (checklistData?.[index]?.url?.length == 5)
-        return alert(i18n.t('dvir.maxMediaError'));
+        {return alert(i18n.t('dvir.maxMediaError'));}
 
       const details = {
         title: isVideo ? i18n.t('dvir.uploadVideo') : i18n.t('dvir.uploadImage'),
@@ -413,16 +412,19 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
 
   // Handler to update tire image
   const handlePressTireImage = (tireId, title) => {
-    handleFramePickerPress(
-      {
-        ...frameConfigMap.tire,
-        ...frameConfigMap.tire.details,
-        title,
-        subCategory: tireId,
-        afterFileUploadNavigationParams: { tireId },
-      },
-      0
-    );
+    const details = {
+      ...frameConfigMap.tire,
+      ...frameConfigMap.tire.details,
+      title,
+      subCategory: tireId,
+      afterFileUploadNavigationParams: { tireId },
+    };
+    const frequencyMatch = inspectionFrequency?.find(item => item?.categoryName === tireId);
+    if (frequencyMatch) {
+      details.categoryId = frequencyMatch.categoryId;
+      details.companyConfigId = frequencyMatch.companyConfigId;
+    }
+    handleFramePickerPress(details, 0);
   };
 
   const handleFramePickerPress = (details, variant = 0) => {
@@ -477,8 +479,19 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
   }
 
   const handleCaptureFrame = (captureFrameId, frameId) => {
+    // const config = frameConfigMap[frameId];
+    // console.log('config', config);
+
     const config = frameConfigMap[frameId];
-    handleFramePickerPress({ ...config.details, source: config.source, afterFileUploadNavigationParams: { captureFrameId, frameId } }, config.index);
+    const details = { ...config.details, source: config.source, afterFileUploadNavigationParams: { captureFrameId, frameId } };
+    const frequencyMatch = inspectionFrequency?.find(item => item?.categoryName === frameId);
+    if (frequencyMatch) {
+      details.categoryId = frequencyMatch.categoryId;
+      details.companyConfigId = frequencyMatch.companyConfigId;
+    }
+    handleFramePickerPress(details, config.index);
+
+
   };
 
   const handleSubmit = async () => {
@@ -541,7 +554,7 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
       });
     }
 
-    if (type) setMediaModalVisible(true);
+    if (type) {setMediaModalVisible(true);}
   };
 
   const resetState = useCallback(() => {
@@ -595,7 +608,8 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
           return tire;
         });
 
-        setTireInspectionData(updatedTires);
+        // setTireInspectionData(updatedTires);
+        setTireInspectionData(getFilteredTireDataByInspectionFrequency(inspectionFrequency, updatedTires));
       }
 
       // ----- EXTERIOR & INTERIOR ITEMS -----
@@ -624,7 +638,9 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
           };
         });
 
-        setCaptureFrames(updatedCaptureFrames);
+        // setCaptureFrames(updatedCaptureFrames);
+        setCaptureFrames(getFilteredCaptureFramesByInspectionFrequency(inspectionFrequency, updatedCaptureFrames));
+
       }
     }
   }, [selectedInspectionID, tireInspectionData, captureFrames]);
@@ -709,7 +725,7 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
       }
     };
 
-    if (selectedInspectionID) fetchData();
+    if (selectedInspectionID) {fetchData();}
   }, [selectedInspectionID]);
 
   const validateFramesTiresCheclist = () => {

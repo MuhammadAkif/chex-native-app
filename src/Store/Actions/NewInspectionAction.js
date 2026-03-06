@@ -71,7 +71,6 @@ export const file_Details = inspectionId => async dispatch => {
   try {
     const response = await getInspectionDetails(inspectionId);
     const {files = {}} = response?.data || {};
-
     dispatch(setFileDetails(files));
     uploadInProgressMediaToStore(files, dispatch);
     dispatch(numberPlateSelected(inspectionId));

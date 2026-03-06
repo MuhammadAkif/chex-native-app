@@ -78,7 +78,8 @@ const CameraContainer = ({ route, navigation }) => {
   const format = useCameraFormat(device, [{ videoResolution: { width: 1280, height: 720 }, photoResolution: { width: 1280, height: 720 } }, { fps: 60 }]);
   const [isLoading, setIsLoading] = useState(false);
   const [orientation, setOrientation] = useState(defaultOrientation);
-  const { category, subCategory, instructionalText, source, title, isVideo, groupType, afterFileUploadNavigationParams } = modalDetails;
+  const { category, subCategory, instructionalText, source, title, isVideo, groupType, afterFileUploadNavigationParams,categoryId,companyConfigId } = modalDetails;
+
   const frameStyles = {
     portrait: {
       ...styles.portraitFrame,
@@ -207,6 +208,8 @@ const CameraContainer = ({ route, navigation }) => {
       groupType: groupType,
       dateImage: getCurrentDate(),
       hasAdded: vehicle_Type,
+      categoryId: categoryId || null,
+      companyConfigId:companyConfigId || null,
     };
     if (haveType) {
       body = { ...body, variant: variant };

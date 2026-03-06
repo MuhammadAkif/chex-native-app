@@ -31,6 +31,26 @@ const EXTERIOR_CATEGORY_NAMES = {
 const hasCategory = (array, categoryName) =>
   array.some(item => item?.categoryName === categoryName);
 
+/**
+ * Enriches ExteriorDetails with categoryId and companyConfigId from config
+ * when a matching categoryName (config) === subCategory (details) exists.
+ * Safe when config is empty or no match — returns details unchanged.
+ */
+const enrichWithCategoryId = (details, config) => {
+  if (!config?.length || !details?.subCategory) {
+    return details;
+  }
+  const match = config.find(item => item?.categoryName === details.subCategory);
+  if (!match) {
+    return details;
+  }
+  return {
+    ...details,
+    categoryId: match.categoryId,
+    companyConfigId: match.companyConfigId,
+  };
+};
+
 const ExteriorItemsExpandedCard = ({
   handleItemPickerPress,
   exteriorItems,
@@ -74,7 +94,7 @@ const ExteriorItemsExpandedCard = ({
               pickerText={pickerText}
               imageURL={exteriorItems?.exteriorFront}
               isLoading={isLoading}
-              onPress={() => handleItemPickerPress(ExteriorFrontDetails(selectedVehicleKind))}
+              onPress={() => handleItemPickerPress(enrichWithCategoryId(ExteriorFrontDetails(selectedVehicleKind), exteriorItemsConfig))}
               onClearPress={() => handleCrossPress(ExteriorFrontDetails(selectedVehicleKind).groupType, ExteriorFrontDetails(selectedVehicleKind).key)}
               handleMediaModalDetailsPress={() =>
                 handleMediaModalDetailsPress(ExteriorFrontDetails(selectedVehicleKind).title, exteriorItems?.exteriorFront)
@@ -87,7 +107,7 @@ const ExteriorItemsExpandedCard = ({
               pickerText={pickerText}
               imageURL={exteriorItems?.exteriorRear}
               isLoading={isLoading}
-              onPress={() => handleItemPickerPress(ExteriorRearDetails(selectedVehicleKind))}
+              onPress={() => handleItemPickerPress(enrichWithCategoryId(ExteriorRearDetails(selectedVehicleKind), exteriorItemsConfig))}
               onClearPress={() => handleCrossPress(ExteriorRearDetails(selectedVehicleKind).groupType, ExteriorRearDetails(selectedVehicleKind).key)}
               handleMediaModalDetailsPress={() =>
                 handleMediaModalDetailsPress(ExteriorRearDetails(selectedVehicleKind).title, exteriorItems?.exteriorRear)
@@ -148,7 +168,7 @@ const ExteriorItemsExpandedCard = ({
               pickerText={pickerText}
               imageURL={exteriorItems?.exteriorFrontLeftCorner}
               isLoading={isLoading}
-              onPress={() => handleItemPickerPress(ExteriorFrontLeftCornerDetails(selectedVehicleKind))}
+              onPress={() => handleItemPickerPress(enrichWithCategoryId(ExteriorFrontLeftCornerDetails(selectedVehicleKind), exteriorItemsConfig))}
               onClearPress={() =>
                 handleCrossPress(ExteriorFrontLeftCornerDetails(selectedVehicleKind).groupType, ExteriorFrontLeftCornerDetails(selectedVehicleKind).key)
               }
@@ -163,7 +183,7 @@ const ExteriorItemsExpandedCard = ({
               pickerText={pickerText}
               imageURL={exteriorItems?.exteriorFrontRightCorner}
               isLoading={isLoading}
-              onPress={() => handleItemPickerPress(ExteriorFrontRightCornerDetails(selectedVehicleKind))}
+              onPress={() => handleItemPickerPress(enrichWithCategoryId(ExteriorFrontRightCornerDetails(selectedVehicleKind), exteriorItemsConfig))}
               onClearPress={() =>
                 handleCrossPress(
                   ExteriorFrontRightCornerDetails(selectedVehicleKind).groupType,
@@ -185,7 +205,7 @@ const ExteriorItemsExpandedCard = ({
               pickerText={pickerText}
               imageURL={exteriorItems?.exteriorRearLeftCorner}
               isLoading={isLoading}
-              onPress={() => handleItemPickerPress(ExteriorRearLeftCornerDetails(selectedVehicleKind))}
+              onPress={() => handleItemPickerPress(enrichWithCategoryId(ExteriorRearLeftCornerDetails(selectedVehicleKind), exteriorItemsConfig))}
               onClearPress={() =>
                 handleCrossPress(ExteriorRearLeftCornerDetails(selectedVehicleKind).groupType, ExteriorRearLeftCornerDetails(selectedVehicleKind).key)
               }
@@ -200,7 +220,7 @@ const ExteriorItemsExpandedCard = ({
               pickerText={pickerText}
               imageURL={exteriorItems?.exteriorRearRightCorner}
               isLoading={isLoading}
-              onPress={() => handleItemPickerPress(ExteriorRearRightCornerDetails(selectedVehicleKind))}
+              onPress={() => handleItemPickerPress(enrichWithCategoryId(ExteriorRearRightCornerDetails(selectedVehicleKind), exteriorItemsConfig))}
               onClearPress={() =>
                 handleCrossPress(ExteriorRearRightCornerDetails(selectedVehicleKind).groupType, ExteriorRearRightCornerDetails(selectedVehicleKind).key)
               }
@@ -259,7 +279,7 @@ const ExteriorItemsExpandedCard = ({
             pickerText={pickerText}
             imageURL={exteriorItems?.exteriorInsideCargoRoof}
             isLoading={isLoading}
-            onPress={() => handleItemPickerPress(ExteriorInsideCargoRoofDetails(selectedVehicleKind))}
+            onPress={() => handleItemPickerPress(enrichWithCategoryId(ExteriorInsideCargoRoofDetails(selectedVehicleKind), exteriorItemsConfig))}
             onClearPress={() =>
               handleCrossPress(ExteriorInsideCargoRoofDetails(selectedVehicleKind).groupType, ExteriorInsideCargoRoofDetails(selectedVehicleKind).key)
             }

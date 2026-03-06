@@ -273,8 +273,6 @@ const DVIRInspectionChecklistScreen = ({
 
   const renderSectionHeader = ({ section }) => null; // No UI change
 
-  console.log(captureFrames,'////');
-
   const renderItem = ({ section }) => {
     if (section.key === 'checklist') {
       return (

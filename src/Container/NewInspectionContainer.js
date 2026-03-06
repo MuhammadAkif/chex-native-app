@@ -221,7 +221,6 @@ const NewInspectionContainer = ({ route, navigation }) => {
 
   // // Cleanup ONLY on screen unmount
   usePreventRemove(true, ({ data }) => {
-    console.log('Inspection Redux CleanUp!');
     dispatch(clearNewInspection());
     dispatch(setRequired());
 
@@ -378,7 +377,6 @@ const NewInspectionContainer = ({ route, navigation }) => {
     } else {
       toggleFieldRequired(true);
     }
-
     // INFO MODAL STATES
     setModalDetails(details);
     setModalVisible(true);

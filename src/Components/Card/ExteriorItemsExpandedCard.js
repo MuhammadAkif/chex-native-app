@@ -32,6 +32,26 @@ const EXTERIOR_CATEGORY_NAMES = {
 const hasCategory = (array, categoryName) =>
   array.some(item => item?.categoryName === categoryName);
 
+/**
+ * Enriches ExteriorDetails with categoryId and companyConfigId from config
+ * when a matching categoryName (config) === subCategory (details) exists.
+ * Safe when config is empty or no match — returns details unchanged.
+ */
+const enrichWithCategoryId = (details, config) => {
+  if (!config?.length || !details?.subCategory) {
+    return details;
+  }
+  const match = config.find(item => item?.categoryName === details.subCategory);
+  if (!match) {
+    return details;
+  }
+  return {
+    ...details,
+    categoryId: match.categoryId,
+    companyConfigId: match.companyConfigId,
+  };
+};
+
 const ExteriorItemsExpandedCard = ({
   handleItemPickerPress,
   exteriorItems,
@@ -79,7 +99,7 @@ const ExteriorItemsExpandedCard = ({
       }}>
       {showFront && (
         <ImagesPickerContainer
-          ExteriorDetails={ExteriorFrontDetails(selectedVehicleKind)}
+          ExteriorDetails={enrichWithCategoryId(ExteriorFrontDetails(selectedVehicleKind), exteriorItemsConfig)}
           pickerText={defaultPickerText}
           imageURL={exteriorItems?.exteriorFront}
           imageURLOne={exteriorItems?.exteriorFront_1}
@@ -97,7 +117,7 @@ const ExteriorItemsExpandedCard = ({
       )}
       {showRear && (
         <ImagesPickerContainer
-          ExteriorDetails={ExteriorRearDetails(selectedVehicleKind)}
+          ExteriorDetails={enrichWithCategoryId(ExteriorRearDetails(selectedVehicleKind), exteriorItemsConfig)}
           pickerText={defaultPickerText}
           imageURL={exteriorItems?.exteriorRear}
           imageURLOne={exteriorItems?.exteriorRear_1}
@@ -115,7 +135,7 @@ const ExteriorItemsExpandedCard = ({
       )}
       {showFrontLeftCorner && (
         <ImagesPickerContainer
-          ExteriorDetails={ExteriorFrontLeftCornerDetails(selectedVehicleKind)}
+          ExteriorDetails={enrichWithCategoryId(ExteriorFrontLeftCornerDetails(selectedVehicleKind), exteriorItemsConfig)}
           pickerText={defaultPickerText}
           imageURL={exteriorItems?.exteriorFrontLeftCorner}
           imageURLOne={exteriorItems?.exteriorFrontLeftCorner_1}
@@ -133,7 +153,7 @@ const ExteriorItemsExpandedCard = ({
       )}
       {showFrontRightCorner && (
         <ImagesPickerContainer
-          ExteriorDetails={ExteriorFrontRightCornerDetails(selectedVehicleKind)}
+          ExteriorDetails={enrichWithCategoryId(ExteriorFrontRightCornerDetails(selectedVehicleKind), exteriorItemsConfig)}
           pickerText={defaultPickerText}
           imageURL={exteriorItems?.exteriorFrontRightCorner}
           imageURLOne={exteriorItems?.exteriorFrontRightCorner_1}
@@ -151,7 +171,7 @@ const ExteriorItemsExpandedCard = ({
       )}
       {showRearLeftCorner && (
         <ImagesPickerContainer
-          ExteriorDetails={ExteriorRearLeftCornerDetails(selectedVehicleKind)}
+          ExteriorDetails={enrichWithCategoryId(ExteriorRearLeftCornerDetails(selectedVehicleKind), exteriorItemsConfig)}
           pickerText={defaultPickerText}
           imageURL={exteriorItems?.exteriorRearLeftCorner}
           imageURLOne={exteriorItems?.exteriorRearLeftCorner_1}
@@ -169,7 +189,7 @@ const ExteriorItemsExpandedCard = ({
       )}
       {showRearRightCorner && (
         <ImagesPickerContainer
-          ExteriorDetails={ExteriorRearRightCornerDetails(selectedVehicleKind)}
+          ExteriorDetails={enrichWithCategoryId(ExteriorRearRightCornerDetails(selectedVehicleKind), exteriorItemsConfig)}
           pickerText={defaultPickerText}
           imageURL={exteriorItems?.exteriorRearRightCorner}
           imageURLOne={exteriorItems?.exteriorRearRightCorner_1}
@@ -187,7 +207,7 @@ const ExteriorItemsExpandedCard = ({
       )}
       {showInsideCargoRoof && (
         <ImagesPickerContainer
-          ExteriorDetails={ExteriorInsideCargoRoofDetails(selectedVehicleKind)}
+          ExteriorDetails={enrichWithCategoryId(ExteriorInsideCargoRoofDetails(selectedVehicleKind), exteriorItemsConfig)}
           pickerText={defaultPickerText}
           imageURL={exteriorItems?.exteriorInsideCargoRoof}
           imageURLOne={exteriorItems?.exteriorInsideCargoRoof_1}

@@ -12,6 +12,26 @@ const { expandedCardContainer } = expandedCardStyles;
 const hasCategory = (array, categoryName) =>
   array.some(item => item?.categoryName === categoryName);
 
+/**
+ * Enriches details with categoryId and companyConfigId from config
+ * when a matching categoryName (config) === subCategory (details) exists.
+ * Safe when config is empty or no match — returns details unchanged.
+ */
+const enrichWithCategoryId = (details, config) => {
+  if (!config?.length || !details?.subCategory) {
+    return details;
+  }
+  const match = config.find(item => item?.categoryName === details.subCategory);
+  if (!match) {
+    return details;
+  }
+  return {
+    ...details,
+    categoryId: match.categoryId,
+    companyConfigId: match.companyConfigId,
+  };
+};
+
 const InteriorItemsExpandedCard = ({
   handleItemPickerPress,
   interiorItems,
@@ -41,7 +61,7 @@ const InteriorItemsExpandedCard = ({
             pickerText={defaultPickerText}
             imageURL={interiorItems?.driverSide}
             isLoading={isLoading}
-            onPress={() => handleItemPickerPress(InteriorDriverSide)}
+            onPress={() => handleItemPickerPress(enrichWithCategoryId(InteriorDriverSide, interiorItemsConfig))}
             onClearPress={() =>
               handleCrossPress(InteriorDriverSide.groupType, InteriorDriverSide.key)
             }
@@ -59,7 +79,7 @@ const InteriorItemsExpandedCard = ({
             pickerText={defaultPickerText}
             imageURL={interiorItems?.passengerSide}
             isLoading={isLoading}
-            onPress={() => handleItemPickerPress(InteriorPassengerSide)}
+            onPress={() => handleItemPickerPress(enrichWithCategoryId(InteriorPassengerSide, interiorItemsConfig))}
             onClearPress={() =>
               handleCrossPress(
                 InteriorPassengerSide.groupType,

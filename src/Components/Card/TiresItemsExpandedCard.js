@@ -25,6 +25,26 @@ const TIRE_CATEGORY_NAMES = {
 const hasCategory = (array, categoryName) =>
   array.some(item => item?.categoryName === categoryName);
 
+/**
+ * Enriches details with categoryId and companyConfigId from config
+ * when a matching categoryName (config) === subCategory (details) exists.
+ * Safe when config is empty or no match — returns details unchanged.
+ */
+const enrichWithCategoryId = (details, config) => {
+  if (!config?.length || !details?.subCategory) {
+    return details;
+  }
+  const match = config.find(item => item?.categoryName === details.subCategory);
+  if (!match) {
+    return details;
+  }
+  return {
+    ...details,
+    categoryId: match.categoryId,
+    companyConfigId: match.companyConfigId,
+  };
+};
+
 const TiresItemsExpandedCard = ({
   handleItemPickerPress,
   tires,
@@ -57,7 +77,7 @@ const TiresItemsExpandedCard = ({
               pickerText={defaultPickerText}
               imageURL={tires?.leftFrontTire}
               isLoading={isLoading}
-              onPress={() => handleItemPickerPress(LeftFrontTireDetails)}
+              onPress={() => handleItemPickerPress(enrichWithCategoryId(LeftFrontTireDetails, tiresItemsConfig))}
               onClearPress={() =>
                 handleCrossPress(
                   LeftFrontTireDetails.groupType,
@@ -78,7 +98,7 @@ const TiresItemsExpandedCard = ({
               pickerText={defaultPickerText}
               imageURL={tires?.leftRearTire}
               isLoading={isLoading}
-              onPress={() => handleItemPickerPress(LeftRearTireDetails)}
+              onPress={() => handleItemPickerPress(enrichWithCategoryId(LeftRearTireDetails, tiresItemsConfig))}
               onClearPress={() =>
                 handleCrossPress(
                   LeftRearTireDetails.groupType,
@@ -103,7 +123,7 @@ const TiresItemsExpandedCard = ({
               pickerText={defaultPickerText}
               imageURL={tires?.rightFrontTire}
               isLoading={isLoading}
-              onPress={() => handleItemPickerPress(RightFrontTireDetails)}
+              onPress={() => handleItemPickerPress(enrichWithCategoryId(RightFrontTireDetails, tiresItemsConfig))}
               onClearPress={() =>
                 handleCrossPress(
                   RightFrontTireDetails.groupType,
@@ -124,7 +144,7 @@ const TiresItemsExpandedCard = ({
               pickerText={defaultPickerText}
               imageURL={tires?.rightRearTire}
               isLoading={isLoading}
-              onPress={() => handleItemPickerPress(RightRearTireDetails)}
+              onPress={() => handleItemPickerPress(enrichWithCategoryId(RightRearTireDetails, tiresItemsConfig))}
               onClearPress={() =>
                 handleCrossPress(
                   RightRearTireDetails.groupType,
