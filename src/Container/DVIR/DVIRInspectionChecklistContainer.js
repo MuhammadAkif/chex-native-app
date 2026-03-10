@@ -460,12 +460,12 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
     // setAnnotationModalDetails(details);
     setCaptureImageModalVisible(false);
     setModalDetails(modalDetailsInitialState);
-
     navigation.navigate(path, {
       type: key,
       modalDetails: modalDetails,
       inspectionId: selectedInspectionID,
       prevScreen: ROUTES.DVIR_INSPECTION_CHECKLIST,
+      returnTo: ROUTES.DVIR_INSPECTION_CHECKLIST,
     });
   };
 
@@ -729,17 +729,23 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
   }, [selectedInspectionID]);
 
   const validateFramesTiresCheclist = () => {
-    // 1. Validate captureFrames: all frames must have a non-null image
+    // 1. Validate captureFrames: all frames must have a non-null image (only when frames are shown)
     const allFramesHaveImages = captureFrames.every(section => section.frames.every(frame => frame.image !== null));
 
-    // 2. Validate tires: all tires must have a non-null image
+    // 2. Validate tires: all tires must have a non-null image (only when tires are shown)
     const allTiresHaveImages = tireInspectionData.every(tire => tire.image !== null);
 
-    // 3. Validate checklist: all items must have a non-empty checkStatus
+    // 3. Validate checklist: all items must have a non-empty checkStatus (only when checklist is shown)
     const allChecklistItemsHaveStatus = checklistData?.every?.(item => item?.checkStatus !== null);
 
-    // Final result
-    const allResults = allFramesHaveImages && allTiresHaveImages && allChecklistItemsHaveStatus;
+    // Only require completion for sections that are shown (have items); empty section = nothing to complete
+    const framesSectionShown = captureFrames.length > 0;
+    const tiresSectionShown = tireInspectionData.length > 0;
+    const checklistSectionShown = (checklistData?.length ?? 0) > 0;
+    const allResults =
+      (!framesSectionShown || allFramesHaveImages) &&
+      (!tiresSectionShown || allTiresHaveImages) &&
+      (!checklistSectionShown || allChecklistItemsHaveStatus);
 
     return {
       allResults,

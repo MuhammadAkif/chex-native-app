@@ -8,7 +8,14 @@ import {
   InteriorItemsAnnotationExpandedCard,
   InteriorItemsExpandedCard,
 } from '../Components';
-import { Delete_Messages, HARDWARE_BACK_PRESS, hasInteriorAndRoofTopCompany, INSPECTION, VEHICLE_TYPES } from '../Constants';
+import {
+  Delete_Messages,
+  HARDWARE_BACK_PRESS,
+  hasInteriorAndRoofTopCompany,
+  INSPECTION,
+  INSPECTION_SUBCATEGORY,
+  VEHICLE_TYPES,
+} from '../Constants';
 import { ROUTES } from '../Navigation/ROUTES';
 import { NewInspectionScreen } from '../Screens';
 import {
@@ -87,6 +94,14 @@ const interiorItemsExpandedCards = {
 const delay = {
   ios: 1000,
   android: 0,
+};
+
+// Tire categoryName from API may be id-style (tdrf, tdlf) or name-style (left_front_tire)
+const TIRE_CATEGORY_TO_KEY = {
+  tdrf: 'rightFrontTire',
+  tdrr: 'rightRearTire',
+  tdlf: 'leftFrontTire',
+  tdlr: 'leftRearTire',
 };
 
 const NewInspectionContainer = ({ route, navigation }) => {
@@ -188,7 +203,7 @@ const NewInspectionContainer = ({ route, navigation }) => {
   }, [exteriorItems]);
   useEffect(() => {
     handleIsAllVehicleParts();
-  }, [carVerificiationItems, interiorItems, exteriorItems, tires, displayTires, modalVisible]);
+  }, [carVerificiationItems, interiorItems, exteriorItems, tires, displayTires, modalVisible, inspectionFrequency]);
   useEffect(() => {
     const isTiresUploaded = haveOneValue(tires);
     if (!displayTires && isTiresUploaded) {
@@ -322,11 +337,53 @@ const NewInspectionContainer = ({ route, navigation }) => {
     }
     // const allCarVerification = !isObjectEmpty(carVerificiationItems);
     const allCarVerification = true;
-    const allInterior = hasInteriorAndRoofTopCompany(companyId) || !isObjectEmpty(interior__);
-    const allExterior = !isObjectEmpty(exterior__);
-    const allTires = !isObjectEmpty(tires);
-    const allParts = allCarVerification && allInterior && allExterior && allTires;
-    const skipOnlyTires = allCarVerification && allInterior && allExterior;
+
+    // When config is present, only check completion for configured categories (avoids false negative from empty '' in non-shown keys)
+    const allInterior =
+      hasInteriorAndRoofTopCompany(companyId) ||
+      (interiorItemsConfig.length > 0
+        ? !interiorItemsConfig.some(item => {
+            const baseKey = INSPECTION_SUBCATEGORY[item?.categoryName];
+            if (!baseKey) {
+              return false;
+            }
+            return !(interiorItems[baseKey] || interiorItems[`${baseKey}_1`] || interiorItems[`${baseKey}_2`]);
+          })
+        : !isObjectEmpty(interior__));
+    const allExterior =
+      exteriorItemsConfig.length > 0
+        ? !exteriorItemsConfig.some(item => {
+            const baseKey = INSPECTION_SUBCATEGORY[item?.categoryName];
+            if (!baseKey) {
+              return false;
+            }
+            return !(exteriorItems[baseKey] || exteriorItems[`${baseKey}_1`] || exteriorItems[`${baseKey}_2`]);
+          })
+        : !isObjectEmpty(exterior__);
+    const allTires =
+      tiresItemsConfig.length > 0
+        ? !tiresItemsConfig.some(item => {
+            const baseKey = INSPECTION_SUBCATEGORY[item?.categoryName] || TIRE_CATEGORY_TO_KEY[item?.categoryName];
+            if (!baseKey) {
+              return false;
+            }
+            return !tires[baseKey];
+          })
+        : !isObjectEmpty(tires);
+
+    // Only require completion for sections that are shown (based on config)
+    const interiorSectionShown = !hasInteriorAndRoofTopCompany(companyId) && interiorItemsConfig.length > 0;
+    const exteriorSectionShown = exteriorItemsConfig.length > 0;
+    const tiresSectionShown = displayTires && tiresItemsConfig.length > 0;
+    const allParts =
+      allCarVerification &&
+      (!interiorSectionShown || allInterior) &&
+      (!exteriorSectionShown || allExterior) &&
+      (!tiresSectionShown || allTires);
+    const skipOnlyTires =
+      allCarVerification &&
+      (!interiorSectionShown || allInterior) &&
+      (!exteriorSectionShown || allExterior);
     const shouldDisplayTire = {
       true: {
         isAllTires: allTires,

@@ -196,7 +196,7 @@ const CameraContainer = ({ route, navigation }) => {
     setIsImageURL('');
     setIsImageFile({});
   };
-
+console.log('route.params.returnTo', route.params?.returnTo);
   const handleResponse = async key => {
     const haveType = checkRelevantType(groupType);
     let extension = isImageFile.path.split('.').pop() || 'jpeg';
@@ -215,6 +215,7 @@ const CameraContainer = ({ route, navigation }) => {
       body = { ...body, variant: variant };
     }
     const image_url = `${S3_BUCKET_BASEURL}${key}`;
+
     // if (category === 'CarVerification' && type === 'licensePlate') {
     //   await handleExtractNumberPlate(image_url);
     // }
