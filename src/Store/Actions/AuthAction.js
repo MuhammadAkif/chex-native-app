@@ -1,5 +1,6 @@
 import {Types} from '../Types';
 import {login} from '../../services/authServices';
+import {OneSignal} from 'react-native-onesignal';
 
 const {
   SIGN_IN,
@@ -12,7 +13,14 @@ const {
 
 export const signIn = (username, password) => async dispatch => {
   await login(username, password)
-    .then(res => dispatch({type: SIGN_IN, payload: res}))
+    .then(res => {
+      try {
+        OneSignal.login(String(res?.data?.id));
+        dispatch({type: SIGN_IN, payload: res});
+      } catch (oneSignalError) {
+        console.log('❌ OneSignal login error:', oneSignalError);
+      }
+    })
     .catch(error => {
       throw error;
     });
@@ -20,6 +28,7 @@ export const signIn = (username, password) => async dispatch => {
 
 export const signOut = () => {
   return dispatch => {
+    OneSignal.logout();
     dispatch({type: CLEAR_INSPECTION_REVIEWED});
     dispatch({type: CLEAR_INSPECTION_IN_PROGRESS});
     dispatch({type: CLEAR_NEW_INSPECTION});

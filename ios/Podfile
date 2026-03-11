@@ -22,7 +22,8 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, min_ios_version_supported
+# OneSignalXCFramework 5.4.x requires a higher minimum deployment target than RN's default
+platform :ios, '16.0'
 prepare_react_native_project!
 
 
@@ -50,6 +51,12 @@ target 'Chex_AI' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+    # OneSignalXCFramework 5.4.x requires a higher minimum deployment target
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
+      end
+    end
     # ```
     # Find the path to the bitcode_strip tool using xcrun, which is used to remove bitcode from the framework files.
     # `.chop!` removes the trailing newline from the command output.
@@ -90,4 +97,8 @@ target 'Chex_AI' do
     # ```
 
   end
+end
+
+target 'OneSignalNotificationServiceExtension' do
+  pod 'OneSignalXCFramework', '>= 5.0.0', '< 6.0'
 end

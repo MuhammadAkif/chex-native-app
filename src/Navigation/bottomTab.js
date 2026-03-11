@@ -8,6 +8,8 @@ import { GradientCircleTabIcon, HomeTabIcon, ProfileTabIcon, ReportTabIcon, Trip
 import { colors } from '../Assets/Styles';
 import { TABS } from './ROUTES';
 import { HomeTabStack, InspectionTabStack, MyTripsTabStack, ProfileTabStack, ReportTabStack } from './stacks';
+import {OneSignal} from 'react-native-onesignal';
+import {useContinueInspection} from '../hooks';
 
 const Tab = createBottomTabNavigator();
 
@@ -86,7 +88,20 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
 
 const BottomTab = () => {
   const { t } = useTranslation();
+  const { handleContinuePress} = useContinueInspection();
 
+  let notificationOpenedFromForeground = false;
+  //Method for handling notifications received while app in foreground
+  OneSignal.Notifications.addEventListener('foregroundWillDisplay', (notificationReceivedEvent) => {
+    notificationOpenedFromForeground = true;
+    notificationReceivedEvent.getNotification().display();
+  });
+
+  OneSignal.Notifications.addEventListener('click', (notification) => {
+    try {
+      handleContinuePress(notification?.notification?.additionalData?.inspectionId);
+    } catch (_) {}
+  });
   return (
     <Tab.Navigator
       tabBar={props => <CustomTabBar {...props} />}

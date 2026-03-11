@@ -16,7 +16,6 @@ export const useContinueInspection = () => {
 
     const handleContinuePress = async (inspectionId, onSuccess) => {
         if (!inspectionId) {return;}
-
         setIsLoading(true);
         setActiveInspectionId(inspectionId);
         try {

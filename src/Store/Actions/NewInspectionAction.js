@@ -73,6 +73,7 @@ export const file_Details = inspectionId => async dispatch => {
     const {files = {}} = response?.data || {};
     dispatch(setFileDetails(files));
     uploadInProgressMediaToStore(files, dispatch);
+    dispatch(setInspectionFrequency(response?.data?.configs));
     dispatch(numberPlateSelected(inspectionId));
     return response;
   } catch (error) {

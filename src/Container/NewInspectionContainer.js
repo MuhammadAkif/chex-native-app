@@ -110,9 +110,9 @@ const NewInspectionContainer = ({ route, navigation }) => {
   const { canGoBack, goBack, navigate } = navigation;
   let {
     carVerificiationItems,
-    exteriorItems,
-    interiorItems,
-    tires,
+    exteriorItems = [],
+    interiorItems = [],
+    tires = [],
     selectedInspectionID,
     plateNumber,
     /* skipLeft,
@@ -129,9 +129,10 @@ const NewInspectionContainer = ({ route, navigation }) => {
   } = useSelector(state => state.newInspection) || {};
   const { user } = useSelector(state => state?.auth) || {};
   const { inspectionFrequency } = useSelector(state => state.newInspection) || {};
-  const interiorItemsConfig = inspectionFrequency?.filter(item => item?.groupType === 'interiorItems') ?? [];
-  const exteriorItemsConfig = inspectionFrequency?.filter(item => item?.groupType === 'exteriorItems') ?? [];
-  const tiresItemsConfig = inspectionFrequency?.filter(item => item?.groupType === 'tires') ?? [];
+  const inspectionFrequencyList = Array.isArray(inspectionFrequency) ? inspectionFrequency : [];
+  const interiorItemsConfig = inspectionFrequencyList.filter(item => item?.groupType === 'interiorItems');
+  const exteriorItemsConfig = inspectionFrequencyList.filter(item => item?.groupType === 'exteriorItems');
+  const tiresItemsConfig = inspectionFrequencyList.filter(item => item?.groupType === 'tires');
 
   const isScreenFocused = useIsFocused();
   const { companyId } = user?.data || {};

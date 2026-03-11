@@ -13,6 +13,7 @@ import { clearNewInspection, hideToast, signOut } from './src/Store/Actions';
 import { hasCameraAndMicrophoneAllowed } from './src/Utils';
 import { resetNavigation } from './src/services/navigationService';
 import smartlookService from './src/services/smartlookService';
+import {OneSignal, LogLevel} from 'react-native-onesignal';
 
 const { TITLE, MESSAGE, BUTTON } = UPDATE_APP;
 const { TITLE: title, MESSAGE: message, BUTTON: button } = SESSION_EXPIRED;
@@ -20,10 +21,15 @@ const { SIGN_IN } = ROUTES;
 
 function App() {
   const dispatch = useDispatch();
+
+  OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+  OneSignal.initialize('3f8c33e1-1334-4cf6-a0c4-347d101bcbef');
+  OneSignal.Notifications.requestPermission(false).then(r => console.log(r));
   // @ts-ignore
   const { sessionExpired } = useSelector(state => state?.auth);
   const [displayGif, setDisplayGif] = useState(true);
   const [updateAvailable, setUpdateAvailable] = useState('');
+
 
   useEffect(() => {
     if (SMARTLOOK_PROJECT_ID) {
