@@ -110,9 +110,9 @@ const NewInspectionContainer = ({ route, navigation }) => {
   const { canGoBack, goBack, navigate } = navigation;
   let {
     carVerificiationItems,
-    exteriorItems = [],
-    interiorItems = [],
-    tires = [],
+    exteriorItems,
+    interiorItems,
+    tires,
     selectedInspectionID,
     plateNumber,
     /* skipLeft,
@@ -130,6 +130,7 @@ const NewInspectionContainer = ({ route, navigation }) => {
   const { user } = useSelector(state => state?.auth) || {};
   const { inspectionFrequency } = useSelector(state => state.newInspection) || {};
   const inspectionFrequencyList = Array.isArray(inspectionFrequency) ? inspectionFrequency : [];
+  console.log('inspectionFrequencyList', inspectionFrequencyList);
   const interiorItemsConfig = inspectionFrequencyList.filter(item => item?.groupType === 'interiorItems');
   const exteriorItemsConfig = inspectionFrequencyList.filter(item => item?.groupType === 'exteriorItems');
   const tiresItemsConfig = inspectionFrequencyList.filter(item => item?.groupType === 'tires');
@@ -353,7 +354,7 @@ const NewInspectionContainer = ({ route, navigation }) => {
         : !isObjectEmpty(interior__));
     const allExterior =
       exteriorItemsConfig.length > 0
-        ? !exteriorItemsConfig.some(item => {
+        ? !exteriorItemsConfig?.some(item => {
             const baseKey = INSPECTION_SUBCATEGORY[item?.categoryName];
             if (!baseKey) {
               return false;

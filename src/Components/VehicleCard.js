@@ -5,12 +5,19 @@ import AppText from './text';
 import { colors } from '../Assets/Styles';
 import CardWrapper from './Card/CardWrapper';
 import { IMAGES } from '../Assets/Images';
-import { VEHICLE_IMAGES } from '../Constants';
+import { VEHICLE_IMAGES, VEHICLE_TYPES } from '../Constants';
 
 const VehicleCard = ({ item, onPress }) => {
   return (
     <CardWrapper onPress={onPress} style={styles.container}>
-      <Image source={VEHICLE_IMAGES[item?.vehicleType] || IMAGES.Van} style={styles.image} />
+      <Image
+        source={
+          item?.vehicleType === 'dvir-truck' || item?.vehicleType === 'regular-truck'
+            ? VEHICLE_IMAGES[VEHICLE_TYPES.TRUCK]
+            : VEHICLE_IMAGES[item?.vehicleType] || IMAGES.Van
+        }
+        style={styles.image}
+      />
 
       <View style={styles.contentContainer}>
         <AppText fontWeight={'700'} fontSize={wp(3.5)} color={colors.royalBlue}>

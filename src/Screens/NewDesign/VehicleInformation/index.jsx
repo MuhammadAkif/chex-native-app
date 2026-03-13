@@ -29,7 +29,7 @@ import { useRoute } from '@react-navigation/native';
 import dayjs from 'dayjs';
 import { Types } from '../../../Store/Types';
 
-const validate = (values, hasInspectionType, OCRsCapturedImages, t) => {
+const validate = (values, OCRsCapturedImages, t) => {
   const errors = {};
 
   if (OCRsCapturedImages?.numberPlate?.uri && !values?.licensePlateNumber?.trim()) {
@@ -50,10 +50,6 @@ const validate = (values, hasInspectionType, OCRsCapturedImages, t) => {
     errors.vin = t('vehicleInfo.errors.vinRequired');
   } else if (values?.vin?.length < 17) {
     errors.vin = t('vehicleInfo.errors.vinLength');
-  }
-
-  if (values.vehicleType === VEHICLE_TYPES.TRUCK && hasInspectionType && !values.inspectionType?.trim?.()) {
-    errors.inspectionType = t('vehicleInfo.errors.inspectionTypeRequired');
   }
 
   return errors;
@@ -77,92 +73,6 @@ const VehicleTypes = [
 const currentDate = new Date().toISOString();
 const OCRsCapturedImagesInitialState = { mileage: { uri: '', extension: '' }, numberPlate: { uri: '', extension: '' }, vin: { uri: '', extension: '' } };
 
-const configs =  [
-          {
-              "categoryId": 60,
-              "categoryName": "front_right_corner",
-              "groupType": "exteriorItems",
-              "companyConfigId": 19064
-          },
-          {
-              "categoryId": 61,
-              "categoryName": "rear_left_corner",
-              "groupType": "exteriorItems",
-              "companyConfigId": 19065
-          },
-          {
-              "categoryId": 62,
-              "categoryName": "exterior_rear",
-              "groupType": "exteriorItems",
-              "companyConfigId": 19066
-          },
-          {
-              "categoryId": 63,
-              "categoryName": "exterior_front",
-              "groupType": "exteriorItems",
-              "companyConfigId": 19067
-          },
-          {
-              "categoryId": 64,
-              "categoryName": "rear_interior",
-              "groupType": "interiorItems",
-              "companyConfigId": 19068
-          },
-          {
-              "categoryId": 65,
-              "categoryName": "front_interior",
-              "groupType": "interiorItems",
-              "companyConfigId": 19069
-          },
-          {
-              "categoryId": 66,
-              "categoryName": "exterior_left",
-              "groupType": "exteriorItems",
-              "companyConfigId": 19070
-          },
-          {
-              "categoryId": 67,
-              "categoryName": "exterior_right",
-              "groupType": "exteriorItems",
-              "companyConfigId": 19071
-          },
-          {
-              "categoryId": 68,
-              "categoryName": "brake_components",
-              "groupType": "tires",
-              "companyConfigId": 19072
-          },
-          {
-              "categoryId": 69,
-              "categoryName": "tdspare",
-              "groupType": "tires",
-              "companyConfigId": 19073
-          },
-          {
-              "categoryId": 70,
-              "categoryName": "tdrr",
-              "groupType": "tires",
-              "companyConfigId": 19074
-          },
-          {
-              "categoryId": 71,
-              "categoryName": "tdlr",
-              "groupType": "tires",
-              "companyConfigId": 19075
-          },
-          {
-              "categoryId": 72,
-              "categoryName": "tdrf",
-              "groupType": "tires",
-              "companyConfigId": 19076
-          },
-          {
-              "categoryId": 73,
-              "categoryName": "tdlf",
-              "groupType": "tires",
-              "companyConfigId": 19077
-          }
-      ]
 
 const VehicleInformation = props => {
   const { t } = useTranslation();
@@ -177,7 +87,6 @@ const VehicleInformation = props => {
 
   const user = authState?.user?.data;
   const companyId = user?.companyId;
-  const hasInspectionType = user?.hasInspectionType || false;
   const [showVehicleType, setShowVehicleType] = useState(false);
   const [hasApiDetectedVehicleType, setHasApiDetectedVehicleType] = useState(false);
   const [isFetchingVehicleInfo, setIsFetchingVehicleInfo] = useState(false);
@@ -254,7 +163,7 @@ const VehicleInformation = props => {
   const scrollToVehicleType = useCallback(
     typeId => {
       const index = VehicleTypes.findIndex(v => v.id === typeId);
-      if (index < 0) return;
+      if (index < 0) {return;}
       const x = index * (VEHICLE_ITEM_WIDTH + VEHICLE_ITEM_GAP);
       vehicleTypesScrollRef.current?.scrollTo({ x, y: 0, animated: true });
     },
@@ -274,7 +183,7 @@ const VehicleInformation = props => {
       const hasVin = apiVin.length > 0;
       setFieldValue('vin', hasVin ? apiVin : '', false);
       setShowVinInput(!hasVin || apiVin.length < 17);
-      if (hasVin) setFieldError?.('vin', '');
+      if (hasVin) {setFieldError?.('vin', '');}
 
       const normalizedType = typeof apiVehicleType === 'string' ? apiVehicleType.toLowerCase() : null;
       if (normalizedType && Object.values(VEHICLE_TYPES).includes(normalizedType)) {
@@ -303,23 +212,20 @@ const VehicleInformation = props => {
       vehicleType: undefined,
       vin: undefined,
     });
-  }
-
+  };
   const handleSubmitForm = (values, { setSubmitting, resetForm }) => {
     Keyboard.dismiss();
 
     const { numberPlate, mileage } = OCRsCapturedImagesRef.current;
     const dateImage = dayjs(currentDate).format('DD-M-YYYY');
     const vehicleType = values?.vehicleType;
-
     const data = {
       ...values,
-      ...(vehicleType === VEHICLE_TYPES.TRUCK &&
-        hasInspectionType && {
-          hasCheckList: values.inspectionType === 'DVIR',
-          vehicleType:
-            values.inspectionType === 'DVIR' ? 'dvir-truck' : values.inspectionType === 'Regular' ? 'regular-truck' : values.vehicleType,
-        }),
+      ...(vehicleType === VEHICLE_TYPES.TRUCK && {
+        hasCheckList: values.inspectionType === 'DVIR',
+        vehicleType:
+          values.inspectionType === 'DVIR' ? 'dvir-truck' : values.inspectionType === 'Regular' ? 'regular-truck' : values.vehicleType,
+      }),
       files: [
         {
           url: numberPlate?.uri,
@@ -342,7 +248,6 @@ const VehicleInformation = props => {
       year: makeYearModelValue?.year,
 
     };
-
     setIsLoading(true);
 
     // API CALL TO CREATE INSPECTION
@@ -456,7 +361,7 @@ const VehicleInformation = props => {
 
   const handlePressOCRInput = (key, captureHandler) => {
     const uri = OCRsCapturedImagesRef?.current?.[key]?.uri;
-    if (!uri) captureHandler();
+    if (!uri) {captureHandler();}
   };
 
   const handlePressClearForm = useCallback((setFieldValue, setFieldTouched, setFieldError) => {
@@ -475,7 +380,7 @@ const VehicleInformation = props => {
     setFieldTouched('mileage', true, false);
     setFieldTouched('vin', true, false);
     setShowVehicleType(false);
-    setShowVinInput(true)
+    setShowVinInput(true);
     setHasApiDetectedVehicleType(false);
     setIsFetchingVehicleInfo(false);
     setShowExistingVehicleDropdown(false);
@@ -505,7 +410,7 @@ const VehicleInformation = props => {
     setFieldTouched('mileage', true, false);
     setFieldTouched('vin', true, false);
     setShowVehicleType(false);
-    setShowVinInput(true)
+    setShowVinInput(true);
     setHasApiDetectedVehicleType(false);
     setIsFetchingVehicleInfo(false);
     setShowExistingVehicleDropdown(false);
@@ -525,7 +430,7 @@ const VehicleInformation = props => {
   const onCloseExistingVehicleDropDown = () => {
     setShowExistingVehicleDropdown(false);
     setShowVehicleType(true);
-  }
+  };
 
 
   return (
@@ -564,10 +469,11 @@ const VehicleInformation = props => {
                   vin: route?.params?.isFromRegisteredVehicle ? route.params.vin : '',
                 }}
                 validate={values => {
-                  const errors = validate(values, hasInspectionType, OCRsCapturedImagesRef?.current, t);
-
+                  const errors = validate(values, OCRsCapturedImagesRef?.current, t);
                   if (showVehicleType && !values.vehicleType) {
                     errors.vehicleType = t('vehicleInfo.errors.vehicleTypeRequired');
+                  }else if(values?.vehicleType === 'truck' && values?.inspectionType === '' ) {
+                    errors.inspectionType = t('vehicleInfo.errors.inspectionTypeRequired');
                   }
 
                   return errors;
@@ -605,7 +511,7 @@ const VehicleInformation = props => {
                     if (isMileageCapture) {
                       navigation.setParams({ isMileageCapture: false });
 
-                      if (!capturedImageUri) return; // guard
+                      if (!capturedImageUri) {return;} // guard
 
                       const mileageNotDetected = () => {
                         dispatch(setMileage(''));
@@ -646,7 +552,7 @@ const VehicleInformation = props => {
                     if (isLicensePlateCapture) {
                       navigation.setParams({ isLicensePlateCapture: false });
 
-                      if (!capturedImageUri) return; // guard
+                      if (!capturedImageUri) {return;} // guard
 
                       const licensePlateNotDetected = () => {
                         setIsFetchingVehicleInfo(false);
@@ -689,7 +595,7 @@ const VehicleInformation = props => {
                     if (isVinCapture) {
                       navigation.setParams({ isVinCapture: false });
 
-                      if (!capturedImageUri) return; // guard
+                      if (!capturedImageUri) {return;} // guard
 
                       const vinNotDetected = () => {
                         setFieldValue('vin', '', false);
@@ -713,7 +619,7 @@ const VehicleInformation = props => {
                               vin_num: response?.data?.vin_num,
                               make: response?.data?.make,
                               model: response?.data?.model,
-                              year: response?.data?.year
+                              year: response?.data?.year,
                             });
                             setIsMakeYearModelModalVisible(true);
                             const vin_num = response?.data?.vin_num ?? '';
@@ -737,7 +643,7 @@ const VehicleInformation = props => {
                   const fetchVehicleInfo = useCallback(
                     async licensePlateNumber => {
                       const normalizedPlate = normalizePlate(licensePlateNumber);
-                      if (!normalizedPlate || !isValidPlate(normalizedPlate)) return;
+                      if (!normalizedPlate || !isValidPlate(normalizedPlate)) {return;}
 
                       // Return cached result if available
                       // const cached = responseCacheRef.current.get(normalizedPlate);
@@ -753,7 +659,7 @@ const VehicleInformation = props => {
                       setIsFetchingVehicleInfo(true);
                       try {
                         const response = await getVehicleInformationAgainstLicenseId(normalizedPlate);
-                        if (requestId !== latestRequestIdRef.current) return; // stale
+                        if (requestId !== latestRequestIdRef.current) {return;} // stale
                         const data = response?.data || {};
                         // Cache small number of recent results
                         // if (responseCacheRef.current.size > 20) {
@@ -772,14 +678,14 @@ const VehicleInformation = props => {
                         }
 
                       } catch (error) {
-                        if (requestId !== latestRequestIdRef.current) return; // stale
+                        if (requestId !== latestRequestIdRef.current) {return;} // stale
                         setFieldValue('vehicleType', '', false);
                         setFieldValue('vin', '', false);
                         setHasApiDetectedVehicleType(false);
                         setShowVehicleType(true);
                         setShowExistingVehicleDropdown(false);
                       } finally {
-                        if (requestId === latestRequestIdRef.current) setIsFetchingVehicleInfo(false);
+                        if (requestId === latestRequestIdRef.current) {setIsFetchingVehicleInfo(false);}
                       }
                     },
                     [applyVehicleInfo, isValidPlate, normalizePlate, setFieldError, setFieldValue]
@@ -792,7 +698,7 @@ const VehicleInformation = props => {
                       // Normalize on typing: native autoCapitalize handles uppercase, we filter special chars
                       const normalizedPlate = normalizePlate(text);
                       // Skip if same as last set (prevents IME double-fire)
-                      if (normalizedPlate === lastSetLicensePlateRef.current) return;
+                      if (normalizedPlate === lastSetLicensePlateRef.current) {return;}
                       lastSetLicensePlateRef.current = normalizedPlate;
                       setFieldValue(name, normalizedPlate);
                       if (!isValidPlate(normalizedPlate)) {
@@ -824,7 +730,7 @@ const VehicleInformation = props => {
                               vin_num: response?.data?.vin_num,
                               make: response?.data?.make,
                               model: response?.data?.model,
-                              year: response?.data?.year
+                              year: response?.data?.year,
                             });
                             setIsMakeYearModelModalVisible(true);
                             setFieldError('vin', undefined);
@@ -848,7 +754,7 @@ const VehicleInformation = props => {
                     }
 
 
-                  }
+                  };
                   useEffect(() => {
                     if (values?.vin?.length === 17 && showVinInput) {
                       fetchMakeYearModelInfo();
@@ -911,7 +817,7 @@ const VehicleInformation = props => {
                               {VehicleTypes.map(v => (
                                 <Pressable
                                   onPress={() => {
-                                    if (isFromRegisteredVehicle && route?.params?.vehicleType) return;
+                                    if (isFromRegisteredVehicle && route?.params?.vehicleType) {return;}
                                     if (!hasApiDetectedVehicleType || (isFromRegisteredVehicle && !route?.params?.vehicleType)) {
                                       setFieldValue('vehicleType', v.id);
                                     }
@@ -988,7 +894,7 @@ const VehicleInformation = props => {
                             />
                           )}
                           {/* INSPECTION TYPE DROPDOWN */}
-                          {hasInspectionType && values.vehicleType === VEHICLE_TYPES.TRUCK && (
+                          {values.vehicleType === VEHICLE_TYPES.TRUCK && (
                             <View>
                               <AppText style={{ marginBottom: 6 }}>{t('vehicleInfo.inspectionTypeLabel')}</AppText>
                               <Pressable
@@ -1001,6 +907,9 @@ const VehicleInformation = props => {
                                 </AppText>
                                 <ChevronIcon />
                               </Pressable>
+                              {errors.inspectionType && (touched.vehicleType || submitCount > 0) && (
+                                <AppText style={[styles.vehicleTypeText, { color: colors.red, marginTop: 1 }]}> {errors.vehicleType} </AppText>
+                              )}
 
                               {isInspectionTypeOpen && (
                                 <>
@@ -1066,7 +975,7 @@ const VehicleInformation = props => {
               vin: makeYearModelValue?.vin_num || makeYearModelValue?.vin || '',
               make: makeYearModelValue?.make || '',
               model: makeYearModelValue?.model || '',
-              year: makeYearModelValue?.year?.toString() || ''
+              year: makeYearModelValue?.year?.toString() || '',
             }}
             onClosePress={() => setIsMakeYearModelModalVisible(false)}
             onConfirmPress={(values) => {

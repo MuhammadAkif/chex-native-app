@@ -196,7 +196,6 @@ const CameraContainer = ({ route, navigation }) => {
     setIsImageURL('');
     setIsImageFile({});
   };
-console.log('route.params.returnTo', route.params?.returnTo);
   const handleResponse = async key => {
     const haveType = checkRelevantType(groupType);
     let extension = isImageFile.path.split('.').pop() || 'jpeg';
@@ -236,7 +235,6 @@ console.log('route.params.returnTo', route.params?.returnTo);
         capturedImageS3Key: key,
         ...route?.params?.returnToParams,
       };
-
       if (targetScreen == ROUTES.VEHICLE_INFORMATION) {
         navigation.popTo(ROUTES.TABS, { screen: TABS.INSPECTION, params: { screen: ROUTES.VEHICLE_INFORMATION, params: navParams } });
       } else if (targetScreen == ROUTES.DVIR_INSPECTION_CHECKLIST) {
@@ -296,8 +294,7 @@ console.log('route.params.returnTo', route.params?.returnTo);
       annotationDetails: annotationDetails,
       is_Exterior: haveType,
     };
-
-    if (route?.params?.prevScreen === ROUTES.DVIR_INSPECTION_CHECKLIST && selectedVehicleKind === VEHICLE_TYPES.TRUCK) {
+    if (route?.params?.prevScreen === ROUTES.DVIR_INSPECTION_CHECKLIST && (selectedVehicleKind === 'dvir-truck' || selectedVehicleKind === 'regular-truck')) {
       navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST, { afterFileUploadImageUrl: image_url, fileId: imageID, ...afterFileUploadNavigationParams });
     } else {
       navigation.popTo(NEW_INSPECTION, params);
@@ -340,7 +337,6 @@ console.log('route.params.returnTo', route.params?.returnTo);
         category
       );
     } catch (error) {
-      console.log('handleNextPress error:', error);
       onUploadFailed(error);
     }
   };

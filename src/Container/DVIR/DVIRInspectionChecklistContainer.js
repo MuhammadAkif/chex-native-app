@@ -465,7 +465,7 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
       modalDetails: modalDetails,
       inspectionId: selectedInspectionID,
       prevScreen: ROUTES.DVIR_INSPECTION_CHECKLIST,
-      returnTo: ROUTES.DVIR_INSPECTION_CHECKLIST,
+      // returnTo: ROUTES.DVIR_INSPECTION_CHECKLIST,
     });
   };
 

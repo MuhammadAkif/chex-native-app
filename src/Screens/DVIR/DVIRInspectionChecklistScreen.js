@@ -380,6 +380,16 @@ const DVIRInspectionChecklistScreen = ({
       );
     }
     if (section.key === 'tires') {
+      const mainTireIds = ['tdlf', 'tdrf', 'tdlr', 'tdrr'];
+      const primaryTires = tireInspectionData.filter(tire => mainTireIds.includes(tire.id));
+      const extraTires = tireInspectionData.filter(tire => !mainTireIds.includes(tire.id));
+      const hasTires = primaryTires.length > 0 || extraTires.length > 0;
+
+      // If there are no tire items at all, don't render the tires section
+      if (!hasTires) {
+        return null;
+      }
+
       return (
         <View style={[styles.secondBodyContainer]}>
           <View style={[styles.header]}>
@@ -394,7 +404,7 @@ const DVIRInspectionChecklistScreen = ({
             </View>
           </View>
 
-          {showTiresSection && (
+          {showTiresSection && hasTires && (
             <View style={styles.tiresContainer}>
               {/* Main Truck with Overlaid Tire Positions */}
               <View style={styles.truckWithTiresContainer}>
@@ -404,9 +414,7 @@ const DVIRInspectionChecklistScreen = ({
                 </View>
 
                 {/* Tire Capture Boxes Positioned Over Truck Tires */}
-                {/* Map tireInspectionData for tire positions */}
-                {tireInspectionData.slice(0, 4).map((tire, idx) => {
-                  // Map index to position style
+                {primaryTires.map(tire => {
                   let positionStyle = null;
                   if (tire.id === 'tdlf') {
                     positionStyle = styles.frontLeftPosition;
@@ -423,7 +431,9 @@ const DVIRInspectionChecklistScreen = ({
                         style={[styles.tireCaptureBox, tire?.image && styles.tireCaptureImageBox]}
                         activeOpacity={0.7}
                         onPress={
-                          tire?.image ? () => handleMediaModalDetailsPress?.(tire, 'tire', 0) : () => onPressTireImage?.(tire.id, tire?.title)
+                          tire?.image
+                            ? () => handleMediaModalDetailsPress?.(tire, 'tire', 0)
+                            : () => onPressTireImage?.(tire.id, tire?.title)
                         }>
                         <View style={[styles.tireIconContainer, tire?.image && styles.tireImageContainer]}>
                           <FastImage
@@ -455,40 +465,46 @@ const DVIRInspectionChecklistScreen = ({
               </View>
 
               {/* Bottom Section - Spare Tire and Brake Components */}
-              <View style={styles.bottomTiresRow}>
-                {tireInspectionData.slice(4).map(tire => (
-                  <View style={styles.bottomTireItem} key={tire.id}>
-                    <TouchableOpacity
-                      style={[styles.tireCaptureBox, tire?.image && styles.tireCaptureImageBox]}
-                      activeOpacity={0.7}
-                      onPress={tire?.image ? () => handleMediaModalDetailsPress?.(tire, 'tire', 0) : () => onPressTireImage?.(tire.id, tire?.title)}>
-                      <View style={[styles.tireIconContainer, tire?.image && styles.tireImageContainer]}>
-                        <FastImage
-                          source={tire?.image ? { uri: tire.image } : IMAGES[tire.icon]}
-                          style={tire.image ? styles.tireImage : styles.tireIcon}
-                          resizeMode={tire?.image ? 'cover' : 'contain'}
-                        />
-                      </View>
-                      {tire?.image ? (
-                        <TouchableOpacity
-                          activeOpacity={0.7}
-                          onPress={() => onRemoveFrameImage(tire?.id, undefined, tire?.fileId, 'tires')}
-                          style={[styles.removeImageButton, styles.removeImageButtonWithImage]}>
-                          <CrossBlue width={wp(5.5)} height={wp(5.5)} />
-                        </TouchableOpacity>
-                      ) : (
-                        <>
-                          <CameraBorderedIcon width={wp(4)} height={wp(4)} style={styles.cameraIcon} />
-                          <AppText style={styles.tireCaptureText}>
-                            {t('dvir.captureImage')}
-                          </AppText>
-                        </>
-                      )}
-                    </TouchableOpacity>
-                    <AppText style={styles.tireLabel}>{tire.title}</AppText>
-                  </View>
-                ))}
-              </View>
+              {extraTires.length > 0 && (
+                <View style={styles.bottomTiresRow}>
+                  {extraTires.map(tire => (
+                    <View style={styles.bottomTireItem} key={tire.id}>
+                      <TouchableOpacity
+                        style={[styles.tireCaptureBox, tire?.image && styles.tireCaptureImageBox]}
+                        activeOpacity={0.7}
+                        onPress={
+                          tire?.image
+                            ? () => handleMediaModalDetailsPress?.(tire, 'tire', 0)
+                            : () => onPressTireImage?.(tire.id, tire?.title)
+                        }>
+                        <View style={[styles.tireIconContainer, tire?.image && styles.tireImageContainer]}>
+                          <FastImage
+                            source={tire?.image ? { uri: tire.image } : IMAGES[tire.icon]}
+                            style={tire.image ? styles.tireImage : styles.tireIcon}
+                            resizeMode={tire?.image ? 'cover' : 'contain'}
+                          />
+                        </View>
+                        {tire?.image ? (
+                          <TouchableOpacity
+                            activeOpacity={0.7}
+                            onPress={() => onRemoveFrameImage(tire?.id, undefined, tire?.fileId, 'tires')}
+                            style={[styles.removeImageButton, styles.removeImageButtonWithImage]}>
+                            <CrossBlue width={wp(5.5)} height={wp(5.5)} />
+                          </TouchableOpacity>
+                        ) : (
+                          <>
+                            <CameraBorderedIcon width={wp(4)} height={wp(4)} style={styles.cameraIcon} />
+                            <AppText style={styles.tireCaptureText}>
+                              {t('dvir.captureImage')}
+                            </AppText>
+                          </>
+                        )}
+                      </TouchableOpacity>
+                      <AppText style={styles.tireLabel}>{tire.title}</AppText>
+                    </View>
+                  ))}
+                </View>
+              )}
             </View>
           )}
         </View>
@@ -962,8 +978,8 @@ const styles = StyleSheet.create({
     marginTop: hp(3),
   },
   bottomTireItem: {
-    flex: 1,
-    alignItems: 'center',
+    // flex: 1,
+    // alignItems: 'center',
     maxWidth: wp(40),
   },
   captureImageStyle: {
