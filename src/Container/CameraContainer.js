@@ -294,7 +294,7 @@ const CameraContainer = ({ route, navigation }) => {
       annotationDetails: annotationDetails,
       is_Exterior: haveType,
     };
-    if (route?.params?.prevScreen === ROUTES.DVIR_INSPECTION_CHECKLIST && (selectedVehicleKind === 'dvir-truck' || selectedVehicleKind === 'regular-truck')) {
+    if (route?.params?.prevScreen === ROUTES.DVIR_INSPECTION_CHECKLIST && (selectedVehicleKind === 'dvir-truck' || selectedVehicleKind === 'regular-truck' || selectedVehicleKind === 'truck')) {
       navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST, { afterFileUploadImageUrl: image_url, fileId: imageID, ...afterFileUploadNavigationParams });
     } else {
       navigation.popTo(NEW_INSPECTION, params);

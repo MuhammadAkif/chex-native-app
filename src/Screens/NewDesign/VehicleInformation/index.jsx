@@ -249,7 +249,6 @@ const VehicleInformation = props => {
 
     };
     setIsLoading(true);
-
     // API CALL TO CREATE INSPECTION
     createInspection(companyId, data)
       .then(response => {
@@ -288,12 +287,14 @@ const VehicleInformation = props => {
           errorMessage = 'An error occurred',
           message = t('errors.alreadyInProgress'),
           vehicleType: vehicleKind,
+          configs:configs,
         } = error?.response?.data || {};
 
         if (statusCode === 409) {
           const vehicleType = hasAdded || 'existing';
           dispatch(setVehicleType(vehicleType));
           dispatch(setSelectedVehicleKind(vehicleKind));
+          dispatch(setInspectionFrequency(configs));
           setTimeout(() => setIsInspectionInProgressModalVisible(true), 100);
           setErrorModalDetail({ title: message, message: errorMessage, inspectionId, resetForm: resetForm, vehicleKind });
 
@@ -311,7 +312,6 @@ const VehicleInformation = props => {
 
   const handleYesPressOfInProgressInspection = async () => {
     setIsInspectionInProgressModalVisible(false);
-
     dispatch(setCompanyId(companyId));
     dispatch(numberPlateSelected(errorModalDetail.inspectionId));
     errorModalDetail?.resetForm?.();
@@ -322,9 +322,8 @@ const VehicleInformation = props => {
     resetRefCacheOfPlateNumber();
 
     const timeout = 500;
-    const nextRoute = errorModalDetail?.vehicleKind === VEHICLE_TYPES.TRUCK ? ROUTES.DVIR_INSPECTION_CHECKLIST : ROUTES.NEW_INSPECTION;
-    const params = errorModalDetail?.vehicleKind === VEHICLE_TYPES.TRUCK ? undefined : { isInProgress: true };
-
+    const nextRoute = errorModalDetail?.vehicleKind === 'dvir-truck'  ? ROUTES.DVIR_INSPECTION_CHECKLIST : ROUTES.NEW_INSPECTION;
+    const params = errorModalDetail?.vehicleKind === VEHICLE_TYPES.TRUCK || errorModalDetail?.vehicleKind === 'dvir-truck' || errorModalDetail?.vehicleKind === 'regular-truck' ? undefined : { isInProgress: true };
     setTimeout(() => navigation.reset({ index: 2, routes: [{ name: ROUTES.TABS }, { name: ROUTES.INSPECTION_IN_PROGRESS }, { name: nextRoute, params }] }), timeout);
 
     setErrorModalDetail({ message: '', title: '', inspectionId: '', resetForm: null, vehicleKind: null });
@@ -432,7 +431,6 @@ const VehicleInformation = props => {
     setShowVehicleType(true);
   };
 
-
   return (
     <View style={styles.blueContainer}>
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
@@ -467,6 +465,7 @@ const VehicleInformation = props => {
                   licensePlateNumber: route?.params?.isFromRegisteredVehicle ? route.params.licensePlateNumber : '',
                   vehicleType: route?.params?.isFromRegisteredVehicle ? route.params.vehicleType : '',
                   vin: route?.params?.isFromRegisteredVehicle ? route.params.vin : '',
+                  inspectionType:route?.params?.isFromRegisteredVehicle ? route.params.inspectionType : '',
                 }}
                 validate={values => {
                   const errors = validate(values, OCRsCapturedImagesRef?.current, t);
@@ -760,8 +759,6 @@ const VehicleInformation = props => {
                       fetchMakeYearModelInfo();
                     }
                   }, [values?.vin]);
-
-
                   return (
                     <>
                       <View style={styles.vehicleTypeContainer}>
@@ -814,7 +811,7 @@ const VehicleInformation = props => {
                               horizontal
                               ref={vehicleTypesScrollRef}
                               contentContainerStyle={styles.vehicleTypeContentList}>
-                              {VehicleTypes.map(v => (
+                              {VehicleTypes?.map(v => (
                                 <Pressable
                                   onPress={() => {
                                     if (isFromRegisteredVehicle && route?.params?.vehicleType) {return;}
@@ -961,7 +958,7 @@ const VehicleInformation = props => {
           <DiscardInspectionModal
             title={errorModalDetail.title}
             onYesPress={handleYesPressOfInProgressInspection}
-            description={errorModalDetail.message}
+             description={errorModalDetail.message}
             dualButton={true}
             onNoPress={handleNoPressOfAlreadyInProgressModal}
           />

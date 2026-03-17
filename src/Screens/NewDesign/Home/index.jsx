@@ -20,8 +20,8 @@ import { useContinueInspection, useInspectionDetails } from '../../../hooks';
 const Home = ({ navigation }) => {
   const { t } = useTranslation();
   const authState = useSelector(state => state?.auth);
-  const isScreenFocused = useIsFocused()
-  const isFirstTimeLoad = useRef(true)
+  const isScreenFocused = useIsFocused();
+  const isFirstTimeLoad = useRef(true);
   const user = authState?.user?.data;
   const [userInspectionStats, setUserInspectionStats] = useState({
     totalVehicles: 0,
@@ -37,7 +37,7 @@ const Home = ({ navigation }) => {
   const [showExitPopup, setShowExitPopup] = useState(false);
 
   const getUserInspectionStatsAPI = async () => {
-    if (isFirstTimeLoad.current) setIsStatsLoading(true);
+    if (isFirstTimeLoad.current) {setIsStatsLoading(true);}
     const response = await getUserInspectionStats();
     setIsStatsLoading(false);
 
@@ -46,7 +46,7 @@ const Home = ({ navigation }) => {
   };
 
   const getRegisteredVehiclesAPI = async () => {
-    if (isFirstTimeLoad.current) setIsVehicleRegisterLoading(true);
+    if (isFirstTimeLoad.current) {setIsVehicleRegisterLoading(true);}
     const response = await getRegisteredVehicles();
     setIsVehicleRegisterLoading(false);
 
@@ -55,7 +55,7 @@ const Home = ({ navigation }) => {
   };
 
   const getRecentInspectionsAPI = () => {
-    if (isFirstTimeLoad.current) setIsRecentInspectionLoading(true);
+    if (isFirstTimeLoad.current) {setIsRecentInspectionLoading(true);}
     getRecentInspections()
       .then(response => {
         if (response.status === 200) {
@@ -105,8 +105,8 @@ const Home = ({ navigation }) => {
   };
 
   const handlePressStatCard = id => {
-    if (id === 1) navigation.navigate(ROUTES.INSPECTION_IN_PROGRESS);
-    else if (id === 2) navigation.navigate(TABS.REPORTS);
+    if (id === 1) {navigation.navigate(ROUTES.INSPECTION_IN_PROGRESS);}
+    else if (id === 2) {navigation.navigate(TABS.REPORTS);}
   };
 
   return (
@@ -204,7 +204,7 @@ const StatBox = ({ count = 0, icon: Icon, title, id, onPress, showArrow = false 
       <AppText fontSize={wp(3.5)} color={colors.steelGray} style={styles.statText}>
         {title}
       </AppText>
-      {showArrow && <DownArrow style={{ transform: [{ rotate: '270deg' }], position: "absolute", right: wp(3), bottom: wp(3) }} color={colors.lightSteelBlue} height={wp(4.5)} width={wp(4.5)} />}
+      {showArrow && <DownArrow style={{ transform: [{ rotate: '270deg' }], position: 'absolute', right: wp(3), bottom: wp(3) }} color={colors.lightSteelBlue} height={wp(4.5)} width={wp(4.5)} />}
     </CardWrapper>
   );
 };
@@ -222,15 +222,17 @@ const RegisteredVehicles = ({ data, isLoading }) => {
 
   const handleConfirmInspection = () => {
     setAlertVisible(false);
-    if (!selectedVehicle) return;
+    if (!selectedVehicle) {return;}
 
     navigation.navigate(TABS.INSPECTION, {
       screen: ROUTES.VEHICLE_INFORMATION, params: {
         licensePlateNumber: selectedVehicle?.licensePlateNumber,
-        vehicleType: selectedVehicle?.vehicleType,
+        // vehicleType: selectedVehicle?.vehicleType,
         vin: selectedVehicle?.vin,
         isFromRegisteredVehicle: true,
-      }
+        vehicleType: selectedVehicle?.vehicleType === 'dvir-truck' ? 'truck' :  selectedVehicle?.vehicleType === 'regular-truck' ? 'truck' : selectedVehicle?.vehicleType,
+        inspectionType:selectedVehicle?.vehicleType === 'dvir-truck' ? 'DVIR' :  selectedVehicle?.vehicleType === 'regular-truck' ? 'Regular' : '',
+      },
     });
     setSelectedVehicle(null);
   };
@@ -283,11 +285,10 @@ const RecentInspections = ({ data, isLoading }) => {
   const [alertMessage, setAlertMessage] = useState('');
 
   const handlePressInspectionCard = (item) => {
-    if (isContinueLoading || isDetailLoading) return;
+    if (isContinueLoading || isDetailLoading) {return;}
 
     const inspectionId = item?.id;
     const itemStatus = INSPECTION_STATUS_FOR_RECENT_INSPECTION[item?.status];
-
     if (itemStatus === INSPECTION_STATUS_FOR_RECENT_INSPECTION.IN_PROGRESS) {
       handleContinuePress(inspectionId);
     } else if (itemStatus === INSPECTION_STATUS_FOR_RECENT_INSPECTION.REVIEWED) {

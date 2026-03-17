@@ -13,7 +13,7 @@ import {
   ExteriorRearLeftCornerDetails,
   ExteriorRearRightCornerDetails,
 } from '../../Utils';
-import {ImagePicker} from '../index';
+import {ExteriorItemsExpandedCard_Old, ImagePicker} from '../index';
 
 const {expandedCardContainer} = expandedCardStyles;
 const {container, itemPickerContainer} = ExpandedCardStyles;
@@ -70,7 +70,6 @@ const ExteriorItemsExpandedCard = ({
     },
   } = useSelector(state => state?.auth);
   const {selectedVehicleKind} = useSelector(state => state?.newInspection);
-
   const hasExteriorConfig = exteriorItemsConfig.length > 0;
   const showFront = !hasExteriorConfig || hasCategory(exteriorItemsConfig, EXTERIOR_CATEGORY_NAMES.FRONT);
   const showRear = !hasExteriorConfig || hasCategory(exteriorItemsConfig, EXTERIOR_CATEGORY_NAMES.REAR);

@@ -190,6 +190,7 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
   const { selectedInspectionID } = useSelector(state => state.newInspection);
   const { inspectionFrequency } = useSelector(state => state.newInspection) || {};
   const { t } = useTranslation();
+  console.log('inspectionFrequency',inspectionFrequency);
   // State for checklist items
   const [commentModalVisible, setAddCommentModalVisible] = useState(false);
   const [currentItemIndex, setCurrentItemIndex] = useState(null);

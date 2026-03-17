@@ -26,7 +26,6 @@ export const createInspection = async (companyId, data) => {
   try {
     return await api.post(CREATE_INSPECTION_URL, body);
   } catch (error) {
-    console.error('Create inspection error:', error.response.data);
     throw error;
   }
 };

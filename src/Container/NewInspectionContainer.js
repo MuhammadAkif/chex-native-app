@@ -130,7 +130,6 @@ const NewInspectionContainer = ({ route, navigation }) => {
   const { user } = useSelector(state => state?.auth) || {};
   const { inspectionFrequency } = useSelector(state => state.newInspection) || {};
   const inspectionFrequencyList = Array.isArray(inspectionFrequency) ? inspectionFrequency : [];
-  console.log('inspectionFrequencyList', inspectionFrequencyList);
   const interiorItemsConfig = inspectionFrequencyList.filter(item => item?.groupType === 'interiorItems');
   const exteriorItemsConfig = inspectionFrequencyList.filter(item => item?.groupType === 'exteriorItems');
   const tiresItemsConfig = inspectionFrequencyList.filter(item => item?.groupType === 'tires');
