@@ -26,7 +26,7 @@ const InspectionInProgressScreen = ({
   onNewInspectionPress,
 }) => {
   const { t } = useTranslation();
-console.log('data', data);
+
   return (
     <View style={container}>
       {isDiscardInspectionModalVisible && (

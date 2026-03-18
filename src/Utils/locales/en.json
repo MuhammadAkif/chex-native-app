@@ -566,6 +566,14 @@
     "right_front_tire": "Right Front Tire",
     "right_rear_tire": "Right Rear Tire",
     "interior_passenger_side": "Interior Passenger Side",
-    "interior_driver_side": "Interior Driver Side"
+    "interior_driver_side": "Interior Driver Side",
+    "rear_interior": "Rear Interior",
+    "front_interior": "Front Interior",
+    "brake_components": "Brake Components",
+    "tdspare": "Tread Depth SPARE",
+    "tdrr": "Tread Depth RR",
+    "tdlr": "Tread Depth LR",
+    "tdrf": "Tread Depth RF",
+    "tdlf": "Tread Depth LF"
   }
 }

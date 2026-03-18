@@ -45,6 +45,7 @@ const InspectionDetailContainer = ({ navigation, route }) => {
   }
   const handleDisplayMedia = item => {
     let title = t(`inspectionTitles.${item?.category}`);
+    console.log('title',title)
     const checkVideo = {
       'video/mp4': true,
       '.mp4': true,

@@ -152,7 +152,7 @@ const DVIRVehicleInfoContainer = ({navigation, route}) => {
               setVinLoading(true);
               try {
                 const response = await extractVinAI(route.params.capturedImageUri);
-                // console.log('RESPONSE', response);
+
                 const {plateNumber = null} = response?.data || {};
                 setFieldValue('vin', plateNumber || '');
               } catch (error) {

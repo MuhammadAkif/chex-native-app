@@ -21,12 +21,11 @@ const ExistingVehicleDropDown = ({
   listMaxHeight = 200,
 }) => {
   const [selectedItem, setSelectedItem] = useState(null);
-
   const handleSelect = useCallback(
     item => {
       setSelectedItem(item);
       onSelect?.(item);
-    
+
     },
     [onSelect],
   );
@@ -40,7 +39,7 @@ const ExistingVehicleDropDown = ({
             {selected && <View style={styles.radioInner} />}
           </View>
           <AppText style={styles.itemText}>
-            {item?.licensePlateNumber} 
+            {item?.licensePlateNumber}
           </AppText>
         </Pressable>
       );
@@ -48,7 +47,7 @@ const ExistingVehicleDropDown = ({
     [handleSelect, selectedItem],
   );
 
-  if (!data || data.length === 0) return null;
+  if (!data || data.length === 0) {return null;}
 
   const iconSize = 20;
   const overlap = iconSize / 4;
@@ -90,7 +89,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 11,
     backgroundColor: colors.white,
-    borderRadius: 10,    
+    borderRadius: 10,
   },
   label: {
     marginBottom: 6,

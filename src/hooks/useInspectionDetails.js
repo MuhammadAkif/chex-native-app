@@ -24,10 +24,7 @@ export const useInspectionDetails = () => {
             const updatedBeforeImages = updateFiles(beforeImages);
             let files_ = sortInspectionReviewedItems(updatedBeforeImages);
 
-            if (onSuccess) onSuccess();
-            console.log('FILES:', files_)
-            console.log('finalStatus:', finalStatus)
-            console.log('remarks:', remarks)
+            if (onSuccess) {onSuccess();}
             navigation.navigate(ROUTES.INSPECTION_DETAIL, {
                 files: files_,
                 finalStatus: finalStatus,
@@ -38,7 +35,6 @@ export const useInspectionDetails = () => {
             if (statusCode === 401) {
                 handle_Session_Expired(statusCode, dispatch);
             }
-            console.log('Error of inspection in detail => ', error?.response?.data);
         } finally {
             setIsLoading(false);
             setSelectedInspectionId(null);

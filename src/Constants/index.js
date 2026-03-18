@@ -32,7 +32,7 @@ const ENV_TYPE_URL = {
 
 const version = '1';
 export const API_VERSION_PATH = '/api/v' + version + '/';
-export const API_BASE_URL = ENV_TYPE_URL.staging;
+export const API_BASE_URL = ENV_TYPE_URL.production;
 
 export const generateApiUrl = path => API_BASE_URL + API_VERSION_PATH + path;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
@@ -41,6 +41,7 @@ export const nightImageCheckAI = process.env.NIGHT_IMAGE_CHECK;
 export const MILEAGE_EXTRACTION = process.env.MILEAGE_EXTRACT;
 export const AI_API_TOKEN = process.env.AI_API_TOKEN;
 export const SMARTLOOK_PROJECT_ID = '77967539d73859f97a4f9cc54d00dac3b6f00deb';
+export const ONE_SIGNAL_ID = '3f8c33e1-1334-4cf6-a0c4-347d101bcbef';
 
 // API endpoints
 export const API_ENDPOINTS = {

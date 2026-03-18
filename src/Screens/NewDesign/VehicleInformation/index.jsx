@@ -186,12 +186,18 @@ const VehicleInformation = props => {
       if (hasVin) {setFieldError?.('vin', '');}
 
       const normalizedType = typeof apiVehicleType === 'string' ? apiVehicleType.toLowerCase() : null;
-      if (normalizedType && Object.values(VEHICLE_TYPES).includes(normalizedType)) {
-        setFieldValue('vehicleType', normalizedType, false);
+      const isDvirOrRegularTruck = normalizedType === 'dvir-truck' || normalizedType === 'regular-truck';
+      const formVehicleType = isDvirOrRegularTruck ? 'truck' : normalizedType;
+      const isValidType = formVehicleType && (Object.values(VEHICLE_TYPES).includes(formVehicleType) || isDvirOrRegularTruck);
+      if (isValidType) {
+        setFieldValue('vehicleType', formVehicleType, false);
         setFieldError?.('vehicleType', '');
+        if (isDvirOrRegularTruck) {
+          setFieldValue('inspectionType', normalizedType === 'dvir-truck' ? 'DVIR' : 'Regular', false);
+        }
         setHasApiDetectedVehicleType(true);
         setShowVehicleType(true);
-        requestAnimationFrame(() => scrollToVehicleType(normalizedType));
+        requestAnimationFrame(() => scrollToVehicleType(formVehicleType));
       } else {
         setFieldValue('vehicleType', '', false);
         setHasApiDetectedVehicleType(false);
@@ -344,6 +350,7 @@ const VehicleInformation = props => {
         licensePlateNumber: route?.params?.licensePlateNumber,
         vehicleType: route?.params?.vehicleType,
         vin: route?.params?.vin,
+        inspectionType: route?.params?.inspectionType,
       },
     });
   };
@@ -759,6 +766,7 @@ const VehicleInformation = props => {
                       fetchMakeYearModelInfo();
                     }
                   }, [values?.vin]);
+
                   return (
                     <>
                       <View style={styles.vehicleTypeContainer}>

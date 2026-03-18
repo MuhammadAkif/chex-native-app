@@ -566,6 +566,14 @@
     "right_front_tire": "Sağ Ön Lastik",
     "right_rear_tire": "Sağ Arka Lastik",
     "interior_passenger_side": "İç Yolcu Tarafı",
-    "interior_driver_side": "İç Sürücü Tarafı"
+    "interior_driver_side": "İç Sürücü Tarafı",
+    "rear_interior": "Arka İç",
+    "front_interior": "Ön İç",
+    "brake_components": "Fren Bileşenleri",
+    "tdspare": "Diş Derinliği SPARE",
+    "tdrr": "Diş Derinliği RR",
+    "tdlr": "Diş Derinliği LR",
+    "tdrf": "Diş Derinliği RF",
+    "tdlf": "Diş Derinliği LF"
   }
 }

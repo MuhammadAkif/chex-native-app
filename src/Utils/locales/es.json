@@ -566,6 +566,14 @@
     "right_front_tire": "Neumático delantero derecho",
     "right_rear_tire": "Neumático trasero derecho",
     "interior_passenger_side": "Interior lado del pasajero",
-    "interior_driver_side": "Interior lado del conductor"
+    "interior_driver_side": "Interior lado del conductor",
+    "rear_interior": "Interior trasero",
+    "front_interior": "Interior delantero",
+    "brake_components": "Componentes de frenos",
+    "tdspare": "Profundidad del dibujo SPARE",
+    "tdrr": "Profundidad del dibujo RR",
+    "tdlr": "Profundidad del dibujo LR",
+    "tdrf": "Profundidad del dibujo RF",
+    "tdlf": "Profundidad del dibujo LF"
   }
 }

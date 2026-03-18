@@ -566,6 +566,14 @@
     "right_front_tire": "Anvelopă Față Dreapta",
     "right_rear_tire": "Anvelopă Spate Dreapta",
     "interior_passenger_side": "Interior Partea Pasagerului",
-    "interior_driver_side": "Interior Partea Șoferului"
+    "interior_driver_side": "Interior Partea Șoferului",
+    "rear_interior": "Interior spate",
+    "front_interior": "Interior față",
+    "brake_components": "Componente frâne",
+    "tdspare": "Adâncimea benzii de rulare SPARE",
+    "tdrr": "Adâncimea benzii de rulare RR",
+    "tdlr": "Adâncimea benzii de rulare LR",
+    "tdrf": "Adâncimea benzii de rulare RF",
+    "tdlf": "Adâncimea benzii de rulare LF"
   }
 }

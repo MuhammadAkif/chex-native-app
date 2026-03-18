@@ -190,7 +190,7 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
   const { selectedInspectionID } = useSelector(state => state.newInspection);
   const { inspectionFrequency } = useSelector(state => state.newInspection) || {};
   const { t } = useTranslation();
-  console.log('inspectionFrequency',inspectionFrequency);
+
   // State for checklist items
   const [commentModalVisible, setAddCommentModalVisible] = useState(false);
   const [currentItemIndex, setCurrentItemIndex] = useState(null);
@@ -480,8 +480,6 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
   }
 
   const handleCaptureFrame = (captureFrameId, frameId) => {
-    // const config = frameConfigMap[frameId];
-    // console.log('config', config);
 
     const config = frameConfigMap[frameId];
     const details = { ...config.details, source: config.source, afterFileUploadNavigationParams: { captureFrameId, frameId } };

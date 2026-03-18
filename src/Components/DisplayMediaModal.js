@@ -19,7 +19,7 @@ const DisplayMediaModal = ({ handleVisible, source, title, isVideo, coordinates 
   const imgSize = useResponsiveImageSize(source);
 
   const displayTitle = title || (isVideo ? t('common.video') : t('common.image'));
-
+  console.log('displayTitle',displayTitle)
   const handleImageLayout = () => {
     setImageReady(true);
   };

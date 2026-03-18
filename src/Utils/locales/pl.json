@@ -566,6 +566,14 @@
         "right_front_tire": "Opona Przód Prawa",
         "right_rear_tire": "Opona Tył Prawa",
         "interior_passenger_side": "Wnętrze strona pasażera",
-        "interior_driver_side": "Wnętrze strona kierowcy"
+        "interior_driver_side": "Wnętrze strona kierowcy",
+        "rear_interior": "Wnętrze tylne",
+        "front_interior": "Wnętrze przednie",
+        "brake_components": "Komponenty hamulcowe",
+        "tdspare": "Głębokość bieżnika SPARE",
+        "tdrr": "Głębokość bieżnika RR",
+        "tdlr": "Głębokość bieżnika LR",
+        "tdrf": "Głębokość bieżnika RF",
+        "tdlf": "Głębokość bieżnika LF"
     }
 }
