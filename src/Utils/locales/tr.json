@@ -399,6 +399,11 @@
       }
     }
   },
+  "odometerGuidance": {
+    "title": "Kilometre sayacı nasıl çekilir",
+    "description": "Kamerayı sabit tutun ve çekimden önce kilometre sayacındaki tüm rakamların net ve tamamen görünür olduğundan emin olun.",
+    "doNotShowAgain": "Bunu bir daha gösterme"
+  },
   "carVerification": {
     "licensePlate": {
       "title": "Plaka",

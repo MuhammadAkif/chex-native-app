@@ -107,6 +107,7 @@ const initialState = {
   triggerTireStatusCheck: false,
   imageDimensions: null,
   vehicleTypeModalVisible: false,
+  isShowOdometerModal: false,
   selectedVehicleKind: 'van',
   inspectionFrequency: '',
 };
@@ -137,6 +138,7 @@ const {
   SET_MILEAGE_MESSAGE,
   SET_IMAGE_DIMENSIONS,
   SET_VEHICLE_TYPE_MODAL_VISIBLE,
+  SET_ODOMETER_MODAL_VISIBLE,
   SET_SELECTED_VEHICLE_KIND,
   SET_INSPECTION_FREQUENCY,
 } = Types;
@@ -264,6 +266,8 @@ const newInspectionReducer = (state = initialState, action) => {
       return {...state, imageDimensions: payload};
     case SET_VEHICLE_TYPE_MODAL_VISIBLE:
       return {...state, vehicleTypeModalVisible: payload};
+    case SET_ODOMETER_MODAL_VISIBLE:
+      return {...state, isShowOdometerModal: payload};
     case SET_SELECTED_VEHICLE_KIND:
       return {...state, selectedVehicleKind: action.payload};
     case SET_INSPECTION_FREQUENCY:

@@ -399,6 +399,11 @@
             }
         }
     },
+    "odometerGuidance": {
+        "title": "Jak sfotografować licznik",
+        "description": "Trzymaj aparat stabilnie i upewnij się, że wszystkie cyfry licznika są wyraźne i w pełni widoczne przed wykonaniem zdjęcia.",
+        "doNotShowAgain": "Nie pokazuj ponownie"
+    },
     "carVerification": {
         "licensePlate": {
             "title": "Tablica rejestracyjna",

@@ -84,6 +84,7 @@ import Sub_Heading from './Sub_Heading';
 import Toast from './Toast';
 import VehicleCard from './VehicleCard';
 import WarningModal from './WarningModal';
+import OdometerGuidanceModal from './PopUpModals/OdometerGuidanceModal';
 export {
   PhoneInput,
   IconWrapper,
@@ -169,4 +170,5 @@ export {
   Toast,
   VideoPicker,
   WarningModal,
+  OdometerGuidanceModal,
 };

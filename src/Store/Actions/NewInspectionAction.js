@@ -30,6 +30,7 @@ const {
   SET_MILEAGE_MESSAGE,
   SET_IMAGE_DIMENSIONS,
   SET_VEHICLE_TYPE_MODAL_VISIBLE,
+  SET_ODOMETER_MODAL_VISIBLE,
   SET_SELECTED_VEHICLE_KIND,
   SET_INSPECTION_FREQUENCY,
 } = Types;
@@ -192,6 +193,10 @@ export const setImageDimensions = (dimensions = null) => ({
 });
 export const setVehicleTypeModalVisible = (visible = false) => ({
   type: SET_VEHICLE_TYPE_MODAL_VISIBLE,
+  payload: visible,
+});
+export const setOdometerModalVisible = (visible = false) => ({
+  type: SET_ODOMETER_MODAL_VISIBLE,
   payload: visible,
 });
 export const setSelectedVehicleKind = kind => ({

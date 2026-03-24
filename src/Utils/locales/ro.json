@@ -399,6 +399,11 @@
       }
     }
   },
+  "odometerGuidance": {
+    "title": "Cum să captezi odometrul",
+    "description": "Ține camera stabilă și asigură-te că toate cifrele odometrului sunt clare și complet vizibile înainte de captură.",
+    "doNotShowAgain": "Nu mai afișa din nou"
+  },
   "carVerification": {
     "licensePlate": {
       "title": "Număr de înmatriculare",

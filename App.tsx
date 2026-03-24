@@ -6,7 +6,7 @@ import BootSplash from 'react-native-bootsplash';
 import { useDispatch, useSelector } from 'react-redux';
 import { DiscardInspectionModal, Splash, Toast } from './src/Components';
 import AlertPopup from './src/Components/AlertPopup';
-import { SESSION_EXPIRED, SMARTLOOK_PROJECT_ID, UPDATE_APP } from './src/Constants';
+import { SESSION_EXPIRED, SMARTLOOK_PROJECT_ID, UPDATE_APP,ONE_SIGNAL_ID } from './src/Constants';
 import { ROUTES } from './src/Navigation/ROUTES';
 import Navigation from './src/Navigation/index';
 import { clearNewInspection, hideToast, signOut } from './src/Store/Actions';
@@ -23,7 +23,7 @@ function App() {
   const dispatch = useDispatch();
 
   OneSignal.Debug.setLogLevel(LogLevel.Verbose);
-  OneSignal.initialize('3f8c33e1-1334-4cf6-a0c4-347d101bcbef');
+  OneSignal.initialize(ONE_SIGNAL_ID);
   OneSignal.Notifications.requestPermission(false).then(r => console.log(r));
   // @ts-ignore
   const { sessionExpired } = useSelector(state => state?.auth);

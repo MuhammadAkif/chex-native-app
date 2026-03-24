@@ -399,6 +399,11 @@
       }
     }
   },
+  "odometerGuidance": {
+    "title": "How to capture odometer",
+    "description": "Keep the camera steady and ensure all odometer digits are clear and fully visible before capturing.",
+    "doNotShowAgain": "Do not show this again"
+  },
   "carVerification": {
     "licensePlate": {
       "title": "License Plate",

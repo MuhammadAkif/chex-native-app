@@ -399,6 +399,11 @@
       }
     }
   },
+  "odometerGuidance": {
+    "title": "Cómo capturar el cuentakilómetros",
+    "description": "Mantén la cámara estable y asegúrate de que todos los dígitos del cuentakilómetros se vean claros y completos antes de capturar.",
+    "doNotShowAgain": "No mostrar esto de nuevo"
+  },
   "carVerification": {
     "licensePlate": {
       "title": "Matrícula",

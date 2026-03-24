@@ -11,8 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BackArrow } from '../Assets/Icons';
 import { getVehicleFrames } from '../Assets/Images';
 import { colors, PreviewStyles } from '../Assets/Styles';
-import { CameraFooter, CameraPreview, CaptureImageModal, DiscardInspectionModal } from '../Components';
-import ExpiredInspectionModal from '../Components/PopUpModals/ExpiredInspectionModal';
+import {CameraFooter, CameraPreview, CaptureImageModal, DiscardInspectionModal, ExpiredInspectionModal, OdometerGuidanceModal} from '../Components';
 import {
   darkImageError,
   HARDWARE_BACK_PRESS,
@@ -26,7 +25,7 @@ import {
   VEHICLE_TYPES_WITH_FRAMES,
 } from '../Constants';
 import { ROUTES, TABS } from '../Navigation/ROUTES';
-import { clearInspectionImages, getMileage, setImageDimensions, setLicensePlateNumber, updateVehicleImage } from '../Store/Actions';
+import { clearInspectionImages, getMileage, setImageDimensions, setLicensePlateNumber, setOdometerModalVisible, updateVehicleImage } from '../Store/Actions';
 import {
   checkRelevantType,
   exteriorVariant,
@@ -59,7 +58,7 @@ const CameraContainer = ({ route, navigation }) => {
     user: { token, data },
   } = useSelector(state => state?.auth);
   const inspectionScreen = route?.params?.returnToParams?.isLicensePlateCapture || route?.params?.returnToParams?.isMileageCapture || route?.params?.returnToParams?.isVinCapture || false;
-  const { vehicle_Type, variant, selectedVehicleKind, selectedInspectionID } = useSelector(state => state.newInspection);
+  const { vehicle_Type, variant, selectedVehicleKind, selectedInspectionID, isShowOdometerModal } = useSelector(state => state.newInspection);
   const isFocused = useIsFocused();
   const cameraRef = useRef(null);
   const appState = useRef(AppState.currentState);
@@ -78,7 +77,11 @@ const CameraContainer = ({ route, navigation }) => {
   const format = useCameraFormat(device, [{ videoResolution: { width: 1280, height: 720 }, photoResolution: { width: 1280, height: 720 } }, { fps: 60 }]);
   const [isLoading, setIsLoading] = useState(false);
   const [orientation, setOrientation] = useState(defaultOrientation);
+  const [isOdometerGuideModalVisible, setIsOdometerGuideModalVisible] = useState(true);
   const { category, subCategory, instructionalText, source, title, isVideo, groupType, afterFileUploadNavigationParams,categoryId,companyConfigId } = modalDetails;
+  const isOdometerScreen = route?.params?.type === 'odometer';
+  const shouldShowOdometerModal = isOdometerScreen && !isShowOdometerModal && isOdometerGuideModalVisible;
+
 
   const frameStyles = {
     portrait: {
@@ -112,11 +115,19 @@ const CameraContainer = ({ route, navigation }) => {
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(HARDWARE_BACK_PRESS, handle_Hardware_Back_Press);
     return () => backHandler.remove();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isImageURL]);
 
   useEffect(() => {
     setSelectedCamera(SWITCH_CAMERA[isBackCamera]);
   }, [isBackCamera, device]);
+
+  useEffect(() => {
+    if (isOdometerScreen) {
+      setIsOdometerGuideModalVisible(true);
+    }
+
+  }, [isOdometerScreen]);
 
   function resetAllStates() {
     setIsImageURL('');
@@ -148,12 +159,12 @@ const CameraContainer = ({ route, navigation }) => {
 
   const handleNavigationBackPress = () => goBack();
 
-  const handleVisible = () => {
-    setProgress(0);
-    setIsModalVisible(false);
-  };
-
   const handleSwitchCamera = () => setIsBackCamera(!isBackCamera);
+  const handleDismissOdometerModal = () => setIsOdometerGuideModalVisible(false);
+  const handleDoNotShowOdometerModal = () => {
+    dispatch(setOdometerModalVisible(true));
+    setIsOdometerGuideModalVisible(false);
+  };
 
   // const handleCaptureNowPress = async () => {
   //   hasCameraAndMicrophoneAllowed().then();
@@ -504,6 +515,11 @@ const CameraContainer = ({ route, navigation }) => {
           noButtonStyle={undefined}
         />
       )}
+      <OdometerGuidanceModal
+        visible={shouldShowOdometerModal}
+        onClose={handleDismissOdometerModal}
+        onDoNotShowAgain={handleDoNotShowOdometerModal}
+      />
 
       <StatusBar backgroundColor="transparent" barStyle="light-content" translucent={true} />
     </>
