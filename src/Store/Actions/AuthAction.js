@@ -9,6 +9,7 @@ const {
   CLEAR_NEW_INSPECTION,
   SIGN_OUT,
   SESSION_EXPIRED,
+  SET_ODOMETER_MODAL_VISIBLE,
 } = Types;
 
 export const signIn = (username, password) => async dispatch => {
@@ -33,6 +34,7 @@ export const signOut = () => {
     dispatch({type: CLEAR_INSPECTION_IN_PROGRESS});
     dispatch({type: CLEAR_NEW_INSPECTION});
     dispatch({type: SIGN_OUT});
+    dispatch({type: SET_ODOMETER_MODAL_VISIBLE, payload: false});
   };
 };
 export const sessionExpired = () => ({

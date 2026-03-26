@@ -13,20 +13,19 @@ const OdometerGuidanceModal = ({ visible, onClose, onDoNotShowAgain }) => {
   const [isChecked, setIsChecked] = useState(false);
 
   const handleToggleDoNotShowAgain = () => {
-    const nextState = !isChecked;
-    setIsChecked(nextState);
-    if (nextState) {
-      onDoNotShowAgain();
-    }
+    setIsChecked(!isChecked);
+  };
+  const onCloseModal = () => {
+    onClose(isChecked);
   };
 
   return (
-    <Modal animationType="fade" transparent={true} visible={visible} onRequestClose={onClose}>
+    <Modal animationType="fade" transparent={true} visible={visible} onRequestClose={onCloseModal}>
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.headerRow}>
             <Text style={styles.title}>{t('odometerGuidance.title')}</Text>
-            <TouchableOpacity onPress={onClose} style={styles.crossButton}>
+            <TouchableOpacity onPress={onCloseModal} style={styles.crossButton}>
               <Cross height={hp('3%')} width={wp('6%')} color={white} />
             </TouchableOpacity>
           </View>

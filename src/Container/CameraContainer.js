@@ -160,7 +160,13 @@ const CameraContainer = ({ route, navigation }) => {
   const handleNavigationBackPress = () => goBack();
 
   const handleSwitchCamera = () => setIsBackCamera(!isBackCamera);
-  const handleDismissOdometerModal = () => setIsOdometerGuideModalVisible(false);
+  const handleDismissOdometerModal = (isChecked = false) => {
+    if(isChecked){
+      handleDoNotShowOdometerModal();
+    }else{
+      setIsOdometerGuideModalVisible(false);
+    }
+  };
   const handleDoNotShowOdometerModal = () => {
     dispatch(setOdometerModalVisible(true));
     setIsOdometerGuideModalVisible(false);

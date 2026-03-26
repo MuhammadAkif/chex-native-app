@@ -48,6 +48,7 @@ function App() {
       dispatch(clearNewInspection());
       dispatch(hideToast());
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [displayGif]);
 
   async function initializeApp() {

@@ -235,7 +235,7 @@ const newInspectionReducer = (state = initialState, action) => {
     case SET_REQUIRED:
       return {...state, fileRequired: action.payload};
     case CLEAR_NEW_INSPECTION:
-      return initialState;
+      return {...initialState, isShowOdometerModal: state.isShowOdometerModal};
     case BATCH_UPDATE_VEHICLE_IMAGES:
       const updatedState = {...state};
 
