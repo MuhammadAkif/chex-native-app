@@ -404,6 +404,16 @@
     "description": "Mantén la cámara estable y asegúrate de que todos los dígitos del cuentakilómetros se vean claros y completos antes de capturar.",
     "doNotShowAgain": "No mostrar esto de nuevo"
   },
+  "licensePlateGuidance": {
+    "title": "Cómo capturar la matrícula",
+    "description": "Alinea la matrícula en el encuadre y asegúrate de que todos los caracteres se vean completos y legibles antes de capturar.",
+    "doNotShowAgain": "No mostrar esto de nuevo"
+  },
+  "vinGuidance": {
+    "title": "Cómo capturar el VIN",
+    "description": "Enfoca la etiqueta VIN y asegúrate de que los 17 caracteres estén claros y legibles antes de capturar.",
+    "doNotShowAgain": "No mostrar esto de nuevo"
+  },
   "carVerification": {
     "licensePlate": {
       "title": "Matrícula",

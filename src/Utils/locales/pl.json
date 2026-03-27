@@ -404,6 +404,16 @@
         "description": "Trzymaj aparat stabilnie i upewnij się, że wszystkie cyfry licznika są wyraźne i w pełni widoczne przed wykonaniem zdjęcia.",
         "doNotShowAgain": "Nie pokazuj ponownie"
     },
+    "licensePlateGuidance": {
+        "title": "Jak sfotografować tablicę rejestracyjną",
+        "description": "Ustaw tablicę rejestracyjną w kadrze i upewnij się, że wszystkie znaki są w pełni widoczne i czytelne przed wykonaniem zdjęcia.",
+        "doNotShowAgain": "Nie pokazuj ponownie"
+    },
+    "vinGuidance": {
+        "title": "Jak sfotografować VIN",
+        "description": "Ustaw ostrość na etykiecie VIN i upewnij się, że wszystkie 17 znaków są wyraźne i czytelne przed wykonaniem zdjęcia.",
+        "doNotShowAgain": "Nie pokazuj ponownie"
+    },
     "carVerification": {
         "licensePlate": {
             "title": "Tablica rejestracyjna",

@@ -404,6 +404,16 @@
     "description": "Keep the camera steady and ensure all odometer digits are clear and fully visible before capturing.",
     "doNotShowAgain": "Do not show this again"
   },
+  "licensePlateGuidance": {
+    "title": "How to capture license plate",
+    "description": "Align the license plate in the frame and make sure all characters are fully visible and readable before capturing.",
+    "doNotShowAgain": "Do not show this again"
+  },
+  "vinGuidance": {
+    "title": "How to capture VIN",
+    "description": "Focus on the VIN label and ensure all 17 characters are clear and readable before capturing.",
+    "doNotShowAgain": "Do not show this again"
+  },
   "carVerification": {
     "licensePlate": {
       "title": "License Plate",

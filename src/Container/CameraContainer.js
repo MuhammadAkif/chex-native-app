@@ -25,7 +25,16 @@ import {
   VEHICLE_TYPES_WITH_FRAMES,
 } from '../Constants';
 import { ROUTES, TABS } from '../Navigation/ROUTES';
-import { clearInspectionImages, getMileage, setImageDimensions, setLicensePlateNumber, setOdometerModalVisible, updateVehicleImage } from '../Store/Actions';
+import {
+  clearInspectionImages,
+  getMileage,
+  setImageDimensions,
+  setLicensePlateModalVisible,
+  setLicensePlateNumber,
+  setOdometerModalVisible,
+  setVinModalVisible,
+  updateVehicleImage,
+} from '../Store/Actions';
 import {
   checkRelevantType,
   exteriorVariant,
@@ -58,7 +67,15 @@ const CameraContainer = ({ route, navigation }) => {
     user: { token, data },
   } = useSelector(state => state?.auth);
   const inspectionScreen = route?.params?.returnToParams?.isLicensePlateCapture || route?.params?.returnToParams?.isMileageCapture || route?.params?.returnToParams?.isVinCapture || false;
-  const { vehicle_Type, variant, selectedVehicleKind, selectedInspectionID, isShowOdometerModal } = useSelector(state => state.newInspection);
+  const {
+    vehicle_Type,
+    variant,
+    selectedVehicleKind,
+    selectedInspectionID,
+    isShowOdometerModal,
+    isShowLicensePlateModal,
+    isShowVinModal,
+  } = useSelector(state => state.newInspection);
   const isFocused = useIsFocused();
   const cameraRef = useRef(null);
   const appState = useRef(AppState.currentState);
@@ -77,11 +94,20 @@ const CameraContainer = ({ route, navigation }) => {
   const format = useCameraFormat(device, [{ videoResolution: { width: 1280, height: 720 }, photoResolution: { width: 1280, height: 720 } }, { fps: 60 }]);
   const [isLoading, setIsLoading] = useState(false);
   const [orientation, setOrientation] = useState(defaultOrientation);
-  const [isOdometerGuideModalVisible, setIsOdometerGuideModalVisible] = useState(true);
+  const [isGuidanceModalVisible, setIsGuidanceModalVisible] = useState(true);
   const { category, subCategory, instructionalText, source, title, isVideo, groupType, afterFileUploadNavigationParams,categoryId,companyConfigId } = modalDetails;
-  const isOdometerScreen = route?.params?.type === 'odometer';
-  const shouldShowOdometerModal = isOdometerScreen && !isShowOdometerModal && isOdometerGuideModalVisible;
+  const routeType = route?.params?.type;
+  const isOdometerScreen = routeType === 'odometer';
+  const isLicensePlateScreen = routeType === 'licensePlate';
+  const isVinScreen = routeType === 'vin';
+  const isGuidanceTypeScreen = isOdometerScreen || isLicensePlateScreen || isVinScreen;
+  const shouldSkipGuidanceModal =
+    (isOdometerScreen && isShowOdometerModal) ||
+    (isLicensePlateScreen && isShowLicensePlateModal) ||
+    (isVinScreen && isShowVinModal);
+  const shouldShowGuidanceModal = isGuidanceTypeScreen && !shouldSkipGuidanceModal && isGuidanceModalVisible;
 
+console.log('route?.params?.type', route?.params?.type);
 
   const frameStyles = {
     portrait: {
@@ -123,11 +149,12 @@ const CameraContainer = ({ route, navigation }) => {
   }, [isBackCamera, device]);
 
   useEffect(() => {
-    if (isOdometerScreen) {
-      setIsOdometerGuideModalVisible(true);
+    if (isGuidanceTypeScreen && !shouldSkipGuidanceModal) {
+      setIsGuidanceModalVisible(true);
+    } else {
+      setIsGuidanceModalVisible(false);
     }
-
-  }, [isOdometerScreen]);
+  }, [isGuidanceTypeScreen, shouldSkipGuidanceModal]);
 
   function resetAllStates() {
     setIsImageURL('');
@@ -161,15 +188,21 @@ const CameraContainer = ({ route, navigation }) => {
 
   const handleSwitchCamera = () => setIsBackCamera(!isBackCamera);
   const handleDismissOdometerModal = (isChecked = false) => {
-    if(isChecked){
+    if (isChecked) {
       handleDoNotShowOdometerModal();
-    }else{
-      setIsOdometerGuideModalVisible(false);
+    } else {
+      setIsGuidanceModalVisible(false);
     }
   };
   const handleDoNotShowOdometerModal = () => {
-    dispatch(setOdometerModalVisible(true));
-    setIsOdometerGuideModalVisible(false);
+    if (isOdometerScreen) {
+      dispatch(setOdometerModalVisible(true));
+    } else if (isLicensePlateScreen) {
+      dispatch(setLicensePlateModalVisible(true));
+    } else if (isVinScreen) {
+      dispatch(setVinModalVisible(true));
+    }
+    setIsGuidanceModalVisible(false);
   };
 
   // const handleCaptureNowPress = async () => {
@@ -522,9 +555,36 @@ const CameraContainer = ({ route, navigation }) => {
         />
       )}
       <OdometerGuidanceModal
-        visible={shouldShowOdometerModal}
+        visible={shouldShowGuidanceModal}
         onClose={handleDismissOdometerModal}
-        onDoNotShowAgain={handleDoNotShowOdometerModal}
+        videoSource={
+          isLicensePlateScreen
+            ? require('../Assets/Videos/Car_Number_Plate_Capture_Demo.mp4')
+            : isVinScreen
+              ? require('../Assets/Videos/VIN_Capture_Demo_Video.mp4')
+              : require('../Assets/Videos/Realistic_Car_Odometer_Capture_Demo.mp4')
+        }
+        titleKey={
+          isLicensePlateScreen
+            ? 'licensePlateGuidance.title'
+            : isVinScreen
+              ? 'vinGuidance.title'
+              : 'odometerGuidance.title'
+        }
+        descriptionKey={
+          isLicensePlateScreen
+            ? 'licensePlateGuidance.description'
+            : isVinScreen
+              ? 'vinGuidance.description'
+              : 'odometerGuidance.description'
+        }
+        doNotShowAgainKey={
+          isLicensePlateScreen
+            ? 'licensePlateGuidance.doNotShowAgain'
+            : isVinScreen
+              ? 'vinGuidance.doNotShowAgain'
+              : 'odometerGuidance.doNotShowAgain'
+        }
       />
 
       <StatusBar backgroundColor="transparent" barStyle="light-content" translucent={true} />

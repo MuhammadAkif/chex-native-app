@@ -31,6 +31,8 @@ const {
   SET_IMAGE_DIMENSIONS,
   SET_VEHICLE_TYPE_MODAL_VISIBLE,
   SET_ODOMETER_MODAL_VISIBLE,
+  SET_LICENSE_PLATE_MODAL_VISIBLE,
+  SET_VIN_MODAL_VISIBLE,
   SET_SELECTED_VEHICLE_KIND,
   SET_INSPECTION_FREQUENCY,
 } = Types;
@@ -197,6 +199,14 @@ export const setVehicleTypeModalVisible = (visible = false) => ({
 });
 export const setOdometerModalVisible = (visible = false) => ({
   type: SET_ODOMETER_MODAL_VISIBLE,
+  payload: visible,
+});
+export const setLicensePlateModalVisible = (visible = false) => ({
+  type: SET_LICENSE_PLATE_MODAL_VISIBLE,
+  payload: visible,
+});
+export const setVinModalVisible = (visible = false) => ({
+  type: SET_VIN_MODAL_VISIBLE,
   payload: visible,
 });
 export const setSelectedVehicleKind = kind => ({

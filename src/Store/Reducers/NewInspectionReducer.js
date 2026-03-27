@@ -108,6 +108,8 @@ const initialState = {
   imageDimensions: null,
   vehicleTypeModalVisible: false,
   isShowOdometerModal: false,
+  isShowLicensePlateModal: false,
+  isShowVinModal: false,
   selectedVehicleKind: 'van',
   inspectionFrequency: '',
 };
@@ -139,6 +141,8 @@ const {
   SET_IMAGE_DIMENSIONS,
   SET_VEHICLE_TYPE_MODAL_VISIBLE,
   SET_ODOMETER_MODAL_VISIBLE,
+  SET_LICENSE_PLATE_MODAL_VISIBLE,
+  SET_VIN_MODAL_VISIBLE,
   SET_SELECTED_VEHICLE_KIND,
   SET_INSPECTION_FREQUENCY,
 } = Types;
@@ -235,7 +239,12 @@ const newInspectionReducer = (state = initialState, action) => {
     case SET_REQUIRED:
       return {...state, fileRequired: action.payload};
     case CLEAR_NEW_INSPECTION:
-      return {...initialState, isShowOdometerModal: state.isShowOdometerModal};
+      return {
+        ...initialState,
+        isShowOdometerModal: state.isShowOdometerModal,
+        isShowLicensePlateModal: state.isShowLicensePlateModal,
+        isShowVinModal: state.isShowVinModal,
+      };
     case BATCH_UPDATE_VEHICLE_IMAGES:
       const updatedState = {...state};
 
@@ -268,6 +277,10 @@ const newInspectionReducer = (state = initialState, action) => {
       return {...state, vehicleTypeModalVisible: payload};
     case SET_ODOMETER_MODAL_VISIBLE:
       return {...state, isShowOdometerModal: payload};
+    case SET_LICENSE_PLATE_MODAL_VISIBLE:
+      return {...state, isShowLicensePlateModal: payload};
+    case SET_VIN_MODAL_VISIBLE:
+      return {...state, isShowVinModal: payload};
     case SET_SELECTED_VEHICLE_KIND:
       return {...state, selectedVehicleKind: action.payload};
     case SET_INSPECTION_FREQUENCY:

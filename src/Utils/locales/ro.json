@@ -404,6 +404,16 @@
     "description": "Ține camera stabilă și asigură-te că toate cifrele odometrului sunt clare și complet vizibile înainte de captură.",
     "doNotShowAgain": "Nu mai afișa din nou"
   },
+  "licensePlateGuidance": {
+    "title": "Cum să captezi numărul de înmatriculare",
+    "description": "Aliniază numărul de înmatriculare în cadru și asigură-te că toate caracterele sunt complet vizibile și lizibile înainte de captură.",
+    "doNotShowAgain": "Nu mai afișa din nou"
+  },
+  "vinGuidance": {
+    "title": "Cum să captezi VIN-ul",
+    "description": "Focalizează eticheta VIN și asigură-te că toate cele 17 caractere sunt clare și lizibile înainte de captură.",
+    "doNotShowAgain": "Nu mai afișa din nou"
+  },
   "carVerification": {
     "licensePlate": {
       "title": "Număr de înmatriculare",

@@ -8,7 +8,7 @@ import { colors } from '../../Assets/Styles';
 
 const { white } = colors;
 
-const OdometerGuidanceModal = ({ visible, onClose, onDoNotShowAgain }) => {
+const OdometerGuidanceModal = ({ visible, onClose, videoSource, titleKey, descriptionKey, doNotShowAgainKey }) => {
   const { t } = useTranslation();
   const [isChecked, setIsChecked] = useState(false);
 
@@ -24,14 +24,14 @@ const OdometerGuidanceModal = ({ visible, onClose, onDoNotShowAgain }) => {
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.headerRow}>
-            <Text style={styles.title}>{t('odometerGuidance.title')}</Text>
+            <Text style={styles.title}>{t(titleKey || 'odometerGuidance.title')}</Text>
             <TouchableOpacity onPress={onCloseModal} style={styles.crossButton}>
               <Cross height={hp('3%')} width={wp('6%')} color={white} />
             </TouchableOpacity>
           </View>
 
           <Video
-            source={require('../../Assets/Videos/Realistic_Car_Odometer_Capture_Demo.mp4')}
+            source={videoSource || require('../../Assets/Videos/Odometer_Photo_Capture_Demo.mp4')}
             style={styles.video}
             controls={false}
             resizeMode="contain"
@@ -41,14 +41,14 @@ const OdometerGuidanceModal = ({ visible, onClose, onDoNotShowAgain }) => {
           />
 
           <Text style={styles.description}>
-            {t('odometerGuidance.description')}
+            {t(descriptionKey || 'odometerGuidance.description')}
           </Text>
 
           <TouchableOpacity style={styles.checkboxRow} onPress={handleToggleDoNotShowAgain} activeOpacity={0.8}>
             <View style={[styles.checkbox, isChecked && styles.checkboxChecked]}>
               {isChecked ? <Check height={hp('1.4%')} width={wp('3.2%')} color={white} /> : null}
             </View>
-            <Text style={styles.checkboxLabel}>{t('odometerGuidance.doNotShowAgain')}</Text>
+            <Text style={styles.checkboxLabel}>{t(doNotShowAgainKey || 'odometerGuidance.doNotShowAgain')}</Text>
           </TouchableOpacity>
         </View>
       </View>

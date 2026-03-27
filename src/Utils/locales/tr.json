@@ -404,6 +404,16 @@
     "description": "Kamerayı sabit tutun ve çekimden önce kilometre sayacındaki tüm rakamların net ve tamamen görünür olduğundan emin olun.",
     "doNotShowAgain": "Bunu bir daha gösterme"
   },
+  "licensePlateGuidance": {
+    "title": "Plaka nasıl çekilir",
+    "description": "Plakayı çerçeveye hizalayın ve çekimden önce tüm karakterlerin tamamen görünür ve okunabilir olduğundan emin olun.",
+    "doNotShowAgain": "Bunu bir daha gösterme"
+  },
+  "vinGuidance": {
+    "title": "VIN nasıl çekilir",
+    "description": "VIN etiketine odaklanın ve çekimden önce tüm 17 karakterin net ve okunabilir olduğundan emin olun.",
+    "doNotShowAgain": "Bunu bir daha gösterme"
+  },
   "carVerification": {
     "licensePlate": {
       "title": "Plaka",
