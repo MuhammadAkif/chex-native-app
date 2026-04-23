@@ -26,7 +26,9 @@
     "cancel": "Anulează",
     "required": "Obligatoriu",
     "optional": "Opțional",
-    "message": "Mesaj"
+    "message": "Mesaj",
+    "confirm": "Confirmă",
+    "edit": "Editează"
   },
   "validation": {
     "fieldRequired": "Câmp obligatoriu",
@@ -283,6 +285,9 @@
     "mileagePlaceholder": "Introdu kilometraj",
     "vinLabel": "VIN",
     "vinPlaceholder": "Introdu VIN",
+    "makeLabel": "Marcă",
+    "modelLabel": "Model",
+    "yearLabel": "An",
     "driverNameLabel": "Nume șofer",
     "dateLabel": "Data",
     "vehicleTypeLabel": "Tip vehicul",

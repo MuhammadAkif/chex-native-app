@@ -26,7 +26,9 @@
         "cancel": "Отказ",
         "required": "Задължително",
         "optional": "По желание",
-        "message": "Съобщение"
+        "message": "Съобщение",
+        "confirm": "Потвърди",
+        "edit": "Редактирай"
     },
     "validation": {
         "fieldRequired": "Полето е задължително",
@@ -283,6 +285,9 @@
         "mileagePlaceholder": "Въведете пробег",
         "vinLabel": "VIN",
         "vinPlaceholder": "Въведете VIN",
+        "makeLabel": "Марка",
+        "modelLabel": "Модел",
+        "yearLabel": "Година",
         "driverNameLabel": "Име на шофьора",
         "dateLabel": "Дата",
         "vehicleTypeLabel": "Тип на автомобила",

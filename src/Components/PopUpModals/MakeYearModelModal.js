@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Modal, StyleSheet, Keyboard, TouchableOpacity, Platform, TouchableWithoutFeedback } from 'react-native';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
+import { useTranslation } from 'react-i18next';
 
 import { PrimaryGradientButton } from '../index';
 import CustomInput from '../CustomInput';
@@ -20,6 +21,7 @@ const MakeYearModelModal = ({
     isLoading = false,
     defaultValues = { vin: '', make: '', model: '', year: '' },
 }) => {
+    const { t } = useTranslation();
 
     const [values, setValues] = useState(defaultValues);
     const [isEditable, setIsEditable] = useState(false);
@@ -50,11 +52,13 @@ const MakeYearModelModal = ({
                                     <Cross height={hp('2%')} width={hp('2%')} color={black} />
                                 </TouchableOpacity>
 
-                                <Text style={styles.headerTitle}>{title}</Text>
+                                <Text style={styles.headerTitle}>
+                                    {title === 'Vehicle Detail' ? t('confirmVehicleDetail.title') : title}
+                                </Text>
 
                                 <View style={styles.inputsWrapper}>
                                     <CustomInput
-                                        label={'Vin'}
+                                        label={t('vehicleInfo.vinLabel')}
                                         value={values.vin}
                                         valueName={'vin'}
                                         onChangeText={handleInputChange}
@@ -66,7 +70,7 @@ const MakeYearModelModal = ({
                                     />
                                     <View style={styles.spacer} />
                                     <CustomInput
-                                        label={'Make'}
+                                        label={t('vehicleInfo.makeLabel')}
                                         value={values.make}
                                         valueName={'make'}
                                         onChangeText={handleInputChange}
@@ -77,7 +81,7 @@ const MakeYearModelModal = ({
                                     />
                                     <View style={styles.spacer} />
                                     <CustomInput
-                                        label={'Model'}
+                                        label={t('vehicleInfo.modelLabel')}
                                         value={values.model}
                                         valueName={'model'}
                                         onChangeText={handleInputChange}
@@ -88,7 +92,7 @@ const MakeYearModelModal = ({
                                     />
                                     <View style={styles.spacer} />
                                     <CustomInput
-                                        label={'Year'}
+                                        label={t('vehicleInfo.yearLabel')}
                                         value={String(values.year || '')}
                                         valueName={'year'}
                                         onChangeText={handleInputChange}
@@ -102,7 +106,7 @@ const MakeYearModelModal = ({
 
                                 <View style={styles.footerContainer}>
                                     <PrimaryGradientButton
-                                        text={'Confirm'}
+                                        text={t('common.confirm')}
                                         disabled={isLoading}
                                         buttonStyle={styles.confirmButton}
                                         textStyle={yesText}
@@ -112,7 +116,7 @@ const MakeYearModelModal = ({
                                         disabled={isLoading}
                                         style={styles.editButton}
                                         onPress={handleEditPress}>
-                                        <Text style={[yesText, { color: white }]}>Edit</Text>
+                                        <Text style={[yesText, { color: white }]}>{t('common.edit')}</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>

@@ -26,7 +26,9 @@
         "cancel": "Anuluj",
         "required": "Wymagane",
         "optional": "Opcjonalne",
-        "message": "Wiadomość"
+        "message": "Wiadomość",
+        "confirm": "Potwierdź",
+        "edit": "Edytuj"
     },
     "validation": {
         "fieldRequired": "Pole wymagane",
@@ -283,6 +285,9 @@
         "mileagePlaceholder": "Wpisz przebieg",
         "vinLabel": "VIN",
         "vinPlaceholder": "Wpisz VIN",
+        "makeLabel": "Marka",
+        "modelLabel": "Model",
+        "yearLabel": "Rok",
         "driverNameLabel": "Imię kierowcy",
         "dateLabel": "Data",
         "vehicleTypeLabel": "Typ pojazdu",
