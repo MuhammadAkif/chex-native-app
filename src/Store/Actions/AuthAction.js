@@ -18,7 +18,7 @@ export const signIn = (username, password) => async dispatch => {
   await login(username, password)
     .then(res => {
       try {
-        OneSignal.login(String(res?.data?.id));
+         OneSignal.login(String(res?.data?.id));
         dispatch({type: SIGN_IN, payload: res});
       } catch (oneSignalError) {
         console.log('❌ OneSignal login error:', oneSignalError);

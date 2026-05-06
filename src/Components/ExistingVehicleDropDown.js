@@ -19,6 +19,7 @@ const ExistingVehicleDropDown = ({
   onClose,
   containerStyle,
   listMaxHeight = 200,
+  hideCloseButton = false,
 }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const handleSelect = useCallback(
@@ -67,12 +68,14 @@ const ExistingVehicleDropDown = ({
             showsVerticalScrollIndicator={true}
           />
         </View>
-        <Pressable
-          onPress={onClose}
-          hitSlop={8}
-          style={[styles.closeButton, { top: -overlap, right: -overlap - 5 }]}>
-          <Cross height={iconSize} width={iconSize} color={colors.steelGray} />
-        </Pressable>
+        {!hideCloseButton && (
+          <Pressable
+            onPress={onClose}
+            hitSlop={8}
+            style={[styles.closeButton, { top: -overlap, right: -overlap - 5 }]}>
+            <Cross height={iconSize} width={iconSize} color={colors.steelGray} />
+          </Pressable>
+        )}
       </View>
     </View>
   );

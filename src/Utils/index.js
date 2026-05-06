@@ -1,5 +1,6 @@
 import { Alert, Platform } from 'react-native';
 import { Camera } from 'react-native-vision-camera';
+import { PERMISSIONS, request, RESULTS } from 'react-native-permissions';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import * as yup from 'yup';
 
@@ -334,7 +335,14 @@ export const hasCameraAndMicrophoneAllowed = async () => {
   if (microphonePermission !== 'authorized') {
     await Camera.requestMicrophonePermission();
   }
+  await requestLocationPermission();
 };
+
+async function requestLocationPermission() {
+  const permissionType = Platform.OS === 'ios' ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+  const result = await request(permissionType);
+  return result === RESULTS.GRANTED || result === RESULTS.LIMITED;
+}
 export function error_Handler(callback = null, title = uploadFailed.title, message = uploadFailed.message) {
   Alert.alert(title || uploadFailed.title, message || uploadFailed.message, [{ text: 'Retry', onPress: callback }]);
 }

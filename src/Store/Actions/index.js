@@ -1,4 +1,5 @@
 import {sessionExpired, signIn, signOut} from './AuthAction';
+import {clearFuelEvent, fetchFuelEvent, fetchFuelVehicles, updateFuelEvent} from './FuelAction';
 import {
   clearInspectionInProgress,
   deleteInspection,
@@ -88,4 +89,8 @@ export {
   updateIsLicensePlateUploaded,
   updateVehicleImage,
   setInspectionFrequency,
+  fetchFuelEvent,
+  fetchFuelVehicles,
+  updateFuelEvent,
+  clearFuelEvent,
 };

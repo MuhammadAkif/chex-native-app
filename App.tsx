@@ -22,9 +22,11 @@ const { SIGN_IN } = ROUTES;
 function App() {
   const dispatch = useDispatch();
 
+  useEffect(() => {
   OneSignal.Debug.setLogLevel(LogLevel.Verbose);
   OneSignal.initialize(ONE_SIGNAL_ID);
   OneSignal.Notifications.requestPermission(false).then(r => console.log(r));
+  }, []);
   // @ts-ignore
   const { sessionExpired } = useSelector(state => state?.auth);
   const [displayGif, setDisplayGif] = useState(true);

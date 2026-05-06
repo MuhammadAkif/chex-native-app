@@ -32,7 +32,8 @@ const ENV_TYPE_URL = {
 
 const version = '1';
 export const API_VERSION_PATH = '/api/v' + version + '/';
-export const API_BASE_URL = ENV_TYPE_URL.staging;
+export const API_BASE_URL = ENV_TYPE_URL.ngrok;
+console.log('API_BASE_URL', API_BASE_URL);
 
 export const generateApiUrl = path => API_BASE_URL + API_VERSION_PATH + path;
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
@@ -68,6 +69,7 @@ export const API_ENDPOINTS = {
   LOCATION_URL: generateApiUrl('inspection/location'),
   SUBMIT_INSPECTION: generateApiUrl('dsp/app/producer'),
   GET_USER_INSPECTION_STATS: generateApiUrl('user/stats'),
+  FUEL_EVENT: generateApiUrl('fuelguard/events'),
 };
 // Api Endpoints ends here
 export const Platforms = {

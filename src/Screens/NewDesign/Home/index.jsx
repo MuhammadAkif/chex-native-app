@@ -107,6 +107,7 @@ const Home = ({ navigation }) => {
   const handlePressStatCard = id => {
     if (id === 1) {navigation.navigate(ROUTES.INSPECTION_IN_PROGRESS);}
     else if (id === 2) {navigation.navigate(TABS.REPORTS);}
+    else if (id === 4) {navigation.navigate(ROUTES.VERIFY_FUELING);}
   };
 
   return (
@@ -162,6 +163,14 @@ const Home = ({ navigation }) => {
               icon={TotalStatIcon}
               count={isStatsLoading ? '...' : userInspectionStats.totalInspections}
               id={3}
+            />
+            <StatBox
+              title={'Verify Your Fuel'}
+              icon={TotalStatIcon}
+              count={'->'}
+              id={4}
+              onPress={handlePressStatCard}
+              showArrow
             />
           </View>
 

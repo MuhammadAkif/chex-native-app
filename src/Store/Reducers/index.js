@@ -5,6 +5,7 @@ import newInspectionReducer from './NewInspectionReducer';
 import inspectionReviewedReducer from './InspecetionReviewedReducer';
 import inspectionInProgressReducer from './InspectionInProgressReducer';
 import UIReducer from './UIReducer';
+import fuelReducer from './fuelReducer';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   inspectionReviewed: inspectionReviewedReducer,
   inspectionInProgress: inspectionInProgressReducer,
   ui: UIReducer,
+  fuel: fuelReducer,
 });
 
 export default rootReducer;

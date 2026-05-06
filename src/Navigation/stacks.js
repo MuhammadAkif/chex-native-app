@@ -11,6 +11,7 @@ import {
   WelcomeContainer,
 } from '../Container';
 import Home from '../Screens/NewDesign/Home';
+import { CaptureOdometerScreen, CaptureReceiptScreen, ConfirmFuelVehicleScreen, FuelLocationConfirmScreen, VerifyFuelingScreen } from '../Screens/NewDesign/FuelVerification';
 import {MyProfile, VehicleInformation} from '../Screens';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {StatusBar} from 'react-native';
@@ -43,6 +44,11 @@ export const AuthStack = () => (
 export const HomeTabStack = () => (
   <Stack.Navigator initialRouteName={ROUTES.HOME} screenOptions={stackScreenOptions}>
     <Stack.Screen name={ROUTES.HOME} component={Home} />
+    <Stack.Screen name={ROUTES.VERIFY_FUELING} component={VerifyFuelingScreen} />
+    <Stack.Screen name={ROUTES.CONFIRM_FUEL_VEHICLE} component={ConfirmFuelVehicleScreen} />
+    <Stack.Screen name={ROUTES.FUEL_LOCATION_CONFIRM} component={FuelLocationConfirmScreen} />
+    <Stack.Screen name={ROUTES.CAPTURE_ODOMETER} component={CaptureOdometerScreen} />
+    <Stack.Screen name={ROUTES.CAPTURE_RECEIPT} component={CaptureReceiptScreen} />
   </Stack.Navigator>
 );
 

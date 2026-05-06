@@ -21,7 +21,14 @@ require Pod::Executable.execute_command('node', ['-p',
     "react-native/scripts/react_native_pods.rb",
     {paths: [process.argv[1]]},
   )', __dir__]).strip
+  require_relative '../node_modules/react-native-permissions/scripts/setup'
 
+  # Configure only the iOS permission handlers used by the app.
+  setup_permissions([
+    'Camera',
+    'Microphone',
+    'LocationWhenInUse',
+  ])
 # OneSignalXCFramework 5.4.x requires a higher minimum deployment target than RN's default
 platform :ios, '16.0'
 prepare_react_native_project!

@@ -5,6 +5,7 @@
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
   <application
     android:name=".MainApplication"
@@ -27,5 +28,8 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+     <meta-data
+     android:name="com.google.android.geo.API_KEY"
+     android:value="AIzaSyBc54to9XG4cxhZa8nFboDJ03em-aT8paA"/>
   </application>
 </manifest>
