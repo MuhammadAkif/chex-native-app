@@ -256,9 +256,24 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#F1F3F5',
   },
+  odometerResultRowLast: {
+    borderBottomWidth: 0,
+    paddingBottom: 0,
+  },
   odometerMiles: {
     fontSize: wp(4.2),
     fontWeight: '700',
     color: '#16A34A',
+  },
+  uploadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: wp(2),
+    paddingVertical: hp(1.2),
+  },
+  uploadingText: {
+    color: colors.steelGray,
+    fontSize: wp(3.2),
   },
 });

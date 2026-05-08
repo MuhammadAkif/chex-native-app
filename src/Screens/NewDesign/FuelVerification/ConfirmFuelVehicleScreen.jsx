@@ -125,7 +125,7 @@ const ConfirmFuelVehicleScreen = ({ navigation }) => {
             <AppText style={styles.modalSub}>Select one option and confirm.</AppText>
             <FlatList
               data={vehicles}
-              keyExtractor={(item, index) => item.vin ?? index.toString()}
+              keyExtractor={(item, index) => item?.id ?? index.toString()}
               style={styles.vehicleSelectionList}
               showsVerticalScrollIndicator
               renderItem={({ item }) => {

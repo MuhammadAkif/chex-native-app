@@ -143,7 +143,7 @@ const FuelLocationConfirmScreen = ({ route, navigation }) => {
       if (eventId) {
         await dispatch(updateFuelEvent(eventId, body));
         navigation.navigate(ROUTES.CAPTURE_ODOMETER, { vehicle: selectedVehicle, location: userLocation });
-
+        setIsSubmitting(false);
       }
     } catch (error) {
       console.error('Confirm location update fuel event failed:', error);
@@ -225,7 +225,7 @@ const FuelLocationConfirmScreen = ({ route, navigation }) => {
           <View style={styles.mapContainer}>
             <MapView
               ref={mapRef}
-              provider={PROVIDER_GOOGLE}
+              provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
               style={styles.map}
               initialRegion={defaultRegion}
               showsUserLocation={hasLocationPermission}

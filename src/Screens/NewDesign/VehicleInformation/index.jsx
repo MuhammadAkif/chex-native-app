@@ -544,10 +544,12 @@ const VehicleInformation = props => {
 
                             resetCaptureImageParams();
                           } else {
+                            console.log(' response:', response);
                             mileageNotDetected();
                           }
                         })
                         .catch(error => {
+                          console.log('mileageNotDetected error:', error);
                           mileageNotDetected();
                         })
                         .finally(() => {

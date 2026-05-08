@@ -33,6 +33,7 @@ export const fetchFuelVehicles = () => async dispatch => {
 export const updateFuelEvent = (id, body) => async dispatch => {
   try {
     const response = await updateFuelEventService(id, body);
+    debugger;
     dispatch({ type: FETCH_FUEL_EVENT, payload: response?.data });
     return response;
   } catch (error) {
