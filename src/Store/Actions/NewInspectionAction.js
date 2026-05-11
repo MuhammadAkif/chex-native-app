@@ -168,6 +168,7 @@ export const getMileage =
       // const mileage_ = removeAlphabets(mileage);
 
       dispatch(setMileage(mileage));
+      return mileage;
     } catch (error) {
       dispatch(setMileage(''));
       throw error;

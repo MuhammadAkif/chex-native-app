@@ -139,6 +139,16 @@ export const styles = StyleSheet.create({
   modalCard: { backgroundColor: colors.white, borderRadius: 16, padding: wp(5), minHeight: hp(60), justifyContent: 'space-between' },
   modalTitle: { fontWeight: '700', fontSize: wp(4), marginBottom: hp(0.8) },
   modalSub: { color: colors.steelGray, marginBottom: hp(1.2), fontSize: wp(3.1) },
+  modalSearchInput: {
+    borderWidth: 1,
+    borderColor: '#E6E6E6',
+    borderRadius: 10,
+    paddingHorizontal: wp(3.2),
+    paddingVertical: hp(1.1),
+    fontSize: wp(3.3),
+    color: colors.black,
+    marginBottom: hp(1.2),
+  },
   vehicleSelectionList: { maxHeight: hp(44), marginBottom: hp(1.2) },
   vehicleOptionRow: {
     flexDirection: 'row',

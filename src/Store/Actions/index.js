@@ -1,5 +1,5 @@
 import {sessionExpired, signIn, signOut} from './AuthAction';
-import {clearFuelEvent, fetchFuelEvent, fetchFuelVehicles, updateFuelEvent} from './FuelAction';
+import {clearFuelEvent, fetchFuelEvent, fetchFuelVehicles, recentFuelEvents, updateFuelEvent} from './FuelAction';
 import {
   clearInspectionInProgress,
   deleteInspection,
@@ -91,6 +91,7 @@ export {
   setInspectionFrequency,
   fetchFuelEvent,
   fetchFuelVehicles,
+  recentFuelEvents,
   updateFuelEvent,
   clearFuelEvent,
 };

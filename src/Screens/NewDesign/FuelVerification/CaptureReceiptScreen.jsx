@@ -1,24 +1,34 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, Image, ScrollView, StatusBar, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, Platform, ScrollView, StatusBar, TouchableOpacity, View } from 'react-native';
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
+import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 import { CardWrapper, LogoHeader, PrimaryGradientButton } from '../../../Components';
 import AppText from '../../../Components/text';
+import { updateFuelEvent } from '../../../Store/Actions';
+import { fixImageOrientation, getSignedUrl } from '../../../Utils';
 import { styles } from './styles';
+import { S3_BUCKET_BASEURL } from '../../../Constants';
+import { ROUTES } from '../../../Navigation/ROUTES';
 
-const DUMMY_RECEIPT_RESPONSE = {
-  gallons: '12.4 gal',
-  price: '$4.21',
-  total: '$52.20',
-  merchant: 'Shell #4471',
-};
-
-const CaptureReceiptScreen = () => {
+const CaptureReceiptScreen = ({ navigation, route }) => {
+  const { t } = useTranslation();
   const progressPips = [0, 1, 2, 3, 4, 5];
   const cameraRef = useRef(null);
   const device = useCameraDevice('back');
+  const dispatch = useDispatch();
+
+  const {
+    user: { token, data },
+  } = useSelector(state => state.auth);
+  const { selectedInspectionID, variant } = useSelector(state => state.newInspection);
+  const fuelEvent = useSelector(state => state.fuel?.fuelEvent);
+
   const [hasPermission, setHasPermission] = useState(false);
   const [capturedImageUri, setCapturedImageUri] = useState('');
-  const [showDummyResult, setShowDummyResult] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [showResult, setShowResult] = useState(false);
 
   useEffect(() => {
     const initPermission = async () => {
@@ -34,23 +44,47 @@ const CaptureReceiptScreen = () => {
         return;
       }
 
-      Alert.alert('Camera permission required', 'Please allow camera access to capture receipt.');
+      Alert.alert(t('fuelVerification.cameraPermissionRequiredTitle'), t('fuelVerification.cameraPermissionCaptureReceipt'));
     };
 
     initPermission();
-  }, []);
+  }, [t]);
+
+  const handleUploadError = () => {
+    setIsUploading(false);
+    setProgress(0);
+    Alert.alert(t('fuelVerification.uploadFailedTitle'), t('fuelVerification.uploadFailedReceipt'));
+  };
+
+  const handleResponse = async (key) => {
+    const imageUrl = `${S3_BUCKET_BASEURL}${key}`;
+    console.log('imageUrl /////', imageUrl);
+    const body = {
+      currentStep: 5,
+      receiptImageUrl: imageUrl,
+    };
+    try {
+      await dispatch(updateFuelEvent(fuelEvent?.id, body));
+      setShowResult(true);
+      setIsUploading(false);
+    } catch (error) {
+      setIsUploading(false);
+      setShowResult(false);
+    }
+  };
 
   const handleCapture = async () => {
     if (capturedImageUri) {
       setCapturedImageUri('');
-      setShowDummyResult(false);
+      setShowResult(false);
+      setProgress(0);
       return;
     }
 
     if (!hasPermission) {
       const requested = await Camera.requestCameraPermission();
       if (requested !== 'granted') {
-        Alert.alert('Camera permission required', 'Please allow camera access to continue.');
+        Alert.alert(t('fuelVerification.cameraPermissionRequiredTitle'), t('fuelVerification.cameraPermissionContinue'));
         return;
       }
       setHasPermission(true);
@@ -64,9 +98,30 @@ const CaptureReceiptScreen = () => {
       const photo = await cameraRef.current.takePhoto({ flash: 'off' });
       const normalizedUri = photo.path.startsWith('file://') ? photo.path : `file://${photo.path}`;
       setCapturedImageUri(normalizedUri);
-      setShowDummyResult(true);
+      setIsUploading(true);
+
+      const extension = photo.path.split('.').pop() || 'jpeg';
+      const mime = `image/${extension}`;
+      const normalizedPath = Platform.OS === 'ios' ? await fixImageOrientation(photo.path) : photo.path;
+
+      await getSignedUrl(
+        token,
+        mime,
+        normalizedPath,
+        setProgress,
+        handleResponse,
+        handleUploadError,
+        dispatch,
+        fuelEvent?.event?.id || selectedInspectionID,
+        'receipt',
+        variant || 0,
+        'app',
+        data?.companyId,
+        'CarVerification'
+      );
     } catch (error) {
-      Alert.alert('Capture failed', 'Could not capture receipt image. Please try again.');
+      setIsUploading(false);
+      Alert.alert(t('fuelVerification.captureFailedTitle'), t('fuelVerification.captureFailedReceipt'));
     }
   };
 
@@ -76,9 +131,9 @@ const CaptureReceiptScreen = () => {
       <View style={styles.blueHeaderContainer}>
         <LogoHeader />
         <View style={styles.flowHeader}>
-          <AppText style={styles.stepText}>Step 4 of 6 · Receipt</AppText>
-          <AppText style={styles.title}>Capture receipt</AppText>
-          <AppText style={styles.subtitle}>Photograph the receipt after fueling</AppText>
+          <AppText style={styles.stepText}>{t('fuelVerification.stepReceipt')}</AppText>
+          <AppText style={styles.title}>{t('fuelVerification.captureReceiptTitle')}</AppText>
+          <AppText style={styles.subtitle}>{t('fuelVerification.captureReceiptSubtitle')}</AppText>
           <View style={styles.progressTrack}>
             {progressPips.map(index => (
               <View key={index} style={[styles.progressPip, index < 4 && styles.progressPipDone]} />
@@ -96,48 +151,60 @@ const CaptureReceiptScreen = () => {
               <Image source={{ uri: capturedImageUri }} style={styles.odometerCapturedImage} />
             ) : (
               <View style={styles.odometerPlaceholder}>
-                <AppText style={styles.cardDescription}>Camera unavailable. Please allow camera permission.</AppText>
+                <AppText style={styles.cardDescription}>{t('fuelVerification.cameraUnavailable')}</AppText>
               </View>
             )}
           </View>
 
-          {!showDummyResult ? (
+          {isUploading ? (
+            <View style={styles.uploadingContainer}>
+              <ActivityIndicator size="small" color="#1D4ED8" />
+              <AppText style={styles.uploadingText}>{t('fuelVerification.uploadingWithProgress', { progress })}</AppText>
+            </View>
+          ) : null}
+
+          {!showResult && !isUploading ? (
             <TouchableOpacity style={styles.ghostButton} onPress={handleCapture} activeOpacity={0.8}>
-              <AppText style={styles.ghostButtonText}>Capture receipt image</AppText>
+              <AppText style={styles.ghostButtonText}>{t('fuelVerification.captureReceiptImage')}</AppText>
             </TouchableOpacity>
           ) : null}
 
-          {showDummyResult ? (
+          {showResult ? (
             <CardWrapper style={styles.odometerResultCard}>
-              <AppText style={styles.modalTitle}>Receipt data</AppText>
+              <AppText style={styles.modalTitle}>{t('fuelVerification.receiptData')}</AppText>
               <View style={styles.odometerResultRow}>
-                <AppText style={styles.vehicleMeta}>Gallons</AppText>
-                <AppText style={styles.vehicleName}>{DUMMY_RECEIPT_RESPONSE.gallons}</AppText>
+                <AppText style={styles.vehicleMeta}>{t('fuelVerification.gallons')}</AppText>
+                <AppText style={styles.vehicleName}>{fuelEvent?.receiptGallons ?? '--'}</AppText>
               </View>
               <View style={styles.odometerResultRow}>
-                <AppText style={styles.vehicleMeta}>Price</AppText>
-                <AppText style={styles.vehicleName}>{DUMMY_RECEIPT_RESPONSE.price}</AppText>
+                <AppText style={styles.vehicleMeta}>{t('fuelVerification.price')}</AppText>
+                <AppText style={styles.vehicleName}>{fuelEvent?.receiptPricePerGallon ?? '--'}</AppText>
               </View>
               <View style={styles.odometerResultRow}>
-                <AppText style={styles.vehicleMeta}>Total</AppText>
-                <AppText style={styles.vehicleName}>{DUMMY_RECEIPT_RESPONSE.total}</AppText>
+                <AppText style={styles.vehicleMeta}>{t('fuelVerification.total')}</AppText>
+                <AppText style={styles.vehicleName}>{fuelEvent?.receiptTotal ?? '--'}</AppText>
               </View>
               <View style={styles.odometerResultRow}>
-                <AppText style={styles.vehicleMeta}>Merchant</AppText>
-                <AppText style={styles.vehicleName}>{DUMMY_RECEIPT_RESPONSE.merchant}</AppText>
+                <AppText style={styles.vehicleMeta}>{t('fuelVerification.merchant')}</AppText>
+                <AppText style={styles.vehicleName}>{fuelEvent?.receiptMerchant || '--'}</AppText>
               </View>
             </CardWrapper>
           ) : null}
 
-          <PrimaryGradientButton text="Continue" buttonStyle={styles.ctaButton} buttonDisabled={!showDummyResult} onPress={() => {}} />
+          <PrimaryGradientButton
+            text={t('common.continue')}
+            buttonStyle={styles.ctaButton}
+            buttonDisabled={!showResult || isUploading}
+            onPress={() => navigation.navigate(ROUTES.FUEL_VERIFIED_SUBMIT)}
+          />
 
           <TouchableOpacity style={styles.ghostButton} activeOpacity={0.8} onPress={() => {}}>
-            <AppText style={styles.ghostButtonText}>No receipt available</AppText>
+            <AppText style={styles.ghostButtonText}>{t('fuelVerification.noReceiptAvailable')}</AppText>
           </TouchableOpacity>
 
-          {showDummyResult ? (
+          {showResult ? (
             <TouchableOpacity style={styles.ghostButton} onPress={handleCapture} activeOpacity={0.8}>
-              <AppText style={styles.ghostButtonText}>Retake photo</AppText>
+              <AppText style={styles.ghostButtonText}>{t('fuelVerification.retakePhoto')}</AppText>
             </TouchableOpacity>
           ) : null}
         </ScrollView>

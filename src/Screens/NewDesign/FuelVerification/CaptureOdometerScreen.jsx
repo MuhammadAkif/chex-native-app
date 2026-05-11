@@ -1,17 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Image, Platform, ScrollView, StatusBar, TouchableOpacity, View } from 'react-native';
 import { Camera, useCameraDevice } from 'react-native-vision-camera';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { CardWrapper, LogoHeader, PrimaryGradientButton } from '../../../Components';
 import AppText from '../../../Components/text';
-import { S3_BUCKET_BASEURL } from '../../../Constants';
 import { ROUTES } from '../../../Navigation/ROUTES';
-import { getMileage } from '../../../Store/Actions';
 import { fixImageOrientation, getSignedUrl } from '../../../Utils';
 import { styles } from './styles';
-import { updateFuelEvent } from '../../../Store/Actions';
+import { getMileage, updateFuelEvent } from '../../../Store/Actions';
+import { S3_BUCKET_BASEURL } from '../../../Constants';
 
 const CaptureOdometerScreen = ({ navigation, route }) => {
+  const { t } = useTranslation();
   const progressPips = [0, 1, 2, 3, 4, 5];
   const cameraRef = useRef(null);
   const device = useCameraDevice('back');
@@ -43,33 +44,34 @@ const CaptureOdometerScreen = ({ navigation, route }) => {
         setHasPermission(true);
         return;
       }
-      Alert.alert('Camera permission required', 'Please allow camera access to capture odometer.');
+      Alert.alert(t('fuelVerification.cameraPermissionRequiredTitle'), t('fuelVerification.cameraPermissionCaptureOdometer'));
     };
     initPermission();
-  }, []);
+  }, [t]);
 
   const handleUploadError = () => {
     setIsUploading(false);
     setProgress(0);
-    Alert.alert('Upload failed', 'Could not upload odometer image. Please try again.');
+    Alert.alert(t('fuelVerification.uploadFailedTitle'), t('fuelVerification.uploadFailedOdometer'));
   };
 
   console.log('fuelEvent', fuelEvent);
 
   const handleResponse = async (key) => {
-    const body = {
-      odometerReading: 44450
+    const imageUrl = `${S3_BUCKET_BASEURL}${key}`;
+    setCapturedS3Key(key);
+    try {
+
+      const extractedMileage = await dispatch(getMileage(imageUrl));
+      const body = {
+      odometerReading: extractedMileage,
+    };
+     await dispatch(updateFuelEvent(fuelEvent?.id, body));
+    } catch (error) {
+     console.log('error', error);
     }
-    await dispatch(updateFuelEvent(fuelEvent?.id, body));
-    // const imageUrl = `${S3_BUCKET_BASEURL}${key}`;
-    // setCapturedS3Key(key);
-    // dispatch(getMileage(imageUrl)).catch(() => {});
     setShowResult(true);
     setIsUploading(false);
-    // const body = {
-    //   odometerReading: 44444
-    // }
-    // await dispatch(updateFuelEvent(fuelEvent?.event?.id, body));
   };
 
   const handleCapture = async () => {
@@ -84,7 +86,7 @@ const CaptureOdometerScreen = ({ navigation, route }) => {
     if (!hasPermission) {
       const requested = await Camera.requestCameraPermission();
       if (requested !== 'granted') {
-        Alert.alert('Camera permission required', 'Please allow camera access to continue.');
+        Alert.alert(t('fuelVerification.cameraPermissionRequiredTitle'), t('fuelVerification.cameraPermissionContinue'));
         return;
       }
       setHasPermission(true);
@@ -119,7 +121,7 @@ const CaptureOdometerScreen = ({ navigation, route }) => {
       );
     } catch (error) {
       setIsUploading(false);
-      Alert.alert('Capture failed', 'Could not capture odometer image. Please try again.');
+      Alert.alert(t('fuelVerification.captureFailedTitle'), t('fuelVerification.captureFailedOdometer'));
     }
   };
 
@@ -129,9 +131,9 @@ const CaptureOdometerScreen = ({ navigation, route }) => {
       <View style={styles.blueHeaderContainer}>
         <LogoHeader />
         <View style={styles.flowHeader}>
-          <AppText style={styles.stepText}>Step 3 of 6 · Odometer</AppText>
-          <AppText style={styles.title}>Capture odometer</AppText>
-          <AppText style={styles.subtitle}>Point camera at the odometer display</AppText>
+          <AppText style={styles.stepText}>{t('fuelVerification.stepOdometer')}</AppText>
+          <AppText style={styles.title}>{t('fuelVerification.captureOdometerTitle')}</AppText>
+          <AppText style={styles.subtitle}>{t('fuelVerification.captureOdometerSubtitle')}</AppText>
           <View style={styles.progressTrack}>
             {progressPips.map(index => (
               <View key={index} style={[styles.progressPip, index < 3 && styles.progressPipDone]} />
@@ -149,7 +151,7 @@ const CaptureOdometerScreen = ({ navigation, route }) => {
               <Image source={{ uri: capturedImageUri }} style={styles.odometerCapturedImage} />
             ) : (
               <View style={styles.odometerPlaceholder}>
-                <AppText style={styles.cardDescription}>Camera unavailable. Please allow camera permission.</AppText>
+                <AppText style={styles.cardDescription}>{t('fuelVerification.cameraUnavailable')}</AppText>
               </View>
             )}
           </View>
@@ -157,36 +159,36 @@ const CaptureOdometerScreen = ({ navigation, route }) => {
           {isUploading ? (
             <View style={styles.uploadingContainer}>
               <ActivityIndicator size="small" color="#1D4ED8" />
-              <AppText style={styles.uploadingText}>Uploading… {progress}%</AppText>
+              <AppText style={styles.uploadingText}>{t('fuelVerification.uploadingWithProgress', { progress })}</AppText>
             </View>
           ) : null}
 
           {!showResult && !isUploading ? (
             <TouchableOpacity style={styles.ghostButton} onPress={handleCapture} activeOpacity={0.8}>
-              <AppText style={styles.ghostButtonText}>Capture odometer image</AppText>
+              <AppText style={styles.ghostButtonText}>{t('fuelVerification.captureOdometerImage')}</AppText>
             </TouchableOpacity>
           ) : null}
 
           {showResult ? (
             <CardWrapper style={styles.odometerResultCard}>
-              <AppText style={styles.modalTitle}>Odometer reading</AppText>
+              <AppText style={styles.modalTitle}>{t('fuelVerification.odometerReading')}</AppText>
               <View style={styles.odometerResultRow}>
-                <AppText style={styles.vehicleMeta}>Current</AppText>
+                <AppText style={styles.vehicleMeta}>{t('fuelVerification.current')}</AppText>
                 <AppText style={styles.odometerMiles}>{fuelEvent?.odometerReading || mileage || 'N/A'}</AppText>
               </View>
               <View style={styles.odometerResultRow}>
-                <AppText style={styles.vehicleMeta}>Last recorded</AppText>
+                <AppText style={styles.vehicleMeta}>{t('fuelVerification.lastRecorded')}</AppText>
                 <AppText style={styles.odometerMiles}>{fuelEvent?.odometerLastRecorded || 'N/A'}</AppText>
               </View>
               <View style={[styles.odometerResultRow, styles.odometerResultRowLast]}>
-                <AppText style={styles.vehicleMeta}>Miles since last fill</AppText>
+                <AppText style={styles.vehicleMeta}>{t('fuelVerification.milesSinceLastFill')}</AppText>
                 <AppText style={styles.odometerMiles}>{fuelEvent?.milesSinceLastFill || 'N/A'}</AppText>
               </View>
             </CardWrapper>
           ) : null}
 
           <PrimaryGradientButton
-            text="Continue"
+            text={t('common.continue')}
             buttonStyle={styles.ctaButton}
             buttonDisabled={!showResult || isUploading}
             onPress={() =>
@@ -202,7 +204,7 @@ const CaptureOdometerScreen = ({ navigation, route }) => {
 
           {showResult ? (
             <TouchableOpacity style={styles.ghostButton} onPress={handleCapture} activeOpacity={0.8}>
-              <AppText style={styles.ghostButtonText}>Retake photo</AppText>
+              <AppText style={styles.ghostButtonText}>{t('fuelVerification.retakePhoto')}</AppText>
             </TouchableOpacity>
           ) : null}
         </ScrollView>

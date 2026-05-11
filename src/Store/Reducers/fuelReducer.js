@@ -7,6 +7,7 @@ const {
   CLEAR_FUEL_EVENT,
   FETCH_FUEL_VEHICLES,
   SET_FUEL_VEHICLES_LOADING,
+  FETCH_RECENT_FUEL_EVENTS,
 } = Types;
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
   error: null,
   vehicles: [],
   vehiclesLoading: false,
+  recentFuelEvents: [],
 };
 
 const fuelReducer = (state = initialState, action) => {
@@ -35,6 +37,9 @@ const fuelReducer = (state = initialState, action) => {
 
     case SET_FUEL_VEHICLES_LOADING:
       return { ...state, vehiclesLoading: payload };
+
+    case FETCH_RECENT_FUEL_EVENTS:
+      return { ...state, recentFuelEvents: payload };
 
     case CLEAR_FUEL_EVENT:
       return initialState;

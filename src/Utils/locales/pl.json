@@ -1,599 +1,675 @@
 {
-    "common": {
-        "signIn": "Zaloguj się",
-        "email": "Email",
-        "submit": "Wyślij",
-        "password": "Hasło",
-        "confirmPassword": "Potwierdź hasło",
-        "reset": "Resetuj",
-        "loading": "Ładowanie...",
-        "home": "Strona główna",
-        "yes": "Tak",
-        "no": "Nie",
-        "licensePlateNo": "Nr rejestracyjny",
-        "dateCreated": "Data utworzenia",
-        "continue": "Kontynuuj",
-        "retry": "Ponów",
-        "next": "Dalej",
-        "comingSoon": "Wkrótce!",
-        "ok": "Ok",
-        "somethingWentWrong": "Coś poszło nie tak, spróbuj ponownie.",
-        "addImage": "Dodaj zdjęcie",
-        "captureImage": "Zrób zdjęcie",
-        "captureImageInstruction": "Wycentruj obiekt w ramce. Trzymaj stabilnie i naciśnij spust.",
-        "captureVideo": "Nagraj wideo",
-        "image": "zdjęcie",
-        "cancel": "Anuluj",
-        "required": "Wymagane",
-        "optional": "Opcjonalne",
-        "message": "Wiadomość",
-        "confirm": "Potwierdź",
-        "edit": "Edytuj"
-    },
-    "validation": {
-        "fieldRequired": "Pole wymagane",
-        "firstNameRequired": "Proszę podać swoje imię!",
-        "nameMinLength": "Imię musi mieć co najmniej 2 znaki",
-        "emailRequired": "Proszę podać swój adres email!",
-        "emailValid": "Proszę podać poprawny adres email",
-        "emailInvalidFormat": "Niepoprawny format email",
-        "phoneNumberRequired": "Pole wymagane",
-        "phoneNumberValid": "Proszę podać poprawny numer telefonu",
-        "passwordRequired": "Proszę podać swoje hasło!",
-        "passwordMinLength": "Hasło musi mieć co najmniej 6 znaków",
-        "passwordMinLength8": "Hasło musi mieć co najmniej 8 znaków",
-        "passwordMinLength1": "Hasło musi mieć co najmniej 1 znak",
-        "verificationCodeRequired": "Proszę podać swój kod!",
-        "verificationCodeMinLength": "Imię musi mieć co najmniej 6 znaków",
-        "newPasswordRequired": "Proszę podać swoje nowe hasło!",
-        "confirmPasswordRequired": "Proszę ponownie podać swoje nowe hasło!",
-        "passwordsMustMatch": "Hasła muszą być identyczne",
-        "emailMinLength": "Email musi mieć co najmniej 2 znaki",
-        "emailInvalidAddress": "Niepoprawny adres email"
-    },
-    "welcome": {
-        "title": "Witamy w",
-        "subtitle": "Wirtualne Inspekcje"
-    },
-    "signIn": {
-        "title": "Zaloguj się",
-        "namePlaceholder": "Jan Kowalski",
-        "forgotPassword": "Zapomniałeś hasła?",
-        "errors": {
-            "loginFailed": "Logowanie nieudane",
-            "wrongPassword": "Błędne hasło. Spróbuj ponownie."
-        }
-    },
-    "forgotPassword": {
-        "title": "Zapomniałeś hasła?",
-        "subtitle": "Wpisz email, aby zresetować hasło",
-        "knowPassword": "Znasz swoje hasło?",
-        "loginLink": "Zaloguj się",
-        "verificationCodeSent": "Kod weryfikacyjny został wysłany na Twoje konto",
-        "errors": {
-            "emailNotFound": "Nie znaleziono adresu email"
-        }
-    },
-    "resetPassword": {
-        "title": "Resetuj hasło",
-        "subtitle": "Proszę sprawdź swój email, aby otrzymać unikalny kod PIN i wpisz go poniżej",
-        "verificationCodePlaceholder": "Kod weryfikacyjny",
-        "successMessage": "Twoje hasło zostało pomyślnie zmienione",
-        "errors": {
-            "failedToReset": "Nie udało się zresetować hasła"
-        }
-    },
-    "home": {
-        "greeting": "Cześć, {{name}}",
-        "subtitle": "Sprawdźmy dzisiaj Twój pojazd",
-        "stats": {
-            "totalVehicles": "Wszystkie\nPojazdy",
-            "inProgressInspections": "Inspekcje\nw toku",
-            "submittedInspections": "Przesłane\nInspekcje",
-            "totalInspections": "Wszystkie\nInspekcje"
-        },
-        "myRegisteredVehicles": "Moje zarejestrowane pojazdy",
-        "recentInspections": "Ostatnie inspekcje",
-        "noRegisteredVehicle": "Brak zarejestrowanych pojazdów",
-        "noRecentInspection": "Brak ostatnich inspekcji",
-        "inspectionUnderReview": "Ta inspekcja jest obecnie sprawdzana."
-    },
-    "inspectionInProgress": {
-        "title": "Inspekcje w toku",
-        "subtitle": "Wybierz inspekcję poniżej, aby kontynuować. Po przesłaniu przejrzymy ją i wystawimy certyfikat",
-        "discardConfirmation": "Czy na pewno chcesz odrzucić swoją inspekcję?",
-        "noInspection": "Brak inspekcji w toku",
-        "startInspection": "+ Rozpocznij inspekcję",
-        "orGoBackTo": "Lub wróć do",
-        "page": "strony"
-    },
-    "inspectionReviewed": {
-        "title": "Inspekcja przejrzana",
-        "filter": "Filtr",
-        "noData": "Brak dostępnych inspekcji"
-    },
-    "filter": {
-        "title": "Filtr",
-        "apply": "Zastosuj",
-        "clear": "Wyczyść",
-        "noStatuses": "Brak dostępnych statusów"
-    },
-    "statuses": {
-        "reviewed": "Przejrzane",
-        "in_review": "W trakcie przeglądu",
-        "ready_for_review": "Gotowe do przeglądu",
-        "in_progress": "W toku"
-    },
-    "results": {
-        "pending": "Oczekujące",
-        "pass": "Zatwierdzone",
-        "fail": "Odrzucone"
-    },
-    "inspectionCard": {
-        "licensePlate": "Nr rejestracyjny",
-        "dateCreated": "Data utworzenia",
-        "damageDetected": "Wykryto uszkodzenia",
-        "noDamageDetected": "Nie wykryto uszkodzeń",
-        "inspectionDetails": "Szczegóły inspekcji",
-        "idLabel": "ID",
-        "byLabel": "Przez"
-    },
-    "inspectionDetail": {
-        "title": "Szczegóły inspekcji",
-        "finalStatus": "Status końcowy",
-        "noRemarks": "Brak uwag"
-    },
-    "tabs": {
-        "home": "Start",
-        "reports": "Raporty",
-        "inspection": "Inspekcja",
-        "myTrips": "Moje trasy",
-        "profile": "Profil"
-    },
-    "newInspection": {
-        "title": "Nowa inspekcja",
-        "header": "Proszę uzupełnij elementy inspekcji w każdej kategorii poniżej",
-        "discardItem": "Czy na pewno chcesz usunąć ten element inspekcji?",
-        "interiorItems": "Wnętrze",
-        "exteriorItems": "Zewnątrz",
-        "tires": "Opony"
-    },
+  "common": {
+    "signIn": "Zaloguj się",
+    "email": "Email",
+    "submit": "Wyślij",
+    "password": "Hasło",
+    "confirmPassword": "Potwierdź hasło",
+    "reset": "Resetuj",
+    "loading": "Ładowanie...",
+    "home": "Strona główna",
+    "yes": "Tak",
+    "no": "Nie",
+    "licensePlateNo": "Nr rejestracyjny",
+    "dateCreated": "Data utworzenia",
+    "continue": "Kontynuuj",
+    "retry": "Ponów",
+    "next": "Dalej",
+    "comingSoon": "Wkrótce!",
+    "ok": "Ok",
+    "somethingWentWrong": "Coś poszło nie tak, spróbuj ponownie.",
+    "addImage": "Dodaj zdjęcie",
+    "captureImage": "Zrób zdjęcie",
+    "captureImageInstruction": "Wycentruj obiekt w ramce. Trzymaj stabilnie i naciśnij spust.",
+    "captureVideo": "Nagraj wideo",
+    "image": "zdjęcie",
+    "cancel": "Anuluj",
+    "required": "Wymagane",
+    "optional": "Opcjonalne",
+    "message": "Wiadomość",
+    "confirm": "Potwierdź",
+    "edit": "Edytuj"
+  },
+  "validation": {
+    "fieldRequired": "Pole wymagane",
+    "firstNameRequired": "Proszę podać swoje imię!",
+    "nameMinLength": "Imię musi mieć co najmniej 2 znaki",
+    "emailRequired": "Proszę podać swój adres email!",
+    "emailValid": "Proszę podać poprawny adres email",
+    "emailInvalidFormat": "Niepoprawny format email",
+    "phoneNumberRequired": "Pole wymagane",
+    "phoneNumberValid": "Proszę podać poprawny numer telefonu",
+    "passwordRequired": "Proszę podać swoje hasło!",
+    "passwordMinLength": "Hasło musi mieć co najmniej 6 znaków",
+    "passwordMinLength8": "Hasło musi mieć co najmniej 8 znaków",
+    "passwordMinLength1": "Hasło musi mieć co najmniej 1 znak",
+    "verificationCodeRequired": "Proszę podać swój kod!",
+    "verificationCodeMinLength": "Imię musi mieć co najmniej 6 znaków",
+    "newPasswordRequired": "Proszę podać swoje nowe hasło!",
+    "confirmPasswordRequired": "Proszę ponownie podać swoje nowe hasło!",
+    "passwordsMustMatch": "Hasła muszą być identyczne",
+    "emailMinLength": "Email musi mieć co najmniej 2 znaki",
+    "emailInvalidAddress": "Niepoprawny adres email"
+  },
+  "welcome": {
+    "title": "Witamy w",
+    "subtitle": "Wirtualne Inspekcje"
+  },
+  "signIn": {
+    "title": "Zaloguj się",
+    "namePlaceholder": "Jan Kowalski",
+    "forgotPassword": "Zapomniałeś hasła?",
     "errors": {
-        "duplicateImage": {
-            "title": "Wykryto duplikat obrazu",
-            "message": "Obraz/wideo dla tej kategorii zostało już wcześniej przesłane i istnieje w naszej bazie danych. Odśwież stronę, aby zobaczyć przesłany obraz."
-        },
-        "inspectionExpired": {
-            "title": "",
-            "message": "Inspekcja wygasła. Proszę rozpocząć nową inspekcję."
-        },
-        "uploadFailed": {
-            "title": "Przesyłanie nieudane",
-            "message": "Sprawdź połączenie internetowe i spróbuj ponownie. Jeśli problem nie ustąpi, zmniejsz rozmiar pliku lub zmień sieć. Skontaktuj się ze wsparciem, jeśli zajdzie potrzeba. Przepraszamy za utrudnienia."
-        },
-        "licensePlateInUse": "Wybrany numer rejestracyjny jest obecnie sprawdzany przez innego użytkownika. Proszę wybrać inny pojazd.",
-        "licensePlateMismatch": {
-            "title": "Wykryto rozbieżność",
-            "message": "Wykryto niezgodność numeru rejestracyjnego. Proszę ponownie zrobić zdjęcie tablicy rejestracyjnej wybranego pojazdu"
-        },
-        "darkImageError": {
-            "title": "Problem z jakością obrazu",
-            "message": "Przesłany obraz wydaje się zbyt ciemny. Spróbuj przesłać wyraźniejszy obraz z lepszym oświetleniem."
-        },
-        "imageAlreadyDeleted": "Bu resim zaten silinmiş.",
-        "genericError": "Bir hata oluştu",
-        "alreadyInProgress": "Już w toku"
-    },
-    "annotateImageDetails": {
-        "title": "Zewnątrz Przód",
-        "description": "Aby opisać obraz pojazdu, kliknij bezpośrednio na wybrany obszar na zdjęciu. Po kliknięciu pojawi się ikona uszkodzenia, która pozwoli wizualnie zazneczić i wyróżnić konkretne miejsce uszkodzenia.",
-        "instruction": "Czy chcesz dodać opis?\n",
-        "annotateText": "Opisz",
-        "skipText": "Pomiń"
-    },
-    "annotateImage": {
-        "title": "Zewnątrz Przód",
-        "description": "Aby opisać obraz przodu pojazdu, kliknij bezpośrednio na wybrany obszar na zdjęciu. Po kliknięciu pojawi się ikona uszkodzenia, która pozwoli wizualnie zaznaczyć i wyróżnić konkretne miejsce uszkodzenia.",
-        "instruction": "Czy chcesz dodać opis?\n",
-        "annotateText": "Wyślij",
-        "cancelText": "Anuluj"
-    },
-    "damageTypes": {
-        "minor": "Drobne",
-        "major": "Poważne",
-        "severe": "Ciężkie"
-    },
-    "drawer": {
-        "home": "START",
-        "thingsYouWillRequire": "Wymagane rzeczy",
-        "logout": "Wyloguj",
-        "dvirc": "DVIRC"
-    },
-    "session": {
-        "expired": {
-            "title": "Sesja wygasła",
-            "message": "Twoja sesja wygasła. Zaloguj się ponownie, aby kontynuować.",
-            "button": "OK"
-        }
-    },
-    "appUpdate": {
-        "title": "Aktualizacja aplikacji",
-        "message": "Dostępna jest nowa wersja aplikacji. Proszę zaktualizuj, aby kontynuować korzystanie z aplikacji.",
-        "button": "AKTUALIZUJ"
-    },
-    "exitApp": {
-        "title": "Zaczekaj!",
-        "message": "Czy na pewno chcesz wyjść z aplikacji?",
-        "button": {
-            "yes": "Tak",
-            "cancel": "Anuluj"
-        }
-    },
-    "delete": {
-        "success": "Usunięto pomyślnie.",
-        "failed": "Nie udało się usunąć. Spróbuj ponownie.",
-        "inspectionDeleted": "Inspekcja została usunięta!"
-    },
-    "dvir": {
-        "checklistTitle": "Lista kontrolna",
-        "tires": "Opony",
-        "captureFrames": "Przechwyć klatki",
-        "comments": "Komentarze",
-        "addComments": "Dodaj komentarz tutaj",
-        "captureImage": "Zrób zdjęcie",
-        "exteriorFront": "Zewnątrz Przód",
-        "exteriorRear": "Zewnątrz Tył",
-        "interiorFrontTitle": "Pełne wnętrze przód (deska rozdzielcza, kierownica, siedzenie)",
-        "interiorRearTitle": "Wnętrze tył (tylne siedzenia, podłoga) / paka ciężarówki",
-        "frontInterior": "Wnętrze przód",
-        "rearInterior": "Wnętrze tył",
-        "tire": "Opona",
-        "dashBoardView": "Proszę zrób zdjęcie z wyraźnym widokiem na deskę rozdzielczą",
-        "rearInteriorView": "Proszę zrób zdjęcie z wyraźnym widokiem na tylne siedzenia",
-        "tireView": "Proszę zrób zdjęcie z wyraźnym widokiem na oponę",
-        "maxMediaError": "Możesz dodać maksymalnie 5 plików multimedialnych",
-        "uploadVideo": "Prześlij wideo",
-        "uploadImage": "Prześlij zdjęcie",
-        "uploadingMedia": "Proszę czekaj, trwa przesyłanie {{media}}",
-        "tdrf": "Głębokość bieżnika PP (TDRF)",
-        "tdrr": "Głębokość bieżnika PT (TDRR)",
-        "tdlf": "Głębokość bieżnika LP (TDLF)",
-        "tdlr": "Głębokość bieżnika LT (TDLR)",
-        "tdspare": "Głębokość bieżnika koła zapasowego (TDSPARE)",
-        "brakeComponents": "Elementy hamulcowe (zdjęcie bębnów/tarcz/przewodów)",
-        "status": {
-            "good": "Dobry",
-            "repair": "Naprawa",
-            "replace": "Wymiana"
-        },
-        "checklist": {
-            "headLights": "Reflektory / Kierunkowskazy / Światła awaryjne / Lampy zewnętrzne / Pióra wycieraczek",
-            "engineBay": "Komora silnika (Szeroki kadr)",
-            "oilDipstick": "Bagnet oleju (Zdjęcie pokazujące poziom/przejrzystość oleju)",
-            "underBodyLeak": "Sprawdzenie wycieków podwozia (Zdjęcie pod silnikiem)",
-            "radioNavigation": "Radio / Ekran nawigacji (Włączony)",
-            "jackTools": "Podnośnik i narzędzia (Podnośnik, Klucz, Zestaw narzędzi)",
-            "tailLights": "Światła tylne / Kierunkowskazy / Światła stopu / Światła awaryjne / Lampy zewnętrzne"
-        }
-    },
-    "vehicleInfo": {
-        "title": "Informacje o pojeździe",
-        "subtitle": "Aby rozpocząć inspekcję, podaj poniższe informacje o pojeździe. Wszystkie pola są wymagane w celu zapewnienia dokładnej zgodności.",
-        "licensePlateLabel": "ID ciężarówki / Nr rejestracyjny",
-        "licensePlatePlaceholder": "Wpisz ID / Nr rejestracyjny",
-        "mileageLabel": "Przebieg",
-        "mileagePlaceholder": "Wpisz przebieg",
-        "vinLabel": "VIN",
-        "vinPlaceholder": "Wpisz VIN",
-        "makeLabel": "Marka",
-        "modelLabel": "Model",
-        "yearLabel": "Rok",
-        "driverNameLabel": "Imię kierowcy",
-        "dateLabel": "Data",
-        "vehicleTypeLabel": "Typ pojazdu",
-        "inspectionTypeLabel": "Typ inspekcji",
-        "inspectionTypePlaceholder": "Typ inspekcji",
-        "clearAll": "Wyczyść wszystko",
-        "next": "Dalej",
-        "startInspection": "Chcesz rozpocząć inspekcję tego pojazdu?",
-        "Info": "Informacje",
-        "confirmClear": "Chcesz wyczyścić dane pojazdu?",
-        "errors": {
-            "licensePlateUndetected": "Odczyt niewykryty. Wpisz numer rejestracyjny ręcznie",
-            "licensePlateRequired": "Numer rejestracyjny jest wymagany",
-            "mileageUndetected": "Odczyt niewykryty. Wpisz przebieg ręcznie",
-            "mileageRequired": "Przebieg jest wymagany",
-            "mileagePositive": "Przebieg musi być liczbą dodatnią",
-            "vinUndetected": "Odczyt niewykryty. Wpisz VIN ręcznie",
-            "vinRequired": "VIN jest wymagany",
-            "vinLength": "VIN musi mieć 17 znaków",
-            "inspectionTypeRequired": "Typ inspekcji jest wymagany",
-            "vehicleTypeRequired": "Wybierz typ pojazdu",
-            "driverNameRequired": "Imię kierowcy jest wymagane",
-            "dateRequired": "Data jest wymagana"
-        },
-        "vehicleTypes": {
-            "van": "AWANGARDA",
-            "truck": "CIĘŻARÓWKA",
-            "sedan": "SEDAN",
-            "other": "INNY"
-        },
-        "inspectionTypes": {
-            "regular": "Zwykły",
-            "dvir": "DVIR"
-        },
-        "camera": {
-            "takePhotoVin": "Proszę zrób zdjęcie\n numeru VIN",
-            "waitVinUpload": "Proszę czekaj, trwa przesyłanie numeru VIN"
-        }
-    },
-    "vehicleTypeModal": {
-        "title": "Wybierz typ pojazdu",
-        "description": "Proszę wybierz typ pojazdu dla tej inspekcji."
-    },
-    "profile": {
-        "title": "Profil użytkownika",
-        "firstNameLabel": "Imię",
-        "firstNamePlaceholder": "Wpisz imię",
-        "lastNameLabel": "Nazwisko",
-        "lastNamePlaceholder": "Wpisz nazwisko",
-        "emailLabel": "Email",
-        "emailPlaceholder": "Wpisz email",
-        "phoneLabel": "Telefon",
-        "phonePlaceholder": "Wpisz numer telefonu",
-        "languageLabel": "Język",
-        "languagePlaceholder": "Wybierz język",
-        "updateProfileButton": "Zaktualizuj profil",
-        "profileUpdatedToast": "Profil został zaktualizowany",
-        "languageChangedToast": "Język został zmieniony pomyślnie",
-        "errors": {
-            "firstNameRequired": "Imię jest wymagane",
-            "lastNameRequired": "Nazwisko jest wymagane",
-            "emailRequired": "Email jest wymagany",
-            "invalidEmail": "Niepoprawny format email",
-            "phoneRequired": "Numer telefonu jest wymagany",
-            "phoneDigits": "Numer telefonu musi mieć od 10 do 15 cyfr"
-        }
-    },
-    "languages": {
-        "en": "Angielski",
-        "ro": "Rumuński",
-        "pl": "Polski",
-        "bg": "Bułgarski",
-        "tr": "Turecki",
-        "es": "Hiszpański"
-    },
-    "annotation": {
-        "title": "Zewnątrz Przód",
-        "description": "Aby opisać obraz pojazdu, kliknij bezpośrednio na wybrany obszar na zdjęciu. Po kliknięciu pojawi się ikona uszkodzenia, która pozwoli wizualnie zaznaczyć i wyróżnić konkretne miejsce uszkodzenia.",
-        "instruction": "Czy chcesz dodać opis?\n",
-        "annotate": "Opisz",
-        "skip": "Pomiń",
-        "submit": "Wyślij",
-        "cancel": "Anuluj",
-        "severityLevel": "Określ stopień nasilenia uszkodzeń",
-        "addNotes": "Dodaj notatki",
-        "notesPlaceholder": "Wpisz tutaj swoje notatki",
-        "damageType": {
-            "minor": "Drobne",
-            "major": "Poważne",
-            "severe": "Ciężkie"
-        },
-        "alertMessage": "Proszę zaznacz uszkodzenie i wybierz stopień nasilenia, aby kontynuować. Oba są wymagane.",
-        "uploading": "Przesyłanie",
-        "finalizingUpload": "Finalizowanie przesyłania",
-        "imageQuestion": "zdjęcie?"
-    },
-    "interiorItems": {
-        "captureImage": "Zrób zdjęcie",
-        "captureNow": "Zrób teraz",
-        "driverSide": {
-            "title": "Wnętrze strona kierowcy",
-            "instruction": "Proszę zrób zdjęcie wnętrza pojazdu z otwartymi drzwiami po stronie kierowcy z wyraźnym widokiem na poniższe elementy:",
-            "details": {
-                "seatBelt": "Zapięty pas kierowcy",
-                "rearview": "Lusterko wsteczne wewnętrzne",
-                "brakePads": "Klocki hamulcowe"
-            }
-        },
-        "passengerSide": {
-            "title": "Wnętrze strona pasażera",
-            "instruction": "Proszę zrób zdjęcie wnętrza pojazdu z otwartymi drzwiami po stronie pasażera z wyraźnym widokiem na poniższe elementy:",
-            "details": {
-                "seatBelt": "Zapięty pas pasażera"
-            }
-        }
-    },
-    "odometerGuidance": {
-        "title": "Jak sfotografować licznik",
-        "description": "Trzymaj aparat stabilnie i upewnij się, że wszystkie cyfry licznika są wyraźne i w pełni widoczne przed wykonaniem zdjęcia.",
-        "doNotShowAgain": "Nie pokazuj ponownie"
-    },
-    "licensePlateGuidance": {
-        "title": "Jak sfotografować tablicę rejestracyjną",
-        "description": "Ustaw tablicę rejestracyjną w kadrze i upewnij się, że wszystkie znaki są w pełni widoczne i czytelne przed wykonaniem zdjęcia.",
-        "doNotShowAgain": "Nie pokazuj ponownie"
-    },
-    "vinGuidance": {
-        "title": "Jak sfotografować VIN",
-        "description": "Ustaw ostrość na etykiecie VIN i upewnij się, że wszystkie 17 znaków są wyraźne i czytelne przed wykonaniem zdjęcia.",
-        "doNotShowAgain": "Nie pokazuj ponownie"
-    },
-    "carVerification": {
-        "licensePlate": {
-            "title": "Tablica rejestracyjna",
-            "instruction": "Proszę zrób zdjęcie tablicy rejestracyjnej pojazdu",
-            "captureNow": "Zrób teraz"
-        },
-        "odometer": {
-            "title": "Odometr",
-            "instruction": "Proszę zrób zdjęcie odometru wyraźnie pokazujące przebieg pojazdu",
-            "captureNow": "Zrób teraz"
-        },
-        "vin": {
-            "title": "VIN",
-            "instruction": "Proszę czekaj, trwa przesyłanie numeru VIN",
-            "captureNow": "Zrób teraz"
-        },
-        "uploadImage": "Prześlij zdjęcie"
-    },
-    "collapsedCard": {
-        "uploadInstructions": "Dla każdej podkategorii prześlij do 3 zdjęć\n(1 wymagane, 2 opcjonalne)"
-    },
-    "exteriorItems": {
-        "captureImage": "Zrób zdjęcie",
-        "captureNow": "Zrób teraz",
-        "front": {
-            "title": "Zewnątrz Przód",
-            "instruction": "Proszę prześlij zdjęcie wyraźnie pokazujące przód pojazdu"
-        },
-        "rear": {
-            "title": "Zewnątrz Tył",
-            "instruction": "Proszę prześlij zdjęcie wyraźnie pokazujące tył pojazdu"
-        },
-        "left": {
-            "title": "Zewnątrz Lewa Strona",
-            "instruction": "Proszę zrób zdjęcie wyraźnie pokazujące cały lewy bok pojazdu"
-        },
-        "right": {
-            "title": "Zewnątrz Prawa Strona",
-            "instruction": "Proszę zrób zdjęcie wyraźnie pokazujące cały prawy bok pojazdu"
-        },
-        "frontLeftCorner": {
-            "title": "Przedni Lewy Narożnik",
-            "instruction": "Proszę zrób zdjęcie z przedniego lewego narożnika pojazdu, wyraźnie pokazujące lewy reflektor, drzwi kierowcy oraz dach po lewej stronie pojazdu"
-        },
-        "frontRightCorner": {
-            "title": "Przedni Prawy Narożnik",
-            "instruction": "Proszę zrób zdjęcie z przedniego prawego narożnika pojazdu, wyraźnie pokazujące prawy reflektor, drzwi pasażera oraz dach po prawej stronie pojazdu"
-        },
-        "rearLeftCorner": {
-            "title": "Tylny Lewy Narożnik",
-            "instruction": "Proszę zrób zdjęcie z tylnego lewego narożnika pojazdu, wyraźnie pokazujące lewe tylne światło, tylne drzwi oraz dach po lewej stronie pojazdu"
-        },
-        "rearRightCorner": {
-            "title": "Tylny Prawy Narożnik",
-            "instruction": "Proszę zrób zdjęcie z tylnego prawego narożnika pojazdu, wyraźnie pokazujące prawe tylne światło, tylne drzwi oraz dach po prawej stronie pojazdu"
-        },
-        "insideCargoRoof": {
-            "title": "Plafon Cargo Interior",
-            "instruction": "Proszę prześlij zdjęcie wyraźnie pokazujące wnętrze sufitu paki/cargo pojazdu"
-        }
-    },
-    "tiresItems": {
-        "captureImage": "Zrób zdjęcie",
-        "captureNow": "Zrób teraz",
-        "instruction": "Proszę umieść monetę w bieżniku opony i zrób zdjęcie pokazujące następujące elementy:",
-        "subHeading": "Umieść monetę tak, aby głowa na niej była skierowana w dół i w stronę aparatu",
-        "leftFront": "Opona Przód Lewa",
-        "leftRear": "Opona Tył Lewa",
-        "rightFront": "Opona Przód Prawa",
-        "rightRear": "Opona Tył Prawa"
-    },
-    "commentBox": {
-        "title": "Dodaj komentarz",
-        "description": "Podaj swoje uwagi lub opinię poniżej",
-        "placeHolder": "Wpisz tutaj swój komentarz lub opinię"
-    },
-    "commentButton": {
-        "text": "+ Dodaj komentarz",
-        "optional": "(Opcjonalnie)"
-    },
-    "confirmVehicleDetail": {
-        "title": "Szczegóły pojazdu",
-        "description": "System nie był w stanie wykryć numeru rejestracyjnego. Wpisz go ręcznie poniżej:",
-        "buttonText": "Potwierdź",
-        "placeHolder": "Wpisz numer rejestracyjny"
-    },
-    "expiryInspection": {
-        "description": "Inspekcja wygasła. Proszę rozpocząć nową inspekcję.",
-        "confirmButton": "Nowa inspekcja",
-        "cancelButton": "Wyjdź"
-    },
-    "mileageInput": {
-        "title": "Przebieg",
-        "description": "System nie był w stanie wykryć przebiegu. Wpisz go ręcznie poniżej:",
-        "placeHolder": "Wpisz przebieg",
-        "errors": {
-            "lessThanPrevious": "Obecny stan nie może być niższy niż poprzedni"
-        }
-    },
-    "categories": {
-        "exterior_front": "Zewnątrz Przód",
-        "exterior_rear": "Zewnątrz Tył",
-        "exterior_left": "Zewnątrz Lewa Strona",
-        "exterior_right": "Zewnątrz Prawa Strona",
-        "front_left_corner": "Przedni Lewy Narożnik",
-        "front_right_corner": "Przedni Prawy Narożnik",
-        "rear_left_corner": "Tylny Lewy Narożnik",
-        "rear_right_corner": "Tylny Prawy Narożnik",
-        "inside_cargo_roof": "Plafon Cargo Interior",
-        "interior_driver_side": "Wnętrze strona kierowcy",
-        "interior_passenger_side": "Wnętrze strona pasażera",
-        "license_plate_number": "Numer rejestracyjny",
-        "odometer": "Odometr",
-        "left_front_tire": "Opona Przód Lewa",
-        "left_rear_tire": "Opona Tył Lewa",
-        "right_front_tire": "Opona Przód Prawa",
-        "right_rear_tire": "Opona Tył Prawa",
-        "front_interior": "Wnętrze przód",
-        "rear_interior": "Wnętrze tył",
-        "tire": "Opona",
-        "tdrf": "Głębokość bieżnika PP (TDRF)",
-        "tdrr": "Głębokość bieżnika PT (TDRR)",
-        "tdlf": "Głębokość bieżnika LP (TDLF)",
-        "tdlr": "Głębokość bieżnika LT (TDLR)",
-        "tdspare": "Głębokość bieżnika koła zapasowego (TDSPARE)",
-        "brake_components": "Elementy hamulcowe"
-    },
-    "completedInspection": {
-        "thankYou": "Dziękujemy za skorzystanie z",
-        "message": "Możesz teraz wyjść z aplikacji. Nasi przedstawiciele skontaktują się z Tobą, jeśli będziemy potrzebować dalszej pomocy",
-        "homeButton": "Start"
-    },
-    "inspectionTitles": {
-        "license_plate_number": "Numer rejestracyjny",
-        "odometer": "Odometr",
-        "exterior_front": "Zewnątrz Przód",
-        "exterior_front_1": "Zewnątrz Przód - 1",
-        "exterior_front_2": "Zewnątrz Przód - 2",
-        "exterior_rear": "Zewnątrz Tył",
-        "exterior_rear_1": "Zewnątrz Tył - 1",
-        "exterior_rear_2": "Zewnątrz Tył - 2",
-        "exterior_left": "Zewnątrz Lewa Strona",
-        "exterior_left_1": "Zewnątrz Lewa Strona - 1",
-        "exterior_left_2": "Zewnątrz Lewa Strona - 2",
-        "exterior_right": "Zewnątrz Prawa Strona",
-        "exterior_right_1": "Zewnątrz Prawa Strona - 1",
-        "exterior_right_2": "Zewnątrz Prawa Strona - 2",
-        "front_left_corner": "Przedni Lewy Narożnik",
-        "front_left_corner_1": "Przedni Lewy Narożnik - 1",
-        "front_left_corner_2": "Przedni Lewy Narożnik - 2",
-        "front_right_corner": "Przedni Prawy Narożnik",
-        "front_right_corner_1": "Przedni Prawy Narożnik - 1",
-        "front_right_corner_2": "Przedni Prawy Narożnik - 2",
-        "rear_left_corner": "Tylny Lewy Narożnik",
-        "rear_left_corner_1": "Tylny Lewy Narożnik - 1",
-        "rear_left_corner_2": "Tylny Lewy Narożnik - 2",
-        "rear_right_corner": "Tylny Prawy Narożnik",
-        "rear_right_corner_1": "Tylny Prawy Narożnik - 1",
-        "rear_right_corner_2": "Tylny Prawy Narożnik - 2",
-        "inside_cargo_roof": "Plafon Cargo Interior",
-        "inside_cargo_roof_1": "Plafon Cargo Interior - 1",
-        "inside_cargo_roof_2": "Plafon Cargo Interior - 2",
-        "left_front_tire": "Opona Przód Lewa",
-        "left_rear_tire": "Opona Tył Lewa",
-        "right_front_tire": "Opona Przód Prawa",
-        "right_rear_tire": "Opona Tył Prawa",
-        "interior_passenger_side": "Wnętrze strona pasażera",
-        "interior_driver_side": "Wnętrze strona kierowcy",
-        "rear_interior": "Wnętrze tylne",
-        "front_interior": "Wnętrze przednie",
-        "brake_components": "Komponenty hamulcowe",
-        "tdspare": "Głębokość bieżnika SPARE",
-        "tdrr": "Głębokość bieżnika RR",
-        "tdlr": "Głębokość bieżnika LR",
-        "tdrf": "Głębokość bieżnika RF",
-        "tdlf": "Głębokość bieżnika LF"
+      "loginFailed": "Logowanie nieudane",
+      "wrongPassword": "Błędne hasło. Spróbuj ponownie."
     }
+  },
+  "forgotPassword": {
+    "title": "Zapomniałeś hasła?",
+    "subtitle": "Wpisz email, aby zresetować hasło",
+    "knowPassword": "Znasz swoje hasło?",
+    "loginLink": "Zaloguj się",
+    "verificationCodeSent": "Kod weryfikacyjny został wysłany na Twoje konto",
+    "errors": {
+      "emailNotFound": "Nie znaleziono adresu email"
+    }
+  },
+  "resetPassword": {
+    "title": "Resetuj hasło",
+    "subtitle": "Proszę sprawdź swój email, aby otrzymać unikalny kod PIN i wpisz go poniżej",
+    "verificationCodePlaceholder": "Kod weryfikacyjny",
+    "successMessage": "Twoje hasło zostało pomyślnie zmienione",
+    "errors": {
+      "failedToReset": "Nie udało się zresetować hasła"
+    }
+  },
+  "home": {
+    "greeting": "Cześć, {{name}}",
+    "subtitle": "Sprawdźmy dzisiaj Twój pojazd",
+    "stats": {
+      "totalVehicles": "Wszystkie\nPojazdy",
+      "inProgressInspections": "Inspekcje\nw toku",
+      "submittedInspections": "Przesłane\nInspekcje",
+      "totalInspections": "Wszystkie\nInspekcje"
+    },
+    "myRegisteredVehicles": "Moje zarejestrowane pojazdy",
+    "recentInspections": "Ostatnie inspekcje",
+    "noRegisteredVehicle": "Brak zarejestrowanych pojazdów",
+    "noRecentInspection": "Brak ostatnich inspekcji",
+    "inspectionUnderReview": "Ta inspekcja jest obecnie sprawdzana."
+  },
+  "inspectionInProgress": {
+    "title": "Inspekcje w toku",
+    "subtitle": "Wybierz inspekcję poniżej, aby kontynuować. Po przesłaniu przejrzymy ją i wystawimy certyfikat",
+    "discardConfirmation": "Czy na pewno chcesz odrzucić swoją inspekcję?",
+    "noInspection": "Brak inspekcji w toku",
+    "startInspection": "+ Rozpocznij inspekcję",
+    "orGoBackTo": "Lub wróć do",
+    "page": "strony"
+  },
+  "inspectionReviewed": {
+    "title": "Inspekcja przejrzana",
+    "filter": "Filtr",
+    "noData": "Brak dostępnych inspekcji"
+  },
+  "filter": {
+    "title": "Filtr",
+    "apply": "Zastosuj",
+    "clear": "Wyczyść",
+    "noStatuses": "Brak dostępnych statusów"
+  },
+  "statuses": {
+    "reviewed": "Przejrzane",
+    "in_review": "W trakcie przeglądu",
+    "ready_for_review": "Gotowe do przeglądu",
+    "in_progress": "W toku"
+  },
+  "results": {
+    "pending": "Oczekujące",
+    "pass": "Zatwierdzone",
+    "fail": "Odrzucone"
+  },
+  "inspectionCard": {
+    "licensePlate": "Nr rejestracyjny",
+    "dateCreated": "Data utworzenia",
+    "damageDetected": "Wykryto uszkodzenia",
+    "noDamageDetected": "Nie wykryto uszkodzeń",
+    "inspectionDetails": "Szczegóły inspekcji",
+    "idLabel": "ID",
+    "byLabel": "Przez"
+  },
+  "inspectionDetail": {
+    "title": "Szczegóły inspekcji",
+    "finalStatus": "Status końcowy",
+    "noRemarks": "Brak uwag"
+  },
+  "tabs": {
+    "home": "Start",
+    "reports": "Raporty",
+    "inspection": "Inspekcja",
+    "myTrips": "Moje trasy",
+    "profile": "Profil"
+  },
+  "newInspection": {
+    "title": "Nowa inspekcja",
+    "header": "Proszę uzupełnij elementy inspekcji w każdej kategorii poniżej",
+    "discardItem": "Czy na pewno chcesz usunąć ten element inspekcji?",
+    "interiorItems": "Wnętrze",
+    "exteriorItems": "Zewnątrz",
+    "tires": "Opony"
+  },
+  "errors": {
+    "duplicateImage": {
+      "title": "Wykryto duplikat obrazu",
+      "message": "Obraz/wideo dla tej kategorii zostało już wcześniej przesłane i istnieje w naszej bazie danych. Odśwież stronę, aby zobaczyć przesłany obraz."
+    },
+    "inspectionExpired": {
+      "title": "",
+      "message": "Inspekcja wygasła. Proszę rozpocząć nową inspekcję."
+    },
+    "uploadFailed": {
+      "title": "Przesyłanie nieudane",
+      "message": "Sprawdź połączenie internetowe i spróbuj ponownie. Jeśli problem nie ustąpi, zmniejsz rozmiar pliku lub zmień sieć. Skontaktuj się ze wsparciem, jeśli zajdzie potrzeba. Przepraszamy za utrudnienia."
+    },
+    "licensePlateInUse": "Wybrany numer rejestracyjny jest obecnie sprawdzany przez innego użytkownika. Proszę wybrać inny pojazd.",
+    "licensePlateMismatch": {
+      "title": "Wykryto rozbieżność",
+      "message": "Wykryto niezgodność numeru rejestracyjnego. Proszę ponownie zrobić zdjęcie tablicy rejestracyjnej wybranego pojazdu"
+    },
+    "darkImageError": {
+      "title": "Problem z jakością obrazu",
+      "message": "Przesłany obraz wydaje się zbyt ciemny. Spróbuj przesłać wyraźniejszy obraz z lepszym oświetleniem."
+    },
+    "imageAlreadyDeleted": "Bu resim zaten silinmiş.",
+    "genericError": "Bir hata oluştu",
+    "alreadyInProgress": "Już w toku"
+  },
+  "annotateImageDetails": {
+    "title": "Zewnątrz Przód",
+    "description": "Aby opisać obraz pojazdu, kliknij bezpośrednio na wybrany obszar na zdjęciu. Po kliknięciu pojawi się ikona uszkodzenia, która pozwoli wizualnie zazneczić i wyróżnić konkretne miejsce uszkodzenia.",
+    "instruction": "Czy chcesz dodać opis?\n",
+    "annotateText": "Opisz",
+    "skipText": "Pomiń"
+  },
+  "annotateImage": {
+    "title": "Zewnątrz Przód",
+    "description": "Aby opisać obraz przodu pojazdu, kliknij bezpośrednio na wybrany obszar na zdjęciu. Po kliknięciu pojawi się ikona uszkodzenia, która pozwoli wizualnie zaznaczyć i wyróżnić konkretne miejsce uszkodzenia.",
+    "instruction": "Czy chcesz dodać opis?\n",
+    "annotateText": "Wyślij",
+    "cancelText": "Anuluj"
+  },
+  "damageTypes": {
+    "minor": "Drobne",
+    "major": "Poważne",
+    "severe": "Ciężkie"
+  },
+  "drawer": {
+    "home": "START",
+    "thingsYouWillRequire": "Wymagane rzeczy",
+    "logout": "Wyloguj",
+    "dvirc": "DVIRC"
+  },
+  "session": {
+    "expired": {
+      "title": "Sesja wygasła",
+      "message": "Twoja sesja wygasła. Zaloguj się ponownie, aby kontynuować.",
+      "button": "OK"
+    }
+  },
+  "appUpdate": {
+    "title": "Aktualizacja aplikacji",
+    "message": "Dostępna jest nowa wersja aplikacji. Proszę zaktualizuj, aby kontynuować korzystanie z aplikacji.",
+    "button": "AKTUALIZUJ"
+  },
+  "exitApp": {
+    "title": "Zaczekaj!",
+    "message": "Czy na pewno chcesz wyjść z aplikacji?",
+    "button": {
+      "yes": "Tak",
+      "cancel": "Anuluj"
+    }
+  },
+  "delete": {
+    "success": "Usunięto pomyślnie.",
+    "failed": "Nie udało się usunąć. Spróbuj ponownie.",
+    "inspectionDeleted": "Inspekcja została usunięta!"
+  },
+  "dvir": {
+    "checklistTitle": "Lista kontrolna",
+    "tires": "Opony",
+    "captureFrames": "Przechwyć klatki",
+    "comments": "Komentarze",
+    "addComments": "Dodaj komentarz tutaj",
+    "captureImage": "Zrób zdjęcie",
+    "exteriorFront": "Zewnątrz Przód",
+    "exteriorRear": "Zewnątrz Tył",
+    "interiorFrontTitle": "Pełne wnętrze przód (deska rozdzielcza, kierownica, siedzenie)",
+    "interiorRearTitle": "Wnętrze tył (tylne siedzenia, podłoga) / paka ciężarówki",
+    "frontInterior": "Wnętrze przód",
+    "rearInterior": "Wnętrze tył",
+    "tire": "Opona",
+    "dashBoardView": "Proszę zrób zdjęcie z wyraźnym widokiem na deskę rozdzielczą",
+    "rearInteriorView": "Proszę zrób zdjęcie z wyraźnym widokiem na tylne siedzenia",
+    "tireView": "Proszę zrób zdjęcie z wyraźnym widokiem na oponę",
+    "maxMediaError": "Możesz dodać maksymalnie 5 plików multimedialnych",
+    "uploadVideo": "Prześlij wideo",
+    "uploadImage": "Prześlij zdjęcie",
+    "uploadingMedia": "Proszę czekaj, trwa przesyłanie {{media}}",
+    "tdrf": "Głębokość bieżnika PP (TDRF)",
+    "tdrr": "Głębokość bieżnika PT (TDRR)",
+    "tdlf": "Głębokość bieżnika LP (TDLF)",
+    "tdlr": "Głębokość bieżnika LT (TDLR)",
+    "tdspare": "Głębokość bieżnika koła zapasowego (TDSPARE)",
+    "brakeComponents": "Elementy hamulcowe (zdjęcie bębnów/tarcz/przewodów)",
+    "status": {
+      "good": "Dobry",
+      "repair": "Naprawa",
+      "replace": "Wymiana"
+    },
+    "checklist": {
+      "headLights": "Reflektory / Kierunkowskazy / Światła awaryjne / Lampy zewnętrzne / Pióra wycieraczek",
+      "engineBay": "Komora silnika (Szeroki kadr)",
+      "oilDipstick": "Bagnet oleju (Zdjęcie pokazujące poziom/przejrzystość oleju)",
+      "underBodyLeak": "Sprawdzenie wycieków podwozia (Zdjęcie pod silnikiem)",
+      "radioNavigation": "Radio / Ekran nawigacji (Włączony)",
+      "jackTools": "Podnośnik i narzędzia (Podnośnik, Klucz, Zestaw narzędzi)",
+      "tailLights": "Światła tylne / Kierunkowskazy / Światła stopu / Światła awaryjne / Lampy zewnętrzne"
+    }
+  },
+  "vehicleInfo": {
+    "title": "Informacje o pojeździe",
+    "subtitle": "Aby rozpocząć inspekcję, podaj poniższe informacje o pojeździe. Wszystkie pola są wymagane w celu zapewnienia dokładnej zgodności.",
+    "licensePlateLabel": "ID ciężarówki / Nr rejestracyjny",
+    "licensePlatePlaceholder": "Wpisz ID / Nr rejestracyjny",
+    "mileageLabel": "Przebieg",
+    "mileagePlaceholder": "Wpisz przebieg",
+    "vinLabel": "VIN",
+    "vinPlaceholder": "Wpisz VIN",
+    "makeLabel": "Marka",
+    "modelLabel": "Model",
+    "yearLabel": "Rok",
+    "driverNameLabel": "Imię kierowcy",
+    "dateLabel": "Data",
+    "vehicleTypeLabel": "Typ pojazdu",
+    "inspectionTypeLabel": "Typ inspekcji",
+    "inspectionTypePlaceholder": "Typ inspekcji",
+    "clearAll": "Wyczyść wszystko",
+    "next": "Dalej",
+    "startInspection": "Chcesz rozpocząć inspekcję tego pojazdu?",
+    "Info": "Informacje",
+    "confirmClear": "Chcesz wyczyścić dane pojazdu?",
+    "errors": {
+      "licensePlateUndetected": "Odczyt niewykryty. Wpisz numer rejestracyjny ręcznie",
+      "licensePlateRequired": "Numer rejestracyjny jest wymagany",
+      "mileageUndetected": "Odczyt niewykryty. Wpisz przebieg ręcznie",
+      "mileageRequired": "Przebieg jest wymagany",
+      "mileagePositive": "Przebieg musi być liczbą dodatnią",
+      "vinUndetected": "Odczyt niewykryty. Wpisz VIN ręcznie",
+      "vinRequired": "VIN jest wymagany",
+      "vinLength": "VIN musi mieć 17 znaków",
+      "inspectionTypeRequired": "Typ inspekcji jest wymagany",
+      "vehicleTypeRequired": "Wybierz typ pojazdu",
+      "driverNameRequired": "Imię kierowcy jest wymagane",
+      "dateRequired": "Data jest wymagana"
+    },
+    "vehicleTypes": {
+      "van": "AWANGARDA",
+      "truck": "CIĘŻARÓWKA",
+      "sedan": "SEDAN",
+      "other": "INNY"
+    },
+    "inspectionTypes": {
+      "regular": "Zwykły",
+      "dvir": "DVIR"
+    },
+    "camera": {
+      "takePhotoVin": "Proszę zrób zdjęcie\n numeru VIN",
+      "waitVinUpload": "Proszę czekaj, trwa przesyłanie numeru VIN"
+    }
+  },
+  "vehicleTypeModal": {
+    "title": "Wybierz typ pojazdu",
+    "description": "Proszę wybierz typ pojazdu dla tej inspekcji."
+  },
+  "profile": {
+    "title": "Profil użytkownika",
+    "firstNameLabel": "Imię",
+    "firstNamePlaceholder": "Wpisz imię",
+    "lastNameLabel": "Nazwisko",
+    "lastNamePlaceholder": "Wpisz nazwisko",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Wpisz email",
+    "phoneLabel": "Telefon",
+    "phonePlaceholder": "Wpisz numer telefonu",
+    "languageLabel": "Język",
+    "languagePlaceholder": "Wybierz język",
+    "updateProfileButton": "Zaktualizuj profil",
+    "profileUpdatedToast": "Profil został zaktualizowany",
+    "languageChangedToast": "Język został zmieniony pomyślnie",
+    "errors": {
+      "firstNameRequired": "Imię jest wymagane",
+      "lastNameRequired": "Nazwisko jest wymagane",
+      "emailRequired": "Email jest wymagany",
+      "invalidEmail": "Niepoprawny format email",
+      "phoneRequired": "Numer telefonu jest wymagany",
+      "phoneDigits": "Numer telefonu musi mieć od 10 do 15 cyfr"
+    }
+  },
+  "languages": {
+    "en": "Angielski",
+    "ro": "Rumuński",
+    "pl": "Polski",
+    "bg": "Bułgarski",
+    "tr": "Turecki",
+    "es": "Hiszpański"
+  },
+  "annotation": {
+    "title": "Zewnątrz Przód",
+    "description": "Aby opisać obraz pojazdu, kliknij bezpośrednio na wybrany obszar na zdjęciu. Po kliknięciu pojawi się ikona uszkodzenia, która pozwoli wizualnie zaznaczyć i wyróżnić konkretne miejsce uszkodzenia.",
+    "instruction": "Czy chcesz dodać opis?\n",
+    "annotate": "Opisz",
+    "skip": "Pomiń",
+    "submit": "Wyślij",
+    "cancel": "Anuluj",
+    "severityLevel": "Określ stopień nasilenia uszkodzeń",
+    "addNotes": "Dodaj notatki",
+    "notesPlaceholder": "Wpisz tutaj swoje notatki",
+    "damageType": {
+      "minor": "Drobne",
+      "major": "Poważne",
+      "severe": "Ciężkie"
+    },
+    "alertMessage": "Proszę zaznacz uszkodzenie i wybierz stopień nasilenia, aby kontynuować. Oba są wymagane.",
+    "uploading": "Przesyłanie",
+    "finalizingUpload": "Finalizowanie przesyłania",
+    "imageQuestion": "zdjęcie?"
+  },
+  "interiorItems": {
+    "captureImage": "Zrób zdjęcie",
+    "captureNow": "Zrób teraz",
+    "driverSide": {
+      "title": "Wnętrze strona kierowcy",
+      "instruction": "Proszę zrób zdjęcie wnętrza pojazdu z otwartymi drzwiami po stronie kierowcy z wyraźnym widokiem na poniższe elementy:",
+      "details": {
+        "seatBelt": "Zapięty pas kierowcy",
+        "rearview": "Lusterko wsteczne wewnętrzne",
+        "brakePads": "Klocki hamulcowe"
+      }
+    },
+    "passengerSide": {
+      "title": "Wnętrze strona pasażera",
+      "instruction": "Proszę zrób zdjęcie wnętrza pojazdu z otwartymi drzwiami po stronie pasażera z wyraźnym widokiem na poniższe elementy:",
+      "details": {
+        "seatBelt": "Zapięty pas pasażera"
+      }
+    }
+  },
+  "odometerGuidance": {
+    "title": "Jak sfotografować licznik",
+    "description": "Trzymaj aparat stabilnie i upewnij się, że wszystkie cyfry licznika są wyraźne i w pełni widoczne przed wykonaniem zdjęcia.",
+    "doNotShowAgain": "Nie pokazuj ponownie"
+  },
+  "licensePlateGuidance": {
+    "title": "Jak sfotografować tablicę rejestracyjną",
+    "description": "Ustaw tablicę rejestracyjną w kadrze i upewnij się, że wszystkie znaki są w pełni widoczne i czytelne przed wykonaniem zdjęcia.",
+    "doNotShowAgain": "Nie pokazuj ponownie"
+  },
+  "vinGuidance": {
+    "title": "Jak sfotografować VIN",
+    "description": "Ustaw ostrość na etykiecie VIN i upewnij się, że wszystkie 17 znaków są wyraźne i czytelne przed wykonaniem zdjęcia.",
+    "doNotShowAgain": "Nie pokazuj ponownie"
+  },
+  "carVerification": {
+    "licensePlate": {
+      "title": "Tablica rejestracyjna",
+      "instruction": "Proszę zrób zdjęcie tablicy rejestracyjnej pojazdu",
+      "captureNow": "Zrób teraz"
+    },
+    "odometer": {
+      "title": "Odometr",
+      "instruction": "Proszę zrób zdjęcie odometru wyraźnie pokazujące przebieg pojazdu",
+      "captureNow": "Zrób teraz"
+    },
+    "vin": {
+      "title": "VIN",
+      "instruction": "Proszę czekaj, trwa przesyłanie numeru VIN",
+      "captureNow": "Zrób teraz"
+    },
+    "uploadImage": "Prześlij zdjęcie"
+  },
+  "collapsedCard": {
+    "uploadInstructions": "Dla każdej podkategorii prześlij do 3 zdjęć\n(1 wymagane, 2 opcjonalne)"
+  },
+  "exteriorItems": {
+    "captureImage": "Zrób zdjęcie",
+    "captureNow": "Zrób teraz",
+    "front": {
+      "title": "Zewnątrz Przód",
+      "instruction": "Proszę prześlij zdjęcie wyraźnie pokazujące przód pojazdu"
+    },
+    "rear": {
+      "title": "Zewnątrz Tył",
+      "instruction": "Proszę prześlij zdjęcie wyraźnie pokazujące tył pojazdu"
+    },
+    "left": {
+      "title": "Zewnątrz Lewa Strona",
+      "instruction": "Proszę zrób zdjęcie wyraźnie pokazujące cały lewy bok pojazdu"
+    },
+    "right": {
+      "title": "Zewnątrz Prawa Strona",
+      "instruction": "Proszę zrób zdjęcie wyraźnie pokazujące cały prawy bok pojazdu"
+    },
+    "frontLeftCorner": {
+      "title": "Przedni Lewy Narożnik",
+      "instruction": "Proszę zrób zdjęcie z przedniego lewego narożnika pojazdu, wyraźnie pokazujące lewy reflektor, drzwi kierowcy oraz dach po lewej stronie pojazdu"
+    },
+    "frontRightCorner": {
+      "title": "Przedni Prawy Narożnik",
+      "instruction": "Proszę zrób zdjęcie z przedniego prawego narożnika pojazdu, wyraźnie pokazujące prawy reflektor, drzwi pasażera oraz dach po prawej stronie pojazdu"
+    },
+    "rearLeftCorner": {
+      "title": "Tylny Lewy Narożnik",
+      "instruction": "Proszę zrób zdjęcie z tylnego lewego narożnika pojazdu, wyraźnie pokazujące lewe tylne światło, tylne drzwi oraz dach po lewej stronie pojazdu"
+    },
+    "rearRightCorner": {
+      "title": "Tylny Prawy Narożnik",
+      "instruction": "Proszę zrób zdjęcie z tylnego prawego narożnika pojazdu, wyraźnie pokazujące prawe tylne światło, tylne drzwi oraz dach po prawej stronie pojazdu"
+    },
+    "insideCargoRoof": {
+      "title": "Plafon Cargo Interior",
+      "instruction": "Proszę prześlij zdjęcie wyraźnie pokazujące wnętrze sufitu paki/cargo pojazdu"
+    }
+  },
+  "tiresItems": {
+    "captureImage": "Zrób zdjęcie",
+    "captureNow": "Zrób teraz",
+    "instruction": "Proszę umieść monetę w bieżniku opony i zrób zdjęcie pokazujące następujące elementy:",
+    "subHeading": "Umieść monetę tak, aby głowa na niej była skierowana w dół i w stronę aparatu",
+    "leftFront": "Opona Przód Lewa",
+    "leftRear": "Opona Tył Lewa",
+    "rightFront": "Opona Przód Prawa",
+    "rightRear": "Opona Tył Prawa"
+  },
+  "commentBox": {
+    "title": "Dodaj komentarz",
+    "description": "Podaj swoje uwagi lub opinię poniżej",
+    "placeHolder": "Wpisz tutaj swój komentarz lub opinię"
+  },
+  "commentButton": {
+    "text": "+ Dodaj komentarz",
+    "optional": "(Opcjonalnie)"
+  },
+  "confirmVehicleDetail": {
+    "title": "Szczegóły pojazdu",
+    "description": "System nie był w stanie wykryć numeru rejestracyjnego. Wpisz go ręcznie poniżej:",
+    "buttonText": "Potwierdź",
+    "placeHolder": "Wpisz numer rejestracyjny"
+  },
+  "expiryInspection": {
+    "description": "Inspekcja wygasła. Proszę rozpocząć nową inspekcję.",
+    "confirmButton": "Nowa inspekcja",
+    "cancelButton": "Wyjdź"
+  },
+  "mileageInput": {
+    "title": "Przebieg",
+    "description": "System nie był w stanie wykryć przebiegu. Wpisz go ręcznie poniżej:",
+    "placeHolder": "Wpisz przebieg",
+    "errors": {
+      "lessThanPrevious": "Obecny stan nie może być niższy niż poprzedni"
+    }
+  },
+  "categories": {
+    "exterior_front": "Zewnątrz Przód",
+    "exterior_rear": "Zewnątrz Tył",
+    "exterior_left": "Zewnątrz Lewa Strona",
+    "exterior_right": "Zewnątrz Prawa Strona",
+    "front_left_corner": "Przedni Lewy Narożnik",
+    "front_right_corner": "Przedni Prawy Narożnik",
+    "rear_left_corner": "Tylny Lewy Narożnik",
+    "rear_right_corner": "Tylny Prawy Narożnik",
+    "inside_cargo_roof": "Plafon Cargo Interior",
+    "interior_driver_side": "Wnętrze strona kierowcy",
+    "interior_passenger_side": "Wnętrze strona pasażera",
+    "license_plate_number": "Numer rejestracyjny",
+    "odometer": "Odometr",
+    "left_front_tire": "Opona Przód Lewa",
+    "left_rear_tire": "Opona Tył Lewa",
+    "right_front_tire": "Opona Przód Prawa",
+    "right_rear_tire": "Opona Tył Prawa",
+    "front_interior": "Wnętrze przód",
+    "rear_interior": "Wnętrze tył",
+    "tire": "Opona",
+    "tdrf": "Głębokość bieżnika PP (TDRF)",
+    "tdrr": "Głębokość bieżnika PT (TDRR)",
+    "tdlf": "Głębokość bieżnika LP (TDLF)",
+    "tdlr": "Głębokość bieżnika LT (TDLR)",
+    "tdspare": "Głębokość bieżnika koła zapasowego (TDSPARE)",
+    "brake_components": "Elementy hamulcowe"
+  },
+  "completedInspection": {
+    "thankYou": "Dziękujemy za skorzystanie z",
+    "message": "Możesz teraz wyjść z aplikacji. Nasi przedstawiciele skontaktują się z Tobą, jeśli będziemy potrzebować dalszej pomocy",
+    "homeButton": "Start"
+  },
+  "inspectionTitles": {
+    "license_plate_number": "Numer rejestracyjny",
+    "odometer": "Odometr",
+    "exterior_front": "Zewnątrz Przód",
+    "exterior_front_1": "Zewnątrz Przód - 1",
+    "exterior_front_2": "Zewnątrz Przód - 2",
+    "exterior_rear": "Zewnątrz Tył",
+    "exterior_rear_1": "Zewnątrz Tył - 1",
+    "exterior_rear_2": "Zewnątrz Tył - 2",
+    "exterior_left": "Zewnątrz Lewa Strona",
+    "exterior_left_1": "Zewnątrz Lewa Strona - 1",
+    "exterior_left_2": "Zewnątrz Lewa Strona - 2",
+    "exterior_right": "Zewnątrz Prawa Strona",
+    "exterior_right_1": "Zewnątrz Prawa Strona - 1",
+    "exterior_right_2": "Zewnątrz Prawa Strona - 2",
+    "front_left_corner": "Przedni Lewy Narożnik",
+    "front_left_corner_1": "Przedni Lewy Narożnik - 1",
+    "front_left_corner_2": "Przedni Lewy Narożnik - 2",
+    "front_right_corner": "Przedni Prawy Narożnik",
+    "front_right_corner_1": "Przedni Prawy Narożnik - 1",
+    "front_right_corner_2": "Przedni Prawy Narożnik - 2",
+    "rear_left_corner": "Tylny Lewy Narożnik",
+    "rear_left_corner_1": "Tylny Lewy Narożnik - 1",
+    "rear_left_corner_2": "Tylny Lewy Narożnik - 2",
+    "rear_right_corner": "Tylny Prawy Narożnik",
+    "rear_right_corner_1": "Tylny Prawy Narożnik - 1",
+    "rear_right_corner_2": "Tylny Prawy Narożnik - 2",
+    "inside_cargo_roof": "Plafon Cargo Interior",
+    "inside_cargo_roof_1": "Plafon Cargo Interior - 1",
+    "inside_cargo_roof_2": "Plafon Cargo Interior - 2",
+    "left_front_tire": "Opona Przód Lewa",
+    "left_rear_tire": "Opona Tył Lewa",
+    "right_front_tire": "Opona Przód Prawa",
+    "right_rear_tire": "Opona Tył Prawa",
+    "interior_passenger_side": "Wnętrze strona pasażera",
+    "interior_driver_side": "Wnętrze strona kierowcy",
+    "rear_interior": "Wnętrze tylne",
+    "front_interior": "Wnętrze przednie",
+    "brake_components": "Komponenty hamulcowe",
+    "tdspare": "Głębokość bieżnika SPARE",
+    "tdrr": "Głębokość bieżnika RR",
+    "tdlr": "Głębokość bieżnika LR",
+    "tdrf": "Głębokość bieżnika RF",
+    "tdlf": "Głębokość bieżnika LF"
+  },
+  "fuelVerification": {
+    "title": "Zweryfikuj tankowanie",
+    "subtitle": "Szybko rejestruj paliwo i zachowaj zgodnosc",
+    "startVerification": "Rozpocznij weryfikacje",
+    "recentFuelEvents": "Ostatnie zdarzenia paliwowe",
+    "thisWeek": "W tym tygodniu",
+    "totalSpend": "Laczny wydatek",
+    "compliance": "Zgodnosc",
+    "stepVehicle": "Krok 1 z 6 · Pojazd",
+    "confirmVehicleTitle": "Potwierdz pojazd",
+    "confirmVehicleSubtitle": "Uzupelnione automatycznie z ostatniej zmiany",
+    "loadingVehicles": "Ladowanie pojazdow...",
+    "plate": "Tablica",
+    "vin": "VIN",
+    "noVehiclesFound": "Nie znaleziono pojazdow",
+    "differentVehicle": "Inny pojazd",
+    "confirmVehicleButton": "Potwierdz pojazd",
+    "chooseDifferentVehicle": "Wybierz inny pojazd",
+    "selectOneOptionAndConfirm": "Wybierz jedna opcje i potwierdz.",
+    "searchByPlateNumber": "Szukaj po numerze rejestracyjnym",
+    "useSelectedVehicle": "Uzyj wybranego pojazdu",
+    "cameraPermissionRequiredTitle": "Wymagane uprawnienie aparatu",
+    "cameraPermissionCaptureOdometer": "Zezwol na dostep do aparatu, aby zrobic zdjecie licznika.",
+    "cameraPermissionContinue": "Zezwol na dostep do aparatu, aby kontynuowac.",
+    "uploadFailedTitle": "Nieudane przesylanie",
+    "uploadFailedOdometer": "Nie mozna przeslac zdjecia licznika. Sprobuj ponownie.",
+    "captureFailedTitle": "Nieudane wykonanie zdjecia",
+    "captureFailedOdometer": "Nie mozna wykonac zdjecia licznika. Sprobuj ponownie.",
+    "stepOdometer": "Krok 3 z 6 · Licznik",
+    "captureOdometerTitle": "Zrob zdjecie licznika",
+    "captureOdometerSubtitle": "Skieruj aparat na wyswietlacz licznika",
+    "cameraUnavailable": "Aparat niedostepny. Zezwol na uprawnienie aparatu.",
+    "uploadingWithProgress": "Przesylanie… {{progress}}%",
+    "captureOdometerImage": "Zrob zdjecie licznika",
+    "odometerReading": "Odczyt licznika",
+    "current": "Biezacy",
+    "lastRecorded": "Ostatnio zapisane",
+    "milesSinceLastFill": "Mile od ostatniego tankowania",
+    "retakePhoto": "Zrob zdjecie ponownie",
+    "cameraPermissionCaptureFuelGauge": "Zezwol na dostep do aparatu, aby zrobic zdjecie wskaznika paliwa.",
+    "uploadFailedFuelGauge": "Nie mozna przeslac zdjecia wskaznika paliwa. Sprobuj ponownie.",
+    "captureFailedFuelGauge": "Nie mozna wykonac zdjecia wskaznika paliwa. Sprobuj ponownie.",
+    "stepPreFuelGauge": "Krok 4 z 6 · Wskaznik paliwa (Przed)",
+    "preFuelGaugeTitle": "Wskaznik paliwa przed",
+    "preFuelGaugeSubtitle": "Zrob zdjecie wskaznika przed tankowaniem",
+    "captureFuelGauge": "Zrob zdjecie wskaznika paliwa",
+    "fuelGaugeReading": "Odczyt wskaznika paliwa",
+    "preFuelLevel": "Poziom przed tankowaniem",
+    "expectedFillToFull": "Szacowane dolanie do pelna",
+    "preFuelLevelValue": "~18% · 4.5 gal pozostalo",
+    "expectedFillToFullValue": "~20.5 gal max",
+    "gaugeCapturedGoPump": "Wskaznik zapisany — idz tankowac",
+    "cameraPermissionCaptureReceipt": "Zezwol na dostep do aparatu, aby zrobic zdjecie paragonu.",
+    "uploadFailedReceipt": "Nie mozna przeslac zdjecia paragonu. Sprobuj ponownie.",
+    "captureFailedReceipt": "Nie mozna wykonac zdjecia paragonu. Sprobuj ponownie.",
+    "stepReceipt": "Krok 5 z 6 · Paragon",
+    "captureReceiptTitle": "Zrob zdjecie paragonu",
+    "captureReceiptSubtitle": "Sfografuj paragon po tankowaniu",
+    "captureReceiptImage": "Zrob zdjecie paragonu",
+    "receiptData": "Dane paragonu",
+    "gallons": "Galony",
+    "price": "Cena",
+    "total": "Suma",
+    "merchant": "Sprzedawca",
+    "noReceiptAvailable": "Brak paragonu",
+    "stepConfirmation": "Krok 6 z 6 · Potwierdzenie",
+    "fuelingVerifiedTitle": "Tankowanie zweryfikowane!",
+    "fuelingVerifiedSubtitle": "Twoje zdarzenie tankowania zostało zarejestrowane i zweryfikowane automatycznie.",
+    "fraudScore": "Wynik oszustwa",
+    "allChecksPassed": "Wszystkie kontrole przeszły",
+    "gallonsAdded": "Dodane galony",
+    "totalCost": "Całkowity koszt",
+    "station": "Stacja",
+    "mpgThisTank": "Mile na galon",
+    "done": "Gotowe"
+  }
 }

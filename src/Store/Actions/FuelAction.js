@@ -1,10 +1,15 @@
 import { getRegisteredVehicles } from '../../services/inspection';
-import { getFuelEvent, updateFuelEvent as updateFuelEventService } from '../../services/fuel';
+import {
+  getFuelEvent,
+  getRecentFuelEvents,
+  updateFuelEvent as updateFuelEventService,
+} from '../../services/fuel';
 import { Types } from '../Types';
 
 const {
   FETCH_FUEL_EVENT,
   FETCH_FUEL_VEHICLES,
+  FETCH_RECENT_FUEL_EVENTS,
 } = Types;
 
 export const fetchFuelEvent = body => async dispatch => {
@@ -33,11 +38,24 @@ export const fetchFuelVehicles = () => async dispatch => {
 export const updateFuelEvent = (id, body) => async dispatch => {
   try {
     const response = await updateFuelEventService(id, body);
-    debugger;
     dispatch({ type: FETCH_FUEL_EVENT, payload: response?.data });
+    console.log('response', response);
     return response;
   } catch (error) {
     console.error('Update fuel event action error:', error);
+    throw error;
+  }
+};
+
+export const recentFuelEvents = () => async dispatch => {
+  try {
+    const response = await getRecentFuelEvents();
+    const recentEvents = response?.data?.events;
+    console.log('recentEvents /////', recentEvents);
+    dispatch({ type: FETCH_RECENT_FUEL_EVENTS, payload: recentEvents || [] });
+    return recentEvents;
+  } catch (error) {
+    console.error('Recent fuel events action error:', error);
     throw error;
   }
 };
