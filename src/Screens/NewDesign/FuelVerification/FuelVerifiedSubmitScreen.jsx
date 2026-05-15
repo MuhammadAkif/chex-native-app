@@ -114,12 +114,13 @@ const FuelVerifiedSubmitScreen = ({ navigation }) => {
               </AppText>
             </View>
           </View>
-
+          <View style={{flex:1,width:'100%'}}>
           <PrimaryGradientButton
             text={t('fuelVerification.done')}
             buttonStyle={styles.doneButton}
             onPress={handleDone}
           />
+          </View>
         </ScrollView>
       </View>
     </View>
@@ -230,7 +231,7 @@ const styles = StyleSheet.create({
   dataKey: { fontSize: wp(3.4), color: '#6C757D' },
   dataVal: { fontSize: wp(3.4), fontWeight: '600', color: '#343A40' },
 
-  doneButton: { width: wp(70), borderRadius: wp(3), marginTop: hp(0.5) },
+  doneButton: { width: '100%', borderRadius: wp(3), marginTop: hp(0.5),padding:wp(4) },
 });
 
 export default FuelVerifiedSubmitScreen;

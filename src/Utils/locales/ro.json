@@ -57,7 +57,7 @@
   },
   "signIn": {
     "title": "Autentificare",
-    "namePlaceholder": "Ion Popescu",
+    "namePlaceholder": "nume de utilizator sau email",
     "forgotPassword": "Ai uitat parola?",
     "errors": {
       "loginFailed": "Autentificare eșuată",

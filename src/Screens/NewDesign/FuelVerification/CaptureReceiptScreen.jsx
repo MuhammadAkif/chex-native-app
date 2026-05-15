@@ -29,6 +29,7 @@ const CaptureReceiptScreen = ({ navigation, route }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showResult, setShowResult] = useState(false);
+  const [isNoReceiptLoading, setIsNoReceiptLoading] = useState(false);
 
   useEffect(() => {
     const initPermission = async () => {
@@ -56,20 +57,27 @@ const CaptureReceiptScreen = ({ navigation, route }) => {
     Alert.alert(t('fuelVerification.uploadFailedTitle'), t('fuelVerification.uploadFailedReceipt'));
   };
 
-  const handleResponse = async (key) => {
-    const imageUrl = `${S3_BUCKET_BASEURL}${key}`;
+  const handleResponse = async (key, shouldUseNullImageUrl = false) => {
+    const imageUrl = shouldUseNullImageUrl ? null : `${S3_BUCKET_BASEURL}${key}`;
     console.log('imageUrl /////', imageUrl);
     const body = {
       currentStep: 5,
       receiptImageUrl: imageUrl,
     };
     try {
-      await dispatch(updateFuelEvent(fuelEvent?.id, body));
-      setShowResult(true);
-      setIsUploading(false);
+      const response = await dispatch(updateFuelEvent(fuelEvent?.id, body));
+      console.log('receipt ai response /////', response);
+      if (response?.status === 200) {
+        setShowResult(true);
+        setIsUploading(false);
+      } else {
+        console.log('pre fuel gauge ai response /////', response?.message);
+        setIsUploading(false);
+        Alert.alert(t('fuelVerification.uploadFailedTitle'), t('fuelVerification.uploadFailedReceipt'));
+      }
     } catch (error) {
+      console.log('error', error);
       setIsUploading(false);
-      setShowResult(false);
     }
   };
 
@@ -123,6 +131,15 @@ const CaptureReceiptScreen = ({ navigation, route }) => {
       setIsUploading(false);
       Alert.alert(t('fuelVerification.captureFailedTitle'), t('fuelVerification.captureFailedReceipt'));
     }
+  };
+
+  const handleNoReceiptAvailable = async () => {
+    if (isNoReceiptLoading || isUploading) {
+      return;
+    }
+    setIsNoReceiptLoading(true);
+    await handleResponse(null, true);
+    setIsNoReceiptLoading(false);
   };
 
   return (
@@ -198,8 +215,17 @@ const CaptureReceiptScreen = ({ navigation, route }) => {
             onPress={() => navigation.navigate(ROUTES.FUEL_VERIFIED_SUBMIT)}
           />
 
-          <TouchableOpacity style={styles.ghostButton} activeOpacity={0.8} onPress={() => {}}>
-            <AppText style={styles.ghostButtonText}>{t('fuelVerification.noReceiptAvailable')}</AppText>
+          <TouchableOpacity
+            style={styles.ghostButton}
+            activeOpacity={0.8}
+            onPress={handleNoReceiptAvailable}
+            disabled={isNoReceiptLoading || isUploading}
+          >
+            {isNoReceiptLoading ? (
+              <ActivityIndicator size="small" color="#1D4ED8" />
+            ) : (
+              <AppText style={styles.ghostButtonText}>{t('fuelVerification.noReceiptAvailable')}</AppText>
+            )}
           </TouchableOpacity>
 
           {showResult ? (

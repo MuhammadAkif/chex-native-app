@@ -57,7 +57,7 @@
   },
   "signIn": {
     "title": "Sign in",
-    "namePlaceholder": "John Doe",
+    "namePlaceholder": "username or email",
     "forgotPassword": "Forgot Password",
     "errors": {
       "loginFailed": "Login Failed",

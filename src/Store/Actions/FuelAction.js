@@ -10,6 +10,7 @@ const {
   FETCH_FUEL_EVENT,
   FETCH_FUEL_VEHICLES,
   FETCH_RECENT_FUEL_EVENTS,
+  FETCH_FUEL_EVENT_METRICS,
 } = Types;
 
 export const fetchFuelEvent = body => async dispatch => {
@@ -43,16 +44,17 @@ export const updateFuelEvent = (id, body) => async dispatch => {
     return response;
   } catch (error) {
     console.error('Update fuel event action error:', error);
-    throw error;
+    return error;
   }
 };
 
 export const recentFuelEvents = () => async dispatch => {
   try {
     const response = await getRecentFuelEvents();
-    const recentEvents = response?.data?.events;
+    const recentEvents = response?.data;
     console.log('recentEvents /////', recentEvents);
-    dispatch({ type: FETCH_RECENT_FUEL_EVENTS, payload: recentEvents || [] });
+    dispatch({ type: FETCH_RECENT_FUEL_EVENTS, payload: response?.data?.events || [] });
+    dispatch({ type: FETCH_FUEL_EVENT_METRICS, payload: response?.data?.fuelEventMetrics || null });
     return recentEvents;
   } catch (error) {
     console.error('Recent fuel events action error:', error);

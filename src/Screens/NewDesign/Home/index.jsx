@@ -6,7 +6,7 @@ import AppText from '../../../Components/text';
 import { AlertPopup, CardWrapper, InspectionCard, LogoHeader, VehicleCard } from '../../../Components';
 import { colors } from '../../../Assets/Styles';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { BlueTruckStatIcon, DownArrow, InProgressStatIcon, SubmittedStatIcon, TotalStatIcon } from '../../../Assets/Icons';
+import { BlueTruckStatIcon, DownArrow, InProgressStatIcon, SubmittedStatIcon, TotalStatIcon,FuelIcon } from '../../../Assets/Icons';
 import { IMAGES } from '../../../Assets/Images';
 import { ROUTES, TABS } from '../../../Navigation/ROUTES';
 import { useNavigation } from '@react-navigation/native';
@@ -165,12 +165,18 @@ const Home = ({ navigation }) => {
               id={3}
             />
             <StatBox
-              title={'Verify Your Fuel'}
-              icon={TotalStatIcon}
-              count={'->'}
+              title={t('fuelVerification.title')}
+              icon={FuelIcon}
+              count={''}
               id={4}
               onPress={handlePressStatCard}
               showArrow
+              statBoxContainerStyle={{
+                width: wp(45),
+                height: wp(30),
+                padding: wp(5),
+                gap: wp(1),
+              }}
             />
           </View>
 
@@ -201,9 +207,9 @@ const Home = ({ navigation }) => {
   );
 };
 
-const StatBox = ({ count = 0, icon: Icon, title, id, onPress, showArrow = false }) => {
+const StatBox = ({ count = 0, icon: Icon, title, id, onPress, showArrow = false,statBoxContainerStyle }) => {
   return (
-    <CardWrapper onPress={() => onPress?.(id)} style={styles.statBoxContainer}>
+    <CardWrapper onPress={() => onPress?.(id)} style={statBoxContainerStyle ? statBoxContainerStyle : styles.statBoxContainer}>
       <View style={styles.numberAndIcon}>
         <AppText fontSize={wp(9)} style={styles.statNumberText}>
           {count}

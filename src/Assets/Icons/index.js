@@ -58,6 +58,7 @@ import UpArrow from './UpArrow';
 import VideoBorderedIcon from './VideoBorderedIcon';
 import Warning from './Warning';
 import XMark from './XMark';
+import FuelIcon from './NewDesign/FuelIcon';
 export {
   //TAB ICONS
   HomeTabIcon,
@@ -121,4 +122,5 @@ export {
   VideoBorderedIcon,
   Warning,
   XMark,
+  FuelIcon,
 };

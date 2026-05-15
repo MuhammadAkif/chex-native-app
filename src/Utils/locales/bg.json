@@ -57,7 +57,7 @@
   },
   "signIn": {
     "title": "Вход",
-    "namePlaceholder": "Иван Иванов",
+    "namePlaceholder": "потребителско име или имейл",
     "forgotPassword": "Забравена парола",
     "errors": {
       "loginFailed": "Входът е неуспешен",

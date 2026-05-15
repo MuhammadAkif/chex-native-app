@@ -39,6 +39,17 @@ const FuelLocationConfirmScreen = ({ route, navigation }) => {
     [],
   );
 
+  const hasValidUserLocation = useMemo(() => {
+    if (!userLocation) {
+      return false;
+    }
+    const { latitude, longitude } = userLocation;
+    if (latitude == null || longitude == null) {
+      return false;
+    }
+    return Number.isFinite(latitude) && Number.isFinite(longitude);
+  }, [userLocation]);
+
   const fetchAddress = useCallback(async (latitude, longitude) => {
     try {
       const res = await fetch(
@@ -99,9 +110,14 @@ const FuelLocationConfirmScreen = ({ route, navigation }) => {
   const handleUserLocationChange = useCallback(
     event => {
       const coords = event?.nativeEvent?.coordinate;
-      if (!coords?.latitude || !coords?.longitude) { return; }
+      const lat = coords?.latitude;
+      const lng = coords?.longitude;
+      if (lat == null || lng == null || !Number.isFinite(lat) || !Number.isFinite(lng)) {
+        return;
+      }
 
-      const { latitude, longitude } = coords;
+      const latitude = lat;
+      const longitude = lng;
 
       clearLocationTimeout();
       setUserLocation({ latitude, longitude });
@@ -132,18 +148,24 @@ const FuelLocationConfirmScreen = ({ route, navigation }) => {
   const confirmLocation = async () => {
     const eventId = fuelEvent?.event?.id;
     const body = {
-      currentStep: 2,
+    currentStep: 2,
     lat: userLocation?.latitude,
     lng: userLocation?.longitude,
     stationAddress: locationAddress,
     };
-
     setIsSubmitting(true);
     try {
       if (eventId) {
-        await dispatch(updateFuelEvent(eventId, body));
+        const response = await dispatch(updateFuelEvent(eventId, body));
+        console.log('location confirm ai response /////', response);
+        if (response?.status === 200) {
         navigation.navigate(ROUTES.CAPTURE_ODOMETER, { vehicle: selectedVehicle, location: userLocation });
         setIsSubmitting(false);
+      } else {
+        console.log('location confirm ai response /////', response?.message);
+        Alert.alert(t('fuelVerification.uploadFailedTitle'), t('fuelVerification.uploadFailedLocation'));
+        setIsSubmitting(false);
+      }
       }
     } catch (error) {
       console.error('Confirm location update fuel event failed:', error);
@@ -247,6 +269,7 @@ const FuelLocationConfirmScreen = ({ route, navigation }) => {
             text="Continue"
             buttonStyle={styles.ctaButton}
             disabled={isSubmitting}
+            buttonDisabled={!hasValidUserLocation}
             onPress={confirmLocation}
           />
 

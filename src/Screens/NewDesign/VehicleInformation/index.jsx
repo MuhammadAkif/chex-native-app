@@ -44,12 +44,14 @@ const validate = (values, OCRsCapturedImages, t) => {
     errors.mileage = t('vehicleInfo.errors.mileageRequired');
   }
 
-  if (OCRsCapturedImages?.vin?.uri && !values?.vin?.trim()) {
-    errors.vin = t('vehicleInfo.errors.vinUndetected');
-  } else if (!OCRsCapturedImages?.vin?.uri && !values?.vin?.trim()) {
-    errors.vin = t('vehicleInfo.errors.vinRequired');
-  } else if (values?.vin?.length < 17) {
-    errors.vin = t('vehicleInfo.errors.vinLength');
+  if (values?.vehicleType !== VEHICLE_TYPES.OTHER) {
+    if (OCRsCapturedImages?.vin?.uri && !values?.vin?.trim()) {
+      errors.vin = t('vehicleInfo.errors.vinUndetected');
+    } else if (!OCRsCapturedImages?.vin?.uri && !values?.vin?.trim()) {
+      errors.vin = t('vehicleInfo.errors.vinRequired');
+    } else if (values?.vin?.length > 0 && values?.vin?.length < 17) {
+      errors.vin = t('vehicleInfo.errors.vinLength');
+    }
   }
 
   return errors;
@@ -127,6 +129,7 @@ const VehicleInformation = props => {
     const unsubscribe = navigation.addListener('blur', () => setIsInspectionTypeOpen(false));
     return unsubscribe;
   }, [navigation]);
+
 
   useEffect(() => {
     if (route?.params?.isFromRegisteredVehicle !== undefined) {
@@ -274,7 +277,7 @@ const VehicleInformation = props => {
         setIsMakeYearModelModalVisible(false);
         resetOCRsCapturedImagesRef();
         resetForm();
-
+        debugger;
         // NAVIGATE
         const timeout = isIOS ? 500 : 100;
         const nextRoute = data?.hasCheckList ? ROUTES.DVIR_INSPECTION_CHECKLIST : ROUTES.NEW_INSPECTION;
@@ -429,7 +432,13 @@ const VehicleInformation = props => {
     }
 
     const { numberPlate, mileage, vin } = OCRsCapturedImagesRef?.current || {};
-    const isAnyImagePresent = values?.licensePlateNumber || values?.mileage || values?.vin || numberPlate?.uri || mileage?.uri || vin?.uri;
+    const isVinRelevant = values?.vehicleType !== VEHICLE_TYPES.OTHER;
+    const isAnyImagePresent =
+      values?.licensePlateNumber ||
+      values?.mileage ||
+      numberPlate?.uri ||
+      mileage?.uri ||
+      (isVinRelevant && (values?.vin || vin?.uri));
 
     return isLoading || vinLoading || mileageLoading || isFetchingVehicleInfo || !isAnyImagePresent;
   };
@@ -764,10 +773,18 @@ const VehicleInformation = props => {
 
                   };
                   useEffect(() => {
-                    if (values?.vin?.length === 17 && showVinInput) {
+                    if (values.vehicleType === VEHICLE_TYPES.OTHER) {
+                      setFieldValue('vin', '', false);
+                      setFieldError('vin', undefined);
+                      OCRsCapturedImagesRef.current.vin = { uri: '', extension: '' };
+                    }
+                  }, [values.vehicleType]);
+
+                  useEffect(() => {
+                    if (values?.vin?.length === 17 && showVinInput && values.vehicleType !== VEHICLE_TYPES.OTHER) {
                       fetchMakeYearModelInfo();
                     }
-                  }, [values?.vin]);
+                  }, [values?.vin, values.vehicleType]);
 
                   return (
                     <>
@@ -880,7 +897,7 @@ const VehicleInformation = props => {
                           // pointerEvents={!OCRsCapturedImagesRef?.current?.mileage?.uri ? 'none' : 'auto'}
                           />
 
-                          {showVinInput && (
+                          {showVinInput && values.vehicleType !== VEHICLE_TYPES.OTHER && (
                             <CustomInput
                               ref={vinInputRef}
                               editable={!(isFromRegisteredVehicle && route?.params?.vin?.length === 17)}

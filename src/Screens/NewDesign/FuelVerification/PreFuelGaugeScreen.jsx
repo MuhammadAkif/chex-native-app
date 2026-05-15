@@ -57,17 +57,24 @@ const PreFuelGaugeScreen = ({ navigation, route }) => {
   const handleResponse = async (key) => {
     setCapturedS3Key(key);
     const imageUrl = `${S3_BUCKET_BASEURL}${key}`;
-    console.log('imageUrl /////', imageUrl);
     const body = {
       preGaugeImageUrl: imageUrl,
+      currentStep: 4,
     };
     try {
-      await dispatch(updateFuelEvent(fuelEvent?.id, body));
-      setShowResult(true);
-      setIsUploading(false);
+      const response = await dispatch(updateFuelEvent(fuelEvent?.id, body));
+      console.log('pre fuel gauge ai response /////', response);
+      if (response?.status === 200) {
+        setShowResult(true);
+        setIsUploading(false);
+      } else {
+        console.log('pre fuel gauge ai response /////', response?.message);
+        setIsUploading(false);
+        Alert.alert(t('fuelVerification.uploadFailedTitle'), t('fuelVerification.uploadFailedPreFuelGauge'));
+      }
     } catch (error) {
       setIsUploading(false);
-      setShowResult(false);
+      console.log('error', error);
     }
   };
 

@@ -14,7 +14,6 @@ export const getFuelEvent = async body => {
 export const getRecentFuelEvents = async () => {
   const endPoint = generateApiUrl('fuelguard/events');
   try {
-    console.log('endPoint /////', endPoint);
     return await api.get(endPoint);
   } catch (error) {
     console.error('Get recent fuel events error:', error);

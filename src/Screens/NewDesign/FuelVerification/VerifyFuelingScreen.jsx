@@ -12,16 +12,21 @@ const VerifyFuelingScreen = ({ navigation }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const recentEventsFromStore = useSelector(state => state.fuel?.recentFuelEvents || []);
+  const fuelEventMetricsFromStore = useSelector(state => state.fuel?.fuelEventMetrics || null);
 
   const [recentEvents, setRecentEvents] = useState(recentEventsFromStore);
+  const [fuelEventMetrics, setFuelEventMetrics] = useState(fuelEventMetricsFromStore);
 
   useEffect(() => {
     setRecentEvents(recentEventsFromStore);
+    setFuelEventMetrics(fuelEventMetricsFromStore);
   }, [recentEventsFromStore]);
 
   useEffect(() => {
     dispatch(recentFuelEvents());
   }, [dispatch]);
+
+  console.log('fuelEventMetrics /////', fuelEventMetrics);
 
   return (
     <View style={styles.container}>
@@ -45,15 +50,15 @@ const VerifyFuelingScreen = ({ navigation }) => {
 
             <View style={styles.heroStatsRow}>
               <View style={styles.statItem}>
-                <AppText style={styles.heroStatValue}>3</AppText>
+                <AppText style={styles.heroStatValue}>{fuelEventMetrics?.totalActiveEvents || 0}</AppText>
                 <AppText style={styles.heroStatLabel}>{t('fuelVerification.thisWeek')}</AppText>
               </View>
               <View style={styles.statItem}>
-                <AppText style={styles.heroStatValue}>$142</AppText>
+                <AppText style={styles.heroStatValue}>${fuelEventMetrics?.totalSpend || 0}</AppText>
                 <AppText style={styles.heroStatLabel}>{t('fuelVerification.totalSpend')}</AppText>
               </View>
               <View style={styles.statItem}>
-                <AppText style={styles.heroStatValue}>100%</AppText>
+                <AppText style={styles.heroStatValue}>{fuelEventMetrics?.complianceScore || 0}%</AppText>
                 <AppText style={styles.heroStatLabel}>{t('fuelVerification.compliance')}</AppText>
               </View>
             </View>
@@ -76,7 +81,7 @@ const VerifyFuelingScreen = ({ navigation }) => {
                 <View style={styles.eventInfo}>
                   <AppText style={styles.eventStation}>{item?.stationName || '-'}</AppText>
                   <AppText style={styles.eventMeta}>
-                    {item?.submittedAt ? new Date(item.submittedAt).toLocaleString() : '-'}
+                    {item?.submittedAt || '-'}
                     {item?.receiptGallons != null ? ` - ${item.receiptGallons}` : ''}
                   </AppText>
                 </View>

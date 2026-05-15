@@ -108,7 +108,6 @@ const NewInspectionScreen = props => {
     exteriorItemsConfig,
     tiresItemsConfig,
   } = props;
-
   return (
     <View style={container}>
       {isDiscardInspectionModalVisible && (

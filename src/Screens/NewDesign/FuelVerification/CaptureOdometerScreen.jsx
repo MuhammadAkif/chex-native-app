@@ -65,12 +65,19 @@ const CaptureOdometerScreen = ({ navigation, route }) => {
       const extractedMileage = await dispatch(getMileage(imageUrl));
       const body = {
       odometerReading: extractedMileage,
+      currentStep: 3,
     };
-     await dispatch(updateFuelEvent(fuelEvent?.id, body));
+    console.log('odomter ai response body /////', body);
+     const response = await dispatch(updateFuelEvent(fuelEvent?.id, body));
+     console.log('odomter ai response /////', response);
+     if (response?.status === 200) {
+      setShowResult(true);
+     } else {
+      Alert.alert(t('fuelVerification.uploadFailedTitle'), t('fuelVerification.uploadFailedOdometer'));
+     }
     } catch (error) {
      console.log('error', error);
     }
-    setShowResult(true);
     setIsUploading(false);
   };
 
