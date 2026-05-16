@@ -55,7 +55,7 @@
   },
   "signIn": {
     "title": "Iniciar sesión",
-    "namePlaceholder": "Juan Pérez",
+    "namePlaceholder": "usuario o correo electrónico",
     "forgotPassword": "¿Olvidó su contraseña?",
     "errors": {
       "loginFailed": "Error al iniciar sesión",

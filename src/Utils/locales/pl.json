@@ -55,7 +55,7 @@
     },
     "signIn": {
         "title": "Zaloguj się",
-        "namePlaceholder": "Jan Kowalski",
+        "namePlaceholder": "nazwa użytkownika lub email",
         "forgotPassword": "Zapomniałeś hasła?",
         "errors": {
             "loginFailed": "Logowanie nieudane",

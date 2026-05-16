@@ -55,7 +55,7 @@
   },
   "signIn": {
     "title": "Giriş Yap",
-    "namePlaceholder": "John Doe",
+    "namePlaceholder": "kullanıcı adı veya e-posta",
     "forgotPassword": "Şifremi Unuttum",
     "errors": {
       "loginFailed": "Giriş Başarısız",
