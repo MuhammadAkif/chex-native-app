@@ -7,7 +7,7 @@ import { circleBorderRadius, colors, modalStyle } from '../../Assets/Styles';
 import { removeAlphabets } from '../../Utils/helpers';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 
-const { red, gray, orange, black } = colors;
+const { red, gray, orange, black, white } = colors;
 const { modalOuterContainer, container, modalContainer, header, body, footer, button, yesText } = modalStyle;
 
 import { useTranslation } from 'react-i18next';
@@ -64,6 +64,11 @@ const ConfirmVehicleDetailModal = ({
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
         <TouchableOpacity style={container} activeOpacity={1} onPress={onTouchDismissKeyboard}>
           <View style={modalContainer}>
+            {!!onCrossPress && (
+              <TouchableOpacity style={styles.crossIcon} onPress={onCrossPress} activeOpacity={0.7}>
+                <Text style={styles.crossText}>✕</Text>
+              </TouchableOpacity>
+            )}
             <Text style={header}>{title}</Text>
             {numberPlateText?.length === 0 && <Text style={[body, { color: red }]}>{description}</Text>}
             {errorMessage && <Text style={[body, { color: red }]}>{errorMessage}</Text>}
@@ -103,8 +108,18 @@ const styles = StyleSheet.create({
     borderRadius: circleBorderRadius,
     position: 'absolute',
     zIndex: 1,
-    top: hp('0.5%'),
-    right: wp('1.5%'),
+    top: hp('0.8%'),
+    right: wp('2%'),
+    width: wp('7%'),
+    height: wp('7%'),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  crossText: {
+    color: white,
+    fontSize: hp('1.8%'),
+    fontWeight: 'bold',
+    lineHeight: hp('2%'),
   },
   numberPlateInput: {
     borderWidth: 1,

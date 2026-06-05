@@ -16,9 +16,11 @@ import {
   HeaderTitle,
   LogoHeader,
   MileageInput,
+  MileageSection,
   NewInspectionFooter,
   TiresItemsExpandedCard,
 } from '../Components';
+import { ROUTES } from '../Navigation/ROUTES';
 import AnnotateImage from '../Components/Annotation/AnnotateImage';
 import AnnotateImageModal from '../Components/Annotation/AnnotateImageModal';
 import LoadingIndicator from '../Components/LoadingIndicator';
@@ -174,6 +176,8 @@ const NewInspectionScreen = props => {
           <ScrollView
             contentContainerStyle={scrollViewContainer}
             showsVerticalScrollIndicator={false}>
+            {/* Optional odometer/mileage capture — sits at the top of the list */}
+            <MileageSection returnTo={ROUTES.NEW_INSPECTION} index={1} />
             {modalVisible && (
               <CaptureImageModal
                 modalVisible={modalVisible}
@@ -226,7 +230,7 @@ const NewInspectionScreen = props => {
               <>
                 <CollapsedCard
                   text={t('newInspection.interiorItems')}
-                  index={1}
+                  index={2}
                   displayInstructions={displayInstructions}
                   isActive={selectedOption?.isInterior}
                   isBothItemsAvailable={isAllInteriorImagesAvailable}
@@ -249,7 +253,7 @@ const NewInspectionScreen = props => {
             <CollapsedCard
               text={t('newInspection.exteriorItems')}
               displayInstructions={displayInstructions}
-              index={hasInteriorAndRoofTopCompany(companyId) ? 1 : 2}
+              index={hasInteriorAndRoofTopCompany(companyId) ? 2 : 3}
               isActive={selectedOption?.isExterior}
               isBothItemsAvailable={isAllExteriorImagesAvailable}
               onPress={() => handleCardExpansion('isExterior')}
@@ -275,7 +279,7 @@ const NewInspectionScreen = props => {
               <>
                 <CollapsedCard
                   text={t('newInspection.tires')}
-                  index={hasInteriorAndRoofTopCompany(companyId) ? 2 : 3}
+                  index={hasInteriorAndRoofTopCompany(companyId) ? 3 : 4}
                   isActive={selectedOption?.isTires}
                   isBothItemsAvailable={isBothTiresImagesAvailable}
                   onPress={() => handleCardExpansion('isTires')}

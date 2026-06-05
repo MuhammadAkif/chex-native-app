@@ -30,9 +30,12 @@ import {
   FooterButtons,
   LoadingIndicator,
   LogoHeader,
+  MileageInput,
+  MileageSection,
   PrimaryGradientButton,
 } from '../../Components';
 import AppText from '../../Components/text';
+import { ROUTES } from '../../Navigation/ROUTES';
 
 const { container, bodyContainer, headerContainer, headerTitleText } = NewInspectionStyles;
 
@@ -279,7 +282,7 @@ const DVIRInspectionChecklistScreen = ({
         <View style={styles.secondBodyContainer}>
           <View style={styles.header}>
             <View style={styles.headerLeft}>
-              <AppText style={styles.headerLeftText}>1</AppText>
+              <AppText style={styles.headerLeftText}>2</AppText>
             </View>
             <AppText style={styles.headerTitle}>{t('dvir.checklistTitle')}</AppText>
             <View style={styles.headerRight}>
@@ -394,7 +397,7 @@ const DVIRInspectionChecklistScreen = ({
         <View style={[styles.secondBodyContainer]}>
           <View style={[styles.header]}>
             <View style={styles.headerLeft}>
-              <AppText style={styles.headerLeftText}>2</AppText>
+              <AppText style={styles.headerLeftText}>3</AppText>
             </View>
             <AppText style={styles.headerTitle}>{t('dvir.tires')}</AppText>
             <View style={styles.headerRight}>
@@ -515,6 +518,7 @@ const DVIRInspectionChecklistScreen = ({
 
   return (
     <View style={container} >
+      <MileageInput />
       <LogoHeader />
       <LoadingIndicator isLoading={isLoading} />
       <View style={headerContainer}>
@@ -528,6 +532,7 @@ const DVIRInspectionChecklistScreen = ({
           keyExtractor={(_, index) => `${index}`}
           renderSectionHeader={renderSectionHeader}
           renderItem={renderItem}
+          ListHeaderComponent={<MileageSection returnTo={ROUTES.DVIR_INSPECTION_CHECKLIST} index={1} />}
           contentContainerStyle={{ flexGrow: 1 }}
           showsVerticalScrollIndicator={false}
         />

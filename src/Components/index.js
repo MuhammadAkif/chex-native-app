@@ -43,6 +43,7 @@ import InputFieldRequiredError from './InputFieldRequiredError';
 import InputModal from './InputModal/InputModal';
 import LicensePlateInput from './InputModal/LicensePlateInput';
 import MileageInput from './InputModal/MileageInput';
+import MileageSection from './MileageSection';
 import InspectionCard from './InspectionCard';
 import IntroBackGroundImageView from './IntroBackgroundImageView';
 import ImagePicker from './ItemPicker/ImagePicker';
@@ -145,6 +146,7 @@ export {
   LoadingIndicator,
   Mandatory,
   MileageInput,
+  MileageSection,
   NewInspectionFooter,
   NumberPlateInUseModal,
   PreviewFooter,

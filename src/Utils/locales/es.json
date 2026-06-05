@@ -367,7 +367,7 @@
     "title": "Exterior frontal",
     "description": "Para anotar una imagen del vehículo, puede hacer clic directamente en la zona de interés. Al hacer clic, aparecerá un icono de daño en el punto seleccionado, permitiéndole marcar y resaltar visualmente la ubicación del daño.",
     "instruction": "¿Desea anotar\n",
-    "annotate": "Anotar",
+    "annotate": "Registrar daño",
     "skip": "Omitir",
     "submit": "Enviar",
     "cancel": "Cancelar",

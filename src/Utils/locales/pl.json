@@ -367,7 +367,7 @@
     "title": "Zewnątrz Przód",
     "description": "Aby opisać obraz pojazdu, kliknij bezpośrednio na wybrany obszar na zdjęciu. Po kliknięciu pojawi się ikona uszkodzenia, która pozwoli wizualnie zaznaczyć i wyróżnić konkretne miejsce uszkodzenia.",
     "instruction": "Czy chcesz dodać opis?\n",
-    "annotate": "Opisz",
+    "annotate": "Zarejestruj uszkodzenie",
     "skip": "Pomiń",
     "submit": "Wyślij",
     "cancel": "Anuluj",

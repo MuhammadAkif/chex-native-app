@@ -367,7 +367,7 @@
     "title": "Dış Ön",
     "description": "Bir aracın görüntüsüne not eklemek için doğrudan görüntü içindeki ilgili alana tıklayabilirsiniz. Tıkladığınızda, seçilen noktada bir hasar simgesi görünecek ve herhangi bir hasarın belirli konumunu görsel olarak işaretleyip vurgulamanıza olanak tanıyacaktır.",
     "instruction": "Not eklemek istiyor musunuz?\n",
-    "annotate": "Not Ekle",
+    "annotate": "Hasar kaydet",
     "skip": "Atla",
     "submit": "Gönder",
     "cancel": "İptal",

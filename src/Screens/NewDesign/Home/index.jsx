@@ -164,7 +164,7 @@ const Home = ({ navigation }) => {
               count={isStatsLoading ? '...' : userInspectionStats.totalInspections}
               id={3}
             />
-            <StatBox
+            {/* <StatBox
               title={t('fuelVerification.title')}
               icon={FuelIcon}
               count={''}
@@ -177,7 +177,7 @@ const Home = ({ navigation }) => {
                 padding: wp(5),
                 gap: wp(1),
               }}
-            />
+            /> */}
           </View>
 
           <View style={styles.withHeadingContentContainer}>

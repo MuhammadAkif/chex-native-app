@@ -1,5 +1,5 @@
 import React, {memo, useCallback} from 'react';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {useBoolean} from '../../hooks';
 import {ConfirmVehicleDetailModal} from '../index';
@@ -16,10 +16,17 @@ const InputModal = ({
   keyboardType,
   inputMode,
   errorMessage,
+  defaultValue = '',
 }) => {
   const {[valueKey]: value = '', [`${valueKey}Visible`]: visible = false} =
     useSelector(state => state.newInspection);
   const {value: isLoading, toggle} = useBoolean(false);
+  const dispatch = useDispatch();
+
+  // Close the modal without submitting (cross / ✕ button).
+  const onCrossPress = useCallback(() => {
+    dispatch(actionCreator());
+  }, [dispatch, actionCreator]);
 
   const onSubmitPress = useCallback(
     (text, resetStates) => {
@@ -38,9 +45,10 @@ const InputModal = ({
       description={description}
       isLoading={isLoading}
       onConfirmPress={onSubmitPress}
-      numberPlateText={value || ''}
+      onCrossPress={onCrossPress}
+      numberPlateText={value || defaultValue || ''}
       textLimit={20}
-      textLength={value?.length || '0'}
+      textLength={value?.length || defaultValue?.length || '0'}
       placeHolder={placeHolder}
       keyboardType={keyboardType}
       inputMode={inputMode}

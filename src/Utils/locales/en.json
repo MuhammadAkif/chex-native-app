@@ -367,7 +367,7 @@
     "title": "Exterior Front",
     "description": "To annotate an image of a vehicle's, you can click directly on the area of interest within the image. Upon clicking, a damage icon will appear at the selected spot, allowing you to visually mark and highlight the specific location of any damage.",
     "instruction": "Do you want to Annotate\n",
-    "annotate": "Annotate",
+    "annotate": "Record damage",
     "skip": "Skip",
     "submit": "Submit",
     "cancel": "Cancel",

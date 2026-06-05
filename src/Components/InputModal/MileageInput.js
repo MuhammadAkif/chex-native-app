@@ -14,9 +14,13 @@ import { removeAlphabets } from '../../Utils/helpers';
 const MileageInput = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  let { selectedInspectionID, mileageMessage } = useSelector(
+  let { selectedInspectionID, mileageMessage,carVerificiationItems } = useSelector(
     state => state.newInspection,
   );
+  // If an odometer image was captured, pre-fill the mileage with its odometerID.
+  const odometerDefault = carVerificiationItems?.odometer
+    ? String(carVerificiationItems?.odometerID ?? '')
+    : '';
 
   const onSubmit = useCallback(
     async (text, actionCreator, toggleLoading, resetStates) => {
@@ -27,9 +31,9 @@ const MileageInput = () => {
 
           await updateMileageInDB(mileage, selectedInspectionID);
 
-          dispatch(setMileage(''));
-          dispatch(setMileageMessage(''));
-          resetStates();
+          // dispatch(setMileage(''));
+          // dispatch(setMileageMessage(''));
+          // resetStates();
           dispatch(actionCreator());
         }
       } catch (error) {
@@ -68,6 +72,7 @@ const MileageInput = () => {
       keyboardType={'decimal-pad'}
       inputMode={'decimal'}
       errorMessage={mileageMessage}
+      defaultValue={odometerDefault}
     />
   );
 };

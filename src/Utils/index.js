@@ -329,13 +329,12 @@ export const RightRearTireDetails = {
 export const hasCameraAndMicrophoneAllowed = async () => {
   const cameraPermission = await Camera.getCameraPermissionStatus();
   const microphonePermission = await Camera.getMicrophonePermissionStatus();
-  if (cameraPermission !== 'authorized') {
+  if (cameraPermission !== 'authorized' && cameraPermission !== 'granted') {
     await Camera.requestCameraPermission();
   }
-  if (microphonePermission !== 'authorized') {
+  if (microphonePermission !== 'authorized' && microphonePermission !== 'granted') {
     await Camera.requestMicrophonePermission();
   }
-  await requestLocationPermission();
 };
 
 async function requestLocationPermission() {

@@ -172,6 +172,7 @@ console.log('route?.params?.type', route?.params?.type);
       return true;
     } else if (route?.params?.returnTo) {
       if (route?.params?.returnTo === ROUTES.DVIR_INSPECTION_CHECKLIST) { navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST); }
+      else if (route?.params?.returnTo === ROUTES.NEW_INSPECTION) { navigation.popTo(ROUTES.NEW_INSPECTION); }
       else { navigation.popTo(ROUTES.TABS, { name: route.params.returnTo }); }
       return true;
     } else if (route?.params?.prevScreen === ROUTES.DVIR_INSPECTION_CHECKLIST && selectedVehicleKind == VEHICLE_TYPES.TRUCK) {
@@ -289,6 +290,8 @@ console.log('route?.params?.type', route?.params?.type);
         navigation.popTo(ROUTES.TABS, { screen: TABS.INSPECTION, params: { screen: ROUTES.VEHICLE_INFORMATION, params: navParams } });
       } else if (targetScreen == ROUTES.DVIR_INSPECTION_CHECKLIST) {
         navigation.popTo(ROUTES.DVIR_INSPECTION_CHECKLIST, navParams);
+      } else if (targetScreen == ROUTES.NEW_INSPECTION) {
+        navigation.popTo(ROUTES.NEW_INSPECTION, navParams);
       }
 
       return;

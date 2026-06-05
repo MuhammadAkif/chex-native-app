@@ -12,7 +12,7 @@ import {
   removeChecklistImageVideo as removeChecklistImageVideoAPI,
   updateChecklist,
 } from '../../services/inspection';
-import { categoryVariant, setRequired } from '../../Store/Actions';
+import { categoryVariant, setRequired, updateVehicleImage } from '../../Store/Actions';
 import {
   ExteriorFrontDetails,
   ExteriorLeftDetails,
@@ -24,6 +24,7 @@ import {
   LicensePlateDetails,
 } from '../../Utils';
 import i18n from '../../Utils/i18n';
+import { checkAndCompleteUrl } from '../../Utils/helpers';
 import { useTranslation } from 'react-i18next';
 
 const frameConfigMap = {
@@ -592,6 +593,14 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
     const files = response?.data?.files || [];
 
     if (files.length > 0) {
+      // ----- ODOMETER (car verification) ----- surface it to MileageSection via Redux.
+      // Use checkAndCompleteUrl (not a raw prefix): the odometer url may already be a full https URL.
+      const odometerFile = files.find(file => file.category === 'odometer');
+      if (odometerFile) {
+        const odometerUrl = checkAndCompleteUrl(odometerFile.url)?.completedUrl || odometerFile.url;
+        dispatch(updateVehicleImage('carVerificiationItems', 'odometer', odometerUrl, odometerFile.id));
+      }
+
       // ----- TIRES -----
       const tiresFiles = files.filter(file => file.groupType === 'tires');
       if (tiresFiles.length > 0) {
@@ -642,7 +651,7 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
 
       }
     }
-  }, [selectedInspectionID, tireInspectionData, captureFrames]);
+  }, [selectedInspectionID, tireInspectionData, captureFrames, dispatch]);
 
   // useFocusEffect(
   //   useCallback(() => {
@@ -654,7 +663,8 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
 
   // CHECKLIST Camera result handler
   useEffect(() => {
-    if (route?.params?.capturedImageUri) {
+    // Mileage captures are handled by the MileageSection component, skip them here.
+    if (route?.params?.capturedImageUri && !route?.params?.isMileageCapture) {
       if (route?.params?.checklistCardIndex !== undefined) {
         const { checklistCardIndex, capturedImageUri, capturedImageMime, localPath } = route.params;
 

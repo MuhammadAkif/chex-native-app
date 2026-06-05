@@ -13,7 +13,6 @@ import { CameraOutlineIcon, ChevronIcon } from '../../../Assets/Icons';
 import { Formik } from 'formik';
 import { isIOS, VEHICLE_TYPES } from '../../../Constants';
 import {
-  ai_Mileage_Extraction,
   createInspection,
   extractLicensePlateAI,
   extractVinAI,
@@ -23,8 +22,8 @@ import {
 import useDebounce from '../../../hooks/useDebounce';
 import { ROUTES, TABS } from '../../../Navigation/ROUTES';
 import { useDispatch, useSelector } from 'react-redux';
-import { numberPlateSelected, setCompanyId, setMileage, setSelectedVehicleKind, setVehicleType, showToast,setInspectionFrequency } from '../../../Store/Actions';
-import { LicensePlateDetails, OdometerDetails, VinDetails } from '../../../Utils';
+import { numberPlateSelected, setCompanyId, setSelectedVehicleKind, setVehicleType, showToast,setInspectionFrequency } from '../../../Store/Actions';
+import { LicensePlateDetails, VinDetails } from '../../../Utils';
 import { useRoute } from '@react-navigation/native';
 import dayjs from 'dayjs';
 import { Types } from '../../../Store/Types';
@@ -36,12 +35,6 @@ const validate = (values, OCRsCapturedImages, t) => {
     errors.licensePlateNumber = t('vehicleInfo.errors.licensePlateUndetected');
   } else if (!OCRsCapturedImages?.numberPlate?.uri && !values?.licensePlateNumber?.trim()) {
     errors.licensePlateNumber = t('vehicleInfo.errors.licensePlateRequired');
-  }
-
-  if (OCRsCapturedImages?.mileage?.uri && !values?.mileage?.trim()) {
-    errors.mileage = t('vehicleInfo.errors.mileageUndetected');
-  } else if (!OCRsCapturedImages?.mileage?.uri && !values?.mileage?.trim()) {
-    errors.mileage = t('vehicleInfo.errors.mileageRequired');
   }
 
   if (values?.vehicleType !== VEHICLE_TYPES.OTHER) {
@@ -59,7 +52,6 @@ const validate = (values, OCRsCapturedImages, t) => {
 
 const initialData = {
   licensePlateNumber: '',
-  mileage: '',
   vin: '',
   vehicleType: '',
   inspectionType: '',
@@ -73,7 +65,7 @@ const VehicleTypes = [
 ];
 
 const currentDate = new Date().toISOString();
-const OCRsCapturedImagesInitialState = { mileage: { uri: '', extension: '' }, numberPlate: { uri: '', extension: '' }, vin: { uri: '', extension: '' } };
+const OCRsCapturedImagesInitialState = { numberPlate: { uri: '', extension: '' }, vin: { uri: '', extension: '' } };
 
 
 const VehicleInformation = props => {
@@ -82,7 +74,6 @@ const VehicleInformation = props => {
   const authState = useSelector(state => state?.auth);
   const dispatch = useDispatch();
   const route = useRoute();
-  const mileageInputRef = useRef(null);
   const licensePlateInputRef = useRef(null);
   const vinInputRef = useRef(null);
   const OCRsCapturedImagesRef = useRef(OCRsCapturedImagesInitialState);
@@ -97,7 +88,6 @@ const VehicleInformation = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [vinLoading, setVinLoading] = useState(false);
   const [showVinInput, setShowVinInput] = useState(true);
-  const [mileageLoading, setMileageLoading] = useState(false);
   const [isInspectionTypeOpen, setIsInspectionTypeOpen] = useState(false);
   const [showExistingVehicleDropdown, setShowExistingVehicleDropdown] = useState(false);
 
@@ -155,8 +145,6 @@ const VehicleInformation = props => {
   };
 
   const resetOCRsCapturedImagesRef = () => {
-    OCRsCapturedImagesRef.current.mileage.uri = '';
-    OCRsCapturedImagesRef.current.mileage.extension = '';
     OCRsCapturedImagesRef.current.vin.uri = '';
     OCRsCapturedImagesRef.current.vin.extension = '';
     OCRsCapturedImagesRef.current.numberPlate.uri = '';
@@ -205,8 +193,6 @@ const VehicleInformation = props => {
         setFieldValue('vehicleType', '', false);
         setHasApiDetectedVehicleType(false);
         setShowVehicleType(true);
-        setFieldValue?.('mileage', '', false);
-        OCRsCapturedImagesRef.current.mileage.uri = '';
         OCRsCapturedImagesRef.current.vin.uri = '';
       }
     },
@@ -225,7 +211,7 @@ const VehicleInformation = props => {
   const handleSubmitForm = (values, { setSubmitting, resetForm }) => {
     Keyboard.dismiss();
 
-    const { numberPlate, mileage } = OCRsCapturedImagesRef.current;
+    const { numberPlate } = OCRsCapturedImagesRef.current;
     const dateImage = dayjs(currentDate).format('DD-M-YYYY');
     const vehicleType = values?.vehicleType;
     const data = {
@@ -241,13 +227,6 @@ const VehicleInformation = props => {
           category: LicensePlateDetails.subCategory,
           extension: numberPlate?.extension,
           groupType: LicensePlateDetails.groupType,
-          dateImage,
-        },
-        {
-          url: mileage?.uri,
-          category: OdometerDetails.subCategory,
-          extension: mileage?.extension,
-          groupType: OdometerDetails.groupType,
           dateImage,
         },
       ],
@@ -277,7 +256,6 @@ const VehicleInformation = props => {
         setIsMakeYearModelModalVisible(false);
         resetOCRsCapturedImagesRef();
         resetForm();
-        debugger;
         // NAVIGATE
         const timeout = isIOS ? 500 : 100;
         const nextRoute = data?.hasCheckList ? ROUTES.DVIR_INSPECTION_CHECKLIST : ROUTES.NEW_INSPECTION;
@@ -359,7 +337,6 @@ const VehicleInformation = props => {
   };
 
   // 🎯 CAMERA CAPTURE HANDLERS
-  const handlePressMileageCameraIcon = () => handleCameraNavigation(OdometerDetails, { isMileageCapture: true });
   const handlePressVinCameraIcon = () => handleCameraNavigation(VinDetails, { isVinCapture: true });
   const handlePressNumberPlateCameraIcon = () => handleCameraNavigation(LicensePlateDetails, { isLicensePlateCapture: true });
 
@@ -380,13 +357,10 @@ const VehicleInformation = props => {
     }
 
     setFieldValue('licensePlateNumber', '', false);
-    setFieldValue('mileage', '', false);
     setFieldValue('vin', '', false);
     setFieldError('licensePlateNumber', '');
-    setFieldError('mileage', '');
     setFieldError('vin', '');
     setFieldTouched('licensePlateNumber', true, false);
-    setFieldTouched('mileage', true, false);
     setFieldTouched('vin', true, false);
     setShowVehicleType(false);
     setShowVinInput(true);
@@ -409,14 +383,11 @@ const VehicleInformation = props => {
     });
 
     setFieldValue('licensePlateNumber', '', false);
-    setFieldValue('mileage', '', false);
     setFieldValue('vin', '', false);
     setFieldValue('vehicleType', '', false);
     setFieldError('licensePlateNumber', '');
-    setFieldError('mileage', '');
     setFieldError('vin', '');
     setFieldTouched('licensePlateNumber', true, false);
-    setFieldTouched('mileage', true, false);
     setFieldTouched('vin', true, false);
     setShowVehicleType(false);
     setShowVinInput(true);
@@ -428,19 +399,17 @@ const VehicleInformation = props => {
 
   const isClearFormDisabled = (values) => {
     if (isFromRegisteredVehicle) {
-      return isLoading || vinLoading || mileageLoading || isFetchingVehicleInfo;
+      return isLoading || vinLoading || isFetchingVehicleInfo;
     }
 
-    const { numberPlate, mileage, vin } = OCRsCapturedImagesRef?.current || {};
+    const { numberPlate, vin } = OCRsCapturedImagesRef?.current || {};
     const isVinRelevant = values?.vehicleType !== VEHICLE_TYPES.OTHER;
     const isAnyImagePresent =
       values?.licensePlateNumber ||
-      values?.mileage ||
       numberPlate?.uri ||
-      mileage?.uri ||
       (isVinRelevant && (values?.vin || vin?.uri));
 
-    return isLoading || vinLoading || mileageLoading || isFetchingVehicleInfo || !isAnyImagePresent;
+    return isLoading || vinLoading || isFetchingVehicleInfo || !isAnyImagePresent;
   };
   const onCloseExistingVehicleDropDown = () => {
     setShowExistingVehicleDropdown(false);
@@ -515,56 +484,13 @@ const VehicleInformation = props => {
                   }, [showClearConfirmModal]);
 
                   useEffect(() => {
-                    const { isMileageCapture, isLicensePlateCapture, isVinCapture, capturedImageUri, capturedImageMime } = route?.params || {};
+                    const { isLicensePlateCapture, isVinCapture, capturedImageUri, capturedImageMime } = route?.params || {};
 
                     const resetCaptureImageParams = () =>
                       navigation.setParams({
                         capturedImageUri: undefined,
                         capturedImageMime: undefined,
                       });
-
-                    if (isMileageCapture) {
-                      navigation.setParams({ isMileageCapture: false });
-
-                      if (!capturedImageUri) {return;} // guard
-
-                      const mileageNotDetected = () => {
-                        dispatch(setMileage(''));
-                        setFieldError('mileage', t('vehicleInfo.errors.mileageUndetected'));
-                        setFieldTouched('mileage', true, false);
-                        resetCaptureImageParams();
-                        setTimeout(() => mileageInputRef.current?.focus(), 200);
-                      };
-
-                      OCRsCapturedImagesRef.current.mileage = {
-                        uri: capturedImageUri,
-                        extension: capturedImageMime,
-                      };
-
-                      setMileageLoading(true);
-                      ai_Mileage_Extraction(capturedImageUri)
-                        .then(response => {
-                          const { mileage = '', status = false } = response?.data || {};
-
-                          if (status === true && mileage) {
-                            setFieldValue('mileage', mileage, false);
-                            setFieldError('mileage', undefined);
-                            dispatch(setMileage(mileage));
-
-                            resetCaptureImageParams();
-                          } else {
-                            console.log(' response:', response);
-                            mileageNotDetected();
-                          }
-                        })
-                        .catch(error => {
-                          console.log('mileageNotDetected error:', error);
-                          mileageNotDetected();
-                        })
-                        .finally(() => {
-                          setMileageLoading(false);
-                        });
-                    }
 
                     if (isLicensePlateCapture) {
                       navigation.setParams({ isLicensePlateCapture: false });
@@ -655,7 +581,7 @@ const VehicleInformation = props => {
                           setVinLoading(false);
                         });
                     }
-                  }, [route?.params?.isMileageCapture, route?.params?.isLicensePlateCapture, route?.params?.isVinCapture]);
+                  }, [route?.params?.isLicensePlateCapture, route?.params?.isVinCapture]);
 
                   const fetchVehicleInfo = useCallback(
                     async licensePlateNumber => {
@@ -875,28 +801,6 @@ const VehicleInformation = props => {
 
                         {/* INPUTS */}
                         <View style={styles.inputsContainer}>
-                          <CustomInput
-                            // onPress={() => handlePressOCRInput('mileage', handlePressMileageCameraIcon)}
-                            // editable={!!OCRsCapturedImagesRef?.current?.mileage?.uri}
-                            ref={mileageInputRef}
-                            inputContainerStyle={styles.inputContainer}
-                            placeholderTextColor={'#BDBDBD'}
-                            rightIcon={mileageLoading ? <ActivityIndicator size="small" color={colors.royalBlue} /> : <CameraOutlineIcon />}
-                            inputStyle={styles.input}
-                            placeholder={t('vehicleInfo.mileagePlaceholder')}
-                            label={t('vehicleInfo.mileageLabel')}
-                            value={values.mileage}
-                            onChangeText={handleChange}
-                            onBlur={handleBlur}
-                            valueName="mileage"
-                            touched={touched.mileage}
-                            error={errors.mileage}
-                            keyboardType="number-pad"
-                            onRightIconPress={handlePressMileageCameraIcon}
-                            maxLength={17}
-                          // pointerEvents={!OCRsCapturedImagesRef?.current?.mileage?.uri ? 'none' : 'auto'}
-                          />
-
                           {showVinInput && values.vehicleType !== VEHICLE_TYPES.OTHER && (
                             <CustomInput
                               ref={vinInputRef}
