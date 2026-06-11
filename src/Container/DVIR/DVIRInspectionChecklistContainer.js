@@ -9,10 +9,11 @@ import {
   getChecklists,
   getInspectionDetails,
   inspectionSubmission,
+  ai_Mileage_Extraction,
   removeChecklistImageVideo as removeChecklistImageVideoAPI,
   updateChecklist,
 } from '../../services/inspection';
-import { categoryVariant, setRequired, updateVehicleImage } from '../../Store/Actions';
+import { categoryVariant, setMileage, setMileageMessage, setMileageVisible, setRequired, updateVehicleImage } from '../../Store/Actions';
 import {
   ExteriorFrontDetails,
   ExteriorLeftDetails,
@@ -22,9 +23,10 @@ import {
   ExteriorRightDetails,
   isNotEmpty,
   LicensePlateDetails,
+  OdometerDetails,
 } from '../../Utils';
 import i18n from '../../Utils/i18n';
-import { checkAndCompleteUrl } from '../../Utils/helpers';
+import { checkAndCompleteUrl, removeAlphabets } from '../../Utils/helpers';
 import { useTranslation } from 'react-i18next';
 
 const frameConfigMap = {
@@ -92,6 +94,11 @@ const frameConfigMap = {
       isVideo: false,
     },
   },
+  odometer: {
+    details: OdometerDetails,
+    source: IMAGES.odometer,
+    index: 0,
+  },
   tire: {
     source: IMAGES.tire,
     index: 0,
@@ -134,6 +141,11 @@ const getInitialCaptureFrames = () => [
     id: 'interior_front',
     title: i18n.t('dvir.interiorFrontTitle'),
     frames: [{ id: 'front_interior', icon: IMAGES.truckInterior, image: null }],
+  },
+  {
+    id: 'odometer',
+    title: OdometerDetails.title,
+    frames: [{ id: 'odometer', icon: IMAGES.odometer, image: null }],
   },
   {
     id: 'interior_rear',
@@ -187,9 +199,11 @@ const getFilteredTireDataByInspectionFrequency = (inspectionFrequency, defaultTi
   return defaultTires.filter(t => allowedTireIds.has(t.id));
 };
 
+const sanitizeMileage = text => (text || '').replace(/[^0-9]/g, '');
+
 const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
   const { selectedInspectionID } = useSelector(state => state.newInspection);
-  const { inspectionFrequency } = useSelector(state => state.newInspection) || {};
+  const { inspectionFrequency, mileage } = useSelector(state => state.newInspection) || {};
   const { t } = useTranslation();
 
   // State for checklist items
@@ -216,6 +230,9 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
         : '',
     [inspectionFrequency]
   );
+  const requiresOdometer = inspectionFrequency?.some(item => String(item?.categoryName || '').trim().toLowerCase() === 'odometer');
+  const sanitizedMileage = removeAlphabets(String(mileage || ''));
+  const hasValidMileage = Number(sanitizedMileage) > 0;
 
   // Sync captureFrames and tireInspectionData with inspectionFrequency: only show frames/tires that exist in config.
   // When inspectionFrequency is empty, show full default. Preserve existing images when applying filter.
@@ -451,9 +468,10 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
       false: ROUTES.CAMERA,
     };
     const path = paths[isVideo];
+    const cameraType = modalDetails?.key === OdometerDetails.key ? OdometerDetails.key : key;
     // const details = {
     //   title: modalDetails.title,
-    //   type: key,
+    //   type: cameraType,
     //   uri: '',
     //   source: modalDetails.source,
     //   fileId: '',
@@ -463,10 +481,11 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
     setCaptureImageModalVisible(false);
     setModalDetails(modalDetailsInitialState);
     navigation.navigate(path, {
-      type: key,
+      type: cameraType,
       modalDetails: modalDetails,
       inspectionId: selectedInspectionID,
       prevScreen: ROUTES.DVIR_INSPECTION_CHECKLIST,
+      ...(cameraType === OdometerDetails.key ? { returnToParams: { isMileageCapture: true } } : {}),
       // returnTo: ROUTES.DVIR_INSPECTION_CHECKLIST,
     });
   };
@@ -480,6 +499,34 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
     dispatch(setRequired(required));
   }
 
+  const handleOpenEditMileage = useCallback(() => {
+    dispatch(setMileageMessage(''));
+    dispatch(setMileage(mileage || ''));
+    dispatch(setMileageVisible(true));
+  }, [dispatch, mileage]);
+
+  const openMileageModal = useCallback(
+    (prefill = '') => {
+      dispatch(setMileageMessage(''));
+      dispatch(setMileage(prefill));
+      dispatch(setMileageVisible(true));
+    },
+    [dispatch]
+  );
+
+  const processCapturedOdometerMileage = useCallback(
+    async imageUrl => {
+      try {
+        const response = await ai_Mileage_Extraction(imageUrl);
+        const { mileage: extractedMileage, status = false } = response?.data || {};
+        openMileageModal(status === true && extractedMileage ? sanitizeMileage(String(extractedMileage)) : '');
+      } catch (err) {
+        openMileageModal('');
+      }
+    },
+    [openMileageModal]
+  );
+
   const handleCaptureFrame = (captureFrameId, frameId) => {
 
     const config = frameConfigMap[frameId];
@@ -488,6 +535,18 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
     if (frequencyMatch) {
       details.categoryId = frequencyMatch.categoryId;
       details.companyConfigId = frequencyMatch.companyConfigId;
+    }
+    if (frameId === OdometerDetails.subCategory) {
+      displayAnnotationPopUp && setDisplayAnnotationPopUp(false);
+      dispatch(categoryVariant(config.index));
+      navigation.navigate(ROUTES.CAMERA, {
+        type: OdometerDetails.key,
+        modalDetails: details,
+        inspectionId: selectedInspectionID,
+        prevScreen: ROUTES.DVIR_INSPECTION_CHECKLIST,
+        returnToParams: { isMileageCapture: true },
+      });
+      return;
     }
     handleFramePickerPress(details, config.index);
 
@@ -624,16 +683,17 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
       const exteriorItemsFiles = files.filter(file => file.groupType === 'exteriorItems');
       const interiorItemsFiles = files.filter(file => file.groupType === 'interiorItems');
 
-      const allItemFiles = [...exteriorItemsFiles, ...interiorItemsFiles];
+      const allItemFiles = [...exteriorItemsFiles, ...interiorItemsFiles, ...(odometerFile ? [odometerFile] : [])];
 
       if (allItemFiles.length > 0) {
         const updatedCaptureFrames = captureFrames.map(section => {
           const updatedFrames = section.frames.map(frame => {
             const matchedFile = allItemFiles.find(file => file.category === frame.id);
             if (matchedFile) {
+              const imageUrl = checkAndCompleteUrl(matchedFile.url)?.completedUrl || S3_BUCKET_BASEURL + matchedFile.url;
               return {
                 ...frame,
-                image: S3_BUCKET_BASEURL + matchedFile.url,
+                image: imageUrl,
                 fileId: matchedFile.id,
               };
             }
@@ -699,6 +759,10 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
 
       // CAPTURE FRAMES
       if (captureFrameId && frameId) {
+        if (frameId === OdometerDetails.subCategory) {
+          processCapturedOdometerMileage(afterFileUploadImageUrl);
+        }
+
         const updatedFrames = captureFrames.map(item => {
           if (item.id === captureFrameId) {
             return {
@@ -740,6 +804,8 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
   const validateFramesTiresCheclist = () => {
     // 1. Validate captureFrames: all frames must have a non-null image (only when frames are shown)
     const allFramesHaveImages = captureFrames.every(section => section.frames.every(frame => frame.image !== null));
+    const hasOdometerImage = captureFrames.some(section => section.frames.some(frame => frame.id === 'odometer' && frame.image !== null));
+    const hasRequiredOdometerData = !requiresOdometer || (hasOdometerImage && hasValidMileage);
 
     // 2. Validate tires: all tires must have a non-null image (only when tires are shown)
     const allTiresHaveImages = tireInspectionData.every(tire => tire.image !== null);
@@ -753,6 +819,7 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
     const checklistSectionShown = (checklistData?.length ?? 0) > 0;
     const allResults =
       (!framesSectionShown || allFramesHaveImages) &&
+      hasRequiredOdometerData &&
       (!tiresSectionShown || allTiresHaveImages) &&
       (!checklistSectionShown || allChecklistItemsHaveStatus);
 
@@ -761,6 +828,7 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
       allFramesHaveImages,
       allTiresHaveImages,
       allChecklistItemsHaveStatus,
+      hasRequiredOdometerData,
     };
   };
 
@@ -850,6 +918,7 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
       handleMediaModalDetailsCrossPress={handleMediaModalDetailsCrossPress}
       handleMediaModalDetailsPress={handleMediaModalDetailsPress}
       onRemoveFrameImage={handleRemoveFrameImage}
+      onOpenEditMileage={handleOpenEditMileage}
       initialCommentText={checklistData?.[currentItemIndex]?.comment}
     />
   );

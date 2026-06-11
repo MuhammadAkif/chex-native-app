@@ -20,6 +20,8 @@ const initialState = {
     passengerSide_1ID: '',
     passengerSide_2: '',
     passengerSide_2ID: '',
+    odometer: '',
+    odometerID: '',
   },
   exteriorItems: {
     exteriorLeft: '',

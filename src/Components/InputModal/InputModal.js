@@ -17,6 +17,8 @@ const InputModal = ({
   inputMode,
   errorMessage,
   defaultValue = '',
+  crossButtonColor,
+  crossButtonStyle,
 }) => {
   const {[valueKey]: value = '', [`${valueKey}Visible`]: visible = false} =
     useSelector(state => state.newInspection);
@@ -53,6 +55,8 @@ const InputModal = ({
       keyboardType={keyboardType}
       inputMode={inputMode}
       errorMessage={errorMessage}
+      crossButtonColor={crossButtonColor}
+      crossButtonStyle={crossButtonStyle}
     />
   );
 };

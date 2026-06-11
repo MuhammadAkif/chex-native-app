@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { CameraBorderedIcon, CircledChevron, CrossCircledIcon, MovieIcon, VideoBorderedIcon } from '../../Assets/Icons';
+import { CameraBorderedIcon, CircledChevron, MovieIcon, VideoBorderedIcon } from '../../Assets/Icons';
 import CommentBorderedIcon from '../../Assets/Icons/CommentBorderedIcon';
 import CrossBlue from '../../Assets/Icons/CrossBlue';
 import { IMAGES } from '../../Assets/Images';
@@ -257,6 +257,7 @@ const DVIRInspectionChecklistScreen = ({
   handleMediaModalDetailsCrossPress,
   handleMediaModalDetailsPress,
   onRemoveFrameImage,
+  onOpenEditMileage,
   initialCommentText,
 }) => {
   const { t } = useTranslation();
@@ -282,7 +283,7 @@ const DVIRInspectionChecklistScreen = ({
         <View style={styles.secondBodyContainer}>
           <View style={styles.header}>
             <View style={styles.headerLeft}>
-              <AppText style={styles.headerLeftText}>2</AppText>
+              <AppText style={styles.headerLeftText}>1</AppText>
             </View>
             <AppText style={styles.headerTitle}>{t('dvir.checklistTitle')}</AppText>
             <View style={styles.headerRight}>
@@ -308,7 +309,7 @@ const DVIRInspectionChecklistScreen = ({
                     onComment={onCommentIconPress}
                     onCamera={onCheckItemCameraIconPress}
                     onRemove={onCheckItemRemoveImage}
-                    CrossCircledIcon={CrossCircledIcon}
+                    CrossCircledIcon={CrossBlue}
                     CameraBorderedIcon={CameraBorderedIcon}
                     VideoBorderedIcon={VideoBorderedIcon}
                     buttonStyles={buttonStyles}
@@ -335,7 +336,14 @@ const DVIRInspectionChecklistScreen = ({
                 <View style={styles.cardItems}>
                   {captureFrames.map(item => (
                     <View style={[styles.itemContainer, { gap: wp(5) }]} key={item.id}>
-                      <AppText style={styles.captureFrameTitle}>{item?.title}</AppText>
+                      <View style={styles.captureFrameHeader}>
+                        <AppText style={styles.captureFrameTitle}>{item?.title}</AppText>
+                        {item?.id === 'odometer' && item?.frames?.some(frame => frame?.image) && (
+                          <TouchableOpacity onPress={onOpenEditMileage} activeOpacity={0.7}>
+                            <AppText style={styles.editMileageText}>{`+ ${t('common.edit')} ${t('vehicleInfo.mileageLabel')}`}</AppText>
+                          </TouchableOpacity>
+                        )}
+                      </View>
 
                       <View style={styles.captureFrameRow}>
                         {item?.frames?.map(frame => (
@@ -397,7 +405,7 @@ const DVIRInspectionChecklistScreen = ({
         <View style={[styles.secondBodyContainer]}>
           <View style={[styles.header]}>
             <View style={styles.headerLeft}>
-              <AppText style={styles.headerLeftText}>3</AppText>
+              <AppText style={styles.headerLeftText}>2</AppText>
             </View>
             <AppText style={styles.headerTitle}>{t('dvir.tires')}</AppText>
             <View style={styles.headerRight}>
@@ -518,7 +526,7 @@ const DVIRInspectionChecklistScreen = ({
 
   return (
     <View style={container} >
-      <MileageInput />
+      <MileageInput crossButtonColor={colors.royalBlue} />
       <LogoHeader />
       <LoadingIndicator isLoading={isLoading} />
       <View style={headerContainer}>
@@ -532,7 +540,7 @@ const DVIRInspectionChecklistScreen = ({
           keyExtractor={(_, index) => `${index}`}
           renderSectionHeader={renderSectionHeader}
           renderItem={renderItem}
-          ListHeaderComponent={<MileageSection returnTo={ROUTES.DVIR_INSPECTION_CHECKLIST} index={1} />}
+          // ListHeaderComponent={<MileageSection returnTo={ROUTES.DVIR_INSPECTION_CHECKLIST} index={1} />}
           contentContainerStyle={{ flexGrow: 1 }}
           showsVerticalScrollIndicator={false}
         />
@@ -784,6 +792,17 @@ const styles = StyleSheet.create({
     marginTop: hp(0.5),
     textAlign: 'center',
   },
+  captureFrameHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: wp(2),
+  },
+  editMileageText: {
+    color: colors.royalBlue,
+    fontSize: wp(3.2),
+    fontWeight: '600',
+  },
   commentContainer: {
     marginTop: hp(1),
     padding: wp(3),
@@ -1008,6 +1027,7 @@ const styles = StyleSheet.create({
   captureFrameTitle: {
     fontSize: wp('4%'),
     fontWeight: '500',
+    flex: 1,
   },
   captureFrameRow: {
     flexDirection: 'row',

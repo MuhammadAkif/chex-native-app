@@ -56,6 +56,7 @@ import {
   isObjectEmpty,
   LicensePlateDetails,
 } from '../Utils';
+import { removeAlphabets } from '../Utils/helpers';
 import { useIsFocused, usePreventRemove } from '@react-navigation/native';
 import AppText from '../Components/text';
 
@@ -136,6 +137,8 @@ const NewInspectionContainer = ({ route, navigation }) => {
 
   const isScreenFocused = useIsFocused();
   const { companyId } = user?.data || {};
+  const sanitizedMileage = removeAlphabets(String(mileage || ''));
+  const hasValidMileage = Number(sanitizedMileage) > 0;
   const [modalVisible, setModalVisible] = useState(false);
   const [mediaModalVisible, setMediaModalVisible] = useState(false);
   const [mediaModalDetails, setMediaModalDetails] = useState({});
@@ -204,7 +207,7 @@ const NewInspectionContainer = ({ route, navigation }) => {
   }, [exteriorItems]);
   useEffect(() => {
     handleIsAllVehicleParts();
-  }, [carVerificiationItems, interiorItems, exteriorItems, tires, displayTires, modalVisible, inspectionFrequency]);
+  }, [carVerificiationItems, interiorItems, exteriorItems, tires, displayTires, modalVisible, inspectionFrequency, hasValidMileage]);
   useEffect(() => {
     const isTiresUploaded = haveOneValue(tires);
     if (!displayTires && isTiresUploaded) {
@@ -347,6 +350,10 @@ const NewInspectionContainer = ({ route, navigation }) => {
             const baseKey = INSPECTION_SUBCATEGORY[item?.categoryName];
             if (!baseKey) {
               return false;
+            }
+            if (item?.categoryName === 'odometer') {
+              const hasOdometerImage = carVerificiationItems[baseKey] || interiorItems[baseKey];
+              return !(hasOdometerImage && hasValidMileage);
             }
             return !(interiorItems[baseKey] || interiorItems[`${baseKey}_1`] || interiorItems[`${baseKey}_2`]);
           })
@@ -702,6 +709,9 @@ const NewInspectionContainer = ({ route, navigation }) => {
   };
   //Annotation logic ends here
 
+  const requiresMileage = inspectionFrequencyList.some(item => String(item?.categoryName || '').trim().toLowerCase() === 'odometer');
+  const canSubmitInspection = isAllVehicleParts.isAllParts && (!requiresMileage || hasValidMileage);
+
   return (
     <NewInspectionScreen
       selectedOption={selectedOption}
@@ -729,7 +739,7 @@ const NewInspectionContainer = ({ route, navigation }) => {
       isAllInteriorImagesAvailable={isAllVehicleParts.isAllInterior}
       isAllExteriorImagesAvailable={isAllVehicleParts.isAllExterior}
       isBothTiresImagesAvailable={isAllVehicleParts.isAllTires}
-      isVehicleAllPartsImagesAvailable={isAllVehicleParts.isAllParts}
+      isVehicleAllPartsImagesAvailable={canSubmitInspection}
       handleSubmitPress={handleSubmitPress}
       isLoading={isLoading}
       handleMediaModalDetailsPress={handleMediaModalDetailsPress}

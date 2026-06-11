@@ -26,6 +26,8 @@ const ConfirmVehicleDetailModal = ({
   keyboardType = 'default',
   inputMode,
   errorMessage = '',
+  crossButtonColor = orange,
+  crossButtonStyle,
 }) => {
   const { t } = useTranslation();
   const defaultTitle = title || t('confirmVehicleDetail.title');
@@ -65,7 +67,7 @@ const ConfirmVehicleDetailModal = ({
         <TouchableOpacity style={container} activeOpacity={1} onPress={onTouchDismissKeyboard}>
           <View style={modalContainer}>
             {!!onCrossPress && (
-              <TouchableOpacity style={styles.crossIcon} onPress={onCrossPress} activeOpacity={0.7}>
+              <TouchableOpacity style={[styles.crossIcon, { backgroundColor: crossButtonColor }, crossButtonStyle]} onPress={onCrossPress} activeOpacity={0.7}>
                 <Text style={styles.crossText}>✕</Text>
               </TouchableOpacity>
             )}

@@ -86,6 +86,7 @@ import Toast from './Toast';
 import VehicleCard from './VehicleCard';
 import WarningModal from './WarningModal';
 import OdometerGuidanceModal from './PopUpModals/OdometerGuidanceModal';
+import OdometerSection from './OdometerSection';
 export {
   PhoneInput,
   IconWrapper,
@@ -173,4 +174,5 @@ export {
   VideoPicker,
   WarningModal,
   OdometerGuidanceModal,
+  OdometerSection,
 };

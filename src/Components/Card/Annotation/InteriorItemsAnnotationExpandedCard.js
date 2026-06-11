@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { ExpandedCardStyles, expandedCardStyles } from '../../../Assets/Styles';
 import { InteriorDriverSide, InteriorPassengerSide } from '../../../Utils';
 import { ImagesPickerContainer } from '../../index';
+import OdometerSection from '../../OdometerSection';
 import { useTranslation } from 'react-i18next';
 const { expandedCardContainer } = expandedCardStyles;
 const { container } = ExpandedCardStyles;
@@ -44,11 +45,13 @@ const InteriorItemsAnnotationExpandedCard = ({
   const hasInteriorConfig = interiorItemsConfig.length > 0;
   const hasDriverSide = !hasInteriorConfig || interiorItemsConfig.some(item => item?.categoryName === 'interior_driver_side');
   const hasPassengerSide = !hasInteriorConfig || interiorItemsConfig.some(item => item?.categoryName === 'interior_passenger_side');
+  const hasOdometer = !hasInteriorConfig || interiorItemsConfig.some(item => item?.categoryName === 'odometer');
 
   const { t } = useTranslation();
   const defaultPickerText = pickerText || t('common.captureImage');
   return (
     <View style={containerStyle}>
+      {hasOdometer && <OdometerSection handleMediaModalDetailsPress={handleMediaModalDetailsPress} />}
       {hasDriverSide && (
         <ImagesPickerContainer
           ExteriorDetails={enrichWithCategoryId(InteriorDriverSide, interiorItemsConfig)}

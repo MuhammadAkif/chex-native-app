@@ -134,7 +134,7 @@ const NewInspectionScreen = props => {
           dualButton={false}
         />
       )}
-      <MileageInput />
+      <MileageInput crossButtonColor={colors.orangePeel} />
       {isLicenseModalVisible && (
         <ConfirmVehicleDetailModal
           isLoading={isLoading}
@@ -177,7 +177,7 @@ const NewInspectionScreen = props => {
             contentContainerStyle={scrollViewContainer}
             showsVerticalScrollIndicator={false}>
             {/* Optional odometer/mileage capture — sits at the top of the list */}
-            <MileageSection returnTo={ROUTES.NEW_INSPECTION} index={1} />
+            {/* <MileageSection returnTo={ROUTES.NEW_INSPECTION} index={1} /> */}
             {modalVisible && (
               <CaptureImageModal
                 modalVisible={modalVisible}
@@ -230,7 +230,7 @@ const NewInspectionScreen = props => {
               <>
                 <CollapsedCard
                   text={t('newInspection.interiorItems')}
-                  index={2}
+                  index={1}
                   displayInstructions={displayInstructions}
                   isActive={selectedOption?.isInterior}
                   isBothItemsAvailable={isAllInteriorImagesAvailable}
@@ -245,6 +245,7 @@ const NewInspectionScreen = props => {
                     isLoading={isLoading}
                     handleMediaModalDetailsPress={handleMediaModalDetailsPress}
                     interiorItemsConfig={interiorItemsConfig}
+                    handleCaptureNowPress={handleCaptureNowPress}
                   />
                 )}
               </>
@@ -253,7 +254,7 @@ const NewInspectionScreen = props => {
             <CollapsedCard
               text={t('newInspection.exteriorItems')}
               displayInstructions={displayInstructions}
-              index={hasInteriorAndRoofTopCompany(companyId) ? 2 : 3}
+              index={hasInteriorAndRoofTopCompany(companyId) ? 1 : 2}
               isActive={selectedOption?.isExterior}
               isBothItemsAvailable={isAllExteriorImagesAvailable}
               onPress={() => handleCardExpansion('isExterior')}
@@ -279,7 +280,7 @@ const NewInspectionScreen = props => {
               <>
                 <CollapsedCard
                   text={t('newInspection.tires')}
-                  index={hasInteriorAndRoofTopCompany(companyId) ? 3 : 4}
+                  index={hasInteriorAndRoofTopCompany(companyId) ? 2 : 3}
                   isActive={selectedOption?.isTires}
                   isBothItemsAvailable={isBothTiresImagesAvailable}
                   onPress={() => handleCardExpansion('isTires')}
