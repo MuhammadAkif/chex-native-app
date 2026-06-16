@@ -78,6 +78,10 @@ export const file_Details = inspectionId => async dispatch => {
     uploadInProgressMediaToStore(files, dispatch);
     dispatch(setInspectionFrequency(response?.data?.configs));
     dispatch(numberPlateSelected(inspectionId));
+    const savedMileage = response?.data?.inspection?.mileage;
+    if (savedMileage) {
+      dispatch(setMileage(savedMileage));
+    }
     return response;
   } catch (error) {
     console.error('Inspection details getting error:', error);
