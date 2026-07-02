@@ -87,6 +87,7 @@ const LicensePlateNumberSelectionContainer = ({navigation}) => {
     const body = {
       licensePlateNumber: selectedNP,
       companyId: data?.companyId,
+      source: 'app',
     };
     dispatch(setCompanyId(data?.companyId));
     const headers = {

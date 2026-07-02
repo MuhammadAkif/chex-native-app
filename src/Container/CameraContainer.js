@@ -107,8 +107,6 @@ const CameraContainer = ({ route, navigation }) => {
     (isVinScreen && isShowVinModal);
   const shouldShowGuidanceModal = isGuidanceTypeScreen && !shouldSkipGuidanceModal && isGuidanceModalVisible;
 
-console.log('route?.params?.type', route?.params?.type);
-
   const frameStyles = {
     portrait: {
       ...styles.portraitFrame,

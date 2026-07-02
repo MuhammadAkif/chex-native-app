@@ -22,7 +22,7 @@ const {
 } = API_ENDPOINTS;
 
 export const createInspection = async (companyId, data) => {
-  const body = { companyId, ...data };
+  const body = { companyId, ...data, source: 'app' };
   try {
     return await api.post(CREATE_INSPECTION_URL, body);
   } catch (error) {
