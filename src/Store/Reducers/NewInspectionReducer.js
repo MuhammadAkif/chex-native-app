@@ -114,6 +114,7 @@ const initialState = {
   isShowVinModal: false,
   selectedVehicleKind: 'van',
   inspectionFrequency: '',
+  inspectionDetail: null,
 };
 const {
   UPDATE_VEHICLE_IMAGE,
@@ -147,6 +148,7 @@ const {
   SET_VIN_MODAL_VISIBLE,
   SET_SELECTED_VEHICLE_KIND,
   SET_INSPECTION_FREQUENCY,
+  SET_INSPECTION_DETAIL,
 } = Types;
 const newInspectionReducer = (state = initialState, action) => {
   const {type, payload} = action;
@@ -287,6 +289,8 @@ const newInspectionReducer = (state = initialState, action) => {
       return {...state, selectedVehicleKind: action.payload};
     case SET_INSPECTION_FREQUENCY:
       return {...state, inspectionFrequency: action.payload};
+    case SET_INSPECTION_DETAIL:
+      return {...state, inspectionDetail: payload};
 
     default:
       return state;

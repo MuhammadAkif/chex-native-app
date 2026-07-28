@@ -9,7 +9,7 @@ const {GET_INSPECTION_IN_PROGRESS, REMOVE_INSPECTION, CLEAR_INSPECTION_IN_PROGRE
 export const fetchInspectionInProgress = () => async dispatch => {
   try {
     const {data: inspections} = await fetchAllInspections('IN_PROGRESS');
-
+    console.log('inspections', inspections);
     dispatch({
       type: GET_INSPECTION_IN_PROGRESS,
       payload: inspections || [],

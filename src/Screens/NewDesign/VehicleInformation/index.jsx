@@ -22,7 +22,7 @@ import {
 import useDebounce from '../../../hooks/useDebounce';
 import { ROUTES, TABS } from '../../../Navigation/ROUTES';
 import { useDispatch, useSelector } from 'react-redux';
-import { numberPlateSelected, setCompanyId, setSelectedVehicleKind, setVehicleType, showToast,setInspectionFrequency } from '../../../Store/Actions';
+import { numberPlateSelected, setCompanyId, setSelectedVehicleKind, setVehicleType, showToast,setInspectionFrequency, setInspectionDetail } from '../../../Store/Actions';
 import { LicensePlateDetails, VinDetails } from '../../../Utils';
 import { useRoute } from '@react-navigation/native';
 import dayjs from 'dayjs';
@@ -246,6 +246,8 @@ const VehicleInformation = props => {
         dispatch(setSelectedVehicleKind(vehicleType));
         dispatch(numberPlateSelected(response?.data?.id));
         dispatch(setInspectionFrequency(response?.data?.configs));
+        // Carries createdAt, which the expiry watcher counts from (see useInspectionExpiry).
+        dispatch(setInspectionDetail(response?.data));
 
         // RESET STATES
         resetIsFromRegisteredVehicleStates();

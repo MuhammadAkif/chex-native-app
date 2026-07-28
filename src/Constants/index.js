@@ -32,7 +32,7 @@ const ENV_TYPE_URL = {
 
 const version = '1';
 export const API_VERSION_PATH = '/api/v' + version + '/';
-export const API_BASE_URL = ENV_TYPE_URL.production;
+export const API_BASE_URL = ENV_TYPE_URL.staging;
 export const generateApiUrl = path => API_BASE_URL + API_VERSION_PATH + path;
 console.log('API_BASE_URL', API_BASE_URL);
 export const S3_BUCKET_BASEURL = process.env.S3_BUCKET_BASEURL;
@@ -85,6 +85,9 @@ export const INSPECTION = {
   exteriorItems: 'exteriorItems',
   tires: 'tires',
 };
+// An in-progress inspection is considered stale this many minutes after its createdAt.
+// TODO: set back to 120 before release — temporarily lowered for testing.
+export const INSPECTION_EXPIRY_MINUTES = 120;
 export const INSPECTION_SUBCATEGORY = {
   license_plate_number: 'licensePlate',
   odometer: 'odometer',

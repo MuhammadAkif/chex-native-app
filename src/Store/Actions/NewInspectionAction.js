@@ -35,6 +35,7 @@ const {
   SET_VIN_MODAL_VISIBLE,
   SET_SELECTED_VEHICLE_KIND,
   SET_INSPECTION_FREQUENCY,
+  SET_INSPECTION_DETAIL,
 } = Types;
 
 const itemsImagePayload = (item = '', group = '', uri = '', id = 0) => {
@@ -73,12 +74,13 @@ export const categoryVariant = payload => ({
 export const file_Details = inspectionId => async dispatch => {
   try {
     const response = await getInspectionDetails(inspectionId);
-    const {files = {}} = response?.data || {};
+    const {files = {}, inspection = null} = response?.data || {};
     dispatch(setFileDetails(files));
     uploadInProgressMediaToStore(files, dispatch);
     dispatch(setInspectionFrequency(response?.data?.configs));
+    dispatch(setInspectionDetail(inspection));
     dispatch(numberPlateSelected(inspectionId));
-    const savedMileage = response?.data?.inspection?.mileage;
+    const savedMileage = inspection?.mileage;
     if (savedMileage) {
       dispatch(setMileage(savedMileage));
     }
@@ -221,4 +223,8 @@ export const setSelectedVehicleKind = kind => ({
 export const setInspectionFrequency = frequency => ({
   type: SET_INSPECTION_FREQUENCY,
   payload: frequency,
+});
+export const setInspectionDetail = (inspection = null) => ({
+  type: SET_INSPECTION_DETAIL,
+  payload: inspection,
 });

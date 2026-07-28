@@ -57,6 +57,7 @@ import {
   LicensePlateDetails,
 } from '../Utils';
 import { removeAlphabets } from '../Utils/helpers';
+import { useInspectionExpiry } from '../hooks/useInspectionExpiry';
 import { useIsFocused, usePreventRemove } from '@react-navigation/native';
 import AppText from '../Components/text';
 
@@ -131,6 +132,8 @@ const NewInspectionContainer = ({ route, navigation }) => {
   const { user } = useSelector(state => state?.auth) || {};
   const { inspectionFrequency } = useSelector(state => state.newInspection) || {};
   const inspectionFrequencyList = Array.isArray(inspectionFrequency) ? inspectionFrequency : [];
+ const inspectionData = useSelector(state => state.newInspection) || {};
+ console.log('inspectionData', inspectionData);
   const interiorItemsConfig = inspectionFrequencyList.filter(item => item?.groupType === 'interiorItems');
   const exteriorItemsConfig = inspectionFrequencyList.filter(item => item?.groupType === 'exteriorItems');
   const tiresItemsConfig = inspectionFrequencyList.filter(item => item?.groupType === 'tires');
@@ -152,6 +155,8 @@ const NewInspectionContainer = ({ route, navigation }) => {
   // const [previousRoute, setPreviousRoute] = useState('');
   const [errorTitle, setErrorTitle] = useState('');
   const [inUseErrorTitle, setInUseErrorTitle] = useState('');
+  // Expiry watcher is shared with the DVIR checklist screen; resetAllStates clears this screen's local state.
+  const { isInspectionExpired, handleExpiredInspectionPress } = useInspectionExpiry({ onAcknowledge: resetAllStates });
   const [inspectionID, setInspectionID] = useState(null);
   const modalDetailsInitialState = {
     ...LicensePlateDetails,
@@ -759,6 +764,8 @@ const NewInspectionContainer = ({ route, navigation }) => {
       handleYesPressOfInProgressInspection={handleYesPressOfInProgressInspection}
       isInspectionInProgressModalVisible={isInspectionInProgressModalVisible}
       inUseErrorTitle={inUseErrorTitle}
+      isInspectionExpired={isInspectionExpired}
+      handleExpiredInspectionPress={handleExpiredInspectionPress}
       handleCardExpansion={handleCardExpansion}
       /*skipLeft={skipLeft}
       skipLeftCorners={skipLeftCorners}

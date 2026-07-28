@@ -13,7 +13,7 @@ import {
   removeChecklistImageVideo as removeChecklistImageVideoAPI,
   updateChecklist,
 } from '../../services/inspection';
-import { categoryVariant, setMileage, setMileageMessage, setMileageVisible, setRequired, updateVehicleImage } from '../../Store/Actions';
+import { categoryVariant, setInspectionDetail, setMileage, setMileageMessage, setMileageVisible, setRequired, updateVehicleImage } from '../../Store/Actions';
 import {
   ExteriorFrontDetails,
   ExteriorLeftDetails,
@@ -27,6 +27,7 @@ import {
 } from '../../Utils';
 import i18n from '../../Utils/i18n';
 import { checkAndCompleteUrl, removeAlphabets } from '../../Utils/helpers';
+import { useInspectionExpiry } from '../../hooks/useInspectionExpiry';
 import { useTranslation } from 'react-i18next';
 
 const frameConfigMap = {
@@ -205,6 +206,9 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
   const { selectedInspectionID } = useSelector(state => state.newInspection);
   const { inspectionFrequency, mileage } = useSelector(state => state.newInspection) || {};
   const { t } = useTranslation();
+  // Same expiry rule as the standard inspection screen (see useInspectionExpiry).
+  // getInspectionData below already dispatches the detail, so the hook must not fetch it again.
+  const { isInspectionExpired, handleExpiredInspectionPress } = useInspectionExpiry({ autoLoadDetail: false });
 
   // State for checklist items
   const [commentModalVisible, setAddCommentModalVisible] = useState(false);
@@ -651,6 +655,10 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
     const response = await getInspectionDetails(selectedInspectionID);
     const files = response?.data?.files || [];
 
+    // Keep the store copy of the inspection in sync when this screen is entered
+    // directly (i.e. without file_Details having run for this inspection).
+    dispatch(setInspectionDetail(response?.data?.inspection || null));
+
     if (files.length > 0) {
       // ----- ODOMETER (car verification) ----- surface it to MileageSection via Redux.
       // Use checkAndCompleteUrl (not a raw prefix): the odometer url may already be a full https URL.
@@ -920,6 +928,8 @@ const DVIRInspectionChecklistContainer = ({ navigation, route }) => {
       onRemoveFrameImage={handleRemoveFrameImage}
       onOpenEditMileage={handleOpenEditMileage}
       initialCommentText={checklistData?.[currentItemIndex]?.comment}
+      isInspectionExpired={isInspectionExpired}
+      handleExpiredInspectionPress={handleExpiredInspectionPress}
     />
   );
 };

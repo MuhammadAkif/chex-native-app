@@ -42,6 +42,7 @@ import {
   updateIsLicensePlateUploaded,
   updateVehicleImage,
   setInspectionFrequency,
+  setInspectionDetail,
 } from './NewInspectionAction';
 import {hideToast, setLoading, showToast} from './UIActions';
 
@@ -89,6 +90,7 @@ export {
   updateIsLicensePlateUploaded,
   updateVehicleImage,
   setInspectionFrequency,
+  setInspectionDetail,
   fetchFuelEvent,
   fetchFuelVehicles,
   recentFuelEvents,

@@ -26,6 +26,7 @@ import { DVIR_CHECKLIST_MAPPING } from '../../Constants'; // Import mapping
 import {
   AndroidMediaViewModal,
   CaptureImageModal,
+  DiscardInspectionModal,
   DisplayMediaModal,
   FooterButtons,
   LoadingIndicator,
@@ -259,6 +260,8 @@ const DVIRInspectionChecklistScreen = ({
   onRemoveFrameImage,
   onOpenEditMileage,
   initialCommentText,
+  isInspectionExpired,
+  handleExpiredInspectionPress,
 }) => {
   const { t } = useTranslation();
   // Prepare sections for SectionList
@@ -526,6 +529,14 @@ const DVIRInspectionChecklistScreen = ({
 
   return (
     <View style={container} >
+      {isInspectionExpired && (
+        <DiscardInspectionModal
+          yesButtonText={t('common.ok')}
+          onYesPress={handleExpiredInspectionPress}
+          description={t('errors.inspectionExpired.message')}
+          dualButton={false}
+        />
+      )}
       <MileageInput crossButtonColor={colors.royalBlue} />
       <LogoHeader />
       <LoadingIndicator isLoading={isLoading} />

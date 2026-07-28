@@ -84,6 +84,8 @@ const NewInspectionScreen = props => {
     handleYesPressOfInProgressInspection,
     isInspectionInProgressModalVisible,
     inUseErrorTitle,
+    isInspectionExpired,
+    handleExpiredInspectionPress,
     skipLeft,
     skipLeftCorners,
     skipRight,
@@ -131,6 +133,14 @@ const NewInspectionScreen = props => {
           yesButtonText={t('common.ok')}
           onYesPress={handleBackPress}
           description={inUseErrorTitle}
+          dualButton={false}
+        />
+      )}
+      {!inUseErrorTitle && isInspectionExpired && (
+        <DiscardInspectionModal
+          yesButtonText={t('common.ok')}
+          onYesPress={handleExpiredInspectionPress}
+          description={t('errors.inspectionExpired.message')}
           dualButton={false}
         />
       )}
