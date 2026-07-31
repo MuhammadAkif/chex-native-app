@@ -11,7 +11,6 @@ import {
 import {
   Delete_Messages,
   HARDWARE_BACK_PRESS,
-  hasInteriorAndRoofTopCompany,
   INSPECTION,
   INSPECTION_SUBCATEGORY,
   VEHICLE_TYPES,
@@ -132,8 +131,6 @@ const NewInspectionContainer = ({ route, navigation }) => {
   const { user } = useSelector(state => state?.auth) || {};
   const { inspectionFrequency } = useSelector(state => state.newInspection) || {};
   const inspectionFrequencyList = Array.isArray(inspectionFrequency) ? inspectionFrequency : [];
- const inspectionData = useSelector(state => state.newInspection) || {};
- console.log('inspectionData', inspectionData);
   const interiorItemsConfig = inspectionFrequencyList.filter(item => item?.groupType === 'interiorItems');
   const exteriorItemsConfig = inspectionFrequencyList.filter(item => item?.groupType === 'exteriorItems');
   const tiresItemsConfig = inspectionFrequencyList.filter(item => item?.groupType === 'tires');
@@ -338,19 +335,17 @@ const NewInspectionContainer = ({ route, navigation }) => {
       exteriorRearLeftCorner: exteriorRearLeftCorner || exteriorRearLeftCorner_1 || exteriorRearLeftCorner_2,
       exteriorRearRightCorner: exteriorRearRightCorner || exteriorRearRightCorner_1 || exteriorRearRightCorner_2,
 
-      exteriorInsideCargoRoof:
-        !hasInteriorAndRoofTopCompany(companyId) && (exteriorInsideCargoRoof || exteriorInsideCargoRoof_1 || exteriorInsideCargoRoof_2),
+      exteriorInsideCargoRoof: exteriorInsideCargoRoof || exteriorInsideCargoRoof_1 || exteriorInsideCargoRoof_2,
     };
     if (vehicle_Type === 'new') {
-      updateRequiredFields(hasInteriorAndRoofTopCompany(companyId) ? interior__ : {}, exterior__);
+      updateRequiredFields(interior__, exterior__);
     }
     // const allCarVerification = !isObjectEmpty(carVerificiationItems);
     const allCarVerification = true;
 
     // When config is present, only check completion for configured categories (avoids false negative from empty '' in non-shown keys)
     const allInterior =
-      hasInteriorAndRoofTopCompany(companyId) ||
-      (interiorItemsConfig.length > 0
+      interiorItemsConfig.length > 0
         ? !interiorItemsConfig.some(item => {
             const baseKey = INSPECTION_SUBCATEGORY[item?.categoryName];
             if (!baseKey) {
@@ -362,7 +357,7 @@ const NewInspectionContainer = ({ route, navigation }) => {
             }
             return !(interiorItems[baseKey] || interiorItems[`${baseKey}_1`] || interiorItems[`${baseKey}_2`]);
           })
-        : !isObjectEmpty(interior__));
+        : !isObjectEmpty(interior__);
     const allExterior =
       exteriorItemsConfig.length > 0
         ? !exteriorItemsConfig?.some(item => {
@@ -385,7 +380,7 @@ const NewInspectionContainer = ({ route, navigation }) => {
         : !isObjectEmpty(tires);
 
     // Only require completion for sections that are shown (based on config)
-    const interiorSectionShown = !hasInteriorAndRoofTopCompany(companyId) && interiorItemsConfig.length > 0;
+    const interiorSectionShown = interiorItemsConfig.length > 0;
     const exteriorSectionShown = exteriorItemsConfig.length > 0;
     const tiresSectionShown = displayTires && tiresItemsConfig.length > 0;
     const allParts =
@@ -787,7 +782,6 @@ const NewInspectionContainer = ({ route, navigation }) => {
       coordinates={mediaModalDetails?.coordinates?.coordinateArray || []}
       displayInstructions={vehicle_Type === 'new'}
       imageDimensions={imageDimensions}
-      companyId={companyId}
       interiorItemsConfig={interiorItemsConfig}
       exteriorItemsConfig={exteriorItemsConfig}
       tiresItemsConfig={tiresItemsConfig}

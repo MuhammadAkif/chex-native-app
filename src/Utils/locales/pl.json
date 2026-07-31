@@ -141,7 +141,8 @@
   "inspectionDetail": {
     "title": "Szczegóły inspekcji",
     "finalStatus": "Status końcowy",
-    "noRemarks": "Brak uwag"
+    "noRemarks": "Brak uwag",
+    "aiSummary": "Podsumowanie AI"
   },
   "tabs": {
     "home": "Start",

@@ -141,7 +141,8 @@
   "inspectionDetail": {
     "title": "Inspection Details",
     "finalStatus": "Final Status",
-    "noRemarks": "No Remarks"
+    "noRemarks": "No Remarks",
+    "aiSummary": "AI Summary"
   },
   "tabs": {
     "home": "Home",

@@ -141,7 +141,8 @@
   "inspectionDetail": {
     "title": "Детайли на инспекцията",
     "finalStatus": "Краен статус",
-    "noRemarks": "Няма забележки"
+    "noRemarks": "Няма забележки",
+    "aiSummary": "AI обобщение"
   },
   "tabs": {
     "home": "Начало",

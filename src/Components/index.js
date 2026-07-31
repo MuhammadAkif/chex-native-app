@@ -1,3 +1,4 @@
+import AiSummary from './AiSummary';
 import AlertPopup from './AlertPopup';
 import AndroidMediaViewModal from './AndroidMediaViewModal';
 import AnnotateImage from './Annotation/AnnotateImage';
@@ -94,6 +95,7 @@ export {
   LogoHeader,
   InspectionCard,
   VehicleCard,
+  AiSummary,
   AlertPopup,
   AndroidMediaViewModal,
   AnnotateImage,

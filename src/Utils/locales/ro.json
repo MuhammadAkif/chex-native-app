@@ -141,7 +141,8 @@
   "inspectionDetail": {
     "title": "Detalii inspecție",
     "finalStatus": "Status final",
-    "noRemarks": "Fără observații"
+    "noRemarks": "Fără observații",
+    "aiSummary": "Rezumat AI"
   },
   "tabs": {
     "home": "Acasă",

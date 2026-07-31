@@ -24,7 +24,6 @@ import { ROUTES } from '../Navigation/ROUTES';
 import AnnotateImage from '../Components/Annotation/AnnotateImage';
 import AnnotateImageModal from '../Components/Annotation/AnnotateImageModal';
 import LoadingIndicator from '../Components/LoadingIndicator';
-import { hasInteriorAndRoofTopCompany } from '../Constants';
 import { useTranslation } from 'react-i18next';
 
 const { OS } = Platform;
@@ -107,11 +106,18 @@ const NewInspectionScreen = props => {
     coordinates,
     displayInstructions,
     imageDimensions,
-    companyId,
     interiorItemsConfig,
     exteriorItemsConfig,
     tiresItemsConfig,
   } = props;
+
+  // Which sections appear — and how they are numbered — comes entirely from the company's
+  // inspectionFrequency config. No per-company special cases.
+  const showInterior = interiorItemsConfig.length > 0;
+  const showExterior = exteriorItemsConfig.length > 0;
+  const exteriorIndex = showInterior ? 2 : 1;
+  const tiresIndex = showExterior ? exteriorIndex + 1 : exteriorIndex;
+
   return (
     <View style={container}>
       {isDiscardInspectionModalVisible && (
@@ -236,7 +242,7 @@ const NewInspectionScreen = props => {
                 isLicensePlateUploaded={!isLicensePlateUploaded}
               />
             )} */}
-            {!hasInteriorAndRoofTopCompany(companyId) && interiorItemsConfig.length > 0 && (
+            {showInterior && (
               <>
                 <CollapsedCard
                   text={t('newInspection.interiorItems')}
@@ -260,11 +266,11 @@ const NewInspectionScreen = props => {
                 )}
               </>
             )}
-            {exteriorItemsConfig.length > 0 && (
+            {showExterior && (
             <CollapsedCard
               text={t('newInspection.exteriorItems')}
               displayInstructions={displayInstructions}
-              index={hasInteriorAndRoofTopCompany(companyId) ? 1 : 2}
+              index={exteriorIndex}
               isActive={selectedOption?.isExterior}
               isBothItemsAvailable={isAllExteriorImagesAvailable}
               onPress={() => handleCardExpansion('isExterior')}
@@ -282,7 +288,6 @@ const NewInspectionScreen = props => {
                 skipRight={skipRight}
                 skipRightCorners={skipRightCorners}
                 handleMediaModalDetailsPress={handleMediaModalDetailsPress}
-                companyId={companyId}
                 exteriorItemsConfig={exteriorItemsConfig}
               />
             )}
@@ -290,7 +295,7 @@ const NewInspectionScreen = props => {
               <>
                 <CollapsedCard
                   text={t('newInspection.tires')}
-                  index={hasInteriorAndRoofTopCompany(companyId) ? 2 : 3}
+                  index={tiresIndex}
                   isActive={selectedOption?.isTires}
                   isBothItemsAvailable={isBothTiresImagesAvailable}
                   onPress={() => handleCardExpansion('isTires')}

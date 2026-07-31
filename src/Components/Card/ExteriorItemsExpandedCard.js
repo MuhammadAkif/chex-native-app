@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 
 import { useSelector } from 'react-redux';
 import { ExpandedCardStyles, expandedCardStyles } from '../../Assets/Styles';
-import { hasInteriorAndRoofTopCompany } from '../../Constants';
 import {
   ExteriorFrontDetails,
   ExteriorFrontLeftCornerDetails,
@@ -68,11 +67,6 @@ const ExteriorItemsExpandedCard = ({
   const { t } = useTranslation();
   const defaultPickerText = pickerText || t('exteriorItems.captureImage');
 
-  const {
-    user: {
-      data: { companyId },
-    },
-  } = useSelector(state => state?.auth);
   const { selectedVehicleKind } = useSelector(state => state?.newInspection);
 
   const hasExteriorConfig = exteriorItemsConfig.length > 0;
@@ -83,7 +77,7 @@ const ExteriorItemsExpandedCard = ({
   const showFrontRightCorner = (!hasExteriorConfig || hasCategory(exteriorItemsConfig, EXTERIOR_CATEGORY_NAMES.FRONT_RIGHT_CORNER)) && !skipRightCorners;
   const showRearLeftCorner = (!hasExteriorConfig || hasCategory(exteriorItemsConfig, EXTERIOR_CATEGORY_NAMES.REAR_LEFT_CORNER)) && !skipLeftCorners;
   const showRearRightCorner = (!hasExteriorConfig || hasCategory(exteriorItemsConfig, EXTERIOR_CATEGORY_NAMES.REAR_RIGHT_CORNER)) && !skipRightCorners;
-  const showInsideCargoRoof = (!hasExteriorConfig || hasCategory(exteriorItemsConfig, EXTERIOR_CATEGORY_NAMES.INSIDE_CARGO_ROOF)) && !hasInteriorAndRoofTopCompany(companyId);
+  const showInsideCargoRoof = !hasExteriorConfig || hasCategory(exteriorItemsConfig, EXTERIOR_CATEGORY_NAMES.INSIDE_CARGO_ROOF);
 
   const visibleSections = [showFront, showRear, showFrontLeftCorner, showFrontRightCorner, showRearLeftCorner, showRearRightCorner, showInsideCargoRoof];
   const lastVisibleIndex = visibleSections.reduce((last, visible, index) => (visible ? index : last), -1);

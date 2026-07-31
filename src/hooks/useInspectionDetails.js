@@ -19,7 +19,7 @@ export const useInspectionDetails = () => {
             const res = await inspectionDetails(inspectionID);
             const { inspectionData = null, files = {} } = res?.data || {};
 
-            const { finalStatus, remarks } = inspectionData;
+            const { finalStatus, remarks, aiSummary } = inspectionData;
             const beforeImages = FILTER_IMAGES(files, 'before');
             const updatedBeforeImages = updateFiles(beforeImages);
             let files_ = sortInspectionReviewedItems(updatedBeforeImages);
@@ -29,6 +29,7 @@ export const useInspectionDetails = () => {
                 files: files_,
                 finalStatus: finalStatus,
                 remarks: remarks,
+                aiSummary:aiSummary,
             });
         } catch (error) {
             const { statusCode = null } = error?.response?.data || {};

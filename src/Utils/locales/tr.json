@@ -141,7 +141,8 @@
   "inspectionDetail": {
     "title": "Denetim Detayları",
     "finalStatus": "Son Durum",
-    "noRemarks": "Açıklama Yok"
+    "noRemarks": "Açıklama Yok",
+    "aiSummary": "Yapay Zeka Özeti"
   },
   "tabs": {
     "home": "Ana Sayfa",

@@ -21,8 +21,8 @@ const InspectionDetailContainer = ({ navigation, route }) => {
   const [modalDetails, setModalDetails] = useState({});
   let detailsFiles = [];
   if (route?.params) {
-    let { files, finalStatus, remarks } = route.params;
-    detailsFiles = { files: files, finalStatus: finalStatus, remarks: remarks };
+    let { files, finalStatus, remarks, aiSummary } = route.params;
+    detailsFiles = { files: files, finalStatus: finalStatus, remarks: remarks, aiSummary: aiSummary };
   }
   const isPassed = detailsFiles?.finalStatus && detailsFiles?.finalStatus.toLowerCase() === 'pass';
   const ICON_COLOR = {
@@ -64,12 +64,14 @@ const InspectionDetailContainer = ({ navigation, route }) => {
     setIsModalVisible(false);
     setModalDetails({});
   };
+  console.log('detailsFiles',detailsFiles)
 
   return (
     <InspectionDetailScreen
       detailsFiles={detailsFiles?.files}
       finalStatus={detailsFiles?.finalStatus}
       remarks={detailsFiles?.remarks}
+      aiSummary={detailsFiles?.aiSummary}
       isModalVisible={isModalVisible}
       modalDetails={modalDetails}
       handleDisplayMedia={handleDisplayMedia}
